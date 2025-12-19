@@ -19,6 +19,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Uno.Disposables;
+using Uno.Extensions;
 using Uno.Threading;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
@@ -33,14 +34,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private static readonly StringComparer _pathsComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
 		private static readonly StringComparison _pathsComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-		private IDisposable? _solutionSubscriptions;
 		private readonly FastAsyncLock _solutionUpdateGate = new();
 		private readonly BufferGate _solutionWatchersGate = new();
 
-		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
-		private Solution? _currentSolution;
-		private WatchHotReloadService? _hotReloadService;
-		private IReporter _reporter = new Reporter();
+		private (Task<HotReloadWorkspace> GetAsync, CancellationTokenSource Ct)? _workspace;
+		private readonly IReporter _reporter = new Reporter();
 
 		private bool _useRoslynHotReload;
 		private bool _useHotReloadThruDebugger;
@@ -90,7 +88,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
-				_initializeTask = InitializeAsync(CancellationToken.None);
+				var ct = new CancellationTokenSource();
+				_workspace = (InitializeAsync(ct.Token), ct);
 			}
 			catch (Exception e)
 			{
@@ -101,20 +100,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				throw;
 			}
-			async Task<(Solution, WatchHotReloadService)> InitializeAsync(CancellationToken ct)
+			async Task<HotReloadWorkspace> InitializeAsync(CancellationToken ct)
 			{
 				try
 				{
 					await Notify(HotReloadEvent.Initializing);
 
-					var (outputPath, intermediateOutputPath, solution, watch) = await CreateCompilation(configureServer, ct);
+					var workspace = await CreateCompilation(configureServer, ct);
+					ct.Register(() => workspace.Dispose());
 
-					ObserveSolutionPaths(solution, intermediateOutputPath, outputPath);
+					var fileSystemWatch = ObserveSolutionPaths(workspace.CurrentSolution, workspace.OutputPaths);
+					ct.Register(() => fileSystemWatch.Dispose());
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);
 
-					return (solution, watch);
+					return workspace;
 				}
 				catch (Exception e)
 				{
@@ -128,7 +129,19 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task<(string? outputPath, string? intermediateOutputPath, Solution solution, WatchHotReloadService watch)> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
+		private record HotReloadWorkspace(Workspace InnerWorkspace, WatchHotReloadService WatchService, string?[] OutputPaths) : IDisposable
+		{
+			public Solution CurrentSolution { get; set; } = InnerWorkspace.CurrentSolution;
+
+			/// <inheritdoc />
+			public void Dispose()
+			{
+				WatchService.EndSession();
+				InnerWorkspace.Dispose();
+			}
+		}
+
+		private async Task<HotReloadWorkspace> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
 		{
 			// Clone the properties from the ConfigureServer
 			var properties = configureServer.MSBuildProperties.ToDictionary();
@@ -168,7 +181,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				properties["UnoHotReloadTargetFramework"] = targetFramework;
 			}
 
-			var (solution, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
+			var (workspace, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 				configureServer.ProjectPath,
 				_reporter,
 				configureServer.MetadataUpdateCapabilities,
@@ -177,7 +190,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			return (outputPath, intermediateOutputPath, solution, watch);
 		}
 
-		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
+		private IDisposable ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
 		{
 			ImmutableArray<string> excludedDir =
 			[
@@ -215,7 +228,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				filePaths => _ = ProcessFileChanges(filePaths, processing.Token),
 				e => Console.WriteLine($"Error {e}"));
 
-			_solutionSubscriptions = new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
+			return new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
 
 			bool HasInterest(string path)
 			{
@@ -276,7 +289,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async ValueTask ProcessSolutionChanged(HotReloadServerOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
 		{
-			if (!await EnsureSolutionInitializedAsync() || _currentSolution is null || _hotReloadService is null)
+			if (await GetWorkspaceAsync() is not { } workspace)
 			{
 				await hotReload.Complete(HotReloadServerResult.Failed); // Failed to init the workspace
 				return;
@@ -285,11 +298,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			var sw = Stopwatch.StartNew();
 
 			// Detects the changes and try to update the solution
-			var originalSolution = _currentSolution;
+			var originalSolution = workspace.CurrentSolution;
 			var changeSet = await DiscoverChangesAsync(originalSolution, files, ct);
 			var solution = await Apply(originalSolution, changeSet, hotReload, ct);
 
-			if (solution == _currentSolution)
+			if (solution == originalSolution)
 			{
 				_reporter.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
 
@@ -299,10 +312,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			// No matter if the build will succeed or not, we update the _currentSolution.
 			// Files needs to be updated again to fix the compilation errors.
-			_currentSolution = solution;
+			workspace.CurrentSolution = solution;
 
 			// Compile the solution and get deltas
-			var (updates, hotReloadDiagnostics) = await _hotReloadService.EmitSolutionUpdateAsync(solution, ct);
+			var (updates, hotReloadDiagnostics) = await workspace.WatchService.EmitSolutionUpdateAsync(solution, ct);
 			// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
 			var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
@@ -457,28 +470,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			return builder;
 		}
 
-		[MemberNotNullWhen(true, nameof(_currentSolution), nameof(_hotReloadService))]
-		private async ValueTask<bool> EnsureSolutionInitializedAsync()
+		private async ValueTask<HotReloadWorkspace?> GetWorkspaceAsync()
 		{
-			if (_currentSolution is not null && _hotReloadService is not null)
+			if (_workspace is null)
 			{
-				return true;
-			}
-
-			if (_initializeTask is null)
-			{
-				return false;
+				return null;
 			}
 
 			try
 			{
-				(_currentSolution, _hotReloadService) = await _initializeTask;
-				return true;
+				return await _workspace.Value.GetAsync;
 			}
 			catch (Exception ex)
 			{
 				_reporter.Warn(ex.Message);
-				return false;
+				return null;
 			}
 		}
 
@@ -560,7 +566,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			ImmutableHashSet<string> newFiles,
 			CancellationToken ct)
 		{
-			if (_configureServer is null || _currentSolution is null)
+			if (_configureServer is null)
 			{
 				_reporter.Warn("Cannot handle new files: configuration not available.");
 				return ([], [], newFiles);
@@ -571,12 +577,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return ([], [], newFiles);
 			}
 
+			HotReloadWorkspace? tempWorkspace = null;
 			try
 			{
 				_reporter.Output($"Detected {newFiles.Count} potentially new file(s). Creating temporary workspace to discover them...");
 
 				// Create a temporary workspace to discover the new files
-				var (_, _, tempSolution, _) = await CreateCompilation(_configureServer, ct);
+				tempWorkspace = await CreateCompilation(_configureServer, ct);
 
 				var discoveredDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 				var discoveredAdditionalDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
@@ -587,7 +594,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					// Search for the file in the temp workspace's projects
 					// Note: Here again we assume that document can appear in more than one project (same project loaded with different TFM)
 					var found = false;
-					foreach (var project in tempSolution.Projects)
+					foreach (var project in tempWorkspace.CurrentSolution.Projects)
 					{
 						if (project.Documents.FirstOrDefault(d => string.Equals(d.FilePath, file, _pathsComparison)) is { } document)
 						{
@@ -613,6 +620,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				_reporter.Warn($"Error while discovering new files: {ex.Message}");
 				return ([], [], newFiles);
+			}
+			finally
+			{
+				tempWorkspace?.Dispose();
 			}
 		}
 

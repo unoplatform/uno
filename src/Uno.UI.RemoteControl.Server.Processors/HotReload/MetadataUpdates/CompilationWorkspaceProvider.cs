@@ -21,7 +21,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath = "";
 
-		public static async Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(
+		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
@@ -102,7 +102,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				await project.GetCompilationAsync(ct);
 			}
 
-			return (currentSolution, hotReloadService);
+			return (workspace, hotReloadService);
 		}
 
 		public static void InitializeRoslyn(string? workDir)

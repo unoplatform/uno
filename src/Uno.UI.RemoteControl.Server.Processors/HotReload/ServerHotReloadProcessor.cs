@@ -854,10 +854,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		#endregion
 
 		public void Dispose()
-		{
-			_solutionSubscriptions?.Dispose();
-			_hotReloadService?.EndSession();
-		}
+			=> _workspace?.Ct.Cancel();
 
 		#region Helpers
 		private class BufferGate
