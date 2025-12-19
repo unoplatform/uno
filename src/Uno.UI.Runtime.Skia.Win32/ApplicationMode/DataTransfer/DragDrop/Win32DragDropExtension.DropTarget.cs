@@ -242,13 +242,5 @@ internal partial class Win32DragDropExtension
 		return true;
 	}
 
-	private async Task<object> DelayRenderer(CancellationToken ct, AsyncHDropHandler asyncHDropHandler)
-	{
-		if (asyncHDropHandler is null)
-		{
-			throw new InvalidOperationException("Async HDrop handler is called too late.");
-		}
-
-		return await asyncHDropHandler.Task;
-	}
+	private async Task<object> DelayRenderer(CancellationToken ct, AsyncHDropHandler asyncHDropHandler) => await asyncHDropHandler.Task;
 }
