@@ -198,7 +198,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			return new HotReloadWorkspace(workspace, watch, [Trim(outputPath), Trim(intermediateOutputPath)]);
 
 			// We make sure to trim the output path from any TFM / RID / Configuration suffixes
-			// This is to make sure that is we have multiple active HR workspace (like an old Android emulator reconnecting while a desktop app is running),
+			// This is to make sure that if we have multiple active HR workspace (like an old Android emulator reconnecting while a desktop app is running),
 			// we will not consider the files of the other targets.
 			string? Trim(string? outDir)
 			{
