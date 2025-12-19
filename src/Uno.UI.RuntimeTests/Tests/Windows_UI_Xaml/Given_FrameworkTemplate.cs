@@ -94,12 +94,12 @@ partial class Given_FrameworkTemplate // tests
 	}
 
 	[TestMethod]
-	public async Task LambdaFactory_ShouldNotBeCollected()
+	public async Task LambdaExpressionFactory1_ShouldNotBeCollected()
 	{
 		// Arrange
 		var context = new object();
 		Func<View?>? builder = () => new ContentPresenter { Content = context };
-		Assert.IsNotNull(builder.Target, "The delegate is expected to have a capture here");
+		Assert.IsNotNull(builder.Target, "The delegate is expected to have a target here");
 
 		var template = new DataTemplate(builder);
 		var targetWR = new WeakReference(builder.Target);
@@ -110,6 +110,31 @@ partial class Given_FrameworkTemplate // tests
 
 		// Assert
 		Assert.IsNotNull(targetWR.Target);
+
+		// prevent the `template` from being collected before the assertion, which would otherwise brick this test.
+		// since we would expect the `template` to keep `targetWR.Target` alive.
+		GC.KeepAlive(template);
+	}
+
+	[TestMethod]
+	public async Task LambdaExpressionFactory2_ShouldNotBeCollected()
+	{
+		// Arrange
+		Func<View?>? builder = () => new Border();
+		Assert.IsNotNull(builder.Target, "The delegate is expected to have a target here");
+
+		var template = new DataTemplate(builder);
+		var targetWR = new WeakReference(builder.Target);
+
+		// Act
+		builder = null;
+		await TestHelper.TryWaitUntilCollected(targetWR);
+
+		// Assert
+		Assert.IsNotNull(targetWR.Target);
+
+		// completely unnecessary, but the `template` technically should not be collected before `targetWR.Target` does.
+		GC.KeepAlive(template);
 	}
 }
 
