@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
@@ -10,6 +12,7 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Ole;
 using Windows.Win32.System.SystemServices;
+using Windows.Win32.UI.Shell;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
@@ -82,9 +85,15 @@ internal partial class Win32DragDropExtension
 				PInvoke.ReleaseStgMedium(&medium);
 			}
 		}, mediumsToDispose);
+
+		var handled = TryhandleAsyncHDrop(dataObject, formatEtcList, package);
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
 			var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
+			if (formatEtc.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP && handled)
+			{
+				return null;
+			}
 			dataObject->GetData(formatEtc, out STGMEDIUM medium);
 			mediumsToDispose.Add(medium);
 			return medium.u.hGlobal;
@@ -125,6 +134,7 @@ internal partial class Win32DragDropExtension
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragLeave)}");
 
 		_manager.ProcessAborted(_fakePointerId);
+		_lastAsyncHDropHandler = null;
 
 		return HRESULT.S_OK;
 	}
@@ -142,7 +152,13 @@ internal partial class Win32DragDropExtension
 
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
+		_lastAsyncHDropHandler?.Drop(dataObject);
 		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
+		if (_lastAsyncHDropHandler != null)
+		{
+			_lastAsyncHDropHandler.DropEffect = *pdwEffect;
+			_lastAsyncHDropHandler = null;
+		}
 
 		return HRESULT.S_OK;
 	}
@@ -198,5 +214,42 @@ internal partial class Win32DragDropExtension
 
 		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
 		return formats.ToArray();
+	}
+
+	private unsafe bool TryhandleAsyncHDrop(IDataObject* dataObject, FORMATETC[] formatEtcList, DataPackage package)
+	{
+		var formatEtcNullable = formatEtcList.Cast<FORMATETC?>().FirstOrDefault(f => f!.Value.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP, null);
+		if (formatEtcNullable is null)
+		{
+			return false;
+		}
+		var formatEtc = formatEtcNullable.Value;
+
+		HRESULT hResult3;
+		var localDataObject = dataObject;
+		fixed (Guid* guidPtr = &_asyncCapabilityGuid)
+		{
+			hResult3 = dataObject->QueryInterface(guidPtr, (void**)&localDataObject);
+		}
+		var asyncCapability = (IDataObjectAsyncCapability*)localDataObject;
+		if (!hResult3.Succeeded || !asyncCapability->GetAsyncMode(out var isAsync).Succeeded || !isAsync)
+		{
+			return false;
+		}
+
+		var asyncHDropHandler = new AsyncHDropHandler(formatEtc);
+		_lastAsyncHDropHandler = asyncHDropHandler;
+		package.SetDataProvider(StandardDataFormats.StorageItems, ct => DelayRenderer(ct, asyncHDropHandler));
+		return true;
+	}
+
+	private async Task<object> DelayRenderer(CancellationToken ct, AsyncHDropHandler asyncHDropHandler)
+	{
+		if (asyncHDropHandler is null)
+		{
+			throw new InvalidOperationException("Async HDrop handler is called too late.");
+		}
+
+		return await asyncHDropHandler.Task;
 	}
 }
