@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
@@ -93,7 +94,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 					_status.ReportInvalidRuntime();
 				}
 
-				var hrDebug = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
+				var hrDebug = Debugger.IsAttached && Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
 				var message = new ConfigureServer(
 					_projectPath,
 					GetMetadataUpdateCapabilities(),
