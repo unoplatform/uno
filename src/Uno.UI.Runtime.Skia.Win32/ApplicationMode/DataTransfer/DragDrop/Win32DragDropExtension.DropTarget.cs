@@ -225,13 +225,13 @@ internal partial class Win32DragDropExtension
 		}
 		var formatEtc = formatEtcNullable.Value;
 
-		using ComScope<IUnknown> asyncCapabilityScope = new(null);
-		HRESULT hResult3;
+		using ComScope<IDataObjectAsyncCapability> asyncCapabilityScope = new(null);
+		HRESULT queryInterfaceHResult;
 		fixed (Guid* guidPtr = &_asyncCapabilityGuid)
 		{
-			hResult3 = dataObject->QueryInterface(guidPtr, asyncCapabilityScope);
+			queryInterfaceHResult = dataObject->QueryInterface(guidPtr, asyncCapabilityScope);
 		}
-		if (!hResult3.Succeeded || !((IDataObjectAsyncCapability*)asyncCapabilityScope.Value)->GetAsyncMode(out var isAsync).Succeeded || !isAsync)
+		if (!queryInterfaceHResult.Succeeded || !asyncCapabilityScope.Value->GetAsyncMode(out var isAsync).Succeeded || !isAsync)
 		{
 			return false;
 		}

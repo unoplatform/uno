@@ -81,7 +81,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 		public unsafe void Drop(IDataObject* dataObject)
 		{
-			ComScope<IUnknown> asyncCapabilityScope = new(null);
+			ComScope<IDataObjectAsyncCapability> asyncCapabilityScope = new(null);
 			var localGuid = _asyncCapabilityGuid;
 			var hResult = dataObject->QueryInterface(&localGuid, asyncCapabilityScope);
 			if (hResult.Failed)
@@ -92,7 +92,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 			{
 				var success = false;
 				STGMEDIUM hdropMedium = default;
-				var asyncCapability = (IDataObjectAsyncCapability*)asyncCapabilityScope.Value;
+				var asyncCapability = asyncCapabilityScope.Value;
 				var hResult2 = asyncCapability->StartOperation();
 				if (hResult2.Succeeded)
 				{
