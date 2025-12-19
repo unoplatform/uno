@@ -27,22 +27,22 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebViewTests
 
 			WebView.CoreWebView2.WebResourceRequested += (s, e) =>
 		{
-#if __SKIA__
 			try
 			{
-				// Inject an Authorization header so you can verify it on an echo endpoint (Skia only)
+				Console.WriteLine($"[Test] Event handler called. e type: {e.GetType().Name}");
+				Console.WriteLine($"[Test] e.Request type: {e.Request.GetType().Name}");
+				Console.WriteLine($"[Test] e.Request.Headers type: {e.Request.Headers.GetType().Name}");
+
+				// Inject an Authorization header so you can verify it on an echo endpoint
 				e.Request.Headers.SetHeader("Authorization", "Session TEST_TOKEN");
 				var authHeader = e.Request.Headers.GetHeader("Authorization");
 				_ = DispatcherQueue.TryEnqueue(() => StatusText.Text = $"WebResourceRequested: {e.Request.Uri}\nAuth header: {authHeader}");
 			}
 			catch (Exception ex)
 			{
+				Console.WriteLine($"[Test] EXCEPTION: {ex}");
 				_ = DispatcherQueue.TryEnqueue(() => StatusText.Text = "WebResourceRequested handler error: " + ex.Message);
 			}
-#else
-			// WebResourceRequested header injection is currently supported on Skia targets only.
-			_ = DispatcherQueue.TryEnqueue(() => StatusText.Text = "WebResourceRequested fired: (header injection unsupported on this platform)");
-#endif
 		};
 
 			NavigateButton.Click += (s, e) =>

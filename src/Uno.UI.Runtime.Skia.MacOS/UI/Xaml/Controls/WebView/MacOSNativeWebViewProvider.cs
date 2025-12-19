@@ -23,6 +23,9 @@ internal class MacOSNativeWebViewProvider : INativeWebViewProvider
 
 		NativeUno.uno_set_webview_new_window_requested_callback(&MacOSNativeWebView.NewWindowRequestedCallback);
 
+		// Register WebResourceRequested callback for header injection
+		NativeUno.uno_set_webview_resource_requested_callback(&MacOSNativeWebView.WebResourceRequestedCallback);
+
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new MacOSNativeWebViewProvider(o));
 	}
 
