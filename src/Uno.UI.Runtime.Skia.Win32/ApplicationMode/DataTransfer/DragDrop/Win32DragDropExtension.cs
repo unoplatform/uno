@@ -1,11 +1,19 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+using Windows.Storage;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.System.Com;
 using Windows.Win32.System.Ole;
+using Windows.Win32.UI.Shell;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
@@ -24,12 +32,15 @@ namespace Uno.UI.Runtime.Skia.Win32;
 /// </summary>
 internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface
 {
+	private static readonly Guid _asyncCapabilityGuid = new Guid(0x3D8B0590, 0xF691, 0x11D2, 0x8E, 0xA9, 0x00, 0x60, 0x97, 0xDF, 0x5B, 0xD4);
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 
 	private readonly DragDropManager _manager;
 	private readonly CoreDragDropManager _coreDragDropManager;
 	private readonly HWND _hwnd;
 	private readonly ComScope<IDropTarget> _dropTarget;
+
+	private AsyncHDropHandler? _lastAsyncHDropHandler;
 
 	public unsafe Win32DragDropExtension(DragDropManager manager)
 	{
@@ -61,5 +72,87 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 	}
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new NotImplementedException();
+
+	private class AsyncHDropHandler(FORMATETC hdropFormat)
+	{
+		public Task<List<IStorageItem>> Task { get; private set; } = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(new InvalidOperationException("Async HDrop handler can only be used after the Drop event is raised."));
+
+		public DROPEFFECT DropEffect { private get; set; } = DROPEFFECT.DROPEFFECT_NONE;
+
+		public unsafe void Drop(IDataObject* dataObject)
+		{
+			ComScope<IDataObjectAsyncCapability> asyncCapabilityScope = new(null);
+			var localGuid = _asyncCapabilityGuid;
+			var hResult = dataObject->QueryInterface(&localGuid, asyncCapabilityScope);
+			if (hResult.Failed)
+			{
+				Task = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(Marshal.GetExceptionForHR(hResult.Value) ?? new InvalidOperationException($"{nameof(IDataObject)}::{nameof(IDataObject.QueryInterface)} failed."));
+			}
+			else
+			{
+				var success = false;
+				STGMEDIUM hdropMedium = default;
+				var asyncCapability = asyncCapabilityScope.Value;
+				var hResult2 = asyncCapability->StartOperation();
+				if (hResult2.Succeeded)
+				{
+					var dispose = true;
+					using var _ = Disposable.Create(() =>
+					{
+						if (dispose)
+						{
+							asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
+							asyncCapabilityScope.Dispose();
+						}
+					});
+
+					const int attempts = 100;
+					for (int i = 0; i < attempts; i++)
+					{
+						if (dataObject->GetData(hdropFormat, out hdropMedium).Succeeded)
+						{
+							success = true;
+							break;
+						}
+						Thread.Sleep(TimeSpan.FromMilliseconds(10));
+					}
+
+					if (!success)
+					{
+						Task = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(new InvalidOperationException($"Failed to retrieve HDROP data from IDataObject."));
+					}
+					else
+					{
+						var tcs = new TaskCompletionSource<List<IStorageItem>>();
+						Task = tcs.Task;
+						dispose = false;
+						new Thread(() =>
+						{
+							using var _2 = Disposable.Create(() =>
+							{
+								PInvoke.ReleaseStgMedium(ref hdropMedium);
+								asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
+								asyncCapabilityScope.Dispose();
+							});
+
+							var files = Win32ClipboardExtension.GetFileDropList(hdropMedium.u.hGlobal);
+							if (files is null)
+							{
+								tcs.SetException(new InvalidOperationException("Failed to retrieve file drop list from HDROP."));
+							}
+							else
+							{
+								tcs.SetResult(files);
+							}
+						}).Start();
+					}
+				}
+				else
+				{
+					Task = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(Marshal.GetExceptionForHR(hResult2.Value) ?? new InvalidOperationException($"{nameof(IDataObjectAsyncCapability)}::{nameof(IDataObjectAsyncCapability.StartOperation)} failed."));
+				}
+			}
+		}
+	}
 }
 
