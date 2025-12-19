@@ -61,9 +61,9 @@ internal partial class Win32DragDropExtension
 			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {position}, formats: ";
 			foreach (var format in formats)
 			{
-				log += (CLIPBOARD_FORMAT)format.cfFormat + " ";
+				log += $"'{GetClipboardFormatDisplayName(format.cfFormat)}',";
 			}
-			this.Log().Trace(log);
+			this.Log().Trace(log[..^1]);
 		}
 
 		var package = new DataPackage();
@@ -167,5 +167,25 @@ internal partial class Win32DragDropExtension
 	{
 		var xamlRoot = _manager.ContentRoot.GetOrCreateXamlRoot();
 		return new Point(x / xamlRoot.RasterizationScale, y / xamlRoot.RasterizationScale);
+	}
+
+	private static unsafe string GetClipboardFormatDisplayName(ushort formatId)
+	{
+		if (Enum.IsDefined(typeof(CLIPBOARD_FORMAT), (CLIPBOARD_FORMAT)formatId))
+		{
+			return Enum.GetName(typeof(CLIPBOARD_FORMAT), (CLIPBOARD_FORMAT)formatId)!;
+		}
+
+		Span<char> buffer = stackalloc char[256];
+		fixed (char* bufferPtr = buffer)
+		{
+			var length = PInvoke.GetClipboardFormatName(formatId, bufferPtr, buffer.Length);
+			if (length > 0)
+			{
+				return new string(buffer[..length]);
+			}
+		}
+
+		return $"0x{formatId:X4}";
 	}
 }
