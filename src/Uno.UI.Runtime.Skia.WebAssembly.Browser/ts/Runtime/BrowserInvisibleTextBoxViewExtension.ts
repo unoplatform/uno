@@ -42,7 +42,7 @@
 			}
 		}
 
-		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isSpellCheckEnabled: boolean) {
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
 			if (isPasswordBox) {
 				(input as HTMLInputElement).type = "password";
@@ -50,7 +50,7 @@
 			}
 
 			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
-			input.spellcheck = false;
+			input.spellcheck = isSpellCheckEnabled;
 			input.style.whiteSpace = "pre-wrap";
 			input.style.position = "absolute";
 			input.style.padding = "0px";
@@ -117,13 +117,13 @@
 			}
 		}
 
-		public static focus(isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		public static focus(isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isSpellCheckEnabled: boolean) {
 			// NOTE: We can get focused as true while we have inputElement.
 			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
 			// For such case, we do call StartEntry twice without any EndEntry in between.
 			// So, cleanup the existing inputElement and create a new one.
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
-			this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+			this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint, isSpellCheckEnabled);
 
 			// It's necessary to actually focus the native input, not just make it visible. This is particularly
 			// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal

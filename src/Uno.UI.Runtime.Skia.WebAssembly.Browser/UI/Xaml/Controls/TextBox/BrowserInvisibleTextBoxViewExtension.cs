@@ -58,7 +58,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void StartEntry()
 	{
-		NativeMethods.Focus(_view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false, GetInputModeValue(), GetEnterKeyHintValue());
+		NativeMethods.Focus(_view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false, GetInputModeValue(), GetEnterKeyHintValue(), _view.TextBox?.IsSpellCheckEnabled ?? false);
 		InvalidateLayout(); // we create the native <input /> object in Focus, so we should make sure to update the layout
 		NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0, SelectionDirection);
 	}
@@ -166,7 +166,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void SetText(string text);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.focus")]
-		public static partial void Focus(bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
+		public static partial void Focus(bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint, bool isSpellCheckEnabled);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.blur")]
 		public static partial void Blur();

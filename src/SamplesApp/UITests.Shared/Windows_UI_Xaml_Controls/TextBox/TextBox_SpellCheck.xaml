@@ -1,0 +1,59 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_SpellCheck"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Padding="20" Spacing="20">
+			<TextBlock Text="Spell Check Support" 
+					   Style="{StaticResource TitleTextBlockStyle}"/>
+			
+			<TextBlock Text="These TextBoxes demonstrate spell checking functionality on Skia platforms. On WebAssembly, browser spell checking is enabled when IsSpellCheckEnabled is true."
+					   TextWrapping="Wrap"
+					   Margin="0,0,0,10"/>
+
+			<TextBlock Text="With Spell Check Enabled:" 
+					   Style="{StaticResource SubtitleTextBlockStyle}"/>
+			<TextBox PlaceholderText="Type some misspelled words here (e.g., 'teh', 'recieve')"
+					 IsSpellCheckEnabled="True"
+					 AcceptsReturn="True"
+					 TextWrapping="Wrap"
+					 Height="120"
+					 Margin="0,5,0,0"/>
+
+			<TextBlock Text="Without Spell Check:" 
+					   Style="{StaticResource SubtitleTextBlockStyle}"
+					   Margin="0,20,0,0"/>
+			<TextBox PlaceholderText="Type some misspelled words here (no spell check)"
+					 IsSpellCheckEnabled="False"
+					 AcceptsReturn="True"
+					 TextWrapping="Wrap"
+					 Height="120"
+					 Margin="0,5,0,0"/>
+
+			<TextBlock Text="Single-line with Spell Check:" 
+					   Style="{StaticResource SubtitleTextBlockStyle}"
+					   Margin="0,20,0,0"/>
+			<TextBox PlaceholderText="Single line spell check (e.g., 'recieve')"
+					 IsSpellCheckEnabled="True"
+					 Margin="0,5,0,0"/>
+
+			<TextBlock Text="Note:" 
+					   FontWeight="Bold"
+					   Margin="0,20,0,0"/>
+			<TextBlock TextWrapping="Wrap"
+					   Margin="0,5,0,0">
+				<Run Text="• On Skia WebAssembly, browser-native spell checking is enabled"/>
+				<LineBreak/>
+				<Run Text="• Right-click on misspelled words to see suggestions (browser context menu)"/>
+				<LineBreak/>
+				<Run Text="• Custom proofing menu integration is planned for future updates"/>
+			</TextBlock>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
