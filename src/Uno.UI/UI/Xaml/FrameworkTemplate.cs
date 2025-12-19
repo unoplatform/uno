@@ -262,10 +262,8 @@ namespace Microsoft.UI.Xaml
 				// Same target method (instance or static) (possible if the delegate was created from a
 				// method group, which are *not* cached by the C# compiler (required by
 				// the C# spec as of version 6.0)
-				|| (
-					ReferenceEquals(left?._viewFactory?.Target, right?._viewFactory?.Target)
-					&& left?.RawFactoryMethodInfo == right?.RawFactoryMethodInfo
-				);
+				|| (left?._hashCode == right?._hashCode)
+				;
 
 			public int GetHashCode(FrameworkTemplate obj) => obj._hashCode;
 		}

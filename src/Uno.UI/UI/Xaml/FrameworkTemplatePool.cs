@@ -533,6 +533,8 @@ namespace Microsoft.UI.Xaml
 			return "Unknown";
 		}
 
+		internal bool ContainsKey(FrameworkTemplate template) => _templates.ContainsKey(template);
+
 		private record TemplateInfo(List<MaterializedEntry> MaterializedInstance, List<TemplateEntry> PooledInstances);
 
 		private class TemplateEntry
