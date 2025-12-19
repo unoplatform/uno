@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Uno.UI.Helpers;
 
-internal interface IDelegate<TDelegate> where TDelegate : Delegate
+internal interface IDelegate<out TDelegate> where TDelegate : Delegate
 {
 	public object? Target { get; }
 	public MethodInfo Method { get; }

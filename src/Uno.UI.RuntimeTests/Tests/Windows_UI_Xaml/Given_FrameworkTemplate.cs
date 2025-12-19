@@ -92,11 +92,30 @@ partial class Given_FrameworkTemplate // tests
 		// Assert
 		Assert.IsNull(setupWR.Target);
 	}
+
+	[TestMethod]
+	public async Task LambdaFactory_ShouldNotBeCollected()
+	{
+		// Arrange
+		var context = new object();
+		Func<View?>? builder = () => new ContentPresenter { Content = context };
+		Assert.IsNotNull(builder.Target, "The delegate is expected to have a capture here");
+
+		var template = new DataTemplate(builder);
+		var targetWR = new WeakReference(builder.Target);
+
+		// Act
+		builder = null;
+		await TestHelper.TryWaitUntilCollected(targetWR);
+
+		// Assert
+		Assert.IsNotNull(targetWR.Target);
+	}
 }
 
 partial class Given_FrameworkTemplate
 {
-	public class XamlPageSetup
+	public class XamlPageSetup : Page
 	{
 		public DataTemplate GetTemplate(string name)
 		{

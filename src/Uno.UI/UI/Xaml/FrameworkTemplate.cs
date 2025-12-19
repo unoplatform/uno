@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+//#define DEBUG_INNER_VIEW_FACTORY
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -40,6 +42,10 @@ namespace Microsoft.UI.Xaml
 		/// XAML scope captured during template creation, used as context provider for resource resolution when materializing template content.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
+
+#if DEBUG_INNER_VIEW_FACTORY
+		internal IDelegate<Delegate>? _viewFactoryInner;
+#endif
 
 		/// <summary>
 		/// The template builder factory. This field is mutable and may be updated at runtime
@@ -110,15 +116,19 @@ namespace Microsoft.UI.Xaml
 		/// <param name="factory">The new factory to set</param>
 		internal void SetViewFactory(NewFrameworkTemplateBuilder? factory)
 		{
-			// We want to keep a weak reference to the factory target (typically the top-level container for the templates, eg: Page, ResourceDictionary, etc),
-			// so that templates do not prevent those objects from being GC'd.
-			// But if the factory doesn't have a target (no capture), then we use the literal delegate that has no overhead.
+			// We want to keep a weak reference to the factory target, so that templates do not prevent those objects from being GC'd.
+			// But only so, if the target is not an instance of the closure class, which we use IWeakReferenceProvider to determine since
+			// the known top-level xaml classes (Pages, ResourceDictionary,...) usually implement this interface.
+			// If the factory doesn't have a target (no capture), then we use the literal delegate that has no overhead.
 			_viewFactory = factory switch
 			{
-				{ Target: not null } => DelegateHelper.CreateWeak(factory),
-				{ Target: null } => DelegateHelper.CreateLiteral(factory),
+				{ Target: IWeakReferenceProvider } => DelegateHelper.CreateWeak(factory),
+				{ } => DelegateHelper.CreateLiteral(factory),
 				null => null,
 			};
+#if DEBUG_INNER_VIEW_FACTORY
+			_viewFactoryInner = _viewFactory;
+#endif
 			RawFactoryMethodInfo = factory?.Method;
 		}
 
@@ -127,10 +137,11 @@ namespace Microsoft.UI.Xaml
 		{
 			if (factory is { })
 			{
-				// We want to keep a weak reference to the factory target (typically the top-level container for the templates, eg: Page, ResourceDictionary, etc),
-				// so that templates do not prevent those objects from being GC'd.
-				// But if the factory doesn't have a target (no capture), then we use the literal delegate that has no overhead.
-				var inner = factory.Target is not null
+				// We want to keep a weak reference to the factory target, so that templates do not prevent those objects from being GC'd.
+				// But only so, if the target is not an instance of the closure class, which we use IWeakReferenceProvider to determine since
+				// the known top-level xaml classes (Pages, ResourceDictionary,...) usually implement this interface.
+				// If the factory doesn't have a target (no capture), then we use the literal delegate that has no overhead.
+				var inner = factory.Target is IWeakReferenceProvider
 					? DelegateHelper.CreateWeak(factory)
 					: DelegateHelper.CreateLiteral(factory) as IDelegate<TDelegate>;
 				// the adapted factory must not be a weak delegate, as we would lose the captures otherwise.
@@ -139,11 +150,17 @@ namespace Microsoft.UI.Xaml
 				);
 
 				_viewFactory = adapted;
+#if DEBUG_INNER_VIEW_FACTORY
+				_viewFactoryInner = inner;
+#endif
 				RawFactoryMethodInfo = factory.Method;
 			}
 			else
 			{
 				_viewFactory = null;
+#if DEBUG_INNER_VIEW_FACTORY
+				_viewFactoryInner = null;
+#endif
 				RawFactoryMethodInfo = null;
 			}
 		}
