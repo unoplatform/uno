@@ -75,6 +75,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			try
 			{
+				if (_workspace is not null)
+				{
+					_reporter.Warn("Hot-reload workspace is already initialized.");
+					return;
+				}
+
 				if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
 				{
 					// If this assembly was loaded from a stream, it will not have a location.
