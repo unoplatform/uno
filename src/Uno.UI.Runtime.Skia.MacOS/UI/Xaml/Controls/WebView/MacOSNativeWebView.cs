@@ -13,7 +13,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
+internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 {
 	private readonly MacOSWindowNative _window;
 	private readonly CoreWebView2 _owner;

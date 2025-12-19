@@ -26,10 +26,8 @@ public partial class CoreWebView2
 
 	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
-#if __SKIA__
 	private ISupportsWebResourceRequested? _webResourceRequestedSupport;
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
-#endif
 	internal long _navigationId;
 	private object? _processedSource;
 
@@ -165,9 +163,7 @@ public partial class CoreWebView2
 	{
 		DetachWebResourceRequestedSupport();
 		_nativeWebView = GetNativeWebViewFromTemplate();
-#if __SKIA__
 		AttachWebResourceRequestedSupport();
-#endif
 
 		// Signal that native WebView is now initialized
 		_nativeWebViewInitializedTcs.TrySetResult(true);
@@ -260,7 +256,7 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
-#if __SKIA__
+
 	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
 	{
 		if (uri is null)
@@ -301,7 +297,8 @@ public partial class CoreWebView2
 	{
 		WebResourceRequested?.Invoke(this, eventArgs);
 	}
-#endif
+
+
 
 	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
 	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
@@ -358,7 +355,7 @@ public partial class CoreWebView2
 		_processedSource = null;
 	}
 
-#if __SKIA__
+
 	private void AttachWebResourceRequestedSupport()
 	{
 		if (_nativeWebView is not ISupportsWebResourceRequested supports)
@@ -409,16 +406,14 @@ public partial class CoreWebView2
 			&& ResourceContext == resourceContext
 			&& RequestSourceKinds == requestSourceKinds;
 	}
-#endif
 
 	private void DetachWebResourceRequestedSupport()
 	{
-#if __SKIA__
 		if (_webResourceRequestedSupport is { })
 		{
 			_webResourceRequestedSupport.WebResourceRequested -= OnNativeWebResourceRequested;
 			_webResourceRequestedSupport = null;
 		}
-#endif
 	}
 }
+
