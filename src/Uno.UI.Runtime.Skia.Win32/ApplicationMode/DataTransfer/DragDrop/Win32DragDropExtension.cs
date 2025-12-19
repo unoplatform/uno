@@ -81,9 +81,9 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 		public unsafe void Drop(IDataObject* dataObject)
 		{
-			IntPtr ptr = 0;
+			ComScope<IUnknown> asyncCapabilityScope = new(null);
 			var localGuid = _asyncCapabilityGuid;
-			var hResult = dataObject->QueryInterface(&localGuid, (void**)&ptr);
+			var hResult = dataObject->QueryInterface(&localGuid, asyncCapabilityScope);
 			if (hResult.Failed)
 			{
 				Task = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(Marshal.GetExceptionForHR(hResult.Value) ?? new InvalidOperationException($"{nameof(IDataObject)}::{nameof(IDataObject.QueryInterface)} failed."));
@@ -92,7 +92,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 			{
 				var success = false;
 				STGMEDIUM hdropMedium = default;
-				var asyncCapability = (IDataObjectAsyncCapability*)ptr;
+				var asyncCapability = (IDataObjectAsyncCapability*)asyncCapabilityScope.Value;
 				var hResult2 = asyncCapability->StartOperation();
 				if (hResult2.Succeeded)
 				{
@@ -102,6 +102,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 						if (dispose)
 						{
 							asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
+							asyncCapabilityScope.Dispose();
 						}
 					});
 
@@ -131,6 +132,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 							{
 								PInvoke.ReleaseStgMedium(ref hdropMedium);
 								asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
+								asyncCapabilityScope.Dispose();
 							});
 
 							var files = Win32ClipboardExtension.GetFileDropList(hdropMedium.u.hGlobal);
