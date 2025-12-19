@@ -23,27 +23,6 @@ internal partial class Win32DragDropExtension
 	{
 		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
 
-		IEnumFORMATETC* enumFormatEtc;
-		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
-		if (hResult.Failed)
-		{
-			this.LogError()?.Error($"{nameof(IDataObject.EnumFormatEtc)} failed: {Win32Helper.GetErrorMessage(hResult)}");
-			return HRESULT.E_UNEXPECTED;
-		}
-
-		using var enumFormatDisposable = new DisposableStruct<IntPtr>(static p => ((IEnumFORMATETC*)p)->Release(), (IntPtr)enumFormatEtc);
-
-		enumFormatEtc->Reset();
-		const int formatBufferLength = 100;
-		var formatBuffer = stackalloc FORMATETC[formatBufferLength];
-		uint fetchedFormatCount;
-		hResult = enumFormatEtc->Next(formatBufferLength, formatBuffer, &fetchedFormatCount);
-		if (hResult.Failed)
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
-			return HRESULT.E_UNEXPECTED;
-		}
-
 		var position = new System.Drawing.Point(pt.x, pt.y);
 
 		var success = PInvoke.ScreenToClient(_hwnd, ref position);
@@ -55,7 +34,12 @@ internal partial class Win32DragDropExtension
 
 		var src = new DragEventSource(scaledPosition, grfKeyState);
 
-		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
+		var formats = EnumerateFormats(dataObject);
+		if (formats is null)
+		{
+			return HRESULT.E_UNEXPECTED;
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {position}, formats: ";
@@ -187,5 +171,32 @@ internal partial class Win32DragDropExtension
 		}
 
 		return $"0x{formatId:X4}";
+	}
+
+	private unsafe FORMATETC[]? EnumerateFormats(IDataObject* dataObject)
+	{
+		IEnumFORMATETC* enumFormatEtc;
+		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"{nameof(IDataObject.EnumFormatEtc)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return null;
+		}
+
+		using var enumFormatDisposable = new DisposableStruct<IntPtr>(static p => ((IEnumFORMATETC*)p)->Release(), (IntPtr)enumFormatEtc);
+
+		enumFormatEtc->Reset();
+		const int formatBufferLength = 100;
+		var formatBuffer = stackalloc FORMATETC[formatBufferLength];
+		uint fetchedFormatCount;
+		hResult = enumFormatEtc->Next(formatBufferLength, formatBuffer, &fetchedFormatCount);
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"{nameof(IEnumFORMATETC.Next)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return null;
+		}
+
+		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
+		return formats.ToArray();
 	}
 }
