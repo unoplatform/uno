@@ -81,7 +81,12 @@ public partial class TextBox
 		}
 	}
 
-	// TODO: remove this context menu when TextCommandBarFlyout is implemented
+	// TODO: Implement TextCommandBarFlyout with spell checking proofing menu
+	// This context menu is temporary until TextCommandBarFlyout is fully implemented with:
+	// 1. Visual red squiggle indicators for misspelled words
+	// 2. "Proofing" submenu with spelling suggestions
+	// 3. "Ignore" and "Add to dictionary" options
+	// See: https://github.com/unoplatform/uno/issues/[issue number]
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);

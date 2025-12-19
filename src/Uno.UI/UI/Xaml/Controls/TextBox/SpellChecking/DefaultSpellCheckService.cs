@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ internal class DefaultSpellCheckService : ISpellCheckService
 
 	public Task<bool> IsMisspelledAsync(string word) => Task.FromResult(false);
 
-	public Task<IReadOnlyList<string>> GetSuggestionsAsync(string word) => 
+	public Task<IReadOnlyList<string>> GetSuggestionsAsync(string word) =>
 		Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 
 	public Task<bool> AddToDictionaryAsync(string word) => Task.FromResult(false);
