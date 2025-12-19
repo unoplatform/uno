@@ -308,7 +308,9 @@ namespace SamplesApp
 			}
 			else if (arguments.Kind == ExtendedActivationKind.Launch)
 			{
-
+				// No additional handling is required for Launch activations here.
+				// The main window and navigation are already initialized by the
+				// app's primary activation path before this method is invoked.
 			}
 		}
 
