@@ -203,7 +203,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			string? Trim(string? outDir)
 			{
 				var result = outDir;
-				while(!string.IsNullOrWhiteSpace(result))
+				while (!string.IsNullOrWhiteSpace(result))
 				{
 					var updated = result
 						.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)

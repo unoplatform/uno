@@ -28,7 +28,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			Dictionary<string, string> properties,
 			CancellationToken ct)
 		{
-			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath))
+			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
 			{
 				// Sets Roslyn's environment variable for troubleshooting HR, see:
 				// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
