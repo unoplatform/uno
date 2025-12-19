@@ -179,6 +179,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			if (properties.Remove("TargetFramework", out var targetFramework))
 			{
 				properties["UnoHotReloadTargetFramework"] = targetFramework;
+				properties["TargetFrameworks"] = targetFramework;
 			}
 
 			var (workspace, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
