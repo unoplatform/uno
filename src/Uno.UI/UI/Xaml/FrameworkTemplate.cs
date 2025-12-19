@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-//#define DEBUG_INNER_VIEW_FACTORY
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -43,10 +41,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private readonly XamlScope _xamlScope;
 
-#if DEBUG_INNER_VIEW_FACTORY
-		internal IDelegate<Delegate>? _viewFactoryInner;
-#endif
-
 		/// <summary>
 		/// The template builder factory. This field is mutable and may be updated at runtime
 		/// only when Uno.UI.TemplateManager enables "template materialization override mode".
@@ -54,12 +48,13 @@ namespace Microsoft.UI.Xaml
 		/// scenarios (e.g., hot reload, design-time updates). Outside of this mode, the field
 		/// should remain unchanged. See Uno.UI.TemplateManager for details.
 		/// </summary>
-		private IDelegate<NewFrameworkTemplateBuilder>? _viewFactory;
+		/// <remarks>
+		/// This delegate may be wrapped align the signature to <see cref="NewFrameworkTemplateBuilder"/>.
+		/// The original factory method can be found in <see cref="ViewFactoryInner"/>.
+		/// </remarks>
+		internal IDelegate<NewFrameworkTemplateBuilder>? ViewFactory { get; private set; }
 
-		/// <summary>
-		/// Gets the underlying view factory method, that is not wrapped.
-		/// </summary>
-		internal MethodInfo? RawFactoryMethodInfo { get; private set; }
+		internal IDelegate<Delegate>? ViewFactoryInner { get; private set; }
 
 		protected FrameworkTemplate()
 			=> throw new NotSupportedException("Use the factory constructors");
@@ -105,6 +100,10 @@ namespace Microsoft.UI.Xaml
 			_hashCode = HashCode.Combine(rawFactory?.Target, rawFactory?.Method);
 #if DEBUG
 			TemplateSource = $"{rawFactory?.Method.DeclaringType}.{rawFactory?.Method.Name}";
+			if (rawFactory?.Target is { })
+			{
+				TemplateSource += $", target={rawFactory.Target.GetType()}";
+			}
 #endif
 
 			_xamlScope = ResourceResolver.CurrentScope;
@@ -120,16 +119,13 @@ namespace Microsoft.UI.Xaml
 			// But only so, if the target is not an instance of the closure class, which we use IWeakReferenceProvider to determine since
 			// the known top-level xaml classes (Pages, ResourceDictionary,...) usually implement this interface.
 			// If the factory doesn't have a target (no capture), then we use the literal delegate that has no overhead.
-			_viewFactory = factory switch
+			ViewFactory = factory switch
 			{
 				{ Target: IWeakReferenceProvider } => DelegateHelper.CreateWeak(factory),
 				{ } => DelegateHelper.CreateLiteral(factory),
 				null => null,
 			};
-#if DEBUG_INNER_VIEW_FACTORY
-			_viewFactoryInner = _viewFactory;
-#endif
-			RawFactoryMethodInfo = factory?.Method;
+			ViewFactoryInner = ViewFactory;
 		}
 
 		internal void SetViewFactory<TDelegate>(TDelegate? factory, Func<object?, TemplateMaterializationSettings, IDelegate<TDelegate>, View?> adapter)
@@ -149,19 +145,13 @@ namespace Microsoft.UI.Xaml
 					(o, s) => adapter(o, s, inner)
 				);
 
-				_viewFactory = adapted;
-#if DEBUG_INNER_VIEW_FACTORY
-				_viewFactoryInner = inner;
-#endif
-				RawFactoryMethodInfo = factory.Method;
+				ViewFactory = adapted;
+				ViewFactoryInner = inner;
 			}
 			else
 			{
-				_viewFactory = null;
-#if DEBUG_INNER_VIEW_FACTORY
-				_viewFactoryInner = null;
-#endif
-				RawFactoryMethodInfo = null;
+				ViewFactory = null;
+				ViewFactoryInner = null;
 			}
 		}
 
@@ -203,7 +193,7 @@ namespace Microsoft.UI.Xaml
 				{
 					var settings = new TemplateMaterializationSettings(templatedParent, null);
 
-					var view = _viewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
+					var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
 
 					return view;
 				}
@@ -212,7 +202,7 @@ namespace Microsoft.UI.Xaml
 					var members = new List<DependencyObject>();
 					var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
 
-					var view = _viewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
+					var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
 
 					if (view is { })
 					{
@@ -274,7 +264,7 @@ namespace Microsoft.UI.Xaml
 
 				// Same delegate (possible if the delegate was created from a
 				// lambda, which are cached automatically by the C# compiler (as of v6.0)
-				|| left?._viewFactory == right?._viewFactory
+				|| left?.ViewFactory == right?.ViewFactory
 
 				// Same target method (instance or static) (possible if the delegate was created from a
 				// method group, which are *not* cached by the C# compiler (required by
@@ -303,7 +293,7 @@ namespace Microsoft.UI.Xaml
 
 		internal bool UpdateFactory(Func<View?> value)
 		{
-			if (value?.Method != RawFactoryMethodInfo)
+			if (value?.Method != ViewFactoryInner?.Method)
 			{
 				SetViewFactory(value, AdaptViewFactory);
 
@@ -324,7 +314,7 @@ namespace Microsoft.UI.Xaml
 			// Special case to update the factory without creating a new instance.
 			// A special mode is required for it to work and is activated directly in the Uno.UI.TemplateManager.
 
-			var previous = _viewFactory?.Delegate;
+			var previous = ViewFactory?.Delegate;
 			var newFactory = update?.Invoke(previous);
 			if (newFactory != previous)
 			{
