@@ -60,7 +60,7 @@ internal partial class Win32DragDropExtension
 			formatEtcList
 			.Where(static formatetc =>
 			{
-				if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
+				if (!Win32ClipboardExtension.IsSupported(formatetc.cfFormat))
 				{
 					return false;
 				}
