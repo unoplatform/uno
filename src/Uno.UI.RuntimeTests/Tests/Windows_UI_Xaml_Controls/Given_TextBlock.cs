@@ -1749,6 +1749,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			Assert.AreEqual(selectedText, sut.SelectedText);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Focus_Changes_Selection_Is_Not_Shown()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
+			}
+
+			var SUT = new TextBlock { Text = "Some text", IsTextSelectionEnabled = true };
+			var focusBtn = new Button();
+			await UITestHelper.Load(new StackPanel { Children = { SUT, focusBtn } });
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.SelectionHighlightColor).Color);
+
+			focusBtn.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+			var screenshot2 = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot2, new Rectangle(0, 0, screenshot2.Width, screenshot2.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.SelectionHighlightColor).Color);
+		}
+#endif
+
 		#endregion
 #endif
 
