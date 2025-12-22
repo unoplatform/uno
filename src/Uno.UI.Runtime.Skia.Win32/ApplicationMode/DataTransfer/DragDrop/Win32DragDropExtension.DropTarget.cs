@@ -320,31 +320,26 @@ internal partial class Win32DragDropExtension
 
 			using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
 
-			try
+			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop");
+			Directory.CreateDirectory(tempDir);
+			var tempPath = Path.Combine(tempDir, fileName);
+			using var fileStream = File.Create(tempPath);
+
+			storageItems.Add((fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
+				? new StorageFolder(tempPath)
+				: StorageFile.GetFileFromPath(tempPath));
+
+			if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
 			{
-				IStorageItem? storageItem = null;
-
-				if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
-				{
-					storageItem = ReadFromIStream(fileContentMedium.u.pstm, fileName, fileDescriptor);
-				}
-				else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
-				{
-					storageItem = ReadFromHGlobal(fileContentMedium.u.hGlobal, fileName, fileDescriptor);
-				}
-				else
-				{
-					this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
-				}
-
-				if (storageItem != null)
-				{
-					storageItems.Add(storageItem);
-				}
+				ReadFromIStream(fileContentMedium.u.pstm, fileStream);
 			}
-			catch (Exception ex)
+			else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
 			{
-				this.LogError()?.Error($"Exception while reading file contents for '{fileName}': {ex}");
+				ReadFromHGlobal(fileContentMedium.u.hGlobal, fileName, fileDescriptor);
+			}
+			else
+			{
+				this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
 			}
 		}
 
@@ -354,39 +349,19 @@ internal partial class Win32DragDropExtension
 		}
 	}
 
-	private unsafe IStorageItem? ReadFromIStream(IStream* pStream, string fileName, FILEDESCRIPTORW fileDescriptor)
+	private static unsafe void ReadFromIStream(IStream* pStream, FileStream fileStream)
 	{
-		try
+		const int bufferSize = 8192;
+		byte* buffer = stackalloc byte[bufferSize];
+		while (true)
 		{
-			var memoryStream = new MemoryStream();
-			const int bufferSize = 8192;
-			byte* buffer = stackalloc byte[bufferSize];
-			while (true)
+			uint bytesRead = 0;
+			var readResult = pStream->Read(buffer, bufferSize, &bytesRead);
+			if (readResult.Failed || bytesRead == 0)
 			{
-				uint bytesRead = 0;
-				var readResult = pStream->Read(buffer, bufferSize, &bytesRead);
-				if (readResult.Failed || bytesRead == 0)
-				{
-					break;
-				}
-				memoryStream.Write(new ReadOnlySpan<byte>(buffer, (int)bytesRead));
+				break;
 			}
-
-			memoryStream.Position = 0;
-
-			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop");
-			Directory.CreateDirectory(tempDir);
-			var tempPath = Path.Combine(tempDir, fileName);
-			File.WriteAllBytes(tempPath, memoryStream.ToArray());
-
-			return (fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
-				? new StorageFolder(tempPath)
-				: StorageFile.GetFileFromPath(tempPath);
-		}
-		catch (Exception ex)
-		{
-			this.LogError()?.Error($"Failed to read from IStream for '{fileName}': {ex}");
-			return null;
+			fileStream.Write(new ReadOnlySpan<byte>(buffer, (int)bytesRead));
 		}
 	}
 
