@@ -95,7 +95,7 @@ internal partial class Win32DragDropExtension
 			}
 		}, mediumsToDispose);
 
-		TryhandleFileDescriptor(dataObject, formatEtcList, package);
+		TryHandleFileDescriptor(dataObject, formatEtcList, package);
 		var handled = TryhandleAsyncHDrop(dataObject, formatEtcList, package);
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
@@ -255,7 +255,7 @@ internal partial class Win32DragDropExtension
 
 	private async Task<object> DelayRenderer(CancellationToken ct, AsyncHDropHandler asyncHDropHandler) => await asyncHDropHandler.Task;
 
-	private unsafe void TryhandleFileDescriptor(IDataObject* dataObject, FORMATETC[] formatEtcList, DataPackage package)
+	private unsafe void TryHandleFileDescriptor(IDataObject* dataObject, FORMATETC[] formatEtcList, DataPackage package)
 	{
 		var formatEtcNullable = formatEtcList.Cast<FORMATETC?>().FirstOrDefault(f => f!.Value.cfFormat == CFSTR_FILEDESCRIPTOR, null);
 		if (formatEtcNullable is null || formatEtcNullable.Value.tymed != (uint)TYMED.TYMED_HGLOBAL)
