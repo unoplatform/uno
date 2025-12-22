@@ -336,7 +336,7 @@ internal partial class Win32DragDropExtension
 			}
 			else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
 			{
-				ReadFromHGlobal(fileContentMedium.u.hGlobal, fileName, fileDescriptor);
+				ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream);
 			}
 			else
 			{
@@ -366,48 +366,33 @@ internal partial class Win32DragDropExtension
 		}
 	}
 
-	private unsafe IStorageItem? ReadFromHGlobal(HGLOBAL hGlobal, string fileName, FILEDESCRIPTORW fileDescriptor)
+	private unsafe void ReadFromHGlobal(HGLOBAL hGlobal, FILEDESCRIPTORW fileDescriptor, FileStream fileStream)
 	{
-		try
+		using var lockDisposable = Win32Helper.GlobalLock(hGlobal, out var dataPtr);
+		if (lockDisposable is null)
 		{
-			using var lockDisposable = Win32Helper.GlobalLock(hGlobal, out var dataPtr);
-			if (lockDisposable is null)
-			{
-				this.LogError()?.Error($"Failed to lock HGLOBAL for file '{fileName}'");
-				return null;
-			}
-
-			long fileSize = ((long)fileDescriptor.nFileSizeHigh << 32) | fileDescriptor.nFileSizeLow;
-
-			if (fileSize <= 0)
-			{
-				var globalSize = (long)PInvoke.GlobalSize(hGlobal);
-				if (globalSize > 0)
-				{
-					fileSize = globalSize;
-				}
-			}
-
-			if (fileSize <= 0)
-			{
-				this.LogWarn()?.Warn($"File size is 0 or unknown for '{fileName}'");
-				return null;
-			}
-
-			var data = new ReadOnlySpan<byte>(dataPtr, (int)fileSize);
-
-			var tempPath = Path.Combine(Path.GetTempPath(), fileName);
-			File.WriteAllBytes(tempPath, data.ToArray());
-
-			return (fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
-				? new StorageFolder(tempPath)
-				: StorageFile.GetFileFromPath(tempPath);
+			this.LogError()?.Error($"Failed to lock HGLOBAL for file '{fileStream.Name}'");
+			return;
 		}
-		catch (Exception ex)
+
+		long fileSize = ((long)fileDescriptor.nFileSizeHigh << 32) | fileDescriptor.nFileSizeLow;
+
+		if (fileSize <= 0)
 		{
-			this.LogError()?.Error($"Failed to read from HGLOBAL for '{fileName}': {ex}");
-			return null;
+			var globalSize = (long)PInvoke.GlobalSize(hGlobal);
+			if (globalSize > 0)
+			{
+				fileSize = globalSize;
+			}
 		}
+
+		if (fileSize <= 0)
+		{
+			this.LogWarn()?.Warn($"File size is 0 or unknown for '{fileStream.Name}'");
+			return;
+		}
+
+		fileStream.Write(new ReadOnlySpan<byte>(dataPtr, (int)fileSize));
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
