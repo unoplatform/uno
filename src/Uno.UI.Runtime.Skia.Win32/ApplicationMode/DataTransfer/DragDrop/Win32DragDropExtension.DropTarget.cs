@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -12,13 +13,18 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Windows.Win32.System.Com;
 using Windows.Win32.System.Ole;
 using Windows.Win32.System.SystemServices;
 using Windows.Win32.UI.Shell;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using DATADIR = Windows.Win32.System.Com.DATADIR;
+using FORMATETC = Windows.Win32.System.Com.FORMATETC;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
+using IEnumFORMATETC = Windows.Win32.System.Com.IEnumFORMATETC;
+using IStream = Windows.Win32.System.Com.IStream;
+using STGMEDIUM = Windows.Win32.System.Com.STGMEDIUM;
+using TYMED = Windows.Win32.System.Com.TYMED;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -307,7 +313,7 @@ internal partial class Win32DragDropExtension
 			{
 				cfFormat = (ushort)CFSTR_FILECONTENTS,
 				ptd = null,
-				dwAspect = 1, // DVASPECT_CONTENT
+				dwAspect = (uint)DVASPECT.DVASPECT_CONTENT,
 				lindex = i, // Index of the file in the file group descriptor
 				tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL
 			};
