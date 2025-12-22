@@ -138,6 +138,7 @@ internal partial class Win32DragDropExtension
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragLeave)}");
 
 		_manager.ProcessAborted(_fakePointerId);
+		_lastAsyncHDropHandler?.Leave();
 		_lastAsyncHDropHandler = null;
 
 		return HRESULT.S_OK;

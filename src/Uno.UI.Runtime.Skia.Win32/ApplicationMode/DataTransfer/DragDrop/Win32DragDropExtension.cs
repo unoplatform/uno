@@ -86,9 +86,13 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 	private class AsyncHDropHandler(FORMATETC hdropFormat)
 	{
-		public Task<List<IStorageItem>> Task { get; private set; } = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(new InvalidOperationException("Async HDrop handler can only be used after the Drop event is raised."));
+		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = new();
+
+		public Task<List<IStorageItem>> Task => _tcs.Task;
 
 		public DROPEFFECT DropEffect { private get; set; } = DROPEFFECT.DROPEFFECT_NONE;
+
+		public void Leave() => _tcs.SetException(new InvalidOperationException("Attempt to get file drop list after the dragging operation left the window."));
 
 		public unsafe void Drop(IDataObject* dataObject)
 		{
@@ -97,7 +101,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 			var hResult = dataObject->QueryInterface(&localGuid, asyncCapabilityScope);
 			if (hResult.Failed)
 			{
-				Task = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(Marshal.GetExceptionForHR(hResult.Value) ?? new InvalidOperationException($"{nameof(IDataObject)}::{nameof(IDataObject.QueryInterface)} failed."));
+				_tcs.SetException(Marshal.GetExceptionForHR(hResult.Value) ?? new InvalidOperationException($"{nameof(IDataObject)}::{nameof(IDataObject.QueryInterface)} failed."));
 			}
 			else
 			{
@@ -130,12 +134,10 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 					if (!success)
 					{
-						Task = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(new InvalidOperationException($"Failed to retrieve HDROP data from IDataObject."));
+						_tcs.SetException(new InvalidOperationException($"Failed to retrieve HDROP data from IDataObject."));
 					}
 					else
 					{
-						var tcs = new TaskCompletionSource<List<IStorageItem>>();
-						Task = tcs.Task;
 						dispose = false;
 						new Thread(() =>
 						{
@@ -149,18 +151,18 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 							var files = Win32ClipboardExtension.GetFileDropList(hdropMedium.u.hGlobal);
 							if (files is null)
 							{
-								tcs.SetException(new InvalidOperationException("Failed to retrieve file drop list from HDROP."));
+								_tcs.SetException(new InvalidOperationException("Failed to retrieve file drop list from HDROP."));
 							}
 							else
 							{
-								tcs.SetResult(files);
+								_tcs.SetResult(files);
 							}
 						}).Start();
 					}
 				}
 				else
 				{
-					Task = System.Threading.Tasks.Task.FromException<List<IStorageItem>>(Marshal.GetExceptionForHR(hResult2.Value) ?? new InvalidOperationException($"{nameof(IDataObjectAsyncCapability)}::{nameof(IDataObjectAsyncCapability.StartOperation)} failed."));
+					_tcs.SetException(Marshal.GetExceptionForHR(hResult2.Value) ?? new InvalidOperationException($"{nameof(IDataObjectAsyncCapability)}::{nameof(IDataObjectAsyncCapability.StartOperation)} failed."));
 				}
 			}
 		}
