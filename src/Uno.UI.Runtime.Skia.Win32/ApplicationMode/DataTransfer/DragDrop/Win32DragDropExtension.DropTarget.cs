@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
@@ -60,7 +63,7 @@ internal partial class Win32DragDropExtension
 			formatEtcList
 			.Where(static formatetc =>
 			{
-				if (!Win32ClipboardExtension.IsSupported(formatetc.cfFormat))
+				if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
 				{
 					return false;
 				}
@@ -86,6 +89,7 @@ internal partial class Win32DragDropExtension
 			}
 		}, mediumsToDispose);
 
+		TryhandleFileDescriptor(dataObject, formatEtcList, package);
 		var handled = TryhandleAsyncHDrop(dataObject, formatEtcList, package);
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
@@ -243,4 +247,214 @@ internal partial class Win32DragDropExtension
 	}
 
 	private async Task<object> DelayRenderer(CancellationToken ct, AsyncHDropHandler asyncHDropHandler) => await asyncHDropHandler.Task;
+
+	private unsafe void TryhandleFileDescriptor(IDataObject* dataObject, FORMATETC[] formatEtcList, DataPackage package)
+	{
+		var formatEtcNullable = formatEtcList.Cast<FORMATETC?>().FirstOrDefault(f => f!.Value.cfFormat == CFSTR_FILEDESCRIPTOR, null);
+		if (formatEtcNullable is null || formatEtcNullable.Value.tymed != (uint)TYMED.TYMED_HGLOBAL)
+		{
+			return;
+		}
+		var formatEtc = formatEtcNullable.Value;
+
+		var getDataHResult = dataObject->GetData(formatEtc, out STGMEDIUM medium);
+		if (getDataHResult.Failed)
+		{
+			this.LogError()?.Error($"{nameof(IDataObject)}.{nameof(IDataObject.GetData)} failed to get {nameof(CFSTR_FILEDESCRIPTOR)} data: {Win32Helper.GetErrorMessage(getDataHResult)}");
+			return;
+		}
+		using var mediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), medium);
+
+		using var lockDisposable = Win32Helper.GlobalLock(medium.u.hGlobal, out var firstByte);
+		if (lockDisposable is null)
+		{
+			this.LogError()?.Error($"Failed to lock {nameof(HGLOBAL)} contents when reading {nameof(CFSTR_FILEDESCRIPTOR)} data.");
+			return;
+		}
+
+		var fileGroupDescriptor = (FILEGROUPDESCRIPTORW*)firstByte;
+		var fileCount = fileGroupDescriptor->cItems;
+
+		if (fileCount == 0)
+		{
+			return;
+		}
+
+		var fileDescriptors = new ReadOnlySpan<FILEDESCRIPTORW>((byte*)firstByte + sizeof(uint), (int)fileCount);
+
+		// Now retrieve the file contents for each file descriptor
+		var storageItems = new List<IStorageItem>();
+
+		for (int i = 0; i < fileCount; i++)
+		{
+			ref readonly var fileDescriptor = ref fileDescriptors[i];
+
+			// Get the file name from the descriptor using fixed statement
+			string fileName;
+			fixed (char* pFileName = fileDescriptor.cFileName)
+			{
+				fileName = Marshal.PtrToStringAuto((IntPtr)pFileName) ?? string.Empty;
+			}
+
+			if (string.IsNullOrEmpty(fileName))
+			{
+				this.LogWarn()?.Warn($"File descriptor at index {i} has no file name, skipping.");
+				continue;
+			}
+
+			var fileContentsFormatEtc = new FORMATETC
+			{
+				cfFormat = (ushort)CFSTR_FILECONTENTS,
+				ptd = null,
+				dwAspect = 1, // DVASPECT_CONTENT
+				lindex = i, // Index of the file in the file group descriptor
+				tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL
+			};
+
+			var getFileContentResult = dataObject->GetData(fileContentsFormatEtc, out STGMEDIUM fileContentMedium);
+			if (getFileContentResult.Failed)
+			{
+				this.LogError()?.Error($"Failed to get file contents for '{fileName}' at index {i}: {Win32Helper.GetErrorMessage(getFileContentResult)}");
+				continue;
+			}
+
+			using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
+
+			try
+			{
+				IStorageItem? storageItem = null;
+
+				if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
+				{
+					storageItem = ReadFromIStream(fileContentMedium.u.pstm, fileName, fileDescriptor);
+				}
+				else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
+				{
+					storageItem = ReadFromHGlobal(fileContentMedium.u.hGlobal, fileName, fileDescriptor);
+				}
+				else
+				{
+					this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
+				}
+
+				if (storageItem != null)
+				{
+					storageItems.Add(storageItem);
+				}
+			}
+			catch (Exception ex)
+			{
+				this.LogError()?.Error($"Exception while reading file contents for '{fileName}': {ex}");
+			}
+		}
+
+		if (storageItems.Count > 0)
+		{
+			package.SetStorageItems(storageItems, readOnly: true);
+		}
+	}
+
+	private unsafe IStorageItem? ReadFromIStream(IStream* pStream, string fileName, FILEDESCRIPTORW fileDescriptor)
+	{
+		try
+		{
+			var memoryStream = new MemoryStream();
+			const int bufferSize = 8192;
+			byte* buffer = stackalloc byte[bufferSize];
+			while (true)
+			{
+				uint bytesRead = 0;
+				var readResult = pStream->Read(buffer, bufferSize, &bytesRead);
+				if (readResult.Failed || bytesRead == 0)
+				{
+					break;
+				}
+				memoryStream.Write(new ReadOnlySpan<byte>(buffer, (int)bytesRead));
+			}
+
+			memoryStream.Position = 0;
+
+			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop");
+			Directory.CreateDirectory(tempDir);
+			var tempPath = Path.Combine(tempDir, fileName);
+			File.WriteAllBytes(tempPath, memoryStream.ToArray());
+
+			return (fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
+				? new StorageFolder(tempPath)
+				: StorageFile.GetFileFromPath(tempPath);
+		}
+		catch (Exception ex)
+		{
+			this.LogError()?.Error($"Failed to read from IStream for '{fileName}': {ex}");
+			return null;
+		}
+	}
+
+	private unsafe IStorageItem? ReadFromHGlobal(HGLOBAL hGlobal, string fileName, FILEDESCRIPTORW fileDescriptor)
+	{
+		try
+		{
+			using var lockDisposable = Win32Helper.GlobalLock(hGlobal, out var dataPtr);
+			if (lockDisposable is null)
+			{
+				this.LogError()?.Error($"Failed to lock HGLOBAL for file '{fileName}'");
+				return null;
+			}
+
+			long fileSize = ((long)fileDescriptor.nFileSizeHigh << 32) | fileDescriptor.nFileSizeLow;
+
+			if (fileSize <= 0)
+			{
+				var globalSize = (long)PInvoke.GlobalSize(hGlobal);
+				if (globalSize > 0)
+				{
+					fileSize = globalSize;
+				}
+			}
+
+			if (fileSize <= 0)
+			{
+				this.LogWarn()?.Warn($"File size is 0 or unknown for '{fileName}'");
+				return null;
+			}
+
+			var data = new ReadOnlySpan<byte>(dataPtr, (int)fileSize);
+
+			var tempPath = Path.Combine(Path.GetTempPath(), fileName);
+			File.WriteAllBytes(tempPath, data.ToArray());
+
+			return (fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
+				? new StorageFolder(tempPath)
+				: StorageFile.GetFileFromPath(tempPath);
+		}
+		catch (Exception ex)
+		{
+			this.LogError()?.Error($"Failed to read from HGLOBAL for '{fileName}': {ex}");
+			return null;
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	private struct FILEGROUPDESCRIPTORW
+	{
+		public uint cItems;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	private unsafe struct FILEDESCRIPTORW
+	{
+		public uint dwFlags;
+		public Guid clsid;
+		public int /* SIZE */ cx;
+		public int /* SIZE */ cy;
+		public int /* POINTL */ x;
+		public int /* POINTL */ y;
+		public uint dwFileAttributes;
+		public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
+		public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
+		public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
+		public uint nFileSizeHigh;
+		public uint nFileSizeLow;
+		public fixed char cFileName[260]; // MAX_PATH
+	}
 }

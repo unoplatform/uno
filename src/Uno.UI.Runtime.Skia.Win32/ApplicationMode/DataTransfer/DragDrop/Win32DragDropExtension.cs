@@ -42,6 +42,9 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 	private AsyncHDropHandler? _lastAsyncHDropHandler;
 
+	private readonly uint CFSTR_FILEDESCRIPTOR;
+	private readonly uint CFSTR_FILECONTENTS;
+
 	public unsafe Win32DragDropExtension(DragDropManager manager)
 	{
 		var host = XamlRootMap.GetHostForRoot(manager.ContentRoot.GetOrCreateXamlRoot()) as Win32WindowWrapper ?? throw new InvalidOperationException($"Couldn't find an {nameof(Win32WindowWrapper)} instance associated with this {nameof(XamlRoot)}.");
@@ -63,6 +66,14 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		if (hResult.Failed)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+		}
+
+		if (CFSTR_FILEDESCRIPTOR is 0)
+		{
+			CFSTR_FILEDESCRIPTOR = PInvoke.RegisterClipboardFormat("FileGroupDescriptorW");
+			if (CFSTR_FILEDESCRIPTOR is 0) { this.LogError()?.Error($"{nameof(PInvoke.RegisterClipboardFormat)} failed to register {nameof(CFSTR_FILEDESCRIPTOR)}: {Win32Helper.GetErrorMessage()}"); }
+			CFSTR_FILECONTENTS = PInvoke.RegisterClipboardFormat("FileContents");
+			if (CFSTR_FILECONTENTS is 0) { this.LogError()?.Error($"{nameof(PInvoke.RegisterClipboardFormat)} failed to register {nameof(CFSTR_FILECONTENTS)}: {Win32Helper.GetErrorMessage()}"); }
 		}
 	}
 

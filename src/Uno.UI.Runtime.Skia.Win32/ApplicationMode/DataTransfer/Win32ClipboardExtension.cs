@@ -52,9 +52,6 @@ internal class Win32ClipboardExtension : IClipboardExtension
 	private bool _observeContentChanged;
 	private DataPackage? _currentPackage;
 
-	private readonly uint CFSTR_FILEDESCRIPTOR;
-	private readonly uint CFSTR_FILECONTENTS;
-
 	public static Win32ClipboardExtension Instance { get; } = new();
 
 	private unsafe Win32ClipboardExtension()
@@ -98,11 +95,6 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		// No need to unregister. This class lasts the lifetime on the app.
 		var success = PInvoke.AddClipboardFormatListener(_hwnd);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}"); }
-
-		CFSTR_FILEDESCRIPTOR = PInvoke.RegisterClipboardFormat("FileGroupDescriptorW");
-		if (CFSTR_FILEDESCRIPTOR is 0) { this.LogError()?.Error($"{nameof(PInvoke.RegisterClipboardFormat)} failed to register {nameof(CFSTR_FILEDESCRIPTOR)}: {Win32Helper.GetErrorMessage()}"); }
-		CFSTR_FILECONTENTS = PInvoke.RegisterClipboardFormat("FileContents");
-		if (CFSTR_FILECONTENTS is 0) { this.LogError()?.Error($"{nameof(PInvoke.RegisterClipboardFormat)} failed to register {nameof(CFSTR_FILECONTENTS)}: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -174,7 +166,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 	{
 		foreach (var format in formats)
 		{
-			if (IsSupported((uint)format) && dataGetter(format) is { } handle)
+			if (Enum.IsDefined((CLIPBOARD_FORMAT)format) && dataGetter(format) is { } handle)
 			{
 				switch (format)
 				{
@@ -191,20 +183,9 @@ internal class Win32ClipboardExtension : IClipboardExtension
 					case CLIPBOARD_FORMAT.CF_DIB:
 						GetBitmap(handle, package);
 						break;
-					default:
-						if (format == (CLIPBOARD_FORMAT)Instance.CFSTR_FILEDESCRIPTOR && dataGetter(format) is { } fileDescriptorHandle)
-						{
-							GetFileDescriptor(fileDescriptorHandle, package, dataGetter);
-						}
-						break;
 				}
 			}
 		}
-	}
-
-	internal static bool IsSupported(uint format)
-	{
-		return (CLIPBOARD_FORMAT)format is CLIPBOARD_FORMAT.CF_UNICODETEXT or CLIPBOARD_FORMAT.CF_HDROP or CLIPBOARD_FORMAT.CF_DIB || format == Instance.CFSTR_FILEDESCRIPTOR || format == Instance.CFSTR_FILECONTENTS;
 	}
 
 	private static unsafe void GetText(HGLOBAL handle, DataPackage package)
@@ -319,26 +300,6 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		}
 
 		return files;
-	}
-
-	private static unsafe void GetFileDescriptor(HGLOBAL handle, DataPackage package, Func<CLIPBOARD_FORMAT, HGLOBAL?> dataGetter)
-	{
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
-		if (lockDisposable is null)
-		{
-			return;
-		}
-
-		var fileGroupDescriptor = (FILEGROUPDESCRIPTORW*)firstByte;
-		var fileCount = fileGroupDescriptor->cItems;
-
-		if (fileCount == 0)
-		{
-			return;
-		}
-
-		var span = new ReadOnlySpan<FILEDESCRIPTORW>((byte*)firstByte + sizeof(uint), (int)fileCount);
-		var files = span.ToArray();
 	}
 
 	public void SetContent(DataPackage content)
@@ -480,29 +441,5 @@ internal class Win32ClipboardExtension : IClipboardExtension
 				if (!success) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.CloseClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}
 		}
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	private struct FILEGROUPDESCRIPTORW
-	{
-		public uint cItems;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	private unsafe struct FILEDESCRIPTORW
-	{
-		public uint dwFlags;
-		public Guid clsid;
-		public int /* SIZE */ cx;
-		public int /* SIZE */ cy;
-		public int /* POINTL */ x;
-		public int /* POINTL */ y;
-		public uint dwFileAttributes;
-		public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
-		public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
-		public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
-		public uint nFileSizeHigh;
-		public uint nFileSizeLow;
-		public fixed char cFileName[260]; // MAX_PATH
 	}
 }
