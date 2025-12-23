@@ -574,10 +574,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						{
 							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance, settings);
 						}
-						else
-						{
-							throw new InvalidOperationException($"{instance} is not a DependencyObject");
-						}
+						// If instance is not a DependencyObject, skip setting attached property
+						// This handles cases like attached properties on x:String
 					}
 				}
 			}
