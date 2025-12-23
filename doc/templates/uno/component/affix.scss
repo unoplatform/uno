@@ -16,50 +16,73 @@
 
 .sideaffix {
   overflow: auto;
-  padding-top:36px;
-  margin-top:0;
+  padding-top: 36px;
+  margin-top: 0;
+  background-color: $sidebar-bg;
+  border-left: 1px solid $light-border;
+  
   .affix ul > li.active > ul, .affix ul > li.active > a:before, .affix ul > li > a:hover:before {
     white-space: normal;
   }
 
   > div.contribution > ul > li > a.contribution-link {
-    font-family: 'Open Sans';
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
-    letter-spacing: 0.25px;
+    letter-spacing: 0;
+    color: $text-secondary;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: $accent;
+    }
   }
 
   #affix {
-    font-size: 19px;
+    font-size: 16px;
     font-weight: 600;
     line-height: 1.8;
     height: auto;
     a {
-      color: $darkgray;
-      font-size: 17px;
+      color: $text-secondary;
+      font-size: 14px;
       line-height: 28px;
       font-weight: 400;
-      letter-spacing: 0.25px;
-      margin-bottom: 4px;
+      letter-spacing: 0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: block;
+      margin-bottom: 2px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &:hover {
+        color: $text-primary;
+        background-color: $hover-bg;
+        text-decoration: none;
+      }
     }
     
     ul > li.active > a {
-      font-weight: bold;
+      font-weight: 500;
+      color: $accent;
+      background-color: rgba(37, 99, 235, 0.08);
+      
       &:before {
-        color: $darkgray;
+        color: $accent;
       }
       ul > li.active > a {
-        font-weight: bold;
+        font-weight: 500;
         &:before {
-          color: $darkgray;
+          color: $accent;
         }
       }
     }
 
     ul ul > li > a:before {
       top: 2px;
+      content: '' !important;
     }
     li:last-child {
       padding-bottom: 20px;
@@ -72,11 +95,14 @@
 
     .title {
       text-transform: uppercase;
-      font-size: 12px;
+      font-size: 11px;
       font-style: normal;
-      font-weight: 500;
-      line-height: 16px; /* 133.333% */
-      letter-spacing: 1.5px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 1px;
+      color: $text-secondary;
+      padding: 0 12px;
+      margin-bottom: 8px;
     }
 
     .level1::before {
@@ -89,11 +115,13 @@
   }
 
   h5 {
-    letter-spacing: 1.5px;
-    font-size: 12px;
+    letter-spacing: 1px;
+    font-size: 11px;
     line-height: 16px;
     text-transform: uppercase;
-    color: $gray;
+    color: $text-secondary;
+    font-weight: 600;
+    padding: 0 12px;
   }
 }
 

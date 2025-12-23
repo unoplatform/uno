@@ -1,20 +1,42 @@
 @use '../variables' as *;
 
 .alert {
-  background-color: transparent;
-  border-color: $lightgray;
-  color: $darkgray;
-  padding: 16px 16px;
-  transition: transform .2s;
+  background-color: rgba(37, 99, 235, 0.08);
+  border-left: 3px solid $accent;
+  border-color: $accent;
+  color: $text-primary;
+  padding: 16px 20px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin: 16px 0;
+  
+  &.alert-info {
+    background-color: rgba(37, 99, 235, 0.08);
+    border-color: $accent;
+  }
+  
+  &.alert-warning {
+    background-color: rgba(245, 158, 11, 0.08);
+    border-color: $orange;
+  }
+  
+  &.alert-danger {
+    background-color: rgba(239, 68, 68, 0.08);
+    border-color: $red;
+  }
+  
+  &.alert-success {
+    background-color: rgba(16, 185, 129, 0.08);
+    border-color: $green;
+  }
 }
 
 .alert-hover {
   &:hover {
-    transform: scale(1.05);
-    border-color: $blue;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
-    h4{
-      color: $blue;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+    h4 {
+      color: $accent;
     }
   }
 }

@@ -14,21 +14,25 @@
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
-  color: $black;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  background-color: $offWhite;
+  color: $text-primary;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 1.75;
   font-weight: 400;
-  text-transform: none;
-  color:$black;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.01em;
+  transition: background-color 0.2s ease;
 
   mark {
-    background: rgba(21, 155, 255, 0.25);
+    background: rgba(37, 99, 235, 0.15);
+    color: $text-primary;
+    border-radius: 3px;
+    padding: 2px 4px;
   }
 
   .toc {
-    background-color: transparent;
+    background-color: $sidebar-bg;
+    border-right: 1px solid $light-border;
     padding: 24px;
     padding-top: 12px;
     margin: 0;
@@ -46,48 +50,58 @@ body {
 }
 
 a {
-  color: $blue;
+  color: $accent;
+  text-decoration: none;
+  transition: color 0.2s ease;
 
   &:hover,
   &:active {
-    color: $darkgray;
+    color: $lightblue;
+    text-decoration: underline;
   }
 }
 
 h1 {
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 36px;
+  line-height: 1.2;
   font-weight: 700;
   text-transform: none;
   text-align: left;
-  color:$black;
-  letter-spacing: -1.5px;
-  padding: 24px 0;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+  padding: 32px 0 16px 0;
+  margin-top: 0;
 }
 
 h2 {
-  font-size: 24px;
-  line-height: 32px;
-  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 600;
   text-transform: none;
-  color:$black;
-  letter-spacing: -0.5px;
+  color: $text-primary;
+  letter-spacing: -0.01em;
+  margin-top: 48px;
+  margin-bottom: 16px;
 }
 
 h3 {
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 600;
   text-transform: none;
-  color:$black;
+  color: $text-primary;
+  margin-top: 32px;
+  margin-bottom: 12px;
 }
 
 h4 {
   font-size: 18px;
-  line-height: 24px;
-  font-weight: 700;
+  line-height: 1.5;
+  font-weight: 600;
   text-transform: none;
-  color:$black;
+  color: $text-secondary;
+  margin-top: 24px;
+  margin-bottom: 8px;
 }
 
 subtitle {
@@ -150,91 +164,160 @@ h5 {
   margin-right: 0;
 }
 
-.sidefilter {
-  @media only screen {
-    @include media-breakpoint-up(md) {
-      width: 24%;
-    }
+#sidetoggle {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  min-width: 200px;
+  max-width: 600px;
+  transition: width 0.3s ease, transform 0.3s ease;
+  z-index: 50;
+  
+  &.collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden;
   }
-  @include media-breakpoint-between(md, tablet){
-    width: 30%;
+  
+  @media only screen and (max-width: 768px) {
+    position: relative;
+    width: 100% !important;
   }
 }
 
+.sidefilter {
+  // Width controlled by parent sidetoggle container
+}
+
 .article.grid-right {
+  transition: margin-left 0.3s ease;
+  
   @media only screen {
     @include media-breakpoint-up(md) {
-      margin-left: 26%;
+      margin-left: 300px;
     }
   }
   @include media-breakpoint-between(md, tablet){
-    margin-left: 32%;
+    margin-left: 300px;
+  }
+  
+  // Adjust article margin when TOC is collapsed
+  &.toc-collapsed {
+    @include media-breakpoint-up(md) {
+      margin-left: 0 !important;
+    }
   }
 }
 
 .sidetoc {
-  top: 180px;
-  background-color: white !important;
-  @media only screen {
-    @include media-breakpoint-up(md) {
-      width: 24%;
-    }
+  background-color: $sidebar-bg !important;
+  border-right: 1px solid $light-border;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  height: calc(100vh - 174px); // Account for header and search
+  
+  // Prevent flickering and layout thrashing
+  transform: translateZ(0);
+  will-change: scroll-position;
+  contain: layout style paint;
+  
+  // Disable transitions temporarily during page navigation
+  &.no-transition,
+  &.no-transition * {
+    transition: none !important;
+    animation: none !important;
   }
-  @include media-breakpoint-between(md, tablet) {
-    width: 30%;  
-  }
-
-  @include media-breakpoint-between(md, mobile) {
-    border-left: 1px solid #e7e7e7;
-    border-right: 1px solid #e7e7e7;
-    position: fixed;
+  
+  // Collapsed state handled by parent
+  
+  @media only screen and (max-width: 768px) {
+    height: auto;
   }
 
   .nav > li {
-    line-height: 32px;
-    margin-bottom: 4px;
+    line-height: 18px;
+    margin-bottom: 1px;
+    border-radius: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    // Optimize rendering
+    contain: layout;
+    transform: translateZ(0);
     
     a {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 400;
       text-transform: none;
-      color:$black;
-      letter-spacing: 0.1px;
+      color: $black;
+      letter-spacing: 0;
+      padding: 6px 8px;
+      border-radius: 6px;
+      display: block;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      // Prevent text flickering
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      
+      &:hover {
+        background-color: $hover-bg;
+        color: $text-primary;
+      }
     }
   }
 
-  .nav.level1 , .nav.level2 {
+  .nav.level1 {
     > li {
-      line-height: 28px;
-      margin-bottom: 4px;
+      line-height: 18px;
+      margin-bottom: 2px;
         
       > a {
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 400;
         text-transform: none;
         color:$black;
         letter-spacing: 0.25px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    }
+  }
+
+  .nav.level2 {
+    > li {
+      line-height: 18px;
+      margin-bottom: 2px;
+        
+      > a {
+        font-size: 16px;
+        font-weight: 400;
+        text-transform: none;
+        color:$black;
+        letter-spacing: 0.25px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
     }
   }
 
   .nav > li.active > a {
-    color: $darkgray;
-    font-weight: 600;
+    color: $accent;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     
-    &:last-child {
-      border-radius: 6px;
-      background-color: #F1F1F1;
-      width: 100%;
-    }
-
     &:hover {
-      color: #000;
+      color: $text-primary;
+      background-color: $light-border;
     }
   }
 
   .toc .nav .in ul li {
     margin-left: 9px;
+  }
+
+  .toc .nav > li > ul {
+    display: none;
   }
 
   .toc .nav > li.filtered > ul, .toc .nav > li.in > ul {
@@ -256,35 +339,70 @@ h5 {
   }
 
   .toc {
+    // Expand-stub icons (for parent nodes at first level only)
     .nav > li > .expand-stub::before {
-      font-family: 'Glyphicons Halflings', 'ui-sans-serif';
-      content: '\e258';
-      font-size: 0.8em;
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+      content: attr(data-icon);
+      font-size: 1em;
+      margin-right: 6px;
+      vertical-align: middle;
+      line-height: 1;
     }
 
     .nav > li.in > .expand-stub::before {
-      font-family: 'Glyphicons Halflings', 'ui-sans-serif';
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
       display: inline-block;
-      content: '\e258';
-      font-size: 0.8em;
-      transform: rotate(90deg);
+      content: attr(data-icon);
+      font-size: 1em;
+      margin-right: 6px;
+      vertical-align: middle;
+      line-height: 1;
+      transform: none;
     }
 
+    // First-level links with expand-stub (don't duplicate icon)
     .nav > li > .expand-stub + a {
-      margin-left: 15px;
+      margin-left: 0;
+      display: inline-flex;
+      align-items: center;
+      
+      &:before {
+        display: none !important;
+      }
     }
 
+    // First-level links only (leaf nodes at top level)
     .nav > li > a {
       margin-left: 0;
       padding-left: 5px;
+      display: inline-flex;
+      align-items: center;
+      
+      &:before {
+        font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+        content: attr(data-icon);
+        font-size: 1em;
+        margin-right: 6px;
+        vertical-align: middle;
+        line-height: 1;
+      }
     }
 
     .nav > li > .expand-stub {
       left: 4px;
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &::before {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
     }
-
+    
+    // Nested items - no icons
     ul ul > li > a:before {
-      content: '';
+      content: '' !important;
     }
 
     ul {
@@ -310,11 +428,111 @@ h5 {
       }
     }
   }
+  
+  // Resize handle
+  .toc-resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    cursor: ew-resize;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+    z-index: 10;
+    
+    &:hover,
+    &.resizing {
+      background-color: $accent;
+    }
+    
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
+  }
+  
+  // Collapse toggle button
+  .toc-collapse-toggle {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background-color: $white;
+    border: 1px solid $light-border;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: $text-primary;
+    transition: all 0.2s ease;
+    z-index: 20;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      background-color: $hover-bg;
+      border-color: $accent;
+      color: $accent;
+      transform: scale(1.05);
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+    
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
+  }
+}
+
+// Expand button (shown when collapsed)
+.toc-expand-button {
+  position: fixed;
+  top: 90px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  background-color: $white;
+  border: 1px solid $light-border;
+  border-radius: 8px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: $text-primary;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  
+  &:hover {
+    background-color: $hover-bg;
+    border-color: $accent;
+    color: $accent;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  &.visible {
+    display: flex;
+  }
+  
+  @media only screen and (max-width: 768px) {
+    display: none !important;
+  }
 }
 
 .sidenav {
-  background-color: #fff;
-  border-bottom: 1px solid #e7e7e7;
+  background-color: $white;
+  border-bottom: 1px solid $light-border;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 
   @media only screen {
     @include media-breakpoint-down(md) {
@@ -325,17 +543,35 @@ h5 {
   }
 
   @include media-breakpoint-between(md, mobile) {
-    background: transparent;
+    background: $sidebar-bg;
     padding: 0;
     margin: 0;
     border: none;
   }
-
 }
 
 .btn.toc-toggle.collapse {
-  color: $darkgray;
+  color: $text-primary;
+  background-color: $white;
+  border: 1px solid $light-border;
   text-align: left;
+  border-radius: 6px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $hover-bg;
+    border-color: $accent;
+  }
+  border-radius: 6px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $hover-bg;
+    border-color: $accent;
+  }
+  
   @include media-breakpoint-between(md, mobile) {
     display: none;
   }
@@ -518,14 +754,15 @@ h5 {
 // Easy-copy-code
 .code-header {
   box-sizing: content-box;
-  background-color: #f2f2f2;
-  color: #171717;
+  background-color: $light-card;
+  color: $text-primary;
   display: flex;
   flex-direction: row;
-  border: 1px solid #e3e3e3;
+  border: 1px solid $light-border;
   border-bottom: 0;
   margin-top: 16px;
   min-height: 30px;
+  border-radius: 8px 8px 0 0;
 }
 .tabGroup section[role="tabpanel"] > .codeHeader, .tabGroup section[role="tabpanel"] > pre {
   margin-left: 0;
@@ -536,28 +773,33 @@ h5 {
   flex-grow: 1;
   text-transform: uppercase;
   line-height: 26px;
+  font-size: 12px;
+  font-weight: 500;
+  color: $text-secondary;
 }
 .code-header > .action {
   position: relative;
   padding: 2px 10px;
   background-color: transparent;
-  border: 0 solid #e3e3e3;
+  border: 0 solid $light-border;
   border-left-width: 1px;
-  color: #171717;
+  color: $text-secondary;
   cursor: pointer;
   display: flex;
   align-items: center;
   line-height: normal;
+  transition: all 0.2s ease;
 }
 .code-header .glyphicon {
   margin-right: 0.25em;
 }
 .code-header > .action:hover {
-  background-color: #fafafa;
+  background-color: $hover-bg;
+  color: $accent;
 }
 .code-header + pre {
   margin-top: 0;
-  border: 1px solid #e3e3e3;
+  border-radius: 0 0 8px 8px;
 }
 .code-header > .action .successful-copy-alert {
   justify-content: center;
@@ -568,13 +810,125 @@ h5 {
   top: 0;
   position: absolute;
   display: flex;
-  background-color: #128712;
-  outline-color: #fff;
-  color: #fff;
+  background-color: $green;
+  outline-color: $white;
+  color: $white;
+  border-radius: 4px;
 }
 .code-header > .action .successful-copy-alert.is-transparent {
   opacity: 0;
   transition: 500ms opacity ease-in-out;
+}
+
+// Modern table styling
+table {
+  background-color: $white;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid $light-border;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  margin: 16px 0;
+  
+  thead {
+    background-color: $lightgray;
+    
+    th {
+      color: $text-primary;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid $light-border;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  tbody {
+    tr {
+      border-bottom: 1px solid $light-border;
+      transition: background-color 0.15s ease;
+      
+      &:hover {
+        background-color: $offWhite;
+      }
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    
+    td {
+      padding: 12px 16px;
+      color: $text-secondary;
+      
+      code {
+        background-color: $lightgray;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: $accent;
+      }
+    }
+  }
+}
+
+// Modern list styling
+ul, ol {
+  color: $text-secondary;
+  line-height: 1.75;
+  margin: 16px 0;
+  padding-left: 24px;
+  
+  li {
+    margin-bottom: 8px;
+    
+    &::marker {
+      color: $accent;
+    }
+    
+    code {
+      background-color: $lightgray;
+      color: $accent;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+  }
+  
+  ul, ol {
+    margin: 8px 0;
+  }
+}
+
+// Blockquote styling
+blockquote {
+  border-left: 3px solid $accent;
+  background-color: $offWhite;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 0 8px 8px 0;
+  color: $text-secondary;
+  
+  p {
+    margin: 0;
+    color: $text-secondary;
+  }
+  
+  code {
+    background-color: $lightgray;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+}
+
+// Horizontal rule
+hr {
+  border: none;
+  border-top: 1px solid $light-border;
+  margin: 32px 0;
 }
 
 // This overrides the behavior from normalize.css

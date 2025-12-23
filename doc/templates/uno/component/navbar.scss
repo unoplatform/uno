@@ -26,14 +26,15 @@
 #header-container {
   padding: 16px 32px;
   z-index: 9999;
-  background: #fff;
+  background: $white;
+  border-bottom: 1px solid $light-border;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 
   display: flex;
   position: fixed;
   width: 100%;
   min-height: 67px;
   max-height: 75px;
-  border-bottom: 1px solid #f4f2f3;
   justify-content: space-between;
 
   &::after,
@@ -83,7 +84,7 @@
     z-index: 9;
 
     .icon-bar {
-      background: $darkgray;
+      background: $text-primary;
       width: 20px;
     }
 
