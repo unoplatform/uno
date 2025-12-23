@@ -8,7 +8,7 @@ uid: Uno.Development.FAQ
 
 ### What is the Uno Platform?
 
-Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md). Read more [here](xref:Uno.Documentation.Intro).
+Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md). Read more in the [Uno Platform introduction](xref:Uno.Documentation.Intro).
 
 ### Who makes Uno Platform?
 
