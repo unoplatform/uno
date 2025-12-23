@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Text;
+using Windows.UI.ViewManagement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -11,6 +12,9 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	public partial class HyperlinkButton : ButtonBase
 	{
+		private const string HyperlinkUnderlineVisibleKey = "HyperlinkUnderlineVisible";
+		private static readonly Lazy<AccessibilitySettings> _accessibilitySettings = new Lazy<AccessibilitySettings>(() => new AccessibilitySettings());
+
 		/// <summary>
 		/// Initializes a new instance of the HyperlinkButton class.
 		/// </summary>
@@ -32,9 +36,32 @@ namespace Microsoft.UI.Xaml.Controls
 				contentPresenter.Measure(new Size(0, 0));
 				if (VisualTreeHelper.GetChildrenCount(contentPresenter) == 1 && VisualTreeHelper.GetChild(contentPresenter, 0) is ImplicitTextBlock textBlock)
 				{
-					textBlock.TextDecorations = TextDecorations.Underline;
+					// Only apply underline if HighContrast is enabled OR HyperlinkUnderlineVisible is true
+					if (ShouldUnderlineHyperlink())
+					{
+						textBlock.TextDecorations = TextDecorations.Underline;
+					}
 				}
 			}
+		}
+
+		private bool ShouldUnderlineHyperlink()
+		{
+			// Check if high contrast is enabled
+			if (_accessibilitySettings.Value.HighContrast)
+			{
+				return true;
+			}
+
+			// Check if HyperlinkUnderlineVisible resource is set to true
+			if (Application.Current?.Resources.TryGetValue(HyperlinkUnderlineVisibleKey, out var underlineVisible) == true
+				&& underlineVisible is bool boolValue
+				&& boolValue)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		#region NavigateUri
