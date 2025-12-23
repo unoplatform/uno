@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 
@@ -107,13 +106,9 @@ internal readonly partial struct UnicodeText
 					throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
 				}
 
-				// ICU is included in the dotnet runtime itself
-				// the version doesn't matter as the symbols don't have the version postfix
+				// ICU is included in the unoicu.a static library without version postfixes, so the version doesn't matter
 				_icuVersion = 1;
-				if (!NativeLibrary.TryLoad("__Internal", Assembly.GetEntryAssembly()!, unchecked((DllImportSearchPath)0xFFFFFFFF), out libicuuc))
-				{
-					throw new DllNotFoundException("Failed to load libicuuc.");
-				}
+				libicuuc = IntPtr.Zero;
 			}
 			else
 			{
@@ -133,26 +128,27 @@ internal readonly partial struct UnicodeText
 		{
 			if (!_lookupCache.TryGetValue(typeof(T), out var value))
 			{
-				if (OperatingSystem.IsIOS())
+				if (OperatingSystem.IsIOS() || OperatingSystem.IsBrowser())
 				{
 					// iOS doesn't support NativeLibrary.TryGetExport so we have to make DllImport declarations to
 					// the exact symbol names at compile times (even DllImport.EntryPoint doesn't work) and do the
 					// method mapping by reflection.
-					var methodName = typeof(T).Name + "_" + _icuVersion;
-					var method = typeof(IOSICUSymbols).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+					// On WASM, NativeLibrary.TryGetExport is supported, but not on NativeAOT.
+					var (methodName, type) = OperatingSystem.IsBrowser() ? ($"uno_{typeof(T).Name}", typeof(BrowserICUSymbols)) : ($"{typeof(T).Name}_{_icuVersion}", typeof(IOSICUSymbols));
+					var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
 					if (method is null)
 					{
-						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {nameof(IOSICUSymbols)}.");
+						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {type.Name}.");
 					}
 					value = Delegate.CreateDelegate(typeof(T), method);
 				}
-				else if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var func))
+				else if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var originalNameFunc))
 				{
-					value = Marshal.GetDelegateForFunctionPointer<T>(func)!;
+					value = Marshal.GetDelegateForFunctionPointer<T>(originalNameFunc)!;
 				}
-				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var func2))
+				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var versionPostfixedFunc))
 				{
-					value = Marshal.GetDelegateForFunctionPointer<T>(func2)!;
+					value = Marshal.GetDelegateForFunctionPointer<T>(versionPostfixedFunc)!;
 				}
 				else
 				{
@@ -249,32 +245,32 @@ internal readonly partial struct UnicodeText
 			[DllImport("unoicu")]
 			public static extern int next_line_breaking_opportunity(IntPtr breaker);
 
-			// These symbols come from dotnet's own ICU.
-			// WASM needs all used symbols from ICU defined as DllImports to be added to emscripten's linker EXPORTED_FUNCTIONS option.
-			// These won't actually be used and the signature of the functions can be anything, just the symbol name is enough.
-			[DllImport("__Internal")]
-			static extern void ubidi_open();
+			// These are methods from ICU that are redeclared under the uno_ prefix for WASM linking purposes.
+			// These methods are also present in the dotnet runtime ICU build (through __Internal), except that
+			// the symbols are not available on NativeAOT.
+			[DllImport("unoicu")]
+			static extern IntPtr uno_ubidi_open();
 
-			[DllImport("__Internal")]
-			static extern void ubidi_close();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_close(IntPtr pBiDi);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_setPara();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_getLogicalRun();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_countRuns();
+			[DllImport("unoicu")]
+			static extern int uno_ubidi_countRuns(IntPtr pBiDI, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_getVisualRun();
+			[DllImport("unoicu")]
+			static extern int uno_ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
 
-			[DllImport("__Internal")]
-			static extern void u_getVersion();
+			[DllImport("unoicu")]
+			static extern void uno_u_getVersion(out UVersionInfo versionInfo);
 
-			[DllImport("__Internal")]
-			static extern void u_versionToString();
+			[DllImport("unoicu")]
+			static extern void uno_u_versionToString(IntPtr versionArray, IntPtr versionString);
 		}
 
 		private static class IOSICUSymbols
