@@ -556,6 +556,7 @@
   <Project Path="Uno.Sdk/Uno.Sdk.csproj">
     <BuildType Solution="Release_NoSamples|*" Project="Debug" />
   </Project>
+  <Project Path="Uno.Sdk.Tests/Uno.Sdk.Tests.csproj" />
   <Properties Name="TestCaseManagementSettings" Scope="PostLoad">
     <Property Name="CategoryFile" Value="Umbrella.vsmdi" />
   </Properties>
