@@ -36,6 +36,39 @@ bool uno_app_initialize(bool *metal)
 
         // KVO observation for dark/light theme
         [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:nil];
+        
+        if (app.mainMenu == nil) {
+            NSMenu *mainMenu = [[NSMenu alloc] init];
+            
+            // App menu
+            NSMenuItem *appMenuItem = [[NSMenuItem alloc] init];
+            NSMenu *appMenu = [[NSMenu alloc] init];
+            
+            // Quit menu item with Command+Q
+            NSMenuItem *quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit"
+                                                                  action:@selector(terminate:)
+                                                           keyEquivalent:@"q"];
+            [appMenu addItem:quitMenuItem];
+            [appMenuItem setSubmenu:appMenu];
+            [mainMenu addItem:appMenuItem];
+            
+            // File menu
+            NSMenuItem *fileMenuItem = [[NSMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:@""];
+            NSMenu *fileMenu = [[NSMenu alloc] initWithTitle:@"File"];
+            
+            // Close window menu item with Command+W
+            NSMenuItem *closeMenuItem = [[NSMenuItem alloc] initWithTitle:@"Close Window"
+                                                                   action:@selector(performClose:)
+                                                            keyEquivalent:@"w"];
+            [fileMenu addItem:closeMenuItem];
+            [fileMenuItem setSubmenu:fileMenu];
+            [mainMenu addItem:fileMenuItem];
+            
+            [app setMainMenu:mainMenu];
+#if DEBUG
+            NSLog(@"uno_app_initialize: Created default menu with Command+Q and Command+W shortcuts");
+#endif
+        }
     }
     device = MTLCreateSystemDefaultDevice();
 #if DEBUG
@@ -139,8 +172,12 @@ void uno_application_quit(void)
 #if DEBUG
     NSLog(@"UNOApplicationDelegate.applicationShouldTerminate %@", sender);
 #endif
-    // as long as `ICoreApplicationExtension.CanExit` returns `true` there's no need for any additional check here
-    return uno_get_application_can_exit_callback()() ? NSTerminateNow : NSTerminateCancel;
+    // Check if the application can exit (ICoreApplicationExtension.CanExit)
+    if (!uno_get_application_can_exit_callback()()) {
+        return NSTerminateCancel;
+    }
+    
+    return NSTerminateNow;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
