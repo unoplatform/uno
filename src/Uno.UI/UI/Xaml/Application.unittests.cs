@@ -12,13 +12,12 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml
+namespace Microsoft.UI.Xaml;
+
+public partial class Application
 {
-	public partial class Application
+	partial void InitializePartial()
 	{
-		partial void InitializePartial()
-		{
-			InitializeSystemTheme();
-		}
+		InitializeSystemTheme();
 	}
 }

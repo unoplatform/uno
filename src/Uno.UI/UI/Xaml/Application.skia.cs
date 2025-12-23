@@ -4,8 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using Windows.ApplicationModel.Activation;
-using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
@@ -14,11 +12,11 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Globalization;
-using System.Threading.Tasks;
 using Uno.UI;
 using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
+using Microsoft.Windows.AppLifecycle;
 using Windows.Storage;
 
 
@@ -107,31 +105,25 @@ namespace Microsoft.UI.Xaml
 				_ = ApplicationData.Current.EnablePersistenceAsync();
 
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+				DispatcherQueue.Main.TryEnqueue(_current.PrepareOnLaunched);
 			}
 			else
 			{
 				// Other platforms can be synchronous, except iOS that requires
 				// the creation of the window to be synchronous to avoid a black screen.
-				_current.InvokeOnLaunched();
+				_current.PrepareOnLaunched();
 			}
 		}
 
-		private void InvokeOnLaunched()
+		private void PrepareOnLaunched()
 		{
+			using var _ = WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop);
 			InitializeSystemTheme();
 
-			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
-			{
-				InitializationCompleted();
-				PreloadFonts();
+			InitializationCompleted();
+			PreloadFonts();
 
-				// OnLaunched should execute only for full apps, not for individual islands.
-				if (CoreApplication.IsFullFledgedApp)
-				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
-				}
-			}
+			InvokeOnLaunched(null);
 		}
 
 		private static void PreloadFonts()
