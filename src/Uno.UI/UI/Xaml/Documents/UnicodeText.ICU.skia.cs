@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 
@@ -90,30 +89,9 @@ internal readonly partial struct UnicodeText
 			}
 			else if (OperatingSystem.IsBrowser())
 			{
-				var stream = AppDomain.CurrentDomain
-					.GetAssemblies()
-					.Select(a => (a, a.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture))))
-					.Where(t => t.Item2 != null)
-					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
-					.First()!;
-				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
-				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
-				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
-				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
-				var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)data);
-				var errorString = Marshal.PtrToStringUTF8(errorPtr);
-				if (errorString is not null)
-				{
-					throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
-				}
-
-				// ICU is included in the dotnet runtime itself
-				// the version doesn't matter as the symbols don't have the version postfix
+				// ICU is included in the unoicu.a static library without version postfixes, so the version doesn't matter
 				_icuVersion = 1;
-				if (!NativeLibrary.TryLoad("__Internal", Assembly.GetEntryAssembly()!, unchecked((DllImportSearchPath)0xFFFFFFFF), out libicuuc))
-				{
-					throw new DllNotFoundException("Failed to load libicuuc.");
-				}
+				libicuuc = IntPtr.Zero;
 			}
 			else
 			{
@@ -127,32 +105,53 @@ internal readonly partial struct UnicodeText
 			GetMethod<u_versionToString>()((IntPtr)(&versionInfo), ptr);
 			typeof(ICU).LogInfo()?.Info($"Found ICU version {Marshal.PtrToStringAnsi(ptr)}.");
 			Marshal.FreeHGlobal(ptr);
+
+			if (OperatingSystem.IsBrowser() || OperatingSystem.IsMacOS() || OperatingSystem.IsWindows())
+			{
+				var stream = AppDomain.CurrentDomain
+					.GetAssemblies()
+					.Select(a => (a, a.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture))))
+					.Where(t => t.Item2 != null)
+					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
+					.First()!;
+				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
+				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
+				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
+				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
+				GetMethod<udata_setCommonData>()((IntPtr)data, out var errorCode);
+				if (errorCode > 0)
+				{
+					var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(errorCode));
+					throw new InvalidOperationException($"{nameof(udata_setCommonData)} failed: {errorString}");
+				}
+			}
 		}
 
 		public static T GetMethod<T>()
 		{
 			if (!_lookupCache.TryGetValue(typeof(T), out var value))
 			{
-				if (OperatingSystem.IsIOS())
+				if (OperatingSystem.IsIOS() || OperatingSystem.IsBrowser())
 				{
 					// iOS doesn't support NativeLibrary.TryGetExport so we have to make DllImport declarations to
 					// the exact symbol names at compile times (even DllImport.EntryPoint doesn't work) and do the
 					// method mapping by reflection.
-					var methodName = typeof(T).Name + "_" + _icuVersion;
-					var method = typeof(IOSICUSymbols).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+					// On WASM, NativeLibrary.TryGetExport is supported, but not on NativeAOT.
+					var (methodName, type) = OperatingSystem.IsBrowser() ? ($"uno_{typeof(T).Name}", typeof(BrowserICUSymbols)) : ($"{typeof(T).Name}_{_icuVersion}", typeof(IOSICUSymbols));
+					var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
 					if (method is null)
 					{
-						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {nameof(IOSICUSymbols)}.");
+						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {type.Name}.");
 					}
 					value = Delegate.CreateDelegate(typeof(T), method);
 				}
-				else if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var func))
+				else if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var originalNameFunc))
 				{
-					value = Marshal.GetDelegateForFunctionPointer<T>(func)!;
+					value = Marshal.GetDelegateForFunctionPointer<T>(originalNameFunc)!;
 				}
-				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var func2))
+				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var versionPostfixedFunc))
 				{
-					value = Marshal.GetDelegateForFunctionPointer<T>(func2)!;
+					value = Marshal.GetDelegateForFunctionPointer<T>(versionPostfixedFunc)!;
 				}
 				else
 				{
@@ -226,6 +225,12 @@ internal readonly partial struct UnicodeText
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void u_versionToString(IntPtr versionArray, IntPtr versionString);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void udata_setCommonData(IntPtr bytes, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate IntPtr u_errorName(int code);
+
 		[StructLayout(LayoutKind.Sequential)]
 		private struct UVersionInfo
 		{
@@ -237,48 +242,52 @@ internal readonly partial struct UnicodeText
 
 		public class BrowserICUSymbols
 		{
-			// These methods are supplied by our own unoicu.a static library and includes support for the BreakIterator
-			// API. The dotnet runtime version of ICU complains about mising resources when calling ubrk_open even
-			// when udata_setCommonData is called.
-			[DllImport("unoicu")]
-			public static extern IntPtr uno_udata_setCommonData(IntPtr bytes);
-
 			[DllImport("unoicu", CharSet = CharSet.Unicode)]
 			public static extern IntPtr init_line_breaker(string bytes);
 
 			[DllImport("unoicu")]
 			public static extern int next_line_breaking_opportunity(IntPtr breaker);
 
-			// These symbols come from dotnet's own ICU.
-			// WASM needs all used symbols from ICU defined as DllImports to be added to emscripten's linker EXPORTED_FUNCTIONS option.
-			// These won't actually be used and the signature of the functions can be anything, just the symbol name is enough.
-			[DllImport("__Internal")]
-			static extern void ubidi_open();
+			// These are methods from ICU that are redeclared under the uno_ prefix for WASM linking purposes.
+			// These methods are also present in the dotnet runtime ICU build (through __Internal), except that
+			// the symbols are not available on NativeAOT.
 
-			[DllImport("__Internal")]
-			static extern void ubidi_close();
+			[DllImport("unoicu")]
+			static extern void uno_udata_setCommonData(IntPtr bytes, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_setPara();
+			[DllImport("unoicu")]
+			static extern IntPtr uno_ubidi_open();
 
-			[DllImport("__Internal")]
-			static extern void ubidi_getLogicalRun();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_close(IntPtr pBiDi);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_countRuns();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_getVisualRun();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
-			[DllImport("__Internal")]
-			static extern void u_getVersion();
+			[DllImport("unoicu")]
+			static extern int uno_ubidi_countRuns(IntPtr pBiDI, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void u_versionToString();
+			[DllImport("unoicu")]
+			static extern int uno_ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("unoicu")]
+			static extern void uno_u_getVersion(out UVersionInfo versionInfo);
+
+			[DllImport("unoicu")]
+			static extern void uno_u_versionToString(IntPtr versionArray, IntPtr versionString);
+
+			[DllImport("unoicu")]
+			static extern IntPtr uno_u_errorName(int code);
 		}
 
 		private static class IOSICUSymbols
 		{
+			[DllImport("__Internal")]
+			static extern void udata_setCommonData_77(IntPtr bytes, out int errorCode);
+
 			[DllImport("__Internal")]
 			static extern IntPtr ubidi_open_77();
 
@@ -314,6 +323,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern void u_versionToString_77(IntPtr versionArray, IntPtr versionString);
+
+			[DllImport("__Internal")]
+			static extern IntPtr u_errorName_77(int code);
 		}
 	}
 }
