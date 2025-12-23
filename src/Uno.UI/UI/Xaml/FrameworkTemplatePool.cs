@@ -243,15 +243,14 @@ namespace Microsoft.UI.Xaml
 
 		internal View? DequeueTemplate(FrameworkTemplate template, DependencyObject? templatedParent)
 		{
-			var info = GetTemplatePool(template);
-
 			View? instance;
 
-			if (info.PooledInstances.Count == 0)
+			var info = TryGetTemplatePool(template);
+			if (info == null || info.PooledInstances.Count == 0)
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template._viewFactory?.Method.DeclaringType?.FullName });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template.ViewFactoryInner?.Method.DeclaringType?.FullName });
 				}
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -273,6 +272,11 @@ namespace Microsoft.UI.Xaml
 				info.PooledInstances.RemoveAt(position);
 
 				if (_trace.IsEnabled)
+				{
+					_trace.WriteEventActivity(TraceProvider.ReuseTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
+				}
+
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {info.PooledInstances.Count} items remaining in cache");
 				}
@@ -301,17 +305,26 @@ namespace Microsoft.UI.Xaml
 
 		internal void TrackMaterializedTemplate(FrameworkTemplate template, View templateRoot, IEnumerable<DependencyObject> templateMembers)
 		{
-			var info = GetTemplatePool(template);
-			var entry = new MaterializedEntry(templateRoot, templateMembers);
+			if (TryGetTemplatePool(template) is { } info)
+			{
+				var entry = new MaterializedEntry(templateRoot, templateMembers);
 
-			info.MaterializedInstance.Add(entry);
+				info.MaterializedInstance.Add(entry);
+			}
 		}
 
-		private TemplateInfo GetTemplatePool(FrameworkTemplate template)
+		private TemplateInfo? TryGetTemplatePool(FrameworkTemplate template)
 		{
+			// don't bother creating an entry if pooling is disabled,
+			// since it only leads to cache miss and prevents templates from being gc'd.
+			if (!_isPoolingEnabled)
+			{
+				return null;
+			}
+
 			if (!_templates.TryGetValue(template, out var info))
 			{
-				_templates[template] = info = new(new(), new());
+				_templates[template] = info = new([], []);
 			}
 
 			return info;
@@ -410,7 +423,11 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var info = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
+			var info = TryGetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkTemplate)}"));
+			if (info is null)
+			{
+				return;
+			}
 
 			if (newParent == null)
 			{
@@ -507,14 +524,16 @@ namespace Microsoft.UI.Xaml
 		private string GetTemplateDebugId(FrameworkTemplate? template)
 		{
 			// Grossly inefficient, should only be used for debug logging
-			if (template?._viewFactory is { } func &&
+			if (template?.ViewFactoryInner?.Method is { } method &&
 				_templates.Keys.IndexOf(template) is { } index && index != -1)
 			{
-				return $"{index}({func.Method.DeclaringType}.{func.Method.Name})";
+				return $"{index}({method.DeclaringType}.{method.Name})";
 			}
 
 			return "Unknown";
 		}
+
+		internal bool ContainsKey(FrameworkTemplate template) => _templates.ContainsKey(template);
 
 		private record TemplateInfo(List<MaterializedEntry> MaterializedInstance, List<TemplateEntry> PooledInstances);
 
