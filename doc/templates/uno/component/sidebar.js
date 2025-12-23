@@ -95,162 +95,209 @@ function renderSidebar() {
         initializeTocControls();
     }
 
+    // Icon mapping configuration
+    const ICON_MAP = {
+        // Level 1 navigation (exact matches)
+        level1: [
+            { keywords: ['get started'], icon: '🚀', exact: true },
+            { keywords: ['samples', 'tutorials'], icon: '💡' },
+            { keywords: ['overview'], icon: '📚', exact: true },
+            { keywords: ['studio'], icon: '🎨', exact: true },
+            { keywords: ['reference'], icon: '📘', exact: true },
+            { keywords: ['extensions'], icon: '🧩', exact: true },
+            { keywords: ['themes'], icon: '🌈', exact: true },
+            { keywords: ['toolkit'], icon: '🔧', exact: true },
+            { keywords: ['tooling'], icon: '🛠️', exact: true }
+        ],
+        // Sub-level navigation (priority order - most specific first)
+        subLevel: [
+            // Getting Started
+            { keywords: ['getting', 'start'], icon: '🚀', allRequired: true },
+            { keywords: ['quick', 'start'], icon: '⚡', allRequired: true },
+            { keywords: ['first', 'app'], icon: '🎯', allRequired: true },
+            
+            // API & Technical Reference
+            { keywords: ['api', 'reference'], icon: '📘' },
+            { keywords: ['method', 'property'], icon: '🔷' },
+            
+            // Setup & Configuration
+            { keywords: ['install', 'setup'], icon: '⚙️' },
+            { keywords: ['configur', 'setting'], icon: '🔧' },
+            
+            // Guides & Tutorials
+            { keywords: ['guide', 'tutorial', 'walkthrough'], icon: '📖' },
+            { keywords: ['how to', 'how-to'], icon: '📝' },
+            
+            // Features & Capabilities
+            { keywords: ['feature', 'capability'], icon: '✨' },
+            { keywords: ["what's new", 'new feature'], icon: '🆕' },
+            
+            // Controls & Components
+            { keywords: ['control', 'widget'], icon: '🧩' },
+            { keywords: ['component', 'element'], icon: '🔳' },
+            
+            // Platform Targets
+            { keywords: ['ios', 'ipad', 'iphone'], icon: '🍎' },
+            { keywords: ['android'], icon: '🤖' },
+            { keywords: ['windows', 'uwp', 'winui'], icon: '🪟' },
+            { keywords: ['wasm', 'webassembly'], icon: '🌐' },
+            { keywords: ['macos', 'catalyst'], icon: '💻' },
+            { keywords: ['linux', 'gtk', 'skia'], icon: '🐧' },
+            { keywords: ['platform', 'target', 'mobile', 'desktop'], icon: '🎯' },
+            
+            // Build & Compilation
+            { keywords: ['build', 'compile'], icon: '🏗️' },
+            { keywords: ['package', 'packaging'], icon: '📦' },
+            
+            // Deployment
+            { keywords: ['deploy', 'publish', 'release'], icon: '🚀' },
+            
+            // Debugging & Diagnostics
+            { keywords: ['debug', 'diagnos', 'trace'], icon: '🐛' },
+            { keywords: ['log', 'logging'], icon: '📋' },
+            
+            // Testing
+            { keywords: ['test', 'unit', 'integration'], icon: '🧪' },
+            
+            // Performance
+            { keywords: ['performance', 'optimize', 'speed', 'memory'], icon: '⚡' },
+            
+            // Security & Authentication
+            { keywords: ['security', 'secure'], icon: '🔒' },
+            { keywords: ['auth', 'permission', 'credential'], icon: '🔑' },
+            
+            // Data & Storage
+            { keywords: ['data', 'database'], icon: '💾' },
+            { keywords: ['storage', 'cache'], icon: '🗄️' },
+            
+            // Networking
+            { keywords: ['network', 'http', 'rest', 'request'], icon: '🌐' },
+            
+            // UI & Layout
+            { keywords: ['ui', 'interface'], icon: '🖥️' },
+            { keywords: ['layout', 'page'], icon: '📐' },
+            
+            // XAML
+            { keywords: ['xaml', 'markup', 'xml'], icon: '📝' },
+            
+            // Views & Navigation
+            { keywords: ['view', 'screen', 'window'], icon: '📱' },
+            { keywords: ['navigation', 'routing', 'navigate'], icon: '🧭' },
+            
+            // Styling & Theming
+            { keywords: ['style', 'styling'], icon: '🎨' },
+            { keywords: ['theme', 'theming'], icon: '🌈' },
+            { keywords: ['design', 'appearance'], icon: '✨' },
+            
+            // Animation
+            { keywords: ['animation', 'transition', 'motion'], icon: '🎬' },
+            
+            // Data Binding
+            { keywords: ['binding', 'databinding'], icon: '🔗' },
+            { keywords: ['mvvm', 'viewmodel'], icon: '🔀' },
+            
+            // Samples & Examples
+            { keywords: ['sample', 'example', 'demo'], icon: '💡' },
+            
+            // Migration & Updates
+            { keywords: ['migration', 'migrat'], icon: '🔄' },
+            { keywords: ['upgrade', 'update', 'port'], icon: '⬆️' },
+            
+            // Troubleshooting
+            { keywords: ['troubleshoot', 'issue', 'problem', 'error'], icon: '🔧' },
+            { keywords: ['faq', 'question', 'help'], icon: '❓' },
+            
+            // Contributing & Community
+            { keywords: ['contribute', 'contributor', 'contributing'], icon: '🤝' },
+            { keywords: ['community', 'forum', 'discussion'], icon: '👥' },
+            
+            // Development
+            { keywords: ['develop', 'development', 'coding'], icon: '💻' },
+            
+            // Documentation Structure
+            { keywords: ['overview', 'about'], icon: '📚' },
+            { keywords: ['introduction', 'intro'], icon: '👋' },
+            { keywords: ['concept', 'architecture', 'principle'], icon: '💭' },
+            { keywords: ['best practice', 'pattern', 'recommendation'], icon: '⭐' },
+            
+            // Resources & Assets
+            { keywords: ['resource', 'asset'], icon: '📁' },
+            { keywords: ['image', 'icon'], icon: '🖼️' },
+            { keywords: ['video', 'media', 'audio'], icon: '🎥' },
+            
+            // Localization & Accessibility
+            { keywords: ['localization', 'translation', 'language', 'globalization'], icon: '🌍' },
+            { keywords: ['accessibility', 'a11y'], icon: '♿' },
+            
+            // Tools & Extensions
+            { keywords: ['tool', 'utility', 'helper'], icon: '🔨' },
+            { keywords: ['extension', 'plugin', 'addon'], icon: '🧩' },
+            
+            // Packages & Dependencies
+            { keywords: ['nuget', 'library', 'dependency'], icon: '📦' },
+            
+            // Versioning & Release
+            { keywords: ['version', 'changelog', 'release note'], icon: '📋' },
+            
+            // Legal
+            { keywords: ['license', 'legal', 'terms'], icon: '⚖️' },
+            
+            // Feedback
+            { keywords: ['feedback', 'report', 'contact'], icon: '💬' }
+        ],
+        default: '📄'
+    };
+
+    /**
+     * Determines the appropriate icon for a given text and level
+     * @param {string} text - The text to match against
+     * @param {boolean} isLevel1 - Whether this is a level 1 item
+     * @returns {string} The matched icon or default icon
+     */
+    function getIconForItem(text, isLevel1) {
+        const lowerText = text.toLowerCase();
+        
+        // Check level 1 specific icons first
+        if (isLevel1) {
+            for (const rule of ICON_MAP.level1) {
+                if (rule.exact && lowerText === rule.keywords[0]) {
+                    return rule.icon;
+                }
+                if (!rule.exact && rule.keywords.some(kw => lowerText.includes(kw))) {
+                    return rule.icon;
+                }
+            }
+        }
+        
+        // Check sub-level patterns
+        for (const rule of ICON_MAP.subLevel) {
+            if (rule.allRequired) {
+                // All keywords must be present
+                if (rule.keywords.every(kw => lowerText.includes(kw))) {
+                    return rule.icon;
+                }
+            } else {
+                // Any keyword matches
+                if (rule.keywords.some(kw => lowerText.includes(kw))) {
+                    return rule.icon;
+                }
+            }
+        }
+        
+        return ICON_MAP.default;
+    }
+
     function registerTocEvents() {
         // Assign contextual icons to first-level nodes only
         $('.toc .nav > li').each(function() {
             const $li = $(this);
             const $stub = $li.children('.expand-stub');
             const $link = $li.children('a');
-            const text = $link.text().toLowerCase();
+            const text = $link.text();
             const isLevel1 = $li.parent().hasClass('level1');
             
-            let icon = '📄'; // default document icon
-            
-            // Level 1 specific icons (exact matches for main navigation)
-            if (isLevel1) {
-                if (text.includes('get started')) icon = '🚀';
-                else if (text.includes('samples') || text.includes('tutorials')) icon = '💡';
-                else if (text === 'overview') icon = '📚';
-                else if (text === 'studio') icon = '🎨';
-                else if (text === 'reference') icon = '📘';
-                else if (text === 'extensions') icon = '🧩';
-                else if (text === 'themes') icon = '🌈';
-                else if (text === 'toolkit') icon = '🔧';
-                else if (text === 'tooling') icon = '🛠️';
-            }
-            // Sub-level icon assignment with priority order (most specific first)
-            else if (text.includes('getting') && text.includes('start')) icon = '🚀';
-            else if (text.includes('quick') && text.includes('start')) icon = '⚡';
-            else if (text.includes('first') && text.includes('app')) icon = '🎯';
-            
-            // API & Technical Reference
-            else if (text.includes('api') || text.includes('reference')) icon = '📘';
-            else if (text.includes('method') || text.includes('property')) icon = '🔷';
-            
-            // Setup & Configuration
-            else if (text.includes('install') || text.includes('setup')) icon = '⚙️';
-            else if (text.includes('configur') || text.includes('setting')) icon = '🔧';
-            
-            // Guides & Tutorials
-            else if (text.includes('guide') || text.includes('tutorial') || text.includes('walkthrough')) icon = '📖';
-            else if (text.includes('how to') || text.includes('how-to')) icon = '📝';
-            
-            // Features & Capabilities
-            else if (text.includes('feature') || text.includes('capability')) icon = '✨';
-            else if (text.includes('what\'s new') || text.includes('new feature')) icon = '🆕';
-            
-            // Controls & Components (Uno Platform specific)
-            else if (text.includes('control') || text.includes('widget')) icon = '🧩';
-            else if (text.includes('component') || text.includes('element')) icon = '🔳';
-            
-            // Platform Targets (Uno Platform specific)
-            else if (text.includes('ios') || text.includes('ipad') || text.includes('iphone')) icon = '🍎';
-            else if (text.includes('android')) icon = '🤖';
-            else if (text.includes('windows') || text.includes('uwp') || text.includes('winui')) icon = '🪟';
-            else if (text.includes('wasm') || text.includes('webassembly')) icon = '🌐';
-            else if (text.includes('macos') || text.includes('catalyst')) icon = '💻';
-            else if (text.includes('linux') || text.includes('gtk') || text.includes('skia')) icon = '🐧';
-            else if (text.includes('platform') || text.includes('target') || text.includes('mobile') || text.includes('desktop')) icon = '🎯';
-            
-            // Build & Compilation
-            else if (text.includes('build') || text.includes('compile')) icon = '🏗️';
-            else if (text.includes('package') || text.includes('packaging')) icon = '📦';
-            
-            // Deployment & Release
-            else if (text.includes('deploy') || text.includes('publish') || text.includes('release')) icon = '🚀';
-            
-            // Debugging & Diagnostics
-            else if (text.includes('debug') || text.includes('diagnos') || text.includes('trace')) icon = '🐛';
-            else if (text.includes('log') || text.includes('logging')) icon = '📋';
-            
-            // Testing
-            else if (text.includes('test') || text.includes('unit') || text.includes('integration')) icon = '🧪';
-            
-            // Performance
-            else if (text.includes('performance') || text.includes('optimize') || text.includes('speed') || text.includes('memory')) icon = '⚡';
-            
-            // Security & Authentication
-            else if (text.includes('security') || text.includes('secure')) icon = '🔒';
-            else if (text.includes('auth') || text.includes('permission') || text.includes('credential')) icon = '🔑';
-            
-            // Data & Storage
-            else if (text.includes('data') || text.includes('database')) icon = '💾';
-            else if (text.includes('storage') || text.includes('cache')) icon = '🗄️';
-            
-            // Networking
-            else if (text.includes('network') || text.includes('http') || text.includes('rest') || text.includes('request')) icon = '🌐';
-            
-            // UI & Layout (Uno Platform specific)
-            else if (text.includes('ui') || text.includes('interface')) icon = '🖥️';
-            else if (text.includes('layout') || text.includes('page')) icon = '📐';
-            
-            // XAML (Uno Platform core)
-            else if (text.includes('xaml') || text.includes('markup') || text.includes('xml')) icon = '📝';
-            
-            // Views & Navigation
-            else if (text.includes('view') || text.includes('screen') || text.includes('window')) icon = '📱';
-            else if (text.includes('navigation') || text.includes('routing') || text.includes('navigate')) icon = '🧭';
-            
-            // Styling & Theming
-            else if (text.includes('style') || text.includes('styling')) icon = '🎨';
-            else if (text.includes('theme') || text.includes('theming')) icon = '🌈';
-            else if (text.includes('design') || text.includes('appearance')) icon = '✨';
-            
-            // Animation
-            else if (text.includes('animation') || text.includes('transition') || text.includes('motion')) icon = '🎬';
-            
-            // Data Binding (Uno Platform specific)
-            else if (text.includes('binding') || text.includes('databinding')) icon = '🔗';
-            else if (text.includes('mvvm') || text.includes('viewmodel')) icon = '🔀';
-            
-            // Samples & Examples
-            else if (text.includes('sample') || text.includes('example') || text.includes('demo')) icon = '💡';
-            
-            // Migration & Updates
-            else if (text.includes('migration') || text.includes('migrat')) icon = '🔄';
-            else if (text.includes('upgrade') || text.includes('update') || text.includes('port')) icon = '⬆️';
-            
-            // Troubleshooting
-            else if (text.includes('troubleshoot') || text.includes('issue') || text.includes('problem') || text.includes('error')) icon = '🔧';
-            else if (text.includes('faq') || text.includes('question') || text.includes('help')) icon = '❓';
-            
-            // Contributing & Community
-            else if (text.includes('contribute') || text.includes('contributor') || text.includes('contributing')) icon = '🤝';
-            else if (text.includes('community') || text.includes('forum') || text.includes('discussion')) icon = '👥';
-            
-            // Development
-            else if (text.includes('develop') || text.includes('development') || text.includes('coding')) icon = '💻';
-            
-            // Documentation Structure
-            else if (text.includes('overview') || text.includes('about')) icon = '📚';
-            else if (text.includes('introduction') || text.includes('intro')) icon = '👋';
-            else if (text.includes('concept') || text.includes('architecture') || text.includes('principle')) icon = '💭';
-            else if (text.includes('best practice') || text.includes('pattern') || text.includes('recommendation')) icon = '⭐';
-            
-            // Resources & Assets
-            else if (text.includes('resource') || text.includes('asset')) icon = '📁';
-            else if (text.includes('image') || text.includes('icon')) icon = '🖼️';
-            else if (text.includes('video') || text.includes('media') || text.includes('audio')) icon = '🎥';
-            
-            // Localization & Accessibility
-            else if (text.includes('localization') || text.includes('translation') || text.includes('language') || text.includes('globalization')) icon = '🌍';
-            else if (text.includes('accessibility') || text.includes('a11y')) icon = '♿';
-            
-            // Tools & Extensions
-            else if (text.includes('tool') || text.includes('utility') || text.includes('helper')) icon = '🔨';
-            else if (text.includes('extension') || text.includes('plugin') || text.includes('addon')) icon = '🧩';
-            
-            // Packages & Dependencies (NuGet specific)
-            else if (text.includes('nuget') || text.includes('library') || text.includes('dependency')) icon = '📦';
-            
-            // Versioning & Release
-            else if (text.includes('version') || text.includes('changelog') || text.includes('release note')) icon = '📋';
-            
-            // Legal
-            else if (text.includes('license') || text.includes('legal') || text.includes('terms')) icon = '⚖️';
-            
-            // Feedback
-            else if (text.includes('feedback') || text.includes('report') || text.includes('contact')) icon = '💬';
+            // Get appropriate icon using centralized logic
+            const icon = getIconForItem(text, isLevel1);
             
             // Assign icon to expand-stub if it exists
             if ($stub.length > 0) {
