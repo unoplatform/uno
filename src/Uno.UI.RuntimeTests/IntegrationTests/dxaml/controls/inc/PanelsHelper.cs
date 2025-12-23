@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
+using System;
 
 namespace Microsoft.UI.Xaml.Tests.Common;
 
@@ -17,7 +18,6 @@ internal static class PanelsHelper
 		where TPanel : Panel, new()
 	{
 		TPanel panel = null;
-		var loadedEvent = false;
 
 		await RunOnUIThread(async () =>
 		{
@@ -42,14 +42,17 @@ internal static class PanelsHelper
 				panel.Children.Add(contentItem);
 			}
 
-			panel.Loaded += (s, e) => loadedEvent = true;
-
 			TestServices.WindowHelper.WindowContent = panel;
 		});
 
 		LOG_OUTPUT("Waiting for the %s to be loaded...", typeof(TPanel).Name);
-		await WindowHelper.WaitFor(() => loadedEvent);
+		await WindowHelper.WaitForLoaded(panel);
 		LOG_OUTPUT("%s loaded.", typeof(TPanel).Name);
+
+		await RunOnUIThread(() =>
+		{
+			panel.UpdateLayout();
+		});
 
 		return panel;
 	}
@@ -189,7 +192,7 @@ internal static class PanelsHelper
 		});
 	}
 
-	private static int Round(double value) => (int)(value + 0.5);
+	private static int Round(double value) => (int)Math.Round(value);
 
 	//template<class TItemsControl>
 	//       static void ApplyContainerStyle(TItemsControl^ itemsControl);
