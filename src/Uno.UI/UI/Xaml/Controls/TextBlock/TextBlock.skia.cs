@@ -103,12 +103,10 @@ namespace Microsoft.UI.Xaml.Controls
 				(float)LineHeight,
 				LineStackingStrategy,
 				FlowDirection,
-				(OwningTextBox as IDependencyObjectStoreProvider)?.Store
-					.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue
-						? null
-						: TextAlignment,
+				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
-				out size);
+				InvalidateInlineAndRequireRepaint,
+				out var desiredSize);
 
 		// the entire body of the text block is considered hit-testable
 		internal override bool HitTest(Point point)
