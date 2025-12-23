@@ -25,8 +25,7 @@
 											HorizontalContentAlignment="Stretch"
 											VerticalContentAlignment="Stretch"
 											Content="{TemplateBinding Content}"
-											u:StarStackPanel.Size="*"
-											Padding="10,10,10,0"/>
+											u:StarStackPanel.Size="*"/>
 						</u:StarStackPanel>
 					</Border>
 				</ControlTemplate>
