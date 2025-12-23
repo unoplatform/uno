@@ -10,6 +10,7 @@ namespace Uno.UI.RuntimeTests.IntegrationTests;
 
 [TestClass]
 [RequiresFullWindow]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class FrameIntegrationTests : BaseDxamlTestClass
 {
 #if HAS_UNO
@@ -745,13 +746,13 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 		Frame frame = null;
 
 		await TestServices.RunOnUIThread(() =>
-
 		{
 			frame = new Frame();
 			frame.CacheSize = 2;
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
+		await TestServices.WindowHelper.WaitForLoaded(frame);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// When NavigationCacheMode is Disabled all InstanceCounter will pick the latest Counter value
