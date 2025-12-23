@@ -13,7 +13,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
+internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView, INativeWebViewCookieManager
 {
 	private readonly MacOSWindowNative _window;
 	private readonly CoreWebView2 _owner;
@@ -473,5 +473,66 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 			typeof(MacOSNativeWebView).Log().Warn($"MacOSNativeWebView.OnUnsupportedUriSchemeIdentified could not map 0x{handle:X} with an WKWebView");
 		}
 		return 0;
+	}
+
+	// Cookie Management Implementation - Requires native bridge to WKHTTPCookieStore
+	// Note: Full implementation would require native Objective-C methods in UNOWebView.m
+	async Task<IReadOnlyList<CoreWebView2Cookie>> INativeWebViewCookieManager.GetCookiesAsync(string uri)
+	{
+		var cookies = new List<CoreWebView2Cookie>();
+		
+		// TODO: Implement via native bridge to WKHTTPCookieStore
+		// This would require adding P/Invoke methods to call into UNOWebView.m
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("Cookie management for Skia macOS requires native bridge implementation in UNOWebView.m");
+		}
+
+		return await Task.FromResult<IReadOnlyList<CoreWebView2Cookie>>(cookies);
+	}
+
+	void INativeWebViewCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
+	{
+		// TODO: Implement via native bridge to WKHTTPCookieStore
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("Cookie management for Skia macOS requires native bridge implementation in UNOWebView.m");
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
+	{
+		// TODO: Implement via native bridge to WKHTTPCookieStore
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("Cookie management for Skia macOS requires native bridge implementation in UNOWebView.m");
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteCookies(string name, string uri)
+	{
+		// TODO: Implement via native bridge to WKHTTPCookieStore
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("Cookie management for Skia macOS requires native bridge implementation in UNOWebView.m");
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
+	{
+		// TODO: Implement via native bridge to WKHTTPCookieStore
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("Cookie management for Skia macOS requires native bridge implementation in UNOWebView.m");
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteAllCookies()
+	{
+		// TODO: Implement via native bridge to WKHTTPCookieStore
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("Cookie management for Skia macOS requires native bridge implementation in UNOWebView.m");
+		}
 	}
 }
