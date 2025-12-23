@@ -1,0 +1,187 @@
+<!-- Algolia InstantSearch for Full Search Results Page -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/satellite-min.css" />
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+
+<style>
+#search-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+#search-input-container {
+    margin-bottom: 2rem;
+}
+
+.ais-SearchBox {
+    margin-bottom: 1rem;
+}
+
+.ais-SearchBox-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ais-SearchBox-input:focus {
+    outline: none;
+    border-color: #5468ff;
+    box-shadow: 0 0 0 3px rgba(84, 104, 255, 0.1);
+}
+
+.ais-Hits-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.ais-Hits-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.hit-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.hit-title a {
+    color: #5468ff;
+    text-decoration: none;
+}
+
+.hit-title a:hover {
+    text-decoration: underline;
+}
+
+.hit-hierarchy {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.hit-content {
+    color: #333;
+    line-height: 1.5;
+}
+
+.ais-Pagination {
+    margin-top: 2rem;
+}
+
+.ais-Stats {
+    margin-bottom: 1rem;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .ais-Hits-item {
+        background: #1e1e1e;
+        border-color: #333;
+    }
+    
+    .hit-content {
+        color: #ddd;
+    }
+    
+    .hit-hierarchy {
+        color: #999;
+    }
+}
+</style>
+
+<script>
+(function() {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeInstantSearch);
+    } else {
+        initializeInstantSearch();
+    }
+
+    function initializeInstantSearch() {
+        const searchClient = algoliasearch('PHB9D8WS99', '7877394996f96cde1a9b795dce3f7787');
+        
+        const search = instantsearch({
+            indexName: 'platform',
+            searchClient,
+            routing: true,
+        });
+
+        // Get initial query from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialQuery = urlParams.get('q') || '';
+
+        search.addWidgets([
+            instantsearch.widgets.searchBox({
+                container: '#search-input-container',
+                placeholder: 'Search documentation...',
+                autofocus: true,
+                showLoadingIndicator: true,
+            }),
+
+            instantsearch.widgets.stats({
+                container: '#search-input-container',
+            }),
+
+            instantsearch.widgets.hits({
+                container: '#search-hits',
+                templates: {
+                    item(hit, { html, components }) {
+                        return html`
+                            <article class="hit-item">
+                                <div class="hit-title">
+                                    <a href="${hit.url}">${components.Highlight({ hit, attribute: 'title' })}</a>
+                                </div>
+                                ${hit.hierarchy && hit.hierarchy.lvl0 ? html`
+                                    <div class="hit-hierarchy">
+                                        ${hit.hierarchy.lvl0}
+                                        ${hit.hierarchy.lvl1 ? ` > ${hit.hierarchy.lvl1}` : ''}
+                                        ${hit.hierarchy.lvl2 ? ` > ${hit.hierarchy.lvl2}` : ''}
+                                    </div>
+                                ` : ''}
+                                ${hit.content ? html`
+                                    <div class="hit-content">
+                                        ${components.Snippet({ hit, attribute: 'content' })}
+                                    </div>
+                                ` : ''}
+                            </article>
+                        `;
+                    },
+                    empty(results, { html }) {
+                        return html`
+                            <div class="no-results">
+                                <p>No results found for query <strong>${results.query}</strong>.</p>
+                                <p>Try different keywords or check your spelling.</p>
+                            </div>
+                        `;
+                    },
+                },
+            }),
+
+            instantsearch.widgets.pagination({
+                container: '#search-pagination',
+                padding: 2,
+                showFirst: true,
+                showLast: true,
+                showPrevious: true,
+                showNext: true,
+            }),
+        ]);
+
+        search.start();
+
+        // Set initial query if provided in URL
+        if (initialQuery) {
+            search.helper.setQuery(initialQuery).search();
+        }
+    }
+})();
+</script>
