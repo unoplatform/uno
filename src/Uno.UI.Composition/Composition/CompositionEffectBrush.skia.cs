@@ -10,6 +10,7 @@ using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.Graphics.Canvas.Effects;
 
 namespace Microsoft.UI.Composition;
 
@@ -45,12 +46,18 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 			_isCurrentInputBackdrop = false;
 
-			// TODO: Support "Optimization" and "BorderMode" properties
+			// TODO: Support "Optimization" property
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
 
+			// Check BorderMode property - when Hard, don't expand blur padding to prevent
+			// sampling from areas outside the element bounds (prevents nearby elements from bleeding through)
+			effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderModeProp, out _);
+			var borderModeValue = borderModeProp != 0xFF ? effectInterop.GetProperty(borderModeProp) : null;
+			bool isHardBorderMode = borderModeValue is uint mode && mode == (uint)EffectBorderMode.Hard;
+
 			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter,
-				UseBlurPadding ?
+				UseBlurPadding && !isHardBorderMode ?
 				bounds with
 				{
 					Left = -100,
@@ -1592,7 +1599,9 @@ $$"""
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		UpdateFilter(bounds);
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
+		// Use Bounds to constrain the backdrop filter to only sample from within the element's area.
+		// This helps prevent nearby sibling elements from bleeding through the acrylic effect.
+		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
 		canvas.Restore();
 	}
 
