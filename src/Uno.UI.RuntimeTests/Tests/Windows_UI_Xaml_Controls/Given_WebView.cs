@@ -246,5 +246,49 @@ public class Given_WebView
 		Assert.AreEqual("", result);
 	}
 #endif
+
+#if __IOS__ || __SKIA__
+	[TestMethod]
+	public async Task When_FileUri_With_Relative_Paths()
+	{
+		var border = new Border();
+		var webView = new WebView();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+
+		bool navigationStarting = false;
+		bool navigationDone = false;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
+		webView.NavigationCompleted += (s, e) => navigationDone = true;
+
+		// Get the path to the test HTML file
+		var testHtmlPath = System.IO.Path.Combine(
+			global::Windows.ApplicationModel.Package.Current.InstalledLocation.Path,
+			"Assets",
+			"WebView_FileAccess_Test.html");
+
+		// Navigate to the file:// URI
+		var fileUri = new Uri($"file://{testHtmlPath}");
+		webView.Source = fileUri;
+
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+
+		// Wait a bit for the page to fully load and execute scripts
+		await Task.Delay(500);
+
+		// Verify the page loaded
+		var pageLoaded = await webView.InvokeScriptAsync("eval", new[] { "window.fileAccessTestLoaded ? 'true' : 'false'" });
+		Assert.AreEqual("true", pageLoaded, "HTML page should have loaded");
+
+		// Verify the CSS file was loaded and applied
+		// This tests that relative file:// URIs work correctly
+		var cssLoaded = await webView.InvokeScriptAsync("eval", new[] { "window.cssLoaded ? 'true' : 'false'" });
+		Assert.AreEqual("true", cssLoaded, "CSS file should have been loaded via relative path");
+	}
+#endif
 }
 #endif
