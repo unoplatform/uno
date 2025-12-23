@@ -47,6 +47,9 @@ partial class Window
 	private Brush? _background;
 	private WindowType _windowType;
 
+	// Window-local storage to detect secondary ALC content
+	private object? _secondaryAlcContent;
+
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
@@ -72,7 +75,13 @@ partial class Window
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
-		if (!NativeWindowFactory.SupportsMultipleWindows)
+		if (
+			!NativeWindowFactory.SupportsMultipleWindows
+
+			// When a second ALC is defined with a Window, we allow it
+			// even on single-window platforms
+			&& Window.ContentHostOverride == null
+		)
 		{
 			if (_current is not null && _current != this)
 			{
@@ -172,9 +181,40 @@ partial class Window
 	/// </summary>
 	public UIElement? Content
 	{
-		get => _windowImplementation.Content;
-		set => _windowImplementation.Content = value;
+		get
+		{
+			if (IsContentFromSecondaryAlc(_secondaryAlcContent))
+			{
+				return ContentHostOverride?.Content as UIElement;
+			}
+
+			return _windowImplementation.Content;
+		}
+
+		set
+		{
+			if (IsContentFromSecondaryAlc(value) && ContentHostOverride is { } host)
+			{
+				// We're in a secondary ALC, redirect to the host override
+				host.Content = value;
+				_secondaryAlcContent = value;
+			}
+			else
+			{
+				// We're in the default ALC, set content normally
+				_windowImplementation.Content = value;
+			}
+		}
 	}
+
+	/// <summary>
+	/// Gets or sets an internal <c>static</c> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
+	/// </summary>
+	/// <remarks>
+	/// Global effect: This property is <c>static</c> and affects all <see cref="Window"/> instances in the application.
+	/// Usage: When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
+	/// </remarks>
+	internal static ContentControl? ContentHostOverride { get; set; }
 
 	/// <summary>
 	/// Gets the window of the current thread.
@@ -296,7 +336,16 @@ partial class Window
 
 	internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
 
-	public void Activate() => _windowImplementation.Activate();
+	public void Activate()
+	{
+		if (IsContentHostedInSecondaryAlc())
+		{
+			// Don't activate - we're hosted in another window
+			return;
+		}
+
+		_windowImplementation.Activate();
+	}
 
 	public void Close() => _windowImplementation.Close();
 
@@ -347,4 +396,34 @@ partial class Window
 	}
 
 	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => _sizeChangedHandlers?.Invoke(this, e);
+
+	/// <summary>
+	/// Checks if the given content element is from a secondary AssemblyLoadContext.
+	/// When value is null, returns false to allow clearing content.
+	/// </summary>
+	private bool IsContentFromSecondaryAlc(object? value)
+	{
+		// Explicitly handle null: a null assignment should clear content, not be detected as secondary ALC
+		if (value == null)
+		{
+			return false;
+		}
+
+		return !ReferenceEquals(
+			System.Runtime.Loader.AssemblyLoadContext.Default,
+			System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(value.GetType().Assembly));
+	}
+
+	/// <summary>
+	/// Checks if the content in ContentHostOverride is from a secondary ALC.
+	/// </summary>
+	private bool IsContentHostedInSecondaryAlc()
+	{
+		var content = ContentHostOverride?.Content;
+		return content is not null
+			&& ContentHostOverride is not null
+			&& !ReferenceEquals(
+				System.Runtime.Loader.AssemblyLoadContext.Default,
+				System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(content.GetType().Assembly));
+	}
 }

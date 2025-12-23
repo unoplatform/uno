@@ -82,27 +82,35 @@ namespace Microsoft.UI.Xaml
 			return 0;
 		}
 
-		static async partial void StartPartial(ApplicationInitializationCallback callback)
+		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
 		{
-			try
+			async void Start()
 			{
-				_startInvoked = true;
-
-				SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
-
-				await WindowManagerInterop.InitAsync();
-
-				_ = global::Windows.Storage.ApplicationData.Current.EnablePersistenceAsync();
-
-				callback(new ApplicationInitializationCallbackParams());
-			}
-			catch (Exception exception)
-			{
-				if (typeof(Application).Log().IsEnabled(LogLevel.Error))
+				try
 				{
-					typeof(Application).Log().LogError("Application initialization failed.", exception);
+					_startInvoked = true;
+
+					SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
+
+					await WindowManagerInterop.InitAsync();
+
+					_ = global::Windows.Storage.ApplicationData.Current.EnablePersistenceAsync();
+
+					callback(new ApplicationInitializationCallbackParams());
+				}
+				catch (Exception exception)
+				{
+					if (typeof(Application).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(Application).Log().LogError("Application initialization failed.", exception);
+					}
 				}
 			}
+
+			Start();
+
+			// With native wasm, we do not need to use the Start return value.
+			return null;
 		}
 
 		private void Initialize()

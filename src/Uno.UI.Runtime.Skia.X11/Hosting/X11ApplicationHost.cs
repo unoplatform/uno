@@ -153,10 +153,12 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	private void StartApp()
 	{
-		void CreateApp(ApplicationInitializationCallbackParams _)
+		Application CreateApp(ApplicationInitializationCallbackParams _)
 		{
 			var app = _appBuilder();
 			app.Host = this;
+
+			return app;
 		}
 
 		Application.Start(CreateApp);

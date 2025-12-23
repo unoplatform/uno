@@ -239,7 +239,7 @@ internal partial class NavigationHistory
 
 			pFrame.CanGoBack = newCanGoBack;
 			pFrame.CanGoForward = newCanGoForward;
-			var newSourcePageType = Type.GetType(strNewDescriptor);
+			var newSourcePageType = PageStackEntry.ResolveDescriptor(strNewDescriptor);
 			pFrame.SourcePageType = newSourcePageType;
 			pFrame.CurrentSourcePageType = newSourcePageType;
 
@@ -326,16 +326,12 @@ internal partial class NavigationHistory
 		if (m_tpCurrentPageStackEntry is not null)
 		{
 			var strDescriptior = m_tpCurrentPageStackEntry.GetDescriptor();
-			var sourcePageType = GetType(strDescriptior);
+			var sourcePageType = PageStackEntry.ResolveDescriptor(strDescriptior);
 			pFrame.SourcePageType = sourcePageType;
 			pFrame.CurrentSourcePageType = sourcePageType;
 		}
 
 		m_isSetNavigationStatePending = false;
-
-		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
-		static Type GetType(string typeName)
-			=> Type.GetType(typeName);
 	}
 
 	private void ValidateCanChangePageStack()
@@ -820,7 +816,7 @@ internal partial class NavigationHistory
 		if (spTransitionInfo is not null)
 		{
 			// Write NavigationTransitionInfo type.
-			NavigationHelpers.WriteHSTRINGToString(spTransitionInfo.GetType().AssemblyQualifiedName, buffer);
+			NavigationHelpers.WriteHSTRINGToString(PageStackEntry.BuildDescriptor(spTransitionInfo.GetType()), buffer);
 
 			// Write NavigationTransitionInfo.
 			strTransitionInfo = spTransitionInfo.GetNavigationStateCoreInternal();
@@ -901,7 +897,7 @@ internal partial class NavigationHistory
 
 			if (strTransitionInfoType is not null)
 			{
-				var pTransitionInfoTypeInfo = Type.GetType(strTransitionInfoType);
+				var pTransitionInfoTypeInfo = PageStackEntry.ResolveDescriptor(strTransitionInfoType);
 				spTransitionInfo = (NavigationTransitionInfo)Activator.CreateInstance(pTransitionInfoTypeInfo);
 
 				// Read NavigationTransitionInfo.
