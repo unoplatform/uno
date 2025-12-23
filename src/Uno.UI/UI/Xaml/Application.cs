@@ -22,7 +22,7 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Popups.Internal;
 using Windows.UI.ViewManagement;
-
+using DirectUI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
@@ -96,6 +96,8 @@ namespace Microsoft.UI.Xaml
 #endif
 			Current = this;
 			ApplicationLanguages.ApplyCulture();
+
+			BackButtonIntegration.Initialize();
 
 			InitializePartial();
 		}
