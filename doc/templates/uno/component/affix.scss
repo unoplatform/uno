@@ -32,16 +32,17 @@
   }
 
   #affix {
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 600;
-    line-height: 1.5;
+    line-height: 1.8;
     height: auto;
     a {
       color: $darkgray;
-      font-size: 14px;
-      line-height: 20px;
+      font-size: 17px;
+      line-height: 28px;
       font-weight: 400;
       letter-spacing: 0.25px;
+      margin-bottom: 4px;
     }
     
     ul > li.active > a {
@@ -61,8 +62,12 @@
       top: 2px;
     }
     li:last-child {
-      padding-bottom: 16px;
+      padding-bottom: 20px;
       margin-bottom: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
     }
 
     .title {

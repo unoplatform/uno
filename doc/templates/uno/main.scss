@@ -191,10 +191,11 @@ h5 {
   }
 
   .nav > li {
-    line-height: 24px;
+    line-height: 32px;
+    margin-bottom: 4px;
     
     a {
-      font-size: 14px;
+      font-size: 17px;
       font-weight: 400;
       text-transform: none;
       color:$black;
@@ -204,10 +205,11 @@ h5 {
 
   .nav.level1 , .nav.level2 {
     > li {
-      line-height: 20px;
+      line-height: 28px;
+      margin-bottom: 4px;
         
       > a {
-        font-size: 14px;
+        font-size: 17px;
         font-weight: 400;
         text-transform: none;
         color:$black;
