@@ -268,11 +268,12 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		bool cancel;
 		if (Uri.TryCreate(e.Uri, UriKind.RelativeOrAbsolute, out var uri))
 		{
-			_coreWebView.RaiseNavigationStarting(uri, out cancel);
+			// Pass the native NavigationId to ensure consistency with WebView2 SDK behavior
+			_coreWebView.RaiseNavigationStarting(uri, e.NavigationId, out cancel);
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationStarting(e.Uri, out cancel);
+			_coreWebView.RaiseNavigationStarting(e.Uri, e.NavigationId, out cancel);
 		}
 		_coreWebView.SetHistoryProperties(_nativeWebView.CanGoBack, _nativeWebView.CanGoForward);
 		e.Cancel = cancel;
@@ -300,11 +301,12 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 			{
 				_coreWebView.RaiseUnsupportedUriSchemeIdentified(uri, out _);
 			}
-			_coreWebView.RaiseNavigationCompleted(uri, e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
+			// Pass the native NavigationId to ensure consistency with WebView2 SDK behavior
+			_coreWebView.RaiseNavigationCompleted(e.NavigationId, uri, e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationCompleted(null, e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
+			_coreWebView.RaiseNavigationCompleted(e.NavigationId, null, e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
 		}
 	}
 
