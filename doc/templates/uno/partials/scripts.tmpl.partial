@@ -4,6 +4,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
 <script src="https://unpkg.com/highlightjs-dotnetconfig@0.9.3/dist/dotnetconfig.min.js"></script>
 <script type="text/javascript" src="{{_rel}}styles/docfx.js"></script>
+<script type="text/javascript" src="{{_rel}}service/smooth-scroll.js"></script>
 <script type="text/javascript" src="{{_rel}}styles/main.js"></script>
 <!-- Mermaid version will need to be bumped here when this issue is fixed -->
 <!-- Search for this issue in the code to remove the related workaround: https://github.com/mermaid-js/mermaid/issues/1984 -->

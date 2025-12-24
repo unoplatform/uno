@@ -175,6 +175,9 @@ h5 {
 .sidetoc {
   top: 180px;
   background-color: white !important;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
+  contain: layout style paint;
   @media only screen {
     @include media-breakpoint-up(md) {
       width: 24%;
@@ -193,6 +196,7 @@ h5 {
   .nav > li {
     line-height: 32px;
     margin-bottom: 4px;
+    will-change: auto;
     
     a {
       font-size: 17px;
@@ -218,9 +222,19 @@ h5 {
     }
   }
 
+  .nav > li {
+    &.active,
+    &.expanded {
+      > a {
+        will-change: auto;
+      }
+    }
+  }
+
   .nav > li.active > a {
     color: $darkgray;
     font-weight: 600;
+    transition: background-color 0.15s ease-out, color 0.15s ease-out, opacity 0.15s ease-out;
     
     &:last-child {
       border-radius: 6px;
@@ -230,6 +244,14 @@ h5 {
 
     &:hover {
       color: #000;
+    }
+  }
+
+  .toc .nav > li {
+    transition: opacity 0.15s ease-out;
+    
+    &:not(.active):not(.expanded) {
+      opacity: 1;
     }
   }
 
