@@ -85,10 +85,10 @@ function renderSidebar() {
 
     function registerTocEvents() {
         $('.toc .nav > li > .expand-stub').on('click', function (e) {
-            $(e.target).parent().addClass(expanded);
+            $(e.target).parent().toggleClass(expanded);
         });
         $('.toc .nav > li > .expand-stub + a:not([href])').on('click', function (e) {
-            $(e.target).parent().addClass(expanded);
+            $(e.target).parent().toggleClass(expanded);
         });
         $('#toc_filter_input').on('input', function () {
             const val = this.value;
