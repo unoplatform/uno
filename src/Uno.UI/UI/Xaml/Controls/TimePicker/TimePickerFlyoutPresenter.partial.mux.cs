@@ -647,7 +647,7 @@ partial class TimePickerFlyoutPresenter
 			// to avoid culture- and numbering-system-specific formatting differences.
 			if (_is12HourClock && _tpCalendar.Hour == TIMEPICKER_COERCION_INDEX)
 			{
-				strHour = $"{_periodCoercion_OFFSET}";
+				strHour = $"{_periodCoercionOffset}";
 			}
 
 			spItem.PrimaryText = strHour;
