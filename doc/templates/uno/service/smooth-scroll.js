@@ -24,6 +24,29 @@ function debounce(func, wait) {
 }
 
 /**
+ * Check if an element is visible within its scroll container
+ * @param {HTMLElement} element - The element to check
+ * @param {HTMLElement} container - The scroll container
+ * @returns {boolean} - True if element is reasonably visible
+ */
+function isElementVisible(element, container) {
+  if (!element || !container) return false;
+  
+  const containerRect = container.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+  
+  // Check if element is at least partially visible with good margin
+  // Element should be comfortably in view, not just barely visible
+  const topMargin = 100; // px from top
+  const bottomMargin = 100; // px from bottom
+  
+  const isTopVisible = elementRect.top >= (containerRect.top + topMargin);
+  const isBottomVisible = elementRect.bottom <= (containerRect.bottom - bottomMargin);
+  
+  return isTopVisible && isBottomVisible;
+}
+
+/**
  * Smoothly scroll an element to a target position using native smooth behavior
  * @param {HTMLElement} element - The element to scroll
  * @param {number} targetScroll - The target scroll position
@@ -80,6 +103,12 @@ function patchSidetocScrolling() {
         return originalScrollTop.get.call(this);
       },
       set: function(value) {
+        // Check if active item is already visible before scrolling
+        const activeItem = this.querySelector('.nav > li.active');
+        if (activeItem && isElementVisible(activeItem, this)) {
+          // Already visible, don't scroll
+          return;
+        }
         // Use smooth scrolling instead of instant
         smoothScrollTo(this, value);
       },
@@ -93,7 +122,19 @@ function patchSidetocScrolling() {
  */
 function optimizeActiveStateChanges() {
   // Use MutationObserver to batch class changes
+  let isUpdating = false;
+  const sidetoc = document.querySelector('.sidetoc');
+  
   const observer = new MutationObserver(debounce((mutations) => {
+    if (isUpdating) return;
+    
+    isUpdating = true;
+    
+    // Temporarily set opacity to prevent flicker during class changes
+    if (sidetoc) {
+      sidetoc.style.opacity = '0.5';
+    }
+    
     batchUpdate(() => {
       // Process mutations in batches
       mutations.forEach(mutation => {
@@ -105,6 +146,14 @@ function optimizeActiveStateChanges() {
           }
         }
       });
+      
+      // Restore opacity after a brief delay
+      setTimeout(() => {
+        if (sidetoc) {
+          sidetoc.style.opacity = '';
+        }
+        isUpdating = false;
+      }, 50);
     });
   }, 16)); // Debounce to next frame
 

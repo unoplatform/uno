@@ -18,3 +18,63 @@
     }
   }
 }
+
+// DocFX alert blocks (NOTE, IMPORTANT, TIP, WARNING, CAUTION)
+.NOTE,
+.TIP {
+  background-color: #e7f3ff;
+  border-left: 4px solid $blue;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 4px;
+  
+  > h5 {
+    color: $blue;
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  > p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.IMPORTANT,
+.WARNING {
+  background-color: #fff4e6;
+  border-left: 4px solid $orange;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 4px;
+  
+  > h5 {
+    color: darken($orange, 10%);
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  > p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.CAUTION {
+  background-color: #ffe6e6;
+  border-left: 4px solid $red;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 4px;
+  
+  > h5 {
+    color: $red;
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  > p:last-child {
+    margin-bottom: 0;
+  }
+}
