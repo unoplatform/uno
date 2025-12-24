@@ -642,6 +642,12 @@ partial class TimePickerFlyoutPresenter
 			var dateTime = _tpCalendar.GetDateTime();
 			var strHour = spFormatter.Format(dateTime);
 
+			// In 12-hour clock, hour 0 should display as 12
+			if (_is12HourClock && strHour == $"{TIMEPICKER_COERCION_INDEX}")
+			{
+				strHour = $"{_periodCoercionOffset}";
+			}
+
 			spItem.PrimaryText = strHour;
 
 			_tpHourSource.Add(spItem);
