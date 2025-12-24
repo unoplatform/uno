@@ -1,5 +1,3 @@
-#nullable enable
-#if __SKIA__
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,22 +8,23 @@ using SkiaSharp;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
-internal class FontFallbackService
+internal class Win32FontFallbackService : IFontFallbackService
 {
 	private const string FontsDir = @"C:\Users\RamezRagaa\Downloads\fonts";
 	private readonly List<(string fontName, SKTypeface typeface)> _fonts;
 
-	public static FontFallbackService Instance { get; } = new FontFallbackService();
+	public static Win32FontFallbackService Instance { get; } = new Win32FontFallbackService();
 
-	private FontFallbackService()
+	private Win32FontFallbackService()
 	{
 		_fonts = Directory.EnumerateFiles(FontsDir)
 			.Select(f => (Path.GetFileName(f), SKTypeface.FromStream(new MemoryStream(File.ReadAllBytes(f)))))
 			.ToList();
 	}
 
-	public string? GetFontNameForCodePoint(int codepoint)
+	public async Task<string?> GetFontNameForCodePoint(int codepoint)
 	{
+		await Task.CompletedTask;
 		foreach (var (fontName, typeface) in _fonts)
 		{
 			if (typeface.ContainsGlyph(codepoint))
@@ -47,4 +46,3 @@ internal class FontFallbackService
 		return tcs.Task;
 	}
 }
-#endif

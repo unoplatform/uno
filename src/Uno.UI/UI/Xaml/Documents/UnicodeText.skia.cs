@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
@@ -15,6 +16,7 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
@@ -97,6 +99,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
+	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(UnicodeText), out var service) ? service : null;
 	private static readonly SKPaint _spareDrawPaint = new();
 
 	private readonly Size _size;
@@ -323,21 +326,20 @@ internal readonly partial struct UnicodeText : IParsedText
 			return symbolsFont;
 		}
 
-		// TODO: move this to FontFallbackService
-		if (OperatingSystem.IsAndroid())
+		if (_fontFallbackService is not null)
 		{
-			foreach (var file in Directory.EnumerateFiles("/system/fonts"))
+			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodePoint(codepoint);
+			if (fallbackServiceTask.IsCompleted)
 			{
-				if (FontDetailsCache.GetFontOrDefault(file, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var font) && font.SKFont.ContainsGlyph(codepoint))
+				if (fallbackServiceTask is { IsCompletedSuccessfully: true, Result: { } fallbackFontName } && FontDetailsCache.GetFontOrDefault(fallbackFontName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))
 				{
-					return font;
+					return fallbackFont;
 				}
 			}
-		}
-
-		if (FontFallbackService.Instance.GetFontNameForCodePoint(codepoint) is { } fallbackFontName && FontDetailsCache.GetFontOrDefault(fallbackFontName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))
-		{
-			return fallbackFont;
+			else
+			{
+				fallbackServiceTask.ContinueWith(_ => onFontCacheUpdate(), TaskScheduler.FromCurrentSynchronizationContext());
+			}
 		}
 
 		if (SKFontManager.Default.MatchCharacter(codepoint) is { } typeface)

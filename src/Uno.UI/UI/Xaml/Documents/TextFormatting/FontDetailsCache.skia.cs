@@ -12,6 +12,7 @@ using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
+using Uno.Foundation.Extensibility;
 using Uno.Helpers;
 using SKFontStyleWidth = SkiaSharp.SKFontStyleWidth;
 
@@ -33,6 +34,7 @@ internal static class FontDetailsCache
 
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
+	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(UnicodeText), out var service) ? service : null;
 
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
@@ -94,7 +96,7 @@ internal static class FontDetailsCache
 		}
 		else
 		{
-			if (await FontFallbackService.Instance.GetTypefaceForFontName(name, weight, stretch, style) is { } typeface)
+			if (_fontFallbackService is not null && await _fontFallbackService.GetTypefaceForFontName(name, weight, stretch, style) is { } typeface)
 			{
 				return typeface;
 			}
