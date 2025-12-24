@@ -64,6 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 			timePicker.UseNativeStyle = false;
 #endif
+			timePicker.ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour;
 			// Set time to midnight (0:00) or noon (12:00)
 			timePicker.Time = new TimeSpan(0, 0, 0);
 			TestServices.WindowHelper.WindowContent = timePicker;
@@ -87,8 +88,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var firstItem = items[0] as DatePickerFlyoutItem;
 			Assert.IsNotNull(firstItem, "First item should be a DatePickerFlyoutItem");
 
-			// In 12-hour clock, the first hour should display as "12" not "0"
-			Assert.AreEqual("12", firstItem.PrimaryText, "First hour in 12-hour clock should display as 12");
+			// In 12-hour clock, the first hour should represent 12 (not 0), regardless of formatting or digit shapes
+			Assert.IsTrue(int.TryParse(firstItem.PrimaryText, out var firstHourValue), "First hour text should be a valid integer");
+			Assert.AreEqual(12, firstHourValue, "First hour in 12-hour clock should represent 12");
 		}
 
 		[TestMethod]
