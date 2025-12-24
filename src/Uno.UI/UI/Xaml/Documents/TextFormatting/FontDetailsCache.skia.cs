@@ -72,7 +72,7 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static Task<SKTypeface?> GetFontInternal(
+	private static async Task<SKTypeface?> GetFontInternal(
 		string name,
 		FontWeight weight,
 		FontStretch stretch,
@@ -90,12 +90,16 @@ internal static class FontDetailsCache
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
-			return LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
 		else
 		{
+			if (await FontFallbackService.Instance.GetTypefaceForFontName(name, weight, stretch, style) is { } typeface)
+			{
+				return typeface;
+			}
 			// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-			return Task.FromResult<SKTypeface?>(SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant));
+			return SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
 		}
 	}
 

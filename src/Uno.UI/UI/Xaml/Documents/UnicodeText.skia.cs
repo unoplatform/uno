@@ -323,6 +323,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			return symbolsFont;
 		}
 
+		// TODO: move this to FontFallbackService
 		if (OperatingSystem.IsAndroid())
 		{
 			foreach (var file in Directory.EnumerateFiles("/system/fonts"))
@@ -334,10 +335,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		var typeface = SKFontManager.Default.MatchCharacter(codepoint);
-		if (typeface is not null && FontDetailsCache.GetFontOrDefault(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var defaultFont))
+		if (FontFallbackService.Instance.GetFontNameForCodePoint(codepoint) is { } fallbackFontName && FontDetailsCache.GetFontOrDefault(fallbackFontName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))
 		{
-			return defaultFont;
+			return fallbackFont;
+		}
+
+		if (SKFontManager.Default.MatchCharacter(codepoint) is { } typeface)
+		{
+			return FontDetails.Create(typeface, fontSize);
 		}
 
 		return null;
