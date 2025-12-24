@@ -318,12 +318,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, Action onFontCacheUpdate)
 	{
-		var (symbolsFont, symbolsFontTask) = FontDetailsCache.GetFont(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle);
-		if (!symbolsFontTask.IsCompleted)
-		{
-			symbolsFontTask.ContinueWith(_ => onFontCacheUpdate());
-		}
-		if (symbolsFont.SKFont.ContainsGlyph(codepoint))
+		if (FontDetailsCache.GetFontOrDefault(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var symbolsFont) && symbolsFont.SKFont.ContainsGlyph(codepoint))
 		{
 			return symbolsFont;
 		}
@@ -332,12 +327,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			foreach (var file in Directory.EnumerateFiles("/system/fonts"))
 			{
-				var (font, fontTask) = FontDetailsCache.GetFont(file, fontSize, fontWeight, fontStretch, fontStyle);
-				if (!symbolsFontTask.IsCompleted)
-				{
-					fontTask.ContinueWith(_ => onFontCacheUpdate());
-				}
-				if (font.SKFont.ContainsGlyph(codepoint))
+				if (FontDetailsCache.GetFontOrDefault(file, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var font) && font.SKFont.ContainsGlyph(codepoint))
 				{
 					return font;
 				}
@@ -345,19 +335,12 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		var typeface = SKFontManager.Default.MatchCharacter(codepoint);
-		if (typeface is not null)
+		if (typeface is not null && FontDetailsCache.GetFontOrDefault(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var defaultFont))
 		{
-			var (defaultFont, defaultFontTask) = FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle);
-			if (!defaultFontTask.IsCompleted)
-			{
-				defaultFontTask.ContinueWith(_ => onFontCacheUpdate());
-			}
 			return defaultFont;
 		}
-		else
-		{
-			return null;
-		}
+
+		return null;
 	}
 
 	private static IEnumerable<(ReadonlyInlineCopy Inline, int startInInline, int endInInline)> GroupByInline(List<BidiRun> line)
