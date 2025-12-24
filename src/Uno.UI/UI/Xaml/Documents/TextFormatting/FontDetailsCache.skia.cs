@@ -175,4 +175,24 @@ internal static class FontDetailsCache
 		FontWeight weight,
 		FontStretch stretch,
 		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
+
+	public static bool GetFontOrDefault(
+		string? name,
+		float fontSize,
+		FontWeight weight,
+		FontStretch stretch,
+		FontStyle style,
+		Action onFontLoaded,
+		out FontDetails fontDetails)
+	{
+		var (tempFont, task) = GetFont(name, fontSize, weight, stretch, style);
+		if (!task.IsCompleted)
+		{
+			_ = task.ContinueWith(_ => onFontLoaded(), TaskScheduler.FromCurrentSynchronizationContext());
+		}
+
+		var completedSuccessfully = task.IsCompletedSuccessfully;
+		fontDetails = completedSuccessfully ? task.Result : tempFont;
+		return completedSuccessfully;
+	}
 }
