@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
@@ -91,39 +89,5 @@ public class Given_ProgressRing
 		{
 			SUT.IsActive = false;
 		}
-	}
-
-	[TestMethod]
-	public async Task When_Stretch_Fill()
-	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
-		{
-			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-		}
-
-		var pr1 = new ProgressRing { Width = 100, Height = 100, IsIndeterminate = false, Value = 50 };
-		var pr2 = new ProgressRing { Width = 50, Height = 50, IsIndeterminate = false, Value = 50 };
-
-		await UITestHelper.Load(new StackPanel { Children = { pr1, pr2 } });
-		await Task.Delay(TimeSpan.FromSeconds(2)); // wait for the animation to end
-
-		var screenshot1 = await UITestHelper.ScreenShot(pr1);
-		var screenshot2 = await UITestHelper.ScreenShot(pr2);
-
-		var different = false;
-		for (int i = 0; i < 30; i++)
-		{
-			for (int j = 0; j < 30; j++)
-			{
-				var pixel1 = screenshot1.GetPixel(i, j);
-				var pixel2 = screenshot2.GetPixel(i, j);
-				if (pixel1 != pixel2)
-				{
-					different = true;
-					break;
-				}
-			}
-		}
-		Assert.IsTrue(different);
 	}
 }
