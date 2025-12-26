@@ -181,6 +181,16 @@
 			Encoding="Unicode"/>
 	</Target>
 
+	<Target Name="_UnoGetDevServerConfig">
+		<Message Text="UnoVersion=$(UnoVersion)" Importance="High" />
+		<WriteLinesToFile
+			Condition="$(UnoDumpDevServerConfigTargetFile) != ''"
+			File="$(UnoDumpDevServerConfigTargetFile)"
+			Lines="UnoVersion=$(UnoVersion)"
+			Overwrite="true"
+			Encoding="Unicode"/>
+	</Target>
+
 	<Import Project="Uno.SingleProject.VS.Build.targets"
 			Condition=" '$(UnoSingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
 
