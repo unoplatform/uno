@@ -1,4 +1,3 @@
-#if __ANDROID__ || __UNO_SKIA_ANDROID__
 #nullable enable
 
 using Android.Webkit;
@@ -25,4 +24,3 @@ internal class WebResourceInterceptingClient : InternalClient
 		return response ?? base.ShouldInterceptRequest(view, request);
 	}
 }
-#endif

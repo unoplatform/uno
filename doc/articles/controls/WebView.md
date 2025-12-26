@@ -186,6 +186,94 @@ In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `l
 
 It's overall preferable to use libwebkit2gtk 4.1 whenever possible in order to get http headers support, if your environment allows for it.
 
+## WebResourceRequested
+
+The `WebResourceRequested` event allows you to intercept and modify HTTP requests made by the WebView. This is useful for scenarios like injecting custom headers, implementing authentication, or modifying request/response content.
+
+### Basic usage
+
+To use `WebResourceRequested`, you must first add a filter specifying which URLs should trigger the event, then subscribe to the event:
+
+```csharp
+await webView.EnsureCoreWebView2Async();
+
+// Add a filter for all requests
+webView.CoreWebView2.AddWebResourceRequestedFilter(
+    "*", 
+    CoreWebView2WebResourceContext.All,
+    CoreWebView2WebResourceRequestSourceKinds.All);
+
+// Subscribe to the event
+webView.CoreWebView2.WebResourceRequested += (sender, args) =>
+{
+    // Access request information
+    var uri = args.Request.Uri;
+    var method = args.Request.Method;
+    
+    // Modify headers
+    args.Request.Headers.SetHeader("Authorization", "Bearer my-token");
+    args.Request.Headers.SetHeader("X-Custom-Header", "custom-value");
+    
+    // Optionally provide a custom response
+    // args.Response = new CoreWebView2WebResourceResponse(...);
+};
+```
+
+### Filter parameters
+
+The `AddWebResourceRequestedFilter` method accepts three parameters:
+
+- **uri**: A URI pattern with wildcard support (e.g., `"*"` for all URLs, `"https://api.example.com/*"` for specific domains)
+- **resourceContext**: The type of resource to filter (`All`, `Document`, `Image`, `Script`, etc.)
+- **requestSourceKinds**: The source of requests to filter (`All`, `Document`, etc.)
+
+### Platform limitations
+
+> [!IMPORTANT]
+> `WebResourceRequested` has significant platform-specific limitations. Review the table below to understand what is supported on each platform.
+
+| Platform | Support Level | Header Read | Header Modify | Custom Response | Notes |
+|----------|--------------|-------------|---------------|-----------------|-------|
+| **Windows (Win32/WinAppSDK)** | ✅ Full | ✅ | ✅ | ✅ | Full WebView2 support |
+| **Android** | ⚠️ Partial | ✅ | ⚠️ | ✅ | Header modification requires re-fetching the resource with HttpClient. Session cookies are automatically synchronized. POST request bodies cannot be reliably re-fetched. |
+| **iOS** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Navigation request headers cannot be modified. However, JavaScript-initiated requests (`fetch`/`XMLHttpRequest`) support custom header injection. Only fires for main document navigation, not sub-resources. |
+| **macOS** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Header injection is supported for new requests only. Cannot modify existing request headers. |
+| **WebAssembly** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Only `fetch`/`XMLHttpRequest` requests can be intercepted. Standard HTML elements (`img`, `script`, `link`, etc.) cannot have headers modified. Same-origin policy and CORS restrictions apply. May miss requests made during initial page load. |
+| **Linux (X11)** | ❌ None | ❌ | ❌ | ❌ | Not implemented. |
+
+### Platform-specific behavior
+
+#### iOS/macOS (WKWebView)
+
+The implementation uses two mechanisms:
+1. **Navigation interception**: Fires `WebResourceRequested` for main document navigation (read-only headers)
+2. **JavaScript injection**: Automatically injects a script that overrides `window.fetch()` and `XMLHttpRequest.prototype` to apply custom headers to AJAX requests
+
+This means you can inject authentication tokens into API calls made via JavaScript:
+```csharp
+webView.CoreWebView2.WebResourceRequested += (sender, args) =>
+{
+    // This will be applied to fetch() and XMLHttpRequest calls
+    args.Request.Headers.SetHeader("Authorization", "Bearer my-token");
+};
+```
+
+#### Android
+
+When headers are modified, the resource is re-fetched using `HttpClient`. The implementation includes:
+- **Cookie synchronization**: Session cookies from the WebView are automatically included in re-fetched requests
+- **Set-Cookie handling**: Response cookies are synchronized back to the WebView's `CookieManager`
+
+This ensures authenticated sessions work correctly when using `WebResourceRequested`.
+
+#### WebAssembly
+
+For HTML element requests that cannot be intercepted:
+- Use Service Workers for more comprehensive request interception
+- Proxy requests through your server
+- Use JavaScript-based loading for resources that need custom headers
+
+
 ## WinAppSDK Specifics
 
 When using the WebView2 and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:

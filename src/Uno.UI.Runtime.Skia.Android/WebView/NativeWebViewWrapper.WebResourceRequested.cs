@@ -1,6 +1,6 @@
-#if __ANDROID__ || __UNO_SKIA_ANDROID__
 #nullable enable
 
+#if ANDROID_SKIA
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,17 +9,18 @@ using System.Net.Http;
 using Android.Webkit;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Android.WebView.Adapters;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
-/// Partial class extension for NativeWebViewWrapper to implement ISupportsWebResourceRequested on Android.
+/// Partial class extension for NativeWebViewWrapper to implement ISupportsWebResourceRequested on Skia Android.
 /// </summary>
 internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 {
 	private readonly List<WebResourceFilter> _webResourceFilters = new();
-	private WebResourceInterceptingClient? _interceptingClient;
+	private WebResourceInterceptingClientSkia? _interceptingClient;
 	private static readonly Lazy<HttpClient> _refetchClient = new(CreateRefetchClient);
 
 	public event EventHandler<CoreWebView2WebResourceRequestedEventArgs>? WebResourceRequested;
@@ -50,14 +51,14 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 
 		if (_interceptingClient == null)
 		{
-			_interceptingClient = new WebResourceInterceptingClient(_coreWebView, this);
+			_interceptingClient = new WebResourceInterceptingClientSkia(_coreWebView, this);
 		}
 
 		_webView.SetWebViewClient(_interceptingClient);
 	}
 
 	/// <summary>
-	/// Called by WebResourceInterceptingClient when a request is intercepted.
+	/// Called by WebResourceInterceptingClientSkia when a request is intercepted.
 	/// </summary>
 	internal WebResourceResponse? OnWebResourceRequested(IWebResourceRequest? request)
 	{
@@ -80,7 +81,12 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 			return null;
 		}
 
-		var args = new CoreWebView2WebResourceRequestedEventArgs(request, resourceContext);
+		// Create an adapter that mimics the native WebView2 event args API
+		var adapter = new WebResourceRequestedEventArgsAdapter(request, resourceContext, sourceKind);
+
+		// Create the Skia CoreWebView2WebResourceRequestedEventArgs using the adapter
+		// The Skia implementation uses dynamic, so it will access properties on our adapter
+		var args = new CoreWebView2WebResourceRequestedEventArgs(adapter);
 
 		try
 		{
@@ -95,30 +101,31 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 			return null;
 		}
 
-		var nativeResponse = args.GetNativeResponse();
+		// Check if custom response was set via the adapter
+		var nativeResponse = adapter.GetNativeResponse();
 		if (nativeResponse != null)
 		{
 			return nativeResponse;
 		}
 
-		if (!args.RequiresRefetch)
+		if (!adapter.RequiresRefetch)
 		{
 			return null;
 		}
 
-		var effectiveHeaders = args.GetEffectiveHeaders();
+		var effectiveHeaders = adapter.GetEffectiveHeaders();
 		if (effectiveHeaders == null)
 		{
 			return null;
 		}
 
-		var method = args.Request.Method;
+		var method = adapter.Request.Method;
 		if (string.IsNullOrWhiteSpace(method))
 		{
 			method = request.Method ?? "GET";
 		}
 
-		var refetchUrl = args.Request.Uri;
+		var refetchUrl = adapter.Request.Uri;
 		if (string.IsNullOrWhiteSpace(refetchUrl))
 		{
 			refetchUrl = url;
