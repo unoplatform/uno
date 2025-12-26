@@ -18,17 +18,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Partial class extension for NativeWebView to implement ISupportsWebResourceRequested on WASM.
-/// 
-/// WASM IMPLEMENTATION:
-/// ====================
-/// Uses JavaScript injection to override window.fetch and XMLHttpRequest.prototype
-/// to intercept JavaScript-initiated requests and inject custom headers.
-/// 
-/// LIMITATIONS:
-/// - Only fetch/XMLHttpRequest requests are intercepted
-/// - HTML elements (img, script, link, etc.) are NOT intercepted  
-/// - Same-origin policy applies
-/// - Cross-origin iframes cannot be controlled
 /// </summary>
 internal partial class NativeWebView : ISupportsWebResourceRequested
 {

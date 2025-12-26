@@ -1,40 +1,69 @@
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 #nullable enable
 
 using System;
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
 using System.Collections.Generic;
 using System.IO;
-#if __ANDROID__
+#endif
+#if __ANDROID__ || ANDROID_SKIA
 using Android.Webkit;
+#endif
+#if __SKIA__
+using Windows.Storage.Streams;
 #endif
 
 namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
-/// Shared implementation of WebResourceResponse.
+/// Represents a custom response for the WebResourceRequested event.
 /// </summary>
 public partial class CoreWebView2WebResourceResponse
 {
+#if __SKIA__
+	private readonly dynamic _nativeResponse;
+	private CoreWebView2HttpResponseHeaders? _headers;
+
+	internal CoreWebView2WebResourceResponse(object nativeResponse)
+	{
+		_nativeResponse = nativeResponse ?? throw new ArgumentNullException(nameof(nativeResponse));
+	}
+
+	internal dynamic NativeResponse => _nativeResponse;
+
+	public IRandomAccessStream Content
+	{
+		get => _nativeResponse.Content;
+		set => _nativeResponse.Content = value;
+	}
+
+	public CoreWebView2HttpResponseHeaders Headers
+		=> _headers ??= new CoreWebView2HttpResponseHeaders(_nativeResponse.Headers);
+
+	public int StatusCode
+	{
+		get => _nativeResponse.StatusCode;
+		set => _nativeResponse.StatusCode = value;
+	}
+
+	public string ReasonPhrase
+	{
+		get => _nativeResponse.ReasonPhrase;
+		set => _nativeResponse.ReasonPhrase = value;
+	}
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
 	private CoreWebView2HttpResponseHeaders? _headers;
 	private int _statusCode = 200;
 	private string _reasonPhrase = "OK";
-#if __ANDROID__
 	private global::Windows.Storage.Streams.IRandomAccessStream? _content;
 	private const string DefaultMimeType = "text/html";
 	private const string DefaultEncoding = "UTF-8";
-#endif
 
 	internal CoreWebView2WebResourceResponse() { }
 
 	public global::Windows.Storage.Streams.IRandomAccessStream Content
 	{
-#if __ANDROID__
 		get => _content ?? throw new InvalidOperationException("Content has not been set.");
 		set => _content = value;
-#else
-		get => throw new NotSupportedException("Custom responses are not supported on this platform.");
-		set { /* Ignored */ }
-#endif
 	}
 
 	public CoreWebView2HttpResponseHeaders Headers
@@ -52,7 +81,7 @@ public partial class CoreWebView2WebResourceResponse
 		set => _reasonPhrase = value ?? "OK";
 	}
 
-#if __ANDROID__
+#if __ANDROID__ || ANDROID_SKIA
 	/// <summary>
 	/// Creates a native Android WebResourceResponse from this response.
 	/// </summary>
@@ -134,5 +163,5 @@ public partial class CoreWebView2WebResourceResponse
 		return (mimeType, encoding);
 	}
 #endif
-}
 #endif
+}

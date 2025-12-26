@@ -3,35 +3,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.Web.WebView2.Core;
+using Uno.Foundation.Logging;
 using WebKit;
 
 namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
 /// Partial class extension for UnoWKWebView to implement ISupportsWebResourceRequested.
-/// 
-/// WKWEBVIEW LIMITATIONS:
-/// ======================
-/// 1. NAVIGATION ACTIONS ONLY:
-///    WKNavigationDelegate only intercepts main document navigation,
-///    not sub-resource requests (images, scripts, CSS, etc.).
-///    
-/// 2. HEADER MODIFICATION NOT POSSIBLE:
-///    WKWebView does not allow modifying request headers.
-///    Header modifications are tracked but NOT applied.
-///    
-/// 3. NO CUSTOM RESPONSES:
-///    Cannot provide custom response content.
-///    
-/// This implementation is provided for API compatibility and allows:
-/// - Reading request information
-/// - Logging/tracking requests
-/// - Fire events for navigation actions
 /// </summary>
 internal partial class UnoWKWebView : ISupportsWebResourceRequested
 {
 	private readonly List<WebResourceFilter> _webResourceFilters = new();
+	private readonly Dictionary<string, string> _customHeaders = new(StringComparer.OrdinalIgnoreCase);
+	private bool _interceptorInjected;
 
 	public event EventHandler<CoreWebView2WebResourceRequestedEventArgs>? WebResourceRequested;
 
@@ -41,6 +27,11 @@ internal partial class UnoWKWebView : ISupportsWebResourceRequested
 		CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
 	{
 		_webResourceFilters.Add(new WebResourceFilter(uri, resourceContext, requestSourceKinds));
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"WebResourceRequested filter added: {uri}");
+		}
 	}
 
 	public void RemoveWebResourceRequestedFilter(
@@ -86,8 +77,18 @@ internal partial class UnoWKWebView : ISupportsWebResourceRequested
 		var args = new CoreWebView2WebResourceRequestedEventArgs(request, resourceContext);
 		WebResourceRequested?.Invoke(this, args);
 
-		// Note: On iOS/macOS, we cannot actually apply header modifications or custom responses
-		// The event is fired for API compatibility and logging purposes
+		// Track header modifications for JavaScript injection
+		if (args.HasHeaderModifications)
+		{
+			var effectiveHeaders = args.GetEffectiveHeaders();
+			if (effectiveHeaders != null)
+			{
+				UpdateCustomHeaders(effectiveHeaders);
+			}
+		}
+
+		// Note: On iOS/macOS, we cannot actually apply header modifications to navigation requests
+		// However, we can inject headers into JavaScript-initiated requests via the interceptor
 	}
 
 	private bool MatchesAnyFilter(string url, CoreWebView2WebResourceContext resourceContext)
@@ -101,5 +102,174 @@ internal partial class UnoWKWebView : ISupportsWebResourceRequested
 		}
 		return false;
 	}
+
+	/// <summary>
+	/// Injects the JavaScript interceptor that overrides fetch and XMLHttpRequest
+	/// to allow custom header injection into AJAX requests.
+	/// </summary>
+	internal void InjectWebResourceInterceptor()
+	{
+		if (_interceptorInjected || _webResourceFilters.Count == 0)
+		{
+			return;
+		}
+
+		try
+		{
+			var script = GetInterceptorScript();
+			EvaluateJavaScript(script, (result, error) =>
+			{
+				if (error != null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"Failed to inject WebResourceRequested interceptor: {error.LocalizedDescription}");
+					}
+				}
+				else
+				{
+					_interceptorInjected = true;
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("WebResourceRequested JavaScript interceptor injected successfully");
+					}
+
+					// If we already have custom headers, sync them now
+					if (_customHeaders.Count > 0)
+					{
+						SyncCustomHeadersToJavaScript();
+					}
+				}
+			});
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Failed to inject WebResourceRequested interceptor: {ex.Message}");
+			}
+		}
+	}
+
+	/// <summary>
+	/// Updates the custom headers that will be injected into AJAX requests.
+	/// </summary>
+	private void UpdateCustomHeaders(IDictionary<string, string> headers)
+	{
+		_customHeaders.Clear();
+		foreach (var kvp in headers)
+		{
+			_customHeaders[kvp.Key] = kvp.Value;
+		}
+
+		if (_interceptorInjected)
+		{
+			SyncCustomHeadersToJavaScript();
+		}
+	}
+
+	/// <summary>
+	/// Syncs the custom headers to the JavaScript context.
+	/// </summary>
+	private void SyncCustomHeadersToJavaScript()
+	{
+		try
+		{
+			var headersJson = JsonSerializer.Serialize(_customHeaders);
+			var script = $"if(window.__unoSetHeaders){{window.__unoSetHeaders({headersJson});}}";
+			EvaluateJavaScript(script, (result, error) =>
+			{
+				if (error != null && this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Failed to sync headers to JavaScript: {error.LocalizedDescription}");
+				}
+			});
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Failed to sync headers to JavaScript: {ex.Message}");
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets the JavaScript code that will intercept fetch and XMLHttpRequest.
+	/// </summary>
+	private static string GetInterceptorScript()
+	{
+		// This script overrides fetch and XMLHttpRequest to allow header injection
+		return @"
+(function() {
+    if (window.__unoWebResourceInterceptorInstalled) return;
+    window.__unoWebResourceInterceptorInstalled = true;
+
+    // Store custom headers to inject
+    window.__unoCustomHeaders = {};
+
+    // Set headers from C#
+    window.__unoSetHeaders = function(headers) {
+        window.__unoCustomHeaders = headers || {};
+    };
+
+    // Override fetch
+    const originalFetch = window.fetch;
+    window.fetch = function(input, init) {
+        init = init || {};
+        
+        // Handle Headers object or plain object
+        let headers;
+        if (init.headers instanceof Headers) {
+            headers = init.headers;
+        } else {
+            headers = new Headers(init.headers || {});
+        }
+        
+        // Apply custom headers
+        for (const [key, value] of Object.entries(window.__unoCustomHeaders)) {
+            if (value) {
+                headers.set(key, value);
+            }
+        }
+        
+        init.headers = headers;
+        return originalFetch.call(this, input, init);
+    };
+
+    // Override XMLHttpRequest
+    const originalOpen = XMLHttpRequest.prototype.open;
+    const originalSend = XMLHttpRequest.prototype.send;
+    
+    XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+        this.__unoUrl = url;
+        this.__unoMethod = method;
+        this.__unoHeadersApplied = false;
+        return originalOpen.apply(this, arguments);
+    };
+    
+    XMLHttpRequest.prototype.send = function(body) {
+        // Apply custom headers before send (only once)
+        if (!this.__unoHeadersApplied) {
+            this.__unoHeadersApplied = true;
+            for (const [key, value] of Object.entries(window.__unoCustomHeaders)) {
+                if (value) {
+                    try {
+                        this.setRequestHeader(key, value);
+                    } catch (e) {
+                        // Some headers cannot be set (e.g., restricted headers)
+                        console.warn('Uno WebResourceRequested: Could not set header ' + key + ': ' + e.message);
+                    }
+                }
+            }
+        }
+        return originalSend.call(this, body);
+    };
+    
+    console.log('Uno WebResourceRequested JavaScript interceptor installed');
+})();
+";
+	}
 }
 #endif
+
