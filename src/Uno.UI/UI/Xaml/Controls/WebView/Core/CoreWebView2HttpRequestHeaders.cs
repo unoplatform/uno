@@ -1,31 +1,98 @@
-#if __WASM__
 #nullable enable
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+#if __IOS__ || __MACOS__
+using Foundation;
+#endif
 
 namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
-/// WASM implementation of HTTP request headers for WebResourceRequested.
-/// 
-/// WASM LIMITATIONS:
-/// =================
-/// Headers can only be modified for JavaScript-initiated requests (fetch/XMLHttpRequest).
-/// Standard HTML elements (img, script, link, etc.) cannot have headers modified.
+/// HTTP request headers for WebResourceRequested event.
 /// </summary>
 public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<string, string>>
 {
+#if __SKIA__
+	private readonly dynamic _nativeHeaders;
+
+	internal CoreWebView2HttpRequestHeaders(object nativeHeaders)
+	{
+		_nativeHeaders = nativeHeaders ?? throw new ArgumentNullException(nameof(nativeHeaders));
+	}
+
+	internal dynamic NativeHeaders => _nativeHeaders;
+
+	public virtual string GetHeader(string name) => _nativeHeaders.GetHeader(name);
+
+	public CoreWebView2HttpHeadersCollectionIterator GetHeaders(string name)
+		=> new CoreWebView2HttpHeadersCollectionIterator(_nativeHeaders.GetHeaders(name));
+
+	public virtual bool Contains(string name) => _nativeHeaders.Contains(name);
+
+	public virtual void SetHeader(string name, string value) => _nativeHeaders.SetHeader(name, value);
+
+	public virtual void RemoveHeader(string name) => _nativeHeaders.RemoveHeader(name);
+
+	public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+	{
+		if (_nativeHeaders is IEnumerable enumerable)
+		{
+			foreach (var item in enumerable)
+			{
+				yield return ConvertToKeyValuePair(item);
+			}
+		}
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	private static KeyValuePair<string, string> ConvertToKeyValuePair(object item)
+	{
+		return item switch
+		{
+			KeyValuePair<string, string> pair => pair,
+			_ => new KeyValuePair<string, string>(
+				(string)item.GetType().GetProperty("Key")!.GetValue(item)!,
+				(string)item.GetType().GetProperty("Value")!.GetValue(item)!)
+		};
+	}
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
 	private readonly Dictionary<string, string> _originalHeaders;
 	private readonly Dictionary<string, string> _addedHeaders = new(StringComparer.OrdinalIgnoreCase);
 	private readonly HashSet<string> _removedHeaders = new(StringComparer.OrdinalIgnoreCase);
 
+#if __ANDROID__ || ANDROID_SKIA
 	internal CoreWebView2HttpRequestHeaders(IDictionary<string, string>? headers = null)
 	{
 		_originalHeaders = headers != null
 			? new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase)
 			: new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 	}
+#elif __IOS__ || __MACOS__
+	internal CoreWebView2HttpRequestHeaders(NSDictionary? nativeHeaders = null)
+	{
+		_originalHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+		
+		if (nativeHeaders != null)
+		{
+			foreach (var key in nativeHeaders.Keys)
+			{
+				var keyStr = key.ToString();
+				var valueStr = nativeHeaders[key]?.ToString() ?? string.Empty;
+				_originalHeaders[keyStr] = valueStr;
+			}
+		}
+	}
+#elif __WASM__
+	internal CoreWebView2HttpRequestHeaders(IDictionary<string, string>? headers = null)
+	{
+		_originalHeaders = headers != null
+			? new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase)
+			: new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+	}
+#endif
 
 	/// <summary>
 	/// Indicates whether headers have been modified.
@@ -39,6 +106,7 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 	{
 		var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+		// Start with original headers
 		foreach (var kvp in _originalHeaders)
 		{
 			if (!_removedHeaders.Contains(kvp.Key))
@@ -47,6 +115,7 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 			}
 		}
 
+		// Apply added/modified headers
 		foreach (var kvp in _addedHeaders)
 		{
 			result[kvp.Key] = kvp.Value;
@@ -90,7 +159,6 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 
 	/// <summary>
 	/// Sets or adds a header.
-	/// On WASM, this applies to fetch/XMLHttpRequest requests only.
 	/// </summary>
 	public void SetHeader(string name, string value)
 	{
@@ -100,7 +168,6 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 
 	/// <summary>
 	/// Removes a header.
-	/// On WASM, this applies to fetch/XMLHttpRequest requests only.
 	/// </summary>
 	public void RemoveHeader(string name)
 	{
@@ -123,6 +190,6 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 		}
 	}
 
-	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-}
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 #endif
+}

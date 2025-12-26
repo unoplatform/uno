@@ -43,6 +43,8 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.cs" Link="UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\UnoTimePickerDialog.Android.cs" Link="UI\Xaml\Controls\TimePicker\UnoTimePickerDialog.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Core\WebResourceFilter.cs" Link="UI\Xaml\Controls\WebView\Core\WebResourceFilter.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Core\WebResourceContextHelper.cs" Link="UI\Xaml\Controls\WebView\Core\WebResourceContextHelper.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" />
