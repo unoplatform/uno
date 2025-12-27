@@ -421,10 +421,27 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			// This event can be raised synchronously
-			// with the ScrollViewer's ChangeView().
-			// It must be delayed to prevent incorrect re-selection of another value.
-			global::Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			// --------------------
+			// Fix for fast scrolling issue where items disappear
+			// --------------------
+			// During intermediate scroll events (fast scrolling), we need to balance immediately
+			// to ensure items remain visible. Only delay processing for final view changes
+			// to prevent incorrect re-selection.
+			if (pEventArgs.IsIntermediate)
+			{
+				// For intermediate events, balance immediately to keep items visible during fast scrolling
+				if (!_isWithinScrollChange && !_isWithinArrangeOverride)
+				{
+					Balance(false);
+				}
+			}
+			else
+			{
+				// This event can be raised synchronously
+				// with the ScrollViewer's ChangeView().
+				// It must be delayed to prevent incorrect re-selection of another value.
+				global::Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			}
 		}
 
 		void OnViewChanging(
