@@ -40,7 +40,7 @@ public partial class CoreWebView2HttpHeadersCollectionIterator : IIterator<KeyVa
 				(string)value.GetType().GetProperty("Value")!.GetValue(value)!)
 		};
 	}
-#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 	private readonly IEnumerator<KeyValuePair<string, string>> _enumerator;
 	private bool _hasCurrent;
 

@@ -1,7 +1,7 @@
 #nullable enable
 
 using System;
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 using System.Collections.Generic;
 using System.IO;
 #endif
@@ -50,13 +50,11 @@ public partial class CoreWebView2WebResourceResponse
 		get => _nativeResponse.ReasonPhrase;
 		set => _nativeResponse.ReasonPhrase = value;
 	}
-#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 	private CoreWebView2HttpResponseHeaders? _headers;
 	private int _statusCode = 200;
 	private string _reasonPhrase = "OK";
 	private global::Windows.Storage.Streams.IRandomAccessStream? _content;
-	private const string DefaultMimeType = "text/html";
-	private const string DefaultEncoding = "UTF-8";
 
 	internal CoreWebView2WebResourceResponse() { }
 
@@ -82,6 +80,9 @@ public partial class CoreWebView2WebResourceResponse
 	}
 
 #if __ANDROID__ || ANDROID_SKIA
+	private const string DefaultMimeType = "text/html";
+	private const string DefaultEncoding = "UTF-8";
+
 	/// <summary>
 	/// Creates a native Android WebResourceResponse from this response.
 	/// </summary>

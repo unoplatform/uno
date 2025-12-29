@@ -53,7 +53,7 @@ public partial class CoreWebView2HttpResponseHeaders : IEnumerable<KeyValuePair<
 				(string)item.GetType().GetProperty("Value")!.GetValue(item)!)
 		};
 	}
-#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 	private readonly Dictionary<string, List<string>> _headers = new(StringComparer.OrdinalIgnoreCase);
 
 	internal CoreWebView2HttpResponseHeaders() { }
