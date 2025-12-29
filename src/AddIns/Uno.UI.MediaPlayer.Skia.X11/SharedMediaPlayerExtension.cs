@@ -138,7 +138,11 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (Volatile.Read(ref _vlcInitialized) == 0)
 			{
-				var vlc = new LibVLC("--start-paused");
+				// Disable device discovery and network announcements to prevent permission prompts on app startup.
+				// --no-sap: Disable SAP (Session Announcement Protocol) announcements
+				// --no-zeroconf: Disable Zeroconf/Bonjour/mDNS device discovery
+				// --no-video-title-show: Don't show video title overlay
+				var vlc = new LibVLC("--start-paused", "--no-video-title-show", "--no-sap", "--no-zeroconf");
 				try
 				{
 					var mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(vlc);
@@ -174,7 +178,12 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 	{
 		if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
 		{
-			_vlc = new LibVLC("--start-paused");
+			// Disable device discovery and network announcements to prevent permission prompts on app startup.
+			// --no-sap: Disable SAP (Session Announcement Protocol) announcements
+			// --no-zeroconf: Disable Zeroconf/Bonjour/mDNS device discovery
+			// --no-video-title-show: Don't show video title overlay
+			// See: https://github.com/nicprov/uno-private/issues/396
+			_vlc = new LibVLC("--start-paused", "--no-video-title-show", "--no-sap", "--no-zeroconf");
 		}
 
 		VlcPlayer = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
