@@ -1,13 +1,13 @@
 #nullable enable
 
 using System;
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 using System.Collections.Generic;
 #endif
 using Windows.Foundation;
 #if __ANDROID__ || ANDROID_SKIA
 using Android.Webkit;
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ || UIKIT_SKIA
 using Foundation;
 #endif
 
@@ -65,7 +65,7 @@ public partial class CoreWebView2WebResourceRequestedEventArgs
 		=> (CoreWebView2WebResourceRequestSourceKinds)_nativeArgs.RequestedSourceKind;
 
 	public Deferral GetDeferral() => _nativeArgs.GetDeferral();
-#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 	private CoreWebView2WebResourceRequest? _request;
 	private CoreWebView2WebResourceResponse? _response;
 	private readonly CoreWebView2WebResourceContext _resourceContext;
@@ -101,7 +101,7 @@ public partial class CoreWebView2WebResourceRequestedEventArgs
 	internal Dictionary<string, string>? GetEffectiveHeaders()
 		=> _request?.GetEffectiveHeaders();
 
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ || UIKIT_SKIA
 	private readonly NSUrlRequest? _nativeRequest;
 
 	internal CoreWebView2WebResourceRequestedEventArgs(
@@ -168,7 +168,7 @@ public partial class CoreWebView2WebResourceRequestedEventArgs
 	public CoreWebView2WebResourceContext ResourceContext => _resourceContext;
 
 	public CoreWebView2WebResourceRequestSourceKinds RequestedSourceKind
-#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__ || UIKIT_SKIA
 		=> CoreWebView2WebResourceRequestSourceKinds.Document;
 #else
 		=> CoreWebView2WebResourceRequestSourceKinds.All;

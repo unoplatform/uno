@@ -4,16 +4,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Foundation;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
 using WebKit;
 
-namespace Uno.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Partial class extension for UnoWKWebView to implement ISupportsWebResourceRequested.
 /// </summary>
-internal partial class UnoWKWebView : ISupportsWebResourceRequested
+#if UIKIT_SKIA
+internal
+#else
+public
+#endif
+	partial class UnoWKWebView : ISupportsWebResourceRequested
 {
 	private readonly List<WebResourceFilter> _webResourceFilters = new();
 	private readonly Dictionary<string, string> _customHeaders = new(StringComparer.OrdinalIgnoreCase);
@@ -64,7 +71,7 @@ internal partial class UnoWKWebView : ISupportsWebResourceRequested
 	/// <summary>
 	/// Called to process a web resource request.
 	/// </summary>
-	private void OnWebResourceRequested(Foundation.NSUrlRequest request)
+	private void OnWebResourceRequested(NSUrlRequest request)
 	{
 		var url = request.Url?.AbsoluteString ?? string.Empty;
 		var resourceContext = WebResourceContextHelper.DetermineResourceContext(url);
@@ -171,6 +178,7 @@ internal partial class UnoWKWebView : ISupportsWebResourceRequested
 	/// <summary>
 	/// Syncs the custom headers to the JavaScript context.
 	/// </summary>
+	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Dictionary<string, string> serialization is preserved")]
 	private void SyncCustomHeadersToJavaScript()
 	{
 		try
@@ -272,4 +280,3 @@ internal partial class UnoWKWebView : ISupportsWebResourceRequested
 	}
 }
 #endif
-

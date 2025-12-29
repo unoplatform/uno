@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__ || UIKIT_SKIA
 using Foundation;
 #endif
 
@@ -58,7 +58,7 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 				(string)item.GetType().GetProperty("Value")!.GetValue(item)!)
 		};
 	}
-#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 	private readonly Dictionary<string, string> _originalHeaders;
 	private readonly Dictionary<string, string> _addedHeaders = new(StringComparer.OrdinalIgnoreCase);
 	private readonly HashSet<string> _removedHeaders = new(StringComparer.OrdinalIgnoreCase);
@@ -70,11 +70,11 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 			? new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase)
 			: new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 	}
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ || UIKIT_SKIA
 	internal CoreWebView2HttpRequestHeaders(NSDictionary? nativeHeaders = null)
 	{
 		_originalHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-		
+
 		if (nativeHeaders != null)
 		{
 			foreach (var key in nativeHeaders.Keys)
