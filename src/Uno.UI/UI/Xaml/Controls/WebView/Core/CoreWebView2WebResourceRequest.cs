@@ -1,12 +1,12 @@
 #nullable enable
 
 using System;
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 using System.Collections.Generic;
 #endif
 #if __ANDROID__ || ANDROID_SKIA
 using Android.Webkit;
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ || UIKIT_SKIA
 using Foundation;
 #elif __SKIA__
 using Windows.Storage.Streams;
@@ -50,7 +50,7 @@ public partial class CoreWebView2WebResourceRequest
 
 	public CoreWebView2HttpRequestHeaders Headers
 		=> _headers ??= new CoreWebView2HttpRequestHeaders(_nativeRequest.Headers);
-#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA
+#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
 	private CoreWebView2HttpRequestHeaders? _headers;
 	private string _uri;
 	private string _method;
@@ -78,7 +78,7 @@ public partial class CoreWebView2WebResourceRequest
 
 		_headers = new CoreWebView2HttpRequestHeaders(headers);
 	}
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ || UIKIT_SKIA
 	private readonly NSUrlRequest? _nativeRequest;
 
 	internal CoreWebView2WebResourceRequest(NSUrlRequest? nativeRequest)
@@ -114,7 +114,7 @@ public partial class CoreWebView2WebResourceRequest
 #if __ANDROID__ || ANDROID_SKIA
 		get => throw new NotSupportedException("Content stream is not available on Android WebResourceRequest.");
 		set => throw new NotSupportedException("Setting Content is not supported on Android WebResourceRequest.");
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ || UIKIT_SKIA
 		get => throw new NotSupportedException("Content stream is not available on iOS/macOS WebResourceRequest.");
 		set => throw new NotSupportedException("Setting Content is not supported on iOS/macOS WebResourceRequest.");
 #elif __WASM__
@@ -127,7 +127,7 @@ public partial class CoreWebView2WebResourceRequest
 		=> _headers ??= new CoreWebView2HttpRequestHeaders(
 #if __ANDROID__ || __WASM__ || ANDROID_SKIA
 			null
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ || UIKIT_SKIA
 			(NSDictionary?)null
 #endif
 		);
