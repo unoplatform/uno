@@ -3523,7 +3523,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	[TestProperty("Description", "Validates that all values of global::Windows.System.VirtualKey are accounted for when converting to a keyboard accelerator string representation.")]
 	public async Task VerifyAllVirtualKeysAccountedForInKeyboardAcceleratorStringRepresentations()
 	{
-		foreach (VirtualKey vk in Enum.GetValues(typeof(VirtualKey)))
+		foreach (VirtualKey vk in Enum.GetValues<VirtualKey>())
 		{
 			await TestServices.RunOnUIThread(() =>
 			{

@@ -27,11 +27,11 @@ namespace Uno.UI.Controls
 {
 	internal partial class CommandBarRenderer : Renderer<CommandBar, Toolbar>
 	{
-		private static DependencyProperty SubtitleProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "Subtitle");
-		private static DependencyProperty NavigationCommandProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "NavigationCommand");
-		private static DependencyProperty BackButtonVisibilityProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonVisibility");
-		private static DependencyProperty BackButtonForegroundProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonForeground");
-		private static DependencyProperty BackButtonIconProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonIcon");
+		private static DependencyProperty SubtitleProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "Subtitle");
+		private static DependencyProperty NavigationCommandProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "NavigationCommand");
+		private static DependencyProperty BackButtonVisibilityProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "BackButtonVisibility");
+		private static DependencyProperty BackButtonForegroundProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "BackButtonForeground");
+		private static DependencyProperty BackButtonIconProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "BackButtonIcon");
 
 		private static string? _actionBarUpDescription;
 		private static string? ActionBarUpDescription

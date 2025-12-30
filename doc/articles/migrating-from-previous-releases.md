@@ -4,6 +4,22 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
+To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
+
+## Uno Platform 6.4
+
+Uno Platform 6.4 contains an Uno.Extensions breaking changes that require attention when upgrading:
+
+- Uno.Extensions contains an OidcClient change in namespaces. See [the migration guide](xref:Uno.Extensions.Migration) for details.
+
+### Visual Studio, Visual Studio Code, and Rider
+
+When upgrading to Uno Platform 6.4, make sure to update your IDE extension or plugin to the latest stable version to ensure the Uno Platform development tooling connects properly.
+
+- [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace)
+- [Visual Studio Code extension](https://aka.platform.uno/vscode-extension-marketplace)
+- [Rider plugin](https://aka.platform.uno/rider-extension-marketplace)
+
 ## Uno Platform 6.3
 
 **Uno Platform 6.3** introduces support for **.NET 10 RC1** and removes **.NET 8** targets.

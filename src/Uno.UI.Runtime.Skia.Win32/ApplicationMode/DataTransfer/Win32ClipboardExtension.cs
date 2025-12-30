@@ -166,7 +166,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 	{
 		foreach (var format in formats)
 		{
-			if (Enum.IsDefined(typeof(CLIPBOARD_FORMAT), format) && dataGetter(format) is { } handle)
+			if (Enum.IsDefined((CLIPBOARD_FORMAT)format) && dataGetter(format) is { } handle)
 			{
 				switch (format)
 				{
@@ -174,7 +174,11 @@ internal class Win32ClipboardExtension : IClipboardExtension
 						GetText(handle, package);
 						break;
 					case CLIPBOARD_FORMAT.CF_HDROP:
-						GetFileDropList(handle, package);
+						var files = GetFileDropList(handle);
+						if (files is not null)
+						{
+							package.SetStorageItems(files);
+						}
 						break;
 					case CLIPBOARD_FORMAT.CF_DIB:
 						GetBitmap(handle, package);
@@ -244,12 +248,12 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		});
 	}
 
-	private static unsafe void GetFileDropList(HGLOBAL handle, DataPackage package)
+	internal static unsafe List<IStorageItem>? GetFileDropList(HGLOBAL handle)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
 		if (lockDisposable is null)
 		{
-			return;
+			return null;
 		}
 
 		var hDrop = new HDROP((IntPtr)firstByte);
@@ -258,7 +262,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		if (filesDropped == 0)
 		{
 			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
-			return;
+			return null;
 		}
 
 		var files = new List<IStorageItem>((int)filesDropped);
@@ -295,7 +299,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			}
 		}
 
-		package.SetStorageItems(files);
+		return files;
 	}
 
 	public void SetContent(DataPackage content)

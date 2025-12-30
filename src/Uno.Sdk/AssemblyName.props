@@ -1,0 +1,10 @@
+<Project>
+	<!--
+		Keep the mutable AssemblyName outside Uno.Sdk.csproj so the SHA replacement
+		does not modify the csproj that NuGet cache wildcards watch.
+	-->
+	<PropertyGroup>
+		<UnoSdkVersionSuffix>_v0</UnoSdkVersionSuffix>
+		<AssemblyName>Uno.Sdk$(UnoSdkVersionSuffix)</AssemblyName>
+	</PropertyGroup>
+</Project>

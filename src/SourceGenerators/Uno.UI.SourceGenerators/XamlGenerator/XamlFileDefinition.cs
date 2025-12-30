@@ -11,13 +11,12 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>
+	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>, IXamlLocation
 	{
-		public XamlFileDefinition(string file, string targetFilePath, string content, ImmutableArray<byte> checksum)
+		public XamlFileDefinition(string file, string link, string targetFilePath, string content, ImmutableArray<byte> checksum)
 		{
-			Namespaces = new List<NamespaceDeclaration>();
-			Objects = new List<XamlObjectDefinition>();
 			FilePath = file;
+			SourceLink = link;
 			TargetFilePath = targetFilePath;
 			Content = content;
 
@@ -31,14 +30,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			.Replace(" ", "_")
 			.Replace(".", "_");
 
-		public List<NamespaceDeclaration> Namespaces { get; private set; }
-		public List<XamlObjectDefinition> Objects { get; private set; }
+		public List<NamespaceDeclaration> Namespaces { get; } = [];
+		public List<XamlObjectDefinition> Objects { get; } = [];
 
 		public string FilePath { get; }
 
+		public int LineNumber => 1;
+
+		public int LinePosition => 1;
+
 		public string Checksum { get; }
 
-		public string? SourceLink { get; internal set; }
+		public string SourceLink { get; }
+
+		/// <summary>
+		/// Exception set by the parser if any error occurred during parsing
+		/// </summary>
+		public ImmutableArray<XamlParsingException> ParsingErrors { get; init; } = ImmutableArray<XamlParsingException>.Empty;
 
 		/// <summary>
 		/// Provides the path to the file using an actual target path in the project
@@ -64,17 +72,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return ReferenceEquals(this, other)
 				|| string.Equals(UniqueID, other.UniqueID, StringComparison.InvariantCultureIgnoreCase);
-
-		}
-
-		public override bool Equals(object? obj)
-		{
-			if (obj is XamlFileDefinition xfd)
-			{
-				return Equals(xfd);
-			}
-
-			return false;
 		}
 
 		public override int GetHashCode() => UniqueID != null

@@ -130,8 +130,16 @@ namespace Uno.UI.Toolkit
 			=> obj.SetValue(PaddingMaskProperty, value);
 
 #pragma warning disable RS0030 // Do not used banned APIs, This can't be changed because it's built by UWP.
-		public static DependencyProperty PaddingMaskProperty { get; } =
-			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(_VisibleBoundsPadding), new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
+		public static DependencyProperty PaddingMaskProperty
+		{
+			[DynamicDependency(nameof(GetPaddingMask))]
+			[DynamicDependency(nameof(SetPaddingMask))]
+			get;
+		} = DependencyProperty.RegisterAttached(
+				"PaddingMask",
+				typeof(PaddingMask),
+				typeof(_VisibleBoundsPadding),
+				new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
 #pragma warning restore RS0030 // Do not used banned APIs
 
 		private static void OnIsPaddingMaskChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)

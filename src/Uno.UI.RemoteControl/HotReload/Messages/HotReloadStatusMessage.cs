@@ -35,6 +35,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		long Id,
 		DateTimeOffset StartTime,
 		ImmutableHashSet<string> FilePaths,
+		ImmutableHashSet<string>? IgnoredFilePaths,
 		DateTimeOffset? EndTime,
 		HotReloadServerResult? Result,
 		IImmutableList<string>? Diagnostics);

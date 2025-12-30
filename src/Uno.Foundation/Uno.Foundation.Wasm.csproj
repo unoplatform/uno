@@ -16,12 +16,9 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>Uno.Foundation</CommonOverridePackageId>
+		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />

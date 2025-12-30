@@ -230,7 +230,10 @@ namespace Microsoft.UI.Xaml
 			ClearPressed();
 			SetOver(null, false, ctx: BubblingContext.NoBubbling);
 			ClearDragOver();
+			ClearPointerStateNative();
 		}
+
+		partial void ClearPointerStateNative();
 
 		[ThreadStatic]
 		private static PointerEventDispatchResult _currentPointerEventDispatch;
@@ -370,11 +373,11 @@ namespace Microsoft.UI.Xaml
 
 			if (args.TapCount == 1)
 			{
-				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args));
+				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args, that));
 			}
 			else // i.e. args.TapCount == 2
 			{
-				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(src, args));
+				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(src, args, that));
 			}
 		};
 
@@ -383,7 +386,7 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args, that));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
@@ -391,7 +394,7 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(src, args, that));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>

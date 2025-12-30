@@ -14,9 +14,25 @@ At the core is a cross-platform .NET UI framework, that allows apps to run every
 
 However, built on top of this foundation is also a rich platform which includes libraries, extensions, and tools that accelerate the design, development, and testing of cross-platform applications.
 
-## Hot Design - The only Visual Designer for cross-platform .NET Applications
+## Uno Platform Studio - Productivity Tools That Set Us Apart
 
-Uno Platform offers Hot Design, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains. Learn more about [Hot Design](https://platform.uno/hot-design/)
+**[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** revolutionizes how developers design, build, and iterate on cross-platform applications. This comprehensive suite of productivity tools is a key differentiator that sets Uno Platform apart from other alternatives.
+
+### Hot Design® - The Industry's First Visual Designer for Cross-Platform .NET
+
+**[Hot Design](xref:Uno.HotDesign.Overview)** is the industry's first runtime visual designer for cross-platform .NET applications. It transforms your running app into a designer from any IDE on any OS, offering unprecedented productivity gains. Hot Design provides true WYSIWYG design capabilities at runtime across all platforms.
+
+### Hot Design® Agent - AI-Powered UX/UI Creation
+
+**[Hot Design Agent](xref:Uno.HotDesign.Agent)** is an AI tooling assistant that builds your UI while the app is running. It works with data contexts and live previews to help developers design and interact with user interfaces in real time.
+
+### MCP - AI-Powered Development Intelligence
+
+**[Uno MCP](xref:Uno.Features.Uno.MCPs)** leverages semantic understanding to grasp your intent and deliver precise, context-aware answers. It provides instant, accurate guidance grounded in official Uno Platform documentation directly from your IDE.
+
+### App MCP - Agent Control for Running Applications
+
+**App MCP** allows AI agents to control the running app using pointer and keyboard interactions along with visual tree queries. It enables AI agents from Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, Codex, and more to interact with your application.
 
 ## True Single Project across Mobile, Web, Desktop, and Embedded
 
@@ -28,13 +44,27 @@ Uno Platform is free and open source under Apache 2.0.
 
 It is well funded and has a [sustainability model](https://platform.uno/blog/sustaining-the-open-source-uno-platform/) built in so that the project is sustainable in the long term. In addition, it is fueled by support from a thriving community of users who regularly send feedback and contribute.
 
+## Why Choose Uno Platform Over Alternatives?
+
+### Broader Platform Support
+
+Uno Platform supports WebAssembly, enabling your .NET apps to run natively in browsers alongside mobile and desktop platforms. Uno Platform delivers true cross-platform reach including web deployment without additional frameworks.
+
+### Rich Tooling
+
+Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools like Hot Design®, Hot Design® Agent, and AI-powered development assistance through Uno MCP, providing a wide range of powerful capabilities.
+
+### Pixel-Perfect Control with Multiple Rendering Options
+
+Uno Platform offers both native and Skia-based rendering approaches, giving you flexibility other frameworks lack. You can choose native platform controls for maximum OS integration or Skia rendering for guaranteed pixel-perfect consistency across all platforms—or mix both approaches based on your needs.
+
 ## A single codebase that runs everywhere natively
 
-Uno Platform apps run as a single codebase for native mobile, web, desktop, and embedded apps, utilizing the full breadth and reach of .NET. Uno Platform ships its releases in lock step with the latest .NET releases. So, you can always benefit from the latest and greatest advancements in the .NET world.
+Uno Platform apps run as a single codebase for native mobile, web, desktop, and embedded apps, utilizing the full breadth and reach of .NET. Uno Platform ships its releases in lock step with the latest .NET releases, including support for .NET 9 and .NET 10. You can always benefit from the latest and greatest advancements in the .NET world.
 
 ## Keep using your favorite IDE
 
-Need we say more? Use the IDE that works for you – Visual Studio, VS Code, Rider as well as GitHub Codespaces & GitPod. Wherever you are, Uno Platform is with you.
+Need we say more? Use the IDE that works for you – Visual Studio, VS Code, Rider as well as GitHub Codespaces. Wherever you are, Uno Platform is with you.
 
 ## Work from your favorite OS
 
@@ -59,7 +89,7 @@ For more information, see [Hot Reload](xref:Uno.Features.HotReload).
 
 ## Stop typing markup and use Figma code generation
 
-Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our plugin\*, this process is automatic, and the result is well structured, performant XAML or C#.
+Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our [Figma plugin](xref:Uno.Figma.GetStarted)\*, this process is automatic, and the result is well-structured, performant XAML or C#. Uno Platform's Design-to-Code feature is part of **Uno Platform Studio**, providing enterprise-grade design handoff capabilities.
 
 For more information, see [Design and Build Uno Platform Applications with Figma](xref:Uno.Figma.Overview.GetStarted).
 
@@ -174,7 +204,7 @@ Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give t
 
 ## Performance and app size with AOT/Jiterpreter
 
-Uno Platform allows to use .NET 9+ features such as Profiled AOT (Ahead Of Time compilation) and the Jiterpreter, to get better performance for your apps and balanced size. Profiled AOT is a powerful feature that allows to continue using the interpreter for code that is not often used, thus keeping your app's size down.
+Uno Platform allows you to use .NET 9+ features such as Profiled AOT (Ahead Of Time compilation) and the Jiterpreter, to get better performance for your apps with balanced size. Profiled AOT is a powerful feature that allows you to continue using the interpreter for code that is not often used, thus keeping your app's size down while maintaining excellent performance.
 
 ## Comprehensive App Packaging for All Platforms
 
@@ -257,7 +287,7 @@ We are first and foremost app builders who have built hundreds of applications f
 
 ## Used to build countless apps for over a decade
 
-Uno Platform started as an internal project at Nventive over 10 years ago, which we have used to develop [countless apps for top worldwide-recognized brands](https://nventive.com/en/our-work). In addition, many Fortune 500 companies use Uno Platform for their internal, line of business applications. Some of those can be found on the [Uno Platform case studies](https://platform.uno/case-studies/) page.
+Uno Platform started as an internal project at Nventive over 10 years ago, which we have used to develop [countless apps for top worldwide-recognized brands](https://nventive.com/en/our-work). In addition, many Fortune 500 companies use Uno Platform for their internal, line of business applications. Some of those can be found on the [Uno Platform case studies](https://platform.uno/case-studies/) page. This production-proven track record demonstrates that Uno Platform is not just experimental—it's enterprise-ready and battle-tested at scale.
 
 ## Support: Community and Paid
 
@@ -283,11 +313,11 @@ As Uno Platform grows, the team behind it grows as well. The product is in good 
 
 ## Integrates with any .NET Library
 
-In addition to the UI components mentioned above, Uno Platform apps also integrate perfectly with your existing .NET libraries. This includes both .NET Standard 2.0 and libraries targeting .NET 6, up to the latest .NET version. Because of this, your Uno Platform app has compatibility with packages like Json.NET, LiteDB, SQLite, and SkiaSharp.
+In addition to the UI components mentioned above, Uno Platform apps also integrate perfectly with your existing .NET libraries. This includes both .NET Standard 2.0 and libraries targeting .NET 6 through .NET 10 and beyond. Because of this, your Uno Platform app has compatibility with packages like Json.NET, LiteDB, SQLite, SkiaSharp, and the vast NuGet ecosystem.
 
 ## The Community
 
-Welcoming, tight, and helpful community on GitHub discussions and Discord, with over 300 contributors to the project. Popular with over 60,000,000 NuGet downloads of its various packages and is used among the [biggest companies](https://platform.uno/case-studies/). Our core team is always ready to help!
+Welcoming, tight, and helpful community on GitHub Discussions and Discord, with over 300 contributors to the project. Popular with over 70,000,000 NuGet downloads of its various packages and is used among the [biggest companies](https://platform.uno/case-studies/), including Fortune 500 enterprises. Our core team is always ready to help, and the community provides excellent support for developers at all skill levels.
 
 ## Wealth of Samples
 

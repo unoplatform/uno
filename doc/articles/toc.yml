@@ -4,12 +4,22 @@
     - name: Setup
       topicHref: xref:Uno.GetStarted.vs2022
       items:
-      - name: Visual Studio 2022 for Windows
+      - name: Visual Studio
         href: xref:Uno.GetStarted.vs2022
       - name: VS Code
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
+      - name: Claude Code
+        href: xref:Uno.GetStarted.AI.Claude
+      - name: Codex
+        href: xref:Uno.GetStarted.AI.Codex
+      - name: GitHub Copilot CLI
+        href: xref:Uno.GetStarted.AI.CopilotCLI
+      - name: Cursor
+        href: xref:Uno.GetStarted.AI.Cursor
+      - name: Google Antigravity
+        href: xref:Uno.GetStarted.AI.GoogleAntigravity
 
     - name: Sign in with Uno Platform
       href: xref:Uno.GetStarted.Licensing
@@ -17,20 +27,32 @@
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
       items:
-      - name: Visual Studio 2022 for Windows
+      - name: Visual Studio
         href: xref:Uno.GettingStarted.CreateAnApp.VS2022
       - name: VS Code
         href: xref:Uno.GettingStarted.CreateAnApp.VSCode
       - name: Rider
         href: xref:Uno.GettingStarted.CreateAnApp.Rider
+      - name: Claude Code
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.Claude
+      - name: Codex
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.Codex
+      - name: GitHub Copilot CLI
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCli
+      - name: Cursor
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.Cursor
+      - name: Google Antigravity
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
 
-    - name: Write your app
+    - name: Build your app
       topicHref: xref:Uno.GetStarted.Explore
       items:
-      - name: App Structure
-        href: xref:Uno.Development.AppStructure
+      - name: AI Agents
+        href: xref:Uno.BuildYourApp.AI.Agents
       - name: Hot Reload
         href: xref:Uno.Features.HotReload
+      - name: App Structure
+        href: xref:Uno.Development.AppStructure
 
     - name: Troubleshoot
       topicHref: xref:Uno.UI.CommonIssues
@@ -39,12 +61,14 @@
         href: xref:Uno.UI.CommonIssues
       - name: Hot Reload
         topicHref: xref:Uno.Features.HotReload#troubleshooting
+      - name: Uno Platform Status
+        topicHref: xref:Uno.Development.UnoPlatformStatus#troubleshooting
       - name: Development Environments
         topicHref: xref:Uno.UI.CommonIssues.AllIDEs
         items:
         - name: All Development Environments
           href: xref:Uno.UI.CommonIssues.AllIDEs
-        - name: Visual Studio 2022 for Windows
+        - name: Visual Studio
           href: xref:Uno.UI.CommonIssues.vs2022
         - name: VS Code
           href: xref:Uno.UI.CommonIssues.vscode
@@ -52,6 +76,8 @@
           href: xref:Uno.UI.CommonIssues.rider
         - name: Android & iOS Emulators
           href: xref:Uno.UI.CommonIssues.MobileDebugging
+        - name: AI Agents
+          href: xref:Uno.UI.CommonIssues.AIAgents
       - name: Platforms
         topicHref: xref:Uno.UI.CommonIssues.Wasm
         items:
@@ -370,7 +396,7 @@
         href: uno-development/debugging-uno-ui.md
       - name: Using Codespaces
         href: features/working-with-codespaces.md
-      - name: Using Gitpod
+      - name: Using Ona
         href: features/working-with-gitpod.md
       - name: Inspecting the visual tree
         href: uno-development/debugging-inspect-visual-tree.md
@@ -435,6 +461,8 @@
   items:
     - name: Overview
       href: xref:Uno.Platform.Studio.Overview
+    - name: Uno MCPs
+      href: xref:Uno.Features.Uno.MCPs
     - name: Hot Reload
       href: xref:Uno.Platform.Studio.HotReload.Overview
     - name: Hot Design
@@ -718,6 +746,10 @@
       href: external/uno.wasm.bootstrap/doc/toc.yml
     - name: Uno Check
       href: external/uno.check/doc/toc.yml
+    - name: Uno Platform Status
+      href: xref:Uno.UnoPlatformStatus
+    - name: Dev Server
+      href: xref:Uno.DevServer
     - name: Xaml Merging
       href: external/uno.xamlmerge.task/doc/toc.yml
     - name: Uno Resizetizer

@@ -1231,7 +1231,7 @@ namespace Uno.UI.DataBinding
 
 		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
 		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Types may be removed or not present as part of the normal operations of that method")]
-		private static object? ConvertUsingTypeDescriptor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type, object value)
+		private static object? ConvertUsingTypeDescriptor(Type type, object value)
 		{
 			var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
 			if (valueTypeConverter.CanConvertTo(type))
@@ -1295,7 +1295,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		internal static object? Convert(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type? propertyType,
+			Type? propertyType,
 			object? value)
 		{
 			if (value != null)
@@ -1358,7 +1358,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		/// <remarks>This method needs to be aligned with the symbols query in BindableTypeProvidersSourceGenerator.</remarks>
 		private static bool IsValidMetadataProviderType(Type type)
-			=> type.IsPublic && type.IsClass;
+			=> type.IsPublic && (type.IsClass || type.IsValueType);
 	}
 }
 #endif

@@ -14,6 +14,7 @@
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,10 +23,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
 	</ItemGroup>
 
 	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />

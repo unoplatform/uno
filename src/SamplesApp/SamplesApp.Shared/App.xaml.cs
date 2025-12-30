@@ -368,6 +368,9 @@ namespace SamplesApp
 				{
 					rootFrame.Navigate(startingPageType);
 				}
+
+				var mainPage = (MainPage)rootFrame!.Content!;
+				mainPage.ViewModel.SetWindow(_mainWindow);
 			}
 		}
 
@@ -489,6 +492,7 @@ namespace SamplesApp
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
+				builder.AddFilter("Uno.WinUI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
 
 				// builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Trace);

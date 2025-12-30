@@ -265,6 +265,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _metadataHelper.FindPropertyByOwnerSymbol(type, xamlMember.Name);
 		}
 
+		private ISymbol? FindProperty(XamlMemberDefinition xamlMemberDefinition)
+		{
+			var declaringType = xamlMemberDefinition.Member.DeclaringType;
+
+			var type = IsCustomMarkupExtensionType(declaringType)
+				? GetMarkupExtensionType(declaringType)
+				: FindType(xamlMemberDefinition.Member.DeclaringType);
+
+			return _metadataHelper.FindPropertyByOwnerSymbol(type, xamlMemberDefinition.Member.Name);
+		}
+
 		private INamedTypeSymbol? FindPropertyType(XamlMember xamlMember) => FindProperty(xamlMember)?.FindDependencyPropertyType();
 
 		private bool IsAttachedProperty(XamlMemberDefinition member)
@@ -353,16 +364,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Returns true if the property has an accessible public setter and has a parameterless constructor
 		/// </summary>
-		private bool IsNewableProperty(IPropertySymbol property, out string? newableTypeName)
+		private bool IsNewableProperty(IPropertySymbol property, [NotNullWhen(true)] out string? newableTypeName)
 		{
-			var namedType = property.Type as INamedTypeSymbol;
-
-			var isNewable = property.SetMethod.SelectOrDefault(m => m!.DeclaredAccessibility == Accessibility.Public, false) &&
-				namedType.SelectOrDefault(nts => nts?.Constructors.Any(ms => ms.Parameters.Length == 0) ?? false, false);
-
-			newableTypeName = isNewable && namedType != null ? GetFullGenericTypeName(namedType) : null;
-
-			return isNewable;
+			if (property is
+				{
+					SetMethod.DeclaredAccessibility: Accessibility.Public,
+					Type: INamedTypeSymbol propertyType
+				}
+				&& propertyType.Constructors.Any(ms => ms.Parameters.Length == 0))
+			{
+				newableTypeName = GetFullGenericTypeName(propertyType);
+				return true;
+			}
+			else
+			{
+				newableTypeName = null;
+				return false;
+			}
 		}
 
 		/// <summary>

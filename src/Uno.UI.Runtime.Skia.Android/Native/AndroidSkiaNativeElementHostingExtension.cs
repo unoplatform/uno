@@ -18,7 +18,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		_owner = owner;
 	}
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		if (content is View view)
 		{
@@ -74,14 +74,6 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		if (content is View view)
 		{
 			view.Alpha = (float)opacity;
-		}
-	}
-
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is View view)
-		{
-			view.Visibility = visible ? ViewStates.Visible : ViewStates.Invisible;
 		}
 	}
 

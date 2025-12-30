@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference controls\dev\Generated\CommandBarFlyoutCommandBarAutomationProperties.properties.cpp, tag winui3/release/1.7.3, commit 65718e2813a90fc900e8775d2ddc580b268fcc2f
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 
@@ -31,8 +32,12 @@ public static partial class CommandBarFlyoutCommandBarAutomationProperties
 	/// <summary>
 	/// Identifies the ControlType dependency property.
 	/// </summary>
-	public static DependencyProperty ControlTypeProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	public static DependencyProperty ControlTypeProperty
+	{
+		[DynamicDependency(nameof(GetControlType))]
+		[DynamicDependency(nameof(SetControlType))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"ControlType",
 			typeof(AutomationControlType),
 			typeof(CommandBarFlyoutCommandBarAutomationProperties),

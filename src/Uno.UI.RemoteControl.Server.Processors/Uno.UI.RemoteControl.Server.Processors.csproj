@@ -13,10 +13,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReload/%(Filename)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,6 +21,7 @@
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions" />
+		<PackageReference Include="Uno.Core.Extensions.Threading" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
 		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 6.0.0 which has a vulnerability -->

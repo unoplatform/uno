@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -15,10 +18,9 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
-	private Rect _lastFinalRect;
-#if DEBUG
 	private bool _nativeElementAttached;
-#endif
+	private IDisposable _frameRenderedDisposable;
+	private Rect? _lastArrangeRect;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
@@ -41,8 +43,6 @@ partial class ContentPresenter
 			}
 		});
 	}
-
-	private IDisposable _nativeElementDisposable;
 
 	partial void TryRegisterNativeElement(object oldValue, object newValue)
 	{
@@ -78,76 +78,33 @@ partial class ContentPresenter
 		}
 	}
 
-	private void ArrangeNativeElement()
-	{
-		if (!IsNativeHost)
-		{
-			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
-			// might no longer be a NativeHost
-			return;
-		}
-		var arrangeRect = this.GetAbsoluteBoundsRect();
-		var ev = GetParentViewport().Effective;
-
-		Rect clipRect;
-		if (ev.IsEmpty)
-		{
-			clipRect = new Rect(0, 0, 0, 0);
-		}
-		else if (ev.IsInfinite)
-		{
-			clipRect = null;
-		}
-		else
-		{
-			var top = Math.Min(Math.Max(0, ev.Y), ActualHeight);
-			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
-			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
-			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
-			clipRect = new Rect(left, top, width, height);
-		}
-
-		var clipInGlobalCoordinates = new Rect(
-			arrangeRect.X + clipRect.X,
-			arrangeRect.Y + clipRect.Y,
-			clipRect.Width,
-			clipRect.Height);
-		_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates) ?? new Rect(arrangeRect.X, arrangeRect.Y, 0, 0);
-
-		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
-			Content,
-			arrangeRect,
-			clipRect);
-	}
-
 	partial void AttachNativeElement()
 	{
 #if DEBUG
 		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null && !_nativeElementAttached);
-		_nativeElementAttached = true;
 #endif
+		_nativeElementAttached = true;
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
-		EffectiveViewportChanged += OnEffectiveViewportChanged;
-		LayoutUpdated += OnLayoutUpdated;
-		var visiblityToken = RegisterPropertyChangedCallback(HitTestVisibilityProperty, OnHitTestVisiblityChanged);
-		_nativeElementDisposable = Disposable.Create(() =>
-		{
-			UnregisterPropertyChangedCallback(HitTestVisibilityProperty, visiblityToken);
-		});
+		var ct = ((CompositionTarget)Visual.CompositionTarget)!;
+		ct.FrameRendered += ArrangeNativeElement;
+		_frameRenderedDisposable = Disposable.Create(() => ct.FrameRendered -= ArrangeNativeElement);
 	}
 
 	partial void DetachNativeElement(object content)
 	{
 #if DEBUG
-		global::System.Diagnostics.Debug.Assert(IsNativeHost && _nativeElementAttached);
-		_nativeElementAttached = false;
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 #endif
 		_nativeHosts.Remove(this);
-		EffectiveViewportChanged -= OnEffectiveViewportChanged;
-		LayoutUpdated -= OnLayoutUpdated;
-		_nativeElementHostingExtension.Value!.DetachNativeElement(content);
-		_nativeElementDisposable?.Dispose();
+		_lastArrangeRect = null;
+		if (_nativeElementAttached)
+		{
+			_frameRenderedDisposable.Dispose();
+			_frameRenderedDisposable = null;
+			_nativeElementAttached = false;
+			_nativeElementHostingExtension.Value!.DetachNativeElement(content);
+		}
 	}
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
@@ -163,11 +120,6 @@ partial class ContentPresenter
 			ret.Height = 0;
 		}
 		return ret;
-	}
-
-	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)
-	{
-		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(Content, HitTestVisibility != HitTestability.Collapsed);
 	}
 
 	internal static void UpdateNativeHostContentPresentersOpacities()
@@ -186,19 +138,65 @@ partial class ContentPresenter
 		}
 	}
 
-	private void OnLayoutUpdated(object sender, object e)
+	/// <remarks>
+	/// <see cref="nativeVisualsInZOrder"/> is read-only and won't be modified.
+	/// </remarks>
+	internal static void OnNativeHostsRenderOrderChanged(List<Visual> nativeVisualsInZOrder)
 	{
-		// Not quite sure why we need to queue the arrange call, but the native element either explodes or doesn't
-		// respect alignments correctly otherwise. This is particularly relevant for the initial load.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
+		var rentedArray = ArrayPool<(int, ContentPresenter)>.Shared.Rent(_nativeHosts.Count);
+		using var _ = new DisposableStruct<(int, ContentPresenter)[]>(static rentedArray => ArrayPool<(int, ContentPresenter)>.Shared.Return(rentedArray, clearArray: true), rentedArray);
+
+		var count = 0;
+		foreach (var host in _nativeHosts)
+		{
+			rentedArray[count++] = (nativeVisualsInZOrder.IndexOf(host.Visual), host);
+		}
+		new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).Sort((one, two) => one.Item1 - two.Item1);
+
+		for (var index = 0; index < _nativeHosts.Count; index++)
+		{
+			var host = rentedArray[index].Item2;
+			var order = rentedArray[index].Item1;
+
+			if (host._nativeElementHostingExtension.Value.SupportsZIndex())
+			{
+				host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
+			}
+			else
+			{
+				if (host._nativeElementAttached)
+				{
+					if (order == -1)
+					{
+						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+						Debug.Assert(host.IsNativeHost);
+						host._nativeElementAttached = false;
+						host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+					}
+					else
+					{
+						host.DetachNativeElement(host.Content);
+						host.AttachNativeElement();
+						host.ArrangeNativeElement();
+					}
+				}
+				else if (order != -1)
+				{
+					host.AttachNativeElement();
+					host.ArrangeNativeElement();
+				}
+			}
+		}
 	}
 
-	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+	private void ArrangeNativeElement()
 	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		// The arrange call here is queued because EVPChanged is fired before the layout of the ContentPresenter is updated,
-		// so calling ArrangeNativeElement synchronously would get outdated coordinates.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
+		var arrangeRect = this.GetAbsoluteBoundsRect();
+		if (_lastArrangeRect != arrangeRect)
+		{
+			_lastArrangeRect = arrangeRect;
+			_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
+		}
 	}
 
 	internal object CreateSampleComponent(string text)

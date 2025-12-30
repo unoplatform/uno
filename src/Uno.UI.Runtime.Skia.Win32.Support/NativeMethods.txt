@@ -72,6 +72,16 @@ WM_GETMINMAXINFO
 WM_KEYDOWN
 WM_KEYUP
 WM_MOVE
+WM_NCCALCSIZE
+WM_DWMCOMPOSITIONCHANGED
+WM_NCHITTEST
+WM_NCMOUSEMOVE
+WM_NCLBUTTONDOWN
+WM_NCLBUTTONUP
+WM_NCPAINT
+WM_NCPOINTERUPDATE
+WM_NCPOINTERDOWN
+WM_NCPOINTERUP
 WM_PAINT
 WM_POINTERCAPTURECHANGED
 WM_POINTERDOWN
@@ -86,11 +96,14 @@ WM_SETICON
 WM_SIZE
 
 // Structs
+BITMAP
 DATADIR
 BITMAPFILEHEADER
 BROWSEINFOW
 CLIPBOARD_FORMAT
+ICONINFO
 IDataObject
+IDataObjectAsyncCapability
 IDropSource
 IEnumUnknown
 IFileOpenDialog
@@ -100,8 +113,16 @@ MINMAXINFO
 MONITORINFOEXW
 PIXELFORMATDESCRIPTOR
 RECT
+MARGINS
+
+// Enums
+BI_COMPRESSION
+DI_FLAGS
+DWM_WINDOW_CORNER_PREFERENCE
 
 // Functions
+AdjustWindowRectEx
+AdjustWindowRectExForDpi
 AddClipboardFormatListener
 BeginPaint
 BitBlt
@@ -118,7 +139,15 @@ DescribePixelFormat
 DestroyWindow
 DispatchMessage
 DragQueryFile
+DeleteDC
+DeleteObject
+DestroyIcon
+DrawIconEx
 DwmSetWindowAttribute
+DwmIsCompositionEnabled
+DwmExtendFrameIntoClientArea
+DwmSetWindowAttribute
+DwmDefWindowProc
 EmptyClipboard
 EnableMouseInPointer
 EndPaint
@@ -140,9 +169,14 @@ GetActiveWindow
 GetCapture
 GetClientRect
 GetClipboardData
+GetClipboardFormatName
 GetDC
+GetDeviceCaps
 GetDpiForWindow
+GetDpiForMonitor
+GetIconInfo
 GetKeyState
+GetObject
 GetMessage
 GetMessageTime
 GetMonitorInfo
@@ -172,6 +206,7 @@ LoadRegTypeLib
 LocalFree
 MapWindowPoints
 MonitorFromWindow
+MonitorFromPoint
 OleInitialize
 OpenClipboard
 PeekMessage
@@ -186,6 +221,7 @@ RegOpenKeyEx
 ReleaseDC
 ReleaseCapture
 ReleaseStgMedium
+RtlGetVersion
 ScreenToClient
 SelectObject
 SendMessage

@@ -25,6 +25,12 @@ window_move_or_resize_fn_ptr uno_get_window_resize_callback(void);
 - (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note;
 @end
 
+typedef NS_ENUM(sint32, OverlappedPresenterState) {
+    OverlappedPresenterStateMaximized,
+    OverlappedPresenterStateMinimized,
+    OverlappedPresenterStateRestored,
+};
+
 @interface UNOWindow : NSWindow <NSWindowDelegate>
 
 + (void)initialize;
@@ -33,12 +39,21 @@ window_move_or_resize_fn_ptr uno_get_window_resize_callback(void);
 
 @property (strong) UNOMetalViewDelegate* metalViewDelegate;
 
+@property OverlappedPresenterState overlappedPresenterState;
+
 - (void)sendEvent:(NSEvent *)event;
+
+- (void)windowWillMiniaturize:(NSNotification *)notification;
+- (void)windowDidMiniaturize:(NSNotification *)notification;
+- (void)windowDidDeminiaturize:(NSNotification *)notification;
 
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame;
 - (void)windowDidMove:(NSNotification *)notification;
 - (bool)windowShouldClose:(NSWindow *)sender;
 - (void)windowWillClose:(NSNotification *)notification;
+
+- (void) windowWillStartLiveResize:(NSNotification *) notification;
+- (void) windowDidEndLiveResize:(NSNotification *) notification;
 
 @end
 
@@ -59,17 +74,13 @@ bool uno_window_is_full_screen(NSWindow *window);
 bool uno_window_enter_full_screen(NSWindow *window);
 void uno_window_exit_full_screen(NSWindow *window);
 
+void uno_window_maximize(NSWindow *window);
 void uno_window_minimize(NSWindow *window, bool activateWindow);
-void uno_window_restore(NSWindow *window, bool activateWindow);
+void uno_window_restore(UNOWindow *window, bool activateWindow);
 
 bool uno_window_clip_svg(UNOWindow* window, const char* svg);
 
-typedef NS_ENUM(sint32, OverlappedPresenterState) {
-    OverlappedPresenterStateMaximized,
-    OverlappedPresenterStateMinimized,
-    OverlappedPresenterStateRestored,
-};
-OverlappedPresenterState uno_window_get_overlapped_presenter_state(NSWindow *window);
+OverlappedPresenterState uno_window_get_overlapped_presenter_state(UNOWindow *window);
 
 void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop);
 void uno_window_set_border_and_title_bar(NSWindow *window, bool hasBorder, bool hasTitleBar);
@@ -77,6 +88,8 @@ void uno_window_set_maximizable(NSWindow* window, bool isMaximizable);
 void uno_window_set_minimizable(NSWindow* window, bool isMinimizable);
 bool uno_window_set_modal(NSWindow *window, bool isModal);
 void uno_window_set_resizable(NSWindow *window, bool isResizable);
+void uno_window_set_min_size(NSWindow* window, double width, double height);
+void uno_window_set_max_size(NSWindow* window, double width, double height);
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkey?view=winrt-22621
 typedef NS_ENUM(sint32, VirtualKey) {

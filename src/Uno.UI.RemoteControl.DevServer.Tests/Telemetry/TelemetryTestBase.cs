@@ -3,6 +3,7 @@ using System.Text.Json;
 using Windows.ApplicationModel;
 using Microsoft.UI.Xaml;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
+using System.Threading;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 
@@ -10,24 +11,42 @@ public abstract class TelemetryTestBase
 {
 	protected static ILogger Logger { get; private set; } = null!;
 
-	public TestContext? TestContext { get; set; }
+	public TestContext TestContext { get; set; } = null!;
 
-	protected CancellationToken CT => TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
+	private CancellationToken GetTimeoutToken()
+	{
+		var baseToken = TestContext.CancellationTokenSource.Token;
+		if (!Debugger.IsAttached)
+		{
+			var cts = CancellationTokenSource.CreateLinkedTokenSource(baseToken);
+#if DEBUG
+			// 45 seconds when running locally (DEBUG) without debugger
+			cts.CancelAfter(TimeSpan.FromMinutes(.75));
+#else
+			// 2 minutes on CI
+			cts.CancelAfter(TimeSpan.FromMinutes(2));
+#endif
+			return cts.Token;
+		}
+		return baseToken;
+	}
 
-	protected SolutionHelper? SolutionHelper { get; private set; }
+	protected CancellationToken CT => GetTimeoutToken();
+
+	protected SolutionHelper SolutionHelper { get; private set; } = null!;
 
 	[TestInitialize]
 	public void TestInitialize()
 	{
-		SolutionHelper = new SolutionHelper();
+		SolutionHelper = new SolutionHelper(TestContext!);
 		SolutionHelper.EnsureUnoTemplatesInstalled();
 	}
 
 	[TestCleanup]
 	public void TestCleanup()
 	{
-		SolutionHelper?.Dispose();
-		SolutionHelper = null;
+		SolutionHelper.Dispose();
+		SolutionHelper = null!;
 	}
 
 	private static void InitializeLogger<T>() where T : class
@@ -44,16 +63,6 @@ public abstract class TelemetryTestBase
 	protected static void GlobalClassInitialize<T>(TestContext context) where T : class
 	{
 		InitializeLogger<T>();
-	}
-
-	private static void InitializeLogger(Type type)
-	{
-		var loggerFactory = LoggerFactory.Create(builder =>
-		{
-			builder.AddConsole();
-			builder.AddDebug();
-		});
-		Logger = loggerFactory.CreateLogger(type);
 	}
 
 	/// <summary>
@@ -75,33 +84,41 @@ public abstract class TelemetryTestBase
 	/// <summary>
 	/// Creates a DevServerTestHelper with telemetry redirection to an exact file path.
 	/// </summary>
-	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath, string? solutionPath = null)
+	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath, string? solutionPath = null, bool enableIdeChannel = false)
 	{
+		var envVars = new Dictionary<string, string>
+		{
+			{ "UNO_PLATFORM_TELEMETRY_FILE", exactFilePath }
+		};
+
+		if (enableIdeChannel)
+		{
+			// Create an IDE channel GUID so the dev-server will initialize the named-pipe IDE channel
+			envVars["UNO_DEVSERVER_ideChannel"] = Guid.NewGuid().ToString();
+		}
+
 		return new DevServerTestHelper(
 			Logger,
 			solutionPath: solutionPath,
-			environmentVariables: new Dictionary<string, string>
-			{
-				{ "UNO_PLATFORM_TELEMETRY_FILE", exactFilePath },
-			});
+			environmentVariables: envVars);
 	}
 
 	/// <summary>
 	/// Runs a complete telemetry test cycle: start server, wait, shutdown.
 	/// </summary>
 	/// <returns>True if the server started successfully</returns>
-	protected async Task<bool> RunTelemetryTestCycle(DevServerTestHelper helper, int waitTimeMs = 2000)
+	protected async Task<bool> RunTelemetryTestCycleAsync(DevServerTestHelper helper, int waitTimeMs = 2000)
 	{
 		var started = await helper.StartAsync(CT);
 		helper.EnsureStarted();
 
 		await Task.Delay(waitTimeMs, CT);
-		await helper.AttemptGracefulShutdown(CT);
+		await helper.AttemptGracefulShutdownAsync(CT);
 
 		return started;
 	}
 
-	protected async Task CleanupTelemetryTest(DevServerTestHelper helper, string tempDir, string filePattern)
+	protected async Task CleanupTelemetryTestAsync(DevServerTestHelper helper, string tempDir, string filePattern)
 	{
 		await helper.StopAsync(CT);
 
@@ -113,7 +130,7 @@ public abstract class TelemetryTestBase
 		}
 	}
 
-	protected async Task CleanupTelemetryTest(DevServerTestHelper helper, string filePath)
+	protected async Task CleanupTelemetryTestAsync(DevServerTestHelper helper, string filePath)
 	{
 		await helper.StopAsync(CT);
 
@@ -122,17 +139,6 @@ public abstract class TelemetryTestBase
 			try { File.Delete(filePath); }
 			catch { /* ignore cleanup errors */ }
 		}
-	}
-
-	protected async Task<T> WaitFor<T>(Func<CancellationToken, Task<T>> test, CancellationToken ct, int interations = 5,
-		int timeBetweenIterationsInMs = 250)
-	{
-		for (var i = 0; i < interations; i++)
-		{
-			try { return await test(ct); }
-			catch { await Task.Delay(timeBetweenIterationsInMs, ct); if (i == interations - 1) throw; }
-		}
-		throw new InvalidOperationException();
 	}
 
 	/// <summary>
@@ -191,6 +197,19 @@ public abstract class TelemetryTestBase
 		events.Any(e => e.Prefix == prefix).Should().BeTrue($"Should contain at least one event with prefix '{prefix}'");
 	}
 
+	protected void WriteEventsList(List<(string Prefix, JsonDocument Json)> events)
+	{
+		TestContext.WriteLine($"Found {events.Count} telemetry events:");
+		var index = 1;
+		foreach (var (prefix, json) in events)
+		{
+			if (json.RootElement.TryGetProperty("EventName", out var eventName))
+			{
+				TestContext.WriteLine($"[{index++}] Prefix: {prefix}, EventName: {eventName.GetString()}");
+			}
+		}
+	}
+
 	/// <summary>
 	/// Assert that at least one event with the given event name exists (optionally for a given prefix).
 	/// </summary>
@@ -199,6 +218,32 @@ public abstract class TelemetryTestBase
 		var filtered = prefix == null ? events : events.Where(e => e.Prefix == prefix);
 		filtered.Any(e => e.Json.RootElement.TryGetProperty("EventName", out var n) && n.GetString() == eventName)
 			.Should().BeTrue($"Should contain event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
+	}
+
+	/// <summary>
+	/// Assert that at least one event with the given event name exists and has the specified property with the expected value.
+	/// </summary>
+	protected static void AssertEventHasProperty(
+		List<(string Prefix, JsonDocument Json)> events,
+		string eventName,
+		string propertyName,
+		string expectedValue,
+		string? prefix = null)
+	{
+		var filtered = prefix == null ? events : events.Where(e => e.Prefix == prefix);
+		var matchingEvents = filtered
+			.Where(e => e.Json.RootElement.TryGetProperty("EventName", out var n) && n.GetString() == eventName)
+			.ToList();
+
+		matchingEvents.Should().NotBeEmpty($"Should contain at least one event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
+
+		var hasProperty = matchingEvents.Any(e =>
+			e.Json.RootElement.TryGetProperty("Properties", out var props) &&
+			props.TryGetProperty(propertyName, out var prop) &&
+			prop.GetString() == expectedValue);
+
+		hasProperty.Should().BeTrue(
+			$"Event '{eventName}' should have property '{propertyName}' with value '{expectedValue}'{(prefix != null ? $" (prefix: '{prefix}')" : "")}");
 	}
 
 	protected static string GetTestTelemetryFileName(string testKey) => $"telemetry_{testKey}_{Guid.NewGuid():N}.log";

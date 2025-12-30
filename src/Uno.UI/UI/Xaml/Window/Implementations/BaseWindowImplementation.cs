@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+using Microsoft.UI.Input;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
@@ -125,6 +126,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 		NativeWindowWrapper = nativeWindow;
 		Window.AppWindow.SetNativeWindow(nativeWindow);
+		InputNonClientPointerSource.EnsureForAppWindow(Window.AppWindow);
 		OnNativeSizeChanged(null, new Size(nativeWindow.Bounds.Width, nativeWindow.Bounds.Height));
 		SetVisibleBoundsFromNative();
 	}
@@ -405,4 +407,6 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 	}
 
 	partial void DismissSplashScreenPlatform();
+
+	public virtual void SetTitleBar(UIElement? titleBar) { }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -624,8 +625,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			element.SetValue(AttachedFlyoutProperty, value);
 		}
 
-		public static DependencyProperty AttachedFlyoutProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty AttachedFlyoutProperty
+		{
+			[DynamicDependency(nameof(GetAttachedFlyout))]
+			[DynamicDependency(nameof(SetAttachedFlyout))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"AttachedFlyout",
 				typeof(FlyoutBase),
 				typeof(FlyoutBase),

@@ -17,7 +17,8 @@
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>Uno.Foundation</CommonOverridePackageId>
+		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -32,10 +33,6 @@
 		<EmbeddedResource Include="LinkerDefinition.netcoremobile.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

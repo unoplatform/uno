@@ -3,17 +3,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 	[global::Uno.NotImplemented]
 #endif
+	/// <summary>
+	/// Represents a source of pointer input that occurs in a window's non-client area (for example
+	/// the caption, title bar buttons, and resize borders). Provides methods to configure non-client
+	/// region rectangles and events to receive non-client pointer and window-state notifications.
+	/// </summary>
 	public partial class InputNonClientPointerSource
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		internal InputNonClientPointerSource()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
+		/// <summary>
+		/// Gets the <see cref="Microsoft.UI.Dispatching.DispatcherQueue"/> associated with the input source.
+		/// Use this dispatcher to marshal event handlers or other work to the appropriate UI thread.
+		/// </summary>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
 		{
@@ -24,21 +33,38 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerPressed.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
+		/// <summary>
+		/// Removes any region rectangles previously registered for the specified non-client region kind.
+		/// After clearing, input for that region will no longer be treated as part of the specified non-client region.
+		/// </summary>
+		/// <param name="region">The non-client region kind to clear.</param>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearRegionRects(global::Microsoft.UI.Input.NonClientRegionKind region)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.ClearRegionRects(NonClientRegionKind region)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
+		/// <summary>
+		/// Gets the set of rectangle bounds that define the specified non-client region for the window.
+		/// These rectangles are in window coordinates and can be used to determine where non-client input should be routed.
+		/// </summary>
+		/// <param name="region">The non-client region kind to query.</param>
+		/// <returns>An array of <see cref="global::Windows.Graphics.RectInt32"/> describing the region, or an empty array if none are registered.</returns>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.RectInt32[] GetRegionRects(global::Microsoft.UI.Input.NonClientRegionKind region)
 		{
 			throw new global::System.NotImplementedException("The member RectInt32[] InputNonClientPointerSource.GetRegionRects(NonClientRegionKind region) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%5B%5D%20InputNonClientPointerSource.GetRegionRects%28NonClientRegionKind%20region%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
+		/// <summary>
+		/// Sets the set of rectangle bounds that define the specified non-client region for the window.
+		/// These rectangles are expressed in window coordinates and replace any previously registered rectangles for the region.
+		/// </summary>
+		/// <param name="region">The non-client region kind to set.</param>
+		/// <param name="rects">An array of <see cref="global::Windows.Graphics.RectInt32"/> specifying the rectangles for the region.</param>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRegionRects(global::Microsoft.UI.Input.NonClientRegionKind region, global::Windows.Graphics.RectInt32[] rects)
 		{
@@ -69,21 +95,27 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WindowRectChanged.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAllRegionRects()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.ClearAllRegionRects()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
+		/// <summary>
+		/// Gets the <see cref="global::Microsoft.UI.Input.InputNonClientPointerSource"/> associated with the specified window identifier.
+		/// Use this to obtain or create the non-client input source for a particular window.
+		/// </summary>
+		/// <param name="windowId">The identifier of the window.</param>
+		/// <returns>The input source for the specified window.</returns>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputNonClientPointerSource GetForWindowId(global::Microsoft.UI.WindowId windowId)
 		{
 			throw new global::System.NotImplementedException("The member InputNonClientPointerSource InputNonClientPointerSource.GetForWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputNonClientPointerSource%20InputNonClientPointerSource.GetForWindowId%28WindowId%20windowId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientCaptionTappedEventArgs> CaptionTapped
 		{
@@ -99,7 +131,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientPointerEventArgs> PointerEntered
 		{
@@ -115,7 +147,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientPointerEventArgs> PointerExited
 		{
@@ -131,7 +163,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientPointerEventArgs> PointerMoved
 		{
@@ -147,7 +179,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientPointerEventArgs> PointerPressed
 		{
@@ -163,7 +195,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientPointerEventArgs> PointerReleased
 		{
@@ -179,7 +211,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientRegionsChangedEventArgs> RegionsChanged
 		{
@@ -195,7 +227,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.EnteredMoveSizeEventArgs> EnteredMoveSize
 		{
@@ -211,7 +243,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.EnteringMoveSizeEventArgs> EnteringMoveSize
 		{
@@ -227,7 +259,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.ExitedMoveSizeEventArgs> ExitedMoveSize
 		{
@@ -243,7 +275,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.WindowRectChangedEventArgs> WindowRectChanged
 		{
@@ -259,7 +291,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.WindowRectChangingEventArgs> WindowRectChanging
 		{

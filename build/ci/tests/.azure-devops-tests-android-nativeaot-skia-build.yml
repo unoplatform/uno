@@ -45,12 +45,20 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
+  - pwsh: |
+      $artifactName = "uitests-android-nativeaot-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      Write-Host "Publishing Android NativeAOT artifact: $artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
+    name: set_android_nativeaot_artifact
+    displayName: 'Set Android NativeAOT Artifact Name'
+
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Android+NativeAOT Binaries'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/android-nativeaot
-      ArtifactName: uitests-android-nativeaot-skia-build
+      ArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3

@@ -8,12 +8,11 @@
     <Import_RootNamespace>SourceGeneratorHelpers</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.Foundation\_Compat\*.cs" Link="_Compat\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AnalyzerSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DesignTimeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeneratorExecutionContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\IsExternalInit.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Nullable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PlatformHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SymbolExtensions.cs" />

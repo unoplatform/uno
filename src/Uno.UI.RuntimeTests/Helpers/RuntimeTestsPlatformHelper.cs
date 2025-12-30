@@ -67,6 +67,7 @@ internal static class RuntimeTestsPlatformHelper
 			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
 			RuntimeTestPlatforms.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
 			RuntimeTestPlatforms.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
+			RuntimeTestPlatforms.SkiaFrameBuffer => IsSkia() && IsSkiaFrameBuffer(),
 			_ => throw new ArgumentException(nameof(singlePlatform)),
 		};
 	}
@@ -100,6 +101,9 @@ internal static class RuntimeTestsPlatformHelper
 
 	private static bool IsSkiaX11()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.X11");
+
+	private static bool IsSkiaFrameBuffer()
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Linux.FrameBuffer");
 
 	private static bool IsSkiaMacOS()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.MacOS");

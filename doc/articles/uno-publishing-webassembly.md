@@ -14,7 +14,7 @@ You can view more on the [WebAssembly Bootstrapper](xref:UnoWasmBootstrap.Overvi
 
 ## Packaging
 
-### Packaging your app using Visual Studio 2022
+### Packaging your app using Visual Studio 2022/2026
 
 To build your app for WebAssembly:
 

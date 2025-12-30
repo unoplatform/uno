@@ -35,6 +35,8 @@ jobs:
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
+  
   - template: ../templates/uno-dev-feed.yml
 
   - task: CopyFiles@2
@@ -104,7 +106,16 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
 
   - template: ../templates/dotnet-mobile-install-mac.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/uno-dev-feed.yml
+
+  # Required to run netprevious tests
+  - task: UseDotNet@2
+    displayName: Install .NET 9 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '9.0.300'
+      installationPath: $(DOTNET_INSTALL_DIR)
 
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
@@ -122,6 +133,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
+      WasmCachePath: $(WasmCachePath)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -158,9 +170,18 @@ jobs:
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/gitversion.yml
   - template: ../templates/uno-dev-feed.yml
   - template: ../templates/host-cleanup-linux.yml
+
+  # Required to run netprevious tests
+  - task: UseDotNet@2
+    displayName: Install .NET 9 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '9.0.300'
+      installationPath: $(DOTNET_INSTALL_DIR)
 
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
@@ -209,6 +230,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
+      WasmCachePath: $(WasmCachePath)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -221,7 +243,7 @@ jobs:
 
 - job: Dotnet_Tests_Validate_DevServerCli
   displayName: 'DevServer CLI Tests'
-  timeoutInMinutes: 120
+  timeoutInMinutes: 25
   cancelTimeoutInMinutes: 1
 
   pool:
@@ -249,8 +271,16 @@ jobs:
     inputs:
       artifactName: 'Nuget_Packages'
 
+  # Install the .NET 10 SDK in the default system location so 
+  # the devserver tests can find them.
+  - task: UseDotNet@2
+    displayName: Install .NET 10 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '10.0.100'
+
   - template: ../templates/gitversion.yml
-  - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-install.yml
   - template: ../templates/uno-dev-feed.yml
 
   - task: CopyFiles@2
@@ -282,3 +312,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
+      WasmCachePath: $(WasmCachePath)
+      CODEX_API_KEY: $(OPENAI_TOKEN)
+      UNO_STUDIO_LICENSES_BIN: $(UNO_STUDIO_LICENSES_BIN)
+      UNO_STUDIO_USER_JSON: $(UNO_STUDIO_USER_JSON)

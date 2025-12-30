@@ -47,11 +47,13 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	{
 		if (!_wasShown)
 		{
-			Size = new() { Width = (int)(_wpfWindow.Width * RasterizationScale), Height = (int)(_wpfWindow.Height * RasterizationScale) };
+			var size = new SizeInt32() { Width = (int)(_wpfWindow.Width * RasterizationScale), Height = (int)(_wpfWindow.Height * RasterizationScale) };
+			SetSizes(size, size);
 		}
 		else
 		{
-			Size = new() { Width = (int)(_wpfWindow.ActualWidth * RasterizationScale), Height = (int)(_wpfWindow.ActualHeight * RasterizationScale) };
+			var size = new SizeInt32() { Width = (int)(_wpfWindow.ActualWidth * RasterizationScale), Height = (int)(_wpfWindow.ActualHeight * RasterizationScale) };
+			SetSizes(size, size);
 		}
 	}
 
@@ -156,7 +158,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new NativeOverlappedPresenter(_wpfWindow));
+		presenter.SetNative(new NativeOverlappedPresenter(_wpfWindow, this));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 

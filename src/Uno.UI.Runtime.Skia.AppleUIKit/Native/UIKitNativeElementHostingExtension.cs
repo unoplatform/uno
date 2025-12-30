@@ -20,7 +20,7 @@ internal sealed class UIKitNativeElementHostingExtension : ContentPresenter.INat
 
 	private UIView? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? (XamlRootMap.GetHostForRoot(xamlRoot) as IAppleUIKitXamlRootHost)?.NativeOverlayLayer : null;
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		if (content is UIView view)
 		{
@@ -69,14 +69,6 @@ internal sealed class UIKitNativeElementHostingExtension : ContentPresenter.INat
 		if (content is UIView view)
 		{
 			view.Alpha = (float)opacity;
-		}
-	}
-
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is UIView view)
-		{
-			view.Opaque = visible;
 		}
 	}
 

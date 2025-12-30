@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace Uno.UI.RemoteControl.Host.IdeChannel;
 
-namespace Uno.UI.RemoteControl.Host.IdeChannel;
-
-public class IdeChannelServerOptions
+public sealed class IdeChannelServerOptions
 {
-	public Guid ChannelId { get; set; }
+	public string? ChannelId { get; set; }
 }

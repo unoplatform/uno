@@ -149,6 +149,14 @@ Here's what to look for:
 
 - Use [String Resource Trimming](xref:Uno.Features.StringResourceTrimming) to improve package size and startup time
 
+## iOS Native Renderer Specifics
+
+On iOS with the native renderer enabled, memory leaks can happen very frequently when using cross-references on UIElement instances. Some high level analysis can be done using [this C# analyzer](https://github.com/jonathanpeppers/memory-analyzers), to determine obvious patterns that cause memory leaks.
+
+You'll find below other known memory leak patterns on iOS Native:
+
+- `VisualStateManager` must be set on the root element of a XAML file. Placing it on any other control will cause a native controls leak.
+
 ## Skia Targets Specifics
 
 - On Desktop targets, it's possible to change the composition refresh rate using `FeatureConfiguration.CompositionTarget.FrameRate`. The default value is 60 (frames per second).
@@ -156,6 +164,7 @@ Here's what to look for:
   - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
   - If the indicator does not change, this means that the UI is not refreshing.
   - If it is, but nothing is changing visually, it could be that a XAML or Composition animation is still running, see the `ProgressRing` section in this document.
+- Avoid the use of SkiaSharp's `SKXamlCanvas`, instead use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) which is hardware accelerated.
 
 ## Advanced performance Tracing
 

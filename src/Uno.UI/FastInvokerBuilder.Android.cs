@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -18,6 +19,7 @@ namespace Uno.UI
 	{
 		public delegate object FastInvokerHandler(object instance, object[] parms);
 
+		[RequiresDynamicCode("From DynamicMethod: Creating a DynamicMethod requires dynamic code.")]
 		public static FastInvokerHandler DynamicInvokerBuilder(System.Reflection.MethodInfo methodInfo)
 		{
 			DynamicMethod dynamicMethod = new DynamicMethod(

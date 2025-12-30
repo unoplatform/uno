@@ -10,10 +10,12 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Imaging;
@@ -27,8 +29,10 @@ using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
+using Uno.UI.RemoteControl.VS.AppLaunch;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
+using _udeiMsg = Uno.UI.RemoteControl.Messaging.IdeChannel.DevelopmentEnvironmentStatusIdeMessage;
 
 #pragma warning disable VSTHRD010
 #pragma warning disable VSTHRD109
@@ -67,7 +71,9 @@ public partial class EntryPoint : IDisposable
 	private _dispBuildEvents_OnBuildProjConfigBeginEventHandler? _onBuildProjConfigBeginHandler;
 	private UnoMenuCommand? _unoMenuCommand;
 	private IUnoDevelopmentEnvironmentIndicator? _udei;
-	private IdeCommandHandler _commands;
+	private VsAppLaunchIdeBridge? _appLaunchIdeBridge;
+	private VsAppLaunchStateConsumer? _appLaunchStateConsumer;
+	private readonly CompositeCommandHandler _commands;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -81,7 +87,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -103,7 +109,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -171,6 +177,8 @@ public partial class EntryPoint : IDisposable
 		_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = UpdateProjectsAsync();
 		_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
 
+		await InitializeAppLaunchTrackingAsync(asyncPackage);
+
 		// Start the RC server early, as iOS and Android projects capture the globals early
 		// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
 		//
@@ -196,6 +204,23 @@ public partial class EntryPoint : IDisposable
 		_ = _debuggerObserver.ObserveProfilesAsync();
 
 		TelemetryHelper.DataModelTelemetrySession.AddSessionChannel(new TelemetryEventListener(this));
+	}
+
+	private async Task InitializeAppLaunchTrackingAsync(AsyncPackage asyncPackage)
+	{
+		// Initialize App Launch tracking (Play/Build events → state machine)
+		var stateService = new VsAppLaunchStateService<AppLaunchDetails>();
+		stateService.StateChanged += (s, e) =>
+		{
+			var key = e.StateDetails is var d ? d.StartupProjectPath : null;
+			_debugAction?.Invoke($"[AppLaunch] {e.Previous} -> {e.Current} key={key}");
+		};
+
+		var packageVersion = GetAssemblyVersion();
+		var ideVersion = GetIdeVersion();
+
+		_appLaunchIdeBridge = await VsAppLaunchIdeBridge.CreateAsync(asyncPackage, _dte2, stateService);
+		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion, ideVersion);
 	}
 
 	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -272,15 +297,15 @@ public partial class EntryPoint : IDisposable
 		_infoAction($"Uno Remote Control initialized ({GetAssemblyVersion()})");
 	}
 
-	private object GetAssemblyVersion()
+	private string GetAssemblyVersion()
 	{
 		var assembly = GetType().GetTypeInfo().Assembly;
 
-		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is { } aiva)
 		{
 			return aiva.InformationalVersion;
 		}
-		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is AssemblyVersionAttribute ava)
+		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is { } ava)
 		{
 			return ava.Version;
 		}
@@ -288,6 +313,25 @@ public partial class EntryPoint : IDisposable
 		{
 			return "Unknown";
 		}
+	}
+
+	private string GetIdeVersion()
+	{
+		try
+		{
+			// DTE2.Version gives the Visual Studio version (e.g., "17.0" for VS 2022)
+			var vsVersion = _dte2?.Version;
+			if (!string.IsNullOrEmpty(vsVersion))
+			{
+				return $"vswin-{vsVersion}";
+			}
+		}
+		catch
+		{
+			// Swallow any exceptions when retrieving VS version
+		}
+
+		return "vswin";
 	}
 
 	private async Task UpdateProjectsAsync()
@@ -308,30 +352,7 @@ public partial class EntryPoint : IDisposable
 		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
 
 		_closing = true;
-		if (_devServer is { process: var devServer, attachedServices: var ct })
-		{
-			try
-			{
-				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
-				ct.Cancel();
-				devServer.Kill();
-				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
-
-				_ideChannelClient?.Dispose();
-				_ideChannelClient = null;
-			}
-			catch (Exception e)
-			{
-				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
-			}
-			finally
-			{
-				_devServer = null;
-
-				// Invoke Dispose to make sure other event handlers are detached
-				Dispose();
-			}
-		}
+		StopDevServer();
 	}
 
 	private int GetDotnetMajorVersion()
@@ -444,7 +465,7 @@ public partial class EntryPoint : IDisposable
 			devServerCt = CancellationTokenSource.CreateLinkedTokenSource(_ct.Token);
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerStartingAsync(devServerCt.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Starting, devServerCt.Token);
 			}
 
 			if (EnsureTcpPort(ref port) || portMisConfigured)
@@ -500,9 +521,13 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient.ConnectToHost();
 
 				// Use scoped DI instead of this!
-				var remoteCommands = new DevServerCommandHandler(_ideChannelClient);
-				devServerCt.Token.Register(remoteCommands.Dispose);
-				_commands.SetRemoteHandler(remoteCommands);
+				var remoteCommands = new IdeChannelCommandHandler(_ideChannelClient);
+				_commands.Register("Send to Dev Server", remoteCommands);
+				devServerCt.Token.Register(() =>
+				{
+					_commands.Unregister(remoteCommands);
+					remoteCommands.Dispose();
+				});
 			}
 			else
 			{
@@ -516,7 +541,7 @@ public partial class EntryPoint : IDisposable
 			_errorAction?.Invoke($"Failed to start server: {e}");
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerKilledAsync(_ct.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Failed(e), _ct.Token);
 			}
 			devServerCt?.Cancel();
 		}
@@ -531,7 +556,7 @@ public partial class EntryPoint : IDisposable
 			await Task.Delay(10_000, devServerCt.Token);
 			if (ideChannel.MessagesReceivedCount is 0 && _udei is not null && !devServerCt.IsCancellationRequested)
 			{
-				await _udei.NotifyDevServerTimeoutAsync(devServerCt.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Timeout, devServerCt.Token);
 			}
 		}
 
@@ -549,7 +574,7 @@ public partial class EntryPoint : IDisposable
 			// If not closing, restart!
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerRestartAsync(_ct.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Restarting, _ct.Token);
 			}
 
 			_debugAction?.Invoke($"Remote Control server exited ({_devServer?.process.ExitCode}). It will restart in 5sec.");
@@ -564,6 +589,41 @@ public partial class EntryPoint : IDisposable
 
 			await EnsureServerAsync();
 		}
+	}
+
+	private void StopDevServer()
+	{
+		if (_devServer is { process: var devServer, attachedServices: var ct })
+		{
+			try
+			{
+				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
+				ct.Cancel();
+				devServer.Kill();
+				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
+
+				_ideChannelClient?.Dispose();
+				_ideChannelClient = null;
+			}
+			catch (Exception e)
+			{
+				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
+			}
+			finally
+			{
+				_devServer = null;
+
+				// Invoke Dispose to make sure other event handlers are detached
+				Dispose();
+			}
+		}
+	}
+
+	public async Task RestartDevServerAsync(CancellationToken ct)
+	{
+		StopDevServer();
+
+		await EnsureServerAsync();
 	}
 
 	private void OnIdeChannelConnected(object sender, EventArgs e) =>
@@ -707,50 +767,78 @@ public partial class EntryPoint : IDisposable
 		{
 			if (request.FileContent is { Length: > 0 } fileContent)
 			{
-				var filePath = request.FileFullName;
+				var filePath = Path.GetFullPath(request.FileFullName);
 
-				// Update the file content in the IDE using the DTE API.
-				var document = _dte2.Documents
+				// Determine the appropriate encoding for the file
+				var currentEncoding = EncodingHelpers.DetectFileEncoding(filePath);
+				var targetEncoding = EncodingHelpers.GetCompatibleEncoding(currentEncoding, fileContent);
+
+				// Check if document is already open in IDE
+				var document = _dte2
+					.Documents
 					.OfType<Document>()
-					.FirstOrDefault(d => AbsolutePathComparer.ComparerIgnoreCase.Equals(d.FullName, filePath));
+					.FirstOrDefault(d => d.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
 
-				var textDocument = document?.Object("TextDocument") as TextDocument;
+				var shouldReopenDocument = false;
 
-				if (textDocument is null) // The document is not open in the IDE, so we need to open it.
+				// If document is open but encoding needs to be changed, we close it
+				if (document is not null && currentEncoding != targetEncoding)
 				{
-					// Resolve the path to the document (in case it's not open in the IDE).
-					// The path may contain a mix of forward and backward slashes, so we normalize it by using Path.GetFullPath.
-					var adjustedPathForOpening = Path.GetFullPath(filePath);
+					// Document is open but does not have the current encoding, save it, then close it to change encoding
+					_debugAction?.Invoke($"Document {Path.GetFileName(filePath)} is open, saving and closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
 
-					document = _dte2.Documents.Open(adjustedPathForOpening);
-					textDocument = document?.Object("TextDocument") as TextDocument;
+					try
+					{
+						document.Save();
+					}
+					catch
+					{
+						// Ignore save errors
+					}
+
+					document.Close(vsSaveChanges.vsSaveChangesNo);
+					shouldReopenDocument = true;
+					await Task.Delay(250); // Small delay to ensure file system is ready
 				}
 
-				if (document is null || textDocument is null)
+				// If the file is open and encoding compatible, we update its content in-memory
+				// TODO: We should NOT assume the `fileContent` to contains the full document content!
+				if (!shouldReopenDocument && document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding == targetEncoding)
 				{
-					throw new InvalidOperationException($"Failed to open document {filePath}");
+					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (in memory).");
+
+					// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+					// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
+					const int flags = 0b0000_0011;
+					textDocument
+						.StartPoint
+						.CreateEditPoint()
+						.ReplaceText(textDocument.EndPoint, fileContent, flags);
+
+					if (request.ForceSaveOnDisk)
+					{
+						// Save the document.
+						document.Save();
+					}
 				}
-
-				// Replace the content of the document with the new content.
-
-				// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-				// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-				const int flags = 0b0000_0011;
-
-				textDocument.StartPoint.CreateEditPoint()
-					.ReplaceText(textDocument.EndPoint, fileContent, flags);
-
-				if (request.ForceSaveOnDisk)
+				else
 				{
-					// Save the document.
-					document.Save();
+					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (on disk).");
+
+					File.WriteAllText(filePath, fileContent, targetEncoding);
+
+					if (document is not null)
+					{
+						// Re-open the document to reflect changes in IDE
+						await Task.Delay(250); // Small delay to ensure file system is ready
+						_dte2.Documents.Open(filePath);
+					}
 				}
 
 				// Send a message back to indicate that the request has been received and acted upon.
 				if (_ideChannelClient is not null)
 				{
-					await _ideChannelClient.SendToDevServerAsync(
-						new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
+					await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
 				}
 			}
 		}
@@ -820,6 +908,8 @@ public partial class EntryPoint : IDisposable
 			_debuggerObserver?.Dispose();
 			_infoBarFactory?.Dispose();
 			_unoMenuCommand?.Dispose();
+			_appLaunchIdeBridge?.Dispose();
+			_appLaunchStateConsumer?.Dispose();
 		}
 		catch (Exception e)
 		{

@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.Tasks.HotReloadInfo;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -38,12 +40,19 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				ProcessAssemblyReload(frame.GetContent<AssemblyDeltaReload>());
 				break;
 
+			case UpdateSingleFileResponse.Name:
+				// Dev server is not in sync with the application ... this should not happen, but we can safely handle that
+				var single = frame.GetContent<UpdateSingleFileResponse>();
+				var multi = new UpdateFileResponse(single.RequestId, null, [new FileEditResult(single.FilePath, single.Result, single.Error)], single.HotReloadCorrelationId);
+				ProcessUpdateFileResponse(multi);
+				break;
+
 			case UpdateFileResponse.Name:
 				ProcessUpdateFileResponse(frame.GetContent<UpdateFileResponse>());
 				break;
 
 			case HotReloadWorkspaceLoadResult.Name:
-				WorkspaceLoadResult(frame.GetContent<HotReloadWorkspaceLoadResult>());
+				ProcessWorkspaceLoadResult(frame.GetContent<HotReloadWorkspaceLoadResult>());
 				break;
 
 			case HotReloadStatusMessage.Name:
@@ -53,7 +62,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 			default:
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogError($"Unknown frame [{frame.Scope}/{frame.Name}]");
+					this.Log().LogError($"Received unknown frame [{frame.Scope}/{frame.Name}]");
 				}
 				break;
 		}
@@ -75,7 +84,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 				_projectPath = config.ProjectPath;
 
-				_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
+				_msbuildProperties = Messages.ConfigureServer.ParseMSBuildProperties(config.MSBuildProperties);
 
 				ConfigureHotReloadMode();
 				InitializeMetadataUpdater();
@@ -85,8 +94,14 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 					_status.ReportInvalidRuntime();
 				}
 
-				var hrDebug = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
-				var message = new ConfigureServer(_projectPath, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties, hrDebug);
+				var hrDebug = Debugger.IsAttached && Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
+				var message = new ConfigureServer(
+					_projectPath,
+					GetMetadataUpdateCapabilities(),
+					config.MSBuildProperties,
+					HotReloadInfoHelper.GetInfoFilePath(assembly),
+					_serverMetadataUpdatesEnabled,
+					hrDebug);
 
 				await _rcClient.SendMessage(message);
 

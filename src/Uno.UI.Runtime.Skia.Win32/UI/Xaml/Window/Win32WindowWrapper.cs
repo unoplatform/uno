@@ -6,6 +6,20 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
+using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
+using Uno.UI.Xaml.Controls;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
@@ -16,17 +30,7 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
-using Uno.UI.Hosting;
-using Uno.UI.NativeElementHosting;
-using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -46,13 +50,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private readonly ApplicationView _applicationView;
 	private readonly IRenderer _renderer;
 
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	private bool _beforeFirstEraseBkgnd = true;
+	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -80,11 +83,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		var success = PInvoke.SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) != 0;
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetThreadDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}"); }
 
-		// this must come before CreateWindow(), which sends a WM_GETMINMAXINFO message that reads from _applicationView
-		_applicationView = ApplicationView.GetForWindowId(window.AppWindow.Id);
-		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
-
 		_hwnd = CreateWindow();
+
+		window.AppWindow.SetNativeWindow(this);
 
 		XamlRootMap.Register(xamlRoot, this);
 
@@ -113,7 +114,23 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
 		}
 
-		// TODO: extending into titlebar
+		window.AppWindow.TitleBar.Changed += OnAppWindowTitleBarChanged;
+		UpdateClientAreaExtension();
+	}
+
+	private void OnAppWindowTitleBarChanged(object? sender, EventArgs e)
+	{
+		if (_window is null)
+		{
+			throw new InvalidOperationException("Cannot extend client area before the Window is set.");
+		}
+
+		if (!WasShown)
+		{
+			return;
+		}
+
+		UpdateClientAreaExtension();
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -125,21 +142,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (hResult.Failed)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.DwmSetWindowAttribute)} failed: {Win32Helper.GetErrorMessage(hResult)}");
-		}
-	}
-
-	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName == nameof(_applicationView.PreferredMinSize))
-		{
-			if (!PInvoke.GetWindowRect(_hwnd, out var rect))
-			{
-				this.LogError()?.Error($"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
-				return;
-			}
-			// We are setting the window rect to itself to trigger a WM_GETMINMAXINFO
-			var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}
 	}
 
@@ -200,8 +202,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+
+		if (TryHandleCustomCaptionMessage(hwnd, msg, wParam, lParam, out var customCaptionResult))
+		{
+			return customCaptionResult;
+		}
+
 		switch (msg)
 		{
+			case PInvoke.WM_NCPAINT:
+				if (_forcePaintOnNextEraseBkgndOrNcPaint)
+				{
+					SynchronousRenderAndDraw(true);
+				}
+				break;
 			case PInvoke.WM_ACTIVATE:
 				OnWmActivate(wParam);
 				return new LRESULT(0);
@@ -221,28 +235,40 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				UpdateWindowState(wParam);
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				// This call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
+				// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
+				// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
+				// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
+				// and our render timer.
+				SynchronousRenderAndDraw(false);
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
-				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
-				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
+				if (Window?.AppWindow?.Presenter is OverlappedPresenter overlappedPresenter)
+				{
+					int minWidth = overlappedPresenter.PreferredMinimumWidth ?? 0;
+					int minHeight = overlappedPresenter.PreferredMinimumHeight ?? 0;
+					int maxWidth = overlappedPresenter.PreferredMaximumWidth ?? int.MaxValue;
+					int maxHeight = overlappedPresenter.PreferredMaximumHeight ?? int.MaxValue;
+
+					MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
+					info->ptMinTrackSize = new Point(minWidth, minHeight);
+					info->ptMaxTrackSize = new Point(maxWidth, maxHeight);
+				}
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
-				if (_beforeFirstEraseBkgnd)
+				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
-					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
-					// Note that we don't call OnRenderFrameOpportunity here, but before showing
-					// the window in ShowCore. The problem is that any minor delay will cause
-					// a split-second white flash, so we're keeping the "time to blit" to a
-					// minimum by "rendering" before the window is shown and only drawing when
-					// receiving the first WM_ERASEBKGND
-					_beforeFirstEraseBkgnd = false;
+					_forcePaintOnNextEraseBkgndOrNcPaint = false;
+					// This call is necessary to avoid an initial blank frame during window startup.
+					// This follows from the SynchronousRenderAndDraw call in ShowCore
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
 					Render();
@@ -279,9 +305,67 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					return new LRESULT(0);
 				}
 				break;
+			case PInvoke.WM_NCCALCSIZE:
+				if (wParam.Value == 1 && (!_hasBorder || !_hasTitleBar))
+				{
+					return new LRESULT(IntPtr.Zero);
+				}
+				break;
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private void SynchronousRenderAndDraw(bool sizeChanged)
+	{
+		if (sizeChanged)
+		{
+			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+		}
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+		Render();
+	}
+
+	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
+	{
+		// Cast to short before converting to int to handle sign extension for negative coordinates.
+		// This is necessary when the point is outside the primary monitor bounds.
+		int x = (short)(lParam.Value & 0xFFFF);
+		int y = (short)((lParam.Value >> 16) & 0xFFFF);
+		return new System.Drawing.Point(x, y);
+	}
+
+	private bool TryHandleCustomCaptionMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam, out LRESULT result)
+	{
+		var handled = PInvoke.DwmDefWindowProc(hWnd, msg, wParam, lParam, out result);
+		switch (msg)
+		{
+			case PInvoke.WM_NCHITTEST:
+				if (result == IntPtr.Zero)
+				{
+					var hittestResult = NonClientAreaHitTest(hWnd, wParam, lParam);
+
+					if (hittestResult != Win32NonClientHitTestKind.HTNOWHERE)
+					{
+						result = new LRESULT((IntPtr)hittestResult);
+						handled = true;
+					}
+				}
+				break;
+			case PInvoke.WM_NCPOINTERUPDATE:
+			case PInvoke.WM_NCPOINTERDOWN:
+			case PInvoke.WM_NCPOINTERUP:
+				if (!handled
+					&& ShouldRedirectNonClientInput(hWnd, wParam, lParam))
+				{
+					OnPointer(msg, wParam, hWnd);
+					handled = true;
+				}
+				break;
+		}
+
+		return handled;
 	}
 
 	private unsafe void OnWmDpiChanged(WPARAM wParam, LPARAM lParam)
@@ -297,7 +381,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private void OnWmDestroy()
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
-		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderer.Dispose();
@@ -366,7 +449,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		var bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
 		SetBoundsAndVisibleBounds(bounds, bounds);
 
-		Size = new SizeInt32(windowRect.Width, windowRect.Height);
+		SetSizes(new SizeInt32(windowRect.Width, windowRect.Height), new SizeInt32(clientRect.Width, clientRect.Height));
 		Position = new PointInt32(windowRect.left, windowRect.top);
 	}
 
@@ -396,12 +479,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore()
 	{
-		// see the comment in WndProc's WM_ERASEBKGND handling
-		if (_beforeFirstEraseBkgnd)
-		{
-			(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-		}
-
+		UpdateClientAreaExtension();
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
@@ -409,7 +487,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, false);
 			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
 		}
-		else if (Window?.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+		else if (Window?.AppWindow.Presenter is OverlappedPresenter)
 		{
 			switch (_pendingState)
 			{
@@ -419,17 +497,21 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				case OverlappedPresenterState.Minimized:
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 					break;
-				case OverlappedPresenterState.Restored:
-					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_RESTORE);
-					break;
 				default:
-					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+					// This SynchronousRenderAndDraw call avoids showing the window with a blank first frame.
+					// We call it here and not when handling WM_ERASEBKGND. The problem is that any minor delay
+					// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
+					// before the window is shown and then making a Render call on WM_ERASEBKGND.
+					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
+					// the window has been resized (due to e.g. maximizing)
+					SynchronousRenderAndDraw(true);
+					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 					break;
 			}
 		}
 		else
 		{
-			PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+			throw new InvalidOperationException("Unsupported Window Presenter.");
 		}
 	}
 
@@ -480,78 +562,78 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
+	}
 
-		void SetIcon(string iconPath)
+	public override unsafe void SetIcon(string iconPath)
+	{
+		// https://github.com/libsdl-org/SDL/blob/fc12cc6dfd859a4e01376162a58f12208e539ac6/src/video/windows/SDL_windowswindow.c#L827
+		// This software is provided 'as-is', without any express or implied
+		// warranty.  In no event will the authors be held liable for any damages
+		// arising from the use of this software.
+		//
+		// Permission is granted to anyone to use this software for any purpose,
+		// including commercial applications, and to alter it and redistribute it
+		// freely, subject to the following restrictions:
+		//
+		// 1. The origin of this software must not be misrepresented; you must not
+		//    claim that you wrote the original software. If you use this software
+		//    in a product, an acknowledgment in the product documentation would be
+		//    appreciated but is not required.
+		// 2. Altered source versions must be plainly marked as such, and must not be
+		//    misrepresented as being the original software.
+		// 3. This notice may not be removed or altered from any source distribution.
+
+		if (!File.Exists(iconPath))
 		{
-			// https://github.com/libsdl-org/SDL/blob/fc12cc6dfd859a4e01376162a58f12208e539ac6/src/video/windows/SDL_windowswindow.c#L827
-			// This software is provided 'as-is', without any express or implied
-			// warranty.  In no event will the authors be held liable for any damages
-			// arising from the use of this software.
-			//
-			// Permission is granted to anyone to use this software for any purpose,
-			// including commercial applications, and to alter it and redistribute it
-			// freely, subject to the following restrictions:
-			//
-			// 1. The origin of this software must not be misrepresented; you must not
-			//    claim that you wrote the original software. If you use this software
-			//    in a product, an acknowledgment in the product documentation would be
-			//    appreciated but is not required.
-			// 2. Altered source versions must be plainly marked as such, and must not be
-			//    misrepresented as being the original software.
-			// 3. This notice may not be removed or altered from any source distribution.
-
-			if (!File.Exists(iconPath))
-			{
-				this.LogError()?.Error($"Couldn't find icon file [{iconPath}].");
-				return;
-			}
-
-			var image = SKImage.FromEncodedData(iconPath);
-			if (image is null)
-			{
-				this.LogError()?.Error($"Couldn't load icon file [{iconPath}].");
-				return;
-			}
-			using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
-
-			var maskLength = image.Height * (image.Width + 7) / 8;
-			var imageSize = image.Height * image.Width * Marshal.SizeOf<uint>();
-			var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
-			var presBits = stackalloc byte[iconLength];
-
-			var bmi = (BITMAPINFOHEADER*)presBits;
-			bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
-			bmi->biWidth = image.Width;
-			bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
-			bmi->biPlanes = 1;
-			bmi->biBitCount = 32;
-			bmi->biCompression = /* BI_RGB */ 0x0000;
-
-			// Write the pixels upside down into the bitmap buffer
-			var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888);
-			using (var surface = SKSurface.Create(info))
-			{
-				var canvas = surface.Canvas;
-				canvas.Translate(0, image.Height);
-				canvas.Scale(1, -1);
-				canvas.DrawImage(image, 0, 0);
-				surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
-			}
-
-			// Write the mask
-			new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
-
-			// No need to destroy icons created with CreateIconFromResource
-			var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
-			if (hIcon == HICON.Null)
-			{
-				this.LogError()?.Error($"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
-				return;
-			}
-
-			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value);
-			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value);
+			this.LogError()?.Error($"Couldn't find icon file [{iconPath}].");
+			return;
 		}
+
+		var image = SKImage.FromEncodedData(iconPath);
+		if (image is null)
+		{
+			this.LogError()?.Error($"Couldn't load icon file [{iconPath}].");
+			return;
+		}
+		using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
+
+		var maskLength = image.Height * (image.Width + 7) / 8;
+		var imageSize = image.Height * image.Width * Marshal.SizeOf<uint>();
+		var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
+		var presBits = stackalloc byte[iconLength];
+
+		var bmi = (BITMAPINFOHEADER*)presBits;
+		bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
+		bmi->biWidth = image.Width;
+		bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
+		bmi->biPlanes = 1;
+		bmi->biBitCount = 32;
+		bmi->biCompression = /* BI_RGB */ 0x0000;
+
+		// Write the pixels upside down into the bitmap buffer
+		var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888);
+		using (var surface = SKSurface.Create(info))
+		{
+			var canvas = surface.Canvas;
+			canvas.Translate(0, image.Height);
+			canvas.Scale(1, -1);
+			canvas.DrawImage(image, 0, 0);
+			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
+		}
+
+		// Write the mask
+		new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
+
+		// No need to destroy icons created with CreateIconFromResource
+		var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
+		if (hIcon == HICON.Null)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value);
+		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value);
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
@@ -575,6 +657,26 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		else if (_window is null)
 		{
 			this.LogDebug()?.Debug($"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
+		}
+	}
+
+	private unsafe float GetPrimaryMonitorScale()
+	{
+		// Get the handle to the primary monitor
+		var primaryMonitor = PInvoke.MonitorFromPoint(new System.Drawing.Point(0, 0), MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
+
+		// Try getting the DPI using GetDpiForMonitor (Windows 8.1+)
+		if (PInvoke.GetDpiForMonitor(primaryMonitor, Windows.Win32.UI.HiDpi.MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out uint dpiX, out uint dpiY) == 0)
+		{
+			return dpiX / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
+		}
+		else
+		{
+			// Fallback for older Windows versions
+			var hdc = PInvoke.GetDC(HWND.Null);
+			int dpi = PInvoke.GetDeviceCaps(hdc, GET_DEVICE_CAPS_INDEX.LOGPIXELSX);
+			_ = PInvoke.ReleaseDC(HWND.Null, hdc);
+			return dpi / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
 		}
 	}
 }

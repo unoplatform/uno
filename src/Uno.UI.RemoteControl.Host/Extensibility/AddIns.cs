@@ -42,6 +42,7 @@ public class AddIns
 					var msg = $"Failed to get target frameworks of solution '{solutionFile}'. "
 						+ "This usually indicates that the solution is in an invalid state (e.g. a referenced project is missing on disk). "
 						+ $"Please fix and restart your IDE (command used: `dotnet {command}`).";
+
 					if (result.error is { Length: > 0 })
 					{
 						_log.Log(LogLevel.Warning, new Exception(result.error), msg + " (cf. inner exception for more details.)");
@@ -49,10 +50,11 @@ public class AddIns
 					else
 					{
 						var binlog = Path.GetTempFileName();
-						result = ProcessHelper.RunProcess("dotnet", DumpTFM($"\"-bl:{binlog}\""), wd);
+						// Important: the output file extension must be .binlog, otherwise the build will fail.
+						result = ProcessHelper.RunProcess("dotnet", DumpTFM($"\"-bl:{binlog}.binlog\""), wd);
 
 						_log.Log(LogLevel.Warning, msg);
-						_log.Log(LogLevel.Debug, result.output);
+						_log.Log(LogLevel.Debug, $"Error details: {result.output}");
 					}
 				}
 
@@ -75,8 +77,7 @@ public class AddIns
 				{
 					if (_log.IsEnabled(LogLevel.Warning))
 					{
-						var msg =
-							$"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (command used: `dotnet {command}`).";
+						var msg = $"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (command used: `dotnet {command}`).";
 						if (result.error is { Length: > 0 })
 						{
 							_log.Log(LogLevel.Warning, new Exception(result.error),

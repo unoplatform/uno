@@ -1,3 +1,4 @@
+using System;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -13,15 +14,23 @@ partial class ContentPresenter
 
 		void DetachNativeElement(object content);
 
-		void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect);
+		void ArrangeNativeElement(object content, Rect arrangeRect);
 
 		Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize);
 
 		object CreateSampleComponent(string text);
 
-		void ChangeNativeElementVisibility(object content, bool visible);
-
 		void ChangeNativeElementOpacity(object content, double opacity);
+
+		bool SupportsZIndex() => false;
+
+		void SetZIndex(object content, int zIndex)
+		{
+			if (SupportsZIndex())
+			{
+				throw new InvalidOperationException($"{nameof(SetZIndex)} should be implemented if {nameof(SupportsZIndex)}.");
+			}
+		}
 #endif
 	}
 }

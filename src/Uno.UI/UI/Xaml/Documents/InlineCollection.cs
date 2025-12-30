@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+
 #if __WASM__
 using System.Collections.Specialized;
-using System.Linq;
-
 #endif
-using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Documents
 			)
 		{
 #if !IS_UNIT_TESTS
-			_preorderTree = null;
+			InvalidateTraversedTree();
 
 #if __WASM__
 			switch (_collection.Owner)
@@ -59,9 +59,12 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 		}
 
-		private Inline[] _preorderTree;
+		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;
 
-		internal void InvalidatePreorderTree() => _preorderTree = null;
+		internal void InvalidateTraversedTree()
+		{
+			_traversedTree = null;
+		}
 
 		/// <remarks>
 		/// The PreorderTree invalidation logic is extremely buggy because the DP parent chain is flattened
@@ -69,59 +72,70 @@ namespace Microsoft.UI.Xaml.Documents
 		/// when read using GetParent(). The returned value here is up to date only when this is the
 		/// InlineCollection of a TextBlock.
 		/// </remarks>
-		internal Inline[] PreorderTree => _preorderTree ??= GetPreorderTree();
-
-		private Inline[] GetPreorderTree()
+		internal (Inline[] preorderTree, Inline[] leafTree) TraversedTree
 		{
-			if (_collection.Count == 1 && _collection[0] is not Span)
+			get
 			{
-				return new Inline[] { (Inline)_collection[0] };
-			}
-			else if (_collection.Count == 0)
-			{
-				return Array.Empty<Inline>();
-			}
-			else
-			{
-				var result = new List<Inline>(4);
+				if (_traversedTree is { } traversedTree)
+				{
+					return traversedTree;
+				}
+				var preOrderTree = GetPreorderTree();
+				return (_traversedTree = (preOrderTree, preOrderTree.Where(inline => inline is Run or LineBreak).ToArray())).Value;
+
+				Inline[] GetPreorderTree()
+				{
+					if (_collection.Count == 1 && _collection[0] is not Span)
+					{
+						return [(Inline)_collection[0]];
+					}
+					else if (_collection.Count == 0)
+					{
+						return [];
+					}
+					else
+					{
+						var result = new List<Inline>(4);
 
 
 #if __WASM__
-				foreach (var current in _collection)
-				{
-					GetPreorderTreeInner((Inline)current, result);
-				}
+						foreach (var current in _collection)
+						{
+							GetPreorderTreeInner((Inline)current, result);
+						}
 #else
-				var enumerator = _collection.GetEnumeratorFast();
+						var enumerator = _collection.GetEnumeratorFast();
 
-				while (enumerator.MoveNext())
-				{
-					GetPreorderTreeInner(enumerator.Current, result);
-				}
+						while (enumerator.MoveNext())
+						{
+							GetPreorderTreeInner(enumerator.Current, result);
+						}
 #endif
 
-				return result.ToArray();
-			}
+						return result.ToArray();
+					}
 
-			static void GetPreorderTreeInner(Inline inline, List<Inline> accumulator)
-			{
-				accumulator.Add(inline);
+					static void GetPreorderTreeInner(Inline inline, List<Inline> accumulator)
+					{
+						accumulator.Add(inline);
 
-				if (inline is Span span)
-				{
+						if (inline is Span span)
+						{
 #if __WASM__
-					foreach (var current in span.Inlines._collection)
-					{
-						GetPreorderTreeInner((Inline)current, accumulator);
-					}
+							foreach (var current in span.Inlines._collection)
+							{
+								GetPreorderTreeInner((Inline)current, accumulator);
+							}
 #else
-					var enumerator = span.Inlines.GetEnumeratorFast();
+							var enumerator = span.Inlines.GetEnumeratorFast();
 
-					while (enumerator.MoveNext())
-					{
-						GetPreorderTreeInner(enumerator.Current, accumulator);
-					}
+							while (enumerator.MoveNext())
+							{
+								GetPreorderTreeInner(enumerator.Current, accumulator);
+							}
 #endif
+						}
+					}
 				}
 			}
 		}
@@ -136,7 +150,7 @@ namespace Microsoft.UI.Xaml.Documents
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 #if !__WASM__
-		internal List<Inline>.Enumerator GetEnumeratorFast() => _collection.GetEnumeratorFast();
+		private List<Inline>.Enumerator GetEnumeratorFast() => _collection.GetEnumeratorFast();
 #endif
 
 		/// <inheritdoc />

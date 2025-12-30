@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 #if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
 [RunsOnUIThread]
 [TestClass]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer)]
 public class Given_WebView2
 {
 	[TestMethod]

@@ -8,6 +8,24 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public class Given_Binding
 {
+	private static string EmptyCodeBehind(string className) =>
+		$$"""
+		using Microsoft.UI.Xaml.Controls;
+
+		namespace TestRepro
+		{
+			public sealed partial class {{className}} : Page
+			{
+				public {{className}}()
+				{
+					this.InitializeComponent();
+				}
+			}
+		}
+		""";
+
+	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage");
+
 	[TestMethod]
 	public async Task When_Xaml_Object_With_Common_Properties()
 	{
@@ -669,6 +687,88 @@ public class Given_Binding
 				}
 			}
 		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestRelativeSourceFullXmlSyntax()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<TextBlock>
+						<TextBlock.Text>
+							<Binding>
+								<Binding.RelativeSource>
+									<RelativeSource>
+										<RelativeSource.Mode>TemplatedParent</RelativeSource.Mode>
+									</RelativeSource>
+								</Binding.RelativeSource>
+							</Binding>>
+						</TextBlock.Text>
+					</TextBlock>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestRelativeSourceExpendedSyntax()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<TextBlock Text="{Binding ThePath, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestRelativeSourceShortSyntax()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<TextBlock Text="{Binding ThePath, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		await test.RunAsync();
 	}

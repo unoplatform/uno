@@ -18,20 +18,8 @@ internal static class FontManifestHelpers
 		Equivalent,
 	}
 
-	private static readonly JsonSerializerOptions _options = new JsonSerializerOptions()
-	{
-		AllowTrailingCommas = true,
-		PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-		ReadCommentHandling = JsonCommentHandling.Skip,
-		Converters =
-		{
-			new JsonStringEnumConverter(),
-		},
-		TypeInfoResolver = FontManifestSerializerContext.Default,
-	};
-
 	internal static FontManifest? DeserializeManifest(Stream manifestStream)
-		=> JsonSerializer.Deserialize<FontManifest>(manifestStream, _options);
+		=> JsonSerializer.Deserialize<FontManifest>(manifestStream, FontManifestSerializerContext.Default.FontManifest);
 
 	internal static string GetFamilyNameFromManifest(Stream jsonStream, FontWeight weight, FontStyle style, FontStretch stretch)
 	{

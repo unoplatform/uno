@@ -57,7 +57,7 @@ namespace SkiaSharpExample
 				.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
 				.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
 				.UseWindows()
-				.UseLinuxFrameBuffer()
+				.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
 				.UseWindows(b => b
 					.WpfApplication(() =>
 					{
