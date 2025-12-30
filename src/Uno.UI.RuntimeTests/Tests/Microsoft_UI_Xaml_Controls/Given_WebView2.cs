@@ -149,49 +149,49 @@ public class Given_WebView2
 	}
 
 #if __ANDROID__ || __IOS__
-    [TestMethod]
-    public async Task When_IsScrollable()
-    {
-        var border = new Border();
-        var webView = new WebView();
+	[TestMethod]
+	public async Task When_IsScrollable()
+	{
+		var border = new Border();
+		var webView = new WebView();
 		webView.Source = new Uri("https://bing.com");
-        webView.Width = 200;
-        webView.Height = 200;
-        border.Child = webView;
-        TestServices.WindowHelper.WindowContent = border;
-        await TestServices.WindowHelper.WaitForLoaded(border);
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
 
-        Assert.IsTrue(webView.IsScrollEnabled);
+		Assert.IsTrue(webView.IsScrollEnabled);
 
 #if __IOS__
-        var nativeWebView = ((_View)webView)
-            .FindSubviewsOfType<INativeWebView>()
-            .FirstOrDefault();
-        var scrollView = ((_View)nativeWebView)?.FindSubviewsOfType<UIScrollView>().FirstOrDefault();
-        Assert.IsTrue(scrollView.ScrollEnabled);
-        Assert.IsTrue(scrollView.Bounces);
+		var nativeWebView = ((_View)webView)
+			.FindSubviewsOfType<INativeWebView>()
+			.FirstOrDefault();
+		var scrollView = ((_View)nativeWebView)?.FindSubviewsOfType<UIScrollView>().FirstOrDefault();
+		Assert.IsTrue(scrollView.ScrollEnabled);
+		Assert.IsTrue(scrollView.Bounces);
 #endif
 
 #if __ANDROID__
-        var nativeWebView = (webView as Android.Views.ViewGroup)?
-            .GetChildren(v => v is Android.Webkit.WebView)
-            .FirstOrDefault() as Android.Webkit.WebView;
-        Assert.IsTrue(nativeWebView.HorizontalScrollBarEnabled);
-        Assert.IsTrue(nativeWebView.VerticalScrollBarEnabled);
+		var nativeWebView = (webView as Android.Views.ViewGroup)?
+			.GetChildren(v => v is Android.Webkit.WebView)
+			.FirstOrDefault() as Android.Webkit.WebView;
+		Assert.IsTrue(nativeWebView.HorizontalScrollBarEnabled);
+		Assert.IsTrue(nativeWebView.VerticalScrollBarEnabled);
 #endif
-        webView.IsScrollEnabled = false;
+		webView.IsScrollEnabled = false;
 
 #if __IOS__
-        Assert.IsFalse(scrollView.ScrollEnabled);
-        Assert.IsFalse(scrollView.Bounces);
+		Assert.IsFalse(scrollView.ScrollEnabled);
+		Assert.IsFalse(scrollView.Bounces);
 #endif
 
 #if __ANDROID__
-        Assert.IsFalse(nativeWebView.HorizontalScrollBarEnabled);
-        Assert.IsFalse(nativeWebView.VerticalScrollBarEnabled);
+		Assert.IsFalse(nativeWebView.HorizontalScrollBarEnabled);
+		Assert.IsFalse(nativeWebView.VerticalScrollBarEnabled);
 #endif
 
-    }
+	}
 #endif
 
 	[TestMethod]
@@ -308,7 +308,7 @@ public class Given_WebView2
 	}
 
 #if WINAPPSDK
-    [Ignore("Crashes")]
+	[Ignore("Crashes")]
 #endif
 	[TestMethod]
 	public async Task When_LocalFolder_File()
@@ -383,7 +383,7 @@ public class Given_WebView2
 	}
 
 #if __IOS__
-    [Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+	[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 	[TestMethod]
 	// Fails on iOS https://github.com/unoplatform/uno/issues/9080
@@ -412,34 +412,34 @@ public class Given_WebView2
 		webView.NavigateToString(
 """
 <html>
-    <head>
-        <title>Test message</title>
-    </head>
-    <body>
-        <div id='test' style='width: 100px; height: 100px; background-color: blue;'></div>
-        <script type="text/javascript">
-            function sendWebMessage(){
-                try{
-                    let message = {"some": ['values',"in","json",1]};
+	<head>
+		<title>Test message</title>
+	</head>
+	<body>
+		<div id='test' style='width: 100px; height: 100px; background-color: blue;'></div>
+		<script type="text/javascript">
+			function sendWebMessage(){
+				try{
+					let message = {"some": ['values',"in","json",1]};
 
-                    if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
-                        // Windows
-                        chrome.webview.postMessage(message);
-                    } else if (window.hasOwnProperty("unoWebView")) {
-                        // Android
-                        unoWebView.postMessage(JSON.stringify(message));
-                    } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
-                        // iOS and macOS
-                        webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
-                    }
-                }
-                catch (ex){
-                    alert("Error occurred: " + ex);
-                }
-            }
-            sendWebMessage()
-        </script>
-    </body>
+					if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
+						// Windows
+						chrome.webview.postMessage(message);
+					} else if (window.hasOwnProperty("unoWebView")) {
+						// Android
+						unoWebView.postMessage(JSON.stringify(message));
+					} else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
+						// iOS and macOS
+						webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
+					}
+				}
+				catch (ex){
+					alert("Error occurred: " + ex);
+				}
+			}
+			sendWebMessage()
+		</script>
+	</body>
 </html>
 """
 		);
