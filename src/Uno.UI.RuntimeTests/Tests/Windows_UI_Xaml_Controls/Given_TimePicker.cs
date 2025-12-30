@@ -390,12 +390,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21958")]
 		public async Task When_Fast_Scrolling_Items_Should_Remain_Visible()
 		{
-			// This test validates the fix for the issue where numbers disappear during fast scrolling
-			var timePicker = new TimePicker();
+			TimePicker timePicker = new()
+			{
+				Time = new TimeSpan(12, 30, 0)
+			};
 #if HAS_UNO
 			timePicker.UseNativeStyle = false;
 #endif
-			timePicker.Time = new TimeSpan(12, 30, 0);
 			TestServices.WindowHelper.WindowContent = timePicker;
 			await TestServices.WindowHelper.WaitForLoaded(timePicker);
 
@@ -408,7 +409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ScrollViewer scrollViewer = null;
 			LoopingSelectorPanel panel = null;
-			int initialRealizedItemCount = 0;
+			var initialRealizedItemCount = 0;
 
 			await TestServices.RunOnUIThread(() =>
 			{
@@ -418,7 +419,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				panel = scrollViewer.Content as LoopingSelectorPanel;
 				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
 
-				// Get initial count of visible children
 				initialRealizedItemCount = panel.Children.Count;
 				Assert.IsTrue(initialRealizedItemCount > 0, "Should have realized items initially");
 			});
@@ -432,31 +432,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				//bool scrollCompleted = false;
 				await TestServices.RunOnUIThread(() =>
 				{
-					// ChangeView triggers ViewChanged events (with IsIntermediate = true during animation)
 					scrollViewer.ChangeView(null, scrollPosition, null, disableAnimation: false);
 				});
 
-				// Don't wait for idle - this simulates fast scrolling where the user
-				// is scrolling faster than the system can settle
 				await Task.Delay(10); // Small delay to allow event processing
 
-				// Verify that items are still visible during the scroll
-				int currentItemCount = 0;
+				var currentItemCount = 0;
 				await TestServices.RunOnUIThread(() =>
 				{
 					currentItemCount = panel.Children.Count;
 				});
 
-				// During fast scrolling, we should still have visible items
-				// The fix ensures Balance() is called synchronously during intermediate events
 				Assert.IsTrue(currentItemCount > 0,
 					$"Should have visible items during fast scrolling at position {scrollPosition}, but found {currentItemCount} items");
 			}
 
-			// Wait for scrolling to complete and verify final state
 			await TestServices.WindowHelper.WaitForIdle();
 
-			int finalRealizedItemCount = 0;
+			var finalRealizedItemCount = 0;
 			await TestServices.RunOnUIThread(() =>
 			{
 				finalRealizedItemCount = panel.Children.Count;
@@ -464,7 +457,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(finalRealizedItemCount > 0, "Should have realized items after scrolling completes");
 
-			// Clean up - close the flyout
 			await ControlHelper.ClickFlyoutCloseButton(timePicker, false /* isAccept */);
 			await TestServices.WindowHelper.WaitForIdle();
 		}
