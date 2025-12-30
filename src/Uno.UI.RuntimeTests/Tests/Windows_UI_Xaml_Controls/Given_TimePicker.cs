@@ -429,7 +429,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			foreach (var scrollPosition in scrollPositions)
 			{
-				//bool scrollCompleted = false;
 				await TestServices.RunOnUIThread(() =>
 				{
 					scrollViewer.ChangeView(null, scrollPosition, null, disableAnimation: false);
