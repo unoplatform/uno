@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Package = Windows.ApplicationModel.Package;
 using Uno;
 
 namespace Windows.Storage.Helpers;
@@ -26,15 +27,11 @@ internal partial class StorageFileHelper
 #if __SKIA__ || WINDOWS || WINAPPSDK || WINDOWS_UWP || WINUI
 	private static Task<bool> FileExistsInPackage(string fileName)
 	{
-		var executingPath = Assembly.GetExecutingAssembly().Location;
-		if (!string.IsNullOrEmpty(executingPath))
+		var installDir = Package.GetAppInstallDirectory(Assembly.GetExecutingAssembly());
+		if (installDir != null)
 		{
-			var path = Path.GetDirectoryName(executingPath);
-			if (!string.IsNullOrEmpty(path))
-			{
-				var fullPath = Path.Combine(path, fileName);
-				return Task.FromResult(File.Exists(fullPath));
-			}
+			var fullPath = Path.Combine(installDir, fileName);
+			return Task.FromResult(File.Exists(fullPath));
 		}
 
 		return Task.FromResult(false);
