@@ -202,7 +202,7 @@ namespace Uno.Xaml.Schema
 			Name = xamlType.Name;
 			if (xamlType.TypeArguments != null && xamlType.TypeArguments.Count > 0) {
 				var l = new List<XamlTypeName> ();
-				l.AddRange (from x in xamlType.TypeArguments.AsQueryable () select new XamlTypeName (x));
+				l.AddRange (xamlType.TypeArguments.Select (x => new XamlTypeName (x)));
 				TypeArguments = l;
 			}
 		}
