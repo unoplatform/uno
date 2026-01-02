@@ -19,6 +19,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
@@ -338,7 +339,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 			else
 			{
-				fallbackServiceTask.ContinueWith(_ => onFontCacheUpdate(), TaskScheduler.FromCurrentSynchronizationContext());
+				NativeDispatcher.Main.Enqueue(onFontCacheUpdate);
 			}
 		}
 
