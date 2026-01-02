@@ -21,7 +21,7 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 			.ToList();
 	}
 
-	public async Task<string?> GetFontNameForCodePoint(int codepoint)
+	public async Task<string?> GetFontNameForCodepoint(int codepoint)
 	{
 		await Task.CompletedTask;
 		foreach (var (fontName, typeface) in _fonts)
