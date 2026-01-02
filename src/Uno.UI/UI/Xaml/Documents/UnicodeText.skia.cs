@@ -328,7 +328,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (_fontFallbackService is not null)
 		{
-			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodePoint(codepoint);
+			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodepoint(codepoint);
 			if (fallbackServiceTask.IsCompleted)
 			{
 				if (fallbackServiceTask is { IsCompletedSuccessfully: true, Result: { } fallbackFontName } && FontDetailsCache.GetFontOrDefault(fallbackFontName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))

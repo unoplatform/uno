@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
 internal interface IFontFallbackService
 {
-	Task<string?> GetFontNameForCodePoint(int codepoint);
+	Task<string?> GetFontNameForCodepoint(int codepoint);
 	Task<SKTypeface?> GetTypefaceForFontName(string fontName, FontWeight weight, FontStretch stretch, FontStyle style);
 }
 #endif
