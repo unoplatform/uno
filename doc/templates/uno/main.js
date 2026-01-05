@@ -96,7 +96,7 @@ document.addEventListener(
                             <div class="sdk-modal-content">
                                 <div class="sdk-modal-header">
                                     <h3>Update Uno SDK</h3>
-                                    <button class="sdk-modal-close">&times;</button>
+                                    <button class="sdk-modal-close" type="button" aria-label="Close update dialog">&times;</button>
                                 </div>
                                 <div class="sdk-modal-body">
                                     <div class="sdk-version-section">
