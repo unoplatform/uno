@@ -2136,11 +2136,6 @@
 		</Methods>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="6.4">
-		<Fields>			
-			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Unused, and API isn't in WinUI" />
-			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
-			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
-		</Fields>
 	  <Types>
 		  <Member fullName="Uno.Media.Playback.IMediaPlayerExtension" reason="Does not exist in WinUI" />
 		  <Member fullName="Uno.Media.Playback.IMediaPlayerEventsExtension" reason="Does not exist in WinUI" />
