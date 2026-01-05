@@ -37,8 +37,8 @@ The standard Uno template configures logging in the **App.xaml.cs** file.
 
 1. Locate the **ConfigureFilters** method and review the code:
 
-    > [!IMPORTANT]
-    > The `InitializeLogging()` method is wrapped in a `#if DEBUG` preprocessor directive. This means **logging is only enabled in DEBUG builds by default**. If you need logging in Release builds, you'll need to remove or modify the `#if DEBUG` condition, keeping in mind the performance implications mentioned in the code comments.
+   > [!IMPORTANT]
+   > The `InitializeLogging()` method is wrapped in a `#if DEBUG` preprocessor directive. This means **logging is only enabled in DEBUG builds by default**. If you need logging in Release builds, you'll need to remove or modify the `#if DEBUG` condition, keeping in mind the performance implications mentioned in the code comments.
 
     ```csharp
 
