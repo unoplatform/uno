@@ -30,6 +30,7 @@ using Uno.UI.Toolkit.DevTools.Input;
 using Microsoft.UI.Xaml.Data;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Xaml.Media;
 #endif
 
 using Point = Windows.Foundation.Point;
@@ -190,6 +191,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// we tolerate a 2 pixels difference between the bitmaps due to font differences
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
+		}
+
+		[TestMethod]
+		[Timeout(60000)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task Check_FontFallback_Shaping2()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				FontFamily = new FontFamily("https://raw.githubusercontent.com/notofonts/notofonts.github.io/main/fonts/NotoSansArabic/hinted/ttf/NotoSansArabic-Regular.ttf"),
+				LineHeight = 34,
+			};
+
+			var matched = false;
+
+			await UITestHelper.Load(new StackPanel
+			{
+				expected,
+				SUT
+			});
+
+			((CompositionTarget)expected.Visual.CompositionTarget)!.FrameRendered += async () =>
+			{
+				var screenshot1 = await UITestHelper.ScreenShot(SUT);
+				var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+				var rect = ImageAssert.GetColorBounds(screenshot2, ((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
+
+				// we tolerate a 2 pixels difference between the bitmaps due to font differences
+				matched = rect is { Width: > 0, Height: > 0 } && await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenshot1.Bitmap, screenshot2.Bitmap);
+			};
+
+			await UITestHelper.WaitForRender();
+			await UITestHelper.WaitFor(() => matched, 60000);
 		}
 #endif
 
