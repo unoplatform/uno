@@ -182,7 +182,7 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 			// --no-sap: Disable SAP (Session Announcement Protocol) announcements
 			// --no-zeroconf: Disable Zeroconf/Bonjour/mDNS device discovery
 			// --no-video-title-show: Don't show video title overlay
-			// See: https://github.com/nicprov/uno-private/issues/396
+			// See internal tracking notes for additional context.
 			_vlc = new LibVLC("--start-paused", "--no-video-title-show", "--no-sap", "--no-zeroconf");
 		}
 
