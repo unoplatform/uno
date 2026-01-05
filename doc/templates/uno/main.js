@@ -110,7 +110,7 @@ document.addEventListener(
                     e.preventDefault();
                     const existingModal = document.getElementById('sdk-update-modal');
                     if (existingModal) {
-                        closeModal();
+                        existingModal.remove();
                         return;
                     }
                     
