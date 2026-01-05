@@ -138,11 +138,25 @@ document.addEventListener(
                     `;
                     document.body.appendChild(modal);
                     
-                    // Close modal handlers
-                    modal.querySelector('.sdk-modal-close').addEventListener('click', () => modal.remove());
+                    // Close modal handlers (click and Escape key)
+                    function closeModal() {
+                        modal.remove();
+                        document.removeEventListener('keydown', onKeyDown);
+                    }
+
+                    function onKeyDown(e) {
+                        if (e.key === 'Escape' || e.key === 'Esc') {
+                            e.preventDefault();
+                            closeModal();
+                        }
+                    }
+
+                    document.addEventListener('keydown', onKeyDown);
+
+                    modal.querySelector('.sdk-modal-close').addEventListener('click', () => closeModal());
                     modal.querySelector('.sdk-modal-overlay').addEventListener('click', (e) => {
                         if (e.target.classList.contains('sdk-modal-overlay')) {
-                            modal.remove();
+                            closeModal();
                         }
                     });
                     
