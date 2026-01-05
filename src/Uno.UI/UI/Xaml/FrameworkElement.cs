@@ -735,8 +735,8 @@ namespace Microsoft.UI.Xaml
 
 			var style = Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey());
 
-			// Although this is the default style, we use the ImplicitStyle enum value (which is otherwise unused) to ensure that it takes precedence
-			//over inherited property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
+			// Although this is the default style, we use the DefaultStyle enum value to ensure that it takes precedence
+			// over inherited property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
 			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.DefaultStyle);
 #if DEBUG
 			AppliedDefaultStyle = style;
