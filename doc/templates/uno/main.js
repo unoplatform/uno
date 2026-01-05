@@ -71,7 +71,8 @@ document.addEventListener(
             })
             .catch(err => {
                 console.log('Could not fetch SDK version:', err);
-                // If fetch fails and we haven't displayed cached data, show error state
+                // Show error state only if we haven't already displayed valid cached data
+                // (cachedDataDisplayed is only true if valid cache was shown)
                 if (!cachedDataDisplayed) {
                     const versionElement = document.querySelector('.sdk-version');
                     const badgeElement = document.querySelector('.sdk-version-badge');
@@ -93,7 +94,8 @@ document.addEventListener(
             
             if (!versionElement) return;
             
-            versionElement.textContent = latestStableVersion;
+            // Handle null values with a fallback
+            versionElement.textContent = latestStableVersion || 'Version unavailable';
             
             if (badgeElement) {
                 // Remove existing click handler if any
