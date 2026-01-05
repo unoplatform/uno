@@ -13,7 +13,7 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 {
 	private readonly List<(string fontName, SKTypeface typeface)> _fonts;
 
-	public AndroidSkiaFontFallbackService Instance { get; } = new AndroidSkiaFontFallbackService();
+	public static AndroidSkiaFontFallbackService Instance { get; } = new AndroidSkiaFontFallbackService();
 	private AndroidSkiaFontFallbackService()
 	{
 		_fonts = Directory.EnumerateFiles("/system/fonts")

@@ -10,6 +10,8 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.Android;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.WinUI.Runtime.Skia.Android.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -43,6 +45,7 @@ public class AndroidHost : ISkiaApplicationHost
 			ApiExtensibility.Register(typeof(ISkiaNativeTimePickerProviderExtension), _ => new AndroidSkiaTimePickerProvider());
 			ApiExtensibility.Register(typeof(IInputPaneExtension), _ => new InputPaneExtension());
 			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
+			ApiExtensibility.Register(typeof(IFontFallbackService), _ => AndroidSkiaFontFallbackService.Instance);
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{

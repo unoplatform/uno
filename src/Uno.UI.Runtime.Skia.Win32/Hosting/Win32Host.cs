@@ -17,7 +17,6 @@ using Windows.Win32.UI.HiDpi;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.Web.WebView2.Core;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.Storage.Pickers;
@@ -62,7 +61,6 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
-		ApiExtensibility.Register(typeof(IFontFallbackService), _ => Win32FontFallbackService.Instance);
 
 		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), displayInformation =>
 		{
