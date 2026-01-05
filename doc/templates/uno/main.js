@@ -17,6 +17,9 @@ document.addEventListener(
         const CACHE_KEY = 'uno_sdk_versions';
         const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
         
+        // Flag to track if cached data was successfully displayed
+        let cachedDataDisplayed = false;
+        
         // Try to load cached versions immediately
         const cached = localStorage.getItem(CACHE_KEY);
         let cachedData = null;
@@ -25,6 +28,7 @@ document.addEventListener(
                 cachedData = JSON.parse(cached);
                 if (Date.now() - cachedData.timestamp < CACHE_DURATION) {
                     updateVersionDisplay(cachedData.stable, cachedData.dev);
+                    cachedDataDisplayed = true;
                 } else {
                     cachedData = null; // Cache expired
                 }
@@ -42,27 +46,34 @@ document.addEventListener(
                     
                     // Find latest stable version (no -dev suffix)
                     const stableVersions = versions.filter(v => !v.includes('-dev'));
-                    const latestStableVersion = stableVersions[stableVersions.length - 1];
+                    const latestStableVersion = stableVersions.length > 0
+                        ? stableVersions[stableVersions.length - 1]
+                        : null;
                     
                     // Find latest dev version
                     const devVersions = versions.filter(v => v.includes('-dev'));
-                    const latestDevVersion = devVersions[devVersions.length - 1];
+                    const latestDevVersion = devVersions.length > 0
+                        ? devVersions[devVersions.length - 1]
+                        : null;
                     
-                    // Cache the versions
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({
-                        stable: latestStableVersion,
-                        dev: latestDevVersion,
-                        timestamp: Date.now()
-                    }));
-                    
-                    // Update display
-                    updateVersionDisplay(latestStableVersion, latestDevVersion);
+                    // Cache the versions and update display only if at least one version is available
+                    if (latestStableVersion !== null || latestDevVersion !== null) {
+                        localStorage.setItem(CACHE_KEY, JSON.stringify({
+                            stable: latestStableVersion,
+                            dev: latestDevVersion,
+                            timestamp: Date.now()
+                        }));
+                        
+                        // Update display
+                        updateVersionDisplay(latestStableVersion, latestDevVersion);
+                    }
                 }
             })
             .catch(err => {
                 console.log('Could not fetch SDK version:', err);
-                // If fetch fails and we have cached data, keep using it
-                if (!cachedData) {
+                // Show error state only if cached data wasn't successfully displayed earlier
+                // (cachedDataDisplayed is true when cached data was successfully displayed)
+                if (!cachedDataDisplayed) {
                     const versionElement = document.querySelector('.sdk-version');
                     const badgeElement = document.querySelector('.sdk-version-badge');
 
@@ -83,7 +94,8 @@ document.addEventListener(
             
             if (!versionElement) return;
             
-            versionElement.textContent = latestStableVersion;
+            // Handle null values with a fallback
+            versionElement.textContent = latestStableVersion || 'Version unavailable';
             
             if (badgeElement) {
                 // Remove existing click handler if any
