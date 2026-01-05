@@ -164,15 +164,44 @@ document.addEventListener(
                     modal.querySelectorAll('.sdk-copy-btn').forEach(btn => {
                         btn.addEventListener('click', function() {
                             const text = this.getAttribute('data-clipboard');
-                            navigator.clipboard.writeText(text).then(() => {
-                                const originalText = this.textContent;
-                                this.textContent = 'Copied!';
-                                this.classList.add('copied');
+                            const button = this;
+                            const showCopiedState = () => {
+                                const originalText = button.textContent;
+                                button.textContent = 'Copied!';
+                                button.classList.add('copied');
                                 setTimeout(() => {
-                                    this.textContent = originalText;
-                                    this.classList.remove('copied');
+                                    button.textContent = originalText;
+                                    button.classList.remove('copied');
                                 }, 2000);
-                            });
+                            };
+
+                            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                                navigator.clipboard.writeText(text)
+                                    .then(showCopiedState)
+                                    .catch(err => {
+                                        console.error('Failed to copy to clipboard using navigator.clipboard:', err);
+                                    });
+                            } else {
+                                // Fallback for browsers without Clipboard API support
+                                try {
+                                    const textarea = document.createElement('textarea');
+                                    textarea.value = text;
+                                    textarea.setAttribute('readonly', '');
+                                    textarea.style.position = 'absolute';
+                                    textarea.style.left = '-9999px';
+                                    document.body.appendChild(textarea);
+                                    textarea.select();
+                                    const successful = document.execCommand && document.execCommand('copy');
+                                    document.body.removeChild(textarea);
+                                    if (successful) {
+                                        showCopiedState();
+                                    } else {
+                                        console.warn('Fallback copy to clipboard was not successful.');
+                                    }
+                                } catch (err) {
+                                    console.error('Fallback copy to clipboard failed:', err);
+                                }
+                            }
                         });
                     });
                 });
