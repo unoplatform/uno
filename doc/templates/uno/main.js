@@ -192,8 +192,8 @@ document.addEventListener(
                     body.appendChild(createVersionSection(
                         'ℹ️',
                         'Check Installed Version',
-                        '',
-                        '',
+                        null,
+                        null,
                         'dotnet new details Uno.Templates'
                     ));
                     
