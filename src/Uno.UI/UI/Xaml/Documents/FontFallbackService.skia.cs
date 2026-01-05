@@ -72,32 +72,17 @@ internal class NotoFontFallbackService : IFontFallbackService
 			if (font is "Noto Sans CJK")
 			{
 				// all CJK fonts have the same codepoint coverage, so we pick one based on locale
-				font = "SimplifiedChinese";
-
-				var locale = CultureInfo.CurrentCulture.Name;
-				if (locale.StartsWith("ja", StringComparison.InvariantCultureIgnoreCase) || locale.StartsWith("jp", StringComparison.InvariantCultureIgnoreCase))
+				var locale = CultureInfo.CurrentCulture.Name.ToLowerInvariant();
+				font = locale switch
 				{
-					font = "Japanese";
-				}
-				else if (locale.StartsWith("ko", StringComparison.InvariantCultureIgnoreCase))
-				{
-					font = "Korean";
-				}
-				else if (locale.StartsWith("zh", StringComparison.InvariantCultureIgnoreCase))
-				{
-					if (locale.Contains("cn", StringComparison.InvariantCultureIgnoreCase))
-					{
-						font = "SimplifiedChinese";
-					}
-					else if (locale.Contains("hk", StringComparison.InvariantCultureIgnoreCase))
-					{
-						font = "TraditionalChineseHK";
-					}
-					else
-					{
-						font = "TraditionalChinese";
-					}
-				}
+					"zh-tw" or "zh-mo" => "TraditionalChinese",
+					"zh-hk" or "zh-hant-hk" => "TraditionalChineseHK",
+					_ when locale.Contains("hant") => "TraditionalChinese",
+					_ when locale.Contains("hans") => "SimplifiedChinese",
+					_ when locale.Contains("ja") => "Japanese",
+					_ when locale.Contains("ko") => "Korean",
+					_ => "SimplifiedChinese"
+				};
 			}
 
 			var map = FallbackFontMaps.FontWeightsToRawUrls[font];
