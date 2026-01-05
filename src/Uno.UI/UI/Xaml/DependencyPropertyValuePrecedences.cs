@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Microsoft.UI.Xaml
@@ -22,19 +23,32 @@ namespace Microsoft.UI.Xaml
 		Local,
 
 		/// <summary>
-		/// Defined when setting a style from the style property or resolving an implicit style
+		/// This is obsoleted and should not be used within the codebase.
+		/// It is only kept for public API compatibility.
 		/// </summary>
-		ExplicitOrImplicitStyle,
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		TemplatedParent = 3,
 
 		/// <summary>
-		/// Values defined by a default style
+		/// Defined when setting a style from the style property or resolving an implicit style
 		/// </summary>
-		DefaultStyle,
+		ExplicitOrImplicitStyle = 3,
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		ExplicitStyle = 4,
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		ImplicitStyle = 5,
 
 		/// <summary>
 		/// Defined by the inheritance of a FrameworkElement property of the same name
 		/// </summary>
 		Inheritance,
+
+		/// <summary>
+		/// Values defined by a default style
+		/// </summary>
+		DefaultStyle,
 
 		/// <summary>
 		/// Defined on the dependency property metadata
