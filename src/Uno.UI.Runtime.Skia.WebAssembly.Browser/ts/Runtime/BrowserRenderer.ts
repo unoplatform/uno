@@ -1,10 +1,13 @@
 namespace Uno.UI.Runtime.Skia {
 	export class BrowserRenderer {
 		managedHandle: number;
-		canvas: any;
-		requestRender: any;
+		canvas: HTMLCanvasElement;
+		requestRender: () => void;
 		static anyGL: any;
 		glCtx: any;
+		ctx2D: CanvasRenderingContext2D;
+		pixelBuffer: number;
+		clampedArray: Uint8ClampedArray;
 
 		constructor(managedHandle: number) {
 			this.managedHandle = managedHandle;
@@ -62,38 +65,44 @@ namespace Uno.UI.Runtime.Skia {
 			if (!canvasOrCanvasId)
 				throw 'No <canvas> element or ID was provided';
 
-			var canvas = document.getElementById(canvasOrCanvasId);
+			this.canvas = <HTMLCanvasElement>document.getElementById(canvasOrCanvasId);
 
-			if (!canvas)
+			if (!this.canvas)
 				throw `No <canvas> with id ${canvasOrCanvasId} was found`;
 
-			this.glCtx = BrowserRenderer.createWebGLContext(canvas);
-			if (!this.glCtx || this.glCtx < 0)
-				throw `Failed to create WebGL context: err ${this.glCtx}`;
+			try {
+				this.glCtx = BrowserRenderer.createWebGLContext(this.canvas);
+				if (!this.glCtx || this.glCtx < 0)
+					throw `Failed to create WebGL context: err ${this.glCtx}`;
 
-			// make current
-			BrowserRenderer.anyGL.makeContextCurrent(this.glCtx);
+				// make current
+				BrowserRenderer.anyGL.makeContextCurrent(this.glCtx);
 
-			// Starting from .NET 7 the GLctx is defined in an inaccessible scope
-			// when the current GL context changes. We need to pick it up from the
-			// GL.currentContext instead.
-			let currentGLctx = BrowserRenderer.anyGL.currentContext && BrowserRenderer.anyGL.currentContext.GLctx;
+				// Starting from .NET 7 the GLctx is defined in an inaccessible scope
+				// when the current GL context changes. We need to pick it up from the
+				// GL.currentContext instead.
+				let currentGLctx = BrowserRenderer.anyGL.currentContext && BrowserRenderer.anyGL.currentContext.GLctx;
 
-			if (!currentGLctx)
-				throw `Failed to get current WebGL context`;
+				if (!currentGLctx)
+					throw `Failed to get current WebGL context`;
 
-			// read values
-			this.canvas = canvas;
-			this.setCanvasSize();			
-			window.addEventListener("resize", x => this.setCanvasSize());
-			return {
-				ctx: this.glCtx,
-				fbo: currentGLctx.getParameter(currentGLctx.FRAMEBUFFER_BINDING),
-				stencil: currentGLctx.getParameter(currentGLctx.STENCIL_BITS),
-				sample: 0, // TODO: currentGLctx.getParameter(GLctx.SAMPLES)
-				depth: currentGLctx.getParameter(currentGLctx.DEPTH_BITS),
-			};
-
+				// read values
+				this.setCanvasSize();
+				window.addEventListener("resize", x => this.setCanvasSize());
+				return {
+					success: true,
+					fbo: currentGLctx.getParameter(currentGLctx.FRAMEBUFFER_BINDING),
+					stencil: currentGLctx.getParameter(currentGLctx.STENCIL_BITS),
+					sample: 0, // TODO: currentGLctx.getParameter(GLctx.SAMPLES)
+					depth: currentGLctx.getParameter(currentGLctx.DEPTH_BITS),
+				};
+			} catch (e) {
+				this.ctx2D = this.canvas.getContext("2d");
+				return {
+					success: false,
+					error: e.toString()
+				}
+			}
 		}
 
 		static createWebGLContext(canvas: any) {
@@ -122,6 +131,24 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			return ctx;
+		}
+
+		public static resizePixelBuffer(instance: BrowserRenderer, width: number, height: number): number {
+			if (instance.pixelBuffer !== 0) {
+				Module._free(instance.pixelBuffer);
+			}
+			instance.pixelBuffer = Module._malloc(length);
+			instance.clampedArray = new Uint8ClampedArray(Module.HEAPU8.buffer, instance.pixelBuffer, width * height * 4);
+			return instance.pixelBuffer;
+		}
+
+		public static blitSoftware(instance: BrowserRenderer, width: number, height: number) {
+			const imageData = new ImageData(
+				instance.clampedArray,
+				width,
+				height
+			);
+			instance.ctx2D.putImageData(imageData, 0, 0);
 		}
 	}
 }

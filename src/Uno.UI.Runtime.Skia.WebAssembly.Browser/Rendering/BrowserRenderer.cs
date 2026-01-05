@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using Microsoft.UI.Xaml.Media;
@@ -15,7 +16,6 @@ internal partial class BrowserRenderer
 {
 	private readonly IXamlRootHost _host;
 	private int _renderCount;
-	private bool _isWindowInitialized;
 
 	private const int ResourceCacheBytes = 256 * 1024 * 1024; // 256 MB
 	private const SKColorType colorType = SKColorType.Rgba8888;
@@ -26,9 +26,10 @@ internal partial class BrowserRenderer
 
 	private GRGlInterface? _glInterface;
 	private GRContext? _context;
-	private JsInfo _jsInfo;
+	private JsInfo? _jsInfo;
 	private GRGlFramebufferInfo _glInfo;
 	private GRBackendRenderTarget? _renderTarget;
+	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
 
@@ -42,11 +43,6 @@ internal partial class BrowserRenderer
 		_host = host;
 
 		_nativeSwapChainPanel = NativeMethods.CreateInstance(this);
-	}
-
-	private void Initialize()
-	{
-		_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 	}
 
 	internal void InvalidateRender()
@@ -65,9 +61,9 @@ internal partial class BrowserRenderer
 
 	private void RenderFrame()
 	{
-		if (!_jsInfo.IsValid)
+		if (_jsInfo is null)
 		{
-			Initialize();
+			_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 		}
 
 		_renderStopwatch.Restart();
@@ -78,7 +74,7 @@ internal partial class BrowserRenderer
 		}
 
 		// create the SkiaSharp context
-		if (_context == null)
+		if (!_jsInfo.Value.UseSoftware && _context == null)
 		{
 			_glInterface = GRGlInterface.Create();
 			_context = GRContext.CreateGl(_glInterface);
@@ -89,31 +85,48 @@ internal partial class BrowserRenderer
 
 		var currentClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
-			_glInfo = new GRGlFramebufferInfo(_jsInfo.FboId, colorType.ToGlSizedFormat());
-
-			// destroy the old surface
-			_surface?.Dispose();
-			_surface = null;
-			_canvas = null;
-
-			// re-create the render target
-			_renderTarget?.Dispose();
-			_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
-
-			// create the surface
-			_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
-			_canvas = _surface.Canvas;
-
-			if (!_isWindowInitialized)
+			if (_jsInfo.Value.UseSoftware)
 			{
-				_isWindowInitialized = true;
-				// Microsoft.UI.Xaml.Window.Current.OnNativeWindowCreated();
+				_bitmap?.Dispose();
+				_canvas?.Dispose();
+				var pixels = NativeMethods.ResizePixelBuffer(_nativeSwapChainPanel, (int)size.Width, (int)size.Height);
+				_bitmap = new SKBitmap();
+				_bitmap.InstallPixels(new SKImageInfo((int)size.Width, (int)size.Height, colorType, SKAlphaType.Premul), pixels);
+				_canvas = new SKCanvas(_bitmap);
+			}
+			else
+			{
+				_glInfo = new GRGlFramebufferInfo(_jsInfo.Value.FboId, colorType.ToGlSizedFormat());
+
+				// destroy the old surface
+				_surface?.Dispose();
+				_surface = null;
+				_canvas = null;
+
+				// re-create the render target
+				_renderTarget?.Dispose();
+				_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, _jsInfo.Value.Samples, _jsInfo.Value.Stencil, _glInfo);
+
+				// create the surface
+				_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
+				_canvas = _surface.Canvas;
 			}
 
 			return _canvas;
 		});
 
-		_context.Flush();
+		if (_jsInfo.Value.UseSoftware)
+		{
+			if (_canvas is not null)
+			{
+				_canvas.Flush();
+				NativeMethods.BlitSoftware(_nativeSwapChainPanel, _bitmap!.Width, _bitmap.Height);
+			}
+		}
+		else
+		{
+			_context!.Flush();
+		}
 
 		var (path, fillType) = !currentClipPath.IsEmpty ? (currentClipPath.ToSvgPathData(), currentClipPath.FillType is SKPathFillType.EvenOdd ? "evenodd" : "nonzero") : ("", "nonzero");
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);
@@ -124,20 +137,7 @@ internal partial class BrowserRenderer
 		}
 	}
 
-	internal struct JsInfo
-	{
-		public bool IsValid { get; set; }
-
-		public int ContextId { get; set; }
-
-		public uint FboId { get; set; }
-
-		public int Stencil { get; set; }
-
-		public int Samples { get; set; }
-
-		public int Depth { get; set; }
-	}
+	internal record struct JsInfo(bool UseSoftware, uint FboId, int Stencil, int Samples, int Depth);
 
 	internal static partial class NativeMethods
 	{
@@ -151,22 +151,35 @@ internal partial class BrowserRenderer
 
 		internal static JsInfo CreateContext(BrowserRenderer owner, JSObject nativeSwapChainPanel, string canvasId)
 		{
-			var jsInfo = new JsInfo();
-			var jsObject = CreateContextInternal(nativeSwapChainPanel, canvasId);
+			var jsObject = CreateContextStatic(nativeSwapChainPanel, canvasId);
 
-			jsInfo.IsValid = true;
-			jsInfo.ContextId = jsObject.GetPropertyAsInt32("contextId");
-			jsInfo.FboId = (uint)jsObject.GetPropertyAsInt32("fboId");
-			jsInfo.Stencil = jsObject.GetPropertyAsInt32("stencil");
-			jsInfo.Samples = jsObject.GetPropertyAsInt32("samples");
-			jsInfo.Depth = jsObject.GetPropertyAsInt32("depth");
-			return jsInfo;
+			if (jsObject.GetPropertyAsBoolean("success"))
+			{
+				return new JsInfo(
+					UseSoftware: false,
+					FboId: (uint)jsObject.GetPropertyAsInt32("fboId"),
+					Stencil: jsObject.GetPropertyAsInt32("stencil"),
+					Samples: jsObject.GetPropertyAsInt32("samples"),
+					Depth: jsObject.GetPropertyAsInt32("depth")
+				);
+			}
+			else
+			{
+				typeof(BrowserRenderer).LogError()?.Error($"Failed to create WebGL context: {jsObject.GetPropertyAsString("error")}");
+				return new JsInfo() { UseSoftware = true };
+			}
 		}
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.createContextStatic")]
-		internal static partial JSObject CreateContextInternal(JSObject nativeSwapChainPanel, string canvasId);
+		internal static partial JSObject CreateContextStatic(JSObject nativeSwapChainPanel, string canvasId);
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.invalidate")]
 		internal static partial void Invalidate(JSObject nativeSwapChainPanel);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.resizePixelBuffer")]
+		internal static partial IntPtr ResizePixelBuffer(JSObject nativeSwapChainPanel, int width, int height);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.blitSoftware")]
+		internal static partial void BlitSoftware(JSObject nativeSwapChainPanel, int width, int height);
 	}
 }
