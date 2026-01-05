@@ -1044,49 +1044,46 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				var value = LoadObject(extensionNode, rootInstance, memberContext: memberContext);
 
-				// Set the value on the target instance
-				if (value != null)
+				// Set the value on the target instance (markup extensions can return null)
+				if (propertyInfo != null)
 				{
-					if (propertyInfo != null)
+					// Check if this is an initialized collection property (like Panel.Children)
+					if (TypeResolver.IsInitializedCollection(propertyInfo))
 					{
-						// Check if this is an initialized collection property (like Panel.Children)
-						if (TypeResolver.IsInitializedCollection(propertyInfo))
+						if (propertyInfo.GetMethod == null)
 						{
-							if (propertyInfo.GetMethod == null)
-							{
-								throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
-							}
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}).");
+						}
 
-							var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
+						var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
 
-							if (propertyInstance != null)
+						if (propertyInstance != null)
+						{
+							// Add the value returned by the markup extension to the collection (even if null)
+							var addMethod = propertyInstance.GetType().GetMethod("Add");
+							if (addMethod != null)
 							{
-								// Add the value returned by the markup extension to the collection
-								var addMethod = propertyInstance.GetType().GetMethod("Add");
-								if (addMethod != null)
-								{
-									addMethod.Invoke(propertyInstance, new[] { value });
-								}
-								else
-								{
-									throw new InvalidOperationException($"Unable to find Add method for collection property [{propertyInfo}]");
-								}
+								addMethod.Invoke(propertyInstance, new[] { value });
 							}
 							else
 							{
-								throw new InvalidOperationException($"The property {propertyInfo} getter did not provide a value (Line {member.LineNumber}:{member.LinePosition}");
+								throw new InvalidOperationException($"Unable to find Add method for collection property [{propertyInfo}]");
 							}
 						}
 						else
 						{
-							GetPropertySetter(propertyInfo).Invoke(instance, new[] { value });
+							throw new InvalidOperationException($"The property {propertyInfo} getter did not provide a value (Line {member.LineNumber}:{member.LinePosition}).");
 						}
 					}
-					else if (TypeResolver.FindDependencyProperty(member) is { } dependencyProperty &&
-							 instance is DependencyObject dependencyObject)
+					else
 					{
-						dependencyObject.SetValue(dependencyProperty, value);
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { value });
 					}
+				}
+				else if (TypeResolver.FindDependencyProperty(member) is { } dependencyProperty &&
+						 instance is DependencyObject dependencyObject)
+				{
+					dependencyObject.SetValue(dependencyProperty, value);
 				}
 			}
 			catch (Exception ex) when (!(ex is XamlParseException))
