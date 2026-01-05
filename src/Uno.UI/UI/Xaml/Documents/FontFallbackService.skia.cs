@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,20 +11,19 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI.Dispatching;
-using Uno.UI.Runtime.Skia.Win32;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
-internal class Win32FontFallbackService : IFontFallbackService
+internal class NotoFontFallbackService : IFontFallbackService
 {
 	private readonly HashSet<int> _missingCodepoints = new();
 	private Task? _fetchTask;
 	private readonly Func<int, Task<string?>> _memoizedGetFontNameForCodepoint;
 	private readonly Dictionary<string, SKTypeface?> _fetchedFonts = new();
 
-	public static Win32FontFallbackService Instance { get; } = new Win32FontFallbackService();
+	public static NotoFontFallbackService Instance { get; } = new NotoFontFallbackService();
 
-	private Win32FontFallbackService()
+	private NotoFontFallbackService()
 	{
 		_memoizedGetFontNameForCodepoint = ((Func<int, Task<string?>>)GetFontNameForCodepointInternal).AsMemoized();
 	}
