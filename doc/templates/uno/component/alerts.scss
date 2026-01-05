@@ -40,13 +40,13 @@
 }
 
 .NOTE, .TIP {
-  @include alert-block(#e7f3ff, $blue, $blue);
+  @include alert-block(lighten($blue, 40%), $blue, $blue);
 }
 
 .IMPORTANT, .WARNING {
-  @include alert-block(#fff4e6, $orange, $orange);
+  @include alert-block(lighten($orange, 40%), $orange, $orange);
 }
 
 .CAUTION {
-  @include alert-block(#ffe6e6, $red, $red);
+  @include alert-block(lighten($red, 40%), $red, $red);
 }
