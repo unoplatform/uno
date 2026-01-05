@@ -93,7 +93,7 @@ void uno_set_webview_resource_requested_callback(uno_webview_resource_requested_
 }
 
 
-NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
+NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel, bool allowFileAccessFromFileURLs, bool allowUniversalAccessFromFileURLs)
 {
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
     if (@available(macOS 11, *)) {
@@ -106,7 +106,14 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeVideo | WKAudiovisualMediaTypeAudio;
     
     // Enable file access from file URLs to support relative paths in local HTML content
-    [config.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
+    if (allowFileAccessFromFileURLs) {
+        [config.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
+    }
+    
+    // Enable universal access from file URLs if configured
+    if (allowUniversalAccessFromFileURLs) {
+        [config.preferences setValue:@YES forKey:@"allowUniversalAccessFromFileURLs"];
+    }
     
     UNOWebView* webview = [[UNOWebView alloc] initWithFrame:NSMakeRect(0,0,0,0) configuration:config];
 #if DEBUG

@@ -504,7 +504,7 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_set_webview_resource_requested_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, sbyte*> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
+	internal static partial nint uno_webview_create(nint window, string ok, string cancel, [MarshalAs(UnmanagedType.I1)] bool allowFileAccessFromFileURLs, [MarshalAs(UnmanagedType.I1)] bool allowUniversalAccessFromFileURLs);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_webview_register_message_handler(nint webview);
