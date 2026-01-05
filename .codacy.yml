@@ -1,9 +1,0 @@
----
-exclude_paths:
-  - '**/*.g.cs'
-  - 'src/SamplesApp/**'
-  - '**/tsBindings/*.ts'
-  - 'doc/**'
-  - 'src/Uno.UI/UI/Xaml/Controls/Repeater/**'
-  - 'src/Uno.UI/UI/Xaml/Controls/CalendarView/**'
-  - 'src/Uno.UI/DirectUI/**'

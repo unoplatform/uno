@@ -1,6 +1,0 @@
-<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
-  <TextBlock Text="{x:Bind Path=Add(a.Value, b.Value)}" />
-
-</Page>

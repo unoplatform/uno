@@ -1,7 +1,0 @@
-<Project>
-
-	<Import Sdk="Microsoft.NET.Sdk.Web.ProjectSystem" Project="Sdk.targets" />
-
-	<Import Sdk="Microsoft.NET.Sdk.Publish" Project="Sdk.targets" />
-
-</Project>

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Uno.ReferenceImplComparer": {
-      "commandName": "Project",
-      "commandLineArgs": "\"C:\\temp\\nuget-local\\57728-vslatest\\vslatest\\Uno.UI.4.6.0-PullRequest-10019-57728-10019.nupkg\""
-    }
-  }
-}

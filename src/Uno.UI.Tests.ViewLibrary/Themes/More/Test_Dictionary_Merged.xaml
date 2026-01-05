@@ -1,8 +1,0 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:ext="using:Uno.UI.Tests.ViewLibrary">
-	<Color x:Key="IrritableColor">Honeydew</Color>
-	<Color x:Key="UnflappableColor">AntiqueWhite</Color>
-	<SolidColorBrush x:Key="UnflappableColorBrush" Color="{StaticResource UnflappableColor}" />
-</ResourceDictionary>

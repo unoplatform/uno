@@ -1,5 +1,0 @@
-<Project>
-	<ItemGroup>
-		<UnoRuntimeEnabledPackage Include="Uno.Foundation" PackageBasePath="$(MSBuildThisFileDirectory).." />
-	</ItemGroup>
-</Project>

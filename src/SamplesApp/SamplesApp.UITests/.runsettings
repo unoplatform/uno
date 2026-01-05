@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<RunSettings>
-  <NUnit>
-    <TestOutputXml>TestOutputXml</TestOutputXml>
-    <OutputXmlFolderMode>UseResultDirectory</OutputXmlFolderMode>
-    <TestOutputXmlFileName>TestResult-original</TestOutputXmlFileName>
-  </NUnit>
-</RunSettings>

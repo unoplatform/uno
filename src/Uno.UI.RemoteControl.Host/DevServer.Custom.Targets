@@ -1,3 +1,0 @@
-<Project>
-	<Import Condition="'$(UsingUnoSdk)'!='true'" Project="$(MSBuildThisFileDirectory)/DevServer.Custom.Impl.Targets" />
-</Project>

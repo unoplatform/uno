@@ -1,8 +1,0 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<SolidColorBrush x:Key="MoodyColorBrush"
-					 Color="DarkKhaki" />
-	<SolidColorBrush x:Key="PlayfulColorBrush"
-					 Color="SandyBrown" />
-	<x:String x:Key="ThemedString1">ApplicationMergedDark</x:String>
-</ResourceDictionary>

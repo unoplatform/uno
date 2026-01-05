@@ -1,6 +1,0 @@
-﻿<linker>
-  <assembly fullname="Uno.UI.Dispatching">
-    <type fullname="Uno.UI.Dispatching.NativeDispatcher" />
-  </assembly>
-
-</linker>

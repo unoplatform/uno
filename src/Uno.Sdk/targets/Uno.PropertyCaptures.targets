@@ -1,5 +1,0 @@
-<Project>
-	<PropertyGroup Condition="'$(PublishProfile)'!=''">
-		<_UnoOriginalApplicationVersion>$(ApplicationVersion)</_UnoOriginalApplicationVersion>
-	</PropertyGroup>
-</Project>

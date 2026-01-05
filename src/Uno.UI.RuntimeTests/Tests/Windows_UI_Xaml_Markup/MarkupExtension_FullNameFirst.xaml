@@ -1,9 +1,0 @@
-<Page x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup.MarkupExtension_FullNameFirst"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
-	<StackPanel>
-		<TextBlock x:Name="FullName" x:FieldModifier="Public" Tag="{local:FullNameFirstMarkup}" />
-		<TextBlock x:Name="ShortName" x:FieldModifier="Public" Tag="{local:ShortNameMarkup}" />
-	</StackPanel>
-</Page>

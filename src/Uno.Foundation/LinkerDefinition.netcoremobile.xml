@@ -1,7 +1,0 @@
-﻿<linker>
-  <assembly fullname="Uno.Foundation">
-	<type fullname="Windows.Foundation.Collections.ObservableVectorListWrapper" />
-	<type fullname="Windows.Foundation.Collections.ObservableVectorListWrapper" />
-	<type fullname="Windows.Foundation.Collections.ObservableVectorWrapper" />
-  </assembly>
-</linker>
