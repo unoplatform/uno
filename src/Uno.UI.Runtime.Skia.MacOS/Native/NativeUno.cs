@@ -390,7 +390,7 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_set_webview_unsupported_scheme_identified_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
+	internal static partial nint uno_webview_create(nint window, string ok, string cancel, [MarshalAs(UnmanagedType.I1)] bool allowFileAccessFromFileURLs, [MarshalAs(UnmanagedType.I1)] bool allowUniversalAccessFromFileURLs);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string uno_webview_get_title(nint webview);

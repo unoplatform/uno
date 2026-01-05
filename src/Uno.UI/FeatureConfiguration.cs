@@ -760,6 +760,27 @@ namespace Uno.UI
 			/// Important: It will only work when the app runs in Debug mode.
 			/// </remarks>
 			public static bool IsInspectable { get; set; }
+
+			/// <summary>
+			/// Sets whether file URLs are allowed to access other file URLs (i.e., load resources using relative paths).
+			/// This enables local HTML files to reference local CSS, JavaScript, images, and other resources.
+			/// </summary>
+			/// <remarks>
+			/// When enabled, local HTML files loaded via file:// URIs can access other local files using relative paths.
+			/// This is useful for scenarios like PDF.js viewers or bundled web applications.
+			/// Default is true for iOS and macOS.
+			/// </remarks>
+			public static bool AllowFileAccessFromFileURLs { get; set; } = true;
+
+			/// <summary>
+			/// Sets whether file URLs are allowed to access any origin, including remote content.
+			/// This is a more permissive setting than <see cref="AllowFileAccessFromFileURLs"/>.
+			/// </summary>
+			/// <remarks>
+			/// This setting should be used with caution as it can introduce security risks.
+			/// Default is false.
+			/// </remarks>
+			public static bool AllowUniversalAccessFromFileURLs { get; set; }
 #endif
 		}
 
