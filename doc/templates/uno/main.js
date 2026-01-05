@@ -71,8 +71,8 @@ document.addEventListener(
             })
             .catch(err => {
                 console.log('Could not fetch SDK version:', err);
-                // Show error state only if we haven't already displayed valid cached data
-                // (cachedDataDisplayed is only true if valid cache was shown)
+                // Show error state only if cached data wasn't successfully displayed earlier
+                // (cachedDataDisplayed is true when cached data was successfully displayed)
                 if (!cachedDataDisplayed) {
                     const versionElement = document.querySelector('.sdk-version');
                     const badgeElement = document.querySelector('.sdk-version-badge');
