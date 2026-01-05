@@ -1,5 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Media;
+#if HAS_UNO
+using Uno.UI;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
