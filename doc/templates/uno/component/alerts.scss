@@ -20,59 +20,33 @@
 }
 
 // DocFX alert blocks styling
-.NOTE, .TIP {
-  background-color: #e7f3ff;
-  border-left: 4px solid $blue;
+@mixin alert-block($bg-color, $border-color, $text-color) {
+  background-color: $bg-color;
+  border-left: 4px solid $border-color;
   padding: 16px 20px;
   margin: 16px 0;
   border-radius: 4px;
-  
+
   h5 {
-    color: $blue;
+    color: $text-color;
     margin-top: 0;
     margin-bottom: 8px;
     font-weight: 600;
   }
-  
+
   p:last-child {
     margin-bottom: 0;
   }
+}
+
+.NOTE, .TIP {
+  @include alert-block(#e7f3ff, $blue, $blue);
 }
 
 .IMPORTANT, .WARNING {
-  background-color: #fff4e6;
-  border-left: 4px solid $orange;
-  padding: 16px 20px;
-  margin: 16px 0;
-  border-radius: 4px;
-  
-  h5 {
-    color: $orange;
-    margin-top: 0;
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-  
-  p:last-child {
-    margin-bottom: 0;
-  }
+  @include alert-block(#fff4e6, $orange, $orange);
 }
 
 .CAUTION {
-  background-color: #ffe6e6;
-  border-left: 4px solid $red;
-  padding: 16px 20px;
-  margin: 16px 0;
-  border-radius: 4px;
-  
-  h5 {
-    color: $red;
-    margin-top: 0;
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-  
-  p:last-child {
-    margin-bottom: 0;
-  }
+  @include alert-block(#ffe6e6, $red, $red);
 }
