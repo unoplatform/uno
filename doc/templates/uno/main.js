@@ -90,7 +90,7 @@ document.addEventListener(
                 const newBadge = badgeElement.cloneNode(true);
                 badgeElement.parentNode.replaceChild(newBadge, badgeElement);
                 
-                newBadge.title = 'Latest stable: ' + latestStableVersion + '\nLatest dev: ' + latestDevVersion + '\nClick to see update instructions';
+                newBadge.title = `Latest stable: ${latestStableVersion}\nLatest dev: ${latestDevVersion}\nClick to see update instructions`;
                 newBadge.style.cursor = 'pointer';
                 
                 // Add click handler to show update instructions
