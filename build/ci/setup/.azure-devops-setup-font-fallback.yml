@@ -1,0 +1,42 @@
+parameters:
+  vmImage: '$(linuxVMImage)'
+
+stages:
+- stage: FontFallback_Validation
+  displayName: Validate FontFallbackMaps
+  dependsOn: []
+
+  jobs:
+  - job: Validate_FontFallback
+    displayName: Validate FontFallbackMaps.skia.cs
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+
+    steps:
+    - checkout: self
+      clean: true
+      sparseCheckoutPatterns: |
+        src/FontFallbackPreprocessor/**
+        src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs
+        global.json
+        Directory.Build.props
+        Directory.Build.targets
+        src/Directory.Build.props
+        src/Directory.Build.targets
+
+    - displayName: Validate FontFallbackMaps.skia.cs
+      bash: |
+        set -euo pipefail
+        
+        echo "Regenerating FontFallbackMaps.skia.cs..."
+        dotnet run --project src/FontFallbackPreprocessor/FontFallbackPreprocessor.csproj -c Release -- --summary-only > src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new
+        
+        if ! diff -u src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new; then
+          echo "Error: FontFallbackMaps.skia.cs is not up to date."
+          echo "Please run the following command locally and commit the changes:"
+          echo "dotnet run --project src/FontFallbackPreprocessor/FontFallbackPreprocessor.csproj -- --summary-only > src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs"
+          exit 1
+        else
+          echo "FontFallbackMaps.skia.cs is up to date."
+          rm src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new
+        fi
