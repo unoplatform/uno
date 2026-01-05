@@ -349,10 +349,10 @@ document.addEventListener(
                                     document.body.appendChild(textarea);
                                     textarea.select();
                                     let successful = false;
-                                    if (typeof document.execCommand === 'function') {
-                                        successful = document.execCommand('copy');
-                                    } else {
-                                        console.warn('document.execCommand is not supported in this browser.');
+                                    try {
+                                        successful = document.execCommand && document.execCommand('copy');
+                                    } catch (execErr) {
+                                        console.warn('document.execCommand copy failed:', execErr);
                                     }
                                     document.body.removeChild(textarea);
                                     if (successful) {
