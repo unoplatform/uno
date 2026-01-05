@@ -348,7 +348,12 @@ document.addEventListener(
                                     textarea.style.left = '-9999px';
                                     document.body.appendChild(textarea);
                                     textarea.select();
-                                    const successful = document.execCommand && document.execCommand('copy');
+                                    let successful = false;
+                                    if (typeof document.execCommand === 'function') {
+                                        successful = document.execCommand('copy');
+                                    } else {
+                                        console.warn('document.execCommand is not supported in this browser.');
+                                    }
                                     document.body.removeChild(textarea);
                                     if (successful) {
                                         showCopiedState();
