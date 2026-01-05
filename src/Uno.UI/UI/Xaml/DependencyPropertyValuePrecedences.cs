@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Defined when setting a style from the style property or resolving an implicit style
 		/// </summary>
-		ExplicitOrImplicitStyle = 3,
+		ExplicitOrImplicitStyle = 4,
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		ExplicitStyle = 4,
