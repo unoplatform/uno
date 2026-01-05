@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -11,20 +12,22 @@ namespace Uno.WinUI.Runtime.Skia.Android.UI.Xaml.Controls.TextBox;
 
 internal class AndroidSkiaFontFallbackService : IFontFallbackService
 {
-	private readonly List<(string fontName, SKTypeface typeface)> _fonts;
+	private readonly Task<List<(string fontName, SKTypeface typeface)>> _fonts;
 
 	public static AndroidSkiaFontFallbackService Instance { get; } = new AndroidSkiaFontFallbackService();
 	private AndroidSkiaFontFallbackService()
 	{
-		_fonts = Directory.EnumerateFiles("/system/fonts")
-			.Select(f => (Path.GetFileName(f), SKTypeface.FromStream(new MemoryStream(File.ReadAllBytes(f)))))
-			.ToList();
+		_fonts = Task.Factory.StartNew(() =>
+		{
+			return Directory.EnumerateFiles("/system/fonts")
+				.Select(f => (Path.GetFileName(f), SKTypeface.FromStream(new MemoryStream(File.ReadAllBytes(f)))))
+				.ToList();
+		}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
 	}
 
 	public async Task<string?> GetFontNameForCodepoint(int codepoint)
 	{
-		await Task.CompletedTask;
-		foreach (var (fontName, typeface) in _fonts)
+		foreach (var (fontName, typeface) in await _fonts)
 		{
 			if (typeface.ContainsGlyph(codepoint))
 			{
@@ -34,13 +37,6 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 		return null;
 	}
 
-	public Task<SKTypeface?> GetTypefaceForFontName(string fontName, FontWeight weight, FontStretch stretch, FontStyle style)
-	{
-		var tcs = new TaskCompletionSource<SKTypeface?>();
-		_ = Task.Run(() =>
-		{
-			tcs.SetResult(_fonts.FirstOrDefault(f => f.fontName.Equals(fontName)).typeface);
-		}).ConfigureAwait(false);
-		return tcs.Task;
-	}
+	public async Task<SKTypeface?> GetTypefaceForFontName(string fontName, FontWeight weight, FontStretch stretch, FontStyle style)
+		=> (await _fonts).FirstOrDefault(f => f.fontName.Equals(fontName)).typeface;
 }
