@@ -230,24 +230,66 @@ document.addEventListener(
                     content.appendChild(body);
                     overlay.appendChild(content);
                     modal.appendChild(overlay);
+
+                    // Save the element that was focused before opening the modal
+                    const previouslyFocusedElement = document.activeElement;
+
                     document.body.appendChild(modal);
+
+                    // Move focus to the close button (or first focusable element) for accessibility
+                    const closeButton = modal.querySelector('.sdk-modal-close');
+                    if (closeButton && typeof closeButton.focus === 'function') {
+                        closeButton.focus();
+                    }
+
+                    const focusableSelectors = 'a[href], button:not([disabled]), textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select, [tabindex]:not([tabindex="-1"])';
+                    function getFocusableElements() {
+                        return Array.from(modal.querySelectorAll(focusableSelectors))
+                            .filter(el => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
+                    }
                     
                     // Close modal handlers (click and Escape key)
                     function closeModal() {
                         modal.remove();
                         document.removeEventListener('keydown', onKeyDown);
+                        if (previouslyFocusedElement && document.contains(previouslyFocusedElement) && typeof previouslyFocusedElement.focus === 'function') {
+                            previouslyFocusedElement.focus();
+                        }
                     }
 
                     function onKeyDown(e) {
                         if (e.key === 'Escape' || e.key === 'Esc') {
                             e.preventDefault();
                             closeModal();
+                            return;
+                        }
+
+                        if (e.key === 'Tab') {
+                            const focusableElements = getFocusableElements();
+                            if (!focusableElements.length) {
+                                return;
+                            }
+
+                            const firstElement = focusableElements[0];
+                            const lastElement = focusableElements[focusableElements.length - 1];
+                            const isShift = e.shiftKey;
+                            const current = document.activeElement;
+
+                            if (!isShift && current === lastElement) {
+                                e.preventDefault();
+                                firstElement.focus();
+                            } else if (isShift && current === firstElement) {
+                                e.preventDefault();
+                                lastElement.focus();
+                            }
                         }
                     }
 
                     document.addEventListener('keydown', onKeyDown);
 
-                    modal.querySelector('.sdk-modal-close').addEventListener('click', () => closeModal());
+                    if (closeButton) {
+                        closeButton.addEventListener('click', () => closeModal());
+                    }
                     modal.querySelector('.sdk-modal-overlay').addEventListener('click', (e) => {
                         if (e.target.classList.contains('sdk-modal-overlay')) {
                             closeModal();
