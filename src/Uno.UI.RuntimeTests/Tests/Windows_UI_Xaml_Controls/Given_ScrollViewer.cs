@@ -2029,7 +2029,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var stackPanel = new StackPanel();
 			var content = new Border
 			{
-				Height = 100,
+				Height = 500,
 				Background = new SolidColorBrush(Colors.Red)
 			};
 			var button = new Button
@@ -2043,7 +2043,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var sut = new ScrollViewer
 			{
-				Height = 100,
+				Height = 200,
 				Width = 100,
 				Content = stackPanel,
 				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
@@ -2056,11 +2056,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var finger = injector.GetFinger();
 			finger.Drag(
 				from: bounds.GetCenter(),
-				to: new(bounds.GetCenter().X, bounds.GetCenter().Y - 50));
+				to: new(bounds.GetCenter().X, bounds.GetCenter().Y - 150));
 
 			// Ensure scroll is completed
 			await TestServices.WindowHelper.WaitFor(() => (sut.VerticalOffset + 1) >= sut.ScrollableHeight); // Adding 1 to avoid floating point precision issues
-
+			await Task.Delay(500); // Wait for any inertia to finish
 			// Now click the button
 			finger.Press(button.GetAbsoluteBounds().GetCenter());
 			finger.Release();
