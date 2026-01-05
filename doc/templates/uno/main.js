@@ -89,53 +89,134 @@ document.addEventListener(
                         return;
                     }
                     
+                    // Create modal structure using DOM manipulation to prevent XSS
                     const modal = document.createElement('div');
                     modal.id = 'sdk-update-modal';
-                    modal.innerHTML = `
-                        <div class="sdk-modal-overlay">
-                            <div class="sdk-modal-content">
-                                <div class="sdk-modal-header">
-                                    <h3>Update Uno SDK</h3>
-                                    <button class="sdk-modal-close" type="button" aria-label="Close update dialog">&times;</button>
-                                </div>
-                                <div class="sdk-modal-body">
-                                    <div class="sdk-version-section">
-                                        <h4>📦 Latest Stable Version</h4>
-                                        <p class="version-label"><strong>${latestStableVersion}</strong> - Recommended for production</p>
-                                        <div class="sdk-code-block">
-                                            <code>dotnet new install Uno.Templates::${latestStableVersion}</code>
-                                            <button class="sdk-copy-btn" data-clipboard="dotnet new install Uno.Templates::${latestStableVersion}">Copy</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="sdk-version-section">
-                                        <h4>🚀 Latest Dev Version</h4>
-                                        <p class="version-label"><strong>${latestDevVersion}</strong> - Preview features & fixes</p>
-                                        <div class="sdk-code-block">
-                                            <code>dotnet new install Uno.Templates::${latestDevVersion}</code>
-                                            <button class="sdk-copy-btn" data-clipboard="dotnet new install Uno.Templates::${latestDevVersion}">Copy</button>
-                                        </div>
-                                        <p class="sdk-note">
-                                            📍 <strong>NuGet Package:</strong> <a href="https://www.nuget.org/packages/Uno.Templates" target="_blank" rel="noopener">Uno.Templates on NuGet.org</a>
-                                        </p>
-                                    </div>
-                                    
-                                    <div class="sdk-version-section">
-                                        <h4>ℹ️ Check Installed Version</h4>
-                                        <div class="sdk-code-block">
-                                            <code>dotnet new details Uno.Templates</code>
-                                            <button class="sdk-copy-btn" data-clipboard="dotnet new details Uno.Templates">Copy</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <p class="sdk-note">
-                                        💡 <strong>Tip:</strong> If you have an older version installed, uninstall it first using:<br>
-                                        <code>dotnet new uninstall Uno.Templates</code>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    
+                    const overlay = document.createElement('div');
+                    overlay.className = 'sdk-modal-overlay';
+                    
+                    const content = document.createElement('div');
+                    content.className = 'sdk-modal-content';
+                    
+                    // Header
+                    const header = document.createElement('div');
+                    header.className = 'sdk-modal-header';
+                    const headerTitle = document.createElement('h3');
+                    headerTitle.textContent = 'Update Uno SDK';
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'sdk-modal-close';
+                    closeBtn.type = 'button';
+                    closeBtn.setAttribute('aria-label', 'Close update dialog');
+                    closeBtn.textContent = '×';
+                    header.appendChild(headerTitle);
+                    header.appendChild(closeBtn);
+                    
+                    // Body
+                    const body = document.createElement('div');
+                    body.className = 'sdk-modal-body';
+                    
+                    // Helper function to create version section with safe text content
+                    function createVersionSection(icon, title, version, description, command) {
+                        const section = document.createElement('div');
+                        section.className = 'sdk-version-section';
+                        
+                        const h4 = document.createElement('h4');
+                        h4.textContent = `${icon} ${title}`;
+                        section.appendChild(h4);
+                        
+                        // Only add version label if version and description are provided
+                        if (version || description) {
+                            const versionLabel = document.createElement('p');
+                            versionLabel.className = 'version-label';
+                            if (version) {
+                                const strong = document.createElement('strong');
+                                strong.textContent = version; // Use textContent to prevent XSS
+                                versionLabel.appendChild(strong);
+                            }
+                            if (description) {
+                                versionLabel.appendChild(document.createTextNode(version ? ` - ${description}` : description));
+                            }
+                            section.appendChild(versionLabel);
+                        }
+                        
+                        const codeBlock = document.createElement('div');
+                        codeBlock.className = 'sdk-code-block';
+                        const code = document.createElement('code');
+                        code.textContent = command; // Use textContent to prevent XSS
+                        const copyBtn = document.createElement('button');
+                        copyBtn.className = 'sdk-copy-btn';
+                        copyBtn.setAttribute('data-clipboard', command);
+                        copyBtn.textContent = 'Copy';
+                        codeBlock.appendChild(code);
+                        codeBlock.appendChild(copyBtn);
+                        section.appendChild(codeBlock);
+                        
+                        return section;
+                    }
+                    
+                    // Stable version section
+                    body.appendChild(createVersionSection(
+                        '📦',
+                        'Latest Stable Version',
+                        latestStableVersion,
+                        'Recommended for production',
+                        `dotnet new install Uno.Templates::${latestStableVersion}`
+                    ));
+                    
+                    // Dev version section
+                    const devSection = createVersionSection(
+                        '🚀',
+                        'Latest Dev Version',
+                        latestDevVersion,
+                        'Preview features & fixes',
+                        `dotnet new install Uno.Templates::${latestDevVersion}`
+                    );
+                    const devNote = document.createElement('p');
+                    devNote.className = 'sdk-note';
+                    devNote.textContent = '📍 ';
+                    const noteStrong = document.createElement('strong');
+                    noteStrong.textContent = 'NuGet Package:';
+                    devNote.appendChild(noteStrong);
+                    devNote.appendChild(document.createTextNode(' '));
+                    const nugetLink = document.createElement('a');
+                    nugetLink.href = 'https://www.nuget.org/packages/Uno.Templates';
+                    nugetLink.target = '_blank';
+                    nugetLink.rel = 'noopener';
+                    nugetLink.textContent = 'Uno.Templates on NuGet.org';
+                    devNote.appendChild(nugetLink);
+                    devSection.appendChild(devNote);
+                    body.appendChild(devSection);
+                    
+                    // Check version section
+                    body.appendChild(createVersionSection(
+                        'ℹ️',
+                        'Check Installed Version',
+                        '',
+                        '',
+                        'dotnet new details Uno.Templates'
+                    ));
+                    
+                    // Tip note
+                    const tipNote = document.createElement('p');
+                    tipNote.className = 'sdk-note';
+                    tipNote.textContent = '💡 ';
+                    const tipStrong = document.createElement('strong');
+                    tipStrong.textContent = 'Tip:';
+                    tipNote.appendChild(tipStrong);
+                    tipNote.appendChild(document.createTextNode(' If you have an older version installed, uninstall it first using:'));
+                    const br = document.createElement('br');
+                    tipNote.appendChild(br);
+                    const tipCode = document.createElement('code');
+                    tipCode.textContent = 'dotnet new uninstall Uno.Templates';
+                    tipNote.appendChild(tipCode);
+                    body.appendChild(tipNote);
+                    
+                    // Assemble modal
+                    content.appendChild(header);
+                    content.appendChild(body);
+                    overlay.appendChild(content);
+                    modal.appendChild(overlay);
                     document.body.appendChild(modal);
                     
                     // Close modal handlers (click and Escape key)
