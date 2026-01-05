@@ -122,7 +122,7 @@ document.addEventListener(
                         section.className = 'sdk-version-section';
                         
                         const h4 = document.createElement('h4');
-                        h4.textContent = `${icon} ${title}`;
+                        h4.textContent = icon + ' ' + title;
                         section.appendChild(h4);
                         
                         // Only add version label if version and description are provided
@@ -135,7 +135,7 @@ document.addEventListener(
                                 versionLabel.appendChild(strong);
                             }
                             if (description) {
-                                versionLabel.appendChild(document.createTextNode(version ? ` - ${description}` : description));
+                                versionLabel.appendChild(document.createTextNode(version ? ' - ' + description : description));
                             }
                             section.appendChild(versionLabel);
                         }
