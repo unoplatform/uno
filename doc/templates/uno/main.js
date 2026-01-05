@@ -165,37 +165,46 @@ document.addEventListener(
                             section.appendChild(versionLabel);
                         }
                         
-                        const codeBlock = document.createElement('div');
-                        codeBlock.className = 'sdk-code-block';
-                        const code = document.createElement('code');
-                        code.textContent = command; // Use textContent to prevent XSS
-                        const copyBtn = document.createElement('button');
-                        copyBtn.className = 'sdk-copy-btn';
-                        copyBtn.setAttribute('data-clipboard', command);
-                        copyBtn.textContent = 'Copy';
-                        codeBlock.appendChild(code);
-                        codeBlock.appendChild(copyBtn);
-                        section.appendChild(codeBlock);
+                        // Only add command block if a valid command string is provided
+                        if (command) {
+                            const codeBlock = document.createElement('div');
+                            codeBlock.className = 'sdk-code-block';
+                            const code = document.createElement('code');
+                            code.textContent = command; // Use textContent to prevent XSS
+                            const copyBtn = document.createElement('button');
+                            copyBtn.className = 'sdk-copy-btn';
+                            copyBtn.setAttribute('data-clipboard', command);
+                            copyBtn.textContent = 'Copy';
+                            codeBlock.appendChild(code);
+                            codeBlock.appendChild(copyBtn);
+                            section.appendChild(codeBlock);
+                        }
                         
                         return section;
                     }
                     
                     // Stable version section
+                    const stableCommand = latestStableVersion
+                        ? 'dotnet new install Uno.Templates::' + latestStableVersion
+                        : null;
                     body.appendChild(createVersionSection(
                         '📦',
                         'Latest Stable Version',
                         latestStableVersion,
                         'Recommended for production',
-                        'dotnet new install Uno.Templates::' + latestStableVersion
+                        stableCommand
                     ));
                     
                     // Dev version section
+                    const devCommand = latestDevVersion
+                        ? 'dotnet new install Uno.Templates::' + latestDevVersion
+                        : null;
                     const devSection = createVersionSection(
                         '🚀',
                         'Latest Dev Version',
                         latestDevVersion,
                         'Preview features & fixes',
-                        'dotnet new install Uno.Templates::' + latestDevVersion
+                        devCommand
                     );
                     const devNote = document.createElement('p');
                     devNote.className = 'sdk-note';
