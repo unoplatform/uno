@@ -1,6 +1,0 @@
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
-	<x:String x:Key="HR_Frame_Pages_AppResources_String_Resource02">** HR_Frame_Pages_AppResources_SubDictionary Original String **</x:String>
-</ResourceDictionary>

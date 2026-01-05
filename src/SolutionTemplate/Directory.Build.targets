@@ -1,7 +1,0 @@
-<Project>
-	<!-- File is intentionally empty and not referencing parent Directory.Build.targets -->
-	<!-- We don't want our Directory.Build.targets in src to affect building the templates. -->
-
-	<!-- Except for this workaround for .NET 9 RC1 -->
-	<Import Project="../Workaround-43339.targets" />
-</Project>

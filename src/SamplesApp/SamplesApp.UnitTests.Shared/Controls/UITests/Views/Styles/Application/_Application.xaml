@@ -1,9 +1,0 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:local="using:Uno.UI.Samples.Styles.Application">
-
-	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Colors.xaml" />
-		<ResourceDictionary Source="Converters.xaml" />
-	</ResourceDictionary.MergedDictionaries>
-</ResourceDictionary>

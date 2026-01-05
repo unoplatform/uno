@@ -1,2 +1,0 @@
-Is_Windows_UI_Xaml_Controls_FlipView_Available=false
-Is_Windows_UI_Xaml_Controls_TextBlock_Available=true

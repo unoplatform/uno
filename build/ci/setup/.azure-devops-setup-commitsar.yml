@@ -1,8 +1,0 @@
-steps:
-- bash: |
-    curl -L -O https://github.com/aevea/commitsar/releases/download/v0.20.2/commitsar_0.20.2_linux_amd64.tar.gz
-    tar -xzf commitsar_0.20.2_linux_amd64.tar.gz
-    export COMMITSAR_CONFIG_PATH=$(build.sourcesdirectory)/build
-    ./commitsar
-
-  condition: ne(variables['System.PullRequest.PullRequestNumber'], '')

@@ -1,9 +1,0 @@
-<MyRootClass xmlns="clr-namespace:XamarinBug2927;assembly=System.Xaml_test_net_4_0" >
-  <MyRootClass.Child>
-    <MyChildClass>
-      <MyChildClass.Descendant>
-        <DescendantClass Value='x' DoWork='HandleMyEvent' />
-      </MyChildClass.Descendant>
-    </MyChildClass>
-  </MyRootClass.Child>
-</MyRootClass>

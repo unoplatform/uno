@@ -1,6 +1,0 @@
-﻿<linker>
-  <assembly fullname="Uno.UI.XamlHost">
-    <type fullname="Uno.UI.XamlHost.CoreDispatcher" />
-  </assembly>
-
-</linker>

@@ -1,6 +1,0 @@
-﻿<UserControl x:Class="Uno.UI.Tests.Windows_UI_Xaml_Markup.MarkupExtensionTests.Controls.When_DP_Markup_Setup"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml_Markup.MarkupExtensionTests.Controls"
-			 Tag="{local:DebugMarkupExtension}"
-			 local:Attachable.Value2="{local:DebugMarkupExtension Behavior=AssignToAttachableValue}" />

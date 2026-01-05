@@ -1,3 +1,0 @@
-M:Windows.UI.Core.CoreWindow.GetForCurrentThread();Window.GetForCurrentThread returns null in WinUI - try using XamlRoot instead, use GetForCurrentThreadSafe if necessary.
-M:Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();ApplicationView.GetForCurrentView returns null in WinUI, avoid using within the codebase.
-M:Windows.Graphics.Display.DisplayInformation.GetForCurrentView();Should not be used internally. Use XamlRoot and its properties instead.
