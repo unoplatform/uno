@@ -137,7 +137,9 @@ namespace Uno.UI.Runtime.Skia {
 			if (instance.pixelBuffer !== 0) {
 				Module._free(instance.pixelBuffer);
 			}
-			instance.pixelBuffer = Module._malloc(length);
+			instance.canvas.width = width;
+			instance.canvas.height = height;
+			instance.pixelBuffer = Module._malloc(width * height * 4);
 			instance.clampedArray = new Uint8ClampedArray(Module.HEAPU8.buffer, instance.pixelBuffer, width * height * 4);
 			return instance.pixelBuffer;
 		}

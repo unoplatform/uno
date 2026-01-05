@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
-using System.Threading;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
 using Uno.UI.Hosting;
-using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia;
 
