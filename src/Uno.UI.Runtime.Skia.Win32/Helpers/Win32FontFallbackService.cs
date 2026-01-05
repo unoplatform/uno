@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,9 +66,42 @@ internal class Win32FontFallbackService : IFontFallbackService
 		_missingCodepoints.Clear();
 
 		var fonts = GetMinimalFontsForCodepoints(missingCodepoints, FallbackFontMaps.CodepointsToFontFamilies);
-		foreach (var font in fonts)
+		foreach (var rawFont in fonts)
 		{
+			var font = rawFont;
+			if (font is "Noto Sans CJK")
+			{
+				// all CJK fonts have the same codepoint coverage, so we pick one based on locale
+				font = "SimplifiedChinese";
+
+				var locale = CultureInfo.CurrentCulture.Name;
+				if (locale.StartsWith("ja", StringComparison.InvariantCultureIgnoreCase) || locale.StartsWith("jp", StringComparison.InvariantCultureIgnoreCase))
+				{
+					font = "Japanese";
+				}
+				else if (locale.StartsWith("ko", StringComparison.InvariantCultureIgnoreCase))
+				{
+					font = "Korean";
+				}
+				else if (locale.StartsWith("zh", StringComparison.InvariantCultureIgnoreCase))
+				{
+					if (locale.Contains("cn", StringComparison.InvariantCultureIgnoreCase))
+					{
+						font = "SimplifiedChinese";
+					}
+					else if (locale.Contains("hk", StringComparison.InvariantCultureIgnoreCase))
+					{
+						font = "TraditionalChineseHK";
+					}
+					else
+					{
+						font = "TraditionalChinese";
+					}
+				}
+			}
+
 			var map = FallbackFontMaps.FontWeightsToRawUrls[font];
+			// TODO: use weight/stretch/style to pick the best match
 			var uri = new Uri(map["Regular"]);
 			try
 			{
