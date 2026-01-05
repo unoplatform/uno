@@ -247,8 +247,8 @@ public class Given_WebView
 	}
 #endif
 
-#if __IOS__ || __SKIA__
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaIOS)]
 	public async Task When_FileUri_With_Relative_Paths()
 	{
 		var border = new Border();
@@ -289,6 +289,5 @@ public class Given_WebView
 		var cssLoaded = await webView.InvokeScriptAsync("eval", new[] { "window.cssLoaded ? 'true' : 'false'" });
 		Assert.AreEqual("true", cssLoaded, "CSS file should have been loaded via relative path");
 	}
-#endif
 }
 #endif
