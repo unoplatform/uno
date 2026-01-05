@@ -2018,5 +2018,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			CollectionAssert.AreEqual(new bool[] { true, false, true, false }, sequence);
 		}
 #endif
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Touch_Scrolled_Button_Click_Works()
+		{
+			// setup is a 100x100 ScrollViewer with a 2000px tall Border
+			var stackPanel = new StackPanel();
+			var content = new Border
+			{
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red)
+			};
+			var button = new Button
+			{
+				Content = "Click Me"
+			};
+			bool clicked = false;
+			button.Click += (s, e) => clicked = true;
+			stackPanel.Children.Add(content);
+			stackPanel.Children.Add(button);
+
+			var sut = new ScrollViewer
+			{
+				Height = 100,
+				Width = 100,
+				Content = stackPanel,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			// Inject touch to scroll the ScrollViewer all the way down
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Drag(
+				from: bounds.GetCenter(),
+				to: new(bounds.GetCenter().X, bounds.GetCenter().Y - 50));
+
+			// Ensure scroll is completed
+			await TestServices.WindowHelper.WaitFor(() => (sut.VerticalOffset + 1) >= sut.ScrollableHeight); // Adding 1 to avoid floating point precision issues
+
+			// Now click the button
+			finger.Press(button.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(clicked, "Button should be clicked successfully after touch scrolling the ScrollViewer.");
+		}
 	}
 }
