@@ -1,5 +1,4 @@
 #nullable enable
-#if __SKIA__
 using System.Threading.Tasks;
 using Windows.UI.Text;
 using SkiaSharp;
@@ -11,5 +10,3 @@ internal interface IFontFallbackService
 	Task<string?> GetFontNameForCodepoint(int codepoint);
 	Task<SKTypeface?> GetTypefaceForFontName(string fontName, FontWeight weight, FontStretch stretch, FontStyle style);
 }
-#endif
-
