@@ -161,7 +161,7 @@ document.addEventListener(
                         'Latest Stable Version',
                         latestStableVersion,
                         'Recommended for production',
-                        `dotnet new install Uno.Templates::${latestStableVersion}`
+                        'dotnet new install Uno.Templates::' + latestStableVersion
                     ));
                     
                     // Dev version section
@@ -170,7 +170,7 @@ document.addEventListener(
                         'Latest Dev Version',
                         latestDevVersion,
                         'Preview features & fixes',
-                        `dotnet new install Uno.Templates::${latestDevVersion}`
+                        'dotnet new install Uno.Templates::' + latestDevVersion
                     );
                     const devNote = document.createElement('p');
                     devNote.className = 'sdk-note';
