@@ -62,6 +62,19 @@ document.addEventListener(
             .catch(err => {
                 console.log('Could not fetch SDK version:', err);
                 // If fetch fails and we have cached data, keep using it
+                if (!cachedData) {
+                    const versionElement = document.querySelector('.sdk-version');
+                    const badgeElement = document.querySelector('.sdk-version-badge');
+
+                    if (versionElement) {
+                        versionElement.textContent = 'Version unavailable';
+                    }
+
+                    if (badgeElement) {
+                        // Optional: add a class for styling the error state
+                        badgeElement.classList.add('sdk-version-badge-error');
+                    }
+                }
             });
         
         function updateVersionDisplay(latestStableVersion, latestDevVersion) {
