@@ -49,8 +49,8 @@ namespace Microsoft.UI.Xaml
 		/// should remain unchanged. See Uno.UI.TemplateManager for details.
 		/// </summary>
 		/// <remarks>
-		/// This delegate may be wrapped align the signature to <see cref="NewFrameworkTemplateBuilder"/>.
-		/// The original factory method can be found in <see cref="ViewFactoryInner"/>.
+		/// This delegate may be wrapped to align its signature with <see cref="NewFrameworkTemplateBuilder"/>.
+		/// The original factory method can always be found in <see cref="ViewFactoryInner"/>.
 		/// </remarks>
 		internal IDelegate<NewFrameworkTemplateBuilder>? ViewFactory { get; private set; }
 
@@ -115,10 +115,11 @@ namespace Microsoft.UI.Xaml
 		/// <param name="factory">The new factory to set</param>
 		internal void SetViewFactory(NewFrameworkTemplateBuilder? factory)
 		{
-			// We want to keep a weak reference to the factory target, so that templates do not prevent those objects from being GC'd.
-			// But only so, if the target is not an instance of the closure class, which we use IWeakReferenceProvider to determine since
-			// the known top-level xaml classes (Pages, ResourceDictionary,...) usually implement this interface.
-			// If the factory doesn't have a target (no capture), then we use the literal delegate that has no overhead.
+			// When the factory target is a top-level XAML class (e.g. Page, ResourceDictionary, ...) which commonly implements IWeakReferenceProvider,
+			// we wrap the delegate in a weak reference so that the template does not keep that object alive and cause memory leaks.
+			// When the target does not implement IWeakReferenceProvider (typically a compiler-generated closure class), we keep a strong
+			// reference via LiteralDelegate so the closure stays alive. If the factory doesn't have a target (no capture), we also use the literal
+			// delegate without additional overhead.
 			ViewFactory = factory switch
 			{
 				{ Target: IWeakReferenceProvider } => DelegateHelper.CreateWeak(factory),
@@ -133,10 +134,11 @@ namespace Microsoft.UI.Xaml
 		{
 			if (factory is { })
 			{
-				// We want to keep a weak reference to the factory target, so that templates do not prevent those objects from being GC'd.
-				// But only so, if the target is not an instance of the closure class, which we use IWeakReferenceProvider to determine since
-				// the known top-level xaml classes (Pages, ResourceDictionary,...) usually implement this interface.
-				// If the factory doesn't have a target (no capture), then we use the literal delegate that has no overhead.
+				// When the factory target is a top-level XAML class (e.g. Page, ResourceDictionary, ...) which commonly implements IWeakReferenceProvider,
+				// we wrap the delegate in a weak reference so that the template does not keep that object alive and cause memory leaks.
+				// When the target does not implement IWeakReferenceProvider (typically a compiler-generated closure class), we keep a strong
+				// reference via LiteralDelegate so the closure stays alive. If the factory doesn't have a target (no capture), we also use the literal
+				// delegate without additional overhead.
 				var inner = factory.Target is IWeakReferenceProvider
 					? DelegateHelper.CreateWeak(factory)
 					: DelegateHelper.CreateLiteral(factory) as IDelegate<TDelegate>;

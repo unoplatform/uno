@@ -24,9 +24,9 @@ internal interface IDelegate<out TDelegate> where TDelegate : Delegate
 internal class LiteralDelegate<TDelegate> : IDelegate<TDelegate>
 	where TDelegate : Delegate
 {
-	public object? Target => Delegate!.Target;
-	public MethodInfo Method => Delegate!.Method;
-	public TDelegate? Delegate { get; }
+	public object? Target => Delegate.Target;
+	public MethodInfo Method => Delegate.Method;
+	public TDelegate Delegate { get; }
 
 	public LiteralDelegate(TDelegate d)
 	{
@@ -45,29 +45,22 @@ internal class LiteralDelegate<TDelegate> : IDelegate<TDelegate>
 internal class WeakDelegate<TDelegate> : IDelegate<TDelegate>
 	where TDelegate : Delegate
 {
-	public WeakReference? Instance { get; init; }
+	public WeakReference Instance { get; init; }
 	public MethodInfo Method { get; init; }
-
-	// static method delegate doesn't capture any target instance, so we can just reuse it
-	private TDelegate? _staticDelegate;
 
 	public WeakDelegate(TDelegate d)
 	{
 		if (!d.HasSingleTarget)
 		{
-			throw new NotImplementedException("Multi-cast delegate not supported");
+			throw new NotSupportedException("Multi-cast delegate not supported");
+		}
+		if (d.Target is null)
+		{
+			throw new Exception("Delegate target should not be null, use a LiteralDelegate instead");
 		}
 
-		if (d.Target is { } t)
-		{
-			Instance = new WeakReference(t);
-			Method = d.Method;
-		}
-		else
-		{
-			_staticDelegate = d;
-			Method = d.Method; // still used outside of this class for logging
-		}
+		Instance = new WeakReference(d.Target);
+		Method = d.Method;
 	}
 
 	public object? Target => Instance?.Target;
@@ -79,12 +72,10 @@ internal class WeakDelegate<TDelegate> : IDelegate<TDelegate>
 	/// <remarks>
 	/// DO NOT store/cache the returned delegate, as it keeps a strong reference to the target just like the original delegate.
 	/// </remarks>
-	public TDelegate? Delegate =>
-		_staticDelegate ??
-		// for instanced method delegate, only try to create if the instance reference is still alive
-		(Instance!.Target is { } t
-			? System.Delegate.CreateDelegate(typeof(TDelegate), t, Method) as TDelegate
-			: null);
+	public TDelegate? Delegate => Instance.Target is { } t
+		// only try to create if the instance is still alive
+		? System.Delegate.CreateDelegate(typeof(TDelegate), t, Method) as TDelegate
+		: null;
 }
 
 internal class DelegateHelper
