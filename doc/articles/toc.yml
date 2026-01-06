@@ -16,6 +16,10 @@
         href: xref:Uno.GetStarted.AI.Codex
       - name: GitHub Copilot CLI
         href: xref:Uno.GetStarted.AI.CopilotCLI
+      - name: GitHub Copilot in Visual Studio
+        href: xref:Uno.GetStarted.AI.CopilotVS
+      - name: GitHub Copilot in VS Code
+        href: xref:Uno.GetStarted.AI.CopilotVSCode
       - name: Cursor
         href: xref:Uno.GetStarted.AI.Cursor
       - name: Google Antigravity
@@ -39,6 +43,10 @@
         href: xref:Uno.GettingStarted.CreateAnApp.AI.Codex
       - name: GitHub Copilot CLI
         href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCli
+      - name: GitHub Copilot in Visual Studio
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotVS
+      - name: GitHub Copilot in VS Code
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotVSCode
       - name: Cursor
         href: xref:Uno.GettingStarted.CreateAnApp.AI.Cursor
       - name: Google Antigravity
