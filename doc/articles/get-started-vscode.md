@@ -53,7 +53,7 @@ If you want to use GitHub Copilot with Uno Platform's MCP servers:
    - Follow the prompts to authenticate with your GitHub account
 
 1. Configure Uno Platform MCPs:
-   - Open the GitHub Copilot chat by clicking the chat icon in the activity bar or pressing **Ctrl+Alt+I** (Windows/Linux) or **Cmd+Option+I** (macOS)
+   - Open the GitHub Copilot chat by clicking the chat icon in the activity bar or pressing **Ctrl+Alt+I** (Windows/Linux) or **Ctrl+Cmd+I** (macOS)
 
      ![VS Code Copilot icon](Assets/vscode-copilot-icon.png)
 
