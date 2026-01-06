@@ -12,6 +12,9 @@ Uno Platform fully embraces HTML5 as its display backend when targeting WebAssem
 
 In the HTML world, everything running in the browser is assets that must be downloaded from a server. To integrate existing JavaScript frameworks, they can be either downloaded from another location on the Internet (usually from a CDN service) or embedded and deployed with the app.
 
+> [!TIP]
+> For a comprehensive guide on all the ways to reference JavaScript files in your WebAssembly apps, see [How to Reference JavaScript Files](xref:Uno.Interop.ReferenceJavaScript).
+
 The Uno Bootstrapper can automatically embed any asset and deploy it with the app. Some of them (CSS & JavaScript) can also be loaded with the app. Here's how to declare them in a *Uno Wasm* project:
 
 1. **JavaScript files** should be in the `Platforms/WebAssembly/WasmScripts` folder. They will be copied to the output folder and loaded automatically by the bootstrapper when the page loads.
@@ -174,6 +177,7 @@ Then from your C# code, add the following:
 
 ## 🔬 Going further
 
+* [How to Reference JavaScript Files](xref:Uno.Interop.ReferenceJavaScript) - comprehensive guide on all methods to load JavaScript files.
 * [Continue with Part 2](xref:Uno.Interop.WasmJavaScript2) - an integration of a syntax highlighter component.
 * [Continue with Part 3](xref:Uno.Interop.WasmJavaScript3) - an integration of a more complex library with callbacks to application.
 * Read the [Uno Wasm Bootstrapper](xref:UnoWasmBootstrap.Overview) documentation.

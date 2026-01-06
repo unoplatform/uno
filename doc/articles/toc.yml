@@ -161,6 +161,8 @@
       - name: Embed a JavaScript Component
         topicHref: xref:Uno.Interop.WasmJavaScript1
         items:
+          - name: How to Reference JavaScript Files
+            href: xref:Uno.Interop.ReferenceJavaScript
           - name: Part 1
             href: xref:Uno.Interop.WasmJavaScript1
           - name: Part 2
