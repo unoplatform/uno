@@ -5543,9 +5543,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			{
 				cv.CalendarIdentifier = "JapaneseCalendar";
 				cv.DisplayMode = CalendarViewDisplayMode.Month;
-				// by default, CalendarView uses today +- 100years for min/max date
-				// we need enough wiggle room for previous-Decade/Year/Month button to work correctly
-				cv.MinDate = ConvertToDateTime(1, 1926, 12 - 1 * 2, 25);
 				rootPanel.Children.Add(cv);
 			});
 
@@ -5583,9 +5580,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			{
 				cv.CalendarIdentifier = "JapaneseCalendar";
 				cv.DisplayMode = CalendarViewDisplayMode.Year;
-				// by default, CalendarView uses today +- 100years for min/max date
-				// we need enough wiggle room for previous-Decade/Year/Month button to work correctly
-				cv.MinDate = ConvertToDateTime(1, 1926 - 1 * 2, 12, 25);
 				rootPanel.Children.Add(cv);
 			});
 
@@ -5623,9 +5617,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			{
 				cv.CalendarIdentifier = "JapaneseCalendar";
 				cv.DisplayMode = CalendarViewDisplayMode.Decade;
-				// by default, CalendarView uses today +- 100years for min/max date
-				// we need enough wiggle room for previous-Decade/Year/Month button to work correctly
-				cv.MinDate = ConvertToDateTime(1, 1926 - 10 * 2, 12, 25);
 				rootPanel.Children.Add(cv);
 			});
 
