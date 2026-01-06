@@ -38,10 +38,10 @@ function renderAffix() {
                 
                 const editLink = contributionList.find('li a.contribution-link');
                 
-                // Add icon to "Edit this page"
+                // Add icon to "Edit this page" using DOM methods
                 if (editLink.length > 0) {
-                    editLink
-                        .prepend('<i class="fa fa-edit"></i> ');
+                    const editIcon = $('<i></i>').addClass('fa fa-edit');
+                    editLink.prepend(editIcon).prepend(' ');
                 }
                 // Add "Send feedback" link using DOM methods to prevent XSS
                 const feedbackLink = $('<li></li>');
