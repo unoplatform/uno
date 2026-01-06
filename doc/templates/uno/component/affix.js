@@ -43,16 +43,19 @@ function renderAffix() {
                     editLink
                         .prepend('<i class="fa fa-edit"></i> ');
                 }
-                // Add "Send feedback" link
-                const feedbackLink = $('<li></li>').append(
-                    $('<a></a>')
-                        .attr('href', issueUrl)
-                        .attr('target', '_blank')
-                        .attr('rel', 'noopener noreferrer')
-                        .attr('aria-label', 'Send feedback about this documentation page')
-                        .addClass('contribution-link')
-                        .html('<i class="fa fa-comments"></i> Send feedback')
-                );
+                // Add "Send feedback" link using DOM methods to prevent XSS
+                const feedbackLink = $('<li></li>');
+                const feedbackAnchor = $('<a></a>')
+                    .attr('href', issueUrl)
+                    .attr('target', '_blank')
+                    .attr('rel', 'noopener noreferrer')
+                    .addClass('contribution-link');
+                
+                // Create icon and text using DOM methods
+                const icon = $('<i></i>').addClass('fa fa-comments');
+                feedbackAnchor.append(icon).append(' Send feedback');
+                
+                feedbackLink.append(feedbackAnchor);
                 contributionList.append(feedbackLink);
             }
             
@@ -65,27 +68,51 @@ function renderAffix() {
         $('body').append(contributionDiv);
         
         // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
-        let scrollTimer;
-        $(window).on('scroll', function() {
-            const feedbackBox = $('.feedback-box');
-            if (feedbackBox.length === 0) return;
+        // Only attach handler once to prevent memory leaks
+        if (!window.feedbackScrollHandlerAttached) {
+            const MOBILE_BREAKPOINT = 992;
+            const SCROLL_HIDE_DELAY_MS = 300;
+            let scrollTimer;
+            let isScrollHandlingScheduled = false;
             
-            // Only apply scroll hiding on reduced widths (<992px)
-            if ($(window).width() < 992) {
-                feedbackBox.addClass('scrolling');
+            // Use requestAnimationFrame for better performance
+            const scheduleScrollHandler = window.requestAnimationFrame
+                ? window.requestAnimationFrame.bind(window)
+                : function (callback) { return setTimeout(callback, 16); };
+            
+            $(window).on('scroll.feedbackBox', function() {
+                if (isScrollHandlingScheduled) {
+                    return;
+                }
                 
-                // Clear existing timer
-                clearTimeout(scrollTimer);
+                isScrollHandlingScheduled = true;
                 
-                // Set new timer to remove scrolling class after scrolling stops
-                scrollTimer = setTimeout(function() {
-                    feedbackBox.removeClass('scrolling');
-                }, 300); // Show box 300ms after scrolling stops
-            } else {
-                // Remove scrolling class on larger screens
-                feedbackBox.removeClass('scrolling');
-            }
-        });
+                scheduleScrollHandler(function() {
+                    isScrollHandlingScheduled = false;
+                    
+                    const feedbackBox = $('.feedback-box');
+                    if (feedbackBox.length === 0) return;
+                    
+                    // Only apply scroll hiding on reduced widths (<992px)
+                    if ($(window).width() < MOBILE_BREAKPOINT) {
+                        feedbackBox.addClass('scrolling');
+                        
+                        // Clear existing timer
+                        clearTimeout(scrollTimer);
+                        
+                        // Set new timer to remove scrolling class after scrolling stops
+                        scrollTimer = setTimeout(function() {
+                            feedbackBox.removeClass('scrolling');
+                        }, SCROLL_HIDE_DELAY_MS);
+                    } else {
+                        // Remove scrolling class on larger screens
+                        feedbackBox.removeClass('scrolling');
+                    }
+                });
+            });
+            
+            window.feedbackScrollHandlerAttached = true;
+        }
 
     }
 
