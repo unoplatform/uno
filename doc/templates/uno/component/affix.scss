@@ -14,6 +14,124 @@
   }
 }
 
+// Feedback box styling - positioned at bottom of viewport
+div.contribution.feedback-box {
+  position: fixed !important;
+  display: block !important;
+  bottom: 20px;
+  right: 20px;
+  width: 240px;
+  min-width: 240px;
+  max-width: calc(100vw - 40px);
+  background: #ffffff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  // Hide box while scrolling on reduced widths
+  &.scrolling {
+    @media (max-width: 991px) {
+      opacity: 0 !important;
+      transform: translateY(20px);
+      pointer-events: none;
+    }
+  }
+  
+  // Adjust positioning and padding on smaller screens
+  @media (max-width: 991px) {
+    bottom: 15px;
+    right: 15px;
+    padding: 14px;
+  }
+  
+  @media (max-width: 576px) {
+    bottom: 10px;
+    right: 10px;
+    padding: 12px;
+    border-radius: 6px;
+  }
+  
+  @media (max-width: 400px) {
+    bottom: 8px;
+    right: 8px;
+    padding: 10px;
+    font-size: 13px;
+    border-radius: 4px;
+  }
+  
+  > ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    > li {
+      margin-bottom: 10px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      @media (max-width: 576px) {
+        margin-bottom: 8px;
+      }
+      
+      @media (max-width: 400px) {
+        margin-bottom: 6px;
+      }
+    }
+  }
+
+  ul > li > a.contribution-link {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+    display: block;
+    padding: 8px 0;
+    color: #0366d6;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #0052a3;
+      text-decoration: none;
+    }
+    
+    i.fa {
+      margin-right: 8px;
+      font-size: 14px;
+      width: 16px;
+      text-align: center;
+      
+      @media (max-width: 400px) {
+        margin-right: 6px;
+        font-size: 12px;
+        width: 14px;
+      }
+    }
+    
+    // Responsive font sizes
+    @media (max-width: 576px) {
+      font-size: 13px;
+      line-height: 18px;
+      padding: 6px 0;
+    }
+    
+    @media (max-width: 400px) {
+      font-size: 12px;
+      line-height: 16px;
+      padding: 5px 0;
+    }
+  }
+}
+
 .sideaffix {
   overflow: auto;
   padding-top:36px;
