@@ -115,7 +115,7 @@ public class Given_ProgressRing
 		var different = false;
 		for (int i = 0; i < screenshot2.Bitmap.PixelHeight; i++)
 		{
-			different = 0 != pixels1.AsSpan(i * screenshot2.Bitmap.PixelHeight, screenshot2.Bitmap.PixelWidth).SequenceCompareTo(pixels2.AsSpan(i * screenshot2.Bitmap.PixelHeight, screenshot2.Bitmap.PixelWidth));
+			different = 0 != pixels1.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth).SequenceCompareTo(pixels2.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth));
 			if (different)
 			{
 				break;
