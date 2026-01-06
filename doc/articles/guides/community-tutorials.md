@@ -131,7 +131,7 @@ If you're following an older tutorial:
 
 1. **Use current templates** - Start with `dotnet new unoapp` for Single Project structure
 2. **Check for package updates** - Older tutorials may use deprecated packages
-3. **Refer to migration guides** - See [Migration Guidance](xref:Uno.MigratingGuidance) for pattern updates
+3. **Refer to migration guides** - See [Migration Guidance](xref:Uno.Development.MigratingGuidance) for pattern updates
 4. **Ask the community** - Join [Uno Platform Discord](https://platform.uno/discord) for help adapting older content
 
 ### Reporting Issues 🐛
