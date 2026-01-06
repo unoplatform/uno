@@ -34,22 +34,9 @@ function renderAffix() {
                 
                 const pageUrl = encodeURIComponent(window.location.href);
                 const issueTitle = encodeURIComponent(`[Docs] Feedback: ${sanitizedTitle}`);
-                
-                // Derive GitHub repository path from the "Edit this page" link
-                let repoPath = 'unoplatform/uno';
+                const issueUrl = 'https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=' + issueTitle + '&docs-issue-location=' + pageUrl;
                 
                 const editLink = contributionList.find('li a.contribution-link');
-                if (editLink.length > 0) {
-                    const editHref = editLink.attr('href');
-                    if (editHref) {
-                        const repoMatch = editHref.match(/github\.com\/([^\/]+\/[^\/]+)/i);
-                        if (repoMatch && repoMatch[1]) {
-                            repoPath = repoMatch[1];
-                        }
-                    }
-                }
-
-                const issueUrl = `https://github.com/${repoPath}/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
                 
                 // Add icon to "Edit this page"
                 if (editLink.length > 0) {
