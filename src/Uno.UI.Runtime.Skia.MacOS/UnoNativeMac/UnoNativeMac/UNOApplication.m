@@ -173,11 +173,7 @@ void uno_application_quit(void)
     NSLog(@"UNOApplicationDelegate.applicationShouldTerminate %@", sender);
 #endif
     // Check if the application can exit (ICoreApplicationExtension.CanExit)
-    if (!uno_get_application_can_exit_callback()()) {
-        return NSTerminateCancel;
-    }
-    
-    return NSTerminateNow;
+    return uno_get_application_can_exit_callback()() ? NSTerminateNow : NSTerminateCancel;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
