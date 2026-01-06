@@ -27,10 +27,25 @@ function renderAffix() {
             if (contributionList.length > 0) {
                 const pageUrl = encodeURIComponent(window.location.href);
                 const issueTitle = encodeURIComponent(`[Docs] Feedback: ${document.title}`);
-                const issueUrl = `https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
+                
+                // Derive GitHub repository path from the "Edit this page" link when possible,
+                // falling back to the main Uno repository for backward compatibility.
+                let repoPath = 'unoplatform/uno';
+                
+                const editLink = contributionList.find('li a.contribution-link');
+                if (editLink.length > 0) {
+                    const editHref = editLink.attr('href');
+                    if (editHref) {
+                        const repoMatch = editHref.match(/github\.com\/([^\/]+\/[^\/]+)/i);
+                        if (repoMatch && repoMatch[1]) {
+                            repoPath = repoMatch[1];
+                        }
+                    }
+                }
+
+                const issueUrl = `https://github.com/${repoPath}/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
                 
                 // Add icon to "Edit this page"
-                const editLink = contributionList.find('li a.contribution-link');
                 if (editLink.length > 0) {
                     editLink.prepend('<i class="fa fa-edit"></i> ');
                 }
