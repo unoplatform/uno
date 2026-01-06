@@ -21,9 +21,83 @@ function renderAffix() {
         });
 
         const contribution = $('.contribution');
+        
+        if (contribution.length > 0) {
+            const contributionList = contribution.find('ul');
+            if (contributionList.length > 0) {
+                // Sanitize document.title to prevent XSS
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = document.title || '';
+                const sanitizedTitle = tempDiv.textContent
+                    .trim()
+                    .substring(0, 200);
+                
+                const pageUrl = encodeURIComponent(window.location.href);
+                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${sanitizedTitle}`);
+                
+                // Derive GitHub repository path from the "Edit this page" link
+                let repoPath = 'unoplatform/uno';
+                
+                const editLink = contributionList.find('li a.contribution-link');
+                if (editLink.length > 0) {
+                    const editHref = editLink.attr('href');
+                    if (editHref) {
+                        const repoMatch = editHref.match(/github\.com\/([^\/]+\/[^\/]+)/i);
+                        if (repoMatch && repoMatch[1]) {
+                            repoPath = repoMatch[1];
+                        }
+                    }
+                }
+
+                const issueUrl = `https://github.com/${repoPath}/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
+                
+                // Add icon to "Edit this page"
+                if (editLink.length > 0) {
+                    editLink.prepend('<i class="fa fa-edit"></i> ');
+                }
+
+                // Add "Send feedback" link
+                const feedbackLink = $('<li></li>').append(
+                    $('<a></a>')
+                        .attr('href', issueUrl)
+                        .attr('target', '_blank')
+                        .attr('rel', 'noopener noreferrer')
+                        .addClass('contribution-link')
+                        .html('<i class="fa fa-comments"></i> Send feedback')
+                );
+                contributionList.append(feedbackLink);
+            }
+            
+            // Add styling classes for the feedback box
+            contribution.addClass('feedback-box');
+        }
+        
         const contributionDiv = contribution.get(0).outerHTML;
         contribution.remove();
-        $('.sideaffix').append(contributionDiv);
+        $('body').append(contributionDiv);
+        
+        // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
+        let scrollTimer;
+        $(window).on('scroll', function() {
+            const feedbackBox = $('.feedback-box');
+            if (feedbackBox.length === 0) return;
+            
+            // Only apply scroll hiding on reduced widths (<992px)
+            if ($(window).width() < 992) {
+                feedbackBox.addClass('scrolling');
+                
+                // Clear existing timer
+                clearTimeout(scrollTimer);
+                
+                // Set new timer to remove scrolling class after scrolling stops
+                scrollTimer = setTimeout(function() {
+                    feedbackBox.removeClass('scrolling');
+                }, 300); // Show box 300ms after scrolling stops
+            } else {
+                // Remove scrolling class on larger screens
+                feedbackBox.removeClass('scrolling');
+            }
+        });
 
     }
 
