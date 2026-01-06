@@ -62,24 +62,37 @@ function renderAffix() {
         
         // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
         let scrollTimer;
-        $(window).on('scroll', function() {
+        const SCROLL_THROTTLE = 100; // milliseconds
+        let lastScrollCall = 0;
+
+        function onScrollHandler() {
             const feedbackBox = $('.feedback-box');
-            if (feedbackBox.length === 0) return;
-            
+            if (feedbackBox.length === 0) {
+                return;
+            }
+
             // Only apply scroll hiding on reduced widths (< 992px)
             if ($(window).width() < 992) {
                 feedbackBox.addClass('scrolling');
-                
+
                 // Clear existing timer
                 clearTimeout(scrollTimer);
-                
+
                 // Set new timer to remove scrolling class after scrolling stops
-                scrollTimer = setTimeout(function() {
+                scrollTimer = setTimeout(function () {
                     feedbackBox.removeClass('scrolling');
                 }, 300); // Show box 300ms after scrolling stops
             } else {
                 // Remove scrolling class on larger screens
                 feedbackBox.removeClass('scrolling');
+            }
+        }
+
+        $(window).on('scroll', function () {
+            const now = Date.now();
+            if (now - lastScrollCall >= SCROLL_THROTTLE) {
+                lastScrollCall = now;
+                onScrollHandler();
             }
         });
 
