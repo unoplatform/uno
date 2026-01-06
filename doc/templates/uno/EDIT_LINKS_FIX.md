@@ -36,7 +36,7 @@ The behavior of edit links is influenced by the following files:
 - **docfx.json** &mdash; Provides the `gitContribute` settings and other configuration values used by `common.js` when composing edit URLs.
 - **doc/templates/uno/common.js** &mdash; Contains the implementation of `getImproveTheDocHref`.
 - **doc/templates/uno/conceptual.extension.js** &mdash; Provides customization hooks used by the conceptual template.
-- **doc/templates/uno/affix.js** &mdash; Renders the contribution area that may include the edit link.
+- **doc/templates/uno/component/affix.js** &mdash; Renders the contribution area that may include the edit link.
 
 Use this document as a reference when adjusting edit-link behavior or when modifying the Uno DocFX template.
 
