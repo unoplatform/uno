@@ -7,6 +7,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -14,12 +16,15 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.Tasks.HotReloadInfo;
+using static Uno.UI.RemoteControl.Helpers.RoslynExtensions;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessor<Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor>]
 
@@ -71,6 +76,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 				case UpdateFileRequest.Name:
 					await ProcessUpdateFile(frame.GetContent<UpdateFileRequest>());
+					break;
+				case DumpWorkspaceRequest.Name:
+					await ProcessDumpWorkspace(frame.GetContent<DumpWorkspaceRequest>());
+					break;
+				case "bla":
+					await DoBlaBla();
 					break;
 			}
 		}
@@ -565,43 +576,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
-		#region SendAndWaitForResult
-		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingRequestsToIde = new();
-
-		private long _lasIdeCorrelationId;
-
-		private long GetNextIdeCorrelationId() => Interlocked.Increment(ref _lasIdeCorrelationId);
-
-		private async Task<Result> SendAndWaitForResult<TMessage>(TMessage message)
-			where TMessage : IdeMessageWithCorrelationId
-		{
-			var tcs = new TaskCompletionSource<Result>();
-			try
-			{
-				using var cts = new CancellationTokenSource(_waitForIdeResultTimeout);
-				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
-
-				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
-				if (await _remoteControlServer.TrySendMessageToIDEAsync(message, cts.Token))
-				{
-					return await tcs.Task;
-				}
-				else
-				{
-					return new Result("No IDE connection to send the message.");
-				}
-			}
-			catch (Exception ex)
-			{
-				return Result.Fail(ex);
-			}
-			finally
-			{
-				_pendingRequestsToIde.TryRemove(message.CorrelationId, out _);
-			}
-		}
-		#endregion
-
 		#region UpdateFile
 		// LEGACY: As the Update file message might have been duplicated in other projects (e.g. runtime tests engine), we make sure to stay backward compatible.
 		private async Task ProcessUpdateFile(UpdateSingleFileRequest singleRequest)
@@ -853,10 +827,152 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
+		private async Task ProcessDumpWorkspace(DumpWorkspaceRequest req)
+		{
+			try
+			{
+				if (await EnsureSolutionInitializedAsync() || _currentSolution is not null)
+				{
+					var targetFile = req.TargetFile ?? Path.Combine(Path.GetTempPath(), $"hotreload-workspace-dump-{req.RequestId}.json");
+					await Dump(_currentSolution!, targetFile);
+					await _remoteControlServer.SendFrame(new DumpWorkspaceResponse(req.RequestId, targetFile, null));
+				}
+				else
+				{
+					await _remoteControlServer.SendFrame(new DumpWorkspaceResponse(req.RequestId, null, Error: "Hot-reload workspace not initialized"));
+				}
+			}
+			catch (Exception ex)
+			{
+				await _remoteControlServer.SendFrame(new DumpWorkspaceResponse(req.RequestId, null, Error: $"Dumped failed\r\n{ex}"));
+			}
+		}
+
+		private async Task DoBlaBla(string? targetFile = null)
+		{
+			var ct = CancellationToken.None;
+
+			targetFile ??= @"C:\Users\david\AppData\Local\Temp\hotreload-workspace-dump-6dbf356a-6e7d-419e-95ea-ec3c35aa212d.json";
+			await using var dump = File.OpenRead(targetFile);
+			var data = await System.Text.Json.JsonSerializer.DeserializeAsync<WorkspaceData>(dump, _workspaceDumpJsonOptions, ct);
+
+			var properties = GetWorkspaceProperties(_configureServer!, out var outputPath, out var intermediateOutputPath);
+
+			(_currentSolution, _hotReloadService) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
+				data!,
+				_reporter,
+				_configureServer!.MetadataUpdateCapabilities,
+				properties,
+				ct);
+		}
+
+
+		private static readonly JsonSerializerOptions _workspaceDumpJsonOptions = new (JsonSerializerOptions.Default)
+		{
+			WriteIndented = true,
+			Converters =
+			{
+				new JsonStringEnumConverter(),
+				new EncodingJsonConverter(),
+				new SolutionIdConverter(),
+				new ProjectIdConverter(),
+				new DocumentIdConverter(),
+				new CompilationOptionsConverter(),
+				new ParseOptionsConverter(),
+				new MetadataReferenceConverter(),
+				new MetadataReferencePropertiesConverter(),
+				new AnalyzerReferenceConverter(),
+			}
+		};
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+		private async Task Dump(Solution solution, string targetFile)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+		{
+			var workspace = new WorkspaceData(
+				Solution: solution.GetData()
+			);
+
+#pragma warning disable CA1869
+
+#pragma warning restore CA1869
+
+			await using (var target = File.OpenWrite(targetFile))
+			{
+				await System.Text.Json.JsonSerializer.SerializeAsync(target, workspace, _workspaceDumpJsonOptions);
+			}
+
+			//abc.ToString();
+
+			//ProjectData GetData(Project project)
+			//{
+			//	return new ProjectData(project.GetInfo(RoslynInfoOptions.NoLoader));
+			//}
+
+			await DoBlaBla(targetFile);
+		}
+
+		public record WorkspaceData(
+			// Options: No effective way to persist them
+			// Properties: Provided by the ConfigureServer
+			//SolutionData Solution
+			SolutionData Solution
+			);
+
+		//public record SolutionData(
+		//	// Analyzers: Empty in current state
+		//	// Options: No effective way to persist them
+		//	// Services: No effective way to persist them
+		//	ImmutableArray<ProjectData> Projects);
+
+		//public record ProjectData(
+		//	ProjectInfo Info);
+
+
+		//public record DocumentData(
+		//	ProjectInfo Info);
+
 		public void Dispose()
 			=> _workspace?.Ct.Cancel();
 
-		#region Helpers
+		#region Helpers - IDE Channel SendAndWaitForResult
+		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingRequestsToIde = new();
+
+		private long _lasIdeCorrelationId;
+
+		private long GetNextIdeCorrelationId() => Interlocked.Increment(ref _lasIdeCorrelationId);
+
+		private async Task<Result> SendAndWaitForResult<TMessage>(TMessage message)
+			where TMessage : IdeMessageWithCorrelationId
+		{
+			var tcs = new TaskCompletionSource<Result>();
+			try
+			{
+				using var cts = new CancellationTokenSource(_waitForIdeResultTimeout);
+				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
+
+				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
+				if (await _remoteControlServer.TrySendMessageToIDEAsync(message, cts.Token))
+				{
+					return await tcs.Task;
+				}
+				else
+				{
+					return new Result("No IDE connection to send the message.");
+				}
+			}
+			catch (Exception ex)
+			{
+				return Result.Fail(ex);
+			}
+			finally
+			{
+				_pendingRequestsToIde.TryRemove(message.CorrelationId, out _);
+			}
+		}
+		#endregion
+
+		#region Helpers - FileSystemWatcher buffering
 		private class BufferGate
 		{
 			private int _holders;

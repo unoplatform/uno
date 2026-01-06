@@ -149,44 +149,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task<HotReloadWorkspace> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
 		{
-			// Clone the properties from the ConfigureServer
-			var properties = configureServer.MSBuildProperties.ToDictionary();
-
-			// Flag the current build as created for hot reload, which allows for running targets or settings
-			// props/items in the context of the hot reload workspace.
-			properties["UnoIsHotReloadHost"] = "True";
-
-			// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
-			// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
-			// Note: This is required to get HR to work on Rider 2024.3 with Android
-			// Note 2: We remove both properties to make sure to use the default behavior
-			var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
-				&& bool.TryParse(appendStr, out var append)
-				&& append;
-			var hasOutputPath = properties.Remove("OutputPath", out var outputPath);
-			properties.Remove("IntermediateOutputPath", out var intermediateOutputPath);
-
-			if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
-			{
-				if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
-				{
-					// Set the RuntimeIdentifier as a temporary property so that we do not force the
-					// property as a read-only global property that would be transitively applied to
-					// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
-					// which references a netstd2.0 library project)
-					properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
-				}
-			}
-
-			// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
-			// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
-			// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
-			// can still be hot-reloaded.
-			if (properties.Remove("TargetFramework", out var targetFramework))
-			{
-				properties["UnoHotReloadTargetFramework"] = targetFramework;
-				properties["TargetFrameworks"] = targetFramework;
-			}
+			var properties = GetWorkspaceProperties(configureServer, out var outputPath, out var intermediateOutputPath);
 
 			var (workspace, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 				configureServer.ProjectPath,
@@ -222,6 +185,50 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				return null;
 			}
+		}
+
+		private static Dictionary<string, string> GetWorkspaceProperties(ConfigureServer configureServer, out string? outputPath, out string? intermediateOutputPath)
+		{
+			// Clone the properties from the ConfigureServer
+			var properties = configureServer.MSBuildProperties.ToDictionary();
+
+			// Flag the current build as created for hot reload, which allows for running targets or settings
+			// props/items in the context of the hot reload workspace.
+			properties["UnoIsHotReloadHost"] = "True";
+
+			// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
+			// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
+			// Note: This is required to get HR to work on Rider 2024.3 with Android
+			// Note 2: We remove both properties to make sure to use the default behavior
+			var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
+				&& bool.TryParse(appendStr, out var append)
+				&& append;
+			var hasOutputPath = properties.Remove("OutputPath", out outputPath);
+			properties.Remove("IntermediateOutputPath", out intermediateOutputPath);
+
+			if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
+			{
+				if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
+				{
+					// Set the RuntimeIdentifier as a temporary property so that we do not force the
+					// property as a read-only global property that would be transitively applied to
+					// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
+					// which references a netstd2.0 library project)
+					properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+				}
+			}
+
+			// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
+			// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
+			// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
+			// can still be hot-reloaded.
+			if (properties.Remove("TargetFramework", out var targetFramework))
+			{
+				properties["UnoHotReloadTargetFramework"] = targetFramework;
+				properties["TargetFrameworks"] = targetFramework;
+			}
+
+			return properties;
 		}
 
 		private IDisposable ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
@@ -414,6 +421,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						{
 							throw new InvalidOperationException("No active connection with the IDE to send update thru debugger.");
 						}
+
+						//if (!await _remoteControlServer.TrySendMessageToIDEAsync(
+						//		new Uno.UI.RemoteControl.Messaging.IdeChannel.HotReloadThruDebuggerIdeMessage(
+						//			updates[i].ModuleId.ToString(),
+						//			"1",
+						//			"2",	
+						//			"3"
+						//		),
+						//		ct))
+						//{
+						//	throw new InvalidOperationException("No active connection with the IDE to send update thru debugger.");
+						//}
 					}
 					else
 					{
@@ -715,7 +734,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				foreach (var project in projects)
 				{
 					found = true;
-					//var id = DocumentId.CreateNewId(project.Id);
 					solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
 
 				}
