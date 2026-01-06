@@ -149,7 +149,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task<HotReloadWorkspace> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
 		{
-			var properties = GetWorkspaceProperties(configureServer, out var outputPath, out var intermediateOutputPath);
+			var properties = GetWorkspaceProperties(configureServer, out var outputPath, out var intermediateOutputPath, out var targetFramework, out var runtimeIdentifier);
 
 			var (workspace, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 				configureServer.ProjectPath,
@@ -187,7 +187,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private static Dictionary<string, string> GetWorkspaceProperties(ConfigureServer configureServer, out string? outputPath, out string? intermediateOutputPath)
+		private static Dictionary<string, string> GetWorkspaceProperties(ConfigureServer configureServer, out string? outputPath, out string? intermediateOutputPath, out string? targetFramework, out string? runtimeIdentifier)
 		{
 			// Clone the properties from the ConfigureServer
 			var properties = configureServer.MSBuildProperties.ToDictionary();
@@ -206,7 +206,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			var hasOutputPath = properties.Remove("OutputPath", out outputPath);
 			properties.Remove("IntermediateOutputPath", out intermediateOutputPath);
 
-			if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
+			if (properties.Remove("RuntimeIdentifier", out runtimeIdentifier))
 			{
 				if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
 				{
@@ -222,7 +222,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
 			// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
 			// can still be hot-reloaded.
-			if (properties.Remove("TargetFramework", out var targetFramework))
+			if (properties.Remove("TargetFramework", out targetFramework))
 			{
 				properties["UnoHotReloadTargetFramework"] = targetFramework;
 				properties["TargetFrameworks"] = targetFramework;

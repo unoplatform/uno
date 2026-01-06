@@ -831,10 +831,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			try
 			{
-				if (await EnsureSolutionInitializedAsync() || _currentSolution is not null)
+				if (await GetWorkspaceAsync() is { } workspace)
 				{
 					var targetFile = req.TargetFile ?? Path.Combine(Path.GetTempPath(), $"hotreload-workspace-dump-{req.RequestId}.json");
-					await Dump(_currentSolution!, targetFile);
+					await Dump(workspace.CurrentSolution, targetFile);
 					await _remoteControlServer.SendFrame(new DumpWorkspaceResponse(req.RequestId, targetFile, null));
 				}
 				else
@@ -850,20 +850,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task DoBlaBla(string? targetFile = null)
 		{
-			var ct = CancellationToken.None;
+			var ct = new CancellationTokenSource();
 
 			targetFile ??= @"C:\Users\david\AppData\Local\Temp\hotreload-workspace-dump-6dbf356a-6e7d-419e-95ea-ec3c35aa212d.json";
 			await using var dump = File.OpenRead(targetFile);
-			var data = await System.Text.Json.JsonSerializer.DeserializeAsync<WorkspaceData>(dump, _workspaceDumpJsonOptions, ct);
+			var data = await System.Text.Json.JsonSerializer.DeserializeAsync<WorkspaceData>(dump, _workspaceDumpJsonOptions, ct.Token);
 
-			var properties = GetWorkspaceProperties(_configureServer!, out var outputPath, out var intermediateOutputPath);
+			var properties = GetWorkspaceProperties(_configureServer!, out var outputPath, out var intermediateOutputPath, out _, out _);
 
-			(_currentSolution, _hotReloadService) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
+			var (solution, hotReloadService) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
 				data!,
 				_reporter,
 				_configureServer!.MetadataUpdateCapabilities,
 				properties,
-				ct);
+				ct.Token);
+
+			_workspace = new(Task.FromResult(new HotReloadWorkspace(solution.Workspace, hotReloadService, [outputPath, intermediateOutputPath])), ct);
 		}
 
 
