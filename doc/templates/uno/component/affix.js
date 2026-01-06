@@ -25,11 +25,11 @@ function renderAffix() {
         if (contribution.length > 0) {
             const contributionList = contribution.find('ul');
             if (contributionList.length > 0) {
-                // Sanitize document.title to prevent XSS - remove only script-related patterns
-                // while preserving international characters and common punctuation
-                const sanitizedTitle = (document.title || '')
-                    .replace(/<script[^>]*>.*?<\/script>/gi, '')
-                    .replace(/<[^>]+>/g, '')
+                // Sanitize document.title to prevent XSS using DOM-based text extraction
+                // This is more reliable than regex-based sanitization
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = document.title || '';
+                const sanitizedTitle = tempDiv.textContent
                     .replace(/javascript:/gi, '')
                     .replace(/on\w+\s*=/gi, '')
                     .trim()
