@@ -6,11 +6,11 @@
  */
 
 exports.preTransform = function (model) {
-  // Pre-transform hook - modify model before processing
+  // Pre-transform hook - modify model before processing.
   return model;
 };
 
 exports.postTransform = function (model) {
-  // Post-transform hook - modify model after processing
+  // Post-transform hook - modify model after processing.
   return model;
 };
