@@ -25,8 +25,16 @@ function renderAffix() {
         if (contribution.length > 0) {
             const contributionList = contribution.find('ul');
             if (contributionList.length > 0) {
-                // Sanitize inputs to prevent XSS attacks
-                const sanitizedTitle = (document.title || '').replace(/[^\w\s\-\.\(\)]/g, '');
+                // Sanitize document.title to prevent XSS - remove only script-related patterns
+                // while preserving international characters and common punctuation
+                const sanitizedTitle = (document.title || '')
+                    .replace(/<script[^>]*>.*?<\/script>/gi, '')
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/javascript:/gi, '')
+                    .replace(/on\w+\s*=/gi, '')
+                    .trim()
+                    .substring(0, 200); // Limit length for URL compatibility
+                
                 const pageUrl = encodeURIComponent(window.location.href);
                 const issueTitle = encodeURIComponent(`[Docs] Feedback: ${sanitizedTitle}`);
                 const issueUrl = `https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
