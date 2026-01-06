@@ -164,7 +164,7 @@ These samples demonstrate complete application scenarios:
 | **Project Structure** | ⚠️ Multi-head (older pattern) |
 | **Third-party Packages** | ⚠️ IdentityModel.OidcClient (deprecated) |
 | **Status** | ⚠️ **USES DEPRECATED PACKAGES** |
-| **Alternative** | Use [Authentication.Oidc Extension](xref:Uno.Extensions.Authentication.Oidc) instead |
+| **Alternative** | Use [Authentication.Oidc Extension](xref:Uno.Extensions.Authentication.HowToOidcAuthentication) instead |
 | **Notes** | **Deprecated:** Use Uno.Extensions.Authentication.Oidc for new projects |
 
 #### Food Delivery
