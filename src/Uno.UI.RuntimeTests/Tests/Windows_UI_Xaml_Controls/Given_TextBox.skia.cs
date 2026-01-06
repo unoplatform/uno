@@ -3166,6 +3166,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Single_Letter_Selected()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "A" };
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+
+			var canvas = SUT.FindVisualChildByType<ScrollViewer>();
+			var screenshot = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(System.Drawing.Point.Empty, screenshot.Size), SUT.SelectionHighlightColor.Color);
+		}
+
+		[TestMethod]
 		public async Task When_Undo_Redo_Basic()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

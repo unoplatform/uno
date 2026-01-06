@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../variables' as *;
 
 .alert {
@@ -17,4 +18,36 @@
       color: $blue;
     }
   }
+}
+
+// DocFX alert blocks styling
+@mixin alert-block($bg-color, $border-color, $text-color) {
+  background-color: $bg-color;
+  border-left: 4px solid $border-color;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 4px;
+
+  h5 {
+    color: $text-color;
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.NOTE, .TIP {
+  @include alert-block(lighten($blue, 40%), $blue, $blue);
+}
+
+.IMPORTANT, .WARNING {
+  @include alert-block(lighten($orange, 40%), $orange, $orange);
+}
+
+.CAUTION {
+  @include alert-block(lighten($red, 40%), $red, $red);
 }

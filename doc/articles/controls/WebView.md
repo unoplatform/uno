@@ -2,7 +2,7 @@
 uid: Uno.Controls.WebView2
 ---
 
-# `WebView2` (`WebView`)
+# WebView2 (WebView)
 
 > Uno Platform supports two `WebView` controls - the `WebView2` control and the legacy `WebView`. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
 

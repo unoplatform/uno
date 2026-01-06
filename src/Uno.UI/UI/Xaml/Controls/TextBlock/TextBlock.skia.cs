@@ -119,7 +119,13 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSelectionRendering();
 		}
 
-		private void UpdateSelectionRendering() => RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
+		private void UpdateSelectionRendering()
+		{
+			if (!IsTextBoxDisplay) // TextBox managed RenderSelection itself
+			{
+				RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
+			}
+		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -173,10 +179,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Canvas.Save();
 			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
+			var selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), DefaultBrushes.SelectedTextForegroundColor);
 			ParsedText.Draw(
 				session,
-				(_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null),
-				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), DefaultBrushes.SelectedTextForegroundColor));
+				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
+				_renderSelection ? selection : null);
 			session.Canvas.Restore();
 			DrawingFinished?.Invoke();
 		}
