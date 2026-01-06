@@ -47,6 +47,9 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Core\WebResourceContextHelper.cs" Link="UI\Xaml\Controls\WebView\Core\WebResourceContextHelper.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.WebResourceRequested.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.WebResourceRequested.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\WebResourceInterceptingClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\WebResourceInterceptingClient.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\ISupportsWebResourceRequested.cs" Link="UI\Xaml\Controls\WebView\Native\ISupportsWebResourceRequested.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\NativeApplication.cs" Link="UI\Xaml\NativeApplication.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\NativeWindowWrapper.Android.cs" Link="UI\Xaml\Window\NativeWindowWrapper.Android.cs" />

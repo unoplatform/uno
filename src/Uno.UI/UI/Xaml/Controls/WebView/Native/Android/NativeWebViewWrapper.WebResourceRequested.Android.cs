@@ -1,4 +1,4 @@
-#if __ANDROID__ || __UNO_SKIA_ANDROID__
+#if __ANDROID__ || ANDROID_SKIA
 #nullable enable
 
 using System;
