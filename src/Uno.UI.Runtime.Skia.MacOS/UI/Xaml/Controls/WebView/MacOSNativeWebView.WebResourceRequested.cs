@@ -13,20 +13,6 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 /// <summary>
 /// macOS Skia implementation of WebResourceRequested using native WKWebView.
-/// 
-/// IMPLEMENTATION APPROACH:
-/// ========================
-/// Uses the cancel-and-reload pattern in native code (UNOWebView.m):
-/// 1. Native WKWebView decidePolicyForNavigationAction intercepts navigation
-/// 2. Calls C# WebResourceRequestedCallback with URL and method
-/// 3. C# fires WebResourceRequested event and collects modified headers
-/// 4. Returns JSON string of headers to native code
-/// 5. Native code cancels navigation and reloads with modified NSMutableURLRequest
-/// 
-/// LIMITATIONS:
-/// - Only main document navigation is intercepted (not sub-resources)
-/// - No custom response support (WKWebView limitation)
-/// - Each header modification causes navigation to be cancelled and restarted
 /// </summary>
 internal partial class MacOSNativeWebView : ISupportsWebResourceRequested
 {
