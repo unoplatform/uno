@@ -6,11 +6,11 @@ document.addEventListener(
 
         initializeNavbar();
         
-        // Move SDK version badge into first h1
-        const sdkBadge = document.querySelector('#sdk-version-info');
-        const firstH1 = document.querySelector('article h1:first-child');
-        if (sdkBadge && firstH1) {
-            firstH1.appendChild(sdkBadge);
+        // Move SDK badge into the .subnav container
+        const sdkBadge = document.getElementById('sdk-version-info');
+        const subnav = document.querySelector('.subnav');
+        if (sdkBadge && subnav) {
+            subnav.appendChild(sdkBadge);
         }
         
         // Cache key and expiration (1 hour)

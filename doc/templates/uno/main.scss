@@ -35,41 +35,29 @@ body {
   }
 }
 
-.col-md-8 {
-  > #sdk-version-info {
-    display: none;
-  }
+.subnav {
+  position: relative;
 }
 
-article {
-  > h1:first-child {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    
-    @media only screen {
-      @include media-breakpoint-down(md) {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-    
-    + #sdk-version-info {
-      display: none;
-    }
-  }
-}
-
-#sdk-version-info {
-  display: inline-flex;
+.subnav #sdk-version-info {
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
   align-items: center;
-  margin-left: auto;
+  z-index: 1000;
   
-  @media only screen {
-    @include media-breakpoint-down(md) {
-      margin-left: 0;
-      margin-top: 12px;
-    }
+  // Mobile: adjust positioning and size
+  @media only screen and (max-width: 768.98px) {
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  // Tablet: reduce right padding
+  @media only screen and (min-width: 769px) and (max-width: 1023.98px) {
+    right: 16px;
   }
 
   .sdk-version-badge {
@@ -85,9 +73,23 @@ article {
     white-space: nowrap;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
     transition: opacity 0.2s ease;
+    
+    // Slightly smaller on mobile to fit better
+    @media only screen and (max-width: 768.98px) {
+      height: 18px;
+      font-size: 10px;
+      line-height: 18px;
+      border-radius: 3px;
+    }
 
     &:hover {
       opacity: 0.85;
+    }
+    
+    // Focus styles for accessibility
+    &:focus {
+      outline: 2px solid #159bff;
+      outline-offset: 2px;
     }
 
     .sdk-label {
@@ -98,6 +100,10 @@ article {
       letter-spacing: 0;
       display: flex;
       align-items: center;
+      
+      @media only screen and (max-width: 768.98px) {
+        padding: 0 5px;
+      }
     }
 
     .sdk-version {
@@ -109,6 +115,10 @@ article {
       display: flex;
       align-items: center;
       font-family: 'Verdana', 'Geneva', 'DejaVu Sans', sans-serif;
+      
+      @media only screen and (max-width: 768.98px) {
+        padding: 0 5px;
+      }
     }
   }
 }
@@ -401,6 +411,7 @@ h5 {
 
 #breadcrumb {
   padding: 0 32px;
+  position: relative;
 }
 
 .breadcrumb {
