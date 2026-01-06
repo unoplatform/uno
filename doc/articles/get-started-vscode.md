@@ -62,7 +62,7 @@ If you want to use GitHub Copilot with Uno Platform's MCP servers:
      - **macOS**: `~/Library/Application Support/Code/User/globalStorage/github.copilot-chat/mcpServers.json`
      - **Linux**: `~/.config/Code/User/globalStorage/github.copilot-chat/mcpServers.json`
 
-   - Add the following configuration to `mcpServers.json`:
+   - Add the following configuration to `mcp.json`:
 
      ```json
      {
