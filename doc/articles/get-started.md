@@ -69,8 +69,6 @@ To set up your development environment, first select the operating system you're
 - [Claude Code](xref:Uno.GetStarted.AI.Claude)
 - [Codex CLI](xref:Uno.GetStarted.AI.Codex)
 - [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
-- [GitHub Copilot in Visual Studio](xref:Uno.GetStarted.AI.CopilotVS)
-- [GitHub Copilot in VS Code](xref:Uno.GetStarted.AI.CopilotVSCode)
 - [Cursor](xref:Uno.GetStarted.AI.Cursor)
 - [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity)
 
@@ -103,7 +101,6 @@ You can use **Visual Studio Code** or **JetBrains Rider**, to build Uno Platform
 - [Claude Code](xref:Uno.GetStarted.AI.Claude)
 - [Codex CLI](xref:Uno.GetStarted.AI.Codex)
 - [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
-- [GitHub Copilot in VS Code](xref:Uno.GetStarted.AI.CopilotVSCode)
 - [Cursor](xref:Uno.GetStarted.AI.Cursor)
 - [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity)
 
@@ -135,7 +132,6 @@ The latest macOS release and Xcode version are required to develop with Uno Plat
 - [Claude Code](xref:Uno.GetStarted.AI.Claude)
 - [Codex CLI](xref:Uno.GetStarted.AI.Codex)
 - [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
-- [GitHub Copilot in VS Code](xref:Uno.GetStarted.AI.CopilotVSCode)
 - [Cursor](xref:Uno.GetStarted.AI.Cursor)
 - [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity)
 
@@ -191,7 +187,5 @@ Choose the IDE or Agent to Learn more about:
 - [Claude Code](xref:Uno.GetStarted.AI.Claude)
 - [Codex](xref:Uno.GetStarted.AI.Codex)
 - [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
-- [GitHub Copilot in Visual Studio](xref:Uno.GetStarted.AI.CopilotVS)
-- [GitHub Copilot in VS Code](xref:Uno.GetStarted.AI.CopilotVSCode)
 - [Cursor](xref:Uno.GetStarted.AI.Cursor)
 - [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity)

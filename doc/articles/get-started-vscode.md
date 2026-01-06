@@ -37,6 +37,57 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 >
 > Uno Platform's MCP tools are available when you [sign in to your Uno Platform account](xref:Uno.GetStarted.Licensing). For more information, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
+## Setting up GitHub Copilot (Optional)
+
+If you want to use GitHub Copilot with Uno Platform's MCP servers:
+
+1. Install the GitHub Copilot extension:
+   - Press **F1** and type `Extensions: Install Extensions`
+   - Search for "GitHub Copilot"
+   - Install the extension
+   - You'll need a [GitHub Copilot subscription](https://github.com/features/copilot)
+
+1. Sign in to GitHub Copilot:
+   - Click on the Accounts icon in the bottom-left corner
+   - Select **Sign in to use GitHub Copilot**
+   - Follow the prompts to authenticate with your GitHub account
+
+1. Configure Uno Platform MCPs:
+   - Open the GitHub Copilot chat by clicking the chat icon in the activity bar or pressing **Ctrl+Alt+I** (Windows/Linux) or **Cmd+Option+I** (macOS)
+
+     ![VS Code Copilot icon](Assets/vscode-copilot-icon.png)
+
+   - Create or edit the MCP configuration file. The location depends on your operating system:
+     - **Windows**: `%APPDATA%\Code\User\globalStorage\github.copilot-chat\mcpServers.json`
+     - **macOS**: `~/Library/Application Support/Code/User/globalStorage/github.copilot-chat/mcpServers.json`
+     - **Linux**: `~/.config/Code/User/globalStorage/github.copilot-chat/mcpServers.json`
+
+   - Add the following configuration to `mcpServers.json`:
+
+     ```json
+     {
+       "mcpServers": {
+         "uno": {
+           "type": "http",
+           "url": "https://mcp.platform.uno/v1"
+         },
+         "uno-app": {
+           "type": "stdio",
+           "command": "dotnet",
+           "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]
+         }
+       }
+     }
+     ```
+
+   - Restart Visual Studio Code to load the MCP servers
+
+> [!IMPORTANT]
+> The `uno-app` MCP may fail to load unless VS Code is opened in a folder containing an Uno Platform app. This MCP requires you to [sign in to your Uno Platform account](xref:Uno.GetStarted.Licensing) to access the App MCP features.
+
+> [!NOTE]
+> You can verify the MCPs are loaded by opening the Copilot chat and checking if Uno Platform tools are available. You can also check the Output panel (View > Output) and select "GitHub Copilot Chat" from the dropdown to see MCP connection logs.
+
 ## Platform-specific setup
 
 You may need to follow additional directions, depending on your development environment.

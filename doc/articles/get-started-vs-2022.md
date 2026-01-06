@@ -50,6 +50,51 @@ To create Uno Platform applications you will need [**Visual Studio 2022 (17.9+) 
 >
 > Uno Platform's MCP tools are available when you [sign in to your Uno Platform account](xref:Uno.GetStarted.Licensing). For more information, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
+## Setting up GitHub Copilot (Optional)
+
+If you want to use GitHub Copilot with Uno Platform's MCP servers:
+
+1. Install the GitHub Copilot extension from Visual Studio if not already installed:
+   - Go to **Extensions** > **Manage Extensions**
+   - Search for "GitHub Copilot"
+   - Install the extension and restart Visual Studio
+   - You'll need a [GitHub Copilot subscription](https://github.com/features/copilot)
+
+1. Sign in to GitHub Copilot:
+   - Click on your profile in the top-right corner
+   - Select **Sign in to GitHub Copilot**
+   - Follow the prompts to authenticate with your GitHub account
+
+1. Configure Uno Platform MCPs:
+   - Open the GitHub Copilot chat window by clicking the Copilot icon in the toolbar or pressing **Ctrl+/**
+   - Click the **tools** icon in the chat window to configure MCP servers
+
+     ![Visual Studio Copilot MCP Tools](Assets/vs-copilot-mcp-tools.png)
+
+   - Add the Uno Platform Remote MCP:
+     - Click **Add MCP Server**
+     - Server Name: `uno`
+     - Server Type: **HTTP**
+     - URL: `https://mcp.platform.uno/v1`
+     - Leave HTTP Headers empty
+     - Set Tools to `*` (all tools)
+     - Click **Save**
+
+   - Add the Uno Platform App MCP:
+     - Click **Add MCP Server**
+     - Server Name: `uno-app`
+     - Server Type: **Local**
+     - Command: `dotnet dnx -y uno.devserver --mcp-app`
+     - Leave Environment Variables empty
+     - Set Tools to `*` (all tools)
+     - Click **Save**
+
+> [!IMPORTANT]
+> The `uno-app` MCP may fail to load unless Visual Studio is opened in a folder containing an Uno Platform app. This MCP requires you to [sign in to your Uno Platform account](xref:Uno.GetStarted.Licensing) to access the App MCP features.
+
+> [!NOTE]
+> In Visual Studio 2022/2026, MCPs might not be enabled automatically. Make sure to click the "tools" icon in the chat window to verify both Uno Platform MCPs are configured and enabled.
+
 ## Additional Setup for Android & iOS
 
 For assistance configuring Android or iOS emulators, see the [Android & iOS emulator troubleshooting guide](xref:Uno.UI.CommonIssues.MobileDebugging).
