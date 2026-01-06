@@ -4,6 +4,26 @@ uid: Uno.SilverlightMigration.Landing
 
 # Migrating from Silverlight to WinUI and Uno Platform Documentation
 
+> [!CAUTION]
+> **This documentation is significantly outdated and maintained for historical reference only.**
+> 
+> This Silverlight migration guide was created in 2021 and reflects patterns, tools, and approaches from that time. **It should NOT be used as a reference for current Uno Platform development.**
+> 
+> **Key Outdated Elements:**
+> - Uses **older project structures** (multi-head instead of Single Project)
+> - References **deprecated packages** (e.g., IdentityServer4 which reached EOL in December 2022)
+> - Based on **older .NET versions** and Uno Platform versions
+> - Does not reflect **current best practices** or modern Uno Platform features
+> 
+> **If you are migrating from Silverlight:**
+> 1. Use this guide only as a **high-level conceptual reference** for migration patterns
+> 2. Consult [current Uno Platform documentation](xref:Uno.GetStarted) for up-to-date implementation approaches
+> 3. Use [current project templates](xref:Uno.GettingStarted.CreateAnApp.VS2022) (Single Project structure)
+> 4. Check the [samples catalog](xref:Uno.Samples.Catalog) for modern examples
+> 5. Ask for help on [Uno Platform Discord](https://platform.uno/discord) or [GitHub Discussions](https://github.com/unoplatform/uno/discussions)
+>
+> **For new Uno Platform projects:** Start with the [Counter Tutorial](xref:Uno.Workshop.Counter) and [Getting Started guides](xref:Uno.GetStarted) instead.
+
 Silverlight will reach the end of support  on October 12, 2021. As luck would have it, a new Windows UI framework is about to RTM in March 2021 – WinUI – the modern native UI platform of Windows. And with WinUI launch there is a renewed desire by C# and XAML developers to write single codebase applications for Windows and the Web.
 
 Enter Uno Platform. Hello “Rich Internet Applications (RIA)” again!

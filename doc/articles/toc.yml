@@ -171,7 +171,9 @@
         href: xref:Uno.RaspberryPi.Intro
       - name: Community Tutorials
         topicHref: xref:Uno.Tutorials.CommunityTutorials
-    - name: Samples
+    - name: Samples Catalog
+      href: xref:Uno.Samples.Catalog
+    - name: Samples Repository
       href: xref:Uno.Samples
     - name: Additional Resources
       href: xref:Uno.GetStarted.NextSteps
