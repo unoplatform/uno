@@ -1750,7 +1750,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(selectedText, sut.SelectedText);
 		}
 
-#if HAS_UNO
+#if __SKIA__
 		[TestMethod]
 		public async Task When_Focus_Changes_Selection_Is_Not_Shown()
 		{
