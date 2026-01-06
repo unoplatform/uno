@@ -74,48 +74,41 @@ article {
 
   .sdk-version-badge {
     display: inline-flex;
-    align-items: center;
-    background: linear-gradient(135deg, #159BFF 0%, #0E7FD9 100%);
-    padding: 7px 14px;
-    border-radius: 18px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    box-shadow: 0 3px 10px rgba(21, 155, 255, 0.3), 
-                0 1px 3px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    align-items: stretch;
+    height: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 20px;
     cursor: pointer;
     white-space: nowrap;
-    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    transition: opacity 0.2s ease;
 
     &:hover {
-      background: linear-gradient(135deg, #1BA3FF 0%, #0F88E5 100%);
-      box-shadow: 0 6px 16px rgba(21, 155, 255, 0.4), 
-                  0 2px 6px rgba(0, 0, 0, 0.15),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px) scale(1.02);
-    }
-
-    &:active {
-      transform: translateY(-1px) scale(1.01);
+      opacity: 0.85;
     }
 
     .sdk-label {
-      opacity: 0.9;
-      margin-right: 7px;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
+      background: #555;
+      color: #fff;
+      padding: 0 7px;
+      font-weight: 400;
+      letter-spacing: 0;
+      display: flex;
+      align-items: center;
     }
 
     .sdk-version {
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      background: #159bff;
+      color: #fff;
+      padding: 0 7px;
+      font-weight: 400;
+      letter-spacing: 0;
+      display: flex;
+      align-items: center;
+      font-family: 'Verdana', 'Geneva', 'DejaVu Sans', sans-serif;
     }
   }
 }
