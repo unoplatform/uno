@@ -48,7 +48,10 @@ function renderAffix() {
             }
             
             // Add styling classes for the feedback box
-            contribution.addClass('feedback-box');
+            contribution
+                .addClass('feedback-box')
+                .attr('role', 'complementary')
+                .attr('aria-label', 'Feedback options');
         }
         
         const contributionDiv = contribution.get(0).outerHTML;
