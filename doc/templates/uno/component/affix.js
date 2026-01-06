@@ -1,4 +1,7 @@
 //Setup Affix
+// Store reference to scroll handler for cleanup
+let affixScrollHandler = null;
+
 function renderAffix() {
     const hierarchy = getHierarchy();
 
@@ -57,9 +60,14 @@ function renderAffix() {
         // Append feedback box directly to body instead of .sideaffix for better mobile visibility
         $('body').append(contributionDiv);
         
+        // Remove existing scroll handler before adding a new one
+        if (affixScrollHandler) {
+            $(window).off('scroll', affixScrollHandler);
+        }
+        
         // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
         let scrollTimer;
-        $(window).on('scroll', function() {
+        affixScrollHandler = function() {
             const feedbackBox = $('.feedback-box');
             if (feedbackBox.length === 0) return;
             
@@ -78,7 +86,9 @@ function renderAffix() {
                 // Remove scrolling class on larger screens
                 feedbackBox.removeClass('scrolling');
             }
-        });
+        };
+        
+        $(window).on('scroll', affixScrollHandler);
 
     }
 
