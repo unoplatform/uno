@@ -28,12 +28,38 @@ function renderAffix() {
         if (contribution.length > 0) {
             const contributionList = contribution.find('ul');
             if (contributionList.length > 0) {
+                // Sanitize document.title to prevent XSS using DOM-based text extraction
+                // This is more reliable than regex-based sanitization
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = document.title || '';
+                const sanitizedTitle = tempDiv.textContent
+                    .replace(/javascript:/gi, '')
+                    .replace(/on\w+\s*=/gi, '')
+                    .trim()
+                    .substring(0, 200); // Limit length for URL compatibility
+                
                 const pageUrl = encodeURIComponent(window.location.href);
-                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${document.title}`);
+                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${sanitizedTitle}`);
                 const issueUrl = `https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
                 
-                // Add icon to "Edit this page"
+                // Derive GitHub repository path from the "Edit this page" link when possible,
+                // falling back to the main Uno repository for backward compatibility.
+                let repoPath = 'unoplatform/uno';
+                
                 const editLink = contributionList.find('li a.contribution-link');
+                if (editLink.length > 0) {
+                    const editHref = editLink.attr('href');
+                    if (editHref) {
+                        const repoMatch = editHref.match(/github\.com\/([^\/]+\/[^\/]+)/i);
+                        if (repoMatch && repoMatch[1]) {
+                            repoPath = repoMatch[1];
+                        }
+                    }
+                }
+
+                const issueUrl = `https://github.com/${repoPath}/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
+                
+                // Add icon to "Edit this page"
                 if (editLink.length > 0) {
                     editLink.prepend('<i class="fa fa-edit"></i> ');
                 }
@@ -51,7 +77,10 @@ function renderAffix() {
             }
             
             // Add styling classes for the feedback box
-            contribution.addClass('feedback-box');
+            contribution
+                .addClass('feedback-box')
+                .attr('role', 'complementary')
+                .attr('aria-label', 'Feedback options');
         }
         
         const contributionDiv = contribution.get(0).outerHTML;
@@ -66,22 +95,27 @@ function renderAffix() {
         }
         
         // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
+        const MOBILE_BREAKPOINT = 992; // px - viewport width below which mobile behavior applies
+        const SCROLL_HIDE_DELAY = 300; // ms - delay before showing box after scrolling stops
+        
         let scrollTimer;
         affixScrollHandler = function() {
             const feedbackBox = $('.feedback-box');
-            if (feedbackBox.length === 0) return;
-            
-            // Only apply scroll hiding on reduced widths (< 992px)
-            if ($(window).width() < 992) {
+            if (feedbackBox.length === 0) {
+                return;
+            }
+
+            // Only apply scroll hiding on reduced widths (< MOBILE_BREAKPOINT)
+            if ($(window).width() < MOBILE_BREAKPOINT) {
                 feedbackBox.addClass('scrolling');
-                
+
                 // Clear existing timer
                 clearTimeout(scrollTimer);
-                
+
                 // Set new timer to remove scrolling class after scrolling stops
-                scrollTimer = setTimeout(function() {
+                scrollTimer = setTimeout(function () {
                     feedbackBox.removeClass('scrolling');
-                }, 300); // Show box 300ms after scrolling stops
+                }, SCROLL_HIDE_DELAY);
             } else {
                 // Remove scrolling class on larger screens
                 feedbackBox.removeClass('scrolling');
