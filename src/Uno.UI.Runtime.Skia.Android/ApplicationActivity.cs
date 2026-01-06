@@ -69,8 +69,12 @@ namespace Microsoft.UI.Xaml
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
-
 			Uno.UI.Extensions.PermissionsHelper.Initialize();
+
+			// Note: Deep-linking will cause a new instance of this Activity and its DecorView to be created.
+			// This means any event handlers or listeners attached to these objects in previous instances will not be present.
+			// Therefore, it is important to rewire or update any event/listener on these two here to ensure correct behavior.
+			StatusBar.GetForCurrentView().ResetListener();
 		}
 
 		internal void EnsureContentView()

@@ -58,7 +58,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		public ReadonlyInlineCopy(Inline inline, int startIndex, FlowDirection defaultFlowDirection, bool forceDefaultFlowDirection = false)
 		{
-			Debug.Assert(inline is Run or LineBreak);
+			CI.Assert(inline is Run or LineBreak);
 			Inline = inline;
 			Text = inline.GetText();
 			Foreground = inline.Foreground;
@@ -124,7 +124,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		TextWrapping textWrapping,
 		out Size desiredSize)
 	{
-		Debug.Assert(maxLines >= 0);
+		CI.Assert(maxLines >= 0);
 		_size = availableSize;
 		_defaultFontDetails = defaultFontDetails;
 
@@ -132,7 +132,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		if (textAlignment is null)
 		{
 			// TODO: can we make this cleaner instead of implicitly assuming that this is a code path coming from TextBox?
-			Debug.Assert(inlines.Length == 1);
+			CI.Assert(inlines.Length == 1);
 			var inline = (Run)inlines[0];
 			var inlineText = inline.GetText();
 			if (inlineText.Length == 0)
@@ -144,7 +144,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				var firstInlineText = inlines[0].GetText();
 				using var _1 = ICU.CreateBiDiAndSetPara(firstInlineText, 0, firstInlineText.Length, UBIDI_DEFAULT_LTR, out var bidi);
 				ICU.GetMethod<ICU.ubidi_getLogicalRun>()(bidi, 0, out _, out var level);
-				Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
+				CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
 				flowDirection = level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 			}
 			textAlignment = flowDirection is FlowDirection.LeftToRight ? TextAlignment.Left : TextAlignment.Right;
@@ -229,7 +229,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			if (line.Count == 0)
 			{
 				// Only the last line can be empty, otherwise it will have at least one piece of text or a line break.
-				Debug.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
+				CI.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
 				if (lineIndex == 0)
 				{
 					shapedLines.Add((new(), 0, 0));
@@ -255,7 +255,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				for (var runIndex = 0; runIndex < runCount; runIndex++)
 				{
 					var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
-					Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
+					CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
 
 					var sameInlineRunsLengthBeforeFontSplitting = sameInlineRuns.Count;
 					var currentFontDetails = inline.FontDetails;
@@ -456,7 +456,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			if (widthWithoutTrailingSpaces > lineWidth)
 			{
 				// If there was no text wrapping, then everything would fit on the same line
-				Debug.Assert(textWrapping is TextWrapping.Wrap or TextWrapping.WrapWholeWords);
+				CI.Assert(textWrapping is TextWrapping.Wrap or TextWrapping.WrapWholeWords);
 
 				if (prevInSameLine is not null)
 				{
@@ -468,7 +468,8 @@ internal readonly partial struct UnicodeText : IParsedText
 					line[^1] = line[^1] with { endInInline = prevInSameLine.Value.endIndexInLastRun };
 					lines.Add(line);
 					(firstRunIndex, startingIndexInFirstRun) = (prevInSameLine.Value.endRunIndex - 1, prevInSameLine.Value.endIndexInLastRun);
-					prevInSameLine = lineBreakingOpporunity;
+					prevInSameLine = null;
+					lineBreakingOpportunityIndex--; // retry the line breaking opportunity
 				}
 				else
 				{
@@ -540,11 +541,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 #if DEBUG
-		Debug.Assert(lines.Count > 0);
+		CI.Assert(lines.Count > 0);
 		// all the lines have content except possibly the last line, because we only move to a new line when we hit a line break
 		foreach (var line in lines)
 		{
-			Debug.Assert(line.Count > 0 || line == lines[^1]);
+			CI.Assert(line.Count > 0 || line == lines[^1]);
 		}
 #endif
 
@@ -673,7 +674,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			// using bidi.GetLogicalRun instead returned weird results especially in rtl text.
 			var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
-			Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
+			CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
 
 			var currentFontDetails = inline.FontDetails;
 			var currentFontSplitStart = logicalStart;
@@ -715,12 +716,12 @@ internal readonly partial struct UnicodeText : IParsedText
 		logicallyOrderedRuns.Sort((run, bidiRun) => run.startInInline - bidiRun.startInInline);
 
 #if DEBUG
-		Debug.Assert(logicallyOrderedRuns[0].startInInline == 0);
+		CI.Assert(logicallyOrderedRuns[0].startInInline == 0);
 		for (var i = 0; i < runCount - 1; i++)
 		{
-			Debug.Assert(logicallyOrderedRuns[i].endInInline != logicallyOrderedRuns[i].startInInline && logicallyOrderedRuns[i].endInInline == logicallyOrderedRuns[i + 1].startInInline);
+			CI.Assert(logicallyOrderedRuns[i].endInInline != logicallyOrderedRuns[i].startInInline && logicallyOrderedRuns[i].endInInline == logicallyOrderedRuns[i + 1].startInInline);
 		}
-		Debug.Assert(logicallyOrderedRuns[^1].endInInline != logicallyOrderedRuns[^1].startInInline && logicallyOrderedRuns[^1].endInInline == inline.Text.Length);
+		CI.Assert(logicallyOrderedRuns[^1].endInInline != logicallyOrderedRuns[^1].startInInline && logicallyOrderedRuns[^1].endInInline == inline.Text.Length);
 #endif
 
 		return logicallyOrderedRuns;
@@ -734,7 +735,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			textRun = textRun[..^TrailingSpaceCount(textRun, 0, textRun.Length)];
 		}
 
-		Debug.Assert(textRun.Length < 2 || !textRun[..^2].Contains("\r\n"));
+		CI.Assert(textRun.Length < 2 || !textRun[..^2].Contains("\r\n"));
 		using var buffer = new Buffer();
 		buffer.AddUtf16(textRun, 0, textRun is [.., '\r', '\n'] ? textRun.Length - 1 : textRun.Length);
 		buffer.GuessSegmentProperties();
@@ -785,7 +786,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			if (lineRuns.Count == 0)
 			{
 				// Only the last line can be empty. All other lines either have a line break character or actual content since you can't wrap to a new line without having any content on the initial line.
-				Debug.Assert(lineIndex == lines.Count - 1 && lineIndex != 0);
+				CI.Assert(lineIndex == lines.Count - 1 && lineIndex != 0);
 				var (currentLineHeight, baselineOffset) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
 				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, 0, currentLineY, line.startInText, line.endInText, new());
 			}
@@ -872,7 +873,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					}
 				}
 
-				Debug.Assert(run.glyphs.All(g => g.cluster is not null));
+				CI.Assert(run.glyphs.All(g => g.cluster is not null));
 			}
 		}
 	}
@@ -931,7 +932,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						session.Canvas.DrawText(blob1, currentLineX, line.baselineOffset, paint);
 					}
 
-					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart))
+					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && (selection!.Value.selectionEnd == _text.Length || run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart)))
 					{
 						int selectionLeft;
 						int selectionRight; // the selection ends to the left of positions[selectionRight].X
@@ -1157,7 +1158,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			if (line.runs.Count == 0)
 			{
-				Debug.Assert(line == _lines[^1]);
+				CI.Assert(line == _lines[^1]);
 				return extendedSelection ? (0, _lines[^2].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)) : (-1, null);
 			}
 
@@ -1216,7 +1217,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		Debug.Assert(false, "This should be unreachable");
+		CI.Assert(false, "This should be unreachable");
 		return (-1, null);
 	}
 
@@ -1281,6 +1282,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
 	{
+		if (_lines.Count == 0)
+		{
+			return (0, 0, true, true, 0);
+		}
 		foreach (var line in _lines)
 		{
 			if (line.startInText <= index && (line.endInText > index || (line.lineIndex == _lines.Count - 1 && line.endInText == index)))
@@ -1322,11 +1327,6 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static bool IsLineBreak(string text, int indexAfterLineBreakOpportunity)
 	{
 		// https://www.unicode.org/standard/reports/tr13/tr13-5.html
-
-		if (text is [.., '\r', '\n'])
-		{
-			return true;
-		}
 
 		switch (text[indexAfterLineBreakOpportunity - 1])
 		{

@@ -35,6 +35,283 @@ body {
   }
 }
 
+.subnav {
+  position: relative;
+}
+
+.subnav #sdk-version-info {
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  
+  // Mobile: adjust positioning and size
+  @media only screen and (max-width: 768.98px) {
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  // Tablet: reduce right padding
+  @media only screen and (min-width: 769px) and (max-width: 1023.98px) {
+    right: 16px;
+  }
+
+  .sdk-version-badge {
+    display: inline-flex;
+    align-items: stretch;
+    height: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    transition: opacity 0.2s ease;
+    
+    // Slightly smaller on mobile to fit better
+    @media only screen and (max-width: 768.98px) {
+      height: 18px;
+      font-size: 10px;
+      line-height: 18px;
+      border-radius: 3px;
+    }
+
+    &:hover {
+      opacity: 0.85;
+    }
+    
+    // Focus styles for accessibility
+    &:focus {
+      outline: 2px solid #159bff;
+      outline-offset: 2px;
+    }
+
+    .sdk-label {
+      background: #555;
+      color: #fff;
+      padding: 0 7px;
+      font-weight: 400;
+      letter-spacing: 0;
+      display: flex;
+      align-items: center;
+      
+      @media only screen and (max-width: 768.98px) {
+        padding: 0 5px;
+      }
+    }
+
+    .sdk-version {
+      background: #159bff;
+      color: #fff;
+      padding: 0 7px;
+      font-weight: 400;
+      letter-spacing: 0;
+      display: flex;
+      align-items: center;
+      font-family: 'Verdana', 'Geneva', 'DejaVu Sans', sans-serif;
+      
+      @media only screen and (max-width: 768.98px) {
+        padding: 0 5px;
+      }
+    }
+  }
+}
+
+// SDK Update Modal Styles
+.sdk-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.sdk-modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.sdk-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e7e7e7;
+
+  h3 {
+    margin: 0;
+    font-size: 24px;
+    color: $black;
+  }
+}
+
+.sdk-modal-close {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f0f0f0;
+    color: $black;
+  }
+}
+
+.sdk-modal-body {
+  padding: 24px;
+
+  p {
+    margin: 16px 0;
+    line-height: 1.6;
+  }
+
+  strong {
+    color: #159BFF;
+    font-weight: 700;
+  }
+
+  .sdk-note {
+    font-size: 14px;
+    color: #666;
+    background: #f8f8f8;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 3px solid #159BFF;
+
+    code {
+      background: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+  }
+}
+
+.sdk-code-block {
+  position: relative;
+  background: #2d2d2d;
+  color: #f8f8f8;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 12px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  code {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+}
+
+.sdk-copy-btn {
+  background: #159BFF;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1BA3FF;
+    transform: translateY(-1px);
+  }
+
+  &.copied {
+    background: #28a745;
+  }
+}
+
+.sdk-version-section {
+  margin: 24px 0;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e7e7e7;
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: $black;
+  }
+
+  .version-label {
+    font-size: 16px;
+    margin: 12px 0;
+    color: #333;
+  }
+
+  .sdk-note {
+    font-size: 14px;
+    color: #666;
+    margin: 12px 0;
+
+    a {
+      color: #159BFF;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .row {
   &:before {
     content: none;
@@ -134,6 +411,7 @@ h5 {
 
 #breadcrumb {
   padding: 0 32px;
+  position: relative;
 }
 
 .breadcrumb {
@@ -175,6 +453,7 @@ h5 {
 .sidetoc {
   top: 180px;
   background-color: white !important;
+  
   @media only screen {
     @include media-breakpoint-up(md) {
       width: 24%;
@@ -191,10 +470,11 @@ h5 {
   }
 
   .nav > li {
-    line-height: 24px;
+    line-height: 32px;
+    margin-bottom: 4px;
     
     a {
-      font-size: 14px;
+      font-size: 17px;
       font-weight: 400;
       text-transform: none;
       color:$black;
@@ -204,10 +484,11 @@ h5 {
 
   .nav.level1 , .nav.level2 {
     > li {
-      line-height: 20px;
+      line-height: 28px;
+      margin-bottom: 4px;
         
       > a {
-        font-size: 14px;
+        font-size: 17px;
         font-weight: 400;
         text-transform: none;
         color:$black;

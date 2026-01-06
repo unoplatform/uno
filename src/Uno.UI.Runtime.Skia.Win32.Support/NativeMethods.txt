@@ -54,6 +54,7 @@ POINTER_MESSAGE_FLAG_SECONDBUTTON
 POINTER_MESSAGE_FLAG_THIRDBUTTON
 RDH_RECTANGLES
 S_OK
+SC_CLOSE
 TOUCH_MASK_CONTACTAREA
 TOUCH_MASK_ORIENTATION
 TOUCH_MASK_PRESSURE
@@ -94,13 +95,17 @@ WM_POINTERWHEEL
 WM_SETCURSOR
 WM_SETICON
 WM_SIZE
+WM_SYSCOMMAND
 
 // Structs
+BITMAP
 DATADIR
 BITMAPFILEHEADER
 BROWSEINFOW
 CLIPBOARD_FORMAT
+ICONINFO
 IDataObject
+IDataObjectAsyncCapability
 IDropSource
 IEnumUnknown
 IFileOpenDialog
@@ -113,6 +118,8 @@ RECT
 MARGINS
 
 // Enums
+BI_COMPRESSION
+DI_FLAGS
 DWM_WINDOW_CORNER_PREFERENCE
 
 // Functions
@@ -134,6 +141,10 @@ DescribePixelFormat
 DestroyWindow
 DispatchMessage
 DragQueryFile
+DeleteDC
+DeleteObject
+DestroyIcon
+DrawIconEx
 DwmSetWindowAttribute
 DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
@@ -160,11 +171,14 @@ GetActiveWindow
 GetCapture
 GetClientRect
 GetClipboardData
+GetClipboardFormatName
 GetDC
 GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
+GetIconInfo
 GetKeyState
+GetObject
 GetMessage
 GetMessageTime
 GetMonitorInfo

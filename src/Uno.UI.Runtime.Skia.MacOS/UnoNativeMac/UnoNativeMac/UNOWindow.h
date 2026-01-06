@@ -53,6 +53,9 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 - (bool)windowShouldClose:(NSWindow *)sender;
 - (void)windowWillClose:(NSNotification *)notification;
 
+- (void) windowWillStartLiveResize:(NSNotification *) notification;
+- (void) windowDidEndLiveResize:(NSNotification *) notification;
+
 @end
 
 NSWindow* uno_app_get_main_window(void);
