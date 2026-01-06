@@ -76,9 +76,11 @@ function renderAffix() {
         $('body').append(contributionDiv);
         
         // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
+        const MOBILE_BREAKPOINT = 992; // px - viewport width below which mobile behavior applies
+        const SCROLL_HIDE_DELAY = 300; // ms - delay before showing box after scrolling stops
+        
         let scrollTimer;
-        const SCROLL_THROTTLE = 100; // milliseconds
-        let lastScrollCall = 0;
+        let rafScheduled = false;
 
         function onScrollHandler() {
             const feedbackBox = $('.feedback-box');
@@ -86,8 +88,8 @@ function renderAffix() {
                 return;
             }
 
-            // Only apply scroll hiding on reduced widths (< 992px)
-            if ($(window).width() < 992) {
+            // Only apply scroll hiding on reduced widths (< MOBILE_BREAKPOINT)
+            if ($(window).width() < MOBILE_BREAKPOINT) {
                 feedbackBox.addClass('scrolling');
 
                 // Clear existing timer
@@ -96,7 +98,7 @@ function renderAffix() {
                 // Set new timer to remove scrolling class after scrolling stops
                 scrollTimer = setTimeout(function () {
                     feedbackBox.removeClass('scrolling');
-                }, 300); // Show box 300ms after scrolling stops
+                }, SCROLL_HIDE_DELAY);
             } else {
                 // Remove scrolling class on larger screens
                 feedbackBox.removeClass('scrolling');
@@ -104,10 +106,13 @@ function renderAffix() {
         }
 
         $(window).on('scroll', function () {
-            const now = Date.now();
-            if (now - lastScrollCall >= SCROLL_THROTTLE) {
-                lastScrollCall = now;
-                onScrollHandler();
+            // Use requestAnimationFrame to throttle scroll handler efficiently
+            if (!rafScheduled) {
+                rafScheduled = true;
+                requestAnimationFrame(function () {
+                    onScrollHandler();
+                    rafScheduled = false;
+                });
             }
         });
 
