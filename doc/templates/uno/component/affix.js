@@ -25,8 +25,10 @@ function renderAffix() {
         if (contribution.length > 0) {
             const contributionList = contribution.find('ul');
             if (contributionList.length > 0) {
+                // Sanitize inputs to prevent XSS attacks
+                const sanitizedTitle = (document.title || '').replace(/[^\w\s\-\.\(\)]/g, '');
                 const pageUrl = encodeURIComponent(window.location.href);
-                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${document.title}`);
+                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${sanitizedTitle}`);
                 const issueUrl = `https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
                 
                 // Add icon to "Edit this page"
