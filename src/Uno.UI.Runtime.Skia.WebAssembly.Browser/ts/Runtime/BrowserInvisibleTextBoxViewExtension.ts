@@ -96,6 +96,13 @@
 					}
 				}
 
+				// Allow Backspace and Delete keys to be handled by the browser's default behavior
+				// This is especially important for mobile soft keyboards (e.g., Android)
+				// The oninput event will handle the text changes and propagate them to managed code
+				if (ev.key === "Backspace" || ev.key === "Delete") {
+					return;
+				}
+
 				ev.preventDefault();
 			};
 
