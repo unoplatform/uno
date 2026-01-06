@@ -38,9 +38,11 @@ function renderAffix() {
                 
                 const editLink = contributionList.find('li a.contribution-link');
                 
-                // Add icon to "Edit this page"
+                // Add icon and aria-label to "Edit this page"
                 if (editLink.length > 0) {
-                    editLink.prepend('<i class="fa fa-edit"></i> ');
+                    editLink
+                        .attr('aria-label', 'Edit this documentation page on GitHub')
+                        .prepend('<i class="fa fa-edit"></i> ');
                 }
 
                 // Add "Send feedback" link
