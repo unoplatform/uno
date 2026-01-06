@@ -49,6 +49,7 @@ function renderAffix() {
                         .attr('href', issueUrl)
                         .attr('target', '_blank')
                         .attr('rel', 'noopener noreferrer')
+                        .attr('aria-label', 'Send feedback about this documentation page')
                         .addClass('contribution-link')
                         .html('<i class="fa fa-comments"></i> Send feedback')
                 );
