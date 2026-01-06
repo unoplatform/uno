@@ -25,8 +25,19 @@ function renderAffix() {
         if (contribution.length > 0) {
             const contributionList = contribution.find('ul');
             if (contributionList.length > 0) {
+                // Sanitize document.title to prevent XSS using DOM-based text extraction
+                // This is more reliable than regex-based sanitization
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = document.title || '';
+                const sanitizedTitle = tempDiv.textContent
+                    .replace(/javascript:/gi, '')
+                    .replace(/on\w+\s*=/gi, '')
+                    .trim()
+                    .substring(0, 200); // Limit length for URL compatibility
+                
                 const pageUrl = encodeURIComponent(window.location.href);
-                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${document.title}`);
+                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${sanitizedTitle}`);
+                const issueUrl = `https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=${issueTitle}&docs-issue-location=${pageUrl}`;
                 
                 // Derive GitHub repository path from the "Edit this page" link when possible,
                 // falling back to the main Uno repository for backward compatibility.
