@@ -170,7 +170,35 @@ internal partial class ContextMenuProcessor
 		}
 		else
 		{
-			// Keyboard invocation - show without specific position
+			// Keyboard invocation - no explicit position provided
+#if __SKIA__
+			// For TextBox on Skia, position the flyout at the text selection/caret
+			if (element is TextBox textBox)
+			{
+				var textPosition = textBox.GetContextMenuShowPosition();
+				if (textPosition.HasValue)
+				{
+					// Transform position to flyout owner coordinates if needed
+					var position = textPosition.Value;
+					if (element != contextFlyoutOwner)
+					{
+						var transform = element.TransformToVisual(contextFlyoutOwner);
+						position = transform.TransformPoint(position);
+					}
+
+					var showOptions = new FlyoutShowOptions
+					{
+						Position = position,
+						ShowMode = FlyoutShowMode.Standard
+					};
+					flyout.ShowAt(frameworkElement, showOptions);
+					args.Handled = true;
+					return;
+				}
+			}
+#endif
+
+			// Default keyboard invocation - show without specific position
 			flyout.ShowAt(frameworkElement);
 		}
 
