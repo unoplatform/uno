@@ -159,14 +159,14 @@ namespace Microsoft.UI.Xaml
 				return false;
 			}
 
-			DependencyObject? current = element;
+			DependencyObject current = element;
 			while (current != null)
 			{
 				if (current is UIElement uiElement && uiElement.IsDraggableOrPannableImpl())
 				{
 					return true;
 				}
-				current = (current as FrameworkElement)?.Parent ?? VisualTreeHelper.GetParent(current);
+				current = (current as FrameworkElement)?.Parent ?? Media.VisualTreeHelper.GetParent(current);
 			}
 			return false;
 		}
@@ -425,8 +425,9 @@ namespace Microsoft.UI.Xaml
 			// Raise ContextRequested for mouse/pen input after RightTapped.
 			// For touch input, ContextRequested is raised via Holding gesture instead.
 			// This matches WinUI behavior where right-click triggers context menu.
-			if (args.PointerDeviceType == PointerDeviceType.Mouse ||
-				args.PointerDeviceType == PointerDeviceType.Pen)
+			var deviceType = (int)args.PointerDeviceType;
+			if (deviceType == (int)PointerDeviceType.Mouse ||
+				deviceType == (int)PointerDeviceType.Pen)
 			{
 				var contentRoot = VisualTree.GetContentRootForElement(src);
 				contentRoot?.ContextMenuProcessor.RaiseContextRequestedEvent(
@@ -445,7 +446,7 @@ namespace Microsoft.UI.Xaml
 
 			// Handle ContextRequested/ContextCanceled for touch input.
 			// This matches WinUI behavior where touch-and-hold triggers context menu.
-			if (args.PointerDeviceType == PointerDeviceType.Touch)
+			if ((int)args.PointerDeviceType == (int)PointerDeviceType.Touch)
 			{
 				var contentRoot = VisualTree.GetContentRootForElement(src);
 				if (contentRoot != null)
