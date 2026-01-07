@@ -25,7 +25,7 @@ public sealed partial class ApplicationData
 	private readonly Lazy<ApplicationDataContainer> _localSettingsLazy;
 	private readonly Lazy<ApplicationDataContainer> _roamingSettingsLazy;
 
-	private const string VersionSettingKey = ApplicationDataContainer.InternalSettingPrefix + "ApplictionDataVersion";
+	private const string VersionSettingKey = ApplicationDataContainer.InternalSettingPrefix + "ApplicationDataVersion";
 
 	private ApplicationData()
 	{
