@@ -103,8 +103,22 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private resize() {
-			var rect = document.documentElement.getBoundingClientRect();
-			this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
+			// Use visualViewport when available (for mobile soft keyboard support)
+			// visualViewport gives us the actual visible area, excluding soft keyboard
+			let width: number;
+			let height: number;
+
+			if (window.visualViewport) {
+				width = window.visualViewport.width;
+				height = window.visualViewport.height;
+			} else {
+				// Fallback for browsers without visualViewport API
+				var rect = document.documentElement.getBoundingClientRect();
+				width = rect.width;
+				height = rect.height;
+			}
+
+			this.onResize(this.owner, width, height, globalThis.devicePixelRatio);
 		}
 
 		public static setCursor(cssCursor: string) {
