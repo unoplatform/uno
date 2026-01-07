@@ -46,10 +46,9 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 		{
 			if (OperatingSystem.IsAndroid())
 			{
-				var sdkInt = GetAndroidSdkInt();
-				_isAndroid15OrHigher = sdkInt >= 35;
+				_isAndroid15OrHigher = OperatingSystem.IsAndroidVersionAtLeast(35);
 
-				PlatformInfoText.Text = $"Android API {sdkInt} (Android {GetAndroidVersionName(sdkInt)})";
+				PlatformInfoText.Text = $"Android API {(_isAndroid15OrHigher ? "35 or newer" : "older than 35")}";
 
 				if (_isAndroid15OrHigher)
 				{
@@ -75,31 +74,6 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 				PreAndroid15Section.Opacity = 1.0;
 			}
 		}
-
-		private static int GetAndroidSdkInt()
-		{
-			if (OperatingSystem.IsAndroidVersionAtLeast(35)) return 35;
-			if (OperatingSystem.IsAndroidVersionAtLeast(34)) return 34;
-			if (OperatingSystem.IsAndroidVersionAtLeast(33)) return 33;
-			if (OperatingSystem.IsAndroidVersionAtLeast(32)) return 32;
-			if (OperatingSystem.IsAndroidVersionAtLeast(31)) return 31;
-			if (OperatingSystem.IsAndroidVersionAtLeast(30)) return 30;
-			if (OperatingSystem.IsAndroidVersionAtLeast(29)) return 29;
-			if (OperatingSystem.IsAndroidVersionAtLeast(28)) return 28;
-			return 21; // Minimum supported
-		}
-
-		private static string GetAndroidVersionName(int sdkInt) => sdkInt switch
-		{
-			>= 35 => "15+",
-			34 => "14",
-			33 => "13",
-			32 or 31 => "12/12L",
-			30 => "11",
-			29 => "10",
-			28 => "9",
-			_ => $"<9 (API {sdkInt})"
-		};
 
 		private void Subscribe(object sender, RoutedEventArgs e)
 		{
