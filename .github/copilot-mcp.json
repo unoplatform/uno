@@ -1,0 +1,12 @@
+{
+  "$schema": "https://platform.openai.com/docs/mcp/configuration.json",
+  "mcpServers": {
+    "uno": {
+      "type": "sse",
+      "url": "https://mcp.platform.uno/v1",
+      "metadata": {
+        "description": "Uno Platform MCP - Provides Uno Platform documentation search and development guidance"
+      }
+    }
+  }
+}
