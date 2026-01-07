@@ -6,6 +6,11 @@ namespace Uno.UI.Runtime.Skia {
 		private _lastViewportHeight: number = 0;
 		private _isKeyboardVisible: boolean = false;
 
+		// Threshold for considering keyboard visible (in pixels)
+		private static readonly KEYBOARD_THRESHOLD_PX = 100;
+		// Minimum viewport height change to trigger an update (in pixels)
+		private static readonly MIN_HEIGHT_CHANGE_PX = 1;
+
 		public static async initialize(managedInstance: any): Promise<void> {
 			const module = <any>window.Module;
 			if (InputPaneExtension._exports === undefined && module.getAssemblyExports !== undefined) {
@@ -50,12 +55,12 @@ namespace Uno.UI.Runtime.Skia {
 			// The visual viewport height decreases when the keyboard appears
 			const keyboardHeight = windowHeight - viewportHeight;
 
-			// Consider keyboard visible if it occludes more than 100px
+			// Consider keyboard visible if it occludes more than the threshold
 			// This helps avoid false positives from small browser UI changes
-			const isKeyboardVisible = keyboardHeight > 100;
+			const isKeyboardVisible = keyboardHeight > InputPaneExtension.KEYBOARD_THRESHOLD_PX;
 
 			if (isKeyboardVisible !== this._isKeyboardVisible || 
-				Math.abs(viewportHeight - this._lastViewportHeight) > 1) {
+				Math.abs(viewportHeight - this._lastViewportHeight) > InputPaneExtension.MIN_HEIGHT_CHANGE_PX) {
 				
 				this._isKeyboardVisible = isKeyboardVisible;
 				this._lastViewportHeight = viewportHeight;
@@ -86,7 +91,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			const heightDiff = this._lastViewportHeight - currentHeight;
-			const isKeyboardVisible = heightDiff > 100;
+			const isKeyboardVisible = heightDiff > InputPaneExtension.KEYBOARD_THRESHOLD_PX;
 
 			if (isKeyboardVisible !== this._isKeyboardVisible) {
 				this._isKeyboardVisible = isKeyboardVisible;
@@ -113,3 +118,22 @@ namespace Uno.UI.Runtime.Skia {
 		}
 	}
 }
+
+// Expose InputPaneExtension methods to globalThis for C# JSImport access
+if (globalThis.Uno === undefined) {
+	globalThis.Uno = {} as any;
+}
+if (globalThis.Uno.UI === undefined) {
+	globalThis.Uno.UI = {} as any;
+}
+if (globalThis.Uno.UI.Runtime === undefined) {
+	globalThis.Uno.UI.Runtime = {} as any;
+}
+if (globalThis.Uno.UI.Runtime.Skia === undefined) {
+	globalThis.Uno.UI.Runtime.Skia = {} as any;
+}
+
+(globalThis.Uno.UI.Runtime.Skia as any).InputPaneExtension = {
+	initialize: Uno.UI.Runtime.Skia.InputPaneExtension.initialize,
+	hideKeyboard: Uno.UI.Runtime.Skia.InputPaneExtension.hideKeyboard
+};
