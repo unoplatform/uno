@@ -67,6 +67,57 @@ function renderAffix() {
         contribution.remove();
         $('body').append(contributionDiv);
         
+        // Check for actual geometric overlap with affix sidebar and main content
+        let overlapCheckTimer;
+        function checkFeedbackBoxOverlap() {
+            const feedbackBox = $('.feedback-box');
+            if (feedbackBox.length === 0) return;
+            
+            const feedbackRect = feedbackBox[0].getBoundingClientRect();
+            let hasOverlap = false;
+            
+            // Check overlap with "In This Article" section
+            const affixContent = $('#affix');
+            if (affixContent.length > 0 && affixContent.children().length > 0) {
+                const affixRect = affixContent[0].getBoundingClientRect();
+                hasOverlap = !(
+                    feedbackRect.right < affixRect.left ||
+                    feedbackRect.left > affixRect.right ||
+                    feedbackRect.bottom < affixRect.top ||
+                    feedbackRect.top > affixRect.bottom
+                );
+            }
+            
+            // Check overlap with main article content
+            if (!hasOverlap) {
+                const articleContent = $('.article article');
+                if (articleContent.length > 0) {
+                    const articleRect = articleContent[0].getBoundingClientRect();
+                    hasOverlap = !(
+                        feedbackRect.right < articleRect.left ||
+                        feedbackRect.left > articleRect.right ||
+                        feedbackRect.bottom < articleRect.top ||
+                        feedbackRect.top > articleRect.bottom
+                    );
+                }
+            }
+            
+            if (hasOverlap) {
+                feedbackBox.addClass('hidden-with-overlap');
+            } else {
+                feedbackBox.removeClass('hidden-with-overlap');
+            }
+        }
+        
+        // Debounced overlap check for smoother performance
+        function debouncedOverlapCheck() {
+            clearTimeout(overlapCheckTimer);
+            overlapCheckTimer = setTimeout(checkFeedbackBoxOverlap, 100);
+        }
+        
+        // Initial check
+        checkFeedbackBoxOverlap();
+        
         // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
         // Only attach handler once to prevent memory leaks
         if (!window.feedbackScrollHandlerAttached) {
@@ -93,6 +144,9 @@ function renderAffix() {
                     const feedbackBox = $('.feedback-box');
                     if (feedbackBox.length === 0) return;
                     
+                    // Check for overlap on scroll (debounced)
+                    debouncedOverlapCheck();
+                    
                     // Only apply scroll hiding on reduced widths (<992px)
                     if ($(window).width() < MOBILE_BREAKPOINT) {
                         feedbackBox.addClass('scrolling');
@@ -110,6 +164,9 @@ function renderAffix() {
                     }
                 });
             });
+            
+            // Check for overlap on resize (debounced)
+            $(window).on('resize.feedbackBox', debouncedOverlapCheck);
             
             window.feedbackScrollHandlerAttached = true;
         }

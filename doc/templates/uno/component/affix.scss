@@ -29,9 +29,18 @@ div.contribution.feedback-box {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 16px;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
   visibility: visible !important;
   opacity: 1 !important;
+  transform: translateY(0);
+  
+  // Hide box when it actually overlaps with the "In This Article" section
+  &.hidden-with-overlap {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(10px);
+    pointer-events: none;
+  }
   
   // Hide box while scrolling on reduced widths
   &.scrolling {
