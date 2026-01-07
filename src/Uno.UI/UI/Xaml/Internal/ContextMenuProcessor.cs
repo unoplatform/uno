@@ -196,6 +196,9 @@ internal partial class ContextMenuProcessor
 
 	/// <summary>
 	/// Process cancellation of context menu on touch drag after hold.
+	/// When user drags after touch-and-hold that showed a context menu:
+	/// - If in flyout layer (popup): close the topmost light-dismiss popup
+	/// - If not in flyout layer: raise ContextCanceled event
 	/// </summary>
 	/// <param name="element">The element that received the drag.</param>
 	public void ProcessContextCancelOnDrag(UIElement element)
@@ -205,9 +208,40 @@ internal partial class ContextMenuProcessor
 			// Stop any pending context menu timer
 			StopContextMenuTimer();
 
-			// Raise ContextCanceled event
-			RaiseContextCanceledEvent(element);
+			if (IsInFlyoutLayer(element))
+			{
+				// Element is in a popup/flyout - close the topmost light-dismiss popup
+				// This matches WinUI behavior: dragging within a shown flyout dismisses it
+				var popupRoot = VisualTree.GetPopupRootForElement(element);
+				popupRoot?.CloseTopmostPopup(FocusState.Programmatic, PopupRoot.PopupFilter.LightDismissOnly);
+			}
+			else
+			{
+				// Element is NOT in a popup - raise ContextCanceled event
+				// This matches WinUI behavior: dragging when app code handled ContextRequested
+				// (without a flyout) triggers ContextCanceled
+				RaiseContextCanceledEvent(element);
+			}
+
+			_isContextMenuOnHolding = false;
 		}
+	}
+
+	/// <summary>
+	/// Determines if the element is within a flyout/popup layer.
+	/// Used to decide between closing a flyout vs raising ContextCanceled on drag.
+	/// </summary>
+	/// <param name="element">The element to check.</param>
+	/// <returns>True if element is inside a popup; false otherwise.</returns>
+	private static bool IsInFlyoutLayer(UIElement element)
+	{
+		if (element == null)
+		{
+			return false;
+		}
+
+		// GetRootOfPopupSubTree returns non-null if element is inside a popup
+		return element.GetRootOfPopupSubTree() != null;
 	}
 
 	/// <summary>
