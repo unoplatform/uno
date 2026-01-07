@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Defined when setting a style from the style property
 		/// </summary>
-		ExplicitStyle,
+		ExplicitOrImplicitStyle,
 
 		/// <summary>
 		/// Values defined by a default style
