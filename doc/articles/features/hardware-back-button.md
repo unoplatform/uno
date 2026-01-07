@@ -31,3 +31,48 @@ private void OnBackRequested(object sender, BackRequestedEventArgs e)
 When `Handled` is set to `true`, the OS will not continue processing the request. If not set or set to `false`, the OS will navigate away from the application.
 
 Make sure to unsubscribe from the event when no longer needed.
+
+## Android 15+ behavior
+
+Starting with Android 15 (API level 35), the back navigation behavior has changed due to the [predictive back gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture) feature. On these versions, the `Handled` property is ignored, and the subscription state of the `BackRequested` event determines whether the app handles back navigation:
+
+- **When subscribed**: The app is assumed to handle back navigation. Back button presses are consumed by the app.
+- **When unsubscribed**: The system handles back navigation (e.g., exits the app or navigates back in the task stack).
+
+### Best practices for Android 15+
+
+To ensure proper behavior on Android 15+, subscribe to `BackRequested` only when your app can handle back navigation, and unsubscribe when it cannot. A common pattern is to subscribe on `Loaded` and unsubscribe on `Unloaded`:
+
+```csharp
+public MyPage()
+{
+    InitializeComponent();
+
+    Loaded += OnLoaded;
+    Unloaded += OnUnloaded;
+}
+
+private void OnLoaded(object sender, RoutedEventArgs e)
+{
+    SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
+}
+
+private void OnUnloaded(object sender, RoutedEventArgs e)
+{
+    SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
+}
+
+private void OnBackRequested(object sender, BackRequestedEventArgs e)
+{
+    if (this.Frame.CanGoBack)
+    {
+        this.Frame.GoBack();
+        // On Android 15+, the Handled property is ignored.
+        // The subscription itself indicates the app handles back navigation.
+        e.Handled = true;
+    }
+}
+```
+
+> [!NOTE]
+> On Android versions prior to 15, the `Handled` property continues to work as expected. Setting it to `true` prevents the OS from processing the back request, while `false` allows the OS to handle it.
