@@ -62,6 +62,12 @@ internal partial class BrowserRenderer
 
 		_renderer.MakeCurrent();
 
+		if (_renderer.NeedsForceResize())
+		{
+			_canvas?.Dispose();
+			_canvas = null;
+		}
+
 		var currentClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_canvas, size =>
 		{
 			return _canvas = _renderer.Resize((int)size.Width, (int)size.Height);
@@ -69,7 +75,7 @@ internal partial class BrowserRenderer
 
 		if (_canvas is not null)
 		{
-			_canvas?.Flush();
+			_canvas.Flush();
 			_renderer.Flush();
 		}
 
