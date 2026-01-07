@@ -73,6 +73,7 @@ internal partial class ContentRoot
 		InputManager = new InputManager(this);
 		_contentRootEventListener = new ContentRootEventListener(this);
 		FocusManager = new FocusManager(this);
+		ContextMenuProcessor = new ContextMenuProcessor(this);
 
 		// TODO Uno: CompositionTarget is not created here in WinUI.
 		CompositionTarget = new CompositionTarget(this);
