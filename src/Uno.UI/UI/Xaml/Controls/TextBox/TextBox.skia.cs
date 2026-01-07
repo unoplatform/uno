@@ -404,6 +404,34 @@ public partial class TextBox
 	private void UpdateScrolling() => UpdateScrolling(true);
 
 	/// <summary>
+	/// Gets the position where a context menu should be shown for keyboard invocation.
+	/// Returns the position at the selection/caret location.
+	/// </summary>
+	/// <returns>The position in local coordinates, or null if position cannot be determined.</returns>
+	internal Point? GetContextMenuShowPosition()
+	{
+		if (!_isSkiaTextBox || TextBoxView?.DisplayBlock?.ParsedText == null)
+		{
+			return null;
+		}
+
+		// Determine the character index to use for positioning
+		// Use selection end for LTR (selection start for RTL to match WinUI behavior)
+		var index = FlowDirection == FlowDirection.RightToLeft && SelectionLength > 0
+			? SelectionStart
+			: SelectionStart + SelectionLength;
+
+		// Get the rect for the character at the position
+		var rect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
+
+		// Transform from DisplayBlock coordinates to TextBox coordinates
+		var transform = TextBoxView.DisplayBlock.TransformToVisual(this);
+		var point = transform.TransformPoint(new Point(rect.Left, rect.Bottom));
+
+		return point;
+	}
+
+	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
 	/// </summary>
 	/// <remarks>
