@@ -61,8 +61,11 @@ function renderAffix() {
                 contributionList.append(feedbackLink);
             }
             
-            // Add styling classes for the feedback box
-            contribution.addClass('feedback-box');
+            // Add styling classes and ARIA attributes for the feedback box
+            contribution.addClass('feedback-box')
+                .attr('role', 'complementary')
+                .attr('aria-label', 'Documentation actions')
+                .attr('tabindex', '-1'); // Allow programmatic focus but not in tab order
         }
         
         const contributionDiv = contribution.get(0).outerHTML;
@@ -126,16 +129,11 @@ function renderAffix() {
             const MOBILE_BREAKPOINT = 992;
             const SCROLL_HIDE_DELAY_MS = 300;
             let scrollTimer;
-            let isScrollHandlingScheduled = false;
-            let isAdditionalScrollPending = false;
+            let rafPending = false;
             
-            // Use requestAnimationFrame for better performance
-            const scheduleScrollHandler = window.requestAnimationFrame
-                ? window.requestAnimationFrame.bind(window)
-                : function (callback) { return setTimeout(callback, 16); };
-
-            // Encapsulate the actual scroll effects so they can be invoked repeatedly
-            function processScrollEffects() {
+            function handleScrollEffects() {
+                rafPending = false;
+                
                 const feedbackBox = $('.feedback-box');
                 if (feedbackBox.length === 0) {
                     return;
@@ -160,35 +158,19 @@ function renderAffix() {
                     feedbackBox.removeClass('scrolling');
                 }
             }
-
-            // Ensure that additional scrolls that occur while a handler is scheduled
-            // will trigger a follow-up run after the current one completes.
-            function runScheduledScrollHandler() {
-                // Mark the current scheduled handler as running/completed
-                isScrollHandlingScheduled = false;
-
-                // Run the actual scroll-related logic
-                processScrollEffects();
-
-                // If any scroll events occurred while this handler was pending,
-                // schedule another run to process the most recent state.
-                if (isAdditionalScrollPending) {
-                    isAdditionalScrollPending = false;
-                    isScrollHandlingScheduled = true;
-                    scheduleScrollHandler(runScheduledScrollHandler);
-                }
-            }
             
             $(window).on('scroll.feedbackBox', function() {
-                if (isScrollHandlingScheduled) {
-                    // Remember that another scroll happened while a handler is pending
-                    isAdditionalScrollPending = true;
+                if (rafPending) {
                     return;
                 }
                 
-                isScrollHandlingScheduled = true;
+                rafPending = true;
                 
-                scheduleScrollHandler(runScheduledScrollHandler);
+                if (window.requestAnimationFrame) {
+                    window.requestAnimationFrame(handleScrollEffects);
+                } else {
+                    setTimeout(handleScrollEffects, 16);
+                }
             });
             
             // Check for overlap on resize (debounced)
