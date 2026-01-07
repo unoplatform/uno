@@ -16,6 +16,7 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Internal;
 using Uno.UI.Xaml.Islands;
 using Windows.UI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
