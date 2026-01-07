@@ -14,7 +14,7 @@ Before you begin, ensure you have:
 - Basic familiarity with GitHub issues and pull requests
 - (Optional) An existing Uno Platform project, or follow the steps below to create one
 
-## Creating a New Uno Platform Project wit the GitHub Copilot Coding Agent
+## Creating a New Uno Platform Project with the GitHub Copilot Coding Agent
 
 ### Option 1: Using GitHub Copilot Coding Agent
 
