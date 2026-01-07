@@ -37,7 +37,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		// The font prefetching must be done after Application is created,
 		// after the default fonts are updated e.g. by OpenSansGenerator.
-		await NativeDispatcher.Main.EnqueueAsync(() => _ = PrefetchFonts());
+		NativeDispatcher.Main.Enqueue(() => _ = PrefetchFonts());
 	}
 
 	private WebAssemblyWindowWrapper()

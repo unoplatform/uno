@@ -63,11 +63,9 @@ namespace Uno.UI.Runtime.Skia {
 			})
 
 			this.resize();
-
-			this.removeLoading();
 		}
 
-		private removeLoading() {
+		public static removeLoading() {
 			const element = document.getElementById(WebAssemblyWindowWrapper.loadingElementId);
 			if (element) {
 				element.parentElement.removeChild(element);
