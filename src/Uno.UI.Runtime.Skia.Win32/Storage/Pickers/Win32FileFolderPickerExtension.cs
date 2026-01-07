@@ -114,9 +114,17 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 		var hwnd = PInvoke.GetActiveWindow();
 		if (hwnd == IntPtr.Zero)
 		{
-			hwnd = Win32WindowWrapper.GetHwnds().First();
+			var hwnds = Win32WindowWrapper.GetHwnds();
+			if (!hwnds.Any())
+			{
+				this.LogError()?.Error("No window handles available for file picker dialog");
+				return Task.FromResult<IReadOnlyList<StorageFile>>([]);
+			}
+			hwnd = hwnds.First();
 		}
+		this.LogDebug()?.Debug($"Showing file dialog with hwnd: {hwnd.Value:X}");
 		hResult = iFileOpenDialog.Value->Show(hwnd);
+		this.LogDebug()?.Debug($"File dialog returned with hResult: {hResult}");
 		if (hResult.Failed)
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)

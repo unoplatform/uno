@@ -121,9 +121,17 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		var hwnd = PInvoke.GetActiveWindow();
 		if (hwnd == IntPtr.Zero)
 		{
-			hwnd = Win32WindowWrapper.GetHwnds().First();
+			var hwnds = Win32WindowWrapper.GetHwnds();
+			if (!hwnds.Any())
+			{
+				this.LogError()?.Error("No window handles available for file save dialog");
+				return Task.FromResult<StorageFile?>(null);
+			}
+			hwnd = hwnds.First();
 		}
+		this.LogDebug()?.Debug($"Showing file save dialog with hwnd: {hwnd.Value:X}");
 		hResult = iFileSaveDialog.Value->Show(hwnd);
+		this.LogDebug()?.Debug($"File save dialog returned with hResult: {hResult}");
 		if (hResult.Failed)
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)
