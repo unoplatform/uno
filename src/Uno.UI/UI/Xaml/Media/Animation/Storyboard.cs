@@ -39,7 +39,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private bool _hasFillingChildren;
 		private bool _hasScheduledCompletion;
 		private bool _isReversing;
-		private Dictionary<Timeline, (object from, object to)> _originalAnimationValues;
 
 		public Storyboard()
 		{
@@ -112,99 +111,30 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Reverse all child animations by swapping their From/To values.
+		/// Play all child animations in reverse by calling BeginReversed() on each.
+		/// This properly handles animations with null From/To values and By property.
 		/// </summary>
-		private void ReverseChildren()
+		private void PlayReversed()
 		{
-			if (Children != null)
+			_runningChildren = Children?.Count ?? 0;
+			if (_runningChildren > 0)
 			{
-				// Store original values if not already stored
-				if (_originalAnimationValues == null)
-				{
-					_originalAnimationValues = new Dictionary<Timeline, (object from, object to)>();
-				}
-
 				for (int i = 0; i < Children.Count; i++)
 				{
-					var child = Children[i];
+					ITimeline child = Children[i];
 
-					// Try to reverse DoubleAnimation
-					if (child is DoubleAnimation doubleAnim)
-					{
-						// Store original values if this is the first reverse
-						if (!_originalAnimationValues.ContainsKey(child))
-						{
-							_originalAnimationValues[child] = (doubleAnim.From, doubleAnim.To);
-						}
+					DisposeChildRegistrations(child);
 
-						var tempFrom = doubleAnim.From;
-						doubleAnim.From = doubleAnim.To;
-						doubleAnim.To = tempFrom;
-					}
-					// Try to reverse ColorAnimation
-					else if (child is ColorAnimation colorAnim)
-					{
-						if (!_originalAnimationValues.ContainsKey(child))
-						{
-							_originalAnimationValues[child] = (colorAnim.From, colorAnim.To);
-						}
+					child.RegisterListener(this);
 
-						var tempFrom = colorAnim.From;
-						colorAnim.From = colorAnim.To;
-						colorAnim.To = tempFrom;
-					}
-					// Try to reverse PointAnimation
-					else if (child is PointAnimation pointAnim)
-					{
-						if (!_originalAnimationValues.ContainsKey(child))
-						{
-							_originalAnimationValues[child] = (pointAnim.From, pointAnim.To);
-						}
-
-						var tempFrom = pointAnim.From;
-						pointAnim.From = pointAnim.To;
-						pointAnim.To = tempFrom;
-					}
-					// For child Storyboards, we don't need to do anything - they will handle their own AutoReverse
+					child.BeginReversed();
 				}
 			}
-		}
-
-		/// <summary>
-		/// Restore original From/To values for all child animations.
-		/// </summary>
-		private void RestoreChildren()
-		{
-			if (Children != null && _originalAnimationValues != null)
+			else
 			{
-				for (int i = 0; i < Children.Count; i++)
-				{
-					var child = Children[i];
-
-					if (_originalAnimationValues.TryGetValue(child, out var original))
-					{
-						// Restore DoubleAnimation
-						if (child is DoubleAnimation doubleAnim)
-						{
-							doubleAnim.From = (double?)original.from;
-							doubleAnim.To = (double?)original.to;
-						}
-						// Restore ColorAnimation
-						else if (child is ColorAnimation colorAnim)
-						{
-							colorAnim.From = (Color?)original.from;
-							colorAnim.To = (Color?)original.to;
-						}
-						// Restore PointAnimation
-						else if (child is PointAnimation pointAnim)
-						{
-							pointAnim.From = (Point?)original.from;
-							pointAnim.To = (Point?)original.to;
-						}
-					}
-				}
-
-				_originalAnimationValues.Clear();
+				// No children - complete immediately
+				State = TimelineState.Stopped;
+				OnCompleted();
 			}
 		}
 
@@ -226,7 +156,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_hasFillingChildren = false;
 			_replayCount = 1;
 			_isReversing = false; // Reset reversing state on Begin
-			_originalAnimationValues = null; // Clear stored values on new Begin
 			_activeDuration.Restart();
 
 			Play();
@@ -385,25 +314,58 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
-				// If AutoReverse is enabled and we were in forward phase, reverse the children first
-				if (AutoReverse && !_isReversing)
-				{
-					ReverseChildren();
-				}
+				// If Storyboard has AutoReverse and we're in forward phase, children should
+				// skip to their reversed fill state (starting value)
+				var useReversedFill = AutoReverse && !_isReversing;
 
 				for (int i = 0; i < Children.Count; i++)
 				{
 					ITimeline child = Children[i];
 
-					child.SkipToFill();
-				}
-
-				// After skipping to fill, restore original values if we reversed
-				if (AutoReverse && !_isReversing)
-				{
-					RestoreChildren();
+					if (useReversedFill)
+					{
+						child.SkipToFillReversed();
+					}
+					else
+					{
+						child.SkipToFill();
+					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Begins the storyboard in reverse, playing all children from their end values back to start values.
+		/// Used when this Storyboard is a child of another Storyboard with AutoReverse.
+		/// </summary>
+		void ITimeline.BeginReversed()
+		{
+			State = TimelineState.Active;
+			_hasFillingChildren = false;
+			_replayCount = 1;
+			_isReversing = true; // Mark as reversing so we use BeginReversed on children
+			_activeDuration.Restart();
+
+			PlayReversed();
+		}
+
+		/// <summary>
+		/// Skips to the fill state as if the storyboard had played in reverse.
+		/// All children will be set to their starting values.
+		/// </summary>
+		void ITimeline.SkipToFillReversed()
+		{
+			if (Children != null)
+			{
+				for (int i = 0; i < Children.Count; i++)
+				{
+					ITimeline child = Children[i];
+					child.SkipToFillReversed();
+				}
+			}
+
+			State = TimelineState.Filling;
+			OnCompleted();
 		}
 
 		internal void Deactivate()
@@ -491,9 +453,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (AutoReverse && !_isReversing)
 				{
 					_isReversing = true;
-					// Reverse all children by swapping their From/To values and replaying
-					ReverseChildren();
-					Play();
+					// Play all children in reverse using BeginReversed()
+					PlayReversed();
 					return;
 				}
 
@@ -501,8 +462,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (_isReversing)
 				{
 					_isReversing = false;
-					// Restore original From/To values
-					RestoreChildren();
 				}
 
 				if (NeedsRepeat(_activeDuration, _replayCount))

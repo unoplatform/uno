@@ -369,6 +369,18 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
 		}
 
+		void ITimeline.BeginReversed()
+		{
+			// Timeline should not be used directly.  Please use derived class.
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void BeginReversed()");
+		}
+
+		void ITimeline.SkipToFillReversed()
+		{
+			// Timeline should not be used directly.  Please use derived class.
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SkipToFillReversed()");
+		}
+
 		/// <summary>
 		/// Checks if the Timeline will repeat.
 		/// </summary>

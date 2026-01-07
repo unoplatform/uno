@@ -211,6 +211,51 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			/// <summary>
+			/// Begins the animation in reverse, playing from the end value back to the start value.
+			/// Used by Storyboard-level AutoReverse to signal child animations to play in reverse.
+			/// </summary>
+			public void BeginReversed()
+			{
+				// If the animation hasn't been played yet, we need to compute the values first
+				if (!_startingValue.HasValue || !_endValue.HasValue)
+				{
+					_startingValue = ComputeFromValue();
+					_endValue = ComputeToValue();
+				}
+
+				// Set the reverse flag and play
+				_isReversing = true;
+				_replayCount = 1;
+				_activeDuration.Restart();
+
+				Play();
+			}
+
+			/// <summary>
+			/// Skips to the fill state as if the animation had played in reverse.
+			/// Sets the animated property to its starting value (the "reversed" end state).
+			/// </summary>
+			public void SkipToFillReversed()
+			{
+				if (_animator is { IsRunning: true })
+				{
+					_animator.Cancel();
+				}
+
+				// Compute values if not already computed
+				if (!_startingValue.HasValue)
+				{
+					_startingValue = ComputeFromValue();
+				}
+
+				// Set to the starting value (the "reversed" end state)
+				SetValue(_startingValue.Value);
+
+				State = TimelineState.Filling;
+				_owner.OnCompleted();
+			}
+
+			/// <summary>
 			/// Replay this animation.
 			/// </summary>
 			private void Replay()
