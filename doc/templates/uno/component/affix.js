@@ -65,7 +65,7 @@ function renderAffix() {
             contribution.addClass('feedback-box')
                 .attr('role', 'complementary')
                 .attr('aria-label', 'Edit page and send feedback actions')
-                .attr('tabindex', '-1'); // Allow programmatic focus but not in tab order
+                .attr('tabindex', '0'); // Make feedback box keyboard-focusable and programmatically focusable
         }
         
         const contributionDiv = contribution.get(0).outerHTML;
