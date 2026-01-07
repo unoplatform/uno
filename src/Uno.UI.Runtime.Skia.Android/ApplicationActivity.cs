@@ -23,7 +23,6 @@ using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Windows.Storage.Pickers;
-using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -37,7 +36,6 @@ namespace Microsoft.UI.Xaml
 		private static ClippedRelativeLayout? _nativeLayerHost;
 
 		private InputPane _inputPane;
-		private OnBackPressedCallback? _backPressedCallback;
 
 		private static bool _started;
 		private bool _isContentViewSet;
@@ -264,44 +262,6 @@ namespace Microsoft.UI.Xaml
 			InitializeBackPressedCallback();
 		}
 
-		private void InitializeBackPressedCallback()
-		{
-			// On Android 15+ (API 35+), use OnBackPressedCallback for predictive back gesture support.
-			// The callback is enabled/disabled based on BackRequested subscription state.
-			if ((int)Build.VERSION.SdkInt >= 35)
-			{
-				_backPressedCallback = new UnoOnBackPressedCallback(
-					enabled: SystemNavigationManager.GetForCurrentView().HasBackRequestedSubscribers);
-				OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
-				SystemNavigationManager.BackRequestedSubscribersChanged += OnBackRequestedSubscribersChanged;
-			}
-		}
-
-		private void OnBackRequestedSubscribersChanged(object? sender, bool hasSubscribers)
-		{
-			if (_backPressedCallback is not null)
-			{
-				_backPressedCallback.Enabled = hasSubscribers;
-			}
-		}
-
-		/// <summary>
-		/// Callback for handling back button presses on Android 15+ with predictive back gesture support.
-		/// </summary>
-		private sealed class UnoOnBackPressedCallback : OnBackPressedCallback
-		{
-			public UnoOnBackPressedCallback(bool enabled) : base(enabled)
-			{
-			}
-
-			public override void HandleOnBackPressed()
-			{
-				// On Android 15+, subscription to BackRequested means the app handles back navigation.
-				// The Handled property is ignored - back press is always consumed when callback is enabled.
-				SystemNavigationManager.GetForCurrentView().RequestBack();
-			}
-		}
-
 		protected override void OnStart()
 		{
 			base.OnStart();
@@ -398,12 +358,7 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
 
-			if (_backPressedCallback is not null)
-			{
-				SystemNavigationManager.BackRequestedSubscribersChanged -= OnBackRequestedSubscribersChanged;
-				_backPressedCallback.Remove();
-				_backPressedCallback = null;
-			}
+			CleanupBackPressedCallback();
 
 			NativeWindowWrapper.Instance.OnNativeClosed();
 		}
