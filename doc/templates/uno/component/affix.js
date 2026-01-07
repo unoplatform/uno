@@ -31,9 +31,11 @@ function renderAffix() {
                 const sanitizedTitle = tempDiv.textContent
                     .trim()
                     .substring(0, 200);
+                // Fallback to a default title if the sanitized title is empty
+                const effectiveTitle = sanitizedTitle || 'Documentation Feedback';
                 
                 const pageUrl = encodeURIComponent(window.location.href);
-                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${sanitizedTitle}`);
+                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${effectiveTitle}`);
                 const issueUrl = 'https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=' + issueTitle + '&docs-issue-location=' + pageUrl;
                 
                 const editLink = contributionList.find('li a.contribution-link');
