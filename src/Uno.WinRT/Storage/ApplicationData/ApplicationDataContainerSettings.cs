@@ -26,8 +26,6 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		_nativeApplicationSettings = NativeApplicationSettings.GetForLocality(locality);
 	}
 
-	//TODO:MZ: Use MapChanged event
-#pragma warning disable CS0067
 	/// <summary>
 	/// Occurs when the map changes.
 	/// </summary>
@@ -41,7 +39,14 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	public object this[string key]
 	{
 		get => _nativeApplicationSettings[_container.GetSettingKey(key)];
-		set => _nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+		set
+		{
+			var exists = ContainsKey(key);
+			_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+			MapChanged?.Invoke(this, new MapChangedEventArgs(
+				exists ? CollectionChange.ItemChanged : CollectionChange.ItemInserted,
+				key));
+		}
 	}
 
 	/// <summary>
@@ -80,6 +85,7 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		if (value != null)
 		{
 			_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+			MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
 		}
 	}
 
@@ -115,15 +121,27 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		}
 	}
 
-	public bool Remove(string key) => _nativeApplicationSettings.Remove(_container.GetSettingKey(key));
+	public bool Remove(string key)
+	{
+		var removed = _nativeApplicationSettings.Remove(_container.GetSettingKey(key));
+		if (removed)
+		{
+			MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemRemoved, key));
+		}
+		return removed;
+	}
 
 	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 
 	public bool TryGetValue(string key, out object value) =>
 		_nativeApplicationSettings.TryGetValue(_container.GetSettingKey(key), out value);
 
-	// TODO:MZ: Does clearing with public Clear also remove subcontainers?
-	public void Clear() => _nativeApplicationSettings.RemoveKeys(IsCurrentContainerPublicKey);
+	public void Clear()
+	{
+		_container.DeleteAllSubcontainers();
+		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerPublicKey);
+		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.Reset, null));
+	}
 
 	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 	{
