@@ -76,6 +76,16 @@ partial class InputManager
 			// To reduce allocations, we reuse the same routed args object twice.
 			originalSource2.RaiseEvent(down ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, routedArgs);
 
+			// Process context menu keyboard triggers (Shift+F10, Application key, GamepadMenu)
+			// This matches WinUI behavior where context menu is triggered after KeyDown.
+			if (down && !routedArgs.Handled)
+			{
+				_inputManager.ContentRoot.ContextMenuProcessor.ProcessContextRequestOnKeyboardInput(
+					originalSource2,
+					args.VirtualKey,
+					args.KeyboardModifiers);
+			}
+
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				var methodName = down ? "CoreWindow_KeyDown" : "CoreWindow_KeyUp";

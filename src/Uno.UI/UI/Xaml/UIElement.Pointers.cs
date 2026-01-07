@@ -145,6 +145,40 @@ namespace Microsoft.UI.Xaml
 		}
 		#endregion
 
+		#region IsDraggableOrPannable
+		/// <summary>
+		/// Determines whether the specified element or any of its ancestors is draggable or pannable.
+		/// Used to delay context menu on touch for draggable/scrollable elements.
+		/// </summary>
+		/// <param name="element">The element to check.</param>
+		/// <returns>True if the element or any ancestor is draggable or pannable.</returns>
+		internal static bool IsDraggableOrPannable(UIElement element)
+		{
+			if (element == null)
+			{
+				return false;
+			}
+
+			DependencyObject? current = element;
+			while (current != null)
+			{
+				if (current is UIElement uiElement && uiElement.IsDraggableOrPannableImpl())
+				{
+					return true;
+				}
+				current = (current as FrameworkElement)?.Parent ?? VisualTreeHelper.GetParent(current);
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Determines whether this element itself is draggable or pannable.
+		/// Override in derived classes like ScrollViewer and ListViewBase.
+		/// </summary>
+		/// <returns>True if this element is draggable or pannable.</returns>
+		internal virtual bool IsDraggableOrPannableImpl() => CanDrag;
+		#endregion
+
 		private /* readonly but partial */ GestureRecognizer _gestures;
 
 #if __ANDROID__ || __APPLE_UIKIT__
@@ -387,6 +421,19 @@ namespace Microsoft.UI.Xaml
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args, that));
+
+			// Raise ContextRequested for mouse/pen input after RightTapped.
+			// For touch input, ContextRequested is raised via Holding gesture instead.
+			// This matches WinUI behavior where right-click triggers context menu.
+			if (args.PointerDeviceType == PointerDeviceType.Mouse ||
+				args.PointerDeviceType == PointerDeviceType.Pen)
+			{
+				var contentRoot = VisualTree.GetContentRootForElement(src);
+				contentRoot?.ContextMenuProcessor.RaiseContextRequestedEvent(
+					src,
+					args.Position,
+					isTouchInput: false);
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
@@ -395,6 +442,36 @@ namespace Microsoft.UI.Xaml
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(src, args, that));
+
+			// Handle ContextRequested/ContextCanceled for touch input.
+			// This matches WinUI behavior where touch-and-hold triggers context menu.
+			if (args.PointerDeviceType == PointerDeviceType.Touch)
+			{
+				var contentRoot = VisualTree.GetContentRootForElement(src);
+				if (contentRoot != null)
+				{
+					if (args.HoldingState == HoldingState.Started)
+					{
+						// Store the touch point for the context menu processor
+						contentRoot.ContextMenuProcessor.SetContextMenuOnHoldingTouchPoint(args.Position);
+						contentRoot.ContextMenuProcessor.ProcessContextRequestOnHoldingGesture(src);
+					}
+					else if (args.HoldingState == HoldingState.Canceled)
+					{
+						// Cancel context menu if holding was canceled (e.g., user moved finger)
+						contentRoot.ContextMenuProcessor.StopContextMenuTimer();
+						if (contentRoot.ContextMenuProcessor.IsContextMenuOnHolding)
+						{
+							contentRoot.ContextMenuProcessor.RaiseContextCanceledEvent(src);
+						}
+					}
+					else if (args.HoldingState == HoldingState.Completed)
+					{
+						// Reset the context menu on holding state when holding completes
+						contentRoot.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
+					}
+				}
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>

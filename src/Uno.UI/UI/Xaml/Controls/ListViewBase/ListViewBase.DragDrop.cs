@@ -477,5 +477,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// Determines whether this ListViewBase is draggable.
+		/// Returns true if CanDragItems is enabled.
+		/// </summary>
+		internal override bool IsDraggableOrPannableImpl() => CanDragItems;
 	}
 }

@@ -1781,5 +1781,22 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
 		}
+
+		/// <summary>
+		/// Determines whether this ScrollViewer is pannable.
+		/// Returns false only if both vertical and horizontal scrolling are disabled.
+		/// </summary>
+		internal override bool IsDraggableOrPannableImpl()
+		{
+			// If both vertical and horizontal scrolling are disabled, return false.
+			// This matches WinUI's ScrollViewer::IsDraggableOrPannableImpl.
+			return !(
+				(VerticalScrollBarVisibility == ScrollBarVisibility.Disabled ||
+					VerticalScrollMode == ScrollMode.Disabled)
+				&&
+				(HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled ||
+					HorizontalScrollMode == ScrollMode.Disabled)
+			);
+		}
 	}
 }
