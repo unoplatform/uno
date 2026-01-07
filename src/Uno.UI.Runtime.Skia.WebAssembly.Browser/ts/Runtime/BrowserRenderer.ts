@@ -2,20 +2,16 @@ namespace Uno.UI.Runtime.Skia {
 	export class BrowserRenderer {
 		private readonly managedHandle: number;
 		private readonly canvas: HTMLCanvasElement;
-		private requestRender: () => void;
+		private readonly requestRender: () => void;
 
 		constructor(managedHandle: number, canvas: HTMLCanvasElement) {
 			this.canvas = canvas;
 			this.managedHandle = managedHandle;
-			this.buildImports();
+			const skiaSharpExports = WebAssemblyWindowWrapper.getAssemblyExports();
+			this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrame(this.managedHandle);
 
 			this.setCanvasSize();
 			window.addEventListener("resize", x => this.setCanvasSize());
-		}
-
-		async buildImports() {
-			const skiaSharpExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
-			this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrame(this.managedHandle);
 		}
 
 		public static createInstance(managedHandle: number, canvasId: string) {
