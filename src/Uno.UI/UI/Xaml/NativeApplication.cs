@@ -132,7 +132,11 @@ namespace Microsoft.UI.Xaml
 							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
 						}
 
+#if ANDROID_SKIA
+						Application.SetActivationUri(uri);
+#else
 						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
+#endif
 						handled = true;
 					}
 					else
