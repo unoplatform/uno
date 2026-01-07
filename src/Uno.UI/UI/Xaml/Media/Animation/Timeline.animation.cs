@@ -225,9 +225,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			/// </summary>
 			private void InitializeAnimator()
 			{
-				_startingValue = ComputeFromValue();
-
-				_endValue = ComputeToValue();
+				// Only compute the starting and ending values on the first play, not during reverse.
+				// This ensures we use the original values for the reverse phase.
+				if (!_isReversing)
+				{
+					_startingValue = ComputeFromValue();
+					_endValue = ComputeToValue();
+				}
 
 				// If we're in the reverse phase, swap the from and to values
 				var fromValue = _isReversing ? _endValue.Value : _startingValue.Value;
