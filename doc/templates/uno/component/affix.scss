@@ -103,14 +103,22 @@ div.contribution.feedback-box {
     line-height: 20px;
     letter-spacing: 0.25px;
     display: block;
-    padding: 8px 0;
-    color: #0366d6;
+    padding: 8px 12px;
+    color: $black;
     text-decoration: none;
-    transition: color 0.2s ease;
+    border-radius: 6px;
+    transition: color 0.2s ease, background-color 0.2s ease;
     
     &:hover {
-      color: #0052a3;
+      color: #000;
+      background-color: #F1F1F1;
       text-decoration: none;
+    }
+    
+    &:active, &.active {
+      color: $darkgray;
+      font-weight: 600;
+      background-color: #F1F1F1;
     }
     
     i.fa {
