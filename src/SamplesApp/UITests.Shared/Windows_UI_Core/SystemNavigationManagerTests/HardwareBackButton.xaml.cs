@@ -48,7 +48,7 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 			{
 				_isAndroid16OrHigher = OperatingSystem.IsAndroidVersionAtLeast(36);
 
-				PlatformInfoText.Text = $"Android API {(_isAndroid16OrHigher ? "36 or newer" : "older than 36")}";
+				PlatformInfoText.Text = $"Android {(_isAndroid16OrHigher ? "16 and newer" : "15 and earlier")}";
 
 				if (_isAndroid16OrHigher)
 				{
