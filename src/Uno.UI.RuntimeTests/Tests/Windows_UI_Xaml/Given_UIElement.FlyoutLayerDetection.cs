@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -206,3 +207,4 @@ public partial class Given_UIElement_FlyoutLayerDetection
 		}
 	}
 }
+#endif
