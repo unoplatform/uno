@@ -127,7 +127,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 					child.RegisterListener(this);
 
-					child.BeginReversed();
+					// For animations with AutoReverse=true, the animation is symmetric
+					// (it ends at its starting value). Playing it forward again produces
+					// the same visual result as "reversing" it, and correctly ends at
+					// the starting value. This matches WinUI behavior.
+					// For animations without AutoReverse, we need BeginReversed() to
+					// properly reverse the direction and end at the starting value.
+					if (Children[i].AutoReverse)
+					{
+						child.Begin();
+					}
+					else
+					{
+						child.BeginReversed();
+					}
 				}
 			}
 			else

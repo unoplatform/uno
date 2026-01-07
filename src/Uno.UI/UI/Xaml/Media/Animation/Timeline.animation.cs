@@ -37,6 +37,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private T? _startingValue;
 			private T? _endValue;
 			private bool _isReversing = false; // Track if we're in the reverse phase of AutoReverse
+			private bool _playingInReverse = false; // Track if Storyboard requested reverse playback (persists through cycles)
 
 			// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
 			private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);
@@ -97,6 +98,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_activeDuration.Restart();
 				_replayCount = 1;
 				_isReversing = false; // Reset reversing state when beginning
+				_playingInReverse = false; // Reset Storyboard reverse flag when beginning normally
+				_startingValue = null; // Clear so values are recomputed fresh
+				_endValue = null;
 
 				//Start the animation
 				Play();
@@ -191,21 +195,24 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (_animator is { IsRunning: true })
 				{
 					_animator.Cancel(); // Stop the animator if it is running
-					_startingValue = null;
 				}
 
-				// Set property to its final value
-				// With AutoReverse, the final value is the starting value (after reversing back)
-				var value = AutoReverse ? ComputeFromValue() : ComputeToValue();
+				// Determine what the final value should be:
+				// - AutoReverse: animation ends at starting value
+				// - _playingInReverse: Storyboard reversed, so swap again
+				// XOR to get effective behavior
+				var endsAtStart = AutoReverse ^ _playingInReverse;
+				var value = endsAtStart ? ComputeFromValue() : ComputeToValue();
 				SetValue(value);
 
-				OnEnd();
+				// Skip to fill should complete, not trigger more cycles
+				State = FillBehavior == FillBehavior.HoldEnd ? TimelineState.Filling : TimelineState.Stopped;
+				_owner.OnCompleted();
 			}
 
 			public void Deactivate()
 			{
 				_animator?.Cancel(); // Stop the animator if it is running
-				_startingValue = null;
 
 				State = TimelineState.Stopped;
 			}
@@ -223,8 +230,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					_endValue = ComputeToValue();
 				}
 
-				// Set the reverse flag and play
-				_isReversing = true;
+				// Set the Storyboard reverse flag - this persists through all cycles and AutoReverse phases
+				_playingInReverse = true;
+				_isReversing = false; // Reset animation's own AutoReverse state
 				_replayCount = 1;
 				_activeDuration.Restart();
 
@@ -270,17 +278,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			/// </summary>
 			private void InitializeAnimator()
 			{
-				// Only compute the starting and ending values on the first play, not during reverse.
-				// This ensures we use the original values for the reverse phase.
-				if (!_isReversing)
+				// Compute values only if not already set (they're set in Begin/BeginReversed)
+				if (!_startingValue.HasValue)
 				{
 					_startingValue = ComputeFromValue();
+				}
+				if (!_endValue.HasValue)
+				{
 					_endValue = ComputeToValue();
 				}
 
-				// If we're in the reverse phase, swap the from and to values
-				var fromValue = _isReversing ? _endValue.Value : _startingValue.Value;
-				var toValue = _isReversing ? _startingValue.Value : _endValue.Value;
+				// Determine effective direction:
+				// - _playingInReverse: Storyboard requested reverse playback (persists through cycles)
+				// - _isReversing: Animation's own AutoReverse phase
+				// XOR these to get effective direction: if both are true, they cancel out
+				var effectiveReverse = _playingInReverse ^ _isReversing;
+				var fromValue = effectiveReverse ? _endValue.Value : _startingValue.Value;
+				var toValue = effectiveReverse ? _startingValue.Value : _endValue.Value;
 
 				_animator = AnimatorFactory.Create(_owner, fromValue, toValue);
 
@@ -442,7 +456,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 
 				_owner.OnCompleted();
-				_startingValue = null;
+				// Note: Don't clear _startingValue here - it's cleared in Begin() when the animation starts fresh
 			}
 
 			/// <summary>
