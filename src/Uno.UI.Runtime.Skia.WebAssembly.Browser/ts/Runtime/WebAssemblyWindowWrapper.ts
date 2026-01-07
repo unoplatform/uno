@@ -118,21 +118,6 @@ namespace Uno.UI.Runtime.Skia {
 			if (window.visualViewport) {
 				width = window.visualViewport.width;
 				height = window.visualViewport.height;
-
-				// When the keyboard appears, some browsers scroll the viewport
-				// We need to offset the container and canvas to match the visual viewport position
-				const offsetX = window.visualViewport.offsetLeft;
-				const offsetY = window.visualViewport.offsetTop;
-
-				if (offsetX !== 0 || offsetY !== 0) {
-					// Apply transform to shift the content into the visible viewport
-					this.containerElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-					this.canvasElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-				} else {
-					// Reset transform when keyboard is hidden
-					this.containerElement.style.transform = '';
-					this.canvasElement.style.transform = '';
-				}
 			} else {
 				// Fallback for browsers without visualViewport API
 				var rect = document.documentElement.getBoundingClientRect();
