@@ -110,6 +110,7 @@ public static partial class CoreApplication
 	/// Gets a value indicating whether the the app is running as a full fledged app or as Uno islands only.
 	/// </summary>
 	internal static bool IsFullFledgedApp { get; set; } = true;
+<<<<<<< HEAD:src/Uno.UWP/ApplicationModel/Core/CoreApplication.cs
 
 	/// <summary>
 	/// Sets the invalidateRender and setContinuousRender callbacks for this layer.
@@ -137,4 +138,7 @@ public static partial class CoreApplication
 	internal static void QueueInvalidateRender(object visual)
 		=> _invalidateRender?.Invoke(visual);
 
+=======
+	public static bool WasLaunched { get; internal set; }
+>>>>>>> 753cb90e (chore: Cleanup):src/Uno.WinRT/ApplicationModel/Core/CoreApplication.cs
 }
