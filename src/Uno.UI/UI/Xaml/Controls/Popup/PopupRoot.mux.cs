@@ -119,6 +119,18 @@ internal partial class PopupRoot
 		//return popupChildrenDuringEngagement;
 	}
 
+	/// <summary>
+	/// Closes the topmost popup matching the specified filter.
+	/// </summary>
+	/// <param name="focusStateAfterClosing">Focus state to apply after closing.</param>
+	/// <param name="filter">Filter to determine which popups can be closed.</param>
+	/// <returns>True if a popup was closed.</returns>
+	internal bool CloseTopmostPopup(FocusState focusStateAfterClosing, PopupFilter filter)
+	{
+		CloseTopmostPopup(focusStateAfterClosing, filter, out var didCloseAPopup);
+		return didCloseAPopup;
+	}
+
 	private void CloseTopmostPopup(FocusState focusStateAfterClosing, PopupFilter filter, out bool didCloseAPopup)
 	{
 		didCloseAPopup = false;
