@@ -29,13 +29,18 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	/// <summary>
 	/// Occurs when the map changes.
 	/// </summary>
+	/// <remarks>
+	/// Note: WinUI's ApplicationDataContainerSettings does not raise this event even though
+	/// the class implements IObservableMap. Uno Platform raises this event for consistency
+	/// with other IObservableMap implementations.
+	/// </remarks>
 	public event MapChangedEventHandler<string, object> MapChanged;
 
 	/// <summary>
-	/// 
+	/// Gets or sets the value associated with the specified key.
 	/// </summary>
-	/// <param name="key"></param>
-	/// <returns></returns>
+	/// <param name="key">The key of the value to get or set.</param>
+	/// <returns>The value associated with the specified key.</returns>
 	public object this[string key]
 	{
 		get => _nativeApplicationSettings[_container.GetSettingKey(key)];
