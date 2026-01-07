@@ -4,7 +4,6 @@ namespace Uno.UI.Runtime.Skia {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
 		private onResize: any;
-		private prefetchFonts: any;
 		private owner: any;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
@@ -39,7 +38,6 @@ namespace Uno.UI.Runtime.Skia {
 		private async build() {
 			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
-			this.prefetchFonts = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.PrefetchFonts;
 
 			this.containerElement = (document.getElementById("uno-body") as HTMLDivElement);
 
@@ -65,8 +63,6 @@ namespace Uno.UI.Runtime.Skia {
 			})
 
 			this.resize();
-
-			await this.prefetchFonts();
 
 			this.removeLoading();
 		}
