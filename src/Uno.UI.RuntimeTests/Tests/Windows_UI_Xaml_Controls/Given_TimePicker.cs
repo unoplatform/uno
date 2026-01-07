@@ -420,7 +420,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
 
 				initialRealizedItemCount = panel.Children.Count;
-				Assert.IsTrue(initialRealizedItemCount > 0, "Should have realized items initially");
+				Assert.IsGreaterThan(0, initialRealizedItemCount, "Should have realized items initially");
 			});
 
 			// Simulate fast scrolling by rapidly changing the scroll position
@@ -442,8 +442,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					currentItemCount = panel.Children.Count;
 				});
 
-				Assert.IsTrue(currentItemCount > 0,
-					$"Should have visible items during fast scrolling at position {scrollPosition}, but found {currentItemCount} items");
+				Assert.IsGreaterThan(0,
+currentItemCount, $"Should have visible items during fast scrolling at position {scrollPosition}, but found {currentItemCount} items");
 			}
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -454,7 +454,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				finalRealizedItemCount = panel.Children.Count;
 			});
 
-			Assert.IsTrue(finalRealizedItemCount > 0, "Should have realized items after scrolling completes");
+			Assert.IsGreaterThan(0, finalRealizedItemCount, "Should have realized items after scrolling completes");
 
 			await ControlHelper.ClickFlyoutCloseButton(timePicker, false /* isAccept */);
 			await TestServices.WindowHelper.WaitForIdle();
