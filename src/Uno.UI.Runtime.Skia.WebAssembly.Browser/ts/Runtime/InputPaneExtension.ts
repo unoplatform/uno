@@ -31,7 +31,8 @@ namespace Uno.UI.Runtime.Skia {
 				window.visualViewport.addEventListener("resize", () => this.onVisualViewportResize());
 				window.visualViewport.addEventListener("scroll", () => this.onVisualViewportScroll());
 			} else {
-				// Fallback for older browsers
+				// Fallback for older browsers - track window resize
+				this._lastViewportHeight = window.innerHeight;
 				window.addEventListener("resize", () => this.onWindowResize());
 			}
 		}
@@ -58,9 +59,6 @@ namespace Uno.UI.Runtime.Skia {
 				
 				this._isKeyboardVisible = isKeyboardVisible;
 				this._lastViewportHeight = viewportHeight;
-
-				// Update the window size to match visual viewport
-				this.updateWindowSize();
 
 				// Notify managed code about keyboard visibility change
 				if (InputPaneExtension._exports) {
@@ -92,7 +90,11 @@ namespace Uno.UI.Runtime.Skia {
 
 			if (isKeyboardVisible !== this._isKeyboardVisible) {
 				this._isKeyboardVisible = isKeyboardVisible;
-				this._lastViewportHeight = currentHeight;
+				
+				// Update last height only when keyboard state changes
+				if (!isKeyboardVisible) {
+					this._lastViewportHeight = currentHeight;
+				}
 
 				if (InputPaneExtension._exports) {
 					InputPaneExtension._exports.OnKeyboardVisibilityChanged(
@@ -101,23 +103,6 @@ namespace Uno.UI.Runtime.Skia {
 					);
 				}
 			}
-		}
-
-		private updateWindowSize(): void {
-			if (!window.visualViewport) {
-				return;
-			}
-
-			// Update WebAssemblyWindowWrapper with the visual viewport size
-			// This ensures the app layout uses the available viewport space
-			const visualViewport = window.visualViewport;
-			const width = visualViewport.width;
-			const height = visualViewport.height;
-
-			// Trigger a resize event in WebAssemblyWindowWrapper
-			// The resize event will use the visual viewport dimensions
-			const resizeEvent = new Event('resize');
-			window.dispatchEvent(resizeEvent);
 		}
 
 		public static hideKeyboard(): void {

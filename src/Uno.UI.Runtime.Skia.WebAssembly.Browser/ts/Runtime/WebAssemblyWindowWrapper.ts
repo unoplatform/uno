@@ -49,7 +49,14 @@ namespace Uno.UI.Runtime.Skia {
 
 			await Accessibility.setup();
 
-			window.addEventListener("resize", x => this.resize());
+			// Use visualViewport events when available (for soft keyboard support on mobile)
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener("resize", x => this.resize());
+				window.visualViewport.addEventListener("scroll", x => this.resize());
+			} else {
+				// Fallback for browsers without visualViewport API
+				window.addEventListener("resize", x => this.resize());
+			}
 
 			window.addEventListener("contextmenu", x => {
 				x.preventDefault();
