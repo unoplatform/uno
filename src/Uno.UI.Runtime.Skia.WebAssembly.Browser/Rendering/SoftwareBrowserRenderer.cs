@@ -25,6 +25,7 @@ internal partial class SoftwareBrowserRenderer : IBrowserRenderer
 		if (jsObject.GetPropertyAsBoolean("success"))
 		{
 			renderer = new SoftwareBrowserRenderer(jsObject.GetPropertyAsJSObject("instance")!);
+			typeof(SoftwareBrowserRenderer).LogInfo()?.Info($"Successfully created a software rendering context.");
 			return true;
 		}
 		else
