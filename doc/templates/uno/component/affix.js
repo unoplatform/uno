@@ -127,44 +127,68 @@ function renderAffix() {
             const SCROLL_HIDE_DELAY_MS = 300;
             let scrollTimer;
             let isScrollHandlingScheduled = false;
+            let isAdditionalScrollPending = false;
             
             // Use requestAnimationFrame for better performance
             const scheduleScrollHandler = window.requestAnimationFrame
                 ? window.requestAnimationFrame.bind(window)
                 : function (callback) { return setTimeout(callback, 16); };
+
+            // Encapsulate the actual scroll effects so they can be invoked repeatedly
+            function processScrollEffects() {
+                const feedbackBox = $('.feedback-box');
+                if (feedbackBox.length === 0) {
+                    return;
+                }
+
+                // Check for overlap on scroll (debounced)
+                debouncedOverlapCheck();
+
+                // Only apply scroll hiding on reduced widths (<992px)
+                if ($(window).width() < MOBILE_BREAKPOINT) {
+                    feedbackBox.addClass('scrolling');
+
+                    // Clear existing timer
+                    clearTimeout(scrollTimer);
+
+                    // Set new timer to remove scrolling class after scrolling stops
+                    scrollTimer = setTimeout(function() {
+                        feedbackBox.removeClass('scrolling');
+                    }, SCROLL_HIDE_DELAY_MS);
+                } else {
+                    // Remove scrolling class on larger screens
+                    feedbackBox.removeClass('scrolling');
+                }
+            }
+
+            // Ensure that additional scrolls that occur while a handler is scheduled
+            // will trigger a follow-up run after the current one completes.
+            function runScheduledScrollHandler() {
+                // Mark the current scheduled handler as running/completed
+                isScrollHandlingScheduled = false;
+
+                // Run the actual scroll-related logic
+                processScrollEffects();
+
+                // If any scroll events occurred while this handler was pending,
+                // schedule another run to process the most recent state.
+                if (isAdditionalScrollPending) {
+                    isAdditionalScrollPending = false;
+                    isScrollHandlingScheduled = true;
+                    scheduleScrollHandler(runScheduledScrollHandler);
+                }
+            }
             
             $(window).on('scroll.feedbackBox', function() {
                 if (isScrollHandlingScheduled) {
+                    // Remember that another scroll happened while a handler is pending
+                    isAdditionalScrollPending = true;
                     return;
                 }
                 
                 isScrollHandlingScheduled = true;
                 
-                scheduleScrollHandler(function() {
-                    isScrollHandlingScheduled = false;
-                    
-                    const feedbackBox = $('.feedback-box');
-                    if (feedbackBox.length === 0) return;
-                    
-                    // Check for overlap on scroll (debounced)
-                    debouncedOverlapCheck();
-                    
-                    // Only apply scroll hiding on reduced widths (<992px)
-                    if ($(window).width() < MOBILE_BREAKPOINT) {
-                        feedbackBox.addClass('scrolling');
-                        
-                        // Clear existing timer
-                        clearTimeout(scrollTimer);
-                        
-                        // Set new timer to remove scrolling class after scrolling stops
-                        scrollTimer = setTimeout(function() {
-                            feedbackBox.removeClass('scrolling');
-                        }, SCROLL_HIDE_DELAY_MS);
-                    } else {
-                        // Remove scrolling class on larger screens
-                        feedbackBox.removeClass('scrolling');
-                    }
-                });
+                scheduleScrollHandler(runScheduledScrollHandler);
             });
             
             // Check for overlap on resize (debounced)
