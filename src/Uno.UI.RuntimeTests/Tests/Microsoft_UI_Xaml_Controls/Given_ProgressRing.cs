@@ -94,6 +94,9 @@ public class Given_ProgressRing
 	}
 
 	[TestMethod]
+#if !__SKIA__
+	[Ignore("The test is unreliable when DPI scaling is not 1")]
+#endif
 	public async Task When_Stretch_Fill()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
