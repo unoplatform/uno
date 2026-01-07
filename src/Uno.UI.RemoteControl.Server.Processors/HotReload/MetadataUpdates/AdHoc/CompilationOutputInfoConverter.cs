@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.RemoteControl.Host.HotReload;
 
-public class MetadataReferenceConverter : JsonConverter<MetadataReference>
+public class CompilationOutputInfoConverter : JsonConverter<CompilationOutputInfo>
 {
 	/// <inheritdoc />
-	public override MetadataReference? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override CompilationOutputInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		if (reader.TokenType == JsonTokenType.Null)
 		{
-			return null;
+			return default;
 		}
 
 		if (reader.TokenType != JsonTokenType.StartObject)
@@ -23,19 +21,13 @@ public class MetadataReferenceConverter : JsonConverter<MetadataReference>
 			throw new JsonException("Expected StartObject token");
 		}
 
-		string? filePath = null;
-		MetadataReferenceProperties? properties = null;
+		var result = new CompilationOutputInfo();
 
 		while (reader.Read())
 		{
 			if (reader.TokenType == JsonTokenType.EndObject)
 			{
-				if (filePath is not null)
-				{
-					return MetadataReference.CreateFromFile(filePath, properties ?? default);
-				}
-
-				throw new JsonException("Missing required property 'Display' or 'FilePath'");
+				return result;
 			}
 
 			if (reader.TokenType != JsonTokenType.PropertyName)
@@ -48,13 +40,18 @@ public class MetadataReferenceConverter : JsonConverter<MetadataReference>
 
 			switch (propertyName)
 			{
-				case "Display":
-				case "FilePath":
-					filePath = reader.GetString();
+				case nameof(CompilationOutputInfo.AssemblyPath):
+					if (reader.TokenType == JsonTokenType.String)
+					{
+						result = result.WithAssemblyPath(reader.GetString());
+					}
 					break;
 
-				case "Properties":
-					properties = JsonSerializer.Deserialize<MetadataReferenceProperties>(ref reader, options);
+				case nameof(CompilationOutputInfo.GeneratedFilesOutputDirectory):
+					if (reader.TokenType == JsonTokenType.String)
+					{
+						result = result.WithGeneratedFilesOutputDirectory(reader.GetString());
+					}
 					break;
 
 				default:
@@ -71,16 +68,15 @@ public class MetadataReferenceConverter : JsonConverter<MetadataReference>
 	}
 
 	/// <inheritdoc />
-	public override void Write(Utf8JsonWriter writer, MetadataReference value, JsonSerializerOptions options)
+	public override void Write(Utf8JsonWriter writer, CompilationOutputInfo value, JsonSerializerOptions options)
 	{
 		// Create a copy of options without this converter to avoid infinite recursion
 #pragma warning disable CA1869
 		var serializerOptions = new JsonSerializerOptions(options);
 #pragma warning restore CA1869
-		serializerOptions.Converters.Remove(serializerOptions.Converters.First(c => c is MetadataReferenceConverter));
+		serializerOptions.Converters.Remove(serializerOptions.Converters.First(c => c is CompilationOutputInfoConverter));
 
 		// Use the standard serialization
 		JsonSerializer.Serialize(writer, value, value.GetType(), serializerOptions);
 	}
 }
-

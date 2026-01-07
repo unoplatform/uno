@@ -38,6 +38,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private readonly BufferGate _solutionWatchersGate = new();
 
 		private (Task<HotReloadWorkspace> GetAsync, CancellationTokenSource Ct)? _workspace;
+		private HotReloadWorkspace? _originalWorkspace;
 		private readonly IReporter _reporter = new Reporter();
 
 		private bool _useRoslynHotReload;
@@ -157,6 +158,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				configureServer.MetadataUpdateCapabilities,
 				properties,
 				ct);
+
+			//var (workspace, watch) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
+			//	@"C:\Tmp\workspace_dump.json",
+			//	_reporter,
+			//	configureServer.MetadataUpdateCapabilities,
+			//	properties,
+			//	ct);
 
 			return new HotReloadWorkspace(workspace, watch, [Trim(outputPath), Trim(intermediateOutputPath)]);
 

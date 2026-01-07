@@ -49,11 +49,13 @@ public record ProjectData(
 	string? FilePath,
 	string? OutputFilePath,
 	CompilationOptions? CompilationOptions,
+	CompilationOutputInfo? CompilationOutputInfo,
 	ParseOptions? ParseOptions,
 	ImmutableArray<DocumentData> Documents,
 	ImmutableArray<ProjectReference> ProjectReferences,
 	ImmutableArray<MetadataReference> MetadataReferences,
 	ImmutableArray<AnalyzerReference> AnalyzerReferences,
+	ImmutableArray<DocumentData> AnalyzerConfigDocuments,
 	ImmutableArray<DocumentData> AdditionalDocuments,
 	bool IsSubmission
 );
@@ -79,7 +81,7 @@ public static class RoslynExtensions
 	[Flags]
 	public enum RoslynInfoOptions
 	{
-		NoLoader = 1 << 0
+		NoLoader = 1 << 0,
 	}
 
 	public static SolutionInfo GetInfo(this Solution solution, RoslynInfoOptions opts = default)
@@ -99,44 +101,50 @@ public static class RoslynExtensions
 			solution.AnalyzerReferences);
 
 	public static ProjectInfo GetInfo(this Project project, RoslynInfoOptions opts = default)
-		=> ProjectInfo.Create(
-			project.Id,
-			project.Version,
-			project.Name,
-			project.AssemblyName,
-			project.Language,
-			project.FilePath,
-			project.OutputFilePath,
-			project.CompilationOptions,
-			project.ParseOptions,
-			[.. project.Documents.Select(d => GetInfo(d, opts))],
-			project.ProjectReferences,
-			project.MetadataReferences,
-			project.AnalyzerReferences,
-			[.. project.AdditionalDocuments.Select(p => GetInfo(p, opts))],
-			project.IsSubmission,
-			default);
+		=> ProjectInfo
+			.Create(
+				project.Id,
+				project.Version,
+				project.Name,
+				project.AssemblyName,
+				project.Language,
+				project.FilePath,
+				project.OutputFilePath,
+				project.CompilationOptions,
+				project.ParseOptions,
+				[.. project.Documents.Select(d => GetInfo(d, opts))],
+				project.ProjectReferences,
+				project.MetadataReferences,
+				project.AnalyzerReferences,
+				[.. project.AdditionalDocuments.Select(p => GetInfo(p, opts))],
+				project.IsSubmission,
+				default)
+			.WithCompilationOutputInfo(project.CompilationOutputInfo)
+			.WithAnalyzerConfigDocuments(project.AnalyzerConfigDocuments.Select(doc => GetInfo(doc, opts)));
 
 	public static ProjectInfo GetInfo(this ProjectData project)
 	{
 		var projectId = project.Id ?? ProjectId.CreateNewId();
-		return ProjectInfo.Create(
-			projectId,
-			project.Version ?? VersionStamp.Default,
-			project.Name,
-			project.AssemblyName,
-			project.Language,
-			project.FilePath,
-			project.OutputFilePath,
-			project.CompilationOptions,
-			project.ParseOptions,
-			[.. project.Documents.Select(d => GetInfo(d, projectId))],
-			project.ProjectReferences,
-			project.MetadataReferences,
-			project.AnalyzerReferences,
-			[.. project.AdditionalDocuments.Select(p => GetInfo(p, projectId))],
-			project.IsSubmission,
-			default);
+		return ProjectInfo
+			.Create(
+				projectId,
+				project.Version ?? VersionStamp.Default,
+				project.Name,
+				project.AssemblyName,
+				project.Language,
+				project.FilePath,
+				project.OutputFilePath,
+				project.CompilationOptions,
+				project.ParseOptions,
+				[.. project.Documents.Select(d => GetInfo(d, projectId))],
+				project.ProjectReferences,
+				project.MetadataReferences,
+				project.AnalyzerReferences,
+				[.. project.AdditionalDocuments.Select(p => GetInfo(p, projectId))],
+				project.IsSubmission,
+				default)
+			.WithCompilationOutputInfo(project.CompilationOutputInfo ?? new())
+			.WithAnalyzerConfigDocuments(project.AnalyzerConfigDocuments.Select(p => GetInfo(p, projectId)));
 	}
 
 
@@ -158,11 +166,13 @@ public static class RoslynExtensions
 			project.FilePath,
 			project.OutputFilePath,
 			project.CompilationOptions,
+			project.CompilationOutputInfo,
 			project.ParseOptions,
 			[.. project.Documents.Select(GetData)],
 			[.. project.ProjectReferences],
 			[.. project.MetadataReferences],
 			[.. project.AnalyzerReferences],
+			[.. project.AnalyzerConfigDocuments.Select(GetData)],
 			[.. project.AdditionalDocuments.Select(GetData)],
 			project.IsSubmission);
 

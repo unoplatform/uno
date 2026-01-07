@@ -14,15 +14,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
+using static Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	internal static class AdHocWorkspaceProvider
 	{
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-		public static async Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(
+		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-			ServerHotReloadProcessor.WorkspaceData data,
+			string dataFile,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
 			Dictionary<string, string> properties,
@@ -73,6 +74,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
 			};
 
+			workspace.Services.GetService<Microsoft.CodeAnalysis.Host.IAnalyzerService>();
+
+			await using var dump = File.OpenRead(dataFile);
+			var data = await System.Text.Json.JsonSerializer.DeserializeAsync<WorkspaceData>(dump, GetOptions(workspace), ct);
+
 			var currentSolution = workspace.AddSolution(data!.Solution.GetInfo());
 			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 
@@ -87,7 +93,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				await project.GetCompilationAsync(ct);
 			}
 
-			return (currentSolution, hotReloadService);
+			return (workspace, hotReloadService);
 		}
 
 

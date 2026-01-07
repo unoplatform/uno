@@ -1,21 +1,20 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.RemoteControl.Host.HotReload;
 
-public class MetadataReferenceConverter : JsonConverter<MetadataReference>
+public class MetadataReferencePropertiesConverter : JsonConverter<MetadataReferenceProperties>
 {
 	/// <inheritdoc />
-	public override MetadataReference? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override MetadataReferenceProperties Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		if (reader.TokenType == JsonTokenType.Null)
 		{
-			return null;
+			return default;
 		}
 
 		if (reader.TokenType != JsonTokenType.StartObject)
@@ -23,19 +22,15 @@ public class MetadataReferenceConverter : JsonConverter<MetadataReference>
 			throw new JsonException("Expected StartObject token");
 		}
 
-		string? filePath = null;
-		MetadataReferenceProperties? properties = null;
+		var kind = MetadataImageKind.Assembly;
+		var aliases = ImmutableArray<string>.Empty;
+		var embedInteropTypes = false;
 
 		while (reader.Read())
 		{
 			if (reader.TokenType == JsonTokenType.EndObject)
 			{
-				if (filePath is not null)
-				{
-					return MetadataReference.CreateFromFile(filePath, properties ?? default);
-				}
-
-				throw new JsonException("Missing required property 'Display' or 'FilePath'");
+				return new MetadataReferenceProperties(kind, aliases, embedInteropTypes);
 			}
 
 			if (reader.TokenType != JsonTokenType.PropertyName)
@@ -48,13 +43,19 @@ public class MetadataReferenceConverter : JsonConverter<MetadataReference>
 
 			switch (propertyName)
 			{
-				case "Display":
-				case "FilePath":
-					filePath = reader.GetString();
+				case nameof(MetadataReferenceProperties.Kind):
+					kind = JsonSerializer.Deserialize<MetadataImageKind>(ref reader, options);
 					break;
 
-				case "Properties":
-					properties = JsonSerializer.Deserialize<MetadataReferenceProperties>(ref reader, options);
+				case nameof(MetadataReferenceProperties.Aliases):
+					aliases = JsonSerializer.Deserialize<ImmutableArray<string>>(ref reader, options);
+					break;
+
+				case nameof(MetadataReferenceProperties.EmbedInteropTypes):
+					if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
+					{
+						embedInteropTypes = reader.GetBoolean();
+					}
 					break;
 
 				default:
@@ -71,16 +72,15 @@ public class MetadataReferenceConverter : JsonConverter<MetadataReference>
 	}
 
 	/// <inheritdoc />
-	public override void Write(Utf8JsonWriter writer, MetadataReference value, JsonSerializerOptions options)
+	public override void Write(Utf8JsonWriter writer, MetadataReferenceProperties value, JsonSerializerOptions options)
 	{
 		// Create a copy of options without this converter to avoid infinite recursion
 #pragma warning disable CA1869
 		var serializerOptions = new JsonSerializerOptions(options);
 #pragma warning restore CA1869
-		serializerOptions.Converters.Remove(serializerOptions.Converters.First(c => c is MetadataReferenceConverter));
+		serializerOptions.Converters.Remove(serializerOptions.Converters.First(c => c is MetadataReferencePropertiesConverter));
 
 		// Use the standard serialization
 		JsonSerializer.Serialize(writer, value, value.GetType(), serializerOptions);
 	}
 }
-

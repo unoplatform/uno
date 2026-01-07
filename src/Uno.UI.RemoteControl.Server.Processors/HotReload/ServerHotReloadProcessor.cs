@@ -7,12 +7,14 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Runtime.Loader;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Host;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -850,22 +852,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task DoBlaBla(string? targetFile = null)
 		{
-			var ct = new CancellationTokenSource();
+			var ct = _workspace!.Value.Ct;
 
 			targetFile ??= @"C:\Users\david\AppData\Local\Temp\hotreload-workspace-dump-6dbf356a-6e7d-419e-95ea-ec3c35aa212d.json";
-			await using var dump = File.OpenRead(targetFile);
-			var data = await System.Text.Json.JsonSerializer.DeserializeAsync<WorkspaceData>(dump, _workspaceDumpJsonOptions, ct.Token);
 
 			var properties = GetWorkspaceProperties(_configureServer!, out var outputPath, out var intermediateOutputPath, out _, out _);
 
-			var (solution, hotReloadService) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
-				data!,
+			var (workspace, hotReloadService) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
+				targetFile,
 				_reporter,
 				_configureServer!.MetadataUpdateCapabilities,
 				properties,
 				ct.Token);
 
-			_workspace = new(Task.FromResult(new HotReloadWorkspace(solution.Workspace, hotReloadService, [outputPath, intermediateOutputPath])), ct);
+			_originalWorkspace ??= await GetWorkspaceAsync();
+			_workspace = new(Task.FromResult(new HotReloadWorkspace(workspace, hotReloadService, [outputPath, intermediateOutputPath])), ct);
 		}
 
 
@@ -880,10 +881,30 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				new ProjectIdConverter(),
 				new DocumentIdConverter(),
 				new CompilationOptionsConverter(),
+				new CompilationOutputInfoConverter(),
 				new ParseOptionsConverter(),
 				new MetadataReferenceConverter(),
 				new MetadataReferencePropertiesConverter(),
-				new AnalyzerReferenceConverter(),
+				new AnalyzerReferenceConverter(new UnoAnalyzerAssemblyLoader(AssemblyLoadContext.GetLoadContext(typeof(ServerHotReloadProcessor).Assembly) ?? throw new InvalidOperationException("ServerHotReloadProcessor is expected to have been loaded in a dedicated ALC"))),
+			}
+		};
+
+		public static JsonSerializerOptions GetOptions(Workspace workspace) => new(JsonSerializerOptions.Default)
+		{
+			WriteIndented = true,
+			Converters =
+			{
+				new JsonStringEnumConverter(),
+				new EncodingJsonConverter(),
+				new SolutionIdConverter(),
+				new ProjectIdConverter(),
+				new DocumentIdConverter(),
+				new CompilationOptionsConverter(),
+				new CompilationOutputInfoConverter(),
+				new ParseOptionsConverter(),
+				new MetadataReferenceConverter(),
+				new MetadataReferencePropertiesConverter(),
+				new AnalyzerReferenceConverter(workspace.Services.GetRequiredService<Microsoft.CodeAnalysis.Host.IAnalyzerService>().GetLoader()),
 			}
 		};
 
@@ -899,7 +920,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 #pragma warning restore CA1869
 
-			await using (var target = File.OpenWrite(targetFile))
+			await using (var target = File.Create(targetFile))
 			{
 				await System.Text.Json.JsonSerializer.SerializeAsync(target, workspace, _workspaceDumpJsonOptions);
 			}
