@@ -18,7 +18,7 @@ internal partial class BrowserRenderer
 	private int _renderCount;
 	private SKCanvas? _canvas;
 
-	public BrowserRenderer(IXamlRootHost host)
+	public BrowserRenderer(IXamlRootHost host, bool forceSoftwareRendering)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -27,7 +27,7 @@ internal partial class BrowserRenderer
 
 		_host = host;
 
-		if (WebGlBrowserRenderer.TryCreate(out var webGlBrowserRenderer))
+		if (!forceSoftwareRendering && WebGlBrowserRenderer.TryCreate(out var webGlBrowserRenderer))
 		{
 			_renderer = webGlBrowserRenderer;
 		}
