@@ -16,8 +16,8 @@
         href: xref:Uno.GetStarted.AI.Codex
       - name: GitHub Copilot CLI
         href: xref:Uno.GetStarted.AI.CopilotCLI
-      - name: GitHub Copilot PRs
-        href: xref:Uno.GetStarted.AI.CopilotPRs
+      - name: GitHub Copilot Coding Agent
+        href: xref:Uno.GetStarted.AI.CopilotCodingAgent
       - name: Cursor
         href: xref:Uno.GetStarted.AI.Cursor
       - name: Google Antigravity
@@ -41,8 +41,8 @@
         href: xref:Uno.GettingStarted.CreateAnApp.AI.Codex
       - name: GitHub Copilot CLI
         href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCli
-      - name: GitHub Copilot PRs
-        href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotPRs
+      - name: GitHub Copilot Coding Agent
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCodingAgent
       - name: Cursor
         href: xref:Uno.GettingStarted.CreateAnApp.AI.Cursor
       - name: Google Antigravity

@@ -1,25 +1,27 @@
 ---
-uid: Uno.GettingStarted.CreateAnApp.AI.CopilotPRs
+uid: Uno.GettingStarted.CreateAnApp.AI.CopilotCodingAgent
 ---
 
-# Creating an app with GitHub Copilot PRs
+# Creating an app with the GitHub Copilot Coding Agent
 
-This guide explains how to use GitHub Copilot PRs (Assign to Copilot) to create and develop Uno Platform applications directly on GitHub.com.
+This guide explains how to use the GitHub Copilot Codingt Agent (Assign to Copilot) to create and develop Uno Platform applications directly on GitHub.com.
 
 ## Prerequisites
 
 Before you begin, ensure you have:
+
 - A GitHub account with Copilot access enabled
-- Basic familiarity with GitHub Pull Requests
+- Basic familiarity with GitHub issues and pull requests
 - (Optional) An existing Uno Platform project, or follow the steps below to create one
 
-## Creating a New Uno Platform Project with Copilot PRs
+## Creating a New Uno Platform Project wit the GitHub Copilot Coding Agent
 
-### Option 1: Using GitHub Copilot PRs
+### Option 1: Using GitHub Copilot Coding Agent
 
 1. **Create a repository** on GitHub.com (or use an existing one)
 2. **Create an issue** describing what you want to build:
-   ```
+
+   ```Markdown
    Title: Create a new Uno Platform app
    
    Description:
@@ -27,10 +29,12 @@ Before you begin, ensure you have:
    Target .NET 10.0 and include WebAssembly and Desktop support.
    Set up a basic MainPage with a welcome message.
    ```
+
 3. **Create a branch** from the issue or create a new branch manually
-4. **Create a Pull Request** and assign it to Copilot (`@copilot`)
-5. **Give instructions** in a PR comment:
-   ```
+4. **Create a pull request** and assign it to Copilot (`@copilot`)
+5. **Give instructions** in a pull request comments:
+
+   ```Markdown
    @copilot Please create a new Uno Platform app following the project structure best practices.
    Use the unoapp template targeting net10.0.
    ```
@@ -58,19 +62,20 @@ For initial project setup, it's often easier to create the project locally:
    git push -u origin main
    ```
 
-3. Now you can use GitHub Copilot PRs for feature development
+3. Now you can use the GitHub Copilot Coding Agent for feature development
 
-## Developing Features with GitHub Copilot PRs
+## Developing Features with the GitHub Copilot Coding Agent
 
 Once you have a project set up:
 
 1. **Create a feature branch** for your work
-2. **Create a Pull Request** describing the feature
+2. **Create a an issue or pull request** describing the feature
 3. **Assign to Copilot** and provide clear instructions
 
 ### Example Feature Requests
 
 **Adding a new page:**
+
 ```markdown
 @copilot Please add a new SettingsPage.xaml with the following features:
 - A toggle switch for dark mode
@@ -81,6 +86,7 @@ Follow Uno Platform best practices for responsive layout.
 ```
 
 **Implementing data binding:**
+
 ```markdown
 @copilot Implement a user profile view with data binding:
 - Create a User model with Name, Email, and Avatar properties
@@ -90,6 +96,7 @@ Follow Uno Platform best practices for responsive layout.
 ```
 
 **Adding UI controls:**
+
 ```markdown
 @copilot Add a ListView to MainPage that displays a list of items:
 - Use Uno Toolkit CardControl for each item
@@ -98,17 +105,19 @@ Follow Uno Platform best practices for responsive layout.
 - Follow Material design guidelines
 ```
 
-## Best Practices for Working with Copilot PRs
+## Best Practices for Working with the GitHub Copilot Coding Agent
 
 ### 1. Be Specific
 
 Good:
+
 ```markdown
 @copilot Add a Button with a red background and white text that displays a dialog when clicked.
 Use ThemeResource colors where possible.
 ```
 
 Less effective:
+
 ```markdown
 @copilot Add a button
 ```
@@ -138,9 +147,9 @@ Please add spacing between items and increase the card elevation.
 on implementing authentication with MSAL, then implement it.
 ```
 
-## Working with Platform-Specific Code
+## Working with Platform-specific Code
 
-GitHub Copilot PRs can help with platform-specific implementations:
+GitHub Copilot Coding Agent can help with platform-specific implementations:
 
 ```markdown
 @copilot Add platform-specific code to access the device camera:
@@ -151,9 +160,10 @@ GitHub Copilot PRs can help with platform-specific implementations:
 
 ## Testing and Validation
 
-While GitHub Copilot PRs can generate and modify code, it cannot run or test your application. For interactive testing:
+While the GitHub Copilot Coding Agent can generate and modify code, it cannot run or test your application. For interactive testing:
 
 1. **Pull the PR branch locally**:
+
    ```bash
    git fetch origin pull/123/head:pr-123
    git checkout pr-123
@@ -161,16 +171,18 @@ While GitHub Copilot PRs can generate and modify code, it cannot run or test you
 
 2. **Run and test locally** using your preferred IDE or [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
 
-3. **Provide feedback** in the PR with test results:
+3. **Provide feedback** in the pull request with test results:
+
    ```markdown
    @copilot The button click handler is working, but the dialog doesn't show.
    The console shows an error: "XamlParseException on line 45".
    Please fix the XAML syntax.
    ```
 
-## Limitations of GitHub Copilot PRs
+## Limitations of GitHub Copilot Coding Agent
 
-GitHub Copilot PRs is excellent for:
+GitHub Copilot Coding Agent is excellent for:
+
 - ✅ Generating code and project structure
 - ✅ Implementing features based on specifications
 - ✅ Refactoring and code improvements
@@ -178,6 +190,7 @@ GitHub Copilot PRs is excellent for:
 - ✅ Following Uno Platform patterns (via MCP)
 
 However, it cannot:
+
 - ❌ Run your application
 - ❌ Take screenshots or interact with UI
 - ❌ Test the application behavior
@@ -194,6 +207,6 @@ For interactive development and testing, use [GitHub Copilot CLI](xref:Uno.GetSt
 
 ## Related Documentation
 
-- [Get Started with GitHub Copilot PRs](xref:Uno.GetStarted.AI.CopilotPRs)
+- [Get Started with GitHub Copilot Coding Agent](xref:Uno.GetStarted.AI.CopilotCodingAgent)
 - [Uno Platform MCP Features](xref:Uno.Features.Uno.MCPs)
 - [Creating apps with other AI tools](xref:Uno.BuildYourApp.AI.Agents)

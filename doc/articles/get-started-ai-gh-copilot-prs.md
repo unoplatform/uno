@@ -1,16 +1,17 @@
 ---
-uid: Uno.GetStarted.AI.CopilotPRs
+uid: Uno.GetStarted.AI.CopilotCodingAgent
 ---
 
-# Get Started with GitHub Copilot PRs
+# Get Started with the GitHub Copilot Coding Agent
 
-This guide will walk you through using GitHub Copilot PRs (Assign to Copilot) with Uno Platform MCPs.
+This guide will walk you through using the GitHub Copilot Coding Agent with Uno Platform MCPs.
 
-## What is GitHub Copilot PRs?
+## What is the GitHub Copilot Coding Agent
 
-GitHub Copilot PRs is a feature that allows you to assign pull requests directly to GitHub Copilot on GitHub.com. When you assign a PR to Copilot, it can help you implement features, fix bugs, and make changes to your codebase directly in the pull request.
+GitHub Copilot Coding Agent allows you to assign issues or pull requests directly to Copilot on GitHub.com (Assign to Copilot). When you assign a pull request to Copilot, it can help you implement features, fix bugs, and make changes to your codebase directly in the pull request.
 
 This is different from:
+
 - **GitHub Copilot CLI**: A command-line interface for interacting with Copilot
 - **GitHub Copilot in VS Code**: The IDE extension that provides code completions and chat
 
@@ -24,7 +25,7 @@ The Uno Platform repository is pre-configured with the **Uno Platform MCP** (Mod
 
 ### How It Works
 
-When you assign a PR to Copilot in this repository:
+When you assign an issue or pull request to Copilot in a Uno Platform repository:
 
 1. Copilot automatically connects to the Uno Platform MCP server
 2. It can search and fetch Uno Platform documentation as needed
@@ -32,7 +33,7 @@ When you assign a PR to Copilot in this repository:
 
 The MCP configuration is defined in `.github/copilot-mcp.json` and requires no additional setup.
 
-## Using GitHub Copilot PRs with Uno Platform
+## Using the GitHub Copilot Coding Agent with Uno Platform
 
 ### Prerequisites
 
@@ -41,7 +42,7 @@ The MCP configuration is defined in `.github/copilot-mcp.json` and requires no a
 
 ### Steps
 
-1. **Create or open a Pull Request** on GitHub.com
+1. **Create or open an issue or pull request** on GitHub.com
 2. **Assign to Copilot**: Click the "Assign to Copilot" button or add `@copilot` as an assignee
 3. **Describe your task**: In a comment, describe what you want Copilot to do:
    - "Add a new button that displays a dialog"
@@ -58,6 +59,7 @@ Make sure to use MVUX for state management.
 ```
 
 Copilot will use the Uno Platform MCP to:
+
 - Search for ListView documentation
 - Find MVUX patterns and examples
 - Generate code that follows Uno Platform conventions
@@ -65,7 +67,8 @@ Copilot will use the Uno Platform MCP to:
 ## Uno App MCP (Local Development)
 
 > [!NOTE]
-> The **Uno App MCP** (which provides interactive access to running applications) is designed for local development environments and is not available in GitHub Copilot PRs. It can only be used with local AI agents like:
+> The **Uno App MCP** (which provides interactive access to running applications) is designed for local development environments and is not available with GitHub Copilot Coding Agent. It can only be used with local AI agents like:
+> 
 > - GitHub Copilot CLI
 > - VS Code Copilot
 > - Claude Desktop
@@ -96,11 +99,11 @@ If you want to enable Uno Platform MCP in your own repository:
 ```
 
 2. Commit and push the file to your repository
-3. GitHub Copilot PRs will automatically use this configuration when assigned to PRs
+3. Copilot will automatically use this configuration when assigned to an issue or pull request
 
 ## Troubleshooting
 
-### MCP Not Working in PR
+### MCP Not Working with GitHub Copilot Coding Agent
 
 - **Verify the configuration file**: Ensure `.github/copilot-mcp.json` exists and is valid JSON
 - **Check Copilot access**: Ensure your GitHub account has Copilot enabled

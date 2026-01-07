@@ -18,7 +18,8 @@ The Uno Platform MCPs can be used in different environments:
 ### Remote MCP (Documentation & Guidance)
 
 The Uno Platform Remote MCP is available in:
-- **GitHub Copilot PRs** (Assign to Copilot on GitHub.com) - [Setup guide](xref:Uno.GetStarted.AI.CopilotPRs)
+
+- **GitHub Copilot Coding Agent** - [Setup guide](xref:Uno.GetStarted.AI.CopilotCodingAgent)
 - **GitHub Copilot CLI** - [Setup guide](xref:Uno.GetStarted.AI.CopilotCLI)
 - **VS Code Copilot** - [Setup guide](xref:Uno.GetStarted.vscode)
 - **Claude Desktop** - [Setup guide](xref:Uno.GetStarted.AI.Claude)
@@ -28,6 +29,7 @@ The Uno Platform Remote MCP is available in:
 ### Local App MCP (Interactive Testing)
 
 The Uno Platform App MCP is available for local development in:
+
 - **GitHub Copilot CLI** - [Setup guide](xref:Uno.GetStarted.AI.CopilotCLI)
 - **VS Code Copilot** - [Setup guide](xref:Uno.GetStarted.vscode)
 - **Claude Desktop** - [Setup guide](xref:Uno.GetStarted.AI.Claude)
@@ -35,7 +37,7 @@ The Uno Platform App MCP is available for local development in:
 - **Cursor** - [Setup guide](xref:Uno.GetStarted.AI.Cursor)
 
 > [!NOTE]
-> The App MCP is **not available** in GitHub Copilot PRs as it requires a locally running application.
+> The App MCP is **not available** for the GitHub Copilot Coding Agent as it requires a locally running application.
 
 ## MCP (Remote)
 
@@ -101,6 +103,6 @@ You can find additional information about [troubleshooting AI Agents](xref:Uno.U
 
 ## See Also
 
-- [Get Started with GitHub Copilot PRs](xref:Uno.GetStarted.AI.CopilotPRs) - Using MCPs with GitHub Copilot on GitHub.com
+- [Get Started with GitHub Copilot Coding Agent](xref:Uno.GetStarted.AI.CopilotCodingAgent) - Using MCPs with GitHub Copilot on GitHub.com
 - [Get Started with GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI) - Using MCPs with GitHub Copilot CLI
 - [Building Your App with AI Agents](xref:Uno.BuildYourApp.AI.Agents) - General AI agent development guide
