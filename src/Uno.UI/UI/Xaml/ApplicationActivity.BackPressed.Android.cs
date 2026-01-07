@@ -17,8 +17,8 @@ partial class ApplicationActivity
 		{
 			_backPressedCallback = new UnoOnBackPressedCallback(
 				enabled: SystemNavigationManager.GetForCurrentView().HasBackRequestedSubscribers);
-			OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
 			SystemNavigationManager.BackRequestedSubscribersChanged += OnBackRequestedSubscribersChanged;
+			OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
 		}
 	}
 
