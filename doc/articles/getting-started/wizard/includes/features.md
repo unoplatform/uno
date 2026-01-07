@@ -32,7 +32,7 @@ This is included by default in the recommended preset, but not in the blank pres
 dotnet new unoapp -server
 ```
 
-You can read more about the [server project documentation](xref:Uno.Guides.UsingTheServerProject).
+You can read the [server project documentation](xref:Uno.Guides.UsingTheServerProject).
 
 #### PWA Manifest
 
