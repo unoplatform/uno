@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -189,3 +190,4 @@ public partial class Given_UIElement_GamepadContextMenu
 			"TryGetPosition should return false for zero-size element");
 	}
 }
+#endif

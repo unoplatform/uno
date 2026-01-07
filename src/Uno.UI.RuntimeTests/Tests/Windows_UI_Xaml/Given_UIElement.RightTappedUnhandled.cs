@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -161,3 +162,4 @@ public partial class Given_UIElement_RightTappedUnhandled
 		Assert.AreSame(args, testControl.ReceivedArgs, "The same args should be passed to the virtual method");
 	}
 }
+#endif
