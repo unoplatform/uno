@@ -432,5 +432,28 @@ public class Given_Window
 		await TestServices.WindowHelper.WaitForLoaded(content);
 		Assert.AreEqual("Test title", window.Title);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_Secondary_Window_Does_Not_Inherit_Package_DisplayName()
+	{
+		// This test verifies that secondary windows don't automatically
+		// inherit the Package.DisplayName, allowing developers to set
+		// custom titles without being overridden by the package manifest.
+		AssertSupportsMultipleWindows();
+
+		var window = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		window.Content = content;
+		window.Activate();
+
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		
+		// Secondary windows should not automatically get the Package DisplayName.
+		// The title should remain empty or be set to a default value like "Uno Platform".
+		// It should NOT be the Package DisplayName (which might be "WinUI Desktop" in templates).
+		Assert.AreNotEqual(Windows.ApplicationModel.Package.Current.DisplayName, window.Title);
+	}
 #endif
 }
