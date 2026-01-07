@@ -44,36 +44,51 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 
 		private void DetectPlatformAndVersion()
 		{
-#if __ANDROID__
-			var sdkInt = (int)Android.OS.Build.VERSION.SdkInt;
-			_isAndroid15OrHigher = sdkInt >= 35;
-
-			PlatformInfoText.Text = $"Android API {sdkInt} (Android {GetAndroidVersionName(sdkInt)})";
-
-			if (_isAndroid15OrHigher)
+			if (OperatingSystem.IsAndroid())
 			{
-				BehaviorDescriptionText.Text = "Using subscription-based back handling. The Handled property is IGNORED.";
-				// Highlight Android 15+ section, dim pre-Android 15 section
-				Android15Section.Opacity = 1.0;
-				PreAndroid15Section.Opacity = 0.5;
+				var sdkInt = GetAndroidSdkInt();
+				_isAndroid15OrHigher = sdkInt >= 35;
+
+				PlatformInfoText.Text = $"Android API {sdkInt} (Android {GetAndroidVersionName(sdkInt)})";
+
+				if (_isAndroid15OrHigher)
+				{
+					BehaviorDescriptionText.Text = "Using subscription-based back handling. The Handled property is IGNORED.";
+					// Highlight Android 15+ section, dim pre-Android 15 section
+					Android15Section.Opacity = 1.0;
+					PreAndroid15Section.Opacity = 0.5;
+				}
+				else
+				{
+					BehaviorDescriptionText.Text = "Using Handled property approach. Subscription state does not affect system behavior.";
+					// Highlight pre-Android 15 section, dim Android 15+ section
+					Android15Section.Opacity = 0.5;
+					PreAndroid15Section.Opacity = 1.0;
+				}
 			}
 			else
 			{
-				BehaviorDescriptionText.Text = "Using Handled property approach. Subscription state does not affect system behavior.";
-				// Highlight pre-Android 15 section, dim Android 15+ section
+				_isAndroid15OrHigher = false;
+				PlatformInfoText.Text = "Non-Android Platform";
+				BehaviorDescriptionText.Text = "Using Handled property approach (standard WinUI behavior).";
 				Android15Section.Opacity = 0.5;
 				PreAndroid15Section.Opacity = 1.0;
 			}
-#else
-			_isAndroid15OrHigher = false;
-			PlatformInfoText.Text = "Non-Android Platform";
-			BehaviorDescriptionText.Text = "Using Handled property approach (standard WinUI behavior).";
-			Android15Section.Opacity = 0.5;
-			PreAndroid15Section.Opacity = 1.0;
-#endif
 		}
 
-#if __ANDROID__
+		private static int GetAndroidSdkInt()
+		{
+			if (OperatingSystem.IsAndroidVersionAtLeast(35)) return 35;
+			if (OperatingSystem.IsAndroidVersionAtLeast(34)) return 34;
+			if (OperatingSystem.IsAndroidVersionAtLeast(33)) return 33;
+			if (OperatingSystem.IsAndroidVersionAtLeast(32)) return 32;
+			if (OperatingSystem.IsAndroidVersionAtLeast(31)) return 31;
+			if (OperatingSystem.IsAndroidVersionAtLeast(30)) return 30;
+			if (OperatingSystem.IsAndroidVersionAtLeast(29)) return 29;
+			if (OperatingSystem.IsAndroidVersionAtLeast(28)) return 28;
+			return 21; // Minimum supported
+		}
+
 		private static string GetAndroidVersionName(int sdkInt) => sdkInt switch
 		{
 			>= 35 => "15+",
@@ -85,7 +100,6 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 			28 => "9",
 			_ => $"<9 (API {sdkInt})"
 		};
-#endif
 
 		private void Subscribe(object sender, RoutedEventArgs e)
 		{
