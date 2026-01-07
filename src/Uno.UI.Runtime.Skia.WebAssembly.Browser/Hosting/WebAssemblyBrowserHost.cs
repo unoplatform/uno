@@ -52,7 +52,9 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new BrowserMediaPlayerExtension(o));
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
-		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IInputPaneExtension), _ => new Uno.WinUI.Runtime.Skia.WebAssembly.InputPaneExtension());
+		ApiExtensibility.Register<Windows.UI.ViewManagement.InputPane>(
+			typeof(Windows.UI.ViewManagement.IInputPaneExtension),
+			_ => new Uno.WinUI.Runtime.Skia.WebAssembly.InputPaneExtension());
 
 		NativeMethods.PersistBootstrapperLoader();
 
