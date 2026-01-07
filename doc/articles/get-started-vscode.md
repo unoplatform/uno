@@ -58,9 +58,9 @@ If you want to use GitHub Copilot with Uno Platform's MCP servers:
      ![VS Code Copilot icon](Assets/vscode-copilot-icon.png)
 
    - Create or edit the MCP configuration file. The location depends on your operating system:
-     - **Windows**: `%APPDATA%\Code\User\globalStorage\github.copilot-chat\mcpServers.json`
+     - **Windows**: `%AppData%\Roaming\Code\User\mcp.json`
      - **macOS**: `~/Library/Application Support/Code/User/mcp.json`
-     - **Linux**: `~/.config/Code/User/globalStorage/github.copilot-chat/mcpServers.json`
+     - **Linux**: `~/.config/Code/User/mcp.json`
 
    - Add the following configuration to `mcp.json`:
 
