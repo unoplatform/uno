@@ -133,7 +133,14 @@ namespace Microsoft.UI.Xaml
 						}
 
 #if ANDROID_SKIA
-						Application.SetActivationUri(uri);
+						if (_isRunning)
+						{
+							_app?.OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+						}
+						else
+						{
+							Application.SetActivationUri(uri);
+						}
 #else
 						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
 #endif
