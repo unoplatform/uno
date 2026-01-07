@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="uno.platform.unosampleapp" android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35" />
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="36" />
 	<!-- NOTE: Add permissions in AssemblyInfo.cs -->
 	<application android:label="Samples (Native)" android:usesCleartextTraffic="true">
 		<!-- Set an API key locally to test the MapControl - https://developers.google.com/maps/documentation/android-sdk/get-api-key -->
