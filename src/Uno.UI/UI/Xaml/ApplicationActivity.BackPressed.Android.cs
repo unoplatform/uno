@@ -11,6 +11,12 @@ partial class ApplicationActivity
 
 	private void InitializeBackPressedCallback()
 	{
+		// Guard against multiple calls
+		if (_backPressedCallback is not null)
+		{
+			return;
+		}
+
 		// On Android 16+ (API 36+), use OnBackPressedCallback for predictive back gesture support.
 		// The callback is enabled/disabled based on BackRequested subscription state.
 		if ((int)Build.VERSION.SdkInt >= 36)
