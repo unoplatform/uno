@@ -449,7 +449,7 @@ public class Given_Window
 		window.Activate();
 
 		await TestServices.WindowHelper.WaitForLoaded(content);
-		
+
 		// Secondary windows should not automatically get the Package DisplayName.
 		// The title should remain empty or be set to a default value like "Uno Platform".
 		// It should NOT be the Package DisplayName (which might be "WinUI Desktop" in templates).
