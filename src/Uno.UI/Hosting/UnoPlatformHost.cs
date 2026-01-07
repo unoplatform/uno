@@ -9,11 +9,12 @@ public abstract class UnoPlatformHost
 {
 	internal Action? AfterInitAction { get; set; }
 
-	private Task RunCore()
+	private async Task RunCore()
 	{
 		Initialize();
+		await InitializeAsync();
 		AfterInitAction?.Invoke();
-		return RunLoop();
+		await RunLoop();
 	}
 
 	public void Run()
@@ -28,6 +29,8 @@ public abstract class UnoPlatformHost
 	public async Task RunAsync() => await RunCore();
 
 	protected abstract void Initialize();
+
+	protected abstract Task InitializeAsync();
 
 	protected abstract Task RunLoop();
 }

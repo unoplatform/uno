@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
 namespace Uno.UI.Runtime.Skia;
 

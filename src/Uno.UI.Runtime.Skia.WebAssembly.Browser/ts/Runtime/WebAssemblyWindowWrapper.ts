@@ -10,15 +10,22 @@ namespace Uno.UI.Runtime.Skia {
 		private static readonly loadingElementId = "uno-loading";
 		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
 
+		private static assemblyExports: any;
+
 		private static activeInstances: { [id: string]: WebAssemblyWindowWrapper } = {};
 
 		private constructor(owner: any) {
 			this.owner = owner;
-			this.build();
 		}
 
-		public static initialize(owner: any) {
-			WebAssemblyWindowWrapper.activeInstances[owner] = new WebAssemblyWindowWrapper(owner);
+		public static getAssemblyExports(): any {
+			return WebAssemblyWindowWrapper.assemblyExports;
+		}
+
+		public static async initialize(owner: any) {
+			const instance = new WebAssemblyWindowWrapper(owner);
+			await instance.build();
+			WebAssemblyWindowWrapper.activeInstances[owner] = instance;
 		}
 
 		public static persistBootstrapperLoader() {
@@ -30,7 +37,9 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private async build() {
-			await this.buildImports();
+			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
+			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
+			this.prefetchFonts = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.PrefetchFonts;
 
 			this.containerElement = (document.getElementById("uno-body") as HTMLDivElement);
 
@@ -47,7 +56,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
-			await Accessibility.setup();
+			Accessibility.setup();
 
 			window.addEventListener("resize", x => this.resize());
 
@@ -72,17 +81,6 @@ namespace Uno.UI.Runtime.Skia {
 			if (bootstrapperLoaders.length > 0) {
 				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
 				bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
-			}
-		}
-
-		async buildImports() {
-			let anyModule = <any>window.Module;
-
-			if (anyModule.getAssemblyExports !== undefined) {
-				const browserExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
-
-				this.onResize = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
-				this.prefetchFonts = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.PrefetchFonts;
 			}
 		}
 
