@@ -59,7 +59,16 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Gets whether there are any subscribers to the <see cref="BackRequested"/> event.
 		/// </summary>
-		internal bool HasBackRequestedSubscribers => _backRequested is not null;
+		internal bool HasBackRequestedSubscribers
+		{
+			get
+			{
+				lock (_backRequestedLock)
+				{
+					return _backRequested is not null;
+				}
+			}
+		}
 
 		partial void OnBackRequestedSubscribersChanged(bool hasSubscribers);
 
