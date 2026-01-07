@@ -64,7 +64,7 @@ function renderAffix() {
             // Add styling classes and ARIA attributes for the feedback box
             contribution.addClass('feedback-box')
                 .attr('role', 'complementary')
-                .attr('aria-label', 'Documentation actions')
+                .attr('aria-label', 'Edit page and send feedback actions')
                 .attr('tabindex', '-1'); // Allow programmatic focus but not in tab order
         }
         
@@ -132,30 +132,32 @@ function renderAffix() {
             let rafPending = false;
             
             function handleScrollEffects() {
-                rafPending = false;
-                
-                const feedbackBox = $('.feedback-box');
-                if (feedbackBox.length === 0) {
-                    return;
-                }
+                try {
+                    const feedbackBox = $('.feedback-box');
+                    if (feedbackBox.length === 0) {
+                        return;
+                    }
 
-                // Check for overlap on scroll (debounced)
-                debouncedOverlapCheck();
+                    // Check for overlap on scroll (debounced)
+                    debouncedOverlapCheck();
 
-                // Only apply scroll hiding on reduced widths (<992px)
-                if ($(window).width() < MOBILE_BREAKPOINT) {
-                    feedbackBox.addClass('scrolling');
+                    // Only apply scroll hiding on reduced widths (<992px)
+                    if ($(window).width() < MOBILE_BREAKPOINT) {
+                        feedbackBox.addClass('scrolling');
 
-                    // Clear existing timer
-                    clearTimeout(scrollTimer);
+                        // Clear existing timer
+                        clearTimeout(scrollTimer);
 
-                    // Set new timer to remove scrolling class after scrolling stops
-                    scrollTimer = setTimeout(function() {
+                        // Set new timer to remove scrolling class after scrolling stops
+                        scrollTimer = setTimeout(function() {
+                            feedbackBox.removeClass('scrolling');
+                        }, SCROLL_HIDE_DELAY_MS);
+                    } else {
+                        // Remove scrolling class on larger screens
                         feedbackBox.removeClass('scrolling');
-                    }, SCROLL_HIDE_DELAY_MS);
-                } else {
-                    // Remove scrolling class on larger screens
-                    feedbackBox.removeClass('scrolling');
+                    }
+                } finally {
+                    rafPending = false;
                 }
             }
             
