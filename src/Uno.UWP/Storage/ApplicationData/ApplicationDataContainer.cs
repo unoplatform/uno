@@ -13,12 +13,12 @@ namespace Windows.Storage;
 /// <remarks>
 /// Settings are stored in platform-specific preference stores. Some keys are used internally by Uno Platform,
 /// and are not surfaced via the public API. These keys are prefixed with "__".
-/// To provide the concept of nested containers, we use the "__¬" prefix in key names as the container path separator.
+/// To provide the concept of nested containers, we use the "__ï¿½" prefix in key names as the container path separator.
 /// </remarks>
 public partial class ApplicationDataContainer : IDisposable
 {
 	internal const string InternalSettingPrefix = "__";
-	private const string ContainerSeparator = "¬";
+	private const string ContainerSeparator = "ï¿½";
 	private const string ContainerListKey = InternalSettingPrefix + "UnoContainers";
 
 	private readonly Lazy<Dictionary<string, ApplicationDataContainer>> _containers;
@@ -123,8 +123,17 @@ public partial class ApplicationDataContainer : IDisposable
 
 	internal void ClearIncludingInternals()
 	{
+		DeleteAllSubcontainers();
 		Values.Clear();
 		_nativeApplicationSettings.RemoveKeysWithPrefix(InternalSettingPrefix);
+	}
+
+	internal void DeleteAllSubcontainers()
+	{
+		foreach (var containerName in Containers.Keys.ToList())
+		{
+			DeleteContainer(containerName);
+		}
 	}
 
 	private void AddContainerToList(string containerName)
