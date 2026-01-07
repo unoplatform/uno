@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.Foundation.Collections;
 using Windows.Storage;
 
 namespace Uno.UI.Samples.Tests.Windows_Storage
@@ -525,6 +526,151 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			container.Values["test"] = "42";
 			Assert.AreEqual(1, SUT.Containers.Count);
 			Assert.AreEqual(0, SUT.Values.Count);
+		}
+
+		[TestMethod]
+		public void When_MapChanged_Indexer_Insert()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values["mapchanged_insert_test"] = "value";
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemInserted, lastChange);
+			Assert.AreEqual("mapchanged_insert_test", lastKey);
+		}
+
+		[TestMethod]
+		public void When_MapChanged_Indexer_Update()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			SUT.Values["mapchanged_update_test"] = "value1";
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values["mapchanged_update_test"] = "value2";
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemChanged, lastChange);
+			Assert.AreEqual("mapchanged_update_test", lastKey);
+		}
+
+		[TestMethod]
+		public void When_MapChanged_Add()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values.Add("mapchanged_add_test", "value");
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemInserted, lastChange);
+			Assert.AreEqual("mapchanged_add_test", lastKey);
+		}
+
+		[TestMethod]
+		public void When_MapChanged_Remove()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			SUT.Values["mapchanged_remove_test"] = "value";
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values.Remove("mapchanged_remove_test");
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemRemoved, lastChange);
+			Assert.AreEqual("mapchanged_remove_test", lastKey);
+		}
+
+		[TestMethod]
+		public void When_MapChanged_Remove_NonExistent()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				eventCount++;
+			};
+
+			SUT.Values.Remove("mapchanged_nonexistent_key");
+
+			Assert.AreEqual(0, eventCount);
+		}
+
+		[TestMethod]
+		public void When_MapChanged_Clear()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			SUT.Values["mapchanged_clear_test1"] = "value1";
+			SUT.Values["mapchanged_clear_test2"] = "value2";
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values.Clear();
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.Reset, lastChange);
+			Assert.IsNull(lastKey);
 		}
 	}
 }
