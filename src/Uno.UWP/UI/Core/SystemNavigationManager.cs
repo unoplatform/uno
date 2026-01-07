@@ -18,7 +18,50 @@ namespace Windows.UI.Core
 			return _instance;
 		}
 
-		public event EventHandler<BackRequestedEventArgs> BackRequested = delegate { };
+		private readonly object _backRequestedLock = new object();
+		private EventHandler<BackRequestedEventArgs> _backRequested;
+
+		/// <summary>
+		/// Occurs when the user presses the hardware back button (or equivalent gesture).
+		/// </summary>
+		/// <remarks>
+		/// On Android 15+, the subscription state determines whether the app handles back navigation.
+		/// When subscribed, back presses are consumed by the app. When unsubscribed, the system handles back navigation.
+		/// The <see cref="BackRequestedEventArgs.Handled"/> property is ignored on Android 15+.
+		/// </remarks>
+		public event EventHandler<BackRequestedEventArgs> BackRequested
+		{
+			add
+			{
+				lock (_backRequestedLock)
+				{
+					var isFirstSubscriber = _backRequested is null;
+					_backRequested += value;
+					if (isFirstSubscriber)
+					{
+						OnBackRequestedSubscribersChanged(hasSubscribers: true);
+					}
+				}
+			}
+			remove
+			{
+				lock (_backRequestedLock)
+				{
+					_backRequested -= value;
+					if (_backRequested is null)
+					{
+						OnBackRequestedSubscribersChanged(hasSubscribers: false);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets whether there are any subscribers to the <see cref="BackRequested"/> event.
+		/// </summary>
+		internal bool HasBackRequestedSubscribers => _backRequested is not null;
+
+		partial void OnBackRequestedSubscribersChanged(bool hasSubscribers);
 
 		private AppViewBackButtonVisibility _appViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
@@ -48,11 +91,11 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Raise BackRequested
 		/// </summary>
-		/// <returns>True is the BackRequested event was handled.</returns>
+		/// <returns>True if the BackRequested event was handled.</returns>
 		internal bool RequestBack()
 		{
 			var args = new BackRequestedEventArgs();
-			BackRequested?.Invoke(this, args);
+			_backRequested?.Invoke(this, args);
 
 			return args.Handled;
 		}
