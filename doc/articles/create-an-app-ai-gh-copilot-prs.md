@@ -4,7 +4,7 @@ uid: Uno.GettingStarted.CreateAnApp.AI.CopilotCodingAgent
 
 # Creating an app with the GitHub Copilot Coding Agent
 
-This guide explains how to use the GitHub Copilot Codingt Agent (Assign to Copilot) to create and develop Uno Platform applications directly on GitHub.com.
+This guide explains how to use the GitHub Copilot Coding Agent (Assign to Copilot) to create and develop Uno Platform applications directly on GitHub.com.
 
 ## Prerequisites
 
