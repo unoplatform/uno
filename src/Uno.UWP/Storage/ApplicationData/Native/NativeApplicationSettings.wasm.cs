@@ -16,6 +16,8 @@ partial class NativeApplicationSettings
 
 	partial void InitializePlatform() => ReadFromLegacyFile();
 
+	private int Count => NativeMethods.GetCount(_locality);
+
 	private partial bool ContainsSettingPlatform(string key) => NativeMethods.ContainsKey(_locality, key);
 
 	private partial bool RemoveSettingPlatform(string key)
