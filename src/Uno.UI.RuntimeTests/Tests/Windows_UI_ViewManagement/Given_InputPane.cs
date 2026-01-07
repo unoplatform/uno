@@ -47,17 +47,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement
 #if __WASM__
 		[TestMethod]
 		[RequiresFullWindow]
-		public async Task When_TextBox_Focused_Then_KeyboardEvents_Fire()
+		public async Task When_TextBox_Focused_Then_InputPane_Accessible()
 		{
 			// Arrange
 			var inputPane = InputPane.GetForCurrentView();
 			var showingEventFired = false;
-			Rect? showingOccludedRect = null;
 
 			void OnShowing(InputPane sender, InputPaneVisibilityEventArgs args)
 			{
 				showingEventFired = true;
-				showingOccludedRect = sender.OccludedRect;
 			}
 
 			inputPane.Showing += OnShowing;
@@ -69,6 +67,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement
 					PlaceholderText = "Test TextBox"
 				};
 
+				TestServices.WindowHelper.WindowContent = textBox;
 				await TestServices.WindowHelper.WaitForLoaded(textBox);
 				await TestServices.WindowHelper.WaitForIdle();
 
@@ -84,6 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement
 				// In a test environment without actual mobile browser soft keyboard, events may not fire
 				// This test validates that the extension is properly registered and accessible
 				Assert.IsNotNull(inputPane, "InputPane should be accessible");
+				// We don't assert showingEventFired because keyboard behavior depends on execution environment
 			}
 			finally
 			{
@@ -92,32 +92,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement
 		}
 
 		[TestMethod]
-		public void When_TryShow_Called_Then_Returns_Boolean()
+		public void When_TryShow_Called_Then_Succeeds()
 		{
 			// Arrange
 			var inputPane = InputPane.GetForCurrentView();
 
-			// Act
-			var result = inputPane.TryShow();
-
-			// Assert
-			// The method should return a boolean value (true or false)
+			// Act & Assert
+			// TryShow returns true to indicate the method executed successfully
 			// Actual keyboard appearance depends on the execution environment
-			Assert.IsTrue(result == true || result == false, "TryShow should return a boolean value");
+			Assert.IsTrue(inputPane.TryShow(), "TryShow should execute successfully on WASM");
 		}
 
 		[TestMethod]
-		public void When_TryHide_Called_Then_Returns_Boolean()
+		public void When_TryHide_Called_Then_Succeeds()
 		{
 			// Arrange
 			var inputPane = InputPane.GetForCurrentView();
 
-			// Act
-			var result = inputPane.TryHide();
-
-			// Assert
-			// The method should return a boolean value (true or false)
-			Assert.IsTrue(result == true || result == false, "TryHide should return a boolean value");
+			// Act & Assert
+			// TryHide returns true to indicate the method executed successfully
+			Assert.IsTrue(inputPane.TryHide(), "TryHide should execute successfully on WASM");
 		}
 #endif
 	}
