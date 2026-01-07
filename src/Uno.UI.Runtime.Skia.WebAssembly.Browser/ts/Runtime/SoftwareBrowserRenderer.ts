@@ -41,6 +41,12 @@ namespace Uno.UI.Runtime.Skia {
 			return instance.pixelBuffer;
 		}
 
+		public static isPixelBufferValid(instance: SoftwareBrowserRenderer): boolean {
+			// The clampedArray might suddenly becomes zero-length because the runtime
+			// decided to resize the heap.
+			return instance.clampedArray?.length > 0;
+		}
+
 		public static blitSoftware(instance: SoftwareBrowserRenderer, width: number, height: number) {
 			const imageData = new ImageData(
 				instance.clampedArray,

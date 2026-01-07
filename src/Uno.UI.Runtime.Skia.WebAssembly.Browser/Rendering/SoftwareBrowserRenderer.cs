@@ -49,6 +49,8 @@ internal partial class SoftwareBrowserRenderer : IBrowserRenderer
 
 	public void Flush() => NativeMethods.BlitSoftware(_nativeInstance, _bitmap!.Width, _bitmap.Height);
 
+	public bool NeedsForceResize() => !NativeMethods.IsPixelBufferValid(_nativeInstance);
+
 	private static partial class NativeMethods
 	{
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(SoftwareBrowserRenderer)}.tryCreateInstance")]
@@ -59,5 +61,8 @@ internal partial class SoftwareBrowserRenderer : IBrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(SoftwareBrowserRenderer)}.blitSoftware")]
 		internal static partial void BlitSoftware(JSObject nativeSwapChainPanel, int width, int height);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(SoftwareBrowserRenderer)}.isPixelBufferValid")]
+		internal static partial bool IsPixelBufferValid(JSObject nativeSwapChainPanel);
 	}
 }

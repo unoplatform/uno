@@ -72,6 +72,8 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 	public void Flush() => _context.Flush();
 
+	public bool NeedsForceResize() => false;
+
 	private static partial class NativeMethods
 	{
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(WebGlBrowserRenderer)}.tryCreateInstance")]
