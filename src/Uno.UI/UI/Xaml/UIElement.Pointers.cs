@@ -420,7 +420,27 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args, that));
+			var rightTappedArgs = new RightTappedRoutedEventArgs(src, args, that);
+			that.SafeRaiseEvent(RightTappedEvent, rightTappedArgs);
+
+			// After RightTapped, if not handled, invoke OnRightTappedUnhandled on each Control in the tree.
+			// This matches WinUI behavior where controls can implement fallback behavior.
+			if (!rightTappedArgs.Handled)
+			{
+				DependencyObject current = src;
+				while (current != null)
+				{
+					if (current is Controls.Control control)
+					{
+						control.InvokeRightTappedUnhandled(rightTappedArgs);
+						if (rightTappedArgs.Handled)
+						{
+							break;
+						}
+					}
+					current = (current as FrameworkElement)?.Parent ?? Media.VisualTreeHelper.GetParent(current);
+				}
+			}
 
 			// Raise ContextRequested for mouse/pen input after RightTapped.
 			// For touch input, ContextRequested is raised via Holding gesture instead.

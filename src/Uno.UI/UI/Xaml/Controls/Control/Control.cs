@@ -1029,9 +1029,18 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnTapped(TappedRoutedEventArgs e) { }
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
 		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
-		[NotImplemented] // For WinUI code compatibility, not implemented yet
+		/// <summary>
+		/// Called when a RightTapped event is not handled by any event handler.
+		/// This allows controls to implement fallback behavior for right-tap gestures.
+		/// </summary>
+		/// <param name="e">The event args from the RightTapped event.</param>
 		private protected virtual void OnRightTappedUnhandled(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
+
+		/// <summary>
+		/// Internal method to invoke OnRightTappedUnhandled from UIElement.
+		/// </summary>
+		internal void InvokeRightTappedUnhandled(RightTappedRoutedEventArgs e) => OnRightTappedUnhandled(e);
 		protected virtual void OnDragEnter(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
