@@ -5,27 +5,33 @@
   --docsearch-logo-color: #{$blue} !important;
 }
 
-.sidefilter {
+// Hide standard DocFX filter if it appears
+.toc-filter, #toc_filter_input {
+  display: none !important;
+}
 
+.sidefilter {
   background-color: transparent;
-  padding: 24px;
-  height: auto;
-  border: 1px solid #e7e7e7;
-  border-top: 0;
+  padding: 24px 24px 12px 24px;
+  margin: 0;
+  display: block !important;
 
   .DocSearch-Button {
     background: transparent;
-    border: 2px inset $darkgray;
-    border-radius: 6px;
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
     margin: 0;
-    min-height: 45px;
-    padding: 10px;
+    min-height: 36px;
+    padding: 6px 12px;
     width: 100%;
+    color: #333;
+    box-shadow: none;
   }
 
-  .DocSearch-Button:active, .DocSearch-Button:focus, .DocSearch-Button:hover {
-    border: 2px solid $blue;
-    box-shadow: none;
+  .DocSearch-Button:active,
+  .DocSearch-Button:focus,
+  .DocSearch-Button:hover {
+    background: #f5f5f5;
   }
 
   .DocSearch-Button .DocSearch-Search-Icon {
@@ -33,12 +39,13 @@
   }
 
   .DocSearch-Button-Placeholder {
-    color: rgb(117, 117, 117);
+    color: #666;
     font-family: "Open Sans", sans-serif;
-    font-size: 14px;
-    line-height: 20px;
-    padding: 10px;
+    font-size: 17px;
+    font-weight: 400;
+    padding: 0;
     display: block;
+    text-align: left;
   }
 }
 

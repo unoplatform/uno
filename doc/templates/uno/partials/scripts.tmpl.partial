@@ -18,8 +18,8 @@ mermaid.init(undefined, ".lang-mermaid");
 </script>
 
 <!-- Algolia DocSearch -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3.6.3" />
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.6.3"></script>
 <script>
     /**
      * Initialize Algolia DocSearch
@@ -27,6 +27,14 @@ mermaid.init(undefined, ".lang-mermaid");
      */
     function initializeDocSearch() {
         console.log("initializeDocSearch called");
+        
+        // Check if docsearch function is available
+        if (typeof docsearch === 'undefined') {
+            console.log("DocSearch library not loaded yet, retrying...");
+            setTimeout(initializeDocSearch, 100);
+            return;
+        }
+        
         try {
             const searchBox = document.getElementById("docsearch");
 
