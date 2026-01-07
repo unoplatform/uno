@@ -43,6 +43,7 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 				Depth: jsObject.GetPropertyAsInt32("depth")
 			);
 			renderer = new WebGlBrowserRenderer(jsInfo);
+			typeof(WebGlBrowserRenderer).LogInfo()?.Info($"WebGL context created successfully: {jsInfo}");
 			return true;
 		}
 		else

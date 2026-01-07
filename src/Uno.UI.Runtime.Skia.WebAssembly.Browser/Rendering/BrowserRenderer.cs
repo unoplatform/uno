@@ -48,10 +48,7 @@ internal partial class BrowserRenderer
 	[JSExport]
 	internal static void RenderFrame([JSMarshalAs<JSType.Any>] object instance)
 	{
-		if (instance is BrowserRenderer panel)
-		{
-			panel.RenderFrame();
-		}
+		((BrowserRenderer)instance).RenderFrame();
 	}
 
 	private void RenderFrame()
