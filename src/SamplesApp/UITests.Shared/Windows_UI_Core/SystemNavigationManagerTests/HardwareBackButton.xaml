@@ -8,26 +8,62 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<StackPanel Spacing="8" Padding="16">
-		<TextBlock Text="Android 15+ Behavior" FontWeight="Bold" />
-		<TextBlock TextWrapping="Wrap" Text="On Android 15+, subscription state determines back handling. The 'Handle event' checkbox is ignored. Subscribe/unsubscribe controls whether back is consumed." />
+	<ScrollViewer>
+		<StackPanel Spacing="8" Padding="16">
+			<!-- Platform/Version Info -->
+			<TextBlock x:Name="PlatformInfoText" FontWeight="Bold" FontSize="16" />
+			<TextBlock x:Name="BehaviorDescriptionText" TextWrapping="Wrap" Foreground="Gray" />
 
-		<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
-			<Button Click="Subscribe" Content="Subscribe" x:Name="SubscribeButton" />
-			<Button Click="Unsubscribe" Content="Unsubscribe" x:Name="UnsubscribeButton" />
+			<!-- Android 15+ Section: Subscription-based -->
+			<Border x:Name="Android15Section" BorderBrush="Blue" BorderThickness="1" Padding="12" Margin="0,16,0,0" CornerRadius="4">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Android 15+ Test: Subscription-based Back Handling" FontWeight="Bold" Foreground="Blue" />
+					<TextBlock TextWrapping="Wrap" Text="On Android 15+, subscribing to BackRequested enables back handling. Unsubscribing allows system to handle back (exit app)." />
+
+					<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+						<Button Click="Subscribe" Content="Subscribe" x:Name="SubscribeButton" />
+						<Button Click="Unsubscribe" Content="Unsubscribe" x:Name="UnsubscribeButton" />
+					</StackPanel>
+					<TextBlock x:Name="SubscriptionStatusText" Text="Status: Subscribed (via Loaded)" />
+
+					<TextBlock TextWrapping="Wrap" Margin="0,8,0,0" FontStyle="Italic"
+						Text="Test: Press back button while subscribed - app should NOT exit. Unsubscribe and press back - app SHOULD exit." />
+				</StackPanel>
+			</Border>
+
+			<!-- Pre-Android 15 Section: Handled property -->
+			<Border x:Name="PreAndroid15Section" BorderBrush="Green" BorderThickness="1" Padding="12" Margin="0,16,0,0" CornerRadius="4">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Pre-Android 15 Test: Handled Property" FontWeight="Bold" Foreground="Green" />
+					<TextBlock TextWrapping="Wrap" Text="On Android &lt; 15, the Handled property controls whether the app consumes the back press." />
+
+					<CheckBox IsThreeState="False" IsChecked="False" Content="Set Handled = true on next back press" x:Name="HandleCheckBox" />
+
+					<TextBlock TextWrapping="Wrap" Margin="0,8,0,0" FontStyle="Italic"
+						Text="Test: With checkbox checked, press back - app should NOT exit. With checkbox unchecked, press back - app SHOULD exit." />
+				</StackPanel>
+			</Border>
+
+			<!-- AppViewBackButtonVisibility Section -->
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="12" Margin="0,16,0,0" CornerRadius="4">
+				<StackPanel Spacing="8">
+					<TextBlock Text="AppViewBackButtonVisibility (All Versions)" FontWeight="Bold" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Tapped="Enable" Content="Visible" />
+						<Button Tapped="Disable" Content="Collapsed" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- Output Log -->
+			<TextBlock Text="Output Log:" FontWeight="Bold" Margin="0,16,0,0" />
+			<Border BorderBrush="LightGray" BorderThickness="1" Padding="8" MinHeight="100">
+				<ScrollViewer MaxHeight="200">
+					<TextBlock x:Name="OutputTextBlock" TextWrapping="Wrap" />
+				</ScrollViewer>
+			</Border>
+
+			<Button Click="ClearOutput" Content="Clear Log" Margin="0,8,0,0" />
 		</StackPanel>
-		<TextBlock x:Name="SubscriptionStatusText" Text="Status: Subscribed (via Loaded)" />
-
-		<TextBlock Text="Legacy AppViewBackButtonVisibility" FontWeight="Bold" Margin="0,16,0,0" />
-		<StackPanel Orientation="Horizontal" Spacing="8">
-			<Button Tapped="Enable" Content="Enable" />
-			<Button Tapped="Disable" Content="Disable" />
-		</StackPanel>
-
-		<TextBlock Text="Legacy Handled Property (ignored on Android 15+)" FontWeight="Bold" Margin="0,16,0,0" />
-		<CheckBox IsThreeState="False" IsChecked="False" Content="Handle event" x:Name="HandleCheckBox" />
-
-		<TextBlock Text="Output:" FontWeight="Bold" Margin="0,16,0,0" />
-		<TextBlock x:Name="OutputTextBlock" />
-	</StackPanel>
+	</ScrollViewer>
 </Page>
