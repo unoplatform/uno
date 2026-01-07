@@ -13,6 +13,7 @@ using Uno.UI.Xaml.Controls;
 using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
 using Uno.Disposables;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -33,6 +34,10 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		_instance._displayInformation = DisplayInformation.GetForCurrentView();
 		_instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
 		_instance._displayInformation.DpiChanged += (_, _) => _instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
+
+		// The font prefetching must be done after Application is created,
+		// after the default fonts are updated e.g. by OpenSansGenerator.
+		await NativeDispatcher.Main.EnqueueAsync(() => _ = PrefetchFonts());
 	}
 
 	private WebAssemblyWindowWrapper()
@@ -90,7 +95,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	[JSExport]
 	private static async Task PrefetchFonts()
 	{
 		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
