@@ -6,6 +6,9 @@ uid: Uno.BuildYourApp.AI.Agents
 
 Once you have a running app, you're setup to have your agent help you develop features.
 
+> [!NOTE]
+> This guide covers local development with AI agents that can interact with running applications. If you're using **GitHub Copilot PRs** (Assign to Copilot on GitHub.com), which cannot run applications locally, see [Get Started with GitHub Copilot PRs](xref:Uno.GetStarted.AI.CopilotPRs) instead.
+
 In the agent chat, ask the following:
 
   > [!IMPORTANT]

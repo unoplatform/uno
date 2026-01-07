@@ -98,3 +98,9 @@ The Pro license App MCP app tools are:
 ## Troubleshooting MCP Servers
 
 You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.
+
+## See Also
+
+- [Get Started with GitHub Copilot PRs](xref:Uno.GetStarted.AI.CopilotPRs) - Using MCPs with GitHub Copilot on GitHub.com
+- [Get Started with GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI) - Using MCPs with GitHub Copilot CLI
+- [Building Your App with AI Agents](xref:Uno.BuildYourApp.AI.Agents) - General AI agent development guide
