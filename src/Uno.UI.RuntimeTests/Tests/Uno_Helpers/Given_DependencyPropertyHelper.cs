@@ -220,7 +220,7 @@ public partial class Given_DependencyPropertyHelper
 
 		// Assert
 		unsetValue.Should().Be("StyledTestValue");
-		precedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+		precedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle);
 	}
 
 	[TestMethod]

@@ -687,7 +687,7 @@ public partial class Slider
 		// TODO Uno specific: Set background of slider container to ensure touch events are captured, but allow it to be overwritten by bindings etc
 		if (_tpSliderContainer.Background == null)
 		{
-			_tpSliderContainer.SetValue(BackgroundProperty, SolidColorBrushHelper.Transparent, DependencyPropertyValuePrecedences.ImplicitStyle);
+			_tpSliderContainer.SetValue(BackgroundProperty, SolidColorBrushHelper.Transparent, DependencyPropertyValuePrecedences.DefaultStyle);
 		}
 
 		// Attach the event handlers
