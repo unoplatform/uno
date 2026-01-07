@@ -109,19 +109,43 @@ internal partial class ContextMenuProcessor
 
 	/// <summary>
 	/// Shows the ContextFlyout for the specified element if one is set.
+	/// If the element does not have a ContextFlyout, walks up the visual tree
+	/// to find an ancestor with a ContextFlyout.
 	/// Ported from WinUI CUIElement::OnContextRequestedCore.
 	/// </summary>
 	/// <param name="element">The element to show the flyout for.</param>
 	/// <param name="args">The context requested event args.</param>
 	private static void ShowContextFlyoutForElement(UIElement element, ContextRequestedEventArgs args)
 	{
-		var flyout = element.ContextFlyout;
+		// Find element with ContextFlyout (walk up tree if needed)
+		// This matches WinUI behavior where a child element without ContextFlyout
+		// can trigger its parent's ContextFlyout.
+		UIElement contextFlyoutOwner = element;
+		FlyoutBase? flyout = element.ContextFlyout;
+
+		if (flyout == null)
+		{
+			// Walk up parent chain to find an ancestor with ContextFlyout
+			DependencyObject? current = element;
+			while (current != null && flyout == null)
+			{
+				current = (current as FrameworkElement)?.Parent
+					?? Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
+
+				if (current is UIElement uiElement && uiElement.ContextFlyout != null)
+				{
+					flyout = uiElement.ContextFlyout;
+					contextFlyoutOwner = uiElement;
+				}
+			}
+		}
+
 		if (flyout == null)
 		{
 			return;
 		}
 
-		var frameworkElement = element as FrameworkElement;
+		var frameworkElement = contextFlyoutOwner as FrameworkElement;
 		if (frameworkElement == null)
 		{
 			return;
@@ -129,6 +153,13 @@ internal partial class ContextMenuProcessor
 
 		if (args.TryGetPosition(element, out var point))
 		{
+			// Transform point from source element to contextFlyoutOwner coordinates if different
+			if (element != contextFlyoutOwner)
+			{
+				var transform = element.TransformToVisual(contextFlyoutOwner);
+				point = transform.TransformPoint(point);
+			}
+
 			// Show at specific position (pointer/touch invocation)
 			var showOptions = new FlyoutShowOptions
 			{
