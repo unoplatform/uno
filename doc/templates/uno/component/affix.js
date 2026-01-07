@@ -124,62 +124,60 @@ function renderAffix() {
         checkFeedbackBoxOverlap();
         
         // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
-        // Only attach handler once to prevent memory leaks
-        if (!window.feedbackScrollHandlerAttached) {
-            const MOBILE_BREAKPOINT = 992;
-            const SCROLL_HIDE_DELAY_MS = 300;
-            let scrollTimer;
-            let rafPending = false;
-            
-            function handleScrollEffects() {
-                try {
-                    const feedbackBox = $('.feedback-box');
-                    if (feedbackBox.length === 0) {
-                        return;
-                    }
+        // Ensure any previous handlers are removed to prevent leaks in dynamic scenarios
+        $(window).off('.feedbackBox');
 
-                    // Check for overlap on scroll (debounced)
-                    debouncedOverlapCheck();
-
-                    // Only apply scroll hiding on reduced widths (<992px)
-                    if ($(window).width() < MOBILE_BREAKPOINT) {
-                        feedbackBox.addClass('scrolling');
-
-                        // Clear existing timer
-                        clearTimeout(scrollTimer);
-
-                        // Set new timer to remove scrolling class after scrolling stops
-                        scrollTimer = setTimeout(function() {
-                            feedbackBox.removeClass('scrolling');
-                        }, SCROLL_HIDE_DELAY_MS);
-                    } else {
-                        // Remove scrolling class on larger screens
-                        feedbackBox.removeClass('scrolling');
-                    }
-                } finally {
-                    rafPending = false;
-                }
-            }
-            
-            $(window).on('scroll.feedbackBox', function() {
-                if (rafPending) {
+        const MOBILE_BREAKPOINT = 992;
+        const SCROLL_HIDE_DELAY_MS = 300;
+        let scrollTimer;
+        let rafPending = false;
+        
+        function handleScrollEffects() {
+            try {
+                const feedbackBox = $('.feedback-box');
+                if (feedbackBox.length === 0) {
                     return;
                 }
-                
-                rafPending = true;
-                
-                if (window.requestAnimationFrame) {
-                    window.requestAnimationFrame(handleScrollEffects);
+
+                // Check for overlap on scroll (debounced)
+                debouncedOverlapCheck();
+
+                // Only apply scroll hiding on reduced widths (<992px)
+                if ($(window).width() < MOBILE_BREAKPOINT) {
+                    feedbackBox.addClass('scrolling');
+
+                    // Clear existing timer
+                    clearTimeout(scrollTimer);
+
+                    // Set new timer to remove scrolling class after scrolling stops
+                    scrollTimer = setTimeout(function() {
+                        feedbackBox.removeClass('scrolling');
+                    }, SCROLL_HIDE_DELAY_MS);
                 } else {
-                    setTimeout(handleScrollEffects, 16);
+                    // Remove scrolling class on larger screens
+                    feedbackBox.removeClass('scrolling');
                 }
-            });
-            
-            // Check for overlap on resize (debounced)
-            $(window).on('resize.feedbackBox', debouncedOverlapCheck);
-            
-            window.feedbackScrollHandlerAttached = true;
+            } finally {
+                rafPending = false;
+            }
         }
+        
+        $(window).on('scroll.feedbackBox', function() {
+            if (rafPending) {
+                return;
+            }
+            
+            rafPending = true;
+            
+            if (window.requestAnimationFrame) {
+                window.requestAnimationFrame(handleScrollEffects);
+            } else {
+                setTimeout(handleScrollEffects, 16);
+            }
+        });
+        
+        // Check for overlap on resize (debounced)
+        $(window).on('resize.feedbackBox', debouncedOverlapCheck);
 
     }
 
