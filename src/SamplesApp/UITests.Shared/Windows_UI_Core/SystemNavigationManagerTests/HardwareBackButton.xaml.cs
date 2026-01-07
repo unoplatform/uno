@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 	public sealed partial class HardwareBackButton : Page
 	{
 		private bool _isSubscribed;
-		private bool _isAndroid15OrHigher;
+		private bool _isAndroid16OrHigher;
 
 		public HardwareBackButton()
 		{
@@ -46,32 +46,32 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 		{
 			if (OperatingSystem.IsAndroid())
 			{
-				_isAndroid15OrHigher = OperatingSystem.IsAndroidVersionAtLeast(35);
+				_isAndroid16OrHigher = OperatingSystem.IsAndroidVersionAtLeast(36);
 
-				PlatformInfoText.Text = $"Android API {(_isAndroid15OrHigher ? "35 or newer" : "older than 35")}";
+				PlatformInfoText.Text = $"Android API {(_isAndroid16OrHigher ? "36 or newer" : "older than 36")}";
 
-				if (_isAndroid15OrHigher)
+				if (_isAndroid16OrHigher)
 				{
 					BehaviorDescriptionText.Text = "Using subscription-based back handling. The Handled property is IGNORED.";
-					// Highlight Android 15+ section, dim pre-Android 15 section
-					Android15Section.Opacity = 1.0;
-					PreAndroid15Section.Opacity = 0.5;
+					// Highlight Android 16+ section, dim pre-Android 16 section
+					Android16Section.Opacity = 1.0;
+					PreAndroid16Section.Opacity = 0.5;
 				}
 				else
 				{
 					BehaviorDescriptionText.Text = "Using Handled property approach. Subscription state does not affect system behavior.";
-					// Highlight pre-Android 15 section, dim Android 15+ section
-					Android15Section.Opacity = 0.5;
-					PreAndroid15Section.Opacity = 1.0;
+					// Highlight pre-Android 16 section, dim Android 16+ section
+					Android16Section.Opacity = 0.5;
+					PreAndroid16Section.Opacity = 1.0;
 				}
 			}
 			else
 			{
-				_isAndroid15OrHigher = false;
+				_isAndroid16OrHigher = false;
 				PlatformInfoText.Text = "Non-Android Platform";
 				BehaviorDescriptionText.Text = "Using Handled property approach (standard WinUI behavior).";
-				Android15Section.Opacity = 0.5;
-				PreAndroid15Section.Opacity = 1.0;
+				Android16Section.Opacity = 0.5;
+				PreAndroid16Section.Opacity = 1.0;
 			}
 		}
 
@@ -94,9 +94,9 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 				UpdateSubscriptionStatus();
 				Log("Subscribed to BackRequested");
 
-				if (_isAndroid15OrHigher)
+				if (_isAndroid16OrHigher)
 				{
-					Log("  -> Back button will be consumed by app (Android 15+ behavior)");
+					Log("  -> Back button will be consumed by app (Android 16+ behavior)");
 				}
 			}
 		}
@@ -110,16 +110,16 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 				UpdateSubscriptionStatus();
 				Log("Unsubscribed from BackRequested");
 
-				if (_isAndroid15OrHigher)
+				if (_isAndroid16OrHigher)
 				{
-					Log("  -> Back button will be handled by system (Android 15+ behavior)");
+					Log("  -> Back button will be handled by system (Android 16+ behavior)");
 				}
 			}
 		}
 
 		private void UpdateSubscriptionStatus()
 		{
-			if (_isAndroid15OrHigher)
+			if (_isAndroid16OrHigher)
 			{
 				SubscriptionStatusText.Text = _isSubscribed
 					? "Status: Subscribed (back consumed by app)"
@@ -151,17 +151,17 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 		{
 			Log("BackRequested event fired");
 
-			if (_isAndroid15OrHigher)
+			if (_isAndroid16OrHigher)
 			{
-				// On Android 15+, the Handled property is ignored.
+				// On Android 16+, the Handled property is ignored.
 				// The subscription itself determines whether the app handles back navigation.
 				// Back is always consumed when subscribed.
-				Log("  -> Android 15+: Back consumed (Handled property ignored)");
-				args.Handled = true; // Set for consistency, but ignored on Android 15+
+				Log("  -> Android 16+: Back consumed (Handled property ignored)");
+				args.Handled = true; // Set for consistency, but ignored on Android 16+
 			}
 			else
 			{
-				// On Android < 15 and other platforms, the Handled property controls behavior.
+				// On Android < 16 and other platforms, the Handled property controls behavior.
 				var handled = HandleCheckBox.IsChecked.GetValueOrDefault();
 				HandleCheckBox.IsChecked = false;
 				args.Handled = handled;

@@ -14,11 +14,11 @@
 			<TextBlock x:Name="PlatformInfoText" FontWeight="Bold" FontSize="16" />
 			<TextBlock x:Name="BehaviorDescriptionText" TextWrapping="Wrap" Foreground="Gray" />
 
-			<!-- Android 15+ Section: Subscription-based -->
-			<Border x:Name="Android15Section" BorderBrush="Blue" BorderThickness="1" Padding="12" Margin="0,16,0,0" CornerRadius="4">
+			<!-- Android 16+ Section: Subscription-based -->
+			<Border x:Name="Android16Section" BorderBrush="Blue" BorderThickness="1" Padding="12" Margin="0,16,0,0" CornerRadius="4">
 				<StackPanel Spacing="8">
-					<TextBlock Text="Android 15+ Test: Subscription-based Back Handling" FontWeight="Bold" Foreground="Blue" />
-					<TextBlock TextWrapping="Wrap" Text="On Android 15+, subscribing to BackRequested enables back handling. Unsubscribing allows system to handle back (exit app)." />
+					<TextBlock Text="Android 16+ Test: Subscription-based Back Handling" FontWeight="Bold" Foreground="Blue" />
+					<TextBlock TextWrapping="Wrap" Text="On Android 16+, subscribing to BackRequested enables back handling. Unsubscribing allows system to handle back (exit app)." />
 
 					<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
 						<Button Click="Subscribe" Content="Subscribe" x:Name="SubscribeButton" />
@@ -31,11 +31,11 @@
 				</StackPanel>
 			</Border>
 
-			<!-- Pre-Android 15 Section: Handled property -->
-			<Border x:Name="PreAndroid15Section" BorderBrush="Green" BorderThickness="1" Padding="12" Margin="0,16,0,0" CornerRadius="4">
+			<!-- Pre-Android 16 Section: Handled property -->
+			<Border x:Name="PreAndroid16Section" BorderBrush="Green" BorderThickness="1" Padding="12" Margin="0,16,0,0" CornerRadius="4">
 				<StackPanel Spacing="8">
-					<TextBlock Text="Pre-Android 15 Test: Handled Property" FontWeight="Bold" Foreground="Green" />
-					<TextBlock TextWrapping="Wrap" Text="On Android &lt; 15, the Handled property controls whether the app consumes the back press." />
+					<TextBlock Text="Pre-Android 16 Test: Handled Property" FontWeight="Bold" Foreground="Green" />
+					<TextBlock TextWrapping="Wrap" Text="On Android &lt; 16, the Handled property controls whether the app consumes the back press." />
 
 					<CheckBox IsThreeState="False" IsChecked="False" Content="Set Handled = true on next back press" x:Name="HandleCheckBox" />
 

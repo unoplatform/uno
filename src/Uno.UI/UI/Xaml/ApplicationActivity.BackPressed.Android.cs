@@ -11,9 +11,9 @@ partial class ApplicationActivity
 
 	private void InitializeBackPressedCallback()
 	{
-		// On Android 15+ (API 35+), use OnBackPressedCallback for predictive back gesture support.
+		// On Android 16+ (API 36+), use OnBackPressedCallback for predictive back gesture support.
 		// The callback is enabled/disabled based on BackRequested subscription state.
-		if ((int)Build.VERSION.SdkInt >= 35)
+		if ((int)Build.VERSION.SdkInt >= 36)
 		{
 			_backPressedCallback = new UnoOnBackPressedCallback(
 				enabled: SystemNavigationManager.GetForCurrentView().HasBackRequestedSubscribers);
@@ -41,7 +41,7 @@ partial class ApplicationActivity
 	}
 
 	/// <summary>
-	/// Callback for handling back button presses on Android 15+ with predictive back gesture support.
+	/// Callback for handling back button presses on Android 16+ with predictive back gesture support.
 	/// </summary>
 	private sealed class UnoOnBackPressedCallback : OnBackPressedCallback
 	{
@@ -51,7 +51,7 @@ partial class ApplicationActivity
 
 		public override void HandleOnBackPressed()
 		{
-			// On Android 15+, subscription to BackRequested means the app handles back navigation.
+			// On Android 16+, subscription to BackRequested means the app handles back navigation.
 			// The Handled property is ignored - back press is always consumed when callback is enabled.
 			SystemNavigationManager.GetForCurrentView().RequestBack();
 		}

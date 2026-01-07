@@ -25,9 +25,9 @@ namespace Windows.UI.Core
 		/// Occurs when the user presses the hardware back button (or equivalent gesture).
 		/// </summary>
 		/// <remarks>
-		/// On Android 15+, the subscription state determines whether the app handles back navigation.
+		/// On Android 16+, the subscription state determines whether the app handles back navigation.
 		/// When subscribed, back presses are consumed by the app. When unsubscribed, the system handles back navigation.
-		/// The <see cref="BackRequestedEventArgs.Handled"/> property is ignored on Android 15+.
+		/// The <see cref="BackRequestedEventArgs.Handled"/> property is ignored on Android 16+.
 		/// </remarks>
 		public event EventHandler<BackRequestedEventArgs> BackRequested
 		{
