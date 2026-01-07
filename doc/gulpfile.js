@@ -100,7 +100,8 @@ function serve() {
     browserSync.init({
         server: {
             baseDir: "_site"
-        }
+        },
+        port: 3001
     });
 }
 
