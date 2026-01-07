@@ -17,7 +17,7 @@ partial class NativeApplicationSettings
 	private partial bool ContainsSettingPlatform(string key)
 	{
 		using var preferences = CreatePreferences();
-		return preferences.All.ContainsKey(key);
+		return preferences.All?.ContainsKey(key) ?? false;
 	}
 
 	private partial bool RemoveSettingPlatform(string key)
@@ -30,13 +30,13 @@ partial class NativeApplicationSettings
 	private partial IEnumerable<string> GetKeysPlatform()
 	{
 		using var preferences = CreatePreferences();
-		return preferences.All.Keys.ToArray();
+		return preferences.All?.Keys.ToArray() ?? [];
 	}
 
 	private partial bool TryGetSettingPlatform(string key, out string? value)
 	{
 		using var preferences = CreatePreferences();
-		if (preferences.All.TryGetValue(key, out var serializedValue))
+		if (preferences.All?.TryGetValue(key, out var serializedValue) == true)
 		{
 			value = serializedValue?.ToString();
 			return true;
