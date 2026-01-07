@@ -92,7 +92,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
-		UpdateWindowPropertiesFromPackage();
+		// Only update window properties from package for the main window.
+		// Secondary windows should not inherit the package display name automatically.
+		if (window.AppWindow.Id.Value == AppWindow.MainWindowId.Value)
+		{
+			UpdateWindowPropertiesFromPackage();
+		}
 
 		Win32Host.RegisterWindow(_hwnd);
 

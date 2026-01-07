@@ -53,7 +53,12 @@ internal class MacOSWindowNative
 
 		NativeWindowReady?.Invoke(this, this);
 
-		UpdateWindowPropertiesFromPackage();
+		// Only update window properties from package for the main window.
+		// Secondary windows should not inherit the package display name automatically.
+		if (MacSkiaHost.Current.InitialWindow == this)
+		{
+			UpdateWindowPropertiesFromPackage();
+		}
 		UpdateWindowPropertiesFromApplicationView();
 	}
 

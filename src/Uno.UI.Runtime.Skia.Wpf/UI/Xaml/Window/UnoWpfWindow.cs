@@ -54,7 +54,12 @@ internal class UnoWpfWindow : WpfWindow
 		Closed += UnoWpfWindow_Closed;
 		Activated += UnoWpfWindow_Activated;
 
-		UpdateWindowPropertiesFromPackage();
+		// Only update window properties from package for the main window.
+		// Secondary windows should not inherit the package display name automatically.
+		if (winUIWindow.AppWindow.Id.Value == Microsoft.UI.Windowing.AppWindow.MainWindowId.Value)
+		{
+			UpdateWindowPropertiesFromPackage();
+		}
 		UpdateWindowPropertiesFromApplicationView();
 		UpdateWindowPropertiesFromCoreApplication();
 
