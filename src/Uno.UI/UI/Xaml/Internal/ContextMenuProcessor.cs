@@ -64,7 +64,22 @@ internal partial class ContextMenuProcessor
 			virtualKey == VirtualKey.Application ||
 			virtualKey == VirtualKey.GamepadMenu)
 		{
-			RaiseContextRequestedEvent(source, new Point(-1, -1), isTouchInput: false);
+			// Default position is (-1, -1) indicating keyboard invocation
+			var position = new Point(-1, -1);
+
+			// For GamepadMenu, position at element center for better UX
+			// This matches WinUI behavior where gamepad invocation shows
+			// the context menu centered on the focused element
+			if (virtualKey == VirtualKey.GamepadMenu && source is UIElement uiElement)
+			{
+				var size = uiElement.RenderSize;
+				if (size.Width > 0 && size.Height > 0)
+				{
+					position = new Point(size.Width / 2, size.Height / 2);
+				}
+			}
+
+			RaiseContextRequestedEvent(source, position, isTouchInput: false);
 		}
 	}
 
