@@ -29,7 +29,7 @@ private void OnBackRequested(object sender, BackRequestedEventArgs e)
 ```
 
 > [!NOTE]
-> On Android 16+ (API level 36+), the behavior differs. See the [Android 16+ behavior](#android-16-behavior) section below for details.
+> On Android 16+ (API level 36+), the behavior differs. See the [Android 16+ behavior](#android-16+-behavior) section below for details.
 
 When `Handled` is set to `true`, the OS will not continue processing the request. If not set or set to `false`, the OS will navigate away from the application.
 
