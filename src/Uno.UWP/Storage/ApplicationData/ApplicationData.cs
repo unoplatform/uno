@@ -139,18 +139,11 @@ public sealed partial class ApplicationData
 			throw new ArgumentNullException(nameof(handler));
 		}
 
-		if (desiredVersion < Version)
-		{
-			//TODO:MZ: Does this happen?
-			throw new ArgumentException("The desired version must be greater than the current version.", nameof(desiredVersion));
-		}
-
 		return AsyncAction.FromTask(async ct => await SetVersionTaskAsync(desiredVersion, handler, ct));
 	}
 
 	private async Task SetVersionTaskAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler, CancellationToken ct)
 	{
-		//TODO:MZ: Is the request handled version by version?
 		var request = new SetVersionRequest(Version, desiredVersion);
 		handler?.Invoke(request);
 		request.DeferralManager.EventRaiseCompleted();
