@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -217,3 +218,4 @@ public partial class Given_UIElement_ContextRequested
 		Assert.IsTrue(contextRequestedOnBorder, "ContextRequested should bubble to parent");
 	}
 }
+#endif
