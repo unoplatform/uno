@@ -41,7 +41,9 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}
 
-	protected override void Initialize()
+	protected override void Initialize() { }
+
+	protected async override Task InitializeAsync()
 	{
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
@@ -54,6 +56,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
 
 		NativeMethods.PersistBootstrapperLoader();
+
+		await WebAssemblyWindowWrapper.Initialize();
 
 		CompositionTarget.FrameRenderingOptions = (false, false);
 		_renderer = new BrowserRenderer(this);
