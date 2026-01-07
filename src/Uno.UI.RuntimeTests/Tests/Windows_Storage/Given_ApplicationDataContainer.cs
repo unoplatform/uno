@@ -528,7 +528,11 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.AreEqual(0, SUT.Values.Count);
 		}
 
+		// Note: WinUI does not raise MapChanged events for ApplicationDataContainerSettings,
+		// but Uno Platform does for consistency with other IObservableMap implementations.
+
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MapChanged_Indexer_Insert()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -553,6 +557,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MapChanged_Indexer_Update()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -579,6 +584,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MapChanged_Add()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -603,6 +609,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MapChanged_Remove()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -629,6 +636,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MapChanged_Remove_NonExistent()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -647,6 +655,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MapChanged_Clear()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
