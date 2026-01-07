@@ -69,7 +69,7 @@ For initial project setup, it's often easier to create the project locally:
 Once you have a project set up:
 
 1. **Create a feature branch** for your work
-2. **Create a an issue or pull request** describing the feature
+2. **Create an issue or pull request** describing the feature
 3. **Assign to Copilot** and provide clear instructions
 
 ### Example Feature Requests
