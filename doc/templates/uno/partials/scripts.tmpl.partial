@@ -26,7 +26,7 @@ mermaid.init(undefined, ".lang-mermaid");
      * This function initializes DocSearch for the element with id 'docsearch'.
      */
     let docSearchRetryCount = 0;
-    const MAX_DOCSEARCH_RETRIES = 50; // Maximum 5 seconds (50 * 100ms)
+    const MAX_DOCSEARCH_RETRIES = 50; // Maximum retry duration: 5 seconds (50 attempts * 100ms intervals)
     
     function initializeDocSearch() {
         console.log("initializeDocSearch called");
