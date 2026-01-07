@@ -46,6 +46,14 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 	protected async override Task InitializeAsync()
 	{
+		NativeMethods.PersistBootstrapperLoader();
+		CompositionTarget.Rendering += OnCompositionTargetOnRendering;
+		void OnCompositionTargetOnRendering(object? sender, object o)
+		{
+			NativeMethods.RemoveLoading();
+			CompositionTarget.Rendering -= OnCompositionTargetOnRendering;
+		}
+
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
@@ -56,8 +64,6 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
 		ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
-
-		NativeMethods.PersistBootstrapperLoader();
 
 		await WebAssemblyWindowWrapper.Initialize();
 
@@ -114,5 +120,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	{
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.persistBootstrapperLoader")]
 		public static partial void PersistBootstrapperLoader();
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.removeLoading")]
+		public static partial void RemoveLoading();
 	}
 }
