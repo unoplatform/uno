@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -195,3 +196,4 @@ public partial class Given_UIElement_ContextFlyoutParentChain
 		Assert.IsFalse(flyoutOpened, "ContextFlyout should NOT open when handler sets Handled=true");
 	}
 }
+#endif

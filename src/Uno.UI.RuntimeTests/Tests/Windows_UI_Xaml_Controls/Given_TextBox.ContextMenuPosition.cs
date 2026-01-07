@@ -139,7 +139,6 @@ public partial class Given_TextBox_ContextMenuPosition
 		Assert.IsTrue(position.Value.X >= 0, "X position should be non-negative");
 		Assert.IsTrue(position.Value.Y >= 0, "Y position should be non-negative");
 	}
-#endif
 
 	[TestMethod]
 	[RunsOnUIThread]
@@ -176,4 +175,5 @@ public partial class Given_TextBox_ContextMenuPosition
 
 		flyout.Hide();
 	}
+#endif
 }
