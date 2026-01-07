@@ -41,7 +41,7 @@ Unfortunately, it's less easy to check if a platform-dependent package supports 
 
 ### Depends on WinUI/UWP
 
-Libraries that depend on WinUI/UWP itself, such as the [Windows Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/), must be recompiled against Uno Platform in order to be used. A number of popular WinUI/UWP libraries have already been retargeted to Uno; a partial list is given [here](https://github.com/unoplatform/Uno#uno-features).
+Libraries that depend on WinUI/UWP itself, such as the [Windows Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/), must be recompiled against Uno Platform in order to be used. A number of popular WinUI/UWP libraries have already been retargeted to Uno; a partial list is given in the [Uno features section](https://github.com/unoplatform/Uno#uno-features).
 
 ## .NET runtime features
 

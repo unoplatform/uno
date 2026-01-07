@@ -49,7 +49,7 @@ To detect errors in initializing the OpenGL environment, `GLCanvasElement` expos
 
 ## How to use Silk.NET
 
-To learn more about using [Silk.NET](https://www.nuget.org/packages/Silk.NET.OpenGL/) as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
+To learn more about using [Silk.NET](https://www.nuget.org/packages/Silk.NET.OpenGL/) as a C# binding for OpenGL, see the [examples in the Silk.NET repository](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
 
 ## Full example
 

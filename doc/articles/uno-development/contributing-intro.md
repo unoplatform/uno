@@ -70,9 +70,9 @@ Uno uses [Dependabot to automatically update external dependencies](../contribut
 
 Read the [guidelines for issue triage](../contributing/guidelines/issue-triage.md).
 
-Tools and procedures for creating stable releases are described [here](release-procedure.md).
+Tools and procedures for creating stable releases are described in the [release procedure documentation](release-procedure.md).
 
-Build artifacts produced by the CI are documented [here](../contributing/build-artifacts.md).
+Build artifacts produced by the CI are documented in the [build artifacts guide](../contributing/build-artifacts.md).
 
 ### More questions?
 
