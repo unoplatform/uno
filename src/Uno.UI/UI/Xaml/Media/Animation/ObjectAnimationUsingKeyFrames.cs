@@ -31,6 +31,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private KeyFrameScheduler<object> _frameScheduler;
 		private (int count, TimeSpan time) _playStatus;
+		private bool _isReversing;
+		private object _startingValue;
 
 		public ObjectAnimationUsingKeyFrames()
 		{
@@ -92,6 +94,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Reset();
 
 			State = TimelineState.Active;
+			_isReversing = false;
+			_startingValue = GetValue();
 
 			_playStatus = default;
 			_frameScheduler = new KeyFrameScheduler<object>(
@@ -180,10 +184,50 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
 
-			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
+			// With AutoReverse, the final value is the starting value (after reversing back)
+			if (AutoReverse)
+			{
+				SetValue(_startingValue);
+			}
+			else
+			{
+				var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
+				SetValue(fillFrame.Value);
+			}
 
-			SetValue(fillFrame.Value);
-			State = TimelineState.Stopped;
+			State = FillBehavior == FillBehavior.HoldEnd ? TimelineState.Filling : TimelineState.Stopped;
+			OnCompleted();
+		}
+
+		/// <summary>
+		/// Begins the animation in reverse, playing from the end value back to the start value.
+		/// Used by Storyboard-level AutoReverse to signal child animations to play in reverse.
+		/// </summary>
+		void ITimeline.BeginReversed()
+		{
+			Reset();
+
+			State = TimelineState.Active;
+			_isReversing = true;
+			_startingValue = GetValue();
+
+			PlayReversed();
+		}
+
+		/// <summary>
+		/// Skips to the fill state as if the animation had played in reverse.
+		/// Sets the animated property to its starting value (the "reversed" end state).
+		/// </summary>
+		void ITimeline.SkipToFillReversed()
+		{
+			_frameScheduler?.Dispose();
+			_frameScheduler = null;
+
+			// Set to the starting value (the "reversed" end state)
+			SetValue(_startingValue);
+
+			State = TimelineState.Filling;
+			OnCompleted();
 		}
 
 		void ITimeline.Deactivate()
@@ -217,6 +261,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
+			// Handle AutoReverse: if enabled and we just finished the forward animation, reverse it
+			if (AutoReverse && !_isReversing)
+			{
+				_isReversing = true;
+				PlayReversed();
+				return;
+			}
+
+			// If we were reversing, we've now completed both forward and reverse
+			if (_isReversing)
+			{
+				_isReversing = false;
+			}
+
 			if (RepeatBehavior.ShouldRepeat(_playStatus.time, _playStatus.count))
 			{
 				Replay();
@@ -234,6 +292,70 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			OnCompleted();
+		}
+
+		/// <summary>
+		/// Play keyframes in reverse order
+		/// </summary>
+		private void PlayReversed()
+		{
+			_frameScheduler?.Dispose();
+
+			// Create reversed keyframe sequence
+			// For discrete keyframe animations, we play the keyframes in reverse order
+			var reversedKeyFrames = CreateReversedKeyFrames();
+
+			_frameScheduler = new KeyFrameScheduler<object>(
+				BeginTime,
+				Duration.HasTimeSpan ? Duration.TimeSpan : default(TimeSpan?),
+				default,
+				reversedKeyFrames,
+				OnFrame,
+				OnFramesEnd);
+			_frameScheduler.Start();
+		}
+
+		/// <summary>
+		/// Creates a reversed sequence of keyframes for reverse playback.
+		/// </summary>
+		private IEnumerable<IKeyFrame<object>> CreateReversedKeyFrames()
+		{
+			var orderedKeyFrames = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).ToList();
+			if (orderedKeyFrames.Count == 0)
+			{
+				yield break;
+			}
+
+			var totalDuration = Duration.HasTimeSpan
+				? Duration.TimeSpan
+				: orderedKeyFrames.Last().KeyTime.TimeSpan;
+
+			// Yield keyframes in reverse order with adjusted times
+			for (int i = orderedKeyFrames.Count - 1; i >= 0; i--)
+			{
+				var originalFrame = orderedKeyFrames[i];
+				var originalTime = originalFrame.KeyTime.TimeSpan;
+				var reversedTime = totalDuration - originalTime;
+
+				// Determine the value - in reverse, we want to go to the previous value (or starting value for the last)
+				object value;
+				if (i == 0)
+				{
+					// The last keyframe in reverse should return to the starting value
+					value = _startingValue;
+				}
+				else
+				{
+					// Otherwise, go to the previous keyframe's value
+					value = orderedKeyFrames[i - 1].Value;
+				}
+
+				yield return new DiscreteObjectKeyFrame
+				{
+					KeyTime = KeyTime.FromTimeSpan(reversedTime),
+					Value = value
+				};
+			}
 		}
 
 		/// <summary>

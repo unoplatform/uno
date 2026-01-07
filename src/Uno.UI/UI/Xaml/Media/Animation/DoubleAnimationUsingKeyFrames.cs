@@ -21,6 +21,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private int _replayCount = 1;
 		private double? _startingValue;
 		private double _finalValue;
+		private bool _isReversing;
 
 		private List<IValueAnimator> _animators;
 		private IValueAnimator _currentAnimator;
@@ -94,6 +95,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 					_activeDuration.Restart();
 					_replayCount = 1;
+					_isReversing = false; // Reset reversing state on Begin
 
 					//Start the animation
 					Play();
@@ -174,12 +176,82 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
-				_startingValue = null;
 			}
 
-			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);//Set property to its final value
+			// With AutoReverse, the final value is the starting value (after reversing back)
+			if (AutoReverse)
+			{
+				SetValue(ComputeFromValue());
+			}
+			else
+			{
+				SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);
+			}
 
-			OnEnd();
+			State = FillBehavior == FillBehavior.HoldEnd ? TimelineState.Filling : TimelineState.Stopped;
+			OnCompleted();
+			_startingValue = null;
+		}
+
+		/// <summary>
+		/// Begins the animation in reverse, playing from the end value back to the start value.
+		/// Used by Storyboard-level AutoReverse to signal child animations to play in reverse.
+		/// </summary>
+		void ITimeline.BeginReversed()
+		{
+			_wasRequestedToStop = false;
+
+			if (!_wasBeginScheduled)
+			{
+				_wasBeginScheduled = true;
+
+#if !IS_UNIT_TESTS
+#if __ANDROID__
+				_ = Dispatcher.RunAnimation(() =>
+#else
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+#endif
+#endif
+				{
+					_wasBeginScheduled = false;
+
+					if (KeyFrames.Count < 1 || _wasRequestedToStop)
+					{
+						return;
+					}
+
+					_activeDuration.Restart();
+					_replayCount = 1;
+					_isReversing = true; // Start in reverse mode
+
+					// Compute the final value first so we know where to start reversing from
+					_finalValue = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value ?? 0;
+
+					Play();
+				}
+#if !IS_UNIT_TESTS
+				);
+#endif
+			}
+		}
+
+		/// <summary>
+		/// Skips to the fill state as if the animation had played in reverse.
+		/// Sets the animated property to its starting value (the "reversed" end state).
+		/// </summary>
+		void ITimeline.SkipToFillReversed()
+		{
+			if (_currentAnimator is { IsRunning: true })
+			{
+				_currentAnimator.Cancel();
+			}
+
+			// Set to the starting value (the "reversed" end state)
+			SetValue(ComputeFromValue());
+
+			State = TimelineState.Filling;
+			OnCompleted();
+			_startingValue = null;
 		}
 
 		void ITimeline.Deactivate()
@@ -236,56 +308,120 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			var startingValue = ComputeFromValue();
 
-			var fromValue = startingValue;
-			double toValue;
-			var previousKeyTime = TimeSpan.Zero;
-
 			// Build the animators
 			_animators = new List<IValueAnimator>(KeyFrames.Count);
 
-			var index = 0;
-			foreach (var keyFrame in KeyFrames.OrderBy(k => k.KeyTime.TimeSpan))
+			if (_isReversing)
 			{
-				toValue = keyFrame.Value;
-				if (index + 1 == KeyFrames.Count)
-				{
-					_finalValue = toValue;
-				}
-				var animator = AnimatorFactory.Create(this, fromValue, toValue);
-				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
-				animator.SetDuration((long)duration.TotalMilliseconds);
-				animator.SetEasingFunction(keyFrame.GetEasingFunction());
-				animator.DisposeWith(_subscriptions);
-				_animators.Add(animator);
+				// When reversing, play keyframes in reverse order: finalValue -> ... -> startingValue
+				var orderedKeyFrames = KeyFrames.OrderByDescending(k => k.KeyTime.TimeSpan).ToList();
+				var fromValue = _finalValue;
+				var previousKeyTime = orderedKeyFrames.Count > 0 ? orderedKeyFrames[0].KeyTime.TimeSpan : TimeSpan.Zero;
 
-				// For next iteration
-				fromValue = toValue;
-				previousKeyTime = keyFrame.KeyTime.TimeSpan;
-
-				if (ReportEachFrame())
+				var index = 0;
+				foreach (var keyFrame in orderedKeyFrames)
 				{
-					//Called each frame
-					animator.Update += (sender, e) =>
+					double toValue;
+					TimeSpan duration;
+
+					if (index + 1 == orderedKeyFrames.Count)
 					{
-						OnFrame((IValueAnimator)sender);
-					};
-				}
+						// Last keyframe in reverse -> go back to starting value
+						toValue = startingValue;
+						duration = keyFrame.KeyTime.TimeSpan;
+					}
+					else
+					{
+						// Go to the next keyframe value (which is the previous one in forward order)
+						toValue = orderedKeyFrames[index + 1].Value;
+						duration = keyFrame.KeyTime.TimeSpan - orderedKeyFrames[index + 1].KeyTime.TimeSpan;
+					}
 
-				var i = index;
+					var animator = AnimatorFactory.Create(this, fromValue, toValue);
+					animator.SetDuration((long)duration.TotalMilliseconds);
+					animator.SetEasingFunction(keyFrame.GetEasingFunction());
+					animator.DisposeWith(_subscriptions);
+					_animators.Add(animator);
+
+					// For next iteration
+					fromValue = toValue;
+
+					if (ReportEachFrame())
+					{
+						animator.Update += (sender, e) =>
+						{
+							OnFrame((IValueAnimator)sender);
+						};
+					}
+
+					var i = index;
 
 #if __ANDROID__
-				if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
-				{
-					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
-				}
+					if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
+					{
+						animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
+					}
 #endif
 
-				animator.AnimationEnd += (a, _) =>
+					animator.AnimationEnd += (a, _) =>
+					{
+						OnFrame((IValueAnimator)a);
+						OnAnimatorEnd(i);
+					};
+					++index;
+				}
+			}
+			else
+			{
+				// Forward playback
+				var fromValue = startingValue;
+				double toValue;
+				var previousKeyTime = TimeSpan.Zero;
+
+				var index = 0;
+				foreach (var keyFrame in KeyFrames.OrderBy(k => k.KeyTime.TimeSpan))
 				{
-					OnFrame((IValueAnimator)a);
-					OnAnimatorEnd(i);
-				};
-				++index;
+					toValue = keyFrame.Value;
+					if (index + 1 == KeyFrames.Count)
+					{
+						_finalValue = toValue;
+					}
+					var animator = AnimatorFactory.Create(this, fromValue, toValue);
+					var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
+					animator.SetDuration((long)duration.TotalMilliseconds);
+					animator.SetEasingFunction(keyFrame.GetEasingFunction());
+					animator.DisposeWith(_subscriptions);
+					_animators.Add(animator);
+
+					// For next iteration
+					fromValue = toValue;
+					previousKeyTime = keyFrame.KeyTime.TimeSpan;
+
+					if (ReportEachFrame())
+					{
+						//Called each frame
+						animator.Update += (sender, e) =>
+						{
+							OnFrame((IValueAnimator)sender);
+						};
+					}
+
+					var i = index;
+
+#if __ANDROID__
+					if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
+					{
+						animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
+					}
+#endif
+
+					animator.AnimationEnd += (a, _) =>
+					{
+						OnFrame((IValueAnimator)a);
+						OnAnimatorEnd(i);
+					};
+					++index;
+				}
 			}
 		}
 
@@ -335,6 +471,22 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private void OnEnd()
 		{
 			_subscriptions.Clear(); // Dispose all current animators
+
+			// Handle AutoReverse: if enabled and we just finished the forward animation, reverse it
+			if (AutoReverse && !_isReversing)
+			{
+				_isReversing = true;
+				// Use Play() instead of Replay() to avoid incrementing _replayCount during the reverse phase.
+				// This ensures RepeatBehavior counts complete cycles (forward + reverse) as single iterations.
+				Play();
+				return;
+			}
+
+			// If we were reversing, we've now completed both forward and reverse
+			if (_isReversing)
+			{
+				_isReversing = false;
+			}
 
 			// If the animation was GPU based, remove the animated value
 			if (NeedsRepeat(_activeDuration, _replayCount))
