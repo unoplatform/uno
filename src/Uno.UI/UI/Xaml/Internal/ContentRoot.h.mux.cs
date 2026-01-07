@@ -2,6 +2,7 @@
 using Microsoft.UI.Content;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Internal;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -22,6 +23,11 @@ partial class ContentRoot
 	};
 
 	internal ContentIsland CompositionContent => _compositionContent;
+
+	/// <summary>
+	/// Represents the context menu processor associated with this content root.
+	/// </summary>
+	internal ContextMenuProcessor ContextMenuProcessor { get; private set; }
 
 	internal void AddPendingXamlRootChangedEvent(ContentRoot.ChangeType _/*ignored for now*/) => _hasPendingChangedEvent = true;
 
