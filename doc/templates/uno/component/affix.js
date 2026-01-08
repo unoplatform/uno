@@ -43,7 +43,7 @@ function renderAffix() {
                 // Add icon to "Edit this page" using DOM methods
                 if (editLink.length > 0) {
                     const editIcon = $('<i></i>').addClass('fa fa-edit');
-                    editLink.prepend(editIcon).prepend(' ');
+                    editLink.prepend(editIcon);
                 }
                 // Add "Send feedback" link using DOM methods to prevent XSS
                 const feedbackLink = $('<li></li>');
@@ -55,7 +55,7 @@ function renderAffix() {
                 
                 // Create icon and text using DOM methods
                 const icon = $('<i></i>').addClass('fa fa-comments');
-                feedbackAnchor.append(icon).append(' Send feedback');
+                feedbackAnchor.append(icon).append('Send feedback');
                 
                 feedbackLink.append(feedbackAnchor);
                 contributionList.append(feedbackLink);
