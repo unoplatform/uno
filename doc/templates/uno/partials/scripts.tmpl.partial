@@ -25,26 +25,44 @@ mermaid.init(undefined, ".lang-mermaid");
      * Initialize Algolia DocSearch
      * This function initializes DocSearch for the element with id 'docsearch'.
      */
-    let docSearchRetryCount = 0;
-    const MAX_DOCSEARCH_RETRIES = 50; // Maximum retry duration: 5 seconds (50 attempts * 100ms intervals)
+    const MAX_DOCSEARCH_RETRIES = 8; // Limit the total number of retries
+    const DOCSEARCH_INITIAL_RETRY_DELAY_MS = 200; // Initial delay before first retry
+    const DOCSEARCH_MAX_RETRY_DELAY_MS = 5000; // Upper bound for exponential backoff delay
     
     function initializeDocSearch() {
         console.log("initializeDocSearch called");
+
+        // Initialize retry counter storage on the function itself to avoid global mutable state
+        if (typeof initializeDocSearch._retryCount === 'undefined') {
+            initializeDocSearch._retryCount = 0;
+        }
         
         // Check if docsearch function is available
         if (typeof docsearch === 'undefined') {
-            docSearchRetryCount++;
-            if (docSearchRetryCount >= MAX_DOCSEARCH_RETRIES) {
+            initializeDocSearch._retryCount++;
+            if (initializeDocSearch._retryCount > MAX_DOCSEARCH_RETRIES) {
                 console.error("DocSearch library failed to load after " + MAX_DOCSEARCH_RETRIES + " retries");
                 return;
             }
-            console.log("DocSearch library not loaded yet, retrying... (attempt " + docSearchRetryCount + "/" + MAX_DOCSEARCH_RETRIES + ")");
-            setTimeout(initializeDocSearch, 100);
+
+            var delay = DOCSEARCH_INITIAL_RETRY_DELAY_MS * Math.pow(2, initializeDocSearch._retryCount - 1);
+            delay = Math.min(delay, DOCSEARCH_MAX_RETRY_DELAY_MS);
+
+            console.log(
+                "DocSearch library not loaded yet, retrying in " +
+                delay +
+                "ms (attempt " +
+                initializeDocSearch._retryCount +
+                "/" +
+                MAX_DOCSEARCH_RETRIES +
+                ")"
+            );
+            setTimeout(initializeDocSearch, delay);
             return;
         }
         
         // Reset retry count on success
-        docSearchRetryCount = 0;
+        initializeDocSearch._retryCount = 0;
         
         try {
             const searchBox = document.getElementById("docsearch");
