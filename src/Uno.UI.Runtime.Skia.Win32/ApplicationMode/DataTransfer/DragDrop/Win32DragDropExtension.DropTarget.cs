@@ -406,7 +406,16 @@ internal partial class Win32DragDropExtension
 			return false;
 		}
 
-		fileStream.Write(new ReadOnlySpan<byte>(dataPtr, (int)fileSize));
+		const int chunkSize = 2^30; // 1 GiB
+		var remaining = fileSize;
+		var currentPtr = (byte*)dataPtr;
+		while (remaining > 0)
+		{
+			var bytesToWrite = remaining > chunkSize ? chunkSize : (int)remaining;
+			fileStream.Write(new ReadOnlySpan<byte>(currentPtr, bytesToWrite));
+			currentPtr += bytesToWrite;
+			remaining -= bytesToWrite;
+		}
 		return true;
 	}
 
@@ -421,10 +430,10 @@ internal partial class Win32DragDropExtension
 	{
 		public uint dwFlags;
 		public Guid clsid;
-		public int /* SIZE */ cx;
-		public int /* SIZE */ cy;
-		public int /* POINTL */ x;
-		public int /* POINTL */ y;
+		public int cx;
+		public int cy;
+		public int x;
+		public int y;
 		public uint dwFileAttributes;
 		public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
 		public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
