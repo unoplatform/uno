@@ -13,6 +13,9 @@ using Windows.UI.Input.Preview.Injection;
 using SamplesApp.UITests;
 using Uno.Extensions;
 using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Toolkit.Extensions;
+using Windows.ApplicationModel.Background;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
 
