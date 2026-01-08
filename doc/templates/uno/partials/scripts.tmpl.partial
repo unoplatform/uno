@@ -84,7 +84,21 @@ mermaid.init(undefined, ".lang-mermaid");
                             appId: 'PHB9D8WS99',
                             indexName: 'platform',
                             apiKey: '7877394996f96cde1a9b795dce3f7787',
-                            placeholder: 'Search Docs...'
+                            placeholder: 'Search Docs...',
+                            navigator: {
+                                navigate({ itemUrl }) {
+                                    // Get the current search query
+                                    const searchQuery = document.querySelector('.DocSearch-Input')?.value || '';
+                                    // Add search query as URL parameter
+                                    if (searchQuery) {
+                                        const url = new URL(itemUrl, window.location.origin);
+                                        url.searchParams.set('q', searchQuery);
+                                        window.location.href = url.toString();
+                                    } else {
+                                        window.location.href = itemUrl;
+                                    }
+                                }
+                            }
                         });
                         console.log("DocSearch initialized.");
                         // Disconnect the observer after initialization
@@ -165,6 +179,97 @@ mermaid.init(undefined, ".lang-mermaid");
             retryInitialization();
         }
     });
+</script>
+
+<!-- Search Result Highlighting -->
+<script>
+    /**
+     * Highlights search results on the page when navigating from Algolia search
+     * This function checks for search query parameters and highlights matching text
+     */
+    function highlightSearchResults() {
+        // Get the search query from URL parameters or hash
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q') || urlParams.get('search') || '';
+        
+        if (!searchQuery || searchQuery.trim().length === 0) {
+            return;
+        }
+        
+        console.log('Highlighting search results for query:', searchQuery);
+        
+        // Function to highlight text within a node
+        function highlightTextInNode(node, searchText) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.textContent;
+                const lowerText = text.toLowerCase();
+                const lowerSearch = searchText.toLowerCase();
+                const index = lowerText.indexOf(lowerSearch);
+                
+                if (index !== -1) {
+                    const span = document.createElement('mark');
+                    span.style.backgroundColor = 'rgba(21, 155, 255, 0.25)';
+                    span.style.padding = '2px 4px';
+                    span.style.borderRadius = '3px';
+                    span.style.transition = 'background-color 0.3s ease';
+                    
+                    const before = text.substring(0, index);
+                    const match = text.substring(index, index + searchText.length);
+                    const after = text.substring(index + searchText.length);
+                    
+                    const beforeNode = document.createTextNode(before);
+                    const matchNode = document.createTextNode(match);
+                    const afterNode = document.createTextNode(after);
+                    
+                    span.appendChild(matchNode);
+                    
+                    const parent = node.parentNode;
+                    parent.insertBefore(beforeNode, node);
+                    parent.insertBefore(span, node);
+                    parent.insertBefore(afterNode, node);
+                    parent.removeChild(node);
+                    
+                    return span;
+                }
+            } else if (node.nodeType === Node.ELEMENT_NODE && 
+                       node.tagName !== 'SCRIPT' && 
+                       node.tagName !== 'STYLE' && 
+                       node.tagName !== 'CODE' &&
+                       node.tagName !== 'MARK') {
+                for (let i = node.childNodes.length - 1; i >= 0; i--) {
+                    const highlighted = highlightTextInNode(node.childNodes[i], searchText);
+                    if (highlighted) {
+                        return highlighted;
+                    }
+                }
+            }
+            return null;
+        }
+        
+        // Find the main content area
+        const contentArea = document.querySelector('.article') || document.querySelector('main') || document.body;
+        
+        // Highlight the search term
+        const firstHighlight = highlightTextInNode(contentArea, searchQuery);
+        
+        // Scroll to the first highlighted result
+        if (firstHighlight) {
+            setTimeout(() => {
+                firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Add a temporary pulse effect
+                firstHighlight.style.backgroundColor = 'rgba(21, 155, 255, 0.5)';
+                setTimeout(() => {
+                    firstHighlight.style.backgroundColor = 'rgba(21, 155, 255, 0.25)';
+                }, 1000);
+            }, 300);
+        }
+    }
+    
+    // Run highlighting when the page loads
+    window.addEventListener('load', highlightSearchResults);
+    
+    // Also run when navigating with browser back/forward
+    window.addEventListener('popstate', highlightSearchResults);
 </script>
 
 <!-- Easy-copy-code -->
