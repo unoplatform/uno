@@ -713,6 +713,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 				}
 
+				writer.AppendLineIndented("[global::System.CodeDom.Compiler.GeneratedCode(\"Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGeneration\", \"0.0.0.0\")]");
+				writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 				{
 					writer.AppendLineIndented("static bool _initialized;");
