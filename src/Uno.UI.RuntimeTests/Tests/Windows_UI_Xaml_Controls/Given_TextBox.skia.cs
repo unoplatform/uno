@@ -4914,10 +4914,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hascut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
 			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
 
-			Assert.IsTrue(hascut, "Cut button should be available when text is selected");
+			Assert.IsTrue(hasCut, "Cut button should be available when text is selected");
 			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
 
 			flyout.Hide();
