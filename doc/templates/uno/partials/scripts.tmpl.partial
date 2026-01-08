@@ -18,22 +18,33 @@ mermaid.init(undefined, ".lang-mermaid");
 </script>
 
 <!-- Algolia DocSearch -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@4.4.0" />
-<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@4.4.0"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@4" />
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@4"></script>
 <script>
     /**
      * Initialize Algolia DocSearch
      * This function initializes DocSearch for the element with id 'docsearch'.
      */
+    let docSearchRetryCount = 0;
+    const MAX_DOCSEARCH_RETRIES = 50; // Maximum retry duration: 5 seconds (50 attempts * 100ms intervals)
+    
     function initializeDocSearch() {
         console.log("initializeDocSearch called");
         
         // Check if docsearch function is available
         if (typeof docsearch === 'undefined') {
-            console.log("DocSearch library not loaded yet, retrying...");
+            docSearchRetryCount++;
+            if (docSearchRetryCount >= MAX_DOCSEARCH_RETRIES) {
+                console.error("DocSearch library failed to load after " + MAX_DOCSEARCH_RETRIES + " retries");
+                return;
+            }
+            console.log("DocSearch library not loaded yet, retrying... (attempt " + docSearchRetryCount + "/" + MAX_DOCSEARCH_RETRIES + ")");
             setTimeout(initializeDocSearch, 100);
             return;
         }
+        
+        // Reset retry count on success
+        docSearchRetryCount = 0;
         
         try {
             const searchBox = document.getElementById("docsearch");
