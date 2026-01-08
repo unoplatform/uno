@@ -67,9 +67,6 @@ public partial class TextBox
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
-	private MenuFlyout _contextMenu;
-	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
-
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
 	internal TextBoxView TextBoxView => _textBoxView;
@@ -382,7 +379,7 @@ public partial class TextBox
 		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
 		{
 			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
-			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			var isFocused = FocusState != FocusState.Unfocused || (ContextFlyout?.IsOpen ?? false);
 			displayBlock.RenderSelection = isFocused;
 			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
 				SelectionLength == 0 &&
