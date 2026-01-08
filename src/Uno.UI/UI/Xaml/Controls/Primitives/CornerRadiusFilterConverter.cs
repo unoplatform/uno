@@ -55,7 +55,7 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 			typeof(CornerRadiusFilterConverter),
 			new FrameworkPropertyMetadata(DoubleBoxes.One));
 
-	private static CornerRadius Convert(CornerRadius radius, CornerRadiusFilterKind filterKind)
+	internal static CornerRadius Convert(CornerRadius radius, CornerRadiusFilterKind filterKind)
 	{
 		var result = radius;
 
