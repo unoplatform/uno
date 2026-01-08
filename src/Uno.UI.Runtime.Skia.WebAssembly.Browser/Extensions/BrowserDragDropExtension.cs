@@ -173,7 +173,7 @@ namespace Uno.UI.Runtime.Skia
 		{
 			if (dataItems is null)
 			{
-				throw new ArgumentNullException(nameof(dataItems), "The dataItems is full-filled only for selected events!");
+				throw new ArgumentNullException(nameof(dataItems), "The dataItems is fullfilled only for selected events!");
 			}
 
 			// Note about images:
@@ -207,7 +207,7 @@ namespace Uno.UI.Runtime.Skia
 				{
 					package.SetDataProvider(
 						StandardDataFormats.Bitmap,
-						async ct => RandomAccessStreamReference.CreateFromFile((IStorageFile)(await RetrieveFiles(ct, image.id)).Single()));
+						async ct => RandomAccessStreamReference.CreateFromFile((IStorageFile)(await RetrieveFiles(ct, id, image.id)).Single()));
 				}
 			}
 
@@ -389,7 +389,7 @@ namespace Uno.UI.Runtime.Skia
 			internal static partial Task<string> RetrieveTextAsync(int pendingDropId, int itemId);
 
 			[JSImport($"globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.{nameof(BrowserDragDropExtension)}.removeId")]
-			internal static partial Task<string> RemoveId(int pendingDropId);
+			internal static partial void RemoveId(int pendingDropId);
 		}
 	}
 }
