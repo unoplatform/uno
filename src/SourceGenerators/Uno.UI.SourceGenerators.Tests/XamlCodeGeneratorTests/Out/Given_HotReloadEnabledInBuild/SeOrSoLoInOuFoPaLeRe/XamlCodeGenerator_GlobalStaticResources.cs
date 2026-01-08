@@ -5,7 +5,7 @@ namespace MyProject
 	/// Contains all the static resources defined for the application
 	/// </summary>
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	[global::System.CodeDom.Compiler.GeneratedCode("Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGeneration", "0.0.0.0")]
+	[global::System.CodeDom.Compiler.GeneratedCode("Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGeneration", "6.5")]
 	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	public sealed partial class GlobalStaticResources
 	{

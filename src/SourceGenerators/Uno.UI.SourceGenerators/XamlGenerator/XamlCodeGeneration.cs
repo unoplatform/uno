@@ -32,6 +32,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 	internal partial class XamlCodeGeneration
 	{
+		private const string GeneratorVersion = "6.5";
+
 		internal const string ParseContextPropertyName = "__ParseContext_";
 		internal const string ParseContextPropertyType = "global::Uno.UI.Xaml.XamlParseContext";
 		internal const string ParseContextGetterMethod = "GetParseContext";
@@ -713,7 +715,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 				}
 
-				writer.AppendLineIndented("[global::System.CodeDom.Compiler.GeneratedCode(\"Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGeneration\", \"0.0.0.0\")]");
+				writer.AppendLineIndented($"[global::System.CodeDom.Compiler.GeneratedCode(\"Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGeneration\", \"{GeneratorVersion}\")]");
 				writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
