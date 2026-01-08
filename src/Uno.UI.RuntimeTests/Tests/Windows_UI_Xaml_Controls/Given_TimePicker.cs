@@ -57,6 +57,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22207")]
+		public async Task When_12HourClock_Should_Display_12_Instead_Of_0()
+		{
+			var timePicker = new TimePicker();
+#if HAS_UNO
+			timePicker.UseNativeStyle = false;
+#endif
+			timePicker.ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour;
+			// Set time to midnight (0:00) or noon (12:00)
+			timePicker.Time = new TimeSpan(0, 0, 0);
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
+			Assert.IsNotNull(timePickerFlyoutPresenter);
+
+			// Find the hour looping selector
+			(var hourLoopingSelector, _, _) = await DateTimePickerHelper.GetHourMinutePeriodLoopingSelectorsFromOpenFlyout();
+
+			Assert.IsNotNull(hourLoopingSelector, "HourLoopingSelector should be found");
+
+			var items = hourLoopingSelector.Items;
+			Assert.IsTrue(items.Count > 0, "Hour items should be populated");
+
+			var firstItem = items[0] as DatePickerFlyoutItem;
+			Assert.IsNotNull(firstItem, "First item should be a DatePickerFlyoutItem");
+
+			// In 12-hour clock, the first hour should represent 12 (not 0), regardless of formatting or digit shapes
+			Assert.IsTrue(int.TryParse(firstItem.PrimaryText, out var firstHourValue), "First hour text should be a valid integer");
+			Assert.AreEqual(12, firstHourValue, "First hour in 12-hour clock should represent 12");
+		}
+
+		[TestMethod]
 		public async Task When_MinuteIncrement_Not_In_Range_Should_Throw_And_Keep_OldValue()
 		{
 			var timePicker = new TimePicker();
