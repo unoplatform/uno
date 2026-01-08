@@ -9,7 +9,20 @@ exports.transform = function (model) {
   }
 
   model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
-  model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
+  
+  // Hide edit links for generated pages:
+  // - API documentation (auto-generated from code)
+  // - Implemented controls pages (generated via PowerShell script)
+  const pathToCheck = (model._path || model._rel || '').toLowerCase();
+  const isGeneratedPage = pathToCheck.includes('/api/') || 
+                         pathToCheck.includes('articles/implemented/') ||
+                         pathToCheck.includes('articles\\implemented\\');
+  
+  if (isGeneratedPage) {
+    model.docurl = null;
+  } else {
+    model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
+  }
 
   if (extension && extension.postTransform) {
     model = extension.postTransform(model);

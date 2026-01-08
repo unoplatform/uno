@@ -44,6 +44,101 @@ function renderAffix() {
                 if (editLink.length > 0) {
                     const editIcon = $('<i></i>').addClass('fa fa-edit');
                     editLink.prepend(editIcon);
+                    
+                    // Make edit link open in new tab
+                    editLink.attr('target', '_blank').attr('rel', 'noopener noreferrer');
+                    
+                    // Add error handling to the edit link
+                    editLink.on('click', function(e) {
+                        const href = $(this).attr('href');
+                        
+                        // Validate the URL before opening
+                        if (!href || href.trim() === '' || href === '#') {
+                            e.preventDefault();
+                            
+                            // Create error message with feedback option
+                            const errorMessage = $('<div></div>')
+                                .addClass('edit-link-error alert alert-warning')
+                                .css({
+                                    'position': 'fixed',
+                                    'top': '20px',
+                                    'right': '20px',
+                                    'max-width': '400px',
+                                    'z-index': '9999',
+                                    'padding': '15px',
+                                    'border-radius': '4px',
+                                    'box-shadow': '0 2px 8px rgba(0,0,0,0.15)',
+                                    'background-color': '#fff3cd',
+                                    'border': '1px solid #ffc107',
+                                    'color': '#856404'
+                                });
+                            
+                            const errorTitle = $('<strong></strong>').text('Edit link not available');
+                            const errorText = $('<div></div>')
+                                .css('margin', '10px 0');
+                            
+                            const mainText = $('<p></p>')
+                                .css('margin-bottom', '8px')
+                                .text('This page cannot be edited because:');
+                            
+                            const reasonsList = $('<ul></ul>')
+                                .css({'margin': '5px 0 8px 20px', 'padding': '0'})
+                                .append($('<li></li>').text('It may be auto-generated from source code'))
+                                .append($('<li></li>').text('The source file may have been moved or deleted'))
+                                .append($('<li></li>').text('It may be imported from external documentation'));
+                            
+                            const nextSteps = $('<p></p>')
+                                .css({'margin-top': '8px', 'font-weight': 'bold'})
+                                .html('Next step: Use "Send feedback" below to report this issue.');
+                            
+                            errorText.append(mainText).append(reasonsList).append(nextSteps);
+                            
+                            const feedbackButton = $('<a></a>')
+                                .attr('href', issueUrl)
+                                .attr('target', '_blank')
+                                .attr('rel', 'noopener noreferrer')
+                                .addClass('btn btn-sm btn-warning')
+                                .css({
+                                    'margin-right': '10px',
+                                    'display': 'inline-block',
+                                    'padding': '5px 10px',
+                                    'text-decoration': 'none',
+                                    'color': '#856404',
+                                    'border': '1px solid #856404',
+                                    'border-radius': '3px'
+                                })
+                                .text('Send feedback');
+                            
+                            const closeButton = $('<button></button>')
+                                .addClass('btn btn-sm')
+                                .css({
+                                    'display': 'inline-block',
+                                    'padding': '5px 10px',
+                                    'background': 'transparent',
+                                    'border': '1px solid #856404',
+                                    'color': '#856404',
+                                    'border-radius': '3px',
+                                    'cursor': 'pointer'
+                                })
+                                .text('Close')
+                                .on('click', function() {
+                                    errorMessage.fadeOut(300, function() { $(this).remove(); });
+                                });
+                            
+                            const buttonContainer = $('<div></div>').css('margin-top', '10px');
+                            buttonContainer.append(feedbackButton).append(closeButton);
+                            
+                            errorMessage.append(errorTitle).append(errorText).append(buttonContainer);
+                            $('body').append(errorMessage);
+                            
+                            // Auto-dismiss after 10 seconds
+                            setTimeout(function() {
+                                errorMessage.fadeOut(300, function() { $(this).remove(); });
+                            }, 10000);
+                            
+                            return false;
+                        }
+                    });
                 }
                 // Add "Send feedback" link using DOM methods to prevent XSS
                 const feedbackLink = $('<li></li>');
