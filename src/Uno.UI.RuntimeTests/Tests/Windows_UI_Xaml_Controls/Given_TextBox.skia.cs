@@ -4879,6 +4879,144 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return false;
 		}
 
+		[TestMethod]
+		public async Task When_TextBox_ContextFlyout_IsTextCommandBarFlyout()
+		{
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.IsNotNull(SUT.ContextFlyout, "TextBox should have a default ContextFlyout");
+			Assert.IsInstanceOfType(SUT.ContextFlyout, typeof(TextCommandBarFlyout), "ContextFlyout should be TextCommandBarFlyout");
+		}
+
+		[TestMethod]
+		public async Task When_TextBox_HasSelection_CutCopy_Available()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "Test content", Width = 200 };
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(0, 4); // Select "Test"
+			await WindowHelper.WaitForIdle();
+
+			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
+			Assert.IsNotNull(flyout, "ContextFlyout should be TextCommandBarFlyout");
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
+			var hascut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+
+			Assert.IsTrue(hascut, "Cut button should be available when text is selected");
+			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
+
+			flyout.Hide();
+		}
+
+		[TestMethod]
+		public async Task When_TextBox_NoSelection_CutCopy_NotAvailable()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "Test content", Width = 200 };
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// No selection
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
+			Assert.IsNotNull(flyout, "ContextFlyout should be TextCommandBarFlyout");
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+
+			Assert.IsFalse(hasCut, "Cut button should NOT be available when no text is selected");
+			Assert.IsFalse(hasCopy, "Copy button should NOT be available when no text is selected");
+
+			flyout.Hide();
+		}
+
+		[TestMethod]
+		public async Task When_TextBox_IsReadOnly_CutPaste_NotAvailable()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "Test", IsReadOnly = true, Width = 200 };
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
+			Assert.IsNotNull(flyout, "ContextFlyout should be TextCommandBarFlyout");
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
+			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Paste");
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+
+			Assert.IsFalse(hasCut, "Cut should NOT be available for ReadOnly TextBox");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available for ReadOnly TextBox");
+			Assert.IsTrue(hasCopy, "Copy should be available for ReadOnly TextBox with selection");
+
+			flyout.Hide();
+		}
+
+		[TestMethod]
+		public async Task When_PasswordBox_ContextFlyout_NoCutCopy()
+		{
+			var SUT = new PasswordBox { Password = "secret", Width = 200 };
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
+			Assert.IsNotNull(flyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+
+			Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+
+			flyout.Hide();
+		}
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _useOverlay;
