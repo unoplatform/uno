@@ -332,21 +332,26 @@ internal partial class Win32DragDropExtension
 			var tempPath = Path.Combine(tempDir, fileName);
 			using var fileStream = File.Create(tempPath);
 
-			storageItems.Add((fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
-				? new StorageFolder(tempPath)
-				: StorageFile.GetFileFromPath(tempPath));
-
+			var success = false;
 			if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
 			{
 				ReadFromIStream(fileContentMedium.u.pstm, fileStream);
+				success = true;
 			}
 			else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
 			{
-				ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream);
+				success = ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream);
 			}
 			else
 			{
 				this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
+			}
+
+			if (success)
+			{
+				storageItems.Add((fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
+					? new StorageFolder(tempPath)
+					: StorageFile.GetFileFromPath(tempPath));
 			}
 		}
 
@@ -372,13 +377,13 @@ internal partial class Win32DragDropExtension
 		}
 	}
 
-	private unsafe void ReadFromHGlobal(HGLOBAL hGlobal, FILEDESCRIPTORW fileDescriptor, FileStream fileStream)
+	private unsafe bool ReadFromHGlobal(HGLOBAL hGlobal, FILEDESCRIPTORW fileDescriptor, FileStream fileStream)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(hGlobal, out var dataPtr);
 		if (lockDisposable is null)
 		{
 			this.LogError()?.Error($"Failed to lock HGLOBAL for file '{fileStream.Name}'");
-			return;
+			return false;
 		}
 
 		long fileSize = ((long)fileDescriptor.nFileSizeHigh << 32) | fileDescriptor.nFileSizeLow;
@@ -395,10 +400,11 @@ internal partial class Win32DragDropExtension
 		if (fileSize <= 0)
 		{
 			this.LogWarn()?.Warn($"File size is 0 or unknown for '{fileStream.Name}'");
-			return;
+			return false;
 		}
 
 		fileStream.Write(new ReadOnlySpan<byte>(dataPtr, (int)fileSize));
+		return true;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
