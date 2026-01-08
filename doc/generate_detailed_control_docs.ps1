@@ -323,8 +323,8 @@ foreach ($control in $script:controls) {
     $content = @"
 # $($control.Name)
 
-**Namespace:** ``$($control.Namespace)``  
-**Base Class:** ``$($control.BaseClass)``  
+**Namespace:** ``$($control.Namespace)``
+**Base Class:** ``$($control.BaseClass)``
 **Platforms:** $($control.Platforms)
 
 ## Overview

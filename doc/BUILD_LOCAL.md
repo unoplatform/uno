@@ -25,7 +25,7 @@ npm run build
 npm start
 ```
 
-The documentation will be available at http://localhost:3000
+The documentation will be available at `http://localhost:3000`
 
 ## What Gets Imported
 
@@ -48,23 +48,27 @@ The `import_external_docs.ps1` script imports documentation from these repositor
 ## External Documentation Structure
 
 External documentation is cloned into:
+
 - `articles/external/{repo-name}/` - For most repos
 - `articles/studio/Hot Design/` - For Hot Design docs
 
 ## Build Commands
 
 ### Full build with external docs
+
 ```bash
 pwsh import_external_docs.ps1
 npm run build
 ```
 
 ### Quick rebuild (uses existing external docs)
+
 ```bash
 npm run build
 ```
 
 ### Clean build
+
 ```bash
 npm run clean
 pwsh import_external_docs.ps1
@@ -72,6 +76,7 @@ npm run build
 ```
 
 ### Build and serve with live reload
+
 ```bash
 npm start
 # or
@@ -99,6 +104,7 @@ pwsh import_external_docs.ps1
 ```
 
 This will:
+
 - Skip cloning if repos already exist
 - Fetch and checkout the specified commits
 - Update to the latest versions defined in the script
@@ -110,16 +116,19 @@ This will:
 If external documentation isn't showing up:
 
 1. Verify the import ran successfully:
+
    ```bash
    ls -la articles/external/
    ```
 
 2. Check for errors during import:
+
    ```bash
    pwsh import_external_docs.ps1 2>&1 | tee import.log
    ```
 
 3. Clean and reimport:
+
    ```bash
    rm -rf articles/external/
    pwsh import_external_docs.ps1
@@ -133,6 +142,7 @@ If the build fails after importing:
 1. Check DocFX output for specific errors
 2. Verify all TOC files are present
 3. Try a clean build:
+
    ```bash
    npm run clean
    npm run build
@@ -165,6 +175,7 @@ In CI pipelines, always run the import script before building:
 For documentation development:
 
 1. **First time setup:**
+
    ```bash
    cd doc
    npm install
@@ -172,11 +183,13 @@ For documentation development:
    ```
 
 2. **Daily development:**
+
    ```bash
    npm start  # Starts with live reload
    ```
-   
+
 3. **When external docs change:**
+
    ```bash
    pwsh import_external_docs.ps1
    # Server will auto-reload if running
@@ -188,5 +201,5 @@ For documentation development:
 - Existing repositories are updated, not deleted
 - External docs use detached HEAD state to ensure consistency
 - Changes to external docs should be made in their source repositories
-- The server at http://localhost:3000 has live reload enabled
-- BrowserSync UI is available at http://localhost:3001
+- The server at `http://localhost:3000` has live reload enabled
+- BrowserSync UI is available at `http://localhost:3001`
