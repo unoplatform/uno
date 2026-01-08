@@ -4,21 +4,22 @@
 #if __ANDROID__
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using Android.App;
-using Java.Interop;
-using Windows.ApplicationModel.Activation;
-using Windows.UI.StartScreen;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Java.Interop;
+using Microsoft.Windows.AppLifecycle;
 using Uno.Extensions;
-using Windows.Foundation.Metadata;
-using System.ComponentModel;
 using Uno.Foundation.Logging;
+using Windows.ApplicationModel.Activation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Windows.UI.StartScreen;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml
 {
@@ -90,7 +91,7 @@ namespace Microsoft.UI.Xaml
 				// default to normal launch
 				if (!handled && !_isRunning)
 				{
-					_app.OnLaunched(new LaunchActivatedEventArgs());
+					_app.InvokeOnLaunched(new LaunchActivatedEventArgs());
 				}
 #endif
 
@@ -116,11 +117,10 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
 					}
 
-#if ANDROID_SKIA
-					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
-#else
-					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
-#endif
+					var jumplistKey = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
+					var launchArgs = new LaunchActivatedEventArgs(ActivationKind.Launch, jumplistKey);
+					_app.InvokeOnLaunched(launchArgs);
+
 					handled = true;
 				}
 				else if (intent.Data != null)
@@ -132,7 +132,9 @@ namespace Microsoft.UI.Xaml
 							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
 						}
 
-						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
+						var protocolArgs = new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning);
+						_app.InvokeOnActivated(protocolArgs);
+
 						handled = true;
 					}
 					else

@@ -107,28 +107,26 @@ namespace Microsoft.UI.Xaml
 
 		private void Initialize()
 		{
-			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
+			using var _ = WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop);
+			var arguments = WindowManagerInterop.BeforeLaunch();
+
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				var arguments = WindowManagerInterop.BeforeLaunch();
-
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug("Launch arguments: " + arguments);
-				}
-
-				InitializationCompleted();
-
-				if (!string.IsNullOrEmpty(arguments))
-				{
-					if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri))
-					{
-						OnActivated(new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning));
-						return;
-					}
-				}
-
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
+				this.Log().Debug("Launch arguments: " + arguments);
 			}
+
+			InitializationCompleted();
+
+			if (!string.IsNullOrEmpty(arguments))
+			{
+				if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri))
+				{
+					InvokeOnActivated(new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning));
+					return;
+				}
+			}
+
+			InvokeOnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 		}
 
 		/// <summary>
