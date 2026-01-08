@@ -32,7 +32,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 	internal partial class XamlCodeGeneration
 	{
-		private const string GeneratorVersion = "6.5";
+		private static readonly string GeneratorVersion = GetGeneratorVersion();
+
+		private static string GetGeneratorVersion()
+		{
+			var assembly = typeof(XamlCodeGeneration).Assembly;
+
+			// Try to get the informational version which contains the real version (e.g., "6.5.0+hash")
+			var infoVersionAttr = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
+				.FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute;
+
+			if (infoVersionAttr?.InformationalVersion != null)
+			{
+				// Extract version portion before the '+' (git hash)
+				var versionString = infoVersionAttr.InformationalVersion.Split('+')[0];
+
+				// Parse and return major.minor
+				if (Version.TryParse(versionString, out var version))
+				{
+					return $"{version.Major}.{version.Minor}";
+				}
+			}
+
+			// Fallback to assembly version
+			var assemblyVersion = assembly.GetName().Version;
+			return assemblyVersion != null ? $"{assemblyVersion.Major}.{assemblyVersion.Minor}" : "0.0";
+		}
 
 		internal const string ParseContextPropertyName = "__ParseContext_";
 		internal const string ParseContextPropertyType = "global::Uno.UI.Xaml.XamlParseContext";
