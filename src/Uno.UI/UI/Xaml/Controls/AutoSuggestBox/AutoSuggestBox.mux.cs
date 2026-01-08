@@ -283,6 +283,12 @@ partial class AutoSuggestBox
 
 		ReevaluateIsOverlayVisible();
 		UpdateDescriptionVisibility(true);
+
+		// Set up corner radius monitoring if enabled
+		if (AutoSuggestBoxHelper.GetKeepInteriorCornersSquare(this))
+		{
+			AutoSuggestBoxHelper.SetupCornerRadiusMonitoring(this);
+		}
 	}
 
 	/// <summary>
@@ -628,7 +634,7 @@ partial class AutoSuggestBox
 		// to the event queue has done so, so we'll schedule a callback
 		// to reset the value of m_ignoreTextChanges to false once they've
 		// all been raised.
-		_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+		_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 		{
 			m_ignoreTextChanges = false;
 		});
@@ -647,7 +653,7 @@ partial class AutoSuggestBox
 		// both of which we want to occur before we raise QuerySubmitted.
 		// To account for this, we'll register a callback that will cause us to call SubmitQuery
 		// after everything else has happened.
-		_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+		_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 		{
 			SubmitQuery(clickedItem);
 		});
@@ -1174,7 +1180,10 @@ partial class AutoSuggestBox
 	/// <summary>
 	/// Scrolls the last item into view.
 	/// </summary>
+	// TODO UNO: This method should be called when the suggestion list position changes to Above
+#pragma warning disable IDE0051 // Private member is unused
 	private void ScrollLastItemIntoView()
+#pragma warning restore IDE0051
 	{
 		if (m_tpSuggestionsPart is ListViewBase listViewBase)
 		{
@@ -1314,7 +1323,7 @@ partial class AutoSuggestBox
 				// Defer the update until after change notification is fully processed.
 				if (!m_deferringUpdate)
 				{
-					_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, ProcessDeferredUpdate);
+					_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, ProcessDeferredUpdate);
 					m_deferringUpdate = true;
 				}
 
