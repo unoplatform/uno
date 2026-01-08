@@ -74,6 +74,10 @@
 			} finally {
 				// No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
 				evt.preventDefault();
+
+				if (evt.type == "dragleave" || evt.type == "drop") {
+					BrowserDragDropExtension._pendingDropId = 0;
+				}
 			}
 		}
 
