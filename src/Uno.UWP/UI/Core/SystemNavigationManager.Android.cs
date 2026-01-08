@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 
 namespace Windows.UI.Core;

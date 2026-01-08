@@ -33,7 +33,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 namespace Microsoft.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
-	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
+	public partial class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
 		private bool _isContentViewSet;
 

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Android.OS;
 using AndroidX.Activity;
