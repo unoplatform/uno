@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -34,6 +33,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly CoreDragDropManager _manager;
 
 		private NativeDrop? _pendingNativeDrop;
+		private DataPackage? _pendingDataPackage;
 
 		private BrowserDragDropExtension()
 		{
@@ -79,15 +79,16 @@ namespace Uno.UI.Runtime.Skia
 						+ $"dataItems={(dataItems.IsNullOrWhiteSpace() ? "<none>" : string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems, DragDropSerializationContext.Default)))}");
 				}
 
+				var drop = new NativeDrop(id, timestamp, x, y, buttons, ctrl, shift, alt);
 				switch (eventName)
 				{
 					case "dragenter":
-						if (Instance._pendingNativeDrop != null)
+						if (Instance._pendingNativeDrop is { Id: var pendingId })
 						{
-							if (Instance._pendingNativeDrop.Id == id)
+							if (pendingId == id)
 							{
 								_log.Error(
-									$"The native drop operation (#{Instance._pendingNativeDrop.Id}) has already been started in managed code "
+									$"The native drop operation (#{pendingId}) has already been started in managed code "
 									+ "and should have been ignored by native code. Ignoring that redundant dragenter.");
 
 								// We are ignoring that event, we don't want to change the currently accepted operation
@@ -97,17 +98,17 @@ namespace Uno.UI.Runtime.Skia
 							else
 							{
 								_log.Error(
-									$"A native drop operation (#{Instance._pendingNativeDrop.Id}) is already pending. "
+									$"A native drop operation (#{pendingId}) is already pending. "
 									+ "Only one native drop operation is supported on wasm currently."
 									+ "Aborting previous operation and beginning a new one.");
 
-								Instance._manager.ProcessAborted(Instance._pendingNativeDrop.Id);
+								Instance._manager.ProcessAborted(pendingId);
 							}
 						}
 
-						var drop = new NativeDrop(id, timestamp, x, y, buttons, ctrl, shift, alt);
 						var allowed = ToDataPackageOperation(allowedOperations);
-						var data = CreateDataPackage(dataItems);
+						var data = CreateDataPackage(id, dataItems);
+						Instance._pendingDataPackage = data;
 						var info = new CoreDragInfo(drop, data.GetView(), allowed);
 
 						if (_log.IsEnabled(LogLevel.Debug))
@@ -123,29 +124,35 @@ namespace Uno.UI.Runtime.Skia
 								_log.Debug($"Completed native drop operation #{drop.Id}: {result}");
 							}
 
-							if (Instance._pendingNativeDrop == drop)
+							if (Instance._pendingNativeDrop?.Id == drop.Id)
 							{
 								Instance._pendingNativeDrop = null;
+								Instance._pendingDataPackage = null;
 							}
 						});
 						Instance._manager.DragStarted(info);
 						break;
 
 					case "dragover" when Instance._pendingNativeDrop != null:
-						Instance._pendingNativeDrop.Update(eventName, id, timestamp, x, y, buttons, ctrl, shift, alt);
+						Instance._pendingNativeDrop = drop;
 						acceptedOperation = ToNativeOperation(Instance._manager.ProcessMoved(Instance._pendingNativeDrop));
 						break;
 
 					case "dragleave" when Instance._pendingNativeDrop != null:
-						Instance._pendingNativeDrop.Update(eventName, id, timestamp, x, y, buttons, ctrl, shift, alt);
-						acceptedOperation = ToNativeOperation(Instance._manager.ProcessAborted(Instance._pendingNativeDrop.Id));
-						Instance._pendingNativeDrop = null;
+						Instance._pendingNativeDrop = drop;
+						acceptedOperation = ToNativeOperation(Instance._manager.ProcessAborted(Instance._pendingNativeDrop.Value.Id));
 						break;
 
 					case "drop" when Instance._pendingNativeDrop != null:
-						Instance._pendingNativeDrop.Update(eventName, id, timestamp, x, y, buttons, ctrl, shift, alt);
+						var view = Instance._pendingDataPackage!.GetView();
+						foreach (var availableFormat in view.AvailableFormats)
+						{
+							// start all async fetchers before the drop event returns since the browser
+							// will destroy the DataTransfer object and the file details, etc. at that point.
+							_ = view.GetDataAsync(availableFormat);
+						}
+						Instance._pendingNativeDrop = drop;
 						acceptedOperation = ToNativeOperation(Instance._manager.ProcessDropped(Instance._pendingNativeDrop));
-						Instance._pendingNativeDrop = null;
 						break;
 				}
 
@@ -162,7 +169,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private static DataPackage CreateDataPackage(string dataItems)
+		private static DataPackage CreateDataPackage(int id, string dataItems)
 		{
 			if (dataItems is null)
 			{
@@ -192,7 +199,7 @@ namespace Uno.UI.Runtime.Skia
 					.ToArray();
 				package.SetDataProvider(
 					StandardDataFormats.StorageItems,
-					async ct => await RetrieveFiles(ct, ids));
+					async ct => await RetrieveFiles(ct, id, ids));
 
 				// There is no kind for image, but when we drag and drop an image from a browser to another one, we sometimes get it as a file.
 				var image = files.FirstOrDefault(file => file.type.StartsWith("image/", StringComparison.OrdinalIgnoreCase));
@@ -208,7 +215,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				foreach (var text in texts)
 				{
-					var (formatId, provider) = GetTextProvider(text.id, text.type);
+					var (formatId, provider) = GetTextProvider(id, text.id, text.type);
 
 					package.SetDataProvider(formatId, provider);
 				}
@@ -217,33 +224,28 @@ namespace Uno.UI.Runtime.Skia
 			return package;
 		}
 
-		private static (string formatId, FuncAsync<object> provider) GetTextProvider(int id, string type)
+		private static (string formatId, FuncAsync<object> provider) GetTextProvider(int id, int textId, string type)
 			=> type switch
 			{
 				"text/uri-list" => // https://datatracker.ietf.org/doc/html/rfc2483#section-5
 					(StandardDataFormats.WebLink,
-					async ct => new Uri((await RetrieveText(ct, id))
+					async ct => new Uri((await NativeMethods.RetrieveTextAsync(id, textId))
 						.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
 						.Where(line => !line.StartsWith('#'))
 						.First())),
-				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),
-				"text/html" => (StandardDataFormats.Html, async ct => await RetrieveText(ct, id)),
-				"text/rtf" => (StandardDataFormats.Rtf, async ct => await RetrieveText(ct, id)),
-				_ => (type, async ct => await RetrieveText(ct, id))
+				"text/plain" => (StandardDataFormats.Text, async ct => await NativeMethods.RetrieveTextAsync(id, textId)),
+				"text/html" => (StandardDataFormats.Html, async ct => await NativeMethods.RetrieveTextAsync(id, textId)),
+				"text/rtf" => (StandardDataFormats.Rtf, async ct => await NativeMethods.RetrieveTextAsync(id, textId)),
+				_ => (type, async ct => await NativeMethods.RetrieveTextAsync(id, textId))
 			};
 
-		private static async Task<IReadOnlyList<IStorageItem>> RetrieveFiles(CancellationToken ct, params int[] itemsIds)
+		private static async Task<IReadOnlyList<IStorageItem>> RetrieveFiles(CancellationToken ct, int id, params int[] itemsIds)
 		{
-			var infosRaw = await NativeMethods.RetrieveFilesAsync(itemsIds);
+			var infosRaw = await NativeMethods.RetrieveFilesAsync(id, itemsIds);
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw, DragDropSerializationContext.Default);
 			var items = infos.Select(StorageFile.GetFromNativeInfo).ToList();
 
 			return items;
-		}
-
-		private static async Task<string> RetrieveText(CancellationToken ct, int itemId)
-		{
-			return await NativeMethods.RetrieveTextAsync(itemId);
 		}
 
 		private static DataPackageOperation ToDataPackageOperation(string allowedOperations)
@@ -285,39 +287,29 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private class NativeDrop : IDragEventSource
+		private readonly struct NativeDrop(
+			int id,
+			double timestamp,
+			double x,
+			double y,
+			int buttons,
+			bool ctrl,
+			bool shift,
+			bool alt)
+			: IDragEventSource
 		{
-			private int _id;
-			private double _timestamp;
-			private double _x;
-			private double _y;
-			private _HtmlPointerButtonsState _buttons;
-			private bool _ctrl;
-			private bool _shift;
-			private bool _alt;
-
-			public NativeDrop(int id, double timestamp, double x, double y, int buttons, bool ctrl, bool shift, bool alt)
-			{
-				_id = id;
-				_timestamp = timestamp;
-				_x = x;
-				_y = y;
-				_buttons = (_HtmlPointerButtonsState)buttons;
-				_ctrl = ctrl;
-				_shift = shift;
-				_alt = alt;
-			}
+			private readonly _HtmlPointerButtonsState _buttons = (_HtmlPointerButtonsState)buttons;
 
 			/// <inheritdoc />
-			public long Id => _id;
+			public long Id => id;
 
 			/// <inheritdoc />
-			public uint FrameId => BrowserPointerInputSource.ToFrameId(_timestamp);
+			public uint FrameId => BrowserPointerInputSource.ToFrameId(timestamp);
 
 			/// <inheritdoc />
 			public (Point location, DragDropModifiers modifier) GetState()
 			{
-				var position = new Point(_x, _y);
+				var position = new Point(x, y);
 				var modifier = DragDropModifiers.None;
 
 				if (_buttons.HasFlag(_HtmlPointerButtonsState.Left))
@@ -333,15 +325,15 @@ namespace Uno.UI.Runtime.Skia
 					modifier |= DragDropModifiers.RightButton;
 				}
 
-				if (_shift)
+				if (shift)
 				{
 					modifier |= DragDropModifiers.Shift;
 				}
-				if (_ctrl)
+				if (ctrl)
 				{
 					modifier |= DragDropModifiers.Control;
 				}
-				if (_alt)
+				if (alt)
 				{
 					modifier |= DragDropModifiers.Alt;
 				}
@@ -352,80 +344,8 @@ namespace Uno.UI.Runtime.Skia
 			/// <inheritdoc />
 			public Point GetPosition(object? relativeTo)
 				=> relativeTo == null
-					? new Point(_x, _y)
-					: ((UIElement)relativeTo).TransformToVisual(null).Inverse.TransformPoint(new Point(_x, _y));
-
-			public void Update(string eventName, int id, double timestamp, double x, double y, int buttons, bool ctrl, bool shift, bool alt)
-			{
-				if (_log.IsEnabled(LogLevel.Trace))
-				{
-					_log.Trace($"Updating native drop operation #{Id} ({eventName})");
-				}
-
-				_id = id;
-				_timestamp = timestamp;
-				_x = x;
-				_y = y;
-				_buttons = (_HtmlPointerButtonsState)buttons;
-				_ctrl = ctrl;
-				_shift = shift;
-				_alt = alt;
-			}
-		}
-
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct DragDropExtensionEventArgs
-		{
-			public string eventName;
-			public string allowedOperations;
-			public string acceptedOperation;
-
-			// Note: This should be an array, but it's currently not supported by marshaling for return values.
-			// Filled only for eventName == dragenter
-			public string dataItems;
-
-			public double timestamp;
-			public double x;
-			public double y;
-
-			public int id;
-			public int buttons; // HtmlPointerButtonsState
-
-			public bool shift;
-			public bool ctrl;
-			public bool alt;
-
-			/// <inheritdoc />
-			public override string ToString()
-			{
-				return $"[{eventName}] {timestamp:F0} @({x:F2},{y:F2})"
-					+ $" | buttons: {(_HtmlPointerButtonsState)buttons}"
-					+ $" | modifiers: {string.Join(", ", GetModifiers(this))}"
-					+ $" | allowed: {allowedOperations} ({ToDataPackageOperation(allowedOperations)})"
-					+ $" | accepted: {acceptedOperation}"
-					+ $" | entries: {dataItems} ({(!dataItems.IsNullOrWhiteSpace() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems, DragDropSerializationContext.Default)) : "")})";
-
-				IEnumerable<string> GetModifiers(DragDropExtensionEventArgs that)
-				{
-					if (that.shift)
-					{
-						yield return "shift";
-					}
-					if (that.ctrl)
-					{
-						yield return "ctrl";
-					}
-					if (that.alt)
-					{
-						yield return "alt";
-					}
-
-					if (!that.shift && !that.ctrl && !that.alt)
-					{
-						yield return "none";
-					}
-				}
-			}
+					? new Point(x, y)
+					: ((UIElement)relativeTo).TransformToVisual(null).Inverse.TransformPoint(new Point(x, y));
 		}
 
 		private struct DataEntry
@@ -458,10 +378,10 @@ namespace Uno.UI.Runtime.Skia
 			internal static partial void Init();
 
 			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.retrieveFiles")]
-			internal static partial Task<string> RetrieveFilesAsync(int[] itemIds);
+			internal static partial Task<string> RetrieveFilesAsync(int pendingDropId, int[] itemIds);
 
 			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.retrieveText")]
-			internal static partial Task<string> RetrieveTextAsync(int itemId);
+			internal static partial Task<string> RetrieveTextAsync(int pendingDropId, int itemId);
 		}
 	}
 }

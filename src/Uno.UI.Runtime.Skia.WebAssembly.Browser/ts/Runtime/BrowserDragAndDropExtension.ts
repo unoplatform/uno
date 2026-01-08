@@ -4,13 +4,12 @@
 		// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
 
 		private static _dispatchDropEventMethod: any;
-		private static _nextDropId: number;
+		private static _nextDropId: number = 0;
 		private static _pendingDropId: number;
-		private static _pendingDropData: DataTransfer;
+		private static _idToContent: Map<number, Array<Promise<FileSystemHandle | File | string | null>>> = new Map<number, Array<Promise<FileSystemHandle | File | string | null>>>();
 
 		public static async init() {
 			DragDropExtension._dispatchDropEventMethod = (await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser")).Uno.UI.Runtime.Skia.BrowserDragDropExtension.OnNativeDropEvent;
-			DragDropExtension._nextDropId = 1;
 
 			// Events fired on the drop target
 			// Note: dragenter and dragover events will enable drop on the app
@@ -24,7 +23,6 @@
 		}
 
 		private static onDragDropEvent(evt: DragEvent): any {
-			console.log("ramez onDragDropEvent: ", evt);
 			if (evt.type == "dragleave"
 				&& evt.clientX > 0
 				&& evt.clientX < document.documentElement.clientWidth
@@ -35,21 +33,16 @@
 				return;
 			}
 
+			// We use the dataItems only for enter, no needs to copy them every time!
+			let dataItems = "";
+			let allowedOperations = "";
 			if (evt.type == "dragenter") {
 				if (DragDropExtension._pendingDropId > 0) {
 					// For the same reason as above, we ignore all dragenter if there is already a pending active drop
 					return;
 				}
-
 				DragDropExtension._pendingDropId = ++DragDropExtension._nextDropId;
-			}
 
-			// We must keep a reference to the dataTransfer in order to be able to retrieve data items
-			DragDropExtension._pendingDropData = evt.dataTransfer;
-
-			let dataItems = "";
-			let allowedOperations = "";
-			if (evt.type == "dragenter") { // We use the dataItems only for enter, no needs to copy them every time!
 				const items = new Array<any>();
 				for (let itemId = 0; itemId < evt.dataTransfer.items.length; itemId++) {
 					const item = evt.dataTransfer.items[itemId];
@@ -57,6 +50,10 @@
 				}
 				dataItems = JSON.stringify(items);
 				allowedOperations = evt.dataTransfer.effectAllowed;
+			} else if (evt.type == "drop") {
+				// Make sure to get **ALL** items content **before** returning from drop
+				// (data.items and each instance of item will be cleared)
+				DragDropExtension._idToContent.set(DragDropExtension._pendingDropId, DragDropExtension.beginRetrieveItems(evt.dataTransfer));
 			}
 
 			try {
@@ -77,52 +74,40 @@
 			} finally {
 				// No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
 				evt.preventDefault();
+			}
+			console.log("ramez end onDragDropEvent: ", evt);
+		}
 
-				if (evt.type == "dragleave" || evt.type == "drop") {
-					DragDropExtension._pendingDropData = null;
-					DragDropExtension._pendingDropId = 0;
+		private static beginRetrieveItems(data: DataTransfer): Array<Promise<FileSystemHandle | File | string | null>> {
+			const promises: Array<Promise<FileSystemHandle | File | string | null>> = [];
+			for (let i = 0; i < data.items.length; i++) {
+				if (data.items[i].kind == "string") {
+					promises.push(DragDropExtension.getText(data.items[i]));
+				} else {
+					promises.push(DragDropExtension.getAsFile(data.items[i]));
 				}
 			}
+			return promises;
 		}
 
-		public static async retrieveText(itemId: number): Promise<string> {
-			const data = DragDropExtension._pendingDropData;
-			if (data == null) {
-				throw new Error("No pending drag and drop data.");
+		public static retrieveText(pendingDropId: number, itemId: number): Promise<string> {
+			const data = DragDropExtension._idToContent.get(pendingDropId);
+			if (!data) {
+				throw new Error(`retrieveFiles failed failed to find pending drag and drop data for id ${pendingDropId}.`);
 			}
 
-			return new Promise((resolve, reject) => {
-				const item = data.items[itemId];
-				const timeout = setTimeout(() => reject("Timeout: for security reason, you cannot access data before drop."), 15000);
-
-				item.getAsString(str => {
-					clearTimeout(timeout);
-					resolve(str);
-				});
-			});
+			return data[itemId] as Promise<string>;
 		}
 
-		public static async retrieveFiles(itemIds: number[]): Promise<string> {
-
-			const data = DragDropExtension._pendingDropData;
-			if (data == null) {
-				throw new Error("No pending drag and drop data.");
+		public static async retrieveFiles(pendingDropId: number, itemIds: Int32Array): Promise<string> {
+			const data = DragDropExtension._idToContent.get(pendingDropId);
+			if (!data) {
+				throw new Error(`retrieveFiles failed failed to find pending drag and drop data for id ${pendingDropId}.`);
 			}
 
-			// Make sure to get **ALL** items content **before** going async
-			// (data.items and each instance of item will be cleared)
-			const asyncFileHandles: Array<Promise<FileSystemHandle | File>> = [];
-			for (const id of itemIds) {
-				asyncFileHandles.push(DragDropExtension.getAsFile(data.items[id]));
-			}
-
-			const fileHandles: Array<FileSystemHandle | File> = [];
-			for (const asyncFile of asyncFileHandles) {
-				fileHandles.push(await asyncFile);
-			}
-
+			const selected = Array.from(itemIds).map(i => data[i] as Promise<FileSystemHandle | File>);
+			const fileHandles = await Promise.all(selected);
 			const infos = Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
-
 			return JSON.stringify(infos);
 		}
 
@@ -132,6 +117,17 @@
 			} else {
 				return item.getAsFile();
 			}
+		}
+
+		private static getText(item: DataTransferItem): Promise<string> {
+			return new Promise((resolve, reject) => {
+				const timeout = setTimeout(() => reject("Timeout: for security reason, you cannot access data before drop."), 15000);
+
+				item.getAsString(str => {
+					clearTimeout(timeout);
+					resolve(str);
+				});
+			});
 		}
 	}
 }
