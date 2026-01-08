@@ -111,6 +111,10 @@
 			return JSON.stringify(infos);
 		}
 
+		public static removeId(id: number) {
+			DragDropExtension._idToContent.delete(id);
+		}
+
 		private static async getAsFile(item: DataTransferItem): Promise<FileSystemHandle|File> {
 			if (item.getAsFileSystemHandle) {
 				return await item.getAsFileSystemHandle();
