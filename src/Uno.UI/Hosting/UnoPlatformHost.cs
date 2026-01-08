@@ -30,7 +30,7 @@ public abstract class UnoPlatformHost
 
 	protected abstract void Initialize();
 
-	protected abstract Task InitializeAsync();
+	protected virtual Task InitializeAsync() => Task.CompletedTask;
 
 	protected abstract Task RunLoop();
 }
