@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
@@ -77,7 +78,6 @@ public partial class TextBox
 		}
 	}
 
-	// TODO: remove this context menu when TextCommandBarFlyout is implemented
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);
@@ -92,8 +92,6 @@ public partial class TextBox
 			// Right tapping should move the caret to the current pointer location if outside the selection
 			Select(index, 0);
 		}
-
-		OpenContextMenu(position);
 	}
 
 	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
@@ -111,7 +109,6 @@ public partial class TextBox
 	{
 		_isPressed = true;
 		TrySetCurrentlyTyping(false);
-		_contextMenu?.Close();
 
 		if (!_isSkiaTextBox)
 		{
@@ -185,8 +182,8 @@ public partial class TextBox
 
 		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// Touch holding
-			OpenContextMenu(args.GetCurrentPoint(this).Position);
+			// Touch holding - show context flyout
+			ContextFlyout?.ShowAt(this, new FlyoutShowOptions { Position = args.GetCurrentPoint(this).Position });
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
@@ -322,92 +319,5 @@ public partial class TextBox
 		var caret = (CaretWithStemAndThumb)sender;
 		caret.SetStemVisible(false);
 		caret.ReleasePointerCaptures();
-	}
-
-	private void OpenContextMenu(Point p)
-	{
-		if (_isSkiaTextBox)
-		{
-			if (_contextMenu is null)
-			{
-				_contextMenu = new MenuFlyout();
-				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
-
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_CUT"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_PASTE"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_UNDO"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
-				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_REDO"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
-			}
-
-			_contextMenu.Items.Clear();
-
-			if (IsSpellCheckEnabled && TextBoxView?.DisplayBlock?.ParsedText is UnicodeText unicodeText)
-			{
-				if (unicodeText.GetSpellCheckSuggestions(SelectionStart, SelectionStart + SelectionLength) is var (correctionIndexStart, correctionIndexEnd, suggestions) && suggestions.Count > 0)
-				{
-					var proofingMenuHeader = new MenuFlyoutSubItem
-					{
-						Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SPELLCHECK_SUGGESTIONS_HEADER"),
-					};
-					_contextMenu.Items.Add(proofingMenuHeader);
-
-					// Add up to 5 suggestions
-					var maxSuggestions = suggestions.Count < 5 ? suggestions.Count : 5;
-					for (int i = 0; i < maxSuggestions; i++)
-					{
-						var suggestion = suggestions[i];
-						var menuItem = new MenuFlyoutItem
-						{
-							Text = suggestion,
-							FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-							Command = new TextBoxCommand(() => ReplaceWithSuggestion(correctionIndexStart, correctionIndexEnd, suggestion))
-						};
-						proofingMenuHeader.Items.Add(menuItem);
-					}
-
-					// Add separator after suggestions
-					_contextMenu.Items.Add(new MenuFlyoutSeparator());
-				}
-			}
-
-			var hasSelection = _selection.length > 0;
-
-			if (!IsReadOnly && hasSelection)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
-			}
-
-			if (hasSelection)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-			}
-
-			if (!IsReadOnly)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-			}
-
-			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-
-			_contextMenu.ShowAt(this, p);
-		}
-	}
-
-	private void ReplaceWithSuggestion(int correctionStart, int correctionEnd, string suggestion)
-	{
-		var text = Text;
-		var newText = text[..correctionStart] + suggestion + text[correctionEnd..];
-		Text = newText;
-		Select(correctionStart + suggestion.Length, 0);
 	}
 }
