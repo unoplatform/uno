@@ -1041,6 +1041,39 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Internal method to invoke OnRightTappedUnhandled from UIElement.
 		/// </summary>
 		internal void InvokeRightTappedUnhandled(RightTappedRoutedEventArgs e) => OnRightTappedUnhandled(e);
+
+		/// <summary>
+		/// Called when a ContextRequested event is not handled by any user event handler.
+		/// Override to customize context flyout display behavior.
+		/// </summary>
+		/// <param name="args">The event args from the ContextRequested event.</param>
+		/// <remarks>
+		/// Ported from WinUI Control_Partial.cpp:1321-1324
+		/// </remarks>
+		private protected virtual void OnContextRequestedImpl(ContextRequestedEventArgs args)
+		{
+			// Default: show flyout on this control
+			ShowContextFlyout(args, this);
+		}
+
+		/// <summary>
+		/// Shows the context flyout for the specified control.
+		/// </summary>
+		/// <param name="args">The event args from the ContextRequested event.</param>
+		/// <param name="contextFlyoutControl">The control whose ContextFlyout should be shown.</param>
+		/// <remarks>
+		/// Ported from WinUI Control_Partial.cpp:1326-1339
+		/// </remarks>
+		private protected void ShowContextFlyout(ContextRequestedEventArgs args, Control contextFlyoutControl)
+		{
+			UIElement.OnContextRequestedCore(this, contextFlyoutControl, args);
+		}
+
+		/// <summary>
+		/// Internal method to invoke OnContextRequestedImpl from ContextMenuProcessor.
+		/// </summary>
+		internal void InvokeOnContextRequestedImpl(ContextRequestedEventArgs args) => OnContextRequestedImpl(args);
+
 		protected virtual void OnDragEnter(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
