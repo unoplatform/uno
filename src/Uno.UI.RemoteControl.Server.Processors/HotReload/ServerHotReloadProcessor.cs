@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime.Loader;
@@ -26,6 +27,7 @@ using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.Tasks.HotReloadInfo;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static Uno.UI.RemoteControl.Helpers.RoslynExtensions;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessor<Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor>]
@@ -850,16 +852,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task DoBlaBla(string? targetFile = null)
+		private async Task DoBlaBla(string? packagePath = null)
 		{
 			var ct = _workspace!.Value.Ct;
 
-			targetFile ??= @"C:\Users\david\AppData\Local\Temp\hotreload-workspace-dump-6dbf356a-6e7d-419e-95ea-ec3c35aa212d.json";
+			packagePath ??= $@"C:\Tmp\workspace_dump.zip";
 
 			var properties = GetWorkspaceProperties(_configureServer!, out var outputPath, out var intermediateOutputPath, out _, out _);
+			var data = await WorkspacePackage.Extract(packagePath, packagePath[..^Path.GetExtension(packagePath).Length], true, ct.Token);
 
 			var (workspace, hotReloadService) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
-				targetFile,
+				data,
 				_reporter,
 				_configureServer!.MetadataUpdateCapabilities,
 				properties,
@@ -869,61 +872,24 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			_workspace = new(Task.FromResult(new HotReloadWorkspace(workspace, hotReloadService, [outputPath, intermediateOutputPath])), ct);
 		}
 
-
-		private static readonly JsonSerializerOptions _workspaceDumpJsonOptions = new (JsonSerializerOptions.Default)
-		{
-			WriteIndented = true,
-			Converters =
-			{
-				new JsonStringEnumConverter(),
-				new EncodingJsonConverter(),
-				new SolutionIdConverter(),
-				new ProjectIdConverter(),
-				new DocumentIdConverter(),
-				new CompilationOptionsConverter(),
-				new CompilationOutputInfoConverter(),
-				new ParseOptionsConverter(),
-				new MetadataReferenceConverter(),
-				new MetadataReferencePropertiesConverter(),
-				new AnalyzerReferenceConverter(new UnoAnalyzerAssemblyLoader(AssemblyLoadContext.GetLoadContext(typeof(ServerHotReloadProcessor).Assembly) ?? throw new InvalidOperationException("ServerHotReloadProcessor is expected to have been loaded in a dedicated ALC"))),
-			}
-		};
-
-		public static JsonSerializerOptions GetOptions(Workspace workspace) => new(JsonSerializerOptions.Default)
-		{
-			WriteIndented = true,
-			Converters =
-			{
-				new JsonStringEnumConverter(),
-				new EncodingJsonConverter(),
-				new SolutionIdConverter(),
-				new ProjectIdConverter(),
-				new DocumentIdConverter(),
-				new CompilationOptionsConverter(),
-				new CompilationOutputInfoConverter(),
-				new ParseOptionsConverter(),
-				new MetadataReferenceConverter(),
-				new MetadataReferencePropertiesConverter(),
-				new AnalyzerReferenceConverter(workspace.Services.GetRequiredService<Microsoft.CodeAnalysis.Host.IAnalyzerService>().GetLoader()),
-			}
-		};
-
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 		private async Task Dump(Solution solution, string targetFile)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 		{
-			var workspace = new WorkspaceData(
-				Solution: solution.GetData()
-			);
+			var packagePath = await WorkspacePackage.Create(solution, targetFile, true, CancellationToken.None);
 
-#pragma warning disable CA1869
+//			var workspace = new WorkspaceData(
+//				Solution: solution.GetData()
+//			);
 
-#pragma warning restore CA1869
+//#pragma warning disable CA1869
 
-			await using (var target = File.Create(targetFile))
-			{
-				await System.Text.Json.JsonSerializer.SerializeAsync(target, workspace, _workspaceDumpJsonOptions);
-			}
+//#pragma warning restore CA1869
+
+//			await using (var target = File.Create(targetFile))
+//			{
+//				await System.Text.Json.JsonSerializer.SerializeAsync(target, workspace, _workspaceDumpJsonOptions);
+//			}
 
 			//abc.ToString();
 
@@ -932,28 +898,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			//	return new ProjectData(project.GetInfo(RoslynInfoOptions.NoLoader));
 			//}
 
-			await DoBlaBla(targetFile);
+			await DoBlaBla(packagePath);
 		}
-
-		public record WorkspaceData(
-			// Options: No effective way to persist them
-			// Properties: Provided by the ConfigureServer
-			//SolutionData Solution
-			SolutionData Solution
-			);
-
-		//public record SolutionData(
-		//	// Analyzers: Empty in current state
-		//	// Options: No effective way to persist them
-		//	// Services: No effective way to persist them
-		//	ImmutableArray<ProjectData> Projects);
-
-		//public record ProjectData(
-		//	ProjectInfo Info);
-
-
-		//public record DocumentData(
-		//	ProjectInfo Info);
 
 		public void Dispose()
 			=> _workspace?.Ct.Cancel();

@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Composition.Hosting;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Elfie.Model.Tree;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
@@ -23,7 +25,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-			string dataFile,
+			WorkspaceData data,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
 			Dictionary<string, string> properties,
@@ -66,6 +68,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
 			var workspace = new AdhocWorkspace();
+			var analyzerLoader = workspace.Services.GetRequiredService<IAnalyzerService>().GetLoader();
 			workspace.WorkspaceFailed += (_sender, diag) =>
 			{
 				// In some cases, load failures may be incorrectly reported such as this one:
@@ -74,12 +77,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
 			};
 
-			workspace.Services.GetService<Microsoft.CodeAnalysis.Host.IAnalyzerService>();
-
-			await using var dump = File.OpenRead(dataFile);
-			var data = await System.Text.Json.JsonSerializer.DeserializeAsync<WorkspaceData>(dump, GetOptions(workspace), ct);
-
-			var currentSolution = workspace.AddSolution(data!.Solution.GetInfo());
+			var currentSolution = workspace.AddSolution(data.Solution.GetInfo(analyzerLoader));
 			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 
 			await hotReloadService.StartSessionAsync(currentSolution, ct);

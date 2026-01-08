@@ -7,6 +7,13 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Uno.UI.RemoteControl.Helpers;
 
+public record WorkspaceData(
+	// Options: No effective way to persist them
+	// Properties: Provided by the ConfigureServer
+	//SolutionData Solution
+	SolutionData Solution
+);
+
 /// <summary>
 /// Represents serializable solution data.
 /// </summary>
@@ -20,7 +27,7 @@ public record SolutionData(
 	VersionStamp? Version,
 	string? FilePath,
 	ImmutableArray<ProjectData> Projects,
-	ImmutableArray<AnalyzerReference> AnalyzerReferences);
+	ImmutableArray<AnalyzerReferenceData> AnalyzerReferences);
 
 /// <summary>
 /// Represents serializable project data.
@@ -52,9 +59,9 @@ public record ProjectData(
 	CompilationOutputInfo? CompilationOutputInfo,
 	ParseOptions? ParseOptions,
 	ImmutableArray<DocumentData> Documents,
-	ImmutableArray<ProjectReference> ProjectReferences,
-	ImmutableArray<MetadataReference> MetadataReferences,
-	ImmutableArray<AnalyzerReference> AnalyzerReferences,
+	ImmutableArray<ProjectReferenceData> ProjectReferences,
+	ImmutableArray<MetadataReferenceData> MetadataReferences,
+	ImmutableArray<AnalyzerReferenceData> AnalyzerReferences,
 	ImmutableArray<DocumentData> AnalyzerConfigDocuments,
 	ImmutableArray<DocumentData> AdditionalDocuments,
 	bool IsSubmission
@@ -76,6 +83,18 @@ public record DocumentData(
 	string? FilePath
 );
 
+public record ProjectReferenceData(
+	ProjectId? ProjectId,
+	ImmutableArray<string> Aliases,
+	bool EmbedInteropTypes);
+
+public record MetadataReferenceData(
+	string FilePath,
+	MetadataReferenceProperties Properties);
+
+public record AnalyzerReferenceData(
+	string FilePath);
+
 public static class RoslynExtensions
 {
 	[Flags]
@@ -92,13 +111,16 @@ public static class RoslynExtensions
 			[.. solution.Projects.Select(p => GetInfo(p, opts))],
 			solution.AnalyzerReferences);
 
-	public static SolutionInfo GetInfo(this SolutionData solution)
-		=> SolutionInfo.Create(
+	public static SolutionInfo GetInfo(this SolutionData solution, IAnalyzerAssemblyLoader analyzerLoader)
+	{
+		ArgumentNullException.ThrowIfNull(analyzerLoader);
+		return SolutionInfo.Create(
 			solution.Id ?? SolutionId.CreateNewId(),
 			solution.Version ?? VersionStamp.Default,
 			solution.FilePath,
-			[.. solution.Projects.Select(GetInfo)],
-			solution.AnalyzerReferences);
+			[.. solution.Projects.Select(project => GetInfo(project, analyzerLoader))],
+			[.. solution.AnalyzerReferences.Select(reference => CreateAnalyzerReference(reference, analyzerLoader))]);
+	}
 
 	public static ProjectInfo GetInfo(this Project project, RoslynInfoOptions opts = default)
 		=> ProjectInfo
@@ -122,7 +144,7 @@ public static class RoslynExtensions
 			.WithCompilationOutputInfo(project.CompilationOutputInfo)
 			.WithAnalyzerConfigDocuments(project.AnalyzerConfigDocuments.Select(doc => GetInfo(doc, opts)));
 
-	public static ProjectInfo GetInfo(this ProjectData project)
+	public static ProjectInfo GetInfo(this ProjectData project, IAnalyzerAssemblyLoader analyzerLoader)
 	{
 		var projectId = project.Id ?? ProjectId.CreateNewId();
 		return ProjectInfo
@@ -137,9 +159,9 @@ public static class RoslynExtensions
 				project.CompilationOptions,
 				project.ParseOptions,
 				[.. project.Documents.Select(d => GetInfo(d, projectId))],
-				project.ProjectReferences,
-				project.MetadataReferences,
-				project.AnalyzerReferences,
+				[.. project.ProjectReferences.Select(CreateProjectReference)],
+				[.. project.MetadataReferences.Select(CreateMetadataReference)],
+				[.. project.AnalyzerReferences.Select(reference => CreateAnalyzerReference(reference, analyzerLoader))],
 				[.. project.AdditionalDocuments.Select(p => GetInfo(p, projectId))],
 				project.IsSubmission,
 				default)
@@ -154,7 +176,7 @@ public static class RoslynExtensions
 			solution.Version,
 			solution.FilePath,
 			[.. solution.Projects.Select(GetData)],
-			[.. solution.AnalyzerReferences]);
+			[.. solution.AnalyzerReferences.Select(GetData)]);
 
 	public static ProjectData GetData(this Project project)
 		=> new(
@@ -169,9 +191,9 @@ public static class RoslynExtensions
 			project.CompilationOutputInfo,
 			project.ParseOptions,
 			[.. project.Documents.Select(GetData)],
-			[.. project.ProjectReferences],
-			[.. project.MetadataReferences],
-			[.. project.AnalyzerReferences],
+			[.. project.ProjectReferences.Select(GetData)],
+			[.. project.MetadataReferences.Select(GetData)],
+			[.. project.AnalyzerReferences.Select(GetData)],
 			[.. project.AnalyzerConfigDocuments.Select(GetData)],
 			[.. project.AdditionalDocuments.Select(GetData)],
 			project.IsSubmission);
@@ -218,4 +240,44 @@ public static class RoslynExtensions
 			default,
 			document.FilePath is null || opts.HasFlag(RoslynInfoOptions.NoLoader) ? null : new FileTextLoader(document.FilePath!, Encoding.UTF8),
 			document.FilePath);
+
+	private static ProjectReference CreateProjectReference(ProjectReferenceData reference)
+		=> new(reference.ProjectId ?? ProjectId.CreateNewId(), reference.Aliases.IsDefault ? ImmutableArray<string>.Empty : reference.Aliases, reference.EmbedInteropTypes);
+
+	private static MetadataReference CreateMetadataReference(MetadataReferenceData reference)
+		=> MetadataReference.CreateFromFile(reference.FilePath, reference.Properties);
+
+	private static AnalyzerReference CreateAnalyzerReference(AnalyzerReferenceData reference, IAnalyzerAssemblyLoader analyzerLoader)
+	{
+		ArgumentNullException.ThrowIfNull(analyzerLoader);
+		if (string.IsNullOrWhiteSpace(reference.FilePath))
+		{
+			throw new InvalidOperationException("Analyzer reference path is missing.");
+		}
+
+		return new AnalyzerFileReference(reference.FilePath, analyzerLoader);
+	}
+
+	private static ProjectReferenceData GetData(ProjectReference reference)
+		=> new(reference.ProjectId, reference.Aliases, reference.EmbedInteropTypes);
+
+	private static MetadataReferenceData GetData(MetadataReference reference)
+	{
+		if (reference is not PortableExecutableReference { FilePath: { Length: > 0 } filePath })
+		{
+			throw new InvalidOperationException("Only PortableExecutableReference with valid file path are supported.");
+		}
+
+		return new MetadataReferenceData(filePath, reference.Properties);
+	}
+
+	private static AnalyzerReferenceData GetData(AnalyzerReference reference)
+	{
+		if (reference is not AnalyzerFileReference { FullPath: { Length: > 0 } filePath })
+		{
+			throw new InvalidOperationException("Only AnalyzerFileReference with valid file path are supported.");
+		}
+
+		return new AnalyzerReferenceData(filePath);
+	}
 }
