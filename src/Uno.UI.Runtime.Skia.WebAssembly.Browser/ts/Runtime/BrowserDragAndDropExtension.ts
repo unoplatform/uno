@@ -1,6 +1,6 @@
 ﻿namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
 
-	export class DragDropExtension {
+	export class BrowserDragDropExtension {
 		// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
 
 		private static _dispatchDropEventMethod: any;
@@ -9,14 +9,14 @@
 		private static _idToContent: Map<number, Array<Promise<FileSystemHandle | File | string | null>>> = new Map<number, Array<Promise<FileSystemHandle | File | string | null>>>();
 
 		public static async init() {
-			DragDropExtension._dispatchDropEventMethod = (await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser")).Uno.UI.Runtime.Skia.BrowserDragDropExtension.OnNativeDropEvent;
+			BrowserDragDropExtension._dispatchDropEventMethod = (await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser")).Uno.UI.Runtime.Skia.BrowserDragDropExtension.OnNativeDropEvent;
 
 			// Events fired on the drop target
 			// Note: dragenter and dragover events will enable drop on the app
-			document.addEventListener("dragenter", DragDropExtension.onDragDropEvent);
-			document.addEventListener("dragover", DragDropExtension.onDragDropEvent);
-			document.addEventListener("dragleave", DragDropExtension.onDragDropEvent); // Seems to be raised also on drop?
-			document.addEventListener("drop", DragDropExtension.onDragDropEvent);
+			document.addEventListener("dragenter", BrowserDragDropExtension.onDragDropEvent);
+			document.addEventListener("dragover", BrowserDragDropExtension.onDragDropEvent);
+			document.addEventListener("dragleave", BrowserDragDropExtension.onDragDropEvent); // Seems to be raised also on drop?
+			document.addEventListener("drop", BrowserDragDropExtension.onDragDropEvent);
 
 			// #18854: Prevent the browser default selection drag preview.
 			document.addEventListener('dragstart', e => e.preventDefault());
@@ -37,11 +37,11 @@
 			let dataItems = "";
 			let allowedOperations = "";
 			if (evt.type == "dragenter") {
-				if (DragDropExtension._pendingDropId > 0) {
+				if (BrowserDragDropExtension._pendingDropId > 0) {
 					// For the same reason as above, we ignore all dragenter if there is already a pending active drop
 					return;
 				}
-				DragDropExtension._pendingDropId = ++DragDropExtension._nextDropId;
+				BrowserDragDropExtension._pendingDropId = ++BrowserDragDropExtension._nextDropId;
 
 				const items = new Array<any>();
 				for (let itemId = 0; itemId < evt.dataTransfer.items.length; itemId++) {
@@ -53,11 +53,11 @@
 			} else if (evt.type == "drop") {
 				// Make sure to get **ALL** items content **before** returning from drop
 				// (data.items and each instance of item will be cleared)
-				DragDropExtension._idToContent.set(DragDropExtension._pendingDropId, DragDropExtension.beginRetrieveItems(evt.dataTransfer));
+				BrowserDragDropExtension._idToContent.set(BrowserDragDropExtension._pendingDropId, BrowserDragDropExtension.beginRetrieveItems(evt.dataTransfer));
 			}
 
 			try {
-				const acceptedOperation = DragDropExtension._dispatchDropEventMethod(
+				const acceptedOperation = BrowserDragDropExtension._dispatchDropEventMethod(
 					evt.type,
 					allowedOperations,
 					evt.dataTransfer.dropEffect,
@@ -65,7 +65,7 @@
 					evt.timeStamp,
 					evt.clientX,
 					evt.clientY,
-					DragDropExtension._pendingDropId,
+					BrowserDragDropExtension._pendingDropId,
 					evt.buttons,
 					evt.shiftKey,
 					evt.ctrlKey,
@@ -82,16 +82,16 @@
 			const promises: Array<Promise<FileSystemHandle | File | string | null>> = [];
 			for (let i = 0; i < data.items.length; i++) {
 				if (data.items[i].kind == "string") {
-					promises.push(DragDropExtension.getText(data.items[i]));
+					promises.push(BrowserDragDropExtension.getText(data.items[i]));
 				} else {
-					promises.push(DragDropExtension.getAsFile(data.items[i]));
+					promises.push(BrowserDragDropExtension.getAsFile(data.items[i]));
 				}
 			}
 			return promises;
 		}
 
 		public static retrieveText(pendingDropId: number, itemId: number): Promise<string> {
-			const data = DragDropExtension._idToContent.get(pendingDropId);
+			const data = BrowserDragDropExtension._idToContent.get(pendingDropId);
 			if (!data) {
 				throw new Error(`retrieveFiles failed failed to find pending drag and drop data for id ${pendingDropId}.`);
 			}
@@ -100,7 +100,7 @@
 		}
 
 		public static async retrieveFiles(pendingDropId: number, itemIds: Int32Array): Promise<string> {
-			const data = DragDropExtension._idToContent.get(pendingDropId);
+			const data = BrowserDragDropExtension._idToContent.get(pendingDropId);
 			if (!data) {
 				throw new Error(`retrieveFiles failed failed to find pending drag and drop data for id ${pendingDropId}.`);
 			}
@@ -112,7 +112,7 @@
 		}
 
 		public static removeId(id: number) {
-			DragDropExtension._idToContent.delete(id);
+			BrowserDragDropExtension._idToContent.delete(id);
 		}
 
 		private static async getAsFile(item: DataTransferItem): Promise<FileSystemHandle|File> {
