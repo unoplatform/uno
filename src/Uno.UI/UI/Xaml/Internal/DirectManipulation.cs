@@ -468,6 +468,15 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 				isHandled = true;
 			}
 		}
+
+		// If no handler claimed the inertia, complete the gesture to prevent orphan inertia updates.
+		// This avoids the assertion failure in OnDirectManipulationUpdated when IsInertial is true but _inertiaHandler is null.
+		// This can happen when scrolling to the edge of content - velocity may exceed inertia threshold but there's nothing to scroll.
+		if (!isHandled)
+		{
+			Trace?.Invoke("[DirectManipulation] Inertia not claimed by any handler, completing gesture.");
+			sender.CompleteGesture();
+		}
 	}
 
 	private void OnDirectManipulationCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs args)
