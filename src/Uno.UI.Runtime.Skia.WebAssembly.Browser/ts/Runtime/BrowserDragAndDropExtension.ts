@@ -75,7 +75,6 @@
 				// No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
 				evt.preventDefault();
 			}
-			console.log("ramez end onDragDropEvent: ", evt);
 		}
 
 		private static beginRetrieveItems(data: DataTransfer): Array<Promise<FileSystemHandle | File | string | null>> {
