@@ -95,10 +95,25 @@ protected async override void OnLaunched(LaunchActivatedEventArgs args)
 }
 ```
 
+## Allowing window size within specific limits
+
+You can set maximum dimensions using `PreferredMaximumWidth` and `PreferredMaximumHeight`:
+
+```csharp
+if (MainWindow.AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
+{
+    presenter.PreferredMaximumWidth = 2560; // Set maximum width
+    presenter.PreferredMaximumHeight = 1440; // Set maximum height
+}
+```
+
+These properties allow you to set the maximum dimensions for the window. When set, the window cannot be resized beyond these values by the user. This is useful for constraining the window size to fit specific design requirements or to prevent the window from becoming too large for the content to display properly.
+
 > [!NOTE]
 > If your app uses Uno Navigation, set the sizing options before you start the Host (see the code below). This makes sure the window appears as expected.
 
 ```csharp
+// Set the window size here
 Host = await builder.NavigateAsync<Shell>();
 ```
 
