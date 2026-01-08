@@ -57,27 +57,28 @@ internal partial class ContextMenuProcessor
 		{
 			args.OriginalSource = source;
 
+			// WinUI behavior: Class handler runs FIRST as part of the event mechanism.
+			// This shows the ContextFlyout before user handlers can set Handled=true.
+			// See WinUI eventmgr.cpp:RaiseUIElementEvents which calls the Delegates array
+			// handlers during event raising.
+			if (uiElement is Control control)
+			{
+				// For Controls, invoke OnContextRequestedImpl which can be overridden
+				control.InvokeOnContextRequestedImpl(args);
+			}
+			else
+			{
+				// For non-Controls, just try to show flyout on the element
+				UIElement.OnContextRequestedCore(uiElement, uiElement, args);
+			}
+
+			// Then raise the user event for notification purposes.
 			// This is a synchronous callout to application code that allows
 			// the application to re-enter XAML. The application could
 			// change state and release objects, so protect against
 			// reentrancy by ensuring that objects are alive and state is
 			// re-validated after return.
 			uiElement.RaiseEvent(UIElement.ContextRequestedEvent, args);
-
-			// If the event is not handled, invoke the class handler pattern
-			if (!args.Handled)
-			{
-				if (uiElement is Control control)
-				{
-					// For Controls, invoke OnContextRequestedImpl which can be overridden
-					control.InvokeOnContextRequestedImpl(args);
-				}
-				else
-				{
-					// For non-Controls, just try to show flyout on the element
-					UIElement.OnContextRequestedCore(uiElement, uiElement, args);
-				}
-			}
 		}
 
 		if (args.Handled && isTouchInput)
