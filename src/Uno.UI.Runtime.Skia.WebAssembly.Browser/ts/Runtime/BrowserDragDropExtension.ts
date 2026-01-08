@@ -28,7 +28,7 @@
 				&& evt.clientX < document.documentElement.clientWidth
 				&& evt.clientY > 0
 				&& evt.clientY < document.documentElement.clientHeight) {
-				// We ignore all dragleave while if pointer is still over the window.
+				// We ignore all dragleave events if the pointer is still over the window.
 				// This is to mute bubbling of drag leave when crossing boundaries of any elements on the app.
 				return;
 			}
@@ -72,7 +72,7 @@
 					evt.altKey);
 				evt.dataTransfer.dropEffect = acceptedOperation;
 			} finally {
-				// No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
+				// No matter if the managed code handled the event, we want to prevent the default behavior (like opening a drop link)
 				evt.preventDefault();
 
 				if (evt.type == "dragleave" || evt.type == "drop") {
@@ -96,7 +96,7 @@
 		public static retrieveText(pendingDropId: number, itemId: number): Promise<string> {
 			const data = BrowserDragDropExtension._idToContent.get(pendingDropId);
 			if (!data) {
-				throw new Error(`retrieveFiles failed failed to find pending drag and drop data for id ${pendingDropId}.`);
+				throw new Error(`retrieveFiles failed to find pending drag and drop data for id ${pendingDropId}.`);
 			}
 
 			return data[itemId] as Promise<string>;
@@ -105,7 +105,7 @@
 		public static async retrieveFiles(pendingDropId: number, itemIds: Int32Array): Promise<string> {
 			const data = BrowserDragDropExtension._idToContent.get(pendingDropId);
 			if (!data) {
-				throw new Error(`retrieveFiles failed failed to find pending drag and drop data for id ${pendingDropId}.`);
+				throw new Error(`retrieveFiles failed to find pending drag and drop data for id ${pendingDropId}.`);
 			}
 
 			const selected = Array.from(itemIds).map(i => data[i] as Promise<FileSystemHandle | File>);
