@@ -31,11 +31,15 @@ partial class AutoSuggestBox
 	private const string c_SuggestionsContainerName = "SuggestionsContainer";
 	private const string c_UpwardTransformName = "UpwardTransform";
 	private const string c_TextBoxScrollViewerName = "ContentElement";
+#pragma warning disable IDE0051 // Private member is unused
 	private const string c_VisualStateLandscape = "Landscape";
 	private const string c_VisualStatePortrait = "Portrait";
+#pragma warning restore IDE0051
 	private const string c_ListItemOrderTransformName = "ListItemOrderTransform";
 	private const string c_LayoutRootName = "LayoutRoot";
+#pragma warning disable IDE0051 // Private member is unused
 	private const string c_RequiredHeaderName = "RequiredHeaderPresenter";
+#pragma warning restore IDE0051
 	private const string c_DescriptionPresenterName = "DescriptionPresenter";
 
 	// Enum for controlling the ControlledPeer
@@ -62,7 +66,9 @@ partial class AutoSuggestBox
 
 	// Template parts
 	private TextBox m_tpTextBoxPart;
+#pragma warning disable CS0414 // The field is assigned but its value is never used
 	private UIElement m_requiredHeaderPresenterPart;
+#pragma warning restore CS0414
 	private ButtonBase m_tpTextBoxQueryButtonPart;
 	private Selector m_tpSuggestionsPart;
 	private Popup m_tpPopupPart;
@@ -169,10 +175,13 @@ partial class AutoSuggestBox
 	private bool m_isOverlayVisible = false;
 
 	// Layout transition elements (for light dismiss overlay)
+	// TODO UNO: These are unused until LTE support is implemented
+#pragma warning disable CS0169, IDE0051 // The field is never used
 	private UIElement m_overlayLayoutTransition;
 	private UIElement m_layoutTransition;
 	private UIElement m_parentElementForLTEs;
 	private FrameworkElement m_overlayElement;
+#pragma warning restore CS0169, IDE0051
 
 	// InputPane reference
 	private InputPane m_tpInputPane;
