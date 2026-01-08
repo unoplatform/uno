@@ -200,8 +200,7 @@
         <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
         <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
         <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-        <!-- Uno TODO: TextCommandBarFlyout isn't implemented but ContextFlyout is mapped to long-press on some platforms, causing an undismissable invisible popup to appear #12165 -->
-        <!--<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />-->
+        <Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
         <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
