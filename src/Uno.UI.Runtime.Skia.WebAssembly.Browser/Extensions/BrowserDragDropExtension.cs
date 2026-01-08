@@ -452,7 +452,7 @@ namespace Uno.UI.Runtime.Skia
 		[JsonSerializable(typeof(NativeStorageItemInfo))]
 		private partial class DragDropSerializationContext : JsonSerializerContext;
 
-		internal static partial class NativeMethods
+		private static partial class NativeMethods
 		{
 			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.init")]
 			internal static partial void Init();
