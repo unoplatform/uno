@@ -254,10 +254,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 					_activeDuration.Restart();
 					_replayCount = 1;
-					_isReversing = true; // Start in reverse mode
 
-					// Compute the final value first so we know where to start reversing from
+					// CRITICAL: Cache the starting value BEFORE setting _isReversing
+					// This ensures InitializeAnimators() knows where to reverse back to.
+					// Without this, ComputeFromValue() would return the current property value
+					// (e.g., Blue after forward animation) instead of the original start (e.g., Red).
+					if (!_startingValue.HasValue)
+					{
+						_startingValue = ComputeFromValue();
+					}
+
+					// Compute the final value so we know where to start reversing from
 					_finalValue = FindFinalValue() ?? ColorOffset.Zero;
+
+					_isReversing = true; // Start in reverse mode
 
 					Play();
 				}

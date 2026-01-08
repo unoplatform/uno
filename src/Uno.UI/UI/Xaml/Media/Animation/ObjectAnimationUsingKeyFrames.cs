@@ -209,7 +209,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			State = TimelineState.Active;
 			_isReversing = true;
-			_startingValue = GetValue();
+
+			// Only cache starting value if not already set (from a prior Begin() call)
+			// This ensures we reverse back to the original starting value, not the current animated value
+			_startingValue ??= GetValue();
 
 			PlayReversed();
 		}

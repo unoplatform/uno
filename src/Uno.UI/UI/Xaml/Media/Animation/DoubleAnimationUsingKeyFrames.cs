@@ -222,10 +222,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 					_activeDuration.Restart();
 					_replayCount = 1;
-					_isReversing = true; // Start in reverse mode
 
-					// Compute the final value first so we know where to start reversing from
-					_finalValue = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value ?? 0;
+					// CRITICAL: Cache the starting value BEFORE setting _isReversing
+					// This ensures InitializeAnimators() knows where to reverse back to.
+					// Without this, ComputeFromValue() would return the current property value
+					// (e.g., 100 after forward animation) instead of the original start (e.g., 0).
+					if (!_startingValue.HasValue)
+					{
+						_startingValue = ComputeFromValue();
+					}
+
+					// Compute the final value so we know where to start reversing from
+					_finalValue = KeyFrames.OrderByDescending(k => k.KeyTime.TimeSpan).FirstOrDefault()?.Value ?? 0;
+
+					_isReversing = true; // Start in reverse mode
 
 					Play();
 				}
