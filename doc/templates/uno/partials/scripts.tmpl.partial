@@ -23,84 +23,84 @@ mermaid.init(undefined, ".lang-mermaid");
 <script>
     /**
      * Initialize Algolia DocSearch
-     * This function initializes DocSearch for the element with id 'docsearch'.
+     * This function uses a closure to manage retry state, ensuring the counter resets properly
+     * between page loads and after successful initialization.
      */
     const MAX_DOCSEARCH_RETRIES = 8; // Limit the total number of retries
     const DOCSEARCH_INITIAL_RETRY_DELAY_MS = 200; // Initial delay before first retry
     const DOCSEARCH_MAX_RETRY_DELAY_MS = 5000; // Upper bound for exponential backoff delay
     
-    function initializeDocSearch() {
-        console.log("initializeDocSearch called");
-
-        // Initialize retry counter storage on the function itself to avoid global mutable state
-        if (typeof initializeDocSearch._retryCount === 'undefined') {
-            initializeDocSearch._retryCount = 0;
-        }
+    const initializeDocSearch = (function() {
+        let retryCount = 0; // Closure-based retry counter
         
-        // Check if docsearch function is available
-        if (typeof docsearch === 'undefined') {
-            initializeDocSearch._retryCount++;
-            if (initializeDocSearch._retryCount > MAX_DOCSEARCH_RETRIES) {
-                console.error("DocSearch library failed to load after " + MAX_DOCSEARCH_RETRIES + " retries");
+        return function() {
+            console.log("initializeDocSearch called");
+            
+            // Check if docsearch function is available
+            if (typeof docsearch === 'undefined') {
+                retryCount++;
+                if (retryCount > MAX_DOCSEARCH_RETRIES) {
+                    console.error("DocSearch library failed to load after " + MAX_DOCSEARCH_RETRIES + " retries");
+                    return;
+                }
+
+                var delay = DOCSEARCH_INITIAL_RETRY_DELAY_MS * Math.pow(2, retryCount - 1);
+                delay = Math.min(delay, DOCSEARCH_MAX_RETRY_DELAY_MS);
+
+                console.log(
+                    "DocSearch library not loaded yet, retrying in " +
+                    delay +
+                    "ms (attempt " +
+                    retryCount +
+                    "/" +
+                    MAX_DOCSEARCH_RETRIES +
+                    ")"
+                );
+                setTimeout(initializeDocSearch, delay);
                 return;
             }
+            
+            // Reset retry count on success
+            retryCount = 0;
+            
+            try {
+                const searchBox = document.getElementById("docsearch");
 
-            var delay = DOCSEARCH_INITIAL_RETRY_DELAY_MS * Math.pow(2, initializeDocSearch._retryCount - 1);
-            delay = Math.min(delay, DOCSEARCH_MAX_RETRY_DELAY_MS);
-
-            console.log(
-                "DocSearch library not loaded yet, retrying in " +
-                delay +
-                "ms (attempt " +
-                initializeDocSearch._retryCount +
-                "/" +
-                MAX_DOCSEARCH_RETRIES +
-                ")"
-            );
-            setTimeout(initializeDocSearch, delay);
-            return;
-        }
-        
-        // Reset retry count on success
-        initializeDocSearch._retryCount = 0;
-        
-        try {
-            const searchBox = document.getElementById("docsearch");
-
-            if (searchBox) {
-                console.log("Found 'docsearch' element");
-                // Check if the search box is already initialized
-                if (searchBox.children.length > 0) {
-                    console.log("Search box already initialized.");
-                    // Disconnect the observer if search box is already initialized
-                    if (observer) {
-                        observer.disconnect();
-                        console.log("MutationObserver disconnected.");
+                if (searchBox) {
+                    console.log("Found 'docsearch' element");
+                    // Check if the search box is already initialized
+                    if (searchBox.children.length > 0) {
+                        console.log("Search box already initialized.");
+                        // Disconnect the observer if search box is already initialized
+                        if (observer) {
+                            observer.disconnect();
+                            console.log("MutationObserver disconnected.");
+                        }
+                    } else {
+                        // Initialize DocSearch if not already initialized
+                        console.log("Initializing DocSearch...");
+                        docsearch({
+                            container: '#docsearch',
+                            appId: 'PHB9D8WS99',
+                            indexName: 'platform',
+                            apiKey: '7877394996f96cde1a9b795dce3f7787',
+                            placeholder: 'Search Docs...'
+                        });
+                        console.log("DocSearch initialized.");
+                        // Disconnect the observer after initialization
+                        if (observer) {
+                            observer.disconnect();
+                            console.log("MutationObserver disconnected.");
+                        }
                     }
                 } else {
-                    // Initialize DocSearch if not already initialized
-                    console.log("Initializing DocSearch...");
-                    docsearch({
-                        container: '#docsearch',
-                        appId: 'PHB9D8WS99',
-                        indexName: 'platform',
-                        apiKey: '7877394996f96cde1a9b795dce3f7787',
-                        placeholder: 'Search Docs...'
-                    });
-                    console.log("DocSearch initialized.");
-                    // Disconnect the observer after initialization
-                    if (observer) {
-                        observer.disconnect();
-                        console.log("MutationObserver disconnected.");
-                    }
+                    console.warn("'docsearch' element not found.");
                 }
-            } else {
-                console.warn("'docsearch' element not found.");
+            } catch (error) {
+                console.error("Error initializing DocSearch:", error);
             }
-        } catch (error) {
-            console.error("Error initializing DocSearch:", error);
-        }
-    }
+        };
+    })();
 
     /**
      * Set up MutationObserver to watch for additions to the DOM
