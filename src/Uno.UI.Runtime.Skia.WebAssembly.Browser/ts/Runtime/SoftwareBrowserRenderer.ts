@@ -8,6 +8,9 @@ namespace Uno.UI.Runtime.Skia {
 		constructor(canvas: HTMLCanvasElement) {
 			this.canvas = canvas;
 			this.ctx2D = this.canvas.getContext("2d");
+			if (!this.ctx2D) {
+				throw 'Unable to acquire 2D rendering context for the provided <canvas> element';
+			}
 		}
 
 		public static tryCreateInstance(canvasId: any) {

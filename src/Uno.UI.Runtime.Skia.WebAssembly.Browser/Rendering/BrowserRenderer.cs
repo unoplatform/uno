@@ -92,7 +92,7 @@ internal partial class BrowserRenderer
 	internal static partial class NativeMethods
 	{
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.createInstance")]
-		internal static partial JSObject CreateInstance([JSMarshalAs<JSType.Any>] object owner, string canvadId);
+		internal static partial JSObject CreateInstance([JSMarshalAs<JSType.Any>] object owner, string canvasId);
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.invalidate")]
 		internal static partial void Invalidate(JSObject nativeSwapChainPanel);
