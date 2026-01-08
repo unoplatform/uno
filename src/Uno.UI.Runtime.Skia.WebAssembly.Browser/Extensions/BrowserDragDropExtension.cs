@@ -221,6 +221,11 @@ namespace Uno.UI.Runtime.Skia
 				}
 			}
 
+			package.Destroyed += (sender, args) =>
+			{
+				NativeMethods.RemoveId(id);
+			};
+
 			return package;
 		}
 
@@ -382,6 +387,9 @@ namespace Uno.UI.Runtime.Skia
 
 			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.retrieveText")]
 			internal static partial Task<string> RetrieveTextAsync(int pendingDropId, int itemId);
+
+			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.removeId")]
+			internal static partial Task<string> RemoveId(int pendingDropId);
 		}
 	}
 }
