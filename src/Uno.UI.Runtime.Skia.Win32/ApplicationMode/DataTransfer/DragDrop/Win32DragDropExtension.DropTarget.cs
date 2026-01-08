@@ -328,7 +328,10 @@ internal partial class Win32DragDropExtension
 			using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
 
 			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop");
-			Directory.CreateDirectory(tempDir);
+			if (!Directory.Exists(tempDir))
+			{
+				Directory.CreateDirectory(tempDir);
+			}
 			var tempPath = Path.Combine(tempDir, fileName);
 			using var fileStream = File.Create(tempPath);
 
