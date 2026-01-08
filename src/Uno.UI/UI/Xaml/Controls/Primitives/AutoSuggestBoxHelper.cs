@@ -2,8 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference AutoSuggestBoxHelper.cpp, tag winui3/release/1.7.1
 
+#nullable enable
+
 using System;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -18,36 +19,6 @@ public partial class AutoSuggestBoxHelper
 	private const string c_textBoxName = "TextBox";
 	private const string c_overlayCornerRadiusKey = "OverlayCornerRadius";
 
-	#region KeepInteriorCornersSquare Attached Property
-
-	/// <summary>
-	/// Identifies the KeepInteriorCornersSquare attached property.
-	/// </summary>
-	public static new DependencyProperty KeepInteriorCornersSquareProperty { get; } =
-		DependencyProperty.RegisterAttached(
-			"KeepInteriorCornersSquare",
-			typeof(bool),
-			typeof(AutoSuggestBoxHelper),
-			new FrameworkPropertyMetadata(false, OnKeepInteriorCornersSquarePropertyChanged));
-
-	/// <summary>
-	/// Gets the value of the KeepInteriorCornersSquare attached property for a specified AutoSuggestBox.
-	/// </summary>
-	/// <param name="autoSuggestBox">The AutoSuggestBox from which the property value is read.</param>
-	/// <returns>The KeepInteriorCornersSquare property value for the AutoSuggestBox.</returns>
-	public static new bool GetKeepInteriorCornersSquare(AutoSuggestBox autoSuggestBox)
-		=> (bool)autoSuggestBox.GetValue(KeepInteriorCornersSquareProperty);
-
-	/// <summary>
-	/// Sets the value of the KeepInteriorCornersSquare attached property for a specified AutoSuggestBox.
-	/// </summary>
-	/// <param name="autoSuggestBox">The AutoSuggestBox to which the attached property is written.</param>
-	/// <param name="value">The value to set.</param>
-	public static new void SetKeepInteriorCornersSquare(AutoSuggestBox autoSuggestBox, bool value)
-		=> autoSuggestBox.SetValue(KeepInteriorCornersSquareProperty, value);
-
-	#endregion
-
 	#region AutoSuggestEventRevokers Attached Property (Internal)
 
 	private static readonly DependencyProperty AutoSuggestEventRevokersProperty =
@@ -57,44 +28,61 @@ public partial class AutoSuggestBoxHelper
 			typeof(AutoSuggestBoxHelper),
 			new FrameworkPropertyMetadata(null));
 
-	private static AutoSuggestEventRevokers GetAutoSuggestEventRevokers(AutoSuggestBox autoSuggestBox)
-		=> (AutoSuggestEventRevokers)autoSuggestBox.GetValue(AutoSuggestEventRevokersProperty);
+	private static AutoSuggestEventRevokers? GetAutoSuggestEventRevokers(AutoSuggestBox autoSuggestBox)
+		=> (AutoSuggestEventRevokers?)autoSuggestBox.GetValue(AutoSuggestEventRevokersProperty);
 
-	private static void SetAutoSuggestEventRevokers(AutoSuggestBox autoSuggestBox, AutoSuggestEventRevokers value)
+	private static void SetAutoSuggestEventRevokers(AutoSuggestBox autoSuggestBox, AutoSuggestEventRevokers? value)
 		=> autoSuggestBox.SetValue(AutoSuggestEventRevokersProperty, value);
 
 	#endregion
 
 	/// <summary>
-	/// Called when the KeepInteriorCornersSquare property changes.
+	/// Called to set up corner radius monitoring for an AutoSuggestBox.
+	/// This should be called when the control is loaded and KeepInteriorCornersSquare is true.
 	/// </summary>
-	private static void OnKeepInteriorCornersSquarePropertyChanged(
-		DependencyObject sender,
-		DependencyPropertyChangedEventArgs args)
+	internal static void SetupCornerRadiusMonitoring(AutoSuggestBox autoSuggestBox)
 	{
-		if (sender is AutoSuggestBox autoSuggestBox)
+		if (autoSuggestBox is null)
 		{
-			bool shouldMonitorAutoSuggestEvents = (bool)args.NewValue;
-
-			if (shouldMonitorAutoSuggestEvents)
-			{
-				var revokers = new AutoSuggestEventRevokers();
-
-				// Subscribe to Loaded event
-				void OnLoaded(object s, RoutedEventArgs e) => OnAutoSuggestBoxLoaded(s, e);
-				autoSuggestBox.Loaded += OnLoaded;
-				revokers.LoadedRevoker = Disposable.Create(() => autoSuggestBox.Loaded -= OnLoaded);
-
-				SetAutoSuggestEventRevokers(autoSuggestBox, revokers);
-			}
-			else
-			{
-				// Clear revokers to unsubscribe from events
-				var revokers = GetAutoSuggestEventRevokers(autoSuggestBox);
-				revokers?.Dispose();
-				SetAutoSuggestEventRevokers(autoSuggestBox, null);
-			}
+			return;
 		}
+
+		// Check if already set up
+		var existingRevokers = GetAutoSuggestEventRevokers(autoSuggestBox);
+		if (existingRevokers is not null)
+		{
+			return;
+		}
+
+		var revokers = new AutoSuggestEventRevokers();
+
+		// Subscribe to Loaded event
+		void OnLoaded(object s, RoutedEventArgs e) => OnAutoSuggestBoxLoaded(s, e);
+		autoSuggestBox.Loaded += OnLoaded;
+		revokers.LoadedRevoker = Disposable.Create(() => autoSuggestBox.Loaded -= OnLoaded);
+
+		SetAutoSuggestEventRevokers(autoSuggestBox, revokers);
+
+		// If already loaded, set up popup events now
+		if (autoSuggestBox.IsLoaded)
+		{
+			OnAutoSuggestBoxLoaded(autoSuggestBox, null!);
+		}
+	}
+
+	/// <summary>
+	/// Called to tear down corner radius monitoring for an AutoSuggestBox.
+	/// </summary>
+	internal static void TeardownCornerRadiusMonitoring(AutoSuggestBox autoSuggestBox)
+	{
+		if (autoSuggestBox is null)
+		{
+			return;
+		}
+
+		var revokers = GetAutoSuggestEventRevokers(autoSuggestBox);
+		revokers?.Dispose();
+		SetAutoSuggestEventRevokers(autoSuggestBox, null);
 	}
 
 	/// <summary>
@@ -122,7 +110,7 @@ public partial class AutoSuggestBoxHelper
 				// Use weak reference to avoid preventing garbage collection
 				var autoSuggestBoxWeakRef = new WeakReference<AutoSuggestBox>(autoSuggestBox);
 
-				void OnPopupOpened(object s, object e)
+				void OnPopupOpened(object? s, object e)
 				{
 					if (autoSuggestBoxWeakRef.TryGetTarget(out var asb))
 					{
@@ -130,7 +118,7 @@ public partial class AutoSuggestBoxHelper
 					}
 				}
 
-				void OnPopupClosed(object s, object e)
+				void OnPopupClosed(object? s, object e)
 				{
 					if (autoSuggestBoxWeakRef.TryGetTarget(out var asb))
 					{
@@ -204,7 +192,7 @@ public partial class AutoSuggestBoxHelper
 			try
 			{
 				var transform = popupBorder.TransformToVisual(textBox);
-				var popupTop = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
+				var popupTop = transform.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				verticalOffset = popupTop.Y;
 			}
 			catch
@@ -221,9 +209,9 @@ public partial class AutoSuggestBoxHelper
 	/// </summary>
 	private sealed class AutoSuggestEventRevokers : IDisposable
 	{
-		public IDisposable LoadedRevoker { get; set; }
-		public IDisposable PopupOpenedRevoker { get; set; }
-		public IDisposable PopupClosedRevoker { get; set; }
+		public IDisposable? LoadedRevoker { get; set; }
+		public IDisposable? PopupOpenedRevoker { get; set; }
+		public IDisposable? PopupClosedRevoker { get; set; }
 
 		public void Dispose()
 		{
