@@ -36,7 +36,22 @@ function renderAffix() {
                 
                 const pageUrl = encodeURIComponent(window.location.href);
                 const issueTitle = encodeURIComponent(`[Docs] Feedback: ${effectiveTitle}`);
-                const issueUrl = 'https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=' + issueTitle + '&docs-issue-location=' + pageUrl;
+                
+                // Determine the repository based on URL content
+                let repoPath = 'unoplatform/uno';
+                const currentUrl = window.location.href;
+                
+                if (currentUrl.includes('uno.extensions')) {
+                    repoPath = 'unoplatform/uno.extensions';
+                } else if (currentUrl.includes('/studio/')) {
+                    repoPath = 'unoplatform/uno.studio';
+                } else if (currentUrl.includes('uno.toolkit.ui')) {
+                    repoPath = 'unoplatform/uno.toolkit.ui';
+                } else if (currentUrl.includes('uno.themes')) {
+                    repoPath = 'unoplatform/Uno.Themes';
+                }
+                
+                const issueUrl = `https://github.com/${repoPath}/issues/new?template=documentation-issue.yml&title=` + issueTitle + '&docs-issue-location=' + pageUrl;
                 
                 const editLink = contributionList.find('li a.contribution-link');
                 
