@@ -5,19 +5,11 @@
 
 		private static _dispatchDropEventMethod: any;
 		private static _nextDropId: number;
-		private static _dropHandler: any;
 		private static _pendingDropId: number;
 		private static _pendingDropData: DataTransfer;
 
-		public static init(): void {
-			if (!DragDropExtension._dispatchDropEventMethod) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					DragDropExtension._dispatchDropEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.OnNativeDropEvent;
-				} else {
-					throw `DragDropExtension: Unable to find dotnet exports`;
-				}
-			}
-
+		public static async init() {
+			DragDropExtension._dispatchDropEventMethod = (await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser")).Uno.UI.Runtime.Skia.BrowserDragDropExtension.OnNativeDropEvent;
 			DragDropExtension._nextDropId = 1;
 
 			// Events fired on the drop target
@@ -27,17 +19,12 @@
 			document.addEventListener("dragleave", DragDropExtension.onDragDropEvent); // Seems to be raised also on drop?
 			document.addEventListener("drop", DragDropExtension.onDragDropEvent);
 
-			// Events fired on the draggable target (the source element)
-			//this._dragHandler = this.dispatchDragEvent.bind(this);
-			//document.addEventListener("dragstart", this._dragHandler);
-			//document.addEventListener("drag", this._dragHandler);
-			//document.addEventListener("dragend", this._dragHandler);
-
 			// #18854: Prevent the browser default selection drag preview.
 			document.addEventListener('dragstart', e => e.preventDefault());
 		}
 
 		private static onDragDropEvent(evt: DragEvent): any {
+			console.log("ramez onDragDropEvent: ", evt);
 			if (evt.type == "dragleave"
 				&& evt.clientX > 0
 				&& evt.clientX < document.documentElement.clientWidth
@@ -49,16 +36,16 @@
 			}
 
 			if (evt.type == "dragenter") {
-				if (this._pendingDropId > 0) {
+				if (DragDropExtension._pendingDropId > 0) {
 					// For the same reason as above, we ignore all dragenter if there is already a pending active drop
 					return;
 				}
 
-				this._pendingDropId = ++DragDropExtension._nextDropId;
+				DragDropExtension._pendingDropId = ++DragDropExtension._nextDropId;
 			}
 
 			// We must keep a reference to the dataTransfer in order to be able to retrieve data items
-			this._pendingDropData = evt.dataTransfer;
+			DragDropExtension._pendingDropData = evt.dataTransfer;
 
 			let dataItems = "";
 			let allowedOperations = "";
@@ -92,14 +79,13 @@
 				evt.preventDefault();
 
 				if (evt.type == "dragleave" || evt.type == "drop") {
-					this._pendingDropData = null;
-					this._pendingDropId = 0;
+					DragDropExtension._pendingDropData = null;
+					DragDropExtension._pendingDropId = 0;
 				}
 			}
 		}
 
 		public static async retrieveText(itemId: number): Promise<string> {
-
 			const data = DragDropExtension._pendingDropData;
 			if (data == null) {
 				throw new Error("No pending drag and drop data.");
