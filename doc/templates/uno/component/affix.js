@@ -21,9 +21,163 @@ function renderAffix() {
         });
 
         const contribution = $('.contribution');
+        
+        if (contribution.length > 0) {
+            const contributionList = contribution.find('ul');
+            if (contributionList.length > 0) {
+                // Sanitize document.title to prevent XSS
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = document.title || '';
+                const sanitizedTitle = tempDiv.textContent
+                    .trim()
+                    .substring(0, 200);
+                // Fallback to a default title if the sanitized title is empty
+                const effectiveTitle = sanitizedTitle || 'Documentation Feedback';
+                
+                const pageUrl = encodeURIComponent(window.location.href);
+                const issueTitle = encodeURIComponent(`[Docs] Feedback: ${effectiveTitle}`);
+                const issueUrl = 'https://github.com/unoplatform/uno/issues/new?template=documentation-issue.yml&title=' + issueTitle + '&docs-issue-location=' + pageUrl;
+                
+                const editLink = contributionList.find('li a.contribution-link');
+                
+                // Add icon to "Edit this page" using DOM methods
+                if (editLink.length > 0) {
+                    const editIcon = $('<i></i>').addClass('fa fa-edit');
+                    editLink.prepend(editIcon).prepend(' ');
+                }
+                // Add "Send feedback" link using DOM methods to prevent XSS
+                const feedbackLink = $('<li></li>');
+                const feedbackAnchor = $('<a></a>')
+                    .attr('href', issueUrl)
+                    .attr('target', '_blank')
+                    .attr('rel', 'noopener noreferrer')
+                    .addClass('contribution-link');
+                
+                // Create icon and text using DOM methods
+                const icon = $('<i></i>').addClass('fa fa-comments');
+                feedbackAnchor.append(icon).append(' Send feedback');
+                
+                feedbackLink.append(feedbackAnchor);
+                contributionList.append(feedbackLink);
+            }
+            
+            // Add styling classes and ARIA attributes for the feedback box
+            contribution.addClass('feedback-box')
+                .attr('role', 'complementary')
+                .attr('aria-label', 'Edit page and send feedback actions')
+                .attr('tabindex', '0'); // Make feedback box keyboard-focusable and programmatically focusable
+        }
+        
         const contributionDiv = contribution.get(0).outerHTML;
         contribution.remove();
-        $('.sideaffix').append(contributionDiv);
+        $('body').append(contributionDiv);
+        
+        // Check for actual geometric overlap with affix sidebar and main content
+        let overlapCheckTimer;
+        function checkFeedbackBoxOverlap() {
+            const feedbackBox = $('.feedback-box');
+            if (feedbackBox.length === 0) return;
+            
+            const feedbackRect = feedbackBox[0].getBoundingClientRect();
+            let hasOverlap = false;
+            
+            // Check overlap with "In This Article" section
+            const affixContent = $('#affix');
+            if (affixContent.length > 0 && affixContent.children().length > 0) {
+                const affixRect = affixContent[0].getBoundingClientRect();
+                hasOverlap = !(
+                    feedbackRect.right < affixRect.left ||
+                    feedbackRect.left > affixRect.right ||
+                    feedbackRect.bottom < affixRect.top ||
+                    feedbackRect.top > affixRect.bottom
+                );
+            }
+            
+            // Check overlap with main article content
+            if (!hasOverlap) {
+                const articleContent = $('.article article');
+                if (articleContent.length > 0) {
+                    const articleRect = articleContent[0].getBoundingClientRect();
+                    hasOverlap = !(
+                        feedbackRect.right < articleRect.left ||
+                        feedbackRect.left > articleRect.right ||
+                        feedbackRect.bottom < articleRect.top ||
+                        feedbackRect.top > articleRect.bottom
+                    );
+                }
+            }
+            
+            if (hasOverlap) {
+                feedbackBox.addClass('hidden-with-overlap');
+            } else {
+                feedbackBox.removeClass('hidden-with-overlap');
+            }
+        }
+        
+        // Debounced overlap check for smoother performance
+        function debouncedOverlapCheck() {
+            clearTimeout(overlapCheckTimer);
+            overlapCheckTimer = setTimeout(checkFeedbackBoxOverlap, 100);
+        }
+        
+        // Initial check
+        checkFeedbackBoxOverlap();
+        
+        // Add scroll behavior for reduced widths - hide box while scrolling, show when stopped
+        // Ensure any previous handlers are removed to prevent leaks in dynamic scenarios
+        $(window).off('.feedbackBox');
+
+        const MOBILE_BREAKPOINT = 992;
+        const SCROLL_HIDE_DELAY_MS = 300;
+        let scrollTimer;
+        let rafPending = false;
+        
+        function handleScrollEffects() {
+            try {
+                const feedbackBox = $('.feedback-box');
+                if (feedbackBox.length === 0) {
+                    return;
+                }
+
+                // Check for overlap on scroll (debounced)
+                debouncedOverlapCheck();
+
+                // Only apply scroll hiding on reduced widths (<992px)
+                if ($(window).width() < MOBILE_BREAKPOINT) {
+                    feedbackBox.addClass('scrolling');
+
+                    // Clear existing timer
+                    clearTimeout(scrollTimer);
+
+                    // Set new timer to remove scrolling class after scrolling stops
+                    scrollTimer = setTimeout(function() {
+                        feedbackBox.removeClass('scrolling');
+                    }, SCROLL_HIDE_DELAY_MS);
+                } else {
+                    // Remove scrolling class on larger screens
+                    feedbackBox.removeClass('scrolling');
+                }
+            } finally {
+                rafPending = false;
+            }
+        }
+        
+        $(window).on('scroll.feedbackBox', function() {
+            if (rafPending) {
+                return;
+            }
+            
+            rafPending = true;
+            
+            if (window.requestAnimationFrame) {
+                window.requestAnimationFrame(handleScrollEffects);
+            } else {
+                setTimeout(handleScrollEffects, 16);
+            }
+        });
+        
+        // Check for overlap on resize (debounced)
+        $(window).on('resize.feedbackBox', debouncedOverlapCheck);
 
     }
 
