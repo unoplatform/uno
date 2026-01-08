@@ -379,16 +379,16 @@ namespace Uno.UI.Runtime.Skia
 
 		private static partial class NativeMethods
 		{
-			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.init")]
+			[JSImport($"globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.{nameof(BrowserDragDropExtension)}.init")]
 			internal static partial void Init();
 
-			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.retrieveFiles")]
+			[JSImport($"globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.{nameof(BrowserDragDropExtension)}.retrieveFiles")]
 			internal static partial Task<string> RetrieveFilesAsync(int pendingDropId, int[] itemIds);
 
-			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.retrieveText")]
+			[JSImport($"globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.{nameof(BrowserDragDropExtension)}.retrieveText")]
 			internal static partial Task<string> RetrieveTextAsync(int pendingDropId, int itemId);
 
-			[JSImport("globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.removeId")]
+			[JSImport($"globalThis.Windows.ApplicationModel.DataTransfer.DragDrop.Core.{nameof(BrowserDragDropExtension)}.removeId")]
 			internal static partial Task<string> RemoveId(int pendingDropId);
 		}
 	}
