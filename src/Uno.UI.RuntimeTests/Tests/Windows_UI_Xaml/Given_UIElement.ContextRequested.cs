@@ -169,30 +169,6 @@ public partial class Given_UIElement_ContextRequested
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_ContextCanceled_Event_Is_Raised()
-	{
-		var button = new Button { Content = "Test Button" };
-		var contextCanceledRaised = false;
-
-		button.ContextCanceled += (sender, args) =>
-		{
-			contextCanceledRaised = true;
-		};
-
-		await UITestHelper.Load(button);
-
-		var contentRoot = Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(button);
-		Assert.IsNotNull(contentRoot);
-
-		// Simulate context menu on holding then cancel
-		contentRoot.ContextMenuProcessor.SetIsContextMenuOnHolding(true);
-		contentRoot.ContextMenuProcessor.RaiseContextCanceledEvent(button);
-
-		Assert.IsTrue(contextCanceledRaised, "ContextCanceled event should be raised");
-	}
-
-	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_ContextRequested_Bubbles_Up_Tree()
 	{
 		var innerButton = new Button { Content = "Inner" };

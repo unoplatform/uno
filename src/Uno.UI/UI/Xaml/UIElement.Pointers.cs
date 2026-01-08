@@ -14,6 +14,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno;
@@ -480,10 +481,24 @@ namespace Microsoft.UI.Xaml
 					else if (args.HoldingState == HoldingState.Canceled)
 					{
 						// Cancel context menu if holding was canceled (e.g., user moved finger)
+						// Ported from WinUI PointerInputProcessor.cpp:494-509
 						contentRoot.ContextMenuProcessor.StopContextMenuTimer();
 						if (contentRoot.ContextMenuProcessor.IsContextMenuOnHolding)
 						{
-							contentRoot.ContextMenuProcessor.RaiseContextCanceledEvent(src);
+							// Check if we're in a flyout/popup layer
+							if (src.GetRootOfPopupSubTree() != null)
+							{
+								// In flyout layer - close the topmost light-dismiss popup
+								var popupRoot = VisualTree.GetPopupRootForElement(src);
+								popupRoot?.CloseTopmostPopup(FocusState.Programmatic, PopupRoot.PopupFilter.LightDismissOnly);
+							}
+							else
+							{
+								// Not in flyout - raise ContextCanceled event
+								var cancelArgs = new RoutedEventArgs { OriginalSource = src };
+								src.RaiseEvent(ContextCanceledEvent, cancelArgs);
+							}
+							contentRoot.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
 						}
 					}
 					else if (args.HoldingState == HoldingState.Completed)
