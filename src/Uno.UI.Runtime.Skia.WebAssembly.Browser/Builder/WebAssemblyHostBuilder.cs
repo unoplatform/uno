@@ -4,11 +4,11 @@ using Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
 namespace Uno.UI.Hosting;
 
-public partial class WebAssemblyHostBuilder : IPlatformHostBuilder
+public class WebAssemblyHostBuilder : IPlatformHostBuilder
 {
 	private bool _forceSoftwareRendering;
 
-	public WebAssemblyHostBuilder()
+	internal WebAssemblyHostBuilder()
 	{
 	}
 
@@ -21,8 +21,8 @@ public partial class WebAssemblyHostBuilder : IPlatformHostBuilder
 		return this;
 	}
 
-	public bool IsSupported => true;
+	bool IPlatformHostBuilder.IsSupported => true;
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
+	UnoPlatformHost IPlatformHostBuilder.Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
 		=> new WebAssemblyBrowserHost(appBuilder, _forceSoftwareRendering);
 }
