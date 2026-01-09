@@ -25,9 +25,9 @@ partial class ApplicationActivity
 		{
 			var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
 			SystemNavigationManager.BackRequestedSubscribersChanged += OnBackRequestedSubscribersChanged;
-			_backPressedCallback = new UnoOnBackPressedCallback(
-				enabled: systemNavigationManager.HasBackRequestedSubscribers);
+			_backPressedCallback = new UnoOnBackPressedCallback();
 			OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
+			_backPressedCallback.Enabled = systemNavigationManager.HasBackRequestedSubscribers;
 		}
 	}
 
@@ -50,11 +50,11 @@ partial class ApplicationActivity
 	}
 
 	/// <summary>
-	/// Callback for handling back button presses on Android 16+ with predictive back gesture support.
+	/// Callback for handling back button presses on Android 16+ (API 36+) with predictive back gesture support.
 	/// </summary>
 	private sealed class UnoOnBackPressedCallback : OnBackPressedCallback
 	{
-		public UnoOnBackPressedCallback(bool enabled) : base(enabled)
+		public UnoOnBackPressedCallback() : base(false)
 		{
 		}
 
