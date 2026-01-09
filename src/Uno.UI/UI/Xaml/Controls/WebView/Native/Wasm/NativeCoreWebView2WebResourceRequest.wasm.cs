@@ -1,41 +1,25 @@
-#if __ANDROID__ || ANDROID_SKIA
+#if __WASM__ || WASM_SKIA
 #nullable enable
 
 using System;
 using System.Collections.Generic;
-using Android.Webkit;
 using Microsoft.Web.WebView2.Core;
 
 namespace Uno.Web.WebView2.Core;
 
 /// <summary>
-/// Android-specific implementation for WebResourceRequest.
+/// WASM-specific implementation for WebResourceRequest.
 /// </summary>
 internal partial class NativeCoreWebView2WebResourceRequest : INativeWebResourceRequest
 {
 	private NativeCoreWebView2HttpRequestHeaders? _headers;
 	private string _uri;
 	private string _method;
-	private readonly IWebResourceRequest? _nativeRequest;
 
-	internal NativeCoreWebView2WebResourceRequest(IWebResourceRequest? nativeRequest)
+	internal NativeCoreWebView2WebResourceRequest(string url, string method, IDictionary<string, string>? headers)
 	{
-		_nativeRequest = nativeRequest;
-		_uri = nativeRequest?.Url?.ToString() ?? string.Empty;
-		_method = nativeRequest?.Method ?? "GET";
-
-		var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-		if (nativeRequest?.RequestHeaders != null)
-		{
-			foreach (var key in nativeRequest.RequestHeaders.Keys)
-			{
-				if (key != null && nativeRequest.RequestHeaders.TryGetValue(key, out var value) && value != null)
-				{
-					headers[key] = value;
-				}
-			}
-		}
-
+		_uri = url ?? string.Empty;
+		_method = string.IsNullOrWhiteSpace(method) ? "GET" : method;
 		_headers = new NativeCoreWebView2HttpRequestHeaders(headers);
 	}
 
@@ -53,8 +37,8 @@ internal partial class NativeCoreWebView2WebResourceRequest : INativeWebResource
 
 	public global::Windows.Storage.Streams.IRandomAccessStream Content
 	{
-		get => throw new NotSupportedException("Content stream is not available on Android WebResourceRequest.");
-		set => throw new NotSupportedException("Setting Content is not supported on Android WebResourceRequest.");
+		get => throw new NotSupportedException("Content stream is not available on WASM WebResourceRequest.");
+		set => throw new NotSupportedException("Setting Content is not supported on WASM WebResourceRequest.");
 	}
 
 	public INativeHttpRequestHeaders Headers

@@ -1,25 +1,26 @@
-#if __IOS__ || __MACOS__ || UIKIT_SKIA
+#if __IOS__ || UIKIT_SKIA
 #nullable enable
 
 using System;
 using System.Collections.Generic;
 using Foundation;
+using Microsoft.Web.WebView2.Core;
 using Windows.Foundation;
 
-namespace Microsoft.Web.WebView2.Core;
+namespace Uno.Web.WebView2.Core;
 
 /// <summary>
 /// iOS/macOS-specific implementation for WebResourceRequested event args.
 /// </summary>
-public partial class CoreWebView2WebResourceRequestedEventArgs
+internal partial class NativeCoreWebView2WebResourceRequestedEventArgs : INativeWebResourceRequestedEventArgs
 {
-	private CoreWebView2WebResourceRequest? _request;
-	private CoreWebView2WebResourceResponse? _response;
+	private NativeCoreWebView2WebResourceRequest? _request;
+	private NativeCoreWebView2WebResourceResponse? _response;
 	private readonly CoreWebView2WebResourceContext _resourceContext;
 	private Deferral? _deferral;
 	private readonly NSUrlRequest? _nativeRequest;
 
-	internal CoreWebView2WebResourceRequestedEventArgs(
+	internal NativeCoreWebView2WebResourceRequestedEventArgs(
 		NSUrlRequest? nativeRequest,
 		CoreWebView2WebResourceContext resourceContext)
 	{
@@ -27,13 +28,13 @@ public partial class CoreWebView2WebResourceRequestedEventArgs
 		_resourceContext = resourceContext;
 	}
 
-	public CoreWebView2WebResourceRequest Request
-		=> _request ??= new CoreWebView2WebResourceRequest(_nativeRequest);
+	public INativeWebResourceRequest Request
+		=> _request ??= new NativeCoreWebView2WebResourceRequest(_nativeRequest);
 
-	public CoreWebView2WebResourceResponse Response
+	public INativeWebResourceResponse? Response
 	{
-		get => _response ??= new CoreWebView2WebResourceResponse();
-		set => _response = value;
+		get => _response;
+		set => _response = value as NativeCoreWebView2WebResourceResponse;
 	}
 
 	public CoreWebView2WebResourceContext ResourceContext => _resourceContext;

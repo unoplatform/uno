@@ -1,28 +1,29 @@
-#if __IOS__ || __MACOS__ || UIKIT_SKIA
+#if __IOS__ || UIKIT_SKIA
 #nullable enable
 
 using System;
 using System.Collections.Generic;
 using Foundation;
+using Microsoft.Web.WebView2.Core;
 
-namespace Microsoft.Web.WebView2.Core;
+namespace Uno.Web.WebView2.Core;
 
 /// <summary>
 /// iOS/macOS-specific implementation for WebResourceRequest.
 /// </summary>
-public partial class CoreWebView2WebResourceRequest
+internal partial class NativeCoreWebView2WebResourceRequest : INativeWebResourceRequest
 {
-	private CoreWebView2HttpRequestHeaders? _headers;
+	private NativeCoreWebView2HttpRequestHeaders? _headers;
 	private string _uri;
 	private string _method;
 	private readonly NSUrlRequest? _nativeRequest;
 
-	internal CoreWebView2WebResourceRequest(NSUrlRequest? nativeRequest)
+	internal NativeCoreWebView2WebResourceRequest(NSUrlRequest? nativeRequest)
 	{
 		_nativeRequest = nativeRequest;
 		_uri = nativeRequest?.Url?.AbsoluteString ?? string.Empty;
 		_method = nativeRequest?.HttpMethod ?? "GET";
-		_headers = new CoreWebView2HttpRequestHeaders(nativeRequest?.Headers);
+		_headers = new NativeCoreWebView2HttpRequestHeaders(nativeRequest?.Headers);
 	}
 
 	public string Uri
@@ -43,8 +44,8 @@ public partial class CoreWebView2WebResourceRequest
 		set => throw new NotSupportedException("Setting Content is not supported on iOS/macOS WebResourceRequest.");
 	}
 
-	public CoreWebView2HttpRequestHeaders Headers
-		=> _headers ??= new CoreWebView2HttpRequestHeaders((NSDictionary?)null);
+	public INativeHttpRequestHeaders Headers
+		=> _headers ??= new NativeCoreWebView2HttpRequestHeaders((NSDictionary?)null);
 
 	/// <summary>
 	/// Indicates whether headers have been modified.

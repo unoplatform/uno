@@ -1,35 +1,27 @@
-#if __IOS__ || __MACOS__ || UIKIT_SKIA
+#if __WASM__ || WASM_SKIA
 #nullable enable
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Foundation;
+using Microsoft.Web.WebView2.Core;
 
-namespace Microsoft.Web.WebView2.Core;
+namespace Uno.Web.WebView2.Core;
 
 /// <summary>
-/// iOS/macOS-specific implementation for HTTP request headers.
+/// WASM-specific implementation for HTTP request headers.
 /// </summary>
-public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<string, string>>
+internal partial class NativeCoreWebView2HttpRequestHeaders : INativeHttpRequestHeaders
 {
 	private readonly Dictionary<string, string> _originalHeaders;
 	private readonly Dictionary<string, string> _addedHeaders = new(StringComparer.OrdinalIgnoreCase);
 	private readonly HashSet<string> _removedHeaders = new(StringComparer.OrdinalIgnoreCase);
 
-	internal CoreWebView2HttpRequestHeaders(NSDictionary? nativeHeaders = null)
+	internal NativeCoreWebView2HttpRequestHeaders(IDictionary<string, string>? headers = null)
 	{
-		_originalHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-		if (nativeHeaders != null)
-		{
-			foreach (var key in nativeHeaders.Keys)
-			{
-				var keyStr = key.ToString();
-				var valueStr = nativeHeaders[key]?.ToString() ?? string.Empty;
-				_originalHeaders[keyStr] = valueStr;
-			}
-		}
+		_originalHeaders = headers != null
+			? new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase)
+			: new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 	}
 
 	/// <summary>
@@ -75,7 +67,7 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 		return _originalHeaders.TryGetValue(name, out var value) ? value : string.Empty;
 	}
 
-	public CoreWebView2HttpHeadersCollectionIterator GetHeaders(string name)
+	public INativeHttpHeadersCollectionIterator GetHeaders(string name)
 	{
 		var headers = new List<KeyValuePair<string, string>>();
 		var value = GetHeader(name);
@@ -83,7 +75,7 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 		{
 			headers.Add(new KeyValuePair<string, string>(name, value));
 		}
-		return new CoreWebView2HttpHeadersCollectionIterator(headers);
+		return new NativeCoreWebView2HttpHeadersCollectionIterator(headers);
 	}
 
 	public bool Contains(string name)

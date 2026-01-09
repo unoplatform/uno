@@ -1,15 +1,16 @@
-#if __ANDROID__ || ANDROID_SKIA
+#if __IOS__ || UIKIT_SKIA
 #nullable enable
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Foundation;
 using Microsoft.Web.WebView2.Core;
 
 namespace Uno.Web.WebView2.Core;
 
 /// <summary>
-/// Android-specific implementation for HTTP request headers.
+/// iOS/macOS-specific implementation for HTTP request headers.
 /// </summary>
 internal partial class NativeCoreWebView2HttpRequestHeaders : INativeHttpRequestHeaders
 {
@@ -17,7 +18,22 @@ internal partial class NativeCoreWebView2HttpRequestHeaders : INativeHttpRequest
 	private readonly Dictionary<string, string> _addedHeaders = new(StringComparer.OrdinalIgnoreCase);
 	private readonly HashSet<string> _removedHeaders = new(StringComparer.OrdinalIgnoreCase);
 
-	internal NativeCoreWebView2HttpRequestHeaders(IDictionary<string, string>? headers = null)
+	internal NativeCoreWebView2HttpRequestHeaders(NSDictionary? nativeHeaders = null)
+	{
+		_originalHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+		if (nativeHeaders != null)
+		{
+			foreach (var key in nativeHeaders.Keys)
+			{
+				var keyStr = key.ToString();
+				var valueStr = nativeHeaders[key]?.ToString() ?? string.Empty;
+				_originalHeaders[keyStr] = valueStr;
+			}
+		}
+	}
+
+	internal NativeCoreWebView2HttpRequestHeaders(IDictionary<string, string>? headers)
 	{
 		_originalHeaders = headers != null
 			? new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase)

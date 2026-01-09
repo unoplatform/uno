@@ -8,6 +8,7 @@ using Foundation;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 using WebKit;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -81,13 +82,14 @@ public
 			return;
 		}
 
-		var args = new CoreWebView2WebResourceRequestedEventArgs(request, resourceContext);
+		var nativeArgs = new NativeCoreWebView2WebResourceRequestedEventArgs(request, resourceContext);
+		var args = new CoreWebView2WebResourceRequestedEventArgs(nativeArgs);
 		WebResourceRequested?.Invoke(this, args);
 
 		// Track header modifications for JavaScript injection
-		if (args.HasHeaderModifications)
+		if (nativeArgs.HasHeaderModifications)
 		{
-			var effectiveHeaders = args.GetEffectiveHeaders();
+			var effectiveHeaders = nativeArgs.GetEffectiveHeaders();
 			if (effectiveHeaders != null)
 			{
 				UpdateCustomHeaders(effectiveHeaders);

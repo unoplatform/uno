@@ -27,7 +27,14 @@ public partial class CoreWebView2HttpResponseHeaders : IEnumerable<KeyValuePair<
 	public string GetHeader(string name) => _nativeHeaders.GetHeader(name);
 
 	public CoreWebView2HttpHeadersCollectionIterator GetHeaders(string name)
-		=> new CoreWebView2HttpHeadersCollectionIterator(_nativeHeaders.GetHeaders(name));
+	{
+		var nativeIterator = _nativeHeaders.GetHeaders(name);
+		if (nativeIterator is INativeHttpHeadersCollectionIterator iterator)
+		{
+			return new CoreWebView2HttpHeadersCollectionIterator(iterator);
+		}
+		throw new InvalidOperationException("The native headers collection did not return a valid iterator.");
+	}
 
 	public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
 	{
@@ -36,4 +43,3 @@ public partial class CoreWebView2HttpResponseHeaders : IEnumerable<KeyValuePair<
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
-

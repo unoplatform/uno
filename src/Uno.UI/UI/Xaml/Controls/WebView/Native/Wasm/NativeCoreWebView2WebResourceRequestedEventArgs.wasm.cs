@@ -1,16 +1,15 @@
-#if __ANDROID__ || ANDROID_SKIA
+#if __WASM__ || WASM_SKIA
 #nullable enable
 
 using System;
 using System.Collections.Generic;
-using Android.Webkit;
 using Microsoft.Web.WebView2.Core;
 using Windows.Foundation;
 
 namespace Uno.Web.WebView2.Core;
 
 /// <summary>
-/// Android-specific implementation for WebResourceRequested event args.
+/// WASM-specific implementation for WebResourceRequested event args.
 /// </summary>
 internal partial class NativeCoreWebView2WebResourceRequestedEventArgs : INativeWebResourceRequestedEventArgs
 {
@@ -18,18 +17,24 @@ internal partial class NativeCoreWebView2WebResourceRequestedEventArgs : INative
 	private NativeCoreWebView2WebResourceResponse? _response;
 	private readonly CoreWebView2WebResourceContext _resourceContext;
 	private Deferral? _deferral;
-	private readonly IWebResourceRequest _nativeRequest;
+	private readonly string _url;
+	private readonly string _method;
+	private readonly IDictionary<string, string>? _headers;
 
 	internal NativeCoreWebView2WebResourceRequestedEventArgs(
-		IWebResourceRequest nativeRequest,
+		string url,
+		string method,
+		IDictionary<string, string>? headers,
 		CoreWebView2WebResourceContext resourceContext)
 	{
-		_nativeRequest = nativeRequest;
+		_url = url;
+		_method = method;
+		_headers = headers;
 		_resourceContext = resourceContext;
 	}
 
 	public INativeWebResourceRequest Request
-		=> _request ??= new NativeCoreWebView2WebResourceRequest(_nativeRequest);
+		=> _request ??= new NativeCoreWebView2WebResourceRequest(_url, _method, _headers);
 
 	public INativeWebResourceResponse? Response
 	{
@@ -49,17 +54,12 @@ internal partial class NativeCoreWebView2WebResourceRequestedEventArgs : INative
 	}
 
 	/// <summary>
-	/// Indicates whether headers have been modified and require re-fetching.
+	/// Indicates whether headers were modified.
 	/// </summary>
-	internal bool RequiresRefetch => _request?.HasModifiedHeaders ?? false;
+	internal bool HasHeaderModifications => _request?.HasModifiedHeaders ?? false;
 
 	/// <summary>
-	/// Gets the native Android WebResourceResponse if a custom response was set.
-	/// </summary>
-	internal WebResourceResponse? GetNativeResponse() => _response?.ToNativeResponse();
-
-	/// <summary>
-	/// Gets the effective headers for re-fetching if headers were modified.
+	/// Gets the effective headers after modifications.
 	/// </summary>
 	internal Dictionary<string, string>? GetEffectiveHeaders()
 		=> _request?.GetEffectiveHeaders();

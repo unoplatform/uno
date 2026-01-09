@@ -12,9 +12,9 @@ namespace Uno.Web.WebView2.Core;
 /// <summary>
 /// Android-specific implementation for WebResourceResponse.
 /// </summary>
-public partial class NativeCoreWebView2WebResourceResponse : INativeWebResourceResponse
+internal partial class NativeCoreWebView2WebResourceResponse : INativeWebResourceResponse
 {
-	private CoreWebView2HttpResponseHeaders? _headers;
+	private NativeCoreWebView2HttpResponseHeaders? _headers;
 	private int _statusCode = 200;
 	private string _reasonPhrase = "OK";
 	private global::Windows.Storage.Streams.IRandomAccessStream? _content;
@@ -27,8 +27,8 @@ public partial class NativeCoreWebView2WebResourceResponse : INativeWebResourceR
 		set => _content = value;
 	}
 
-	public CoreWebView2HttpResponseHeaders Headers
-		=> _headers ??= new CoreWebView2HttpResponseHeaders();
+	public INativeHttpResponseHeaders Headers
+		=> _headers ??= new NativeCoreWebView2HttpResponseHeaders();
 
 	public int StatusCode
 	{

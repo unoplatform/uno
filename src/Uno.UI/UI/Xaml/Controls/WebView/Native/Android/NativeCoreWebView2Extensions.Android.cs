@@ -22,4 +22,14 @@ internal static class NativeCoreWebView2Extensions
 		=> request.NativeRequest is NativeCoreWebView2WebResourceRequest nativeRequest
 			? nativeRequest
 			: throw new InvalidOperationException("The provided CoreWebView2WebResourceRequest is not backed by an Android native implementation.");
+
+	public static CoreWebView2HttpHeadersCollectionIterator GetHeadersIterator(this INativeHttpResponseHeaders headers, string name)
+	{
+		var obj = headers.GetHeaders(name);
+		if (obj is INativeHttpHeadersCollectionIterator nativeIt)
+		{
+			return new CoreWebView2HttpHeadersCollectionIterator(nativeIt);
+		}
+		throw new InvalidOperationException("The provided headers collection is not backed by an Android native iterator implementation.");
+	}
 }

@@ -81,8 +81,8 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 			return null;
 		}
 
-		var args = new CoreWebView2WebResourceRequestedEventArgs(
-			new NativeCoreWebView2WebResourceRequestedEventArgs(request, resourceContext));
+		var nativeArgs = new NativeCoreWebView2WebResourceRequestedEventArgs(request, resourceContext);
+		var args = new CoreWebView2WebResourceRequestedEventArgs(nativeArgs);
 
 		try
 		{
@@ -97,18 +97,18 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 			return null;
 		}
 
-		var nativeResponse = (NativeCoreWebView2WebResourceResponse)args.Response.NativeResponse;
+		var nativeResponse = nativeArgs.Response as NativeCoreWebView2WebResourceResponse;
 		if (nativeResponse != null)
 		{
 			return nativeResponse.ToNativeResponse();
 		}
 
-		if (!((NativeCoreWebView2WebResourceRequestedEventArgs)args.NativeArgs).RequiresRefetch)
+		if (!nativeArgs.RequiresRefetch)
 		{
 			return null;
 		}
 
-		var effectiveHeaders = args.GetEffectiveHeaders();
+		var effectiveHeaders = nativeArgs.GetEffectiveHeaders();
 		if (effectiveHeaders == null)
 		{
 			return null;

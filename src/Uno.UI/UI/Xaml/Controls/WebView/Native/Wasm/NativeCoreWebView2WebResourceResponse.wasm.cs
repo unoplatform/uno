@@ -1,23 +1,22 @@
-#if __IOS__ || __MACOS__ || UIKIT_SKIA
+#if __WASM__ || WASM_SKIA
 #nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.IO;
+using Microsoft.Web.WebView2.Core;
 
-namespace Microsoft.Web.WebView2.Core;
+namespace Uno.Web.WebView2.Core;
 
 /// <summary>
-/// iOS/macOS-specific implementation for WebResourceResponse.
+/// WASM-specific implementation for WebResourceResponse.
 /// </summary>
-public partial class CoreWebView2WebResourceResponse
+internal partial class NativeCoreWebView2WebResourceResponse : INativeWebResourceResponse
 {
-	private CoreWebView2HttpResponseHeaders? _headers;
+	private NativeCoreWebView2HttpResponseHeaders? _headers;
 	private int _statusCode = 200;
 	private string _reasonPhrase = "OK";
 	private global::Windows.Storage.Streams.IRandomAccessStream? _content;
 
-	internal CoreWebView2WebResourceResponse() { }
+	internal NativeCoreWebView2WebResourceResponse() { }
 
 	public global::Windows.Storage.Streams.IRandomAccessStream Content
 	{
@@ -25,8 +24,8 @@ public partial class CoreWebView2WebResourceResponse
 		set => _content = value;
 	}
 
-	public CoreWebView2HttpResponseHeaders Headers
-		=> _headers ??= new CoreWebView2HttpResponseHeaders();
+	public INativeHttpResponseHeaders Headers
+		=> _headers ??= new NativeCoreWebView2HttpResponseHeaders();
 
 	public int StatusCode
 	{
