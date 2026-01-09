@@ -337,8 +337,9 @@ namespace Uno.UI.DataBinding
 		/// The private members lookup is present to enable the binding to
 		/// x:Name elements in x:Bind operations.
 		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Interface types returned from GetInterfaces may not preserve property annotations, but this is acceptable for runtime binding")]
 		private static PropertyInfo? GetPropertyInfo(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type type,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type type,
 			string name,
 			bool allowPrivateMembers)
 		{
@@ -400,8 +401,9 @@ namespace Uno.UI.DataBinding
 		/// The private members lookup is present to enable the binding to
 		/// x:Name elements in x:Bind operations.
 		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Interface types returned from GetInterfaces may not preserve property annotations, but this is acceptable for runtime binding")]
 		private static PropertyInfo? GetIndexerInfo(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type type,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type type,
 			Type? parameterType,
 			bool allowPrivateMembers)
 		{
