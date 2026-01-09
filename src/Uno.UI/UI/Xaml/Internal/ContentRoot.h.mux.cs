@@ -2,7 +2,6 @@
 using Microsoft.UI.Content;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
-using Uno.UI.Xaml.Internal;
 
 namespace Uno.UI.Xaml.Core;
 
