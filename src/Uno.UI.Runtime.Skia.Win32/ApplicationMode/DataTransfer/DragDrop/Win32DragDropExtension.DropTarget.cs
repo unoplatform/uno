@@ -406,7 +406,7 @@ internal partial class Win32DragDropExtension
 			return false;
 		}
 
-		const int chunkSize = 2^30; // 1 GiB
+		const int chunkSize = 1024 * 1024 * 1024; // 1 GiB
 		var remaining = fileSize;
 		var currentPtr = (byte*)dataPtr;
 		while (remaining > 0)
