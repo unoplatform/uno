@@ -149,9 +149,8 @@ If you do need to generate them:
 
 > [!NOTE]
 > By default, the build does not fail on DocFX errors (it prints them in the console). This is for simplicity since you don't need the implemented views for most documentation work. To test DocFX and break on error, run the `npm run strict` command.
->
-> ### Build and serve the documentation locally
 
+### Build and serve the documentation locally
 #### Using npm commands (Recommended)
 
 The easiest way to build and serve the documentation locally is using npm scripts:
