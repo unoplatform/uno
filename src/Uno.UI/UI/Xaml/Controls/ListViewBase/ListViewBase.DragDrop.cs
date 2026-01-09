@@ -482,6 +482,17 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Determines whether this ListViewBase is draggable.
 		/// Returns true if CanDragItems is enabled.
 		/// </summary>
-		internal override bool IsDraggableOrPannableImpl() => CanDragItems;
+		internal override bool IsDraggableOrPannableImpl() => GetIsDragEnabled();
+
+		// Returns TRUE if the current interaction mode requires drag and drop.
+		// This is the case if CanDragItems == TRUE, or CanReorderItems == TRUE
+		// unless we're grouping.
+		private bool GetIsDragEnabled()
+		{
+			// Ignore canReorderItems if we're grouping.
+			var reorderActive = CanReorderItems && !IsGrouping;
+			var pDragEnabled = (CanDragItems || reorderActive);
+			return pDragEnabled;
+		}
 	}
 }
