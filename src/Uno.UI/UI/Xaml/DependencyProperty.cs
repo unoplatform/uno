@@ -544,6 +544,22 @@ namespace Microsoft.UI.Xaml
 				return Boxes.BooleanBoxes.BoxedFalse;
 			}
 
+#if __SKIA__
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 249-276)
+			// WinUI calls GetDefaultTextControlContextFlyout/GetDefaultTextControlSelectionFlyout for text controls
+			if (this == UIElement.ContextFlyoutProperty &&
+				(forType == typeof(TextBlock) || forType == typeof(RichTextBlock)))
+			{
+				return GetDefaultTextControlContextFlyout();
+			}
+
+			if (this == TextBlock.SelectionFlyoutProperty ||
+				this == RichTextBlock.SelectionFlyoutProperty)
+			{
+				return GetDefaultTextControlSelectionFlyout();
+			}
+#endif
+
 			if (this == Shape.StretchProperty)
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
@@ -598,6 +614,37 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override int GetHashCode() => CachedHashCode;
+
+#if __SKIA__
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 249-261)
+		// CDependencyProperty::GetDefaultTextControlContextFlyout
+		private static FlyoutBase GetDefaultTextControlContextFlyout()
+		{
+			const string resourceKey = "TextControlCommandBarContextFlyout";
+			return GetTextControlFlyoutResource(resourceKey);
+		}
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 264-276)
+		// CDependencyProperty::GetDefaultTextControlSelectionFlyout
+		private static FlyoutBase GetDefaultTextControlSelectionFlyout()
+		{
+			const string resourceKey = "TextControlCommandBarSelectionFlyout";
+			return GetTextControlFlyoutResource(resourceKey);
+		}
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 211-246)
+		// GetTextControlFlyoutResource - looks up flyout from app resources, then theme resources
+		private static FlyoutBase GetTextControlFlyoutResource(string resourceKey)
+		{
+			if (Application.Current?.Resources?.TryGetValue(resourceKey, out var flyout) == true)
+			{
+				return flyout as FlyoutBase;
+			}
+
+			var resolved = ResourceResolver.ResolveResourceStatic(resourceKey, typeof(FlyoutBase));
+			return resolved as FlyoutBase;
+		}
+#endif
 
 		[Flags]
 		private enum Flags
