@@ -436,6 +436,7 @@ namespace Uno.UI.DataBinding
 			string name,
 			bool allowPrivateMembers)
 		{
+			var originalType = type;
 			do
 			{
 				var info = type.GetProperty(
@@ -455,6 +456,24 @@ namespace Uno.UI.DataBinding
 				type = type.BaseType!;
 			}
 			while (type != null);
+
+			// If not found in type hierarchy, check interfaces
+			// This handles cases like accessing Count on IReadOnlyList<T> when the concrete type is an array
+			foreach (var iface in originalType.GetInterfaces())
+			{
+				var info = iface.GetProperty(
+					name,
+					BindingFlags.Instance
+					| BindingFlags.Static
+					| BindingFlags.Public
+					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
+				);
+
+				if (info != null)
+				{
+					return info;
+				}
+			}
 
 			return null;
 		}
@@ -480,6 +499,7 @@ namespace Uno.UI.DataBinding
 			Type? parameterType,
 			bool allowPrivateMembers)
 		{
+			var originalType = type;
 			var parameterTypes = parameterType is not null
 				? new[] { parameterType }
 				: null;
@@ -511,6 +531,32 @@ namespace Uno.UI.DataBinding
 				type = type.BaseType!;
 			}
 			while (type != null);
+
+			// If not found in type hierarchy, check interfaces
+			// This handles cases like accessing indexers on IReadOnlyList<T> when the concrete type is an array
+			var bindingFlagsForInterfaces = BindingFlags.Instance
+					| BindingFlags.Static
+					| BindingFlags.Public
+					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default);
+
+			foreach (var iface in originalType.GetInterfaces())
+			{
+				var info = parameterTypes is not null
+					? iface.GetProperty(
+						name: "Item"
+						, bindingAttr: bindingFlagsForInterfaces
+						, binder: null
+						, returnType: null
+						, types: parameterTypes
+						, modifiers: null
+					)
+					: iface.GetProperty(name: "Item", bindingAttr: bindingFlagsForInterfaces);
+
+				if (info != null)
+				{
+					return info;
+				}
+			}
 
 			return null;
 		}
