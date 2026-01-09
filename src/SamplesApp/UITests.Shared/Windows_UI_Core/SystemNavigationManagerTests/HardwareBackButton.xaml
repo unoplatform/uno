@@ -2,126 +2,16 @@
     x:Class="UITests.Windows_UI_Core.SystemNavigationManagerTests.HardwareBackButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_UI_Core.SystemNavigationManagerTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <ScrollViewer>
-        <StackPanel Padding="16" Spacing="8">
-            <!--  Platform/Version Info  -->
-            <TextBlock
-                x:Name="PlatformInfoText"
-                FontSize="16"
-                FontWeight="Bold" />
-            <TextBlock
-                x:Name="BehaviorDescriptionText"
-                Foreground="Gray"
-                TextWrapping="Wrap" />
-
-            <!--  Android 16+ Section: Subscription-based  -->
-            <Border
-                x:Name="Android16Section"
-                Margin="0,16,0,0"
-                Padding="12"
-                BorderBrush="Blue"
-                BorderThickness="1"
-                CornerRadius="4">
-                <StackPanel Spacing="8">
-                    <TextBlock
-                        FontWeight="Bold"
-                        Foreground="Blue"
-                        Text="Android 16 and newer Test: Subscription-based Back Handling" />
-                    <TextBlock Text="On Android 16 and newer, subscribing to BackRequested enables back handling. Unsubscribing allows system to handle back (exit app)." TextWrapping="Wrap" />
-
-                    <StackPanel
-                        Margin="0,8,0,0"
-                        Orientation="Horizontal"
-                        Spacing="8">
-                        <Button
-                            x:Name="SubscribeButton"
-                            Click="Subscribe"
-                            Content="Subscribe" />
-                        <Button
-                            x:Name="UnsubscribeButton"
-                            Click="Unsubscribe"
-                            Content="Unsubscribe" />
-                    </StackPanel>
-                    <TextBlock x:Name="SubscriptionStatusText" Text="Status: Subscribed (via Loaded)" />
-
-                    <TextBlock
-                        Margin="0,8,0,0"
-                        FontStyle="Italic"
-                        Text="Test: Press back button while subscribed - app should NOT exit. Unsubscribe and press back - app SHOULD exit."
-                        TextWrapping="Wrap" />
-                </StackPanel>
-            </Border>
-
-            <!--  Pre-Android 16 Section: Handled property  -->
-            <Border
-                x:Name="PreAndroid16Section"
-                Margin="0,16,0,0"
-                Padding="12"
-                BorderBrush="Green"
-                BorderThickness="1"
-                CornerRadius="4">
-                <StackPanel Spacing="8">
-                    <TextBlock
-                        FontWeight="Bold"
-                        Foreground="Green"
-                        Text="Android 15 and earlier Test: Handled Property" />
-                    <TextBlock Text="On Android 15 and earlier, the Handled property controls whether the app consumes the back press." TextWrapping="Wrap" />
-
-                    <CheckBox
-                        x:Name="HandleCheckBox"
-                        Content="Set Handled = true on next back press"
-                        IsChecked="False"
-                        IsThreeState="False" />
-
-                    <TextBlock
-                        Margin="0,8,0,0"
-                        FontStyle="Italic"
-                        Text="Test: With checkbox checked, press back - app should NOT exit. With checkbox unchecked, press back - app SHOULD exit."
-                        TextWrapping="Wrap" />
-                </StackPanel>
-            </Border>
-
-            <!--  AppViewBackButtonVisibility Section  -->
-            <Border
-                Margin="0,16,0,0"
-                Padding="12"
-                BorderBrush="Gray"
-                BorderThickness="1"
-                CornerRadius="4">
-                <StackPanel Spacing="8">
-                    <TextBlock FontWeight="Bold" Text="AppViewBackButtonVisibility (All Versions)" />
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Button Content="Visible" Tapped="Enable" />
-                        <Button Content="Collapsed" Tapped="Disable" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <!--  Output Log  -->
-            <TextBlock
-                Margin="0,16,0,0"
-                FontWeight="Bold"
-                Text="Output Log:" />
-            <Border
-                MinHeight="100"
-                Padding="8"
-                BorderBrush="LightGray"
-                BorderThickness="1">
-                <ScrollViewer MaxHeight="200">
-                    <TextBlock x:Name="OutputTextBlock" TextWrapping="Wrap" />
-                </ScrollViewer>
-            </Border>
-
-            <Button
-                Margin="0,8,0,0"
-                Click="ClearOutput"
-                Content="Clear Log" />
-        </StackPanel>
-    </ScrollViewer>
+	<StackPanel>
+		<Button Tapped="Enable" Content="Enable" />
+		<Button Tapped="Disable" Content="Disable" />
+		<CheckBox IsThreeState="False" IsChecked="False" Content="Handle event" x:Name="HandleCheckBox" />
+		<TextBlock x:Name="OutputTextBlock" />
+	</StackPanel>
 </Page>
