@@ -8,6 +8,8 @@ using System.Text.Json;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.Storage.Streams;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -149,206 +151,94 @@ internal partial class MacOSNativeWebView : ISupportsWebResourceRequested
 		=> $"{method}:{url}";
 }
 
-/// <summary>
-/// macOS-specific implementation of CoreWebView2WebResourceRequestedEventArgs.
-/// Provides a simple header tracking mechanism without wrapping native objects.
-/// </summary>
 internal class MacOSWebResourceRequestedEventArgs : CoreWebView2WebResourceRequestedEventArgs
 {
-	private readonly MacOSWebResourceRequest _request;
-	private readonly Dictionary<string, string> _modifiedHeaders = new();
-
 	public MacOSWebResourceRequestedEventArgs(string url, string method)
-		: base(nativeArgs: new MacOSNativeArgsStub(url, method))
+		: base(new MacOSNativeWebResourceRequestedEventArgs(url, method))
 	{
-		_request = new MacOSWebResourceRequest(url, method, this);
-
-		// Inject our custom request into the base class's _request field
-		InjectCustomRequest();
 	}
 
-	private void InjectCustomRequest()
-	{
-		try
-		{
-			var requestField = typeof(CoreWebView2WebResourceRequestedEventArgs).GetField(
-				"_request",
-				System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+	internal bool HasModifiedHeaders => (NativeArgs as MacOSNativeWebResourceRequestedEventArgs)!.HasModifiedHeaders;
 
-			requestField?.SetValue(this, _request);
-
-			var headersField = typeof(CoreWebView2WebResourceRequest).GetField(
-				"_headers",
-				System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-			headersField?.SetValue(_request, _request.GetMacOSHeaders());
-		}
-		catch (Exception ex)
-		{
-			if (typeof(MacOSWebResourceRequestedEventArgs).Log().IsEnabled(LogLevel.Warning))
-			{
-				typeof(MacOSWebResourceRequestedEventArgs).Log().Warn($"Failed to inject custom request: {ex.Message}");
-			}
-		}
-	}
-
-	internal bool HasModifiedHeaders => _modifiedHeaders.Count > 0;
-
-	internal Dictionary<string, string>? GetModifiedHeaders() => _modifiedHeaders.Count > 0 ? _modifiedHeaders : null;
-
-	internal void TrackHeaderChange(string name, string value)
-	{
-		_modifiedHeaders[name] = value;
-	}
-
-	internal void TrackHeaderRemoval(string name)
-	{
-		_modifiedHeaders[name] = string.Empty;
-	}
-
-	/// <summary>
-	/// Stub native args object that provides native-like request/response objects.
-	/// </summary>
-	private class MacOSNativeArgsStub
-	{
-		private readonly MacOSDynamicRequestStub _nativeRequest;
-
-		public MacOSNativeArgsStub(string url, string method)
-		{
-			_nativeRequest = new MacOSDynamicRequestStub(url, method);
-		}
-
-		public MacOSDynamicRequestStub Request => _nativeRequest;
-		public object? Response { get; set; }
-		public int ResourceContext => (int)CoreWebView2WebResourceContext.Document;
-		public int RequestedSourceKind => (int)CoreWebView2WebResourceRequestSourceKinds.Document;
-	}
+	internal Dictionary<string, string>? GetModifiedHeaders()
+		=> (NativeArgs as MacOSNativeWebResourceRequestedEventArgs)!.GetModifiedHeaders();
 }
 
-/// <summary>
-/// macOS-specific implementation of CoreWebView2WebResourceRequest.
-/// </summary>
-internal class MacOSWebResourceRequest : CoreWebView2WebResourceRequest
+internal class MacOSNativeWebResourceRequestedEventArgs : INativeWebResourceRequestedEventArgs
+{
+	private readonly MacOSNativeWebResourceRequest _request;
+	private INativeWebResourceResponse? _response;
+
+	public MacOSNativeWebResourceRequestedEventArgs(string url, string method)
+	{
+		_request = new MacOSNativeWebResourceRequest(url, method, this);
+	}
+
+	public INativeWebResourceRequest Request => _request;
+	public INativeWebResourceResponse? Response { get => _response; set => _response = value; }
+	public CoreWebView2WebResourceContext ResourceContext => CoreWebView2WebResourceContext.Document;
+	public CoreWebView2WebResourceRequestSourceKinds RequestedSourceKind => CoreWebView2WebResourceRequestSourceKinds.Document;
+
+	public Deferral GetDeferral() => new Deferral(() => { });
+
+	private readonly Dictionary<string, string> _modifiedHeaders = new();
+
+	internal void TrackHeaderChange(string name, string value) => _modifiedHeaders[name] = value;
+	internal void TrackHeaderRemoval(string name) => _modifiedHeaders[name] = string.Empty;
+
+	internal bool HasModifiedHeaders => _modifiedHeaders.Count > 0;
+	internal Dictionary<string, string>? GetModifiedHeaders() => _modifiedHeaders.Count > 0 ? _modifiedHeaders : null;
+}
+
+internal class MacOSNativeWebResourceRequest : INativeWebResourceRequest
 {
 	private readonly string _uri;
 	private readonly string _method;
-	private readonly MacOSHttpRequestHeaders _headers;
-	private readonly MacOSWebResourceRequestedEventArgs _eventArgs;
+	private readonly MacOSNativeHttpRequestHeaders _headers;
 
-	public MacOSWebResourceRequest(string uri, string method, MacOSWebResourceRequestedEventArgs eventArgs)
-		: base(nativeRequest: new MacOSDynamicRequestStub(uri, method))
+	public MacOSNativeWebResourceRequest(string uri, string method, MacOSNativeWebResourceRequestedEventArgs owner)
 	{
 		_uri = uri;
 		_method = method;
-		_eventArgs = eventArgs;
-		_headers = new MacOSHttpRequestHeaders(this);
+		_headers = new MacOSNativeHttpRequestHeaders(owner);
 	}
 
-	public new string Uri
-	{
-		get => _uri;
-		set { } // Read-only for macOS
-	}
-
-	public new string Method
-	{
-		get => _method;
-		set { } // Read-only for macOS
-	}
-
-	public new CoreWebView2HttpRequestHeaders Headers => _headers;
-
-	internal MacOSWebResourceRequestedEventArgs EventArgs => _eventArgs;
-
-	internal MacOSHttpRequestHeaders GetMacOSHeaders() => _headers;
+	public string Uri { get => _uri; set { } }
+	public string Method { get => _method; set { } }
+	public IRandomAccessStream Content { get => null!; set { } }
+	public INativeHttpRequestHeaders Headers => _headers;
 }
 
-/// <summary>
-/// macOS-specific implementation of CoreWebView2HttpRequestHeaders.
-/// </summary>
-internal class MacOSHttpRequestHeaders : CoreWebView2HttpRequestHeaders
+internal class MacOSNativeHttpRequestHeaders : INativeHttpRequestHeaders
 {
-	private readonly MacOSWebResourceRequest _request;
+	private readonly MacOSNativeWebResourceRequestedEventArgs _owner;
 	private readonly Dictionary<string, string> _headers = new();
 
-	public MacOSHttpRequestHeaders(MacOSWebResourceRequest request)
-		: base(nativeHeaders: new MacOSNativeHeadersStub(request))
-	{
-		_request = request;
-	}
-
-	public override string GetHeader(string name)
-	{
-		return _headers.TryGetValue(name, out var value) ? value : string.Empty;
-	}
-
-	public override bool Contains(string name)
-	{
-		return _headers.ContainsKey(name);
-	}
-
-	public override void SetHeader(string name, string value)
-	{
-		_headers[name] = value;
-		_request.EventArgs.TrackHeaderChange(name, value);
-	}
-
-	public override void RemoveHeader(string name)
-	{
-		_headers.Remove(name);
-		_request.EventArgs.TrackHeaderRemoval(name);
-	}
-}
-
-/// <summary>
-/// Stub native headers object that delegates to the request's EventArgs for tracking.
-/// Must be internal so the dynamic runtime binder can access its members.
-/// </summary>
-internal class MacOSNativeHeadersStub
-{
-	private readonly MacOSWebResourceRequest _request;
-	private readonly Dictionary<string, string> _headers = new();
-
-	public MacOSNativeHeadersStub(MacOSWebResourceRequest request)
-	{
-		_request = request;
-	}
-
-	public string GetHeader(string name)
-	{
-		return _headers.TryGetValue(name, out var value) ? value : string.Empty;
-	}
-
-	public bool Contains(string name) => _headers.ContainsKey(name);
+	public MacOSNativeHttpRequestHeaders(MacOSNativeWebResourceRequestedEventArgs owner) => _owner = owner;
 
 	public void SetHeader(string name, string value)
 	{
 		_headers[name] = value;
-		_request.EventArgs.TrackHeaderChange(name, value);
+		_owner.TrackHeaderChange(name, value);
 	}
 
 	public void RemoveHeader(string name)
 	{
 		_headers.Remove(name);
-		_request.EventArgs.TrackHeaderRemoval(name);
+		_owner.TrackHeaderRemoval(name);
 	}
+
+	public string GetHeader(string name) => _headers.TryGetValue(name, out var v) ? v : string.Empty;
+	public bool Contains(string name) => _headers.ContainsKey(name);
+	public INativeHttpHeadersCollectionIterator GetHeaders(string name) => new MacOSEmptyIterator();
+	public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => _headers.GetEnumerator();
+	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
-/// <summary>
-/// Dynamic binder-friendly stub representing a native request.
-/// Must be public so the dynamic binder can access its members.
-/// </summary>
-public sealed class MacOSDynamicRequestStub
+internal class MacOSEmptyIterator : INativeHttpHeadersCollectionIterator
 {
-	public MacOSDynamicRequestStub(string uri, string method)
-	{
-		Uri = uri;
-		Method = method;
-		Headers = new object();
-	}
-
-	public string Uri { get; set; }
-	public string Method { get; set; }
-	public object Headers { get; set; }
-	public object? Content { get; set; }
+	public object Current => null!;
+	public bool HasCurrent => false;
+	public bool MoveNext() => false;
+	public uint GetMany(object items) => 0;
 }

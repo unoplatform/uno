@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
 #if WASM_SKIA
@@ -160,13 +161,14 @@ internal partial class NativeWebView : ISupportsWebResourceRequested
 			return null;
 		}
 
-		var args = new CoreWebView2WebResourceRequestedEventArgs(url, method, headers, resourceContext);
+		var nativeArgs = new NativeCoreWebView2WebResourceRequestedEventArgs(url, method, headers, resourceContext);
+		var args = new CoreWebView2WebResourceRequestedEventArgs(nativeArgs);
 		WebResourceRequested?.Invoke(this, args);
 
 		// If headers were modified, update them in the JavaScript context
-		if (args.HasHeaderModifications)
+		if (nativeArgs.HasHeaderModifications)
 		{
-			var effectiveHeaders = args.GetEffectiveHeaders();
+			var effectiveHeaders = nativeArgs.GetEffectiveHeaders();
 			if (effectiveHeaders != null)
 			{
 				UpdateCustomHeaders(effectiveHeaders);

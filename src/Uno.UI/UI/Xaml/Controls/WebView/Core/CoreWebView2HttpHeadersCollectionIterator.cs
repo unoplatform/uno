@@ -11,12 +11,11 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2HttpHeadersCollectionIterator : IIterator<KeyValuePair<string, string>>
 {
-#if __SKIA__
-	private readonly dynamic _nativeIterator;
+	private readonly INativeHttpHeadersCollectionIterator _nativeIterator;
 
-	internal CoreWebView2HttpHeadersCollectionIterator(object nativeIterator)
+	internal CoreWebView2HttpHeadersCollectionIterator(INativeHttpHeadersCollectionIterator nativeIterator)
 	{
-		_nativeIterator = nativeIterator ?? throw new ArgumentNullException(nameof(nativeIterator));
+		_nativeIterator = nativeIterator;
 	}
 
 	public KeyValuePair<string, string> Current => ConvertToKeyValuePair(_nativeIterator.Current);
@@ -35,40 +34,7 @@ public partial class CoreWebView2HttpHeadersCollectionIterator : IIterator<KeyVa
 		return value switch
 		{
 			KeyValuePair<string, string> pair => pair,
-			_ => new KeyValuePair<string, string>(
-				(string)value.GetType().GetProperty("Key")!.GetValue(value)!,
-				(string)value.GetType().GetProperty("Value")!.GetValue(value)!)
+			_ => throw new NotSupportedException()
 		};
 	}
-#elif __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || ANDROID_SKIA || UIKIT_SKIA
-	private readonly IEnumerator<KeyValuePair<string, string>> _enumerator;
-	private bool _hasCurrent;
-
-	internal CoreWebView2HttpHeadersCollectionIterator(IEnumerable<KeyValuePair<string, string>> headers)
-	{
-		_enumerator = headers.GetEnumerator();
-		_hasCurrent = _enumerator.MoveNext();
-	}
-
-	public KeyValuePair<string, string> Current => _hasCurrent ? _enumerator.Current : default;
-
-	public bool HasCurrent => _hasCurrent;
-
-	public bool MoveNext()
-	{
-		_hasCurrent = _enumerator.MoveNext();
-		return _hasCurrent;
-	}
-
-	public uint GetMany(KeyValuePair<string, string>[] items)
-	{
-		uint count = 0;
-		while (count < items.Length && _hasCurrent)
-		{
-			items[count++] = _enumerator.Current;
-			_hasCurrent = _enumerator.MoveNext();
-		}
-		return count;
-	}
-#endif
 }
