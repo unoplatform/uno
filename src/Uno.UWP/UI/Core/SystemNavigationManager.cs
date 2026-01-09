@@ -1,13 +1,15 @@
 ﻿using System;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
 
 namespace Windows.UI.Core
 {
 	public sealed partial class SystemNavigationManager
 	{
 		private static SystemNavigationManager _instance;
-		private bool _backIsAlwaysHandled;
+
+		// If Android 16+ (SDK 36+) we must always handle back presses
+		// when any subscriber is present.
+		private readonly bool _backIsAlwaysHandled =
+			OperatingSystem.IsAndroid() && OperatingSystem.IsAndroidVersionAtLeast(36);
 
 		public static SystemNavigationManager GetForCurrentView()
 		{
@@ -15,9 +17,6 @@ namespace Windows.UI.Core
 			{
 				_instance = new SystemNavigationManager();
 			}
-
-			// If Android 16+ (SDK 36+) we always handle back presses
-			_instance._backIsAlwaysHandled = OperatingSystem.IsAndroid() && OperatingSystem.IsAndroidVersionAtLeast(36);
 
 			return _instance;
 		}
@@ -108,9 +107,11 @@ namespace Windows.UI.Core
 		internal bool RequestBack()
 		{
 			var args = new BackRequestedEventArgs();
-			_backRequested?.Invoke(this, args);
 
-			return _backIsAlwaysHandled ? true : args.Handled;
+			var handlers = _backRequested;
+			handlers?.Invoke(this, args);
+
+			return _backIsAlwaysHandled && handlers is not null ? true : args.Handled;
 		}
 	}
 }
