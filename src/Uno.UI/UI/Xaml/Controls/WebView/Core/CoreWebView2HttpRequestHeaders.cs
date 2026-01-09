@@ -12,14 +12,21 @@ namespace Microsoft.Web.WebView2.Core;
 public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<string, string>>
 {
 #if __SKIA__
-	private readonly dynamic _nativeHeaders;
+	private readonly INativeHttpRequestHeaders _nativeHeaders;
 
 	internal CoreWebView2HttpRequestHeaders(object nativeHeaders)
 	{
-		_nativeHeaders = nativeHeaders ?? throw new ArgumentNullException(nameof(nativeHeaders));
+		if (nativeHeaders is INativeHttpRequestHeaders wrapper)
+		{
+			_nativeHeaders = wrapper;
+		}
+		else
+		{
+			_nativeHeaders = new ReflectionNativeHttpRequestHeaders(nativeHeaders ?? throw new ArgumentNullException(nameof(nativeHeaders)));
+		}
 	}
 
-	internal dynamic NativeHeaders => _nativeHeaders;
+	internal object NativeHeaders => _nativeHeaders is ReflectionNativeHttpRequestHeaders r ? r.Target : _nativeHeaders;
 
 	public virtual string GetHeader(string name) => _nativeHeaders.GetHeader(name);
 
@@ -34,26 +41,9 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 
 	public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
 	{
-		if (_nativeHeaders is IEnumerable enumerable)
-		{
-			foreach (var item in enumerable)
-			{
-				yield return ConvertToKeyValuePair(item);
-			}
-		}
+		return _nativeHeaders.GetEnumerator();
 	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-	private static KeyValuePair<string, string> ConvertToKeyValuePair(object item)
-	{
-		return item switch
-		{
-			KeyValuePair<string, string> pair => pair,
-			_ => new KeyValuePair<string, string>(
-				(string)item.GetType().GetProperty("Key")!.GetValue(item)!,
-				(string)item.GetType().GetProperty("Value")!.GetValue(item)!)
-		};
-	}
 #endif
 }

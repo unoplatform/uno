@@ -13,15 +13,23 @@ namespace Microsoft.Web.WebView2.Core;
 public partial class CoreWebView2WebResourceResponse
 {
 #if __SKIA__
-	private readonly dynamic _nativeResponse;
+	private readonly INativeWebResourceResponse _nativeResponse;
 	private CoreWebView2HttpResponseHeaders? _headers;
 
 	internal CoreWebView2WebResourceResponse(object nativeResponse)
 	{
-		_nativeResponse = nativeResponse ?? throw new ArgumentNullException(nameof(nativeResponse));
+		if (nativeResponse is INativeWebResourceResponse wrapper)
+		{
+			_nativeResponse = wrapper;
+		}
+		else
+		{
+			_nativeResponse = new ReflectionNativeWebResourceResponse(nativeResponse ?? throw new ArgumentNullException(nameof(nativeResponse)));
+		}
 	}
 
-	internal dynamic NativeResponse => _nativeResponse;
+	internal object NativeResponse => _nativeResponse is ReflectionNativeWebResourceResponse r ? r.Target : _nativeResponse;
+	internal INativeWebResourceResponse NativeResponseInterface => _nativeResponse;
 
 	public IRandomAccessStream Content
 	{

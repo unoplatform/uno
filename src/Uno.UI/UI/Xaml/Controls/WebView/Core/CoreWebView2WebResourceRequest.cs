@@ -13,15 +13,22 @@ namespace Microsoft.Web.WebView2.Core;
 public partial class CoreWebView2WebResourceRequest
 {
 #if __SKIA__
-	private readonly dynamic _nativeRequest;
+	private readonly INativeWebResourceRequest _nativeRequest;
 	private CoreWebView2HttpRequestHeaders? _headers;
 
 	internal CoreWebView2WebResourceRequest(object nativeRequest)
 	{
-		_nativeRequest = nativeRequest ?? throw new ArgumentNullException(nameof(nativeRequest));
+		if (nativeRequest is INativeWebResourceRequest wrapper)
+		{
+			_nativeRequest = wrapper;
+		}
+		else
+		{
+			_nativeRequest = new ReflectionNativeWebResourceRequest(nativeRequest ?? throw new ArgumentNullException(nameof(nativeRequest)));
+		}
 	}
 
-	internal dynamic NativeRequest => _nativeRequest;
+	internal object NativeRequest => _nativeRequest is ReflectionNativeWebResourceRequest r ? r.Target : _nativeRequest;
 
 	public string Uri
 	{

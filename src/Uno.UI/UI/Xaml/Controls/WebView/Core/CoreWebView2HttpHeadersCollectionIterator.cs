@@ -12,11 +12,18 @@ namespace Microsoft.Web.WebView2.Core;
 public partial class CoreWebView2HttpHeadersCollectionIterator : IIterator<KeyValuePair<string, string>>
 {
 #if __SKIA__
-	private readonly dynamic _nativeIterator;
+	private readonly INativeHttpHeadersCollectionIterator _nativeIterator;
 
 	internal CoreWebView2HttpHeadersCollectionIterator(object nativeIterator)
 	{
-		_nativeIterator = nativeIterator ?? throw new ArgumentNullException(nameof(nativeIterator));
+		if (nativeIterator is INativeHttpHeadersCollectionIterator wrapper)
+		{
+			_nativeIterator = wrapper;
+		}
+		else
+		{
+			_nativeIterator = new ReflectionNativeHttpHeadersCollectionIterator(nativeIterator ?? throw new ArgumentNullException(nameof(nativeIterator)));
+		}
 	}
 
 	public KeyValuePair<string, string> Current => ConvertToKeyValuePair(_nativeIterator.Current);
