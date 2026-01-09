@@ -4267,11 +4267,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								if (rewrittenRValue.Properties.Length == 1)
 								{
+									// For static bindings, properties starting with "global::" are filtered out,
+									// so if we have a property here, it's actually a non-static property accessed via a static path
 									var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0], rootType: null, bindNode).GetFullyQualifiedTypeIncludingGlobal();
 									var rewrittenLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, null, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
 									if (rewrittenLValue.MethodDeclaration is not null)
 									{
 										RegisterXBindTryGetDeclaration(rewrittenLValue.MethodDeclaration);
+										// Use ___ctx for consistency with non-DataTemplate path
 										return $"(___ctx, __value) => {{ {rewrittenLValue.Expression}; }}";
 									}
 									else
@@ -4281,7 +4284,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 								else
 								{
-									throw new XamlGenerationException("Invalid x:Bind property path count (This should not happen)", bindNode);
+									// Fully static bindings (all properties start with global::) result in empty Properties array
+									// TwoWay binding to a fully static property is not supported as static properties typically can't be set via binding
+									throw new XamlGenerationException($"TwoWay binding is not supported for fully static x:Bind expressions", bindNode);
 								}
 							}
 						}
@@ -4293,7 +4298,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var bindFunction = $"{rewrittenRValue.Expression}";
 
-					// For fully static bindings, there are no property paths to track
+					// For fully static bindings, there are no non-static property paths to track for change notifications
 					var staticPathsArray = "";
 
 					return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildStaticBindBack()} {staticPathsArray}))";
