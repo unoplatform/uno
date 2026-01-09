@@ -38,6 +38,14 @@ partial class Window
 			return false;
 		}
 
+#if DEBUG
+		if (callingAssembly.FullName?.StartsWith("System.", StringComparison.Ordinal) == true)
+		{
+			System.Diagnostics.Debug.WriteLine("Window.Content was set via reflection or framework code; secondary ALC detection may be inaccurate.");
+		}
+#endif
+
+		UnmarkSecondaryAlcContent(_secondaryAlcContent);
 		host.Content = value;
 		_secondaryAlcContent = value;
 		MarkContentAsSecondaryAlc(value);
@@ -77,6 +85,16 @@ partial class Window
 		_secondaryAlcMarkers.GetValue(value, static _ => new SecondaryAlcMarker());
 	}
 
+	private static void UnmarkSecondaryAlcContent(object? value)
+	{
+		if (value is null)
+		{
+			return;
+		}
+
+		_secondaryAlcMarkers.Remove(value);
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private bool ShouldRedirectToContentHost(object? value, Assembly callingAssembly)
 	{
@@ -106,7 +124,6 @@ partial class Window
 	{
 		var content = ContentHostOverride?.Content;
 		return content is not null
-			&& ContentHostOverride is not null
 			&& IsSecondaryAlcContent(content);
 	}
 
