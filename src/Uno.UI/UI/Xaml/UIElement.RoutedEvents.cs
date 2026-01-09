@@ -181,7 +181,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets the identifier for the ContextCanceled routed event.
 		/// </summary>
-		public static RoutedEvent ContextCanceledEvent { get; } = new RoutedEvent(RoutedEventFlag.ContextCanceled);
+		internal static RoutedEvent ContextCanceledEvent { get; } = new RoutedEvent(RoutedEventFlag.ContextCanceled);
 
 		private struct RoutedEventHandlerInfo
 		{
@@ -1060,8 +1060,8 @@ namespace Microsoft.UI.Xaml
 				case TypedEventHandler<UIElement, ContextRequestedEventArgs> contextRequestedHandler:
 					contextRequestedHandler(this, (ContextRequestedEventArgs)args);
 					break;
-				case TypedEventHandler<UIElement, RoutedEventArgs> contextCanceledHandler:
-					contextCanceledHandler(this, args);
+				case TypedEventHandler<UIElement, RoutedEventArgs> typedRoutedEventHandler:
+					typedRoutedEventHandler(this, args);
 					break;
 				default:
 					this.Log().Error($"The handler type {handler.GetType()} has not been registered for RoutedEvent");
