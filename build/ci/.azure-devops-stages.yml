@@ -11,6 +11,7 @@ stages:
     steps:
     - checkout: self
       clean: true
+      persistCredentials: true
       sparseCheckoutPatterns: |
         # root files are needed for versioning and build scripts
         /*
@@ -33,6 +34,7 @@ stages:
     steps:
     - checkout: self
       clean: false
+      persistCredentials: true
       fetchDepth: 0
 
     - task: PowerShell@2
