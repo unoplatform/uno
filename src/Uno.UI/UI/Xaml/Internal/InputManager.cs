@@ -29,6 +29,8 @@ internal partial class InputManager : IInputInjectorTarget
 		_contextMenuProcessor = new ContextMenuProcessor(contentRoot);
 	}
 
+	internal ContextMenuProcessor ContextMenuProcessor => _contextMenuProcessor;
+
 	partial void ConstructKeyboardManager();
 
 	partial void ConstructPointerManager();
