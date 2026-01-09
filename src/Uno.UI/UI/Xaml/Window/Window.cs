@@ -21,10 +21,12 @@ using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using System.Collections.Concurrent;
-using Uno.UI;
-using Windows.Devices.PointOfService;
-using Windows.ApplicationModel.Core;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Uno.UI;
+using Windows.ApplicationModel.Core;
+using Windows.Devices.PointOfService;
 
 namespace Microsoft.UI.Xaml;
 
@@ -46,9 +48,6 @@ partial class Window
 	private bool _initialized;
 	private Brush? _background;
 	private WindowType _windowType;
-
-	// Window-local storage to detect secondary ALC content
-	private object? _secondaryAlcContent;
 
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
@@ -101,6 +100,8 @@ partial class Window
 			_ => throw new InvalidOperationException("Unsupported window type")
 		};
 
+		InitializeAlcState();
+
 		Compositor = Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
 		InitializeWindowingFlavor();
@@ -129,6 +130,9 @@ partial class Window
 	}
 
 	partial void InitializeWindowingFlavor();
+	partial void InitializeAlcState();
+	private partial bool TryGetContentFromSecondaryAlc(out UIElement? content);
+	private partial bool TrySetContentFromSecondaryAlc(UIElement? value, ContentControl host, Assembly callingAssembly);
 
 #pragma warning disable 67
 	/// <summary>
@@ -183,27 +187,26 @@ partial class Window
 	{
 		get
 		{
-			if (IsContentFromSecondaryAlc(_secondaryAlcContent))
-			{
-				return ContentHostOverride?.Content as UIElement;
-			}
-
-			return _windowImplementation.Content;
+			return TryGetContentFromSecondaryAlc(out var alcContent)
+				? alcContent
+				: _windowImplementation.Content;
 		}
 
+		[MethodImpl(MethodImplOptions.NoInlining)] // No inlining to keep Assembly.GetCallingAssembly accurate
 		set
 		{
-			if (IsContentFromSecondaryAlc(value) && ContentHostOverride is { } host)
+			var host = ContentHostOverride;
+			if (host is not null)
 			{
-				// We're in a secondary ALC, redirect to the host override
-				host.Content = value;
-				_secondaryAlcContent = value;
+				// Capture the caller *before* delegating to keep the stack frame stable for secondary ALC detection
+				var callingAssembly = Assembly.GetCallingAssembly();
+				if (TrySetContentFromSecondaryAlc(value, host, callingAssembly))
+				{
+					return;
+				}
 			}
-			else
-			{
-				// We're in the default ALC, set content normally
-				_windowImplementation.Content = value;
-			}
+
+			_windowImplementation.Content = value;
 		}
 	}
 
@@ -397,33 +400,4 @@ partial class Window
 
 	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => _sizeChangedHandlers?.Invoke(this, e);
 
-	/// <summary>
-	/// Checks if the given content element is from a secondary AssemblyLoadContext.
-	/// When value is null, returns false to allow clearing content.
-	/// </summary>
-	private bool IsContentFromSecondaryAlc(object? value)
-	{
-		// Explicitly handle null: a null assignment should clear content, not be detected as secondary ALC
-		if (value == null)
-		{
-			return false;
-		}
-
-		return !ReferenceEquals(
-			System.Runtime.Loader.AssemblyLoadContext.Default,
-			System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(value.GetType().Assembly));
-	}
-
-	/// <summary>
-	/// Checks if the content in ContentHostOverride is from a secondary ALC.
-	/// </summary>
-	private bool IsContentHostedInSecondaryAlc()
-	{
-		var content = ContentHostOverride?.Content;
-		return content is not null
-			&& ContentHostOverride is not null
-			&& !ReferenceEquals(
-				System.Runtime.Loader.AssemblyLoadContext.Default,
-				System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(content.GetType().Assembly));
-	}
 }
