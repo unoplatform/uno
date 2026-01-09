@@ -127,13 +127,7 @@ internal partial class PopupRoot
 	/// <returns>True if a popup was closed.</returns>
 	internal bool CloseTopmostPopup(FocusState focusStateAfterClosing, PopupFilter filter)
 	{
-		CloseTopmostPopup(focusStateAfterClosing, filter, out var didCloseAPopup);
-		return didCloseAPopup;
-	}
-
-	private void CloseTopmostPopup(FocusState focusStateAfterClosing, PopupFilter filter, out bool didCloseAPopup)
-	{
-		didCloseAPopup = false;
+		var didCloseAPopup = false;
 
 		var popupNoRef = GetTopmostPopup(filter);
 		if (popupNoRef is { })
@@ -143,7 +137,7 @@ internal partial class PopupRoot
 			popupNoRef.OnClosing(ref cancel);
 			if (cancel)
 			{
-				return;
+				return didCloseAPopup;
 			}
 
 			// Take a ref for the duration of the SetValue call below, which could otherwise release
@@ -158,10 +152,7 @@ internal partial class PopupRoot
 			didCloseAPopup = true;
 		}
 
-		// if (pDidCloseAPopup != nullptr)
-		// {
-		// 	*pDidCloseAPopup = didCloseAPopup;
-		// }
+		return didCloseAPopup;
 	}
 
 	// TODO Uno: Implementation is currently simplified compared to MUX.
