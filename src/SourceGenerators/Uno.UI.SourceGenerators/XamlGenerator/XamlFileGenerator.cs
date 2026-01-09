@@ -4226,9 +4226,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (isInsideDataTemplate)
 			{
 				// First, check if the binding is fully static (doesn't require DataContext)
-				// by parsing without a context type to get the properties
-				var staticCheck = XBindExpressionParser.Rewrite("___tctx", rawFunction, null, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
-				var isFullyStatic = staticCheck.Properties.IsEmpty || staticCheck.Properties.All(p => p.StartsWith("global::", StringComparison.Ordinal));
+				// by parsing without a context type to get the properties.
+				// Note: Empty path bindings (just {x:Bind}) bind to the DataContext itself and are NOT static
+				var staticCheck = string.IsNullOrEmpty(rawFunction)
+					? (MethodDeclaration: (string?)null, Expression: "", Properties: ImmutableArray<string>.Empty, HasFunction: false)
+					: XBindExpressionParser.Rewrite("___tctx", rawFunction, null, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
+				var isFullyStatic = !string.IsNullOrEmpty(rawFunction) && staticCheck.Properties.IsEmpty;
 
 				var dataTypeObject = FindMember(dataTemplateObject!, "DataType", XamlConstants.XamlXmlNamespace);
 
