@@ -114,6 +114,7 @@ choco install docfx
 
 > [!NOTE]
 > On Windows, run the `choco install docfx` command from an elevated PowerShell prompt (Run as Administrator) to avoid permission errors.
+
 ---
 
 #### Install Node.js
