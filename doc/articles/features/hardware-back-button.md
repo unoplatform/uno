@@ -70,9 +70,8 @@ private void OnBackRequested(object sender, BackRequestedEventArgs e)
     if (this.Frame.CanGoBack)
     {
         this.Frame.GoBack();
-        // On Android 16+, the Handled property is ignored.
         // The subscription itself indicates the app handles back navigation.
-        e.Handled = true;
+        // So setting e.Handled has no effect and is ignored.
     }
 }
 ```
