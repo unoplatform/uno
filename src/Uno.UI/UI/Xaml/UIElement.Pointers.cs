@@ -178,6 +178,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <returns>True if this element is draggable or pannable.</returns>
 		internal virtual bool IsDraggableOrPannableImpl() => CanDrag;
+
 		#endregion
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
