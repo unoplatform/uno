@@ -23,9 +23,10 @@ partial class ApplicationActivity
 		// The callback is enabled/disabled based on BackRequested subscription state.
 		if ((int)Build.VERSION.SdkInt >= 36)
 		{
-			_backPressedCallback = new UnoOnBackPressedCallback(
-				enabled: SystemNavigationManager.GetForCurrentView().HasBackRequestedSubscribers);
+			var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
 			SystemNavigationManager.BackRequestedSubscribersChanged += OnBackRequestedSubscribersChanged;
+			_backPressedCallback = new UnoOnBackPressedCallback(
+				enabled: systemNavigationManager.HasBackRequestedSubscribers);
 			OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
 		}
 	}
