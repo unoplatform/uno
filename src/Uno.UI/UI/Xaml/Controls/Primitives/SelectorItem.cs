@@ -146,12 +146,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </remarks>
 		private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
 		{
+#if HAS_UNO
 			// Only apply this behavior to ListViewItem and GridViewItem
+			// WinUI puts this logic in ListViewBaseItem, which is internal.
 			if (!IsListViewBaseItem)
 			{
 				base.OnContextRequestedImpl(args);
 				return;
 			}
+#endif
 
 			// First, try to show flyout on this item
 			ShowContextFlyout(args, this);
