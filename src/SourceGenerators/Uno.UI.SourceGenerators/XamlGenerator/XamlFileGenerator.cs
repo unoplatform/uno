@@ -3594,17 +3594,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new XamlGenerationException("x:Bind event path cannot be empty", bind);
 				}
 
+				// Check if the path is a static method binding (contains ':' which indicates a type qualifier)
+				var isStaticMethodPath = path.Contains(":");
+
 				INamedTypeSymbol GetTargetType()
 				{
 					if (template.isInside)
 					{
 						var dataTypeObject = FindMember(template.xamlObject!, "DataType", XamlConstants.XamlXmlNamespace);
-						if (dataTypeObject?.Value == null)
+
+						// If the path is a static method binding, we don't need a DataType
+						// because the type is specified in the path itself
+						if (!isStaticMethodPath && dataTypeObject?.Value == null)
 						{
 							throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate for x:Bind event", bind);
 						}
 
-						return GetType(dataTypeObject.Value.ToString() ?? "");
+						// For static methods, the contextType is not used by ResolveXBindMethod
+						// as it extracts the type from the path itself, so we can use a placeholder
+						if (isStaticMethodPath && dataTypeObject?.Value == null)
+						{
+							// Use the page type as a placeholder - it won't be used for static method resolution
+							EnsureXClassName();
+							return _xClassName!.Symbol!;
+						}
+
+						return GetType(dataTypeObject!.Value!.ToString() ?? "");
 					}
 					else if (_xClassName?.Symbol is not null)
 					{
@@ -4210,13 +4225,82 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (isInsideDataTemplate)
 			{
+				// First, check if the binding is fully static (doesn't require DataContext)
+				// by parsing without a context type to get the properties
+				var staticCheck = XBindExpressionParser.Rewrite("___tctx", rawFunction, null, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
+				var isFullyStatic = staticCheck.Properties.IsEmpty || staticCheck.Properties.All(p => p.StartsWith("global::", StringComparison.Ordinal));
+
 				var dataTypeObject = FindMember(dataTemplateObject!, "DataType", XamlConstants.XamlXmlNamespace);
-				if (dataTypeObject?.Value == null)
+
+				// If the binding is fully static (all properties start with global::), we don't need a DataType
+				if (!isFullyStatic && dataTypeObject?.Value == null)
 				{
 					throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate", bindNode);
 				}
 
-				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
+				// If fully static, treat it like a non-DataTemplate binding (no DataContext required)
+				if (isFullyStatic)
+				{
+					// Use the already-parsed static expression
+					var rewrittenRValue = staticCheck;
+					if (rewrittenRValue.MethodDeclaration is not null)
+					{
+						RegisterXBindTryGetDeclaration(rewrittenRValue.MethodDeclaration);
+					}
+
+					string buildStaticBindBack()
+					{
+						if (modeMember == "TwoWay")
+						{
+							if (rewrittenRValue.HasFunction)
+							{
+								if (!string.IsNullOrWhiteSpace(rawBindBack))
+								{
+									return $"(___tctx, __value) => {rawBindBack}(({propertyType})__value)";
+								}
+								else
+								{
+									throw new XamlGenerationException($"Expected BindBack for x:Bind function '{rawFunction}'", bindNode);
+								}
+							}
+							else
+							{
+								if (rewrittenRValue.Properties.Length == 1)
+								{
+									var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0], rootType: null, bindNode).GetFullyQualifiedTypeIncludingGlobal();
+									var rewrittenLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, null, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
+									if (rewrittenLValue.MethodDeclaration is not null)
+									{
+										RegisterXBindTryGetDeclaration(rewrittenLValue.MethodDeclaration);
+										return $"(___ctx, __value) => {{ {rewrittenLValue.Expression}; }}";
+									}
+									else
+									{
+										return $"(___ctx, __value) => {{ {rewrittenLValue.Expression} = ({targetPropertyType})global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }}";
+									}
+								}
+								else
+								{
+									throw new XamlGenerationException("Invalid x:Bind property path count (This should not happen)", bindNode);
+								}
+							}
+						}
+						else
+						{
+							return "null";
+						}
+					}
+
+					var bindFunction = $"{rewrittenRValue.Expression}";
+
+					// For fully static bindings, there are no property paths to track
+					var staticPathsArray = "";
+
+					return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildStaticBindBack()} {staticPathsArray}))";
+				}
+
+				// Not fully static, so we need a DataType
+				var dataType = RewriteNamespaces(dataTypeObject!.Value!.ToString() ?? "");
 				var dataTypeSymbol = GetType(dataType);
 
 				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
