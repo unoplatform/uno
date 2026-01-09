@@ -9,6 +9,7 @@ uid: Uno.Features.SplashScreen
 A splash screen is a visual element displayed when an application launches, providing immediate feedback to users while the app initializes. It typically shows branding elements like logos, app names, or icons, creating a polished first impression and a smooth transition into the application experience.
 
 For platform-specific design guidance, see:
+
 - [Windows App Design: Splash screens](https://learn.microsoft.com/windows/apps/design/launch/splash-screens)
 - [Apple Human Interface Guidelines: Launch screens](https://developer.apple.com/design/human-interface-guidelines/launching)
 - [Android Material Design: Launch screens](https://developer.android.com/develop/ui/views/launch/splash-screen)
@@ -78,6 +79,7 @@ WebAssembly applications provide the most extensive customization options throug
 - **Display name**: Application name shown during launch
 
 For a complete list of properties and examples, see:
+
 - [AppManifest for WebAssembly](xref:Uno.Development.WasmAppManifest)
 - [WebAssembly splash screen properties](xref:Uno.Development.SplashScreen#5-webassembly)
 
@@ -92,6 +94,7 @@ Configure splash screen settings through the `Package.appxmanifest` file in the 
 #### Android
 
 Customize splash screen appearance through Android resource files (`Styles.xml`, `drawable/splash.xml`). You can set:
+
 - Background colors
 - Image positioning and scaling
 - Theme integration
