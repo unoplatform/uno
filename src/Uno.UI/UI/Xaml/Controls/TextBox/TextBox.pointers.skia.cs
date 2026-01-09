@@ -81,7 +81,7 @@ public partial class TextBox
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);
-		e.Handled = true;
+		e.Handled = false;
 
 		var displayBlock = TextBoxView.DisplayBlock;
 		var position = e.GetPosition(displayBlock);
@@ -180,14 +180,20 @@ public partial class TextBox
 
 		_isPressed = false;
 
-		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayMicroseconds)
+		var touchHoldTime = args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp;
+		var position = args.GetCurrentPoint(this).Position;
+
+		if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// Touch holding - show context flyout
-			ContextFlyout?.ShowAt(this, new FlyoutShowOptions { Position = args.GetCurrentPoint(this).Position });
+			// Touch holding - show ContextFlyout
+			ContextFlyout?.ShowAt(this, new FlyoutShowOptions { Position = position });
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
 			TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, wasFocused);
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 2088)
+			// OnPointerReleased - queue SelectionFlyout visibility update after pointer release
+			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, position);
 		}
 	}
 
@@ -304,12 +310,33 @@ public partial class TextBox
 		ClearCaretPointerState(sender, e);
 
 		var caret = (CaretWithStemAndThumb)sender;
-
 		var previous = caret.LastPointerDown;
-		if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), e.GetCurrentPoint(null)))
+		var current = e.GetCurrentPoint(null);
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5209-5233)
+		// OnGripperHeld - check if this was a hold gesture on the gripper
+		var holdDuration = current.Timestamp - previous.Timestamp;
+		if (holdDuration >= GestureRecognizer.HoldMinDelayMicroseconds)
+		{
+			// Line 5219: Gripper was held - show ContextFlyout (OnContextRequested)
+			e.Handled = true;
+			ContextFlyout?.ShowAt(this, new FlyoutShowOptions
+			{
+				Position = e.GetCurrentPoint(this).Position
+			});
+		}
+		else if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), current))
 		{
 			e.Handled = true;
 			TouchTap(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
+		}
+		else
+		{
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 653)
+			// Gripper manipulation ended - queue SelectionFlyout visibility update
+			QueueUpdateSelectionFlyoutVisibility(
+				e.Pointer.PointerDeviceType,
+				e.GetCurrentPoint(this).Position);
 		}
 	}
 
