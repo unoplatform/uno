@@ -9,7 +9,7 @@ uid: Uno.Features.SplashScreen
 A splash screen is a visual element displayed when an application launches, providing immediate feedback to users while the app initializes. It typically shows branding elements like logos, app names, or icons, creating a polished first impression and a smooth transition into the application experience.
 
 For platform-specific design guidance, see:
-- [Windows App Design: Splash screens](https://learn.microsoft.com/windows/apps/design/shell/tiles-and-notifications/creating-tiles)
+- [Windows App Design Guidelines](https://learn.microsoft.com/windows/apps/design/)
 - [Apple Human Interface Guidelines: Launch screens](https://developer.apple.com/design/human-interface-guidelines/launching)
 - [Android Material Design: Launch screens](https://developer.android.com/develop/ui/views/launch/splash-screen)
 
@@ -100,7 +100,7 @@ See [Manual setup: Android](xref:Uno.Development.SplashScreen#3-android).
 
 #### iOS/macOS
 
-Configure splash screens using a Storyboard file with constraints and layout options. See [Manual setup: iOS](xref:Uno.Development.SplashScreen#4-ios).
+Configure splash screens using a Storyboard file with constraints and layout options. iOS and macOS follow similar patterns for splash screen configuration. See [Manual setup: iOS](xref:Uno.Development.SplashScreen#4-ios) for detailed instructions that apply to both platforms.
 
 #### GTK/Linux
 
