@@ -2,6 +2,15 @@ steps:
 - bash: |
     curl -L -O https://github.com/aevea/commitsar/releases/download/v0.20.2/commitsar_0.20.2_linux_amd64.tar.gz
     tar -xzf commitsar_0.20.2_linux_amd64.tar.gz
+
+    pr_target="$(System.PullRequest.TargetBranch)"
+    if [ -n "$pr_target" ]; then
+      # Trim common ref prefixes (e.g. refs/heads/) before composing the origin ref
+      pr_target="${pr_target#refs/heads/}"
+      pr_target="${pr_target#refs/}" # fallback trimming if refs/heads/ is absent
+      sed -i "s|upstreamBranch: .*|upstreamBranch: origin/${pr_target}|" $(build.sourcesdirectory)/build/.commitsar.yml
+    fi
+
     export COMMITSAR_CONFIG_PATH=$(build.sourcesdirectory)/build
     ./commitsar
 
