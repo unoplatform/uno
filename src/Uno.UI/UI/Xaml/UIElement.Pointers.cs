@@ -452,7 +452,7 @@ namespace Microsoft.UI.Xaml
 				deviceType == (int)PointerDeviceType.Pen)
 			{
 				var contentRoot = VisualTree.GetContentRootForElement(src);
-				contentRoot?.ContextMenuProcessor.RaiseContextRequestedEvent(
+				contentRoot?.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
 					src,
 					args.Position,
 					isTouchInput: false);
@@ -476,8 +476,8 @@ namespace Microsoft.UI.Xaml
 					if (args.HoldingState == HoldingState.Started)
 					{
 						// Store the touch point for the context menu processor
-						contentRoot.ContextMenuProcessor.SetContextMenuOnHoldingTouchPoint(args.Position);
-						contentRoot.ContextMenuProcessor.ProcessContextRequestOnHoldingGesture(src);
+						contentRoot.InputManager.ContextMenuProcessor.SetContextMenuOnHoldingTouchPoint(args.Position);
+						contentRoot.InputManager.ContextMenuProcessor.ProcessContextRequestOnHoldingGesture(src);
 					}
 					else if (args.HoldingState == HoldingState.Canceled)
 					{
@@ -499,13 +499,13 @@ namespace Microsoft.UI.Xaml
 								var cancelArgs = new RoutedEventArgs { OriginalSource = src };
 								src.RaiseEvent(ContextCanceledEvent, cancelArgs);
 							}
-							contentRoot.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
+							contentRoot.InputManager.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
 						}
 					}
 					else if (args.HoldingState == HoldingState.Completed)
 					{
 						// Reset the context menu on holding state when holding completes
-						contentRoot.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
+						contentRoot.InputManager.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
 					}
 				}
 			}
