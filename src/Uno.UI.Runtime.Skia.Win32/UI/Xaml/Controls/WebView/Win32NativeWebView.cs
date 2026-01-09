@@ -45,7 +45,7 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 	}
 }
 
-internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
+internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint SC_MASK = 0xFFF0; // Mask to extract system command from wParam
@@ -178,7 +178,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping,
 
 	private void NativeWebView2_WebResourceRequested(object? sender, NativeWebView.CoreWebView2WebResourceRequestedEventArgs e)
 	{
-		WebResourceRequested?.Invoke(this, new(e));
+		WebResourceRequested?.Invoke(this, new(new Win32WebResourceRequestedEventArgsWrapper(e)));
 	}
 
 	private EventHandler<T> EventHandlerBuilder<T>(Action<Win32NativeWebView, object?, T> handler)

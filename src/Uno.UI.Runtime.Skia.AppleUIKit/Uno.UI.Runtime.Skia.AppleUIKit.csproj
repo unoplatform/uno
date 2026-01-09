@@ -38,10 +38,16 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.Apple.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.WebResourceRequested.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.WebResourceRequested.Apple.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\WebViewNavigationDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\WebViewNavigationDelegate.Apple.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Core\WebResourceFilter.cs" Link="UI\Xaml\Controls\WebView\Core\WebResourceFilter.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Core\WebResourceContextHelper.cs" Link="UI\Xaml\Controls\WebView\Core\WebResourceContextHelper.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Core\CoreWebView2HttpHeadersCollectionIterator.cs" Link="UI\Xaml\Controls\WebView\Core\CoreWebView2HttpHeadersCollectionIterator.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\ISupportsWebResourceRequested.cs" Link="UI\Xaml\Controls\WebView\Native\ISupportsWebResourceRequested.cs" />
+
+		<!-- Native WebResourceRequested implementations -->
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2WebResourceRequestedEventArgs.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2WebResourceRequestedEventArgs.iOSmacOS.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2WebResourceRequest.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2WebResourceRequest.iOSmacOS.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2WebResourceResponse.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2WebResourceResponse.iOSmacOS.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2HttpRequestHeaders.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2HttpRequestHeaders.iOSmacOS.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2Extensions.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeCoreWebView2Extensions.iOSmacOS.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpHeadersCollectionIterator.cs" Link="UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpHeadersCollectionIterator.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpResponseHeaders.cs" Link="UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpResponseHeaders.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

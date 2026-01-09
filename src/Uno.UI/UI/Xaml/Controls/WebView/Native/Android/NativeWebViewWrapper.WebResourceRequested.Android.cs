@@ -10,6 +10,7 @@ using Android.Webkit;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -80,7 +81,8 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 			return null;
 		}
 
-		var args = new CoreWebView2WebResourceRequestedEventArgs(request, resourceContext);
+		var nativeArgs = new NativeCoreWebView2WebResourceRequestedEventArgs(request, resourceContext);
+		var args = new CoreWebView2WebResourceRequestedEventArgs(nativeArgs);
 
 		try
 		{
@@ -95,18 +97,18 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 			return null;
 		}
 
-		var nativeResponse = args.GetNativeResponse();
+		var nativeResponse = nativeArgs.Response as NativeCoreWebView2WebResourceResponse;
 		if (nativeResponse != null)
 		{
-			return nativeResponse;
+			return nativeResponse.ToNativeResponse();
 		}
 
-		if (!args.RequiresRefetch)
+		if (!nativeArgs.RequiresRefetch)
 		{
 			return null;
 		}
 
-		var effectiveHeaders = args.GetEffectiveHeaders();
+		var effectiveHeaders = nativeArgs.GetEffectiveHeaders();
 		if (effectiveHeaders == null)
 		{
 			return null;
