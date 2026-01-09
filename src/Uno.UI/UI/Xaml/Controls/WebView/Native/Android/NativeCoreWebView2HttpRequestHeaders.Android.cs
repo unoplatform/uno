@@ -4,19 +4,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Web.WebView2.Core;
 
-namespace Microsoft.Web.WebView2.Core;
+namespace Uno.Web.WebView2.Core;
 
 /// <summary>
 /// Android-specific implementation for HTTP request headers.
 /// </summary>
-public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<string, string>>
+public partial class NativeCoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<string, string>>
 {
 	private readonly Dictionary<string, string> _originalHeaders;
 	private readonly Dictionary<string, string> _addedHeaders = new(StringComparer.OrdinalIgnoreCase);
 	private readonly HashSet<string> _removedHeaders = new(StringComparer.OrdinalIgnoreCase);
 
-	internal CoreWebView2HttpRequestHeaders(IDictionary<string, string>? headers = null)
+	internal NativeCoreWebView2HttpRequestHeaders(IDictionary<string, string>? headers = null)
 	{
 		_originalHeaders = headers != null
 			? new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase)

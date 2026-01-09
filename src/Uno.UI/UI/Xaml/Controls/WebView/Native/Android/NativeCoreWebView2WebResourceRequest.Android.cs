@@ -4,20 +4,21 @@
 using System;
 using System.Collections.Generic;
 using Android.Webkit;
+using Microsoft.Web.WebView2.Core;
 
-namespace Microsoft.Web.WebView2.Core;
+namespace Uno.Web.WebView2.Core;
 
 /// <summary>
 /// Android-specific implementation for WebResourceRequest.
 /// </summary>
-public partial class CoreWebView2WebResourceRequest
+public partial class NativeCoreWebView2WebResourceRequest : INativeWebResourceRequest
 {
 	private CoreWebView2HttpRequestHeaders? _headers;
 	private string _uri;
 	private string _method;
 	private readonly IWebResourceRequest? _nativeRequest;
 
-	internal CoreWebView2WebResourceRequest(IWebResourceRequest? nativeRequest)
+	internal NativeCoreWebView2WebResourceRequest(IWebResourceRequest? nativeRequest)
 	{
 		_nativeRequest = nativeRequest;
 		_uri = nativeRequest?.Url?.ToString() ?? string.Empty;

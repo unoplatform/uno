@@ -11,19 +11,11 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2HttpResponseHeaders : IEnumerable<KeyValuePair<string, string>>
 {
-#if __SKIA__
 	private readonly INativeHttpResponseHeaders _nativeHeaders;
 
-	internal CoreWebView2HttpResponseHeaders(object nativeHeaders)
+	internal CoreWebView2HttpResponseHeaders(INativeHttpResponseHeaders nativeHeaders)
 	{
-		if (nativeHeaders is INativeHttpResponseHeaders wrapper)
-		{
-			_nativeHeaders = wrapper;
-		}
-		else
-		{
-			_nativeHeaders = new ReflectionNativeHttpResponseHeaders(nativeHeaders ?? throw new ArgumentNullException(nameof(nativeHeaders)));
-		}
+		_nativeHeaders = nativeHeaders;
 	}
 
 	internal INativeHttpResponseHeaders NativeHeaders => _nativeHeaders;
@@ -43,10 +35,5 @@ public partial class CoreWebView2HttpResponseHeaders : IEnumerable<KeyValuePair<
 	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    // Removed ConvertToKeyValuePair since now INativeHttpResponseHeaders handles it?
-    // Wait, ReflectionNativeHttpResponseHeaders handles ConvertToKeyValuePair internally in its GetEnumerator.
-    // So here we just delegate.
-#endif
 }
 

@@ -11,22 +11,14 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<string, string>>
 {
-#if __SKIA__
 	private readonly INativeHttpRequestHeaders _nativeHeaders;
 
-	internal CoreWebView2HttpRequestHeaders(object nativeHeaders)
+	internal CoreWebView2HttpRequestHeaders(INativeHttpRequestHeaders nativeHeaders)
 	{
-		if (nativeHeaders is INativeHttpRequestHeaders wrapper)
-		{
-			_nativeHeaders = wrapper;
-		}
-		else
-		{
-			_nativeHeaders = new ReflectionNativeHttpRequestHeaders(nativeHeaders ?? throw new ArgumentNullException(nameof(nativeHeaders)));
-		}
+		_nativeHeaders = nativeHeaders;
 	}
 
-	internal object NativeHeaders => _nativeHeaders is ReflectionNativeHttpRequestHeaders r ? r.Target : _nativeHeaders;
+	internal object NativeHeaders => _nativeHeaders;
 
 	public virtual string GetHeader(string name) => _nativeHeaders.GetHeader(name);
 
@@ -45,5 +37,4 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-#endif
 }

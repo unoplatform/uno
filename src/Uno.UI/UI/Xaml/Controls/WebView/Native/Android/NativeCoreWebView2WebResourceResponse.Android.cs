@@ -5,20 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Android.Webkit;
+using Microsoft.Web.WebView2.Core;
 
-namespace Microsoft.Web.WebView2.Core;
+namespace Uno.Web.WebView2.Core;
 
 /// <summary>
 /// Android-specific implementation for WebResourceResponse.
 /// </summary>
-public partial class CoreWebView2WebResourceResponse
+public partial class NativeCoreWebView2WebResourceResponse : INativeWebResourceResponse
 {
 	private CoreWebView2HttpResponseHeaders? _headers;
 	private int _statusCode = 200;
 	private string _reasonPhrase = "OK";
 	private global::Windows.Storage.Streams.IRandomAccessStream? _content;
 
-	internal CoreWebView2WebResourceResponse() { }
+	internal NativeCoreWebView2WebResourceResponse() { }
 
 	public global::Windows.Storage.Streams.IRandomAccessStream Content
 	{

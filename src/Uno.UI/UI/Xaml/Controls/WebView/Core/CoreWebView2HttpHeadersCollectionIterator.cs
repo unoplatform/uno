@@ -11,19 +11,11 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2HttpHeadersCollectionIterator : IIterator<KeyValuePair<string, string>>
 {
-#if __SKIA__
 	private readonly INativeHttpHeadersCollectionIterator _nativeIterator;
 
-	internal CoreWebView2HttpHeadersCollectionIterator(object nativeIterator)
+	internal CoreWebView2HttpHeadersCollectionIterator(INativeHttpHeadersCollectionIterator nativeIterator)
 	{
-		if (nativeIterator is INativeHttpHeadersCollectionIterator wrapper)
-		{
-			_nativeIterator = wrapper;
-		}
-		else
-		{
-			_nativeIterator = new ReflectionNativeHttpHeadersCollectionIterator(nativeIterator ?? throw new ArgumentNullException(nameof(nativeIterator)));
-		}
+		_nativeIterator = nativeIterator;
 	}
 
 	public KeyValuePair<string, string> Current => ConvertToKeyValuePair(_nativeIterator.Current);
@@ -42,10 +34,7 @@ public partial class CoreWebView2HttpHeadersCollectionIterator : IIterator<KeyVa
 		return value switch
 		{
 			KeyValuePair<string, string> pair => pair,
-			_ => new KeyValuePair<string, string>(
-				(string)value.GetType().GetProperty("Key")!.GetValue(value)!,
-				(string)value.GetType().GetProperty("Value")!.GetValue(value)!)
+			_ => throw new NotSupportedException()
 		};
 	}
-#endif
 }

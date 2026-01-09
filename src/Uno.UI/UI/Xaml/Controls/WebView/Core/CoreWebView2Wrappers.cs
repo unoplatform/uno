@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Windows.Foundation;
 using Windows.Storage.Streams;
 
 namespace Microsoft.Web.WebView2.Core;
@@ -44,7 +45,7 @@ internal interface INativeWebResourceRequest
 internal interface INativeHttpRequestHeaders : IEnumerable<KeyValuePair<string, string>>
 {
 	string GetHeader(string name);
-	object GetHeaders(string name);
+	INativeHttpHeadersCollectionIterator GetHeaders(string name);
 	bool Contains(string name);
 	void SetHeader(string name, string value);
 	void RemoveHeader(string name);
@@ -52,9 +53,9 @@ internal interface INativeHttpRequestHeaders : IEnumerable<KeyValuePair<string, 
 
 internal interface INativeWebResourceRequestedEventArgs
 {
-	object Request { get; }
+	INativeWebResourceRequest Request { get; }
 	INativeWebResourceResponse? Response { get; set; }
 	CoreWebView2WebResourceContext ResourceContext { get; }
 	CoreWebView2WebResourceRequestSourceKinds RequestedSourceKind { get; }
-	Windows.Foundation.Deferral GetDeferral();
+	Deferral GetDeferral();
 }

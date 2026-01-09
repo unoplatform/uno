@@ -1,9 +1,7 @@
 #nullable enable
 
 using System;
-#if __SKIA__
 using Windows.Foundation;
-#endif
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -12,24 +10,16 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2WebResourceRequestedEventArgs
 {
-#if __SKIA__
 	private readonly INativeWebResourceRequestedEventArgs _nativeArgs;
 	private CoreWebView2WebResourceRequest? _request;
 	private CoreWebView2WebResourceResponse? _response;
 
-	internal CoreWebView2WebResourceRequestedEventArgs(object nativeArgs)
+	internal CoreWebView2WebResourceRequestedEventArgs(INativeWebResourceRequestedEventArgs nativeArgs)
 	{
-		if (nativeArgs is INativeWebResourceRequestedEventArgs wrapper)
-		{
-			_nativeArgs = wrapper;
-		}
-		else
-		{
-			_nativeArgs = new ReflectionNativeWebResourceRequestedEventArgs(nativeArgs ?? throw new ArgumentNullException(nameof(nativeArgs)));
-		}
+		_nativeArgs = nativeArgs;
 	}
 
-	internal object NativeArgs => _nativeArgs is ReflectionNativeWebResourceRequestedEventArgs r ? r.Target : _nativeArgs;
+	internal object NativeArgs => _nativeArgs;
 
 	public CoreWebView2WebResourceRequest Request
 		=> _request ??= new CoreWebView2WebResourceRequest(_nativeArgs.Request);
@@ -38,18 +28,11 @@ public partial class CoreWebView2WebResourceRequestedEventArgs
 	{
 		get
 		{
-			var nativeResponseWrapper = _nativeArgs.Response;
-			if (nativeResponseWrapper is null)
-			{
-				_response = null;
-				return null!;
-			}
+			var nativeResponse = _nativeArgs.Response;
 
-			var nativeResponseTarget = (nativeResponseWrapper as ReflectionNativeWebResourceResponse)?.Target ?? nativeResponseWrapper;
-
-			if (_response is null || !ReferenceEquals(_response.NativeResponse, nativeResponseTarget))
+			if ((_response is null || !ReferenceEquals(_response.NativeResponse, nativeResponse)) && nativeResponse is not null)
 			{
-				_response = new CoreWebView2WebResourceResponse(nativeResponseWrapper);
+				_response = new CoreWebView2WebResourceResponse(nativeResponse);
 			}
 
 			return _response!;
@@ -68,5 +51,4 @@ public partial class CoreWebView2WebResourceRequestedEventArgs
 		=> _nativeArgs.RequestedSourceKind;
 
 	public Deferral GetDeferral() => _nativeArgs.GetDeferral();
-#endif
 }
