@@ -12,7 +12,7 @@ Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to con
 
 Normally when you add a new doc file, you also add it to [articles/toc.yml](https://github.com/unoplatform/uno/blob/master/doc/articles/toc.yml). This allows it to show up in the left sidebar Table of Contents on the docs website.
 
-## DocFX-flavored markdown
+## DocFX-flavored Markdown
 
 DocFX supports extended Markdown syntaxes that are treated specially when converting to html.
 
