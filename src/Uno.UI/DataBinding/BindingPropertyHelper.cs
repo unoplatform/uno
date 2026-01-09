@@ -364,17 +364,16 @@ namespace Uno.UI.DataBinding
 			}
 			while (type != null);
 
-			// If not found in type hierarchy, check interfaces
-			// This handles cases like accessing Count on IReadOnlyList<T> when the concrete type is an array
+			// If not found in type hierarchy, check interfaces.
+			// This handles cases like accessing Count on IReadOnlyList<T> when the concrete type is an array.
+			var bindingFlagsForInterfaces = BindingFlags.Instance
+				| BindingFlags.Static
+				| BindingFlags.Public
+				| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default);
+
 			foreach (var iface in originalType.GetInterfaces())
 			{
-				var info = iface.GetProperty(
-					name,
-					BindingFlags.Instance
-					| BindingFlags.Static
-					| BindingFlags.Public
-					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
-				);
+				var info = iface.GetProperty(name, bindingFlagsForInterfaces);
 
 				if (info != null)
 				{
@@ -440,8 +439,8 @@ namespace Uno.UI.DataBinding
 			}
 			while (type != null);
 
-			// If not found in type hierarchy, check interfaces
-			// This handles cases like accessing indexers on IReadOnlyList<T> when the concrete type is an array
+			// If not found in type hierarchy, check interfaces.
+			// This handles cases like accessing indexers on IReadOnlyList<T> when the concrete type is an array.
 			var bindingFlagsForInterfaces = BindingFlags.Instance
 					| BindingFlags.Static
 					| BindingFlags.Public
