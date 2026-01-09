@@ -210,7 +210,7 @@ partial class TextCommandBarFlyout
 
 		bool shouldIncludeProofingMenu =
 			(bool)(proofingFlyout is not null) &&
-			proofingMenuFlyout is null || proofingMenuFlyout.Items.Count > 0;
+			(proofingMenuFlyout is null || proofingMenuFlyout.Items.Count > 0);
 
 		if (shouldIncludeProofingMenu)
 		{
