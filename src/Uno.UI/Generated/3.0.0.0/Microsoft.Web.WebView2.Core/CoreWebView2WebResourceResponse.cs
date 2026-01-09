@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2WebResourceResponse
 	{
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if false
 		internal CoreWebView2WebResourceResponse()
 		{
 		}
 #endif
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public int StatusCode
 		{
@@ -27,7 +27,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public string ReasonPhrase
 		{
@@ -41,7 +41,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream Content
 		{
@@ -55,7 +55,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders Headers
 		{

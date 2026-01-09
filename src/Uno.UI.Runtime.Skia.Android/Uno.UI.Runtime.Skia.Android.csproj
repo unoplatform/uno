@@ -56,6 +56,15 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.WebResourceRequested.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.WebResourceRequested.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\WebResourceInterceptingClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\WebResourceInterceptingClient.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" />
+
+		<!-- Core WebResourceRequested partials -->
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2WebResourceRequestedEventArgs.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2WebResourceRequestedEventArgs.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2WebResourceRequest.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2WebResourceRequest.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2WebResourceResponse.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2WebResourceResponse.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2HttpRequestHeaders.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2HttpRequestHeaders.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2Extensions.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeCoreWebView2Extensions.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpHeadersCollectionIterator.cs" Link="UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpHeadersCollectionIterator.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpResponseHeaders.cs" Link="UI\Xaml\Controls\WebView\Native\NativeCoreWebView2HttpResponseHeaders.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
