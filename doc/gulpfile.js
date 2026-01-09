@@ -53,6 +53,19 @@ function docfx(done) {
             // This a workaround
             done(err);
         }
+        
+        // Copy our custom files to override default template
+        const fs = require('fs');
+        try {
+            fs.copyFileSync(`${assets}/styles/docfx.js`, '_site/styles/docfx.js');
+            fs.copyFileSync(`${assets}/styles/docfx.js.map`, '_site/styles/docfx.js.map');
+            fs.copyFileSync(`${assets}/styles/main.css`, '_site/styles/main.css');
+            fs.copyFileSync(`${assets}/styles/main.css.map`, '_site/styles/main.css.map');
+            fs.copyFileSync(`${assets}/styles/main.js`, '_site/styles/main.js');
+        } catch (copyErr) {
+            console.log('Warning: Could not copy custom files:', copyErr.message);
+        }
+        
         done();
     });
 }
