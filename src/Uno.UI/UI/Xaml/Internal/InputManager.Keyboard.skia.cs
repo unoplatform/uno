@@ -80,7 +80,7 @@ partial class InputManager
 			// This matches WinUI behavior where context menu is triggered after KeyDown.
 			if (down && !routedArgs.Handled)
 			{
-				_inputManager.ContentRoot.ContextMenuProcessor.ProcessContextRequestOnKeyboardInput(
+				_inputManager._contextMenuProcessor.ProcessContextRequestOnKeyboardInput(
 					originalSource2,
 					args.VirtualKey,
 					args.KeyboardModifiers);
