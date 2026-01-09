@@ -152,6 +152,7 @@ If you do need to generate them:
 > By default, the build does not fail on DocFX errors (it prints them in the console). This is for simplicity since you don't need the implemented views for most documentation work. To test DocFX and break on error, run the `npm run strict` command.
 
 ### Build and serve the documentation locally
+
 #### Using npm commands (Recommended)
 
 The easiest way to build and serve the documentation locally is using npm scripts:
@@ -195,14 +196,15 @@ npm run clean
 
 If you prefer to run DocFX directly without npm:
 
-1. Navigate to the `doc` folder.
-2. Run DocFX with the configuration file:
+1- Navigate to the `doc` folder.
+
+2- Run DocFX with the configuration file:
 
 ```bash
 docfx docfx.json
 ```
 
-3. The generated HTML will be in the `_site` folder.
+3- The generated HTML will be in the `_site` folder.
 
 ### Serve the built documentation
 
@@ -212,13 +214,13 @@ After building with DocFX directly, you can serve the documentation using a loca
 
 `dotnet-serve` is a simple command-line HTTP server:
 
-1. Install `dotnet-serve`:
+1- Install `dotnet-serve`:
 
 ```bash
 dotnet tool install --global dotnet-serve
 ```
 
-2. Navigate to the `_site` folder and start the server:
+2- Navigate to the `_site` folder and start the server:
 
 ```bash
 cd _site
@@ -247,16 +249,18 @@ The search configuration includes:
 
 When running the documentation locally:
 
-1. Start the development server:
+1- Start the development server:
 
 ```bash
 cd doc
 npm start
 ```
 
-2. Open your browser to the local server URL (typically `http://localhost:3000`).
-3. The search box should appear in the left sidebar.
-4. Type a search query to test the search functionality.
+2- Open your browser to the local server URL (typically `http://localhost:3000`).
+
+3- The search box should appear in the left sidebar.
+
+4- Type a search query to test the search functionality.
 
 > [!NOTE]
 > The search uses the production Algolia index, so search results will reflect the content currently deployed to the live documentation site, not your local changes. To see your local content in search results, your changes need to be deployed to production and the Algolia index needs to be updated.
