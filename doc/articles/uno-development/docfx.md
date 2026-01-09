@@ -137,7 +137,7 @@ npm install
 
 ### Generate implemented views (optional)
 
-"Implemented views" are documentation pages that are generated from the Uno source code to describe how specific APIs are implemented across platforms. They are consumed by DocFX as part of the full docs build, but most day‑to‑day documentation changes (guides, how‑tos, etc.) do not require regenerating them.
+"Implemented views" are documentation pages that are generated from the Uno source code to describe how specific APIs are implemented across platforms. They are consumed by DocFX as part of the full docs build, but most day-to-day documentation changes (guides, how-tos, etc.) do not require regenerating them.
 
 You typically only need to generate implemented views when you are working on the tooling that produces them, or when you want to validate a full local DocFX build that includes these generated pages. For most contributors, this step can be safely skipped.
 
