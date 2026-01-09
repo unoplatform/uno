@@ -24,11 +24,6 @@ partial class ContentRoot
 
 	internal ContentIsland CompositionContent => _compositionContent;
 
-	/// <summary>
-	/// Represents the context menu processor associated with this content root.
-	/// </summary>
-	internal ContextMenuProcessor ContextMenuProcessor { get; private set; }
-
 	internal void AddPendingXamlRootChangedEvent(ContentRoot.ChangeType _/*ignored for now*/) => _hasPendingChangedEvent = true;
 
 	private ContentIsland _compositionContent;
