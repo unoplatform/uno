@@ -24,8 +24,7 @@ stages:
         src/Directory.Build.props
         src/Directory.Build.targets
 
-    - displayName: Validate FontFallbackMaps.skia.cs
-      bash: |
+    - bash: |
         set -euo pipefail
         
         echo "Regenerating FontFallbackMaps.skia.cs..."
@@ -40,3 +39,4 @@ stages:
           echo "FontFallbackMaps.skia.cs is up to date."
           rm src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new
         fi
+      displayName: Validate FontFallbackMaps.skia.cs
