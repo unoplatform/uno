@@ -5,7 +5,7 @@ using System;
 
 namespace UITests.Windows_UI_Xaml_Controls.WebView
 {
-	[SampleControlInfo("WebView", IgnoreInSnapshotTests = true)]
+	[Sample("WebView", IgnoreInSnapshotTests = true)]
 	public sealed partial class WebView_Title : Page
 	{
 		public WebView_Title()

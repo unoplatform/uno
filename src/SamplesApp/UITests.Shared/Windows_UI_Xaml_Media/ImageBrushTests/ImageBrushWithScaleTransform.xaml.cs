@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("Brushes", "ImageBrushWithScaleTransform")]
+	[Sample("Brushes", "ImageBrushWithScaleTransform")]
 	public sealed partial class ImageBrushWithScaleTransform : UserControl
 	{
 		public ImageBrushWithScaleTransform()

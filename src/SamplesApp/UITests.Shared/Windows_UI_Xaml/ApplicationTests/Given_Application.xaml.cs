@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.ApplicationTests;
 
-[SampleControlInfo("Application")]
+[Sample("Application")]
 public sealed partial class Given_Application : Page
 {
 	public Given_Application()

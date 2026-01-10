@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
-	[SampleControlInfo(category: "Clipping", viewModelType: typeof(ButtonTestsViewModel))]
+	[Sample(category: "Clipping", viewModelType: typeof(ButtonTestsViewModel))]
 	public sealed partial class XamlButtonWithClipping_Scrollable : UserControl
 	{
 		public XamlButtonWithClipping_Scrollable()

@@ -10,7 +10,7 @@ using SamplesApp;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
-	[SampleControlInfo("Popup", "MessageDialog", description: "The dialog dims the screen behind it and blocks touch events from passing to the app's canvas until the user responds.")]
+	[Sample("Popup", Name = "MessageDialog", Description = "The dialog dims the screen behind it and blocks touch events from passing to the app's canvas until the user responds.")]
 	public sealed partial class MessageDialog : Page
 	{
 		private const string _title = "Internet Connectivity";

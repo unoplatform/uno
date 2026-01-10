@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfo(
+	[Sample(
 		"ContentPresenter",
 		"ContentPresenter_Changing_ContentTemplate",
 		description: "ContentPresenter where ContentTemplate can be toggled between non-null and null. Content view should be visible when null.",

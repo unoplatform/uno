@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "SimplewithNonUnifmormRadius")]
+	[Sample("Border", "SimplewithNonUnifmormRadius")]
 	public sealed partial class SimplewithNonUnifmormRadius : UserControl
 	{
 		public SimplewithNonUnifmormRadius()

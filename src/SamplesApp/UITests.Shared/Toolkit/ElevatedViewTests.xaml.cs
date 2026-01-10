@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Toolkit
 {
-	[SampleControlInfo("Toolkit")]
+	[Sample("Toolkit")]
 	public sealed partial class ElevatedViewTests : Page
 	{
 		public ElevatedViewTests()

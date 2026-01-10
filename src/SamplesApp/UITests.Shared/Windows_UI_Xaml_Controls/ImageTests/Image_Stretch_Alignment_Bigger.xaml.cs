@@ -2,7 +2,7 @@
 
 namespace Uno.UI.Samples.UITests.Image
 {
-	[Controls.SampleControlInfo("Image")]
+	[Controls.Sample("Image")]
 	public sealed partial class Image_Stretch_Alignment_Bigger : Page
 	{
 		public Image_Stretch_Alignment_Bigger()

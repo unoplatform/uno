@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewSelectedItems")]
+	[Sample("ListView", "ListViewSelectedItems")]
 	public sealed partial class ListViewSelectedItems : UserControl
 	{
 #pragma warning disable CS0109

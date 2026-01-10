@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_Networking
 {
-	[SampleControlInfo("Windows.Networking", "NetworkInformation", viewModelType: typeof(NetworkInformationViewModel))]
+	[Sample("Windows.Networking", "NetworkInformation", viewModelType: typeof(NetworkInformationViewModel))]
 	public sealed partial class NetworkInformationTests : Page
 	{
 		public NetworkInformationTests()

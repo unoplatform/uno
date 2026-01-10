@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.MarkupExtension
 {
-	[SampleControlInfo("XAML", "MarkupExtension")]
+	[Sample("XAML", "MarkupExtension")]
 	public sealed partial class MarkupExtension : UserControl
 	{
 		public MarkupExtension()

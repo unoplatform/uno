@@ -20,7 +20,7 @@ using XamlWindow = Microsoft.UI.Xaml.Window;
 
 namespace UITests.Windows_UI_Xaml.ThemeResources
 {
-	[SampleControlInfo("XAML", nameof(ReloadedControlTheme), Description = SampleDescription, IsManualTest = true, IgnoreInSnapshotTests = true)]
+	[Sample("XAML", nameof(ReloadedControlTheme), Description = SampleDescription, IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class ReloadedControlTheme : UserControl
 	{
 		private const string SampleDescription =

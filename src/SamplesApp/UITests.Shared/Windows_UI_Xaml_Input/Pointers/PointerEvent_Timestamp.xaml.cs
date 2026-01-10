@@ -18,7 +18,7 @@ using System.Collections.ObjectModel;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.Pointers
 {
-	[SampleControlInfo(
+	[Sample(
 		"Pointers",
 		Description =
 		"Click the red rectangle repeatedly. You should see tickmarks in the logs (✔️) indicating that time delta matches timestamp delta.",

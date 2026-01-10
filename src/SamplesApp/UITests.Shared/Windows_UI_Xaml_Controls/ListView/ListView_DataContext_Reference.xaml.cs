@@ -20,7 +20,7 @@ using System.ComponentModel;
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo(
+	[Sample(
 		"ListView",
 		"ListView_DataContext_Reference",
 		viewModelType: typeof(DataContextReferenceViewModel),

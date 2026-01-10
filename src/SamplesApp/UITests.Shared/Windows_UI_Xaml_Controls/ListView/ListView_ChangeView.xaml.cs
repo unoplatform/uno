@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_ChangeView", null, description: "ListView sample demonstating the ChangeView function works when the style changes. When changing the style, a blue rectangle should appear instead of the list. when clicking on \"Change View\", the blue rectangle should change to a pink rectangle.")]
+	[Sample("ListView", "ListView_ChangeView", null, description: "ListView sample demonstating the ChangeView function works when the style changes. When changing the style, a blue rectangle should appear instead of the list. when clicking on \"Change View\", the blue rectangle should change to a pink rectangle.")]
 	public sealed partial class ListView_ChangeView : UserControl
 	{
 		public ListView_ChangeView()

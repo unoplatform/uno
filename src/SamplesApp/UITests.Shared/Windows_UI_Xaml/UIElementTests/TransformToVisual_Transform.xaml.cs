@@ -15,7 +15,7 @@ using TextBlock = Microsoft.UI.Xaml.Controls.TextBlock;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", "TransformToVisual_Transform")]
+	[Sample("UIElement", "TransformToVisual_Transform")]
 	public sealed partial class TransformToVisual_Transform : UserControl
 	{
 		private readonly TestRunner _tests;

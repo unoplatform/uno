@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo(description: "ListView with Margin set on ListViewItems via ItemContainerStyle")]
+	[Sample(description: "ListView with Margin set on ListViewItems via ItemContainerStyle")]
 	public sealed partial class ListView_Margin_On_Container : UserControl
 	{
 

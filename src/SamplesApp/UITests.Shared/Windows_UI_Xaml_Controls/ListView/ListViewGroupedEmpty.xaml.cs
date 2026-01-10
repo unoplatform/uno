@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewGroupedEmpty", typeof(ListViewGroupedViewModel))]
+	[Sample("ListView", "ListViewGroupedEmpty", typeof(ListViewGroupedViewModel))]
 	public sealed partial class ListViewGroupedEmpty : UserControl
 	{
 		public ListViewGroupedEmpty()

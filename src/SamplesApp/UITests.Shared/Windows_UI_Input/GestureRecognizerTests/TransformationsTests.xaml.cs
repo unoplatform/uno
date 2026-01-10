@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
-	[SampleControlInfo("Gesture Recognizer")]
+	[Sample("Gesture Recognizer")]
 	public sealed partial class TransformationsTests : Page
 	{
 		public TransformationsTests()

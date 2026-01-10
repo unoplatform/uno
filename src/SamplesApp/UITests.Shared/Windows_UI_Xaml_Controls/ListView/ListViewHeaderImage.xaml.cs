@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewHeaderImage")]
+	[Sample("ListView", "ListViewHeaderImage")]
 	public sealed partial class ListViewHeaderImage : UserControl
 	{
 		public ListViewHeaderImage()

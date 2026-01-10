@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
 	///
-	[SampleControlInfo("TextBox", description: "TextBox_CharacterCasing")]
+	[Sample("TextBox", description: "TextBox_CharacterCasing")]
 	public sealed partial class TextBox_CharacterCasing : UserControl
 	{
 		public TextBox_CharacterCasing()

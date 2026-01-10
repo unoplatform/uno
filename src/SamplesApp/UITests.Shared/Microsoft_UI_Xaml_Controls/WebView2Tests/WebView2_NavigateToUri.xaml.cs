@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[SampleControlInfo("WebView", "WebView2_NavigateToUri", description: "WebView2 demonstrating simple navigation to a URI")]
+	[Sample("WebView", "WebView2_NavigateToUri", description: "WebView2 demonstrating simple navigation to a URI")]
 	public sealed partial class WebView2_NavigateToUri : Page
 	{
 		public WebView2_NavigateToUri()

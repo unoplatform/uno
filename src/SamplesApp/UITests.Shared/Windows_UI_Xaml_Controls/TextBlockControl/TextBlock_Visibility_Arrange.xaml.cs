@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", "TextBlock_Visibility_Arrange", description: "The TextBlock's visibility changes during the arrange pass - this shouldn't crash!")]
+	[Sample("TextBlock", "TextBlock_Visibility_Arrange", description: "The TextBlock's visibility changes during the arrange pass - this shouldn't crash!")]
 	public sealed partial class TextBlock_Visibility_Arrange : UserControl
 	{
 		public TextBlock_Visibility_Arrange()

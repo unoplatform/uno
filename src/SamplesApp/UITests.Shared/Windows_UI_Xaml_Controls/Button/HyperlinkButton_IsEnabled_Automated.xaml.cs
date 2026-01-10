@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
 
-	[SampleControlInfo("Buttons", nameof(HyperlinkButton_IsEnabled_Automated))]
+	[Sample("Buttons", nameof(HyperlinkButton_IsEnabled_Automated))]
 	public sealed partial class HyperlinkButton_IsEnabled_Automated : UserControl
 	{
 		private int _clickTotal = 0;

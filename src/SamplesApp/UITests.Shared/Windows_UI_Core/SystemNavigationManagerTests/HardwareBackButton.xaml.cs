@@ -17,7 +17,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 {
-	[SampleControlInfo("Windows.UI.Core", "HardwareBackButton")]
+	[Sample("Windows.UI.Core", "HardwareBackButton")]
 	public sealed partial class HardwareBackButton : Page
 	{
 		public HardwareBackButton()

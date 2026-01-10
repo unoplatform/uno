@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("MediaPlayerElement", "Original using a local ms-appdata source", ignoreInSnapshotTests: true, description: "Video using a local ms-appdata source for video and poster. At the moment media element cannot read content from the in-browser file system, so keep this test aside for WASM.", IsManualTest = true)]
+	[Sample("MediaPlayerElement", "Original using a local ms-appdata source", ignoreInSnapshotTests: true, description: "Video using a local ms-appdata source for video and poster. At the moment media element cannot read content from the in-browser file system, so keep this test aside for WASM.", IsManualTest = true)]
 	public sealed partial class MediaPlayerElement_Original_MsAppdataSource : UserControl
 	{
 		public MediaPlayerElement_Original_MsAppdataSource()

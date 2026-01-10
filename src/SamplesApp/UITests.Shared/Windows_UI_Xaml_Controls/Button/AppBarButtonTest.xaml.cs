@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", nameof(AppBarButtonTest), typeof(ButtonTestsViewModel))]
+	[Sample("Buttons", nameof(AppBarButtonTest), typeof(ButtonTestsViewModel))]
 	public sealed partial class AppBarButtonTest : UserControl
 	{
 		public AppBarButtonTest()

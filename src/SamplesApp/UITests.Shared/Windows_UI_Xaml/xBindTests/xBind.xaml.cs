@@ -4,7 +4,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.xBind
 {
-	[SampleControlInfo("x:Bind", "xBind")]
+	[Sample("x:Bind", "xBind")]
 	public sealed partial class xBind : UserControl
 	{
 		internal XbindViewModel ViewModel { get; set; }

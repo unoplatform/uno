@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "TextBox_Focus")]
+	[Sample("TextBox", "TextBox_Focus")]
 	public sealed partial class TextBox_Focus : UserControl
 	{
 		public TextBox_Focus()

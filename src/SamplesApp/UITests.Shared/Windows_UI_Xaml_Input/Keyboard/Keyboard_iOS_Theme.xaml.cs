@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Input.Keyboard
 {
-	[SampleControlInfo("Keyboard", nameof(Keyboard_iOS_Theme),
+	[Sample("Keyboard", nameof(Keyboard_iOS_Theme),
 		description: SampleDescription,
 		ignoreInSnapshotTests: true,
 		isManualTest: true)]

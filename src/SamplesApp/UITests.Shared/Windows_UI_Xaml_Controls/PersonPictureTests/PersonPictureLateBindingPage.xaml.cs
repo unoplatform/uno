@@ -10,13 +10,7 @@ using System.Threading.Tasks;
 
 namespace MUXControlsTestApp
 {
-	[SampleControlInfo(
-		"MUX",
-		"PersonPictureLateBinding",
-		description: "Shows a PersonPicture control and a Textblock with a name. \n" +
-		"The PersonPicture control image is set after 1 second delay. \n" +
-		"The image should be displayed after the delay.",
-		isManualTest: true)]
+	[Sample("MUX", Name = "PersonPictureLateBinding", Description = "Shows a PersonPicture control and a Textblock with a name. \n" + "The PersonPicture control image is set after 1 second delay. \n" + "The image should be displayed after the delay.", IsManualTest = true)]
 #pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class PersonPictureLateBindingPage
 #pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.

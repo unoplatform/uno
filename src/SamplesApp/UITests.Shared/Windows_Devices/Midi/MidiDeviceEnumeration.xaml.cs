@@ -15,7 +15,7 @@ using Private.Infrastructure;
 namespace UITests.Shared.Windows_Devices.Midi
 {
 	// Based on https://github.com/microsoft/Windows-universal-samples/blob/master/Samples/MIDI/cs/Scenario1_MIDIDeviceEnumeration.xaml.cs
-	[SampleControlInfo("Windows.Devices", "Midi_DeviceEnumeration", description: "Sample for enumeration of MIDI devices")]
+	[Sample("Windows.Devices", Name = "Midi_DeviceEnumeration", Description = "Sample for enumeration of MIDI devices")]
 	public sealed partial class MidiDeviceEnumerationTests : UserControl
 	{
 		/// <summary>

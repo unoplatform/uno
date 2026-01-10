@@ -20,7 +20,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-	[SampleControlInfo("FrameworkElement", "XamlEvent_Leak", description: SampleDescription)]
+	[Sample("FrameworkElement", "XamlEvent_Leak", description: SampleDescription)]
 	public sealed partial class XamlEvent_Leak : UserControl
 	{
 		private const string SampleDescription =

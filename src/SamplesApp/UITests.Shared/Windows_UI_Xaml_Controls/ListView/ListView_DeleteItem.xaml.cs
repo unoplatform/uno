@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView;
 
-[SampleControlInfo("ListView", "ListView_DeleteItem", isManualTest: true, description: "Tests that deleting an item from a ListView does not display weird information while the item is being removed.")]
+[Sample("ListView", "ListView_DeleteItem", isManualTest: true, description: "Tests that deleting an item from a ListView does not display weird information while the item is being removed.")]
 public sealed partial class ListView_DeleteItem : UserControl
 {
 	private ViewModel _vm;

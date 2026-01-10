@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_DropDownWidth", typeof(ListViewViewModel))]
+	[Sample("ComboBox", Name = "ComboBox_DropDownWidth")]
 	public sealed partial class ComboBox_DropDownWidth : UserControl
 	{
 		public ComboBox_DropDownWidth()

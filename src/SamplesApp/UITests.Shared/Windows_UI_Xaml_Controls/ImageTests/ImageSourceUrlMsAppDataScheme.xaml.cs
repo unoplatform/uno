@@ -21,7 +21,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo(category: "Image", viewModelType: typeof(ImageSourceUrlMsAppDataSchemeViewModel))]
+	[Sample("Image", ViewModelType = typeof(ImageSourceUrlMsAppDataSchemeViewModel))]
 	internal sealed partial class ImageSourceUrlMsAppDataScheme : Page
 	{
 		public ImageSourceUrlMsAppDataScheme()

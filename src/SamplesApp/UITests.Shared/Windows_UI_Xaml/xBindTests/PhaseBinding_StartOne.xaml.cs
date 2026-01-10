@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Content.UITests.XBind
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("x:Bind", "PhaseBinding_StartOne")]
+	[Sample("x:Bind", "PhaseBinding_StartOne")]
 	public sealed partial class PhaseBinding_StartOne : Page
 	{
 		public PhaseBinding_StartOne()

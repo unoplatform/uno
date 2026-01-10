@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "AutoSizedPathCentered")]
+	[Sample("Path", "AutoSizedPathCentered")]
 	public sealed partial class AutoSizedPathCentered : UserControl
 	{
 		public AutoSizedPathCentered()

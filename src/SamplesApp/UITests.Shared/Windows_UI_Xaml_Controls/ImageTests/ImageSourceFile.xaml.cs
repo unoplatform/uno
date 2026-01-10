@@ -18,7 +18,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "ImageSourceFile", ignoreInSnapshotTests: true /*Local file path shown, including app folder, which is different for each run*/, Description = "Image using local file path as Source, set as string")]
+	[Sample("Image", Name = "ImageSourceFile")]
 	public sealed partial class ImageSourceFile : UserControl
 	{
 		public ImageSourceFile()

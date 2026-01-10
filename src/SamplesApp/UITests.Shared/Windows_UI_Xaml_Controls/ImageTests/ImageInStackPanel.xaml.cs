@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.Image
 {
-	[SampleControlInfo(category: "Image", Description = "ImageInStackPanel")]
+	[Sample(Description = "ImageInStackPanel")]
 	public sealed partial class ImageInStackPanel : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

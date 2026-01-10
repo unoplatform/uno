@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 
 namespace GenericApp.Views.Content.UITests.Animations
 {
-	[SampleControlInfo("Animations", "DoubleAnimation_RenderTransformOrigin")]
+	[Sample("Animations", "DoubleAnimation_RenderTransformOrigin")]
 	public sealed partial class DoubleAnimation_RenderTransformOrigin : UserControl
 	{
 		public DoubleAnimation_RenderTransformOrigin()
