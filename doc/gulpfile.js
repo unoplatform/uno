@@ -15,13 +15,13 @@ const assets = 'templates/uno';
 
 let isStrict = false;
 
-function styles(done) {
+function styles() {
     const output = 'compressed';
 
     src([`${assets}/vendor/*.css`])
         .pipe(dest(`${assets}/styles/`));
 
-    src([`${assets}/**/*.scss`, `${assets}/**/*.sass`])
+    return src([`${assets}/**/*.scss`, `${assets}/**/*.sass`])
         .pipe(sourcemaps.init())
         .pipe(
             sass({includePaths: ['./node_modules/'], outputStyle: output}).on(
@@ -37,8 +37,6 @@ function styles(done) {
         .pipe(sourcemaps.write('.'))
         .pipe(dest(`${assets}/styles/`))
         .pipe(notify({message: 'CSS complete'}));
-
-    done();
 }
 
 function docfx(done) {
@@ -57,7 +55,17 @@ function docfx(done) {
     });
 }
 
-function scripts(done) {
+function pagefind(done) {
+    exec('npx pagefind --site _site --exclude-selectors "nav, .affix, footer"', (err, stdout, stderr) => {
+        console.log(stdout);
+        if (err) {
+            console.error(stderr);
+        }
+        done(err);
+    });
+}
+
+function scripts() {
     src([`${assets}/main.js`])
         .pipe(sourcemaps.init())
         .pipe(uglify())
@@ -68,7 +76,7 @@ function scripts(done) {
     src([`${assets}/vendor/*.js`])
         .pipe(dest(`${assets}/styles/`));
 
-    src([`${assets}/**/*.js`,
+    return src([`${assets}/**/*.js`,
         `!${assets}/styles/*.js`,
         `!${assets}/conceptual.html.primary.js`,
         `!${assets}/main.js`,
@@ -78,8 +86,6 @@ function scripts(done) {
         .pipe(concat('docfx.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(dest(`${assets}/styles/`));
-
-    done();
 }
 
 function watch() {
@@ -119,7 +125,7 @@ function useStrict(done) {
     done();
 }
 
-const build = series(clean, styles, scripts, docfx);
+const build = series(clean, styles, scripts, docfx, pagefind);
 const run = parallel(serve, watch);
 
 exports.build = build;

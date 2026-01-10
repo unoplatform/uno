@@ -1,47 +1,78 @@
 @use "../variables" as *;
 
 :root {
-  --docsearch-primary-color: #{$blue} !important;
-  --docsearch-logo-color: #{$blue} !important;
+  --pagefind-ui-primary: #{$blue} !important;
+  --pagefind-ui-text: #393939 !important;
+  --pagefind-ui-background: #ffffff !important;
+  --pagefind-ui-border: #e7e7e7 !important;
+  --pagefind-ui-border-width: 1px !important;
 }
 
-.sidefilter {
+// Position the search box in the header (breadcrumb bar area)
+#search {
+  position: absolute;
+  right: 180px; // Position to the left of the SDK version info
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  z-index: 900;
+  display: block;
 
-  background-color: transparent;
-  padding: 24px;
-  height: auto;
-  border: 1px solid #e7e7e7;
-  border-top: 0;
+  @media (max-width: 1024px) {
+    width: 200px;
+    right: 140px;
+  }
+  
+  // Hide on mobile for now as it needs specific mobile UI work
+  @media (max-width: 768px) {
+    display: none; 
+  }
+}
 
-  .DocSearch-Button {
-    background: transparent;
-    border: 2px inset $darkgray;
-    border-radius: 6px;
-    margin: 0;
-    min-height: 45px;
-    padding: 10px;
+// Customize Pagefind UI
+#search .pagefind-ui {
     width: 100%;
-  }
-
-  .DocSearch-Button:active, .DocSearch-Button:focus, .DocSearch-Button:hover {
-    border: 2px solid $blue;
+    margin: 0;
     box-shadow: none;
-  }
-
-  .DocSearch-Button .DocSearch-Search-Icon {
-    display: none;
-  }
-
-  .DocSearch-Button-Placeholder {
-    color: rgb(117, 117, 117);
-    font-family: "Open Sans", sans-serif;
-    font-size: 14px;
-    line-height: 20px;
-    padding: 10px;
-    display: block;
-  }
+    border-radius: 0;
 }
 
-.DocSearch.DocSearch-Container {
-  z-index: 9999;
+#search .pagefind-ui__search-input {
+    height: 36px;
+    border-radius: 18px;
+    padding-left: 40px;
+    font-size: 14px;
+    border: 1px solid #e7e7e7;
+    background-color: #f9f9f9;
+}
+
+#search .pagefind-ui__search-clear {
+    top: 9px;
+    background-color: transparent;
+}
+
+// Floating results drawer
+#search .pagefind-ui__drawer {
+  position: absolute !important;
+  top: 45px !important; // Just below the input
+  left: auto !important;
+  right: 0 !important;
+  width: 400px !important; // Wider than input for better reading
+  background: white !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  border: 1px solid #e7e7e7 !important;
+  border-radius: 8px !important;
+  z-index: 10001 !important;
+}
+
+// Adjust padding in results
+#search .pagefind-ui__result {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#search .pagefind-ui__result:last-child {
+    border-bottom: none;
 }
