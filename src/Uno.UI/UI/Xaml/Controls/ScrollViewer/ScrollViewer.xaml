@@ -296,7 +296,7 @@
 								Grid.Row="1"
 								Grid.Column="1"
 								Opacity="0"
-								Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
+								Background="{ThemeResource ScrollViewerScrollBarSeparatorBackground}" />
 						</Grid>
 					</Border>
 				</ControlTemplate>
