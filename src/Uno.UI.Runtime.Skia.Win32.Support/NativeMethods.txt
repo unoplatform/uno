@@ -215,6 +215,7 @@ PeekMessage
 PostMessage
 RegGetValue
 RegisterClassEx
+RegisterClipboardFormat
 RegisterDragDrop
 RegisterTouchWindow
 RegisterWindowMessage
