@@ -136,6 +136,33 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal protected virtual void OnIsSelectedChanged() { }
 
+		/// <summary>
+		/// Override context requested handling for ListViewItem and GridViewItem.
+		/// If the item doesn't have a ContextFlyout, try to use the parent ListView/GridView's ContextFlyout.
+		/// </summary>
+		/// <param name="args">The event args from the ContextRequested event.</param>
+		/// <remarks>
+		/// Ported from WinUI ListViewBaseItem_Partial.cpp:1252-1271
+		/// </remarks>
+		private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
+		{
+			// Only apply this behavior to ListViewItem and GridViewItem
+			if (!IsListViewBaseItem)
+			{
+				base.OnContextRequestedImpl(args);
+				return;
+			}
+
+			// First, try to show flyout on this item
+			ShowContextFlyout(args, this);
+
+			// If not handled and we have a parent ListView/GridView with ContextFlyout, try that
+			if (!args.Handled && Selector is ListViewBase parentListView)
+			{
+				ShowContextFlyout(args, parentListView);
+			}
+		}
+
 		private void UpdateCommonStatesWithoutNeedsLayout(bool useTransitions, PointerDeviceType deviceType, ManipulationUpdateKind manipulationUpdate)
 		{
 			using (InterceptSetNeedsLayout())

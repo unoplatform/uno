@@ -16,6 +16,7 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Internal;
 using Uno.UI.Xaml.Islands;
 using Windows.UI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -73,6 +74,7 @@ internal partial class ContentRoot
 		InputManager = new InputManager(this);
 		_contentRootEventListener = new ContentRootEventListener(this);
 		FocusManager = new FocusManager(this);
+		ContextMenuProcessor = new ContextMenuProcessor(this);
 
 		// TODO Uno: CompositionTarget is not created here in WinUI.
 		CompositionTarget = new CompositionTarget(this);

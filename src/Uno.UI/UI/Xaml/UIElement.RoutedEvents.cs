@@ -173,6 +173,16 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public static RoutedEvent BringIntoViewRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.BringIntoViewRequested);
 
+		/// <summary>
+		/// Gets the identifier for the ContextRequested routed event.
+		/// </summary>
+		public static RoutedEvent ContextRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.ContextRequested);
+
+		/// <summary>
+		/// Gets the identifier for the ContextCanceled routed event.
+		/// </summary>
+		public static RoutedEvent ContextCanceledEvent { get; } = new RoutedEvent(RoutedEventFlag.ContextCanceled);
+
 		private struct RoutedEventHandlerInfo
 		{
 			internal RoutedEventHandlerInfo(object handler, bool handledEventsToo)
@@ -274,6 +284,24 @@ namespace Microsoft.UI.Xaml
 		{
 			add => AddHandler(BringIntoViewRequestedEvent, value, false);
 			remove => RemoveHandler(BringIntoViewRequestedEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when the user has completed a context input gesture, such as a right-click.
+		/// </summary>
+		public event TypedEventHandler<UIElement, ContextRequestedEventArgs> ContextRequested
+		{
+			add => AddHandler(ContextRequestedEvent, value, false);
+			remove => RemoveHandler(ContextRequestedEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when the user has completed a context input gesture and the context flyout should not open.
+		/// </summary>
+		public event TypedEventHandler<UIElement, RoutedEventArgs> ContextCanceled
+		{
+			add => AddHandler(ContextCanceledEvent, value, false);
+			remove => RemoveHandler(ContextCanceledEvent, value);
 		}
 
 		public event PointerEventHandler PointerCanceled
@@ -1028,6 +1056,12 @@ namespace Microsoft.UI.Xaml
 					break;
 				case TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> bringIntoViewRequestedHandler:
 					bringIntoViewRequestedHandler(this, (BringIntoViewRequestedEventArgs)args);
+					break;
+				case TypedEventHandler<UIElement, ContextRequestedEventArgs> contextRequestedHandler:
+					contextRequestedHandler(this, (ContextRequestedEventArgs)args);
+					break;
+				case TypedEventHandler<UIElement, RoutedEventArgs> contextCanceledHandler:
+					contextCanceledHandler(this, args);
 					break;
 				default:
 					this.Log().Error($"The handler type {handler.GetType()} has not been registered for RoutedEvent");
