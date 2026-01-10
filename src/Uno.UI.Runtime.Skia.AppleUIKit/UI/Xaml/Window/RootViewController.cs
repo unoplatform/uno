@@ -10,6 +10,7 @@ using SkiaSharp;
 using UIKit;
 using Uno.Helpers.Theming;
 using Uno.UI.Helpers;
+using Uno.UI.Runtime.Skia.AppleUIKit.Accessibility;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
@@ -83,6 +84,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_topViewLayer.AddSubview(_nativeOverlayLayer);
 		view.AddSubview(_topViewLayer);
 
+		// Initialize accessibility bridge
+		InitializeAccessibility();
+
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
 #if !__TVOS__
@@ -94,6 +98,13 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		// Dismiss when the app is entering background
 		UIApplication.Notifications
 			.ObserveWillResignActive(DismissPopups);
+	}
+
+	private void InitializeAccessibility()
+	{
+		var accessibilityBridge = UIKitAccessibilityBridge.Instance;
+		accessibilityBridge.Container = View;
+		accessibilityBridge.Initialize();
 	}
 
 	private void DismissPopups(object? sender, object? args)
@@ -318,4 +329,37 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		SystemThemeHelper.RefreshSystemTheme();
 	}
 #pragma warning restore CA1422 // Validate platform compatibility
+
+	#region UIAccessibilityContainer Implementation
+
+	/// <summary>
+	/// Indicates that this view is a container for accessibility elements, not an element itself.
+	/// </summary>
+	public override bool IsAccessibilityElement => false;
+
+	/// <summary>
+	/// Gets the number of accessibility elements in this container.
+	/// </summary>
+	public override nint AccessibilityElementCount()
+	{
+		return UIKitAccessibilityBridge.Instance.ElementCount;
+	}
+
+	/// <summary>
+	/// Gets the accessibility element at the specified index.
+	/// </summary>
+	public override NSObject? GetAccessibilityElement(nint index)
+	{
+		return UIKitAccessibilityBridge.Instance.GetElement((int)index);
+	}
+
+	/// <summary>
+	/// Gets the index of the specified accessibility element.
+	/// </summary>
+	public override nint GetIndexOfAccessibilityElement(NSObject element)
+	{
+		return UIKitAccessibilityBridge.Instance.GetIndexOf(element);
+	}
+
+	#endregion
 }
