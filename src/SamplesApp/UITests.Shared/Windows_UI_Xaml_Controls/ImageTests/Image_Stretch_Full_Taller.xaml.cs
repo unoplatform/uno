@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.Image
 {
-	[Controls.SampleControlInfo("Image", "Image_Stretch_Full_Taller", Description = "Description for sample of Image_Stretch_Full_Taller")]
+	[Controls.Sample("Image", "Image_Stretch_Full_Taller", Description = "Description for sample of Image_Stretch_Full_Taller")]
 	public sealed partial class Image_Stretch_Full_Taller : UserControl
 	{
 		public Image_Stretch_Full_Taller()
