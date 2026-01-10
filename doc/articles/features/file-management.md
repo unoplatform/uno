@@ -11,12 +11,12 @@ File management allows shared reading and writing of files across all Uno Platfo
 
 ## Supported features
 
-| Feature             | WinUI     | Android | iOS     | Web (WASM) | macOS   | Linux (Skia) | WPF (Skia) |
-|---------------------|-----------|---------|---------|------------|---------|--------------|------------|
-| `StorageFile`       | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
-| `StorageFolder`     | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
-| `CachedFileManager` | ✔         | partial | partial | partial    | partial | partial      | partial    |
-| `StorageFileHelper` | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
+| Feature             | Windows | Android | iOS | Web (WASM) | Desktop (macOS) | Desktop (X11) | Desktop (Windows) |
+|---------------------|---------|---------|-----|------------|-----------------|---------------|-------------------|
+| `StorageFile`       | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
+| `StorageFolder`     | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
+| `CachedFileManager` | ✔       | partial | partial | partial | partial         | partial       | partial           |
+| `StorageFileHelper` | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
 
 ## Overview
 

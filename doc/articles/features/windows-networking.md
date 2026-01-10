@@ -15,10 +15,10 @@ The `Windows.Networking.Connectivity.NetworkInformation` class provides access t
 
 ### Supported features
 
-| Feature                        | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|--------------------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `GetInternetConnectionProfile` | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `NetworkStatusChanged`         | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
+| Feature                        | Windows | Android | iOS | Web (WASM) | Desktop (macOS) | Desktop (X11) | Desktop (Windows) |
+|--------------------------------|---------|---------|-----|------------|-----------------|---------------|-------------------|
+| `GetInternetConnectionProfile` | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
+| `NetworkStatusChanged`         | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
 
 ### Checking Network Connectivity in Uno
 

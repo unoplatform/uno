@@ -11,12 +11,12 @@ uid: Uno.Features.Gamepad
 
 ## Supported features
 
-| Feature             | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-| ------------------- | ------- | ------- | --- | ---------- | ----- | ------------ | ------------ |
-| `GetCurrentReading` | ✔       | ✔       | ✔   | ✔          | ✔     | ✖            | ✖            |
-| `GamepadAdded`      | ✔       | ✔       | ✔   | ✔          | ✔     | ✖            | ✖            |
-| `GamepadRemoved`    | ✔       | ✔       | ✔   | ✔          | ✔     | ✖            | ✖            |
-| `Gamepads`          | ✔       | ✔       | ✔   | ✔          | ✔     | ✖            | ✖            |
+| Feature             | Windows | Android | iOS | Web (WASM) | Desktop (macOS) | Desktop (X11) | Desktop (Windows) |
+| ------------------- | ------- | ------- | --- | ---------- | --------------- | ------------- | ----------------- |
+| `GetCurrentReading` | ✔       | ✔       | ✔   | ✔          | ✔               | ✖             | ✖                 |
+| `GamepadAdded`      | ✔       | ✔       | ✔   | ✔          | ✔               | ✖             | ✖                 |
+| `GamepadRemoved`    | ✔       | ✔       | ✔   | ✔          | ✔               | ✖             | ✖                 |
+| `Gamepads`          | ✔       | ✔       | ✔   | ✔          | ✔               | ✖             | ✖                 |
 
 ## Example
 

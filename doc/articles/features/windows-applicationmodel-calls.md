@@ -13,13 +13,13 @@ uid: Uno.Features.WAMCalls
 
 ## Supported features
 
-| Feature                   | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|---------------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `ShowPhoneCallUI`         | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
-| `ShowPhoneCallSettingsUI` | ✔       | ✔       | ✖   | ✖          | ✖     | ✖            | ✖            |
-| `CallStateChanged`        | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
-| `IsCallActive`            | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
-| `IsCallActive`            | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
+| Feature                   | Windows | Android | iOS | Web (WASM) | Desktop (macOS) | Desktop (X11) | Desktop (Windows) |
+|---------------------------|---------|---------|-----|------------|-----------------|---------------|-------------------|
+| `ShowPhoneCallUI`         | ✔       | ✔       | ✔   | ✔          | ✖               | ✖             | ✖                 |
+| `ShowPhoneCallSettingsUI` | ✔       | ✔       | ✖   | ✖          | ✖               | ✖             | ✖                 |
+| `CallStateChanged`        | ✔       | ✔       | ✔   | ✖          | ✖               | ✖             | ✖                 |
+| `IsCallActive`            | ✔       | ✔       | ✔   | ✖          | ✖               | ✖             | ✖                 |
+| `IsCallActive`            | ✔       | ✔       | ✔   | ✖          | ✖               | ✖             | ✖                 |
 
 ## Examples
 

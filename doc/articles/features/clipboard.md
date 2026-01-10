@@ -11,13 +11,13 @@ uid: Uno.Features.Clipboard
 
 ## Supported features
 
-| Feature          | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `SetContent`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `GetContent`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `Clear`          | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `ContentChanged` | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `Flush`          | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
+| Feature          | Windows | Android | iOS | Web (WASM) | Desktop (macOS) | Desktop (X11) | Desktop (Windows) |
+|------------------|---------|---------|-----|------------|-----------------|---------------|-------------------|
+| `SetContent`     | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
+| `GetContent`     | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
+| `Clear`          | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
+| `ContentChanged` | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
+| `Flush`          | ✔       | ✔       | ✔   | ✔          | ✔               | ✔             | ✔                 |
 
 <!-- Add any additional information on platform-specific limitations and constraints -->
 
