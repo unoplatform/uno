@@ -5,7 +5,7 @@ using Uno.UI.Samples.Content.UITests.Flyout;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[SampleControlInfo("Flyouts", "Flyout_ButtonInContent", viewModelType: typeof(FlyoutButonViewModel))]
+	[Sample("Flyouts", "Flyout_ButtonInContent", viewModelType: typeof(FlyoutButonViewModel))]
 	public sealed partial class Flyout_ButtonInContent : Page
 	{
 		public Flyout_ButtonInContent()

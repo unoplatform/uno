@@ -22,7 +22,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "HingeAngleSensor", description: "Demonstrates use of Windows.Devices.Sensors.HingeAngleSensor", viewModelType: typeof(HingeAngleSensorTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "HingeAngleSensor", ViewModelType = typeof(HingeAngleSensorTestsViewModel), IgnoreInSnapshotTests = true, Description = "Demonstrates use of Windows.Devices.Sensors.HingeAngleSensor")]
 	public sealed partial class HingeAngleSensorTests : UserControl
 	{
 		public HingeAngleSensorTests()

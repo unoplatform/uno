@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Lottie
 {
-	[SampleControlInfo("Lottie", "Sample animation", ignoreInSnapshotTests: true /* Fails for Android # */)]
+	[Sample("Lottie", "Sample animation", ignoreInSnapshotTests: true /* Fails for Android # */)]
 	public sealed partial class SampleLottieAnimation : Page
 	{
 		public SampleLottieAnimation()

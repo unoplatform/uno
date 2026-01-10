@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.FlipView;
 
-[SampleControlInfo(
+[Sample(
 	"FlipView",
 	"FlipView_Background",
 	description: "Shows a green Page with a red FlipView in the middle. \n" +

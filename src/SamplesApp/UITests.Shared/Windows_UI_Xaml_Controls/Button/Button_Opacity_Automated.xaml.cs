@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
 
-	[SampleControlInfo("Buttons", nameof(Button_Opacity_Automated))]
+	[Sample("Buttons", nameof(Button_Opacity_Automated))]
 	public sealed partial class Button_Opacity_Automated : UserControl
 	{
 		private int increment = 0;

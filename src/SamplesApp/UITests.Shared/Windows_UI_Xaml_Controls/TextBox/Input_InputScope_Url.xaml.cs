@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "Input_InputScope_Url")]
+	[Sample("TextBox", "Input_InputScope_Url")]
 	public sealed partial class Input_InputScope_Url : UserControl
 	{
 		public Input_InputScope_Url()

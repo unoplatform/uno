@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.Keyboard
 {
-	[SampleControlInfo("Keyboard", "Keyboard_Showing_Dismissal")]
+	[Sample("Keyboard", "Keyboard_Showing_Dismissal")]
 	public sealed partial class Keyboard_Showing_Dismissal : UserControl
 	{
 		public Keyboard_Showing_Dismissal()

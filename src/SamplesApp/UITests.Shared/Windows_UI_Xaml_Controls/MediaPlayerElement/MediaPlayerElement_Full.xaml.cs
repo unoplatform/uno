@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("MediaPlayerElement", "Feature coverage", description: "MediaPlayerElement feature coverage", ignoreInSnapshotTests: true /*Media is set to AutoPlay*/)]
+	[Sample("MediaPlayerElement", "Feature coverage", description: "MediaPlayerElement feature coverage", ignoreInSnapshotTests: true /*Media is set to AutoPlay*/)]
 	public sealed partial class MediaPlayerElement_Full : UserControl
 	{
 		public MediaPlayerElement_Full()

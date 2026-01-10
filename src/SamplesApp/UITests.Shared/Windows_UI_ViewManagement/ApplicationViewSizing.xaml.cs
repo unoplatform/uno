@@ -9,7 +9,7 @@ using System;
 
 namespace UITests.Windows_UI_ViewManagement
 {
-	[SampleControlInfo(category: "Windows.UI.ViewManagement")]
+	[Sample(category: "Windows.UI.ViewManagement")]
 
 	public sealed partial class ApplicationViewSizing : Page
 	{

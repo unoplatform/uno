@@ -21,7 +21,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {
-	[SampleControlInfo("Windows.UI.ViewManagement", "TitleBar_Color", description: "Allows changing title bar color dynamically")]
+	[Sample("Windows.UI.ViewManagement", "TitleBar_Color", description: "Allows changing title bar color dynamically")]
 	public sealed partial class TitleBarColorTests : UserControl
 	{
 		public TitleBarColorTests()

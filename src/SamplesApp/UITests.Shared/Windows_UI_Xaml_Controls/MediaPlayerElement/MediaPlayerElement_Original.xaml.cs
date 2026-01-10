@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("MediaPlayerElement", "Original", ignoreInSnapshotTests: true, description: "To make everybody happy, here is the Big Buck Bunny sample")]
+	[Sample("MediaPlayerElement", "Original", ignoreInSnapshotTests: true, description: "To make everybody happy, here is the Big Buck Bunny sample")]
 	public sealed partial class MediaPlayerElement_Original : UserControl
 	{
 		public MediaPlayerElement_Original()

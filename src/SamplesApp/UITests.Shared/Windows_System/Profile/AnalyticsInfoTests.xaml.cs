@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_System.Profile
 {
-	[SampleControlInfo("Windows.System", "Profile.AnalyticsInfo",
+	[Sample("Windows.System", "Profile.AnalyticsInfo",
 		   description: "Shows properties of AnalyticsInfo")]
 	public sealed partial class AnalyticsInfoTests : UserControl
 	{

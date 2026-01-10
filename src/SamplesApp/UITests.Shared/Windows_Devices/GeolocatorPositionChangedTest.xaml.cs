@@ -13,11 +13,7 @@ using System.Threading.Tasks;
 
 namespace UITests.Shared.Windows_Devices;
 
-[SampleControlInfo("Windows.Devices",
-	"GeolocatorPositionChanged",
-	description: "Test the Geolocator PositionChanged reading from non-UI thread",
-	viewModelType: typeof(GeolocatorPositionChangedTestViewModel),
-	isManualTest: true)]
+[Sample("Windows.Devices", Name = "GeolocatorPositionChanged", ViewModelType = typeof(GeolocatorPositionChangedTestViewModel), Description = "Test the Geolocator PositionChanged reading from non-UI thread", IsManualTest = true)]
 public sealed partial class GeolocatorPositionChangedTest : UserControl
 {
 	public GeolocatorPositionChangedTest()

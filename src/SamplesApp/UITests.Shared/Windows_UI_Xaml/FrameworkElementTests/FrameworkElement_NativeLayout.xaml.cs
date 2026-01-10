@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-	[SampleControlInfo("FrameworkElement")]
+	[Sample("FrameworkElement")]
 	public sealed partial class FrameworkElement_NativeLayout : UserControl
 	{
 		public FrameworkElement_NativeLayout()

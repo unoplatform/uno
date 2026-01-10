@@ -18,7 +18,7 @@ using V = System.Collections.Generic.Dictionary<string, object>;
 
 namespace UITests.Shared.Windows_UI_Input.PointersTests
 {
-	[SampleControlInfo("Pointers", "Sequence")]
+	[Sample("Pointers", "Sequence")]
 	public sealed partial class EventsSequences : Page
 	{
 		private readonly List<(object evt, RoutedEventArgs args)> _tapResult = new List<(object, RoutedEventArgs)>();

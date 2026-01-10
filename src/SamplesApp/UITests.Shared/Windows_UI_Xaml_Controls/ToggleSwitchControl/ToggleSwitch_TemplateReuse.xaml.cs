@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 {
-	[SampleControlInfo("ToggleSwitch", "ToggleSwitch_TemplateReuse", typeof(ToggleSwitchViewModel))]
+	[Sample("ToggleSwitch", "ToggleSwitch_TemplateReuse", typeof(ToggleSwitchViewModel))]
 	public sealed partial class ToggleSwitch_TemplateReuse : Page
 	{
 		public ToggleSwitch_TemplateReuse()

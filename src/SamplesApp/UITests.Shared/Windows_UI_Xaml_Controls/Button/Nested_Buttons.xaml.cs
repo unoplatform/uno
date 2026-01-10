@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace nVentive.Umbrella.Views.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "Nested_Buttons", typeof(ButtonTestsViewModel))]
+	[Sample("Buttons", "Nested_Buttons", typeof(ButtonTestsViewModel))]
 
 	public sealed partial class Nested_Buttons : UserControl
 	{

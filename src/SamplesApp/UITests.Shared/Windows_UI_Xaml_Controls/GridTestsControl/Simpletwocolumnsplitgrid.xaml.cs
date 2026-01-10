@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Simpletwocolumnsplitgrid")]
+	[Sample("Grid", "Simpletwocolumnsplitgrid")]
 	public sealed partial class Simpletwocolumnsplitgrid : UserControl
 	{
 		public Simpletwocolumnsplitgrid()

@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI.Xaml_Automation
 {
-	[SampleControlInfo("Automation", nameof(AutomationProperties_AutomationId))]
+	[Sample("Automation", nameof(AutomationProperties_AutomationId))]
 	public sealed partial class AutomationProperties_AutomationId : UserControl
 	{
 		public AutomationProperties_AutomationId()

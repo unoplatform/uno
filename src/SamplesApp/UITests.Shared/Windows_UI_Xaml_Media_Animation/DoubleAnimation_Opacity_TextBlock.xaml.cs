@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace GenericApp.Views.Content.UITests.Animations
 {
-	[SampleControlInfo("Animations", "DoubleAnimation_Opacity_TextBlock")]
+	[Sample("Animations", "DoubleAnimation_Opacity_TextBlock")]
 	public sealed partial class DoubleAnimation_Opacity_TextBlock : UserControl
 	{
 		private Storyboard _storyboard;

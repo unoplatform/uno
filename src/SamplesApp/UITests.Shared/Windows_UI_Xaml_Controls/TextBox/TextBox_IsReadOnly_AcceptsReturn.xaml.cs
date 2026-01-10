@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[SampleControlInfo("TextBox", description: "#2700: Setting IsReadOnly=True breaks AcceptReturns=True on android")]
+	[Sample("TextBox", description: "#2700: Setting IsReadOnly=True breaks AcceptReturns=True on android")]
 	public sealed partial class TextBox_IsReadOnly_AcceptsReturn : UserControl
 	{
 		public TextBox_IsReadOnly_AcceptsReturn()

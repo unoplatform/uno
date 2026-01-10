@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "ImageWithNoSpecificSize", Description = "Description for sample of ImageWithNoSpecificSize")]
+	[Sample("Image", Name = "ImageWithNoSpecificSize")]
 	public sealed partial class ImageWithNoSpecificSize : UserControl
 	{
 		public ImageWithNoSpecificSize()

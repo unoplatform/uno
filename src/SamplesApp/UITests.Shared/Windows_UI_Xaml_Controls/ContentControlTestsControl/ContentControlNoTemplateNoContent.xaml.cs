@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls
 {
-	[SampleControlInfo("ContentControl", "ContentControl_NoTemplateNoContent")]
+	[Sample("ContentControl", "ContentControl_NoTemplateNoContent")]
 	public sealed partial class ContentControlNoTemplateNoContent : Page
 	{
 		public ContentControlNoTemplateNoContent()

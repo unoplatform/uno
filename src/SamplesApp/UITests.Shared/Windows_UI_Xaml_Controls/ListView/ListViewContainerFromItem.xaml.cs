@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewContainerFromItem", description: "ListView where ContainerFromItem+TransformToVisual is used to align indicator when SelectedItem changes")]
+	[Sample("ListView", "ListViewContainerFromItem", description: "ListView where ContainerFromItem+TransformToVisual is used to align indicator when SelectedItem changes")]
 	public sealed partial class ListViewContainerFromItem : UserControl
 	{
 		public ListViewContainerFromItem()

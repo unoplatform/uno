@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "Border_Simple_with_non_Uniform_Thickness")]
+	[Sample("Border", "Border_Simple_with_non_Uniform_Thickness")]
 	public sealed partial class Border_Simple_with_non_Uniform_Thickness : UserControl
 	{
 		public Border_Simple_with_non_Uniform_Thickness()

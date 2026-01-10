@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo(category: "Image")]
+	[Sample("Image")]
 	public sealed partial class Image_Margins : Page
 	{
 		public Image_Margins()

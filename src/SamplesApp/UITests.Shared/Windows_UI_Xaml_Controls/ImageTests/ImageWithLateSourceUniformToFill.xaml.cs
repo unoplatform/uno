@@ -20,7 +20,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo("Image", "ImageWithLateSourceUniformToFill", Description = "Source is set after the image is loaded and visible.")]
+	[Sample("Image", Name = "ImageWithLateSourceUniformToFill")]
 	public sealed partial class ImageWithLateSourceUniformToFill : UserControl
 	{
 		public ImageWithLateSourceUniformToFill()

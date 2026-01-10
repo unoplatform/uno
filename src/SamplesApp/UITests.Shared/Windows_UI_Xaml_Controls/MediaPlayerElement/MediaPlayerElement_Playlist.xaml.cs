@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("MediaPlayerElement", "Playlist", ignoreInSnapshotTests: true, description: "Test the playlist and the Repeat")]
+	[Sample("MediaPlayerElement", "Playlist", ignoreInSnapshotTests: true, description: "Test the playlist and the Repeat")]
 	public sealed partial class MediaPlayerElement_Playlist : UserControl
 	{
 		public MediaPlayerElement_Playlist()

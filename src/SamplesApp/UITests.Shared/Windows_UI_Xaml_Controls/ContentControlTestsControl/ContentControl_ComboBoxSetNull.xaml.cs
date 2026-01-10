@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo(
+	[Sample(
 		"ContentControl",
 		"ContentControl_ComboBoxSetNull",
 		typeof(Presentation.SamplePages.ContentControlTestViewModel),

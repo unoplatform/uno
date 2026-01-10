@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
 
-	[SampleControlInfo("Buttons", nameof(Button_IsEnabled_Automated))]
+	[Sample("Buttons", nameof(Button_IsEnabled_Automated))]
 	public sealed partial class Button_IsEnabled_Automated : UserControl
 	{
 		private int _clickTotal = 0;

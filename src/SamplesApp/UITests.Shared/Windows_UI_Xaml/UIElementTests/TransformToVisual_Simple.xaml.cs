@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", "TransformToVisual_Simple")]
+	[Sample("UIElement", "TransformToVisual_Simple")]
 	public sealed partial class TransformToVisual_Simple : UserControl
 	{
 		private Grid _outer;

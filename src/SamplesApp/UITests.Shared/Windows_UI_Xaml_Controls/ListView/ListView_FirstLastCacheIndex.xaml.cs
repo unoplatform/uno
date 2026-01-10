@@ -8,7 +8,7 @@ using Private.Infrastructure;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_FirstLastCacheIndex", description: "Demonstrates FirstCacheIndex and LastCacheIndex properties of ItemsStackPanel.")]
+	[Sample("ListView", "ListView_FirstLastCacheIndex", description: "Demonstrates FirstCacheIndex and LastCacheIndex properties of ItemsStackPanel.")]
 	public sealed partial class ListView_FirstLastCacheIndex : UserControl
 	{
 		public ListView_FirstLastCacheIndex()

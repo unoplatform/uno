@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[SampleControlInfo("TextBox", "TextBox_BeforeTextChanging")]
+	[Sample("TextBox", "TextBox_BeforeTextChanging")]
 	public sealed partial class TextBox_BeforeTextChanging : UserControl
 	{
 		public TextBox_BeforeTextChanging()

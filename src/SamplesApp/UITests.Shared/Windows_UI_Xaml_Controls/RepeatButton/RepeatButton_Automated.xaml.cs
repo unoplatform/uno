@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls
 {
-	[SampleControlInfo("Buttons")]
+	[Sample("Buttons")]
 	public sealed partial class RepeatButton_Automated : UserControl
 	{
 		private int clickCount;

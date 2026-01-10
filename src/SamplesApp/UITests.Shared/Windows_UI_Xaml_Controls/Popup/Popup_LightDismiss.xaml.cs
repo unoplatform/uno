@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
-	[SampleControlInfo("Popup", "Popup_LightDismiss", description: "Once opened, each popup should be dismissed one after the other, starting by the fourth one.")]
+	[Sample("Popup", Name = "Popup_LightDismiss", Description = "Once opened, each popup should be dismissed one after the other, starting by the fourth one.")]
 	public sealed partial class Popup_LightDismiss : Page
 	{
 		public Popup_LightDismiss()

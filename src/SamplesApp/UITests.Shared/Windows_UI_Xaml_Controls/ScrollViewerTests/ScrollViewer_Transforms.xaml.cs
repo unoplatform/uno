@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo("Scrolling", "ScrollViewer_Transforms", description: "Apply transforms and ensure manipulations are still working smoothly.", ignoreInSnapshotTests: true)]
+	[Sample("Scrolling", Name = "ScrollViewer_Transforms", IgnoreInSnapshotTests = true, Description = "Apply transforms and ensure manipulations are still working smoothly.")]
 	public sealed partial class ScrollViewer_Transforms : Page
 	{
 		public ScrollViewer_Transforms()

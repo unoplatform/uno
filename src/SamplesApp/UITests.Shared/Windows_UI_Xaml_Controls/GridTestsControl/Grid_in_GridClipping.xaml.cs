@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Grid_in_GridClipping")]
+	[Sample("Grid", "Grid_in_GridClipping")]
 	public sealed partial class Grid_in_GridClipping : UserControl
 	{
 		public Grid_in_GridClipping()

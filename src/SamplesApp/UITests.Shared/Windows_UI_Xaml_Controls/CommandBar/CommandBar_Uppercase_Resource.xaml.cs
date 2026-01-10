@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-	[SampleControlInfo("CommandBar", "Uppercase_Resource")]
+	[Sample("CommandBar", Name = "Uppercase_Resource")]
 	public sealed partial class CommandBar_Uppercase_Resource : UserControl
 	{
 		public CommandBar_Uppercase_Resource()

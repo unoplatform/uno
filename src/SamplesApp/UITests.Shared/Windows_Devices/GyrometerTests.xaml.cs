@@ -12,7 +12,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Gyrometer", description: "Demonstrates use of Windows.Devices.Sensors.Gyrometer", viewModelType: typeof(GyrometerTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "Gyrometer", ViewModelType = typeof(GyrometerTestsViewModel), IgnoreInSnapshotTests = true, Description = "Demonstrates use of Windows.Devices.Sensors.Gyrometer")]
 	public sealed partial class GyrometerTests : UserControl
 	{
 		public GyrometerTests()

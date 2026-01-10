@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("Brushes", "ImageBrushWithRotateTransform")]
+	[Sample("Brushes", "ImageBrushWithRotateTransform")]
 	public sealed partial class ImageBrushWithRotateTransform : UserControl
 	{
 		public ImageBrushWithRotateTransform()

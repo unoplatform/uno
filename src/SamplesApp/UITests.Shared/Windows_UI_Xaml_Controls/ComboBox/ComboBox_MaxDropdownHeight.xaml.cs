@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_MaxDropdownHeight", typeof(ListViewViewModel))]
+	[Sample("ComboBox", Name = "ComboBox_MaxDropdownHeight")]
 	public sealed partial class ComboBox_MaxDropdownHeight : Page
 	{
 		public ComboBox_MaxDropdownHeight()

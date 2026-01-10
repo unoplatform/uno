@@ -7,7 +7,7 @@ using Windows.Web.Http;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[SampleControlInfo("WebView", "WebView2_WithHeaders", typeof(WebView2ViewModel))]
+	[Sample("WebView", "WebView2_WithHeaders", typeof(WebView2ViewModel))]
 	public sealed partial class WebView2_WithHeaders : UserControl
 	{
 #if HAS_UNO

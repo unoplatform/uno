@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "LoadFromBytes")]
+	[Sample("Image", Name = "LoadFromBytes")]
 	public sealed partial class LoadFromBytes : UserControl
 	{
 		public LoadFromBytes()

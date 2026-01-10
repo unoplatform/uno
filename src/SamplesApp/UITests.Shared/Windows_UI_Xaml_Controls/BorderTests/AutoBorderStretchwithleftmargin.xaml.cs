@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "AutoBorderStretchwithleftmargin")]
+	[Sample("Border", "AutoBorderStretchwithleftmargin")]
 	public sealed partial class AutoBorderStretchwithleftmargin : UserControl
 	{
 		public AutoBorderStretchwithleftmargin()

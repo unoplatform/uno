@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace UITests.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", nameof(ListView_Selection_Events), description: "The sequence of events when selecting an item should happen in the same order when compared to uwp.")]
+	[Sample("ListView", nameof(ListView_Selection_Events), description: "The sequence of events when selecting an item should happen in the same order when compared to uwp.")]
 	public sealed partial class ListView_Selection_Events : Page
 	{
 		private CustomViewModel ViewModel { get; } = new CustomViewModel();

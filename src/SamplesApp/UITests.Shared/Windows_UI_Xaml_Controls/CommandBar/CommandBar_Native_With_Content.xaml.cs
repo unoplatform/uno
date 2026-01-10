@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("CommandBar")]
+	[Sample("CommandBar")]
 	public sealed partial class CommandBar_Native_With_Content : Page
 	{
 		public CommandBar_Native_With_Content()

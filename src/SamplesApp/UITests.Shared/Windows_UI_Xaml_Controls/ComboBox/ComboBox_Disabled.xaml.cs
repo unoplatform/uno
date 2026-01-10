@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_Disabled", typeof(ListViewViewModel), description: "ComboBox should be disabled by default.")]
+	[Sample("ComboBox", Name = "ComboBox_Disabled", Description = "ComboBox should be disabled by default.")]
 	public sealed partial class ComboBox_Disabled : UserControl
 	{
 		public ComboBox_Disabled()

@@ -20,7 +20,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_Storage.StorageFolderTests
 {
-	[SampleControlInfo("Windows.Storage", "StorageFolder_Persistence", IsManualTest = true,
+	[Sample("Windows.Storage", "StorageFolder_Persistence", IsManualTest = true,
 		Description = "This test is suited for WASM, should show that files in app private folders are correctly persisted and can be edited.")]
 	public sealed partial class Persistence : Page
 	{

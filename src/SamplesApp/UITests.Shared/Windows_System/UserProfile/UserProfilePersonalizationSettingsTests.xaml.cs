@@ -24,7 +24,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_System.UserProfile
 {
-	[SampleControlInfo(
+	[Sample(
 		"Windows.System",
 		description: "Allows setting user's wallpaper and lockscreen",
 		viewModelType: typeof(UserProfilePersonalizationSettingsTestsViewModel))]

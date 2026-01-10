@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests
 {
-	[SampleControlInfo("Flyouts", "Namescope")]
+	[Sample("Flyouts", "Namescope")]
 	public sealed partial class Flyout_Namescope : UserControl
 	{
 		public Flyout_Namescope()

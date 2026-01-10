@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.SplitView
 {
-	[SampleControlInfo("SplitView")]
+	[Sample("SplitView")]
 	public sealed partial class SplitViewClip : Page
 	{
 		public SplitViewClip()

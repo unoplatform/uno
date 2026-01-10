@@ -10,7 +10,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "LightSensor", description: "Demonstrates use of Windows.Devices.Sensors.LightSensor", viewModelType: typeof(LightSensorTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "LightSensor", ViewModelType = typeof(LightSensorTestsViewModel), IgnoreInSnapshotTests = true, Description = "Demonstrates use of Windows.Devices.Sensors.LightSensor")]
 	public sealed partial class LightSensorTests : Page
 	{
 		public LightSensorTests() => InitializeComponent();

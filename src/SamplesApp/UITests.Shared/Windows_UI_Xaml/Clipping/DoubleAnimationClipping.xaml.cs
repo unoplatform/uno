@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
-	[SampleControlInfo(category: "Clipping", description: "[Android]When going to `Ready` state the WebView expand to full screen and cover other control when it shouldn't be.")]
+	[Sample(category: "Clipping", description: "[Android]When going to `Ready` state the WebView expand to full screen and cover other control when it shouldn't be.")]
 	public sealed partial class DoubleAnimationClipping : UserControl
 	{
 		private static readonly Random random = new Random();

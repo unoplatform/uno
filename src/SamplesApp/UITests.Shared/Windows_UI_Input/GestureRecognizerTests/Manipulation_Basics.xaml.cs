@@ -15,7 +15,7 @@ using Windows.UI.Input;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
-	[SampleControlInfo("Gesture Recognizer")]
+	[Sample("Gesture Recognizer")]
 	public sealed partial class Manipulation_Basics : Page
 	{
 		private bool _isReady;

@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox")]
+	[Sample("ComboBox")]
 	public sealed partial class ComboBox_VisibleBounds : UserControl
 	{
 		public ComboBox_VisibleBounds()

@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-	[SampleControlInfo("CommandBar", "Padding")]
+	[Sample("CommandBar", Name = "Padding")]
 	public sealed partial class CommandBar_Padding : UserControl
 	{
 		public CommandBar_Padding()

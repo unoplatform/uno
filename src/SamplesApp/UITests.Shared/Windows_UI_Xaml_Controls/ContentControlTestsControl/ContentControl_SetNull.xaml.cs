@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo("ContentControl", "ContentControl_SetNull", typeof(Presentation.SamplePages.ContentControlTestViewModel))]
+	[Sample("ContentControl", "ContentControl_SetNull", typeof(Presentation.SamplePages.ContentControlTestViewModel))]
 	public sealed partial class ContentControl_SetNull : UserControl
 	{
 		public ContentControl_SetNull()

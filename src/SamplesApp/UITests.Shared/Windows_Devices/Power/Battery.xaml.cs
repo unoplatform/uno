@@ -21,7 +21,7 @@ using Windows.ApplicationModel.Appointments;
 namespace UITests.Windows_Devices.Power
 {
 
-	[SampleControlInfo("Windows.Devices.Power", "Battery")]
+	[Sample("Windows.Devices.Power", Name = "Battery")]
 	public sealed partial class Battery : Page
 	{
 		public Battery()

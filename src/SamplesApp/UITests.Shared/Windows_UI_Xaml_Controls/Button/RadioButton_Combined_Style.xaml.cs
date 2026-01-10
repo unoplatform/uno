@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 {
-	[SampleControlInfo("Buttons", "RadioButton_Combined_Style", description: "RadioButtons where checked and pressed states are in the same VisualStateGroup. The buttons should always read Checked or Unchecked.")]
+	[Sample("Buttons", "RadioButton_Combined_Style", description: "RadioButtons where checked and pressed states are in the same VisualStateGroup. The buttons should always read Checked or Unchecked.")]
 	public sealed partial class RadioButton_Combined_Style : UserControl
 	{
 		public RadioButton_Combined_Style()

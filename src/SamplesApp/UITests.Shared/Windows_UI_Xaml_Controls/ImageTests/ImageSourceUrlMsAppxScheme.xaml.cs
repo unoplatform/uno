@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTests
 {
-	[SampleControlInfo(category: "Image", controlName: nameof(ImageSourceUrlMsAppxScheme), Description = "ImageMsAppxScheme")]
+	[Sample(Description = "ImageMsAppxScheme", Name = nameof(ImageSourceUrlMsAppxScheme))]
 	public sealed partial class ImageSourceUrlMsAppxScheme : Page
 	{
 		public ImageSourceUrlMsAppxScheme()

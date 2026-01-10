@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "TextBox_Foreground")]
+	[Sample("TextBox", "TextBox_Foreground")]
 	public sealed partial class TextBox_Foreground : UserControl
 	{
 		public TextBox_Foreground()

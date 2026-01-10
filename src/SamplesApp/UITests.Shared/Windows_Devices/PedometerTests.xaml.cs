@@ -26,12 +26,7 @@ using EventHandler = System.EventHandler;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo(
-		"Windows.Devices",
-		"Pedometer",
-		description: "Demonstrates the Windows.Devices.Sensors.Pedometer",
-		viewModelType: typeof(PedometerTestsViewModel),
-		ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "Pedometer", ViewModelType = typeof(PedometerTestsViewModel), IgnoreInSnapshotTests = true, Description = "Demonstrates the Windows.Devices.Sensors.Pedometer")]
 	public sealed partial class PedometerTests : UserControl
 	{
 		public PedometerTests()

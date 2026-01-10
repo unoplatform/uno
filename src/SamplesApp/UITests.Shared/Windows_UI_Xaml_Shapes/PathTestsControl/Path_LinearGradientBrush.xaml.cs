@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", description: "Path with Fill set to a LinearGradientBrush")]
+	[Sample("Path", description: "Path with Fill set to a LinearGradientBrush")]
 
 	public sealed partial class Path_LinearGradientBrush : UserControl
 	{

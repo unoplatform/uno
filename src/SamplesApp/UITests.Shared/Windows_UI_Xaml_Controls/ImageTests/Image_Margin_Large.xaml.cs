@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo("Image", description: "Large local resource with Margin set, should display correctly")]
+	[Sample("Image", Description = "Large local resource with Margin set, should display correctly")]
 	public sealed partial class Image_Margin_Large : UserControl
 	{
 		public Image_Margin_Large()

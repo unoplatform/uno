@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "AppBar_KeyBoard")]
+	[Sample("Buttons", "AppBar_KeyBoard")]
 	public sealed partial class AppBar_KeyBoard : UserControl
 	{
 		public AppBar_KeyBoard()

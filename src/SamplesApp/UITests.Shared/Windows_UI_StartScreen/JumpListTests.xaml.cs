@@ -18,7 +18,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_StartScreen
 {
-	[SampleControlInfo("Windows.UI.StartScreen", "JumpList", typeof(JumpListTestsViewModel))]
+	[Sample("Windows.UI.StartScreen", "JumpList", typeof(JumpListTestsViewModel))]
 	public sealed partial class JumpListTests : UserControl
 	{
 		public JumpListTests()

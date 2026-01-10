@@ -11,7 +11,7 @@ using _UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo("Scrolling", "ScrollViewer_UpdatesMode")]
+	[Sample("Scrolling", "ScrollViewer_UpdatesMode")]
 	public sealed partial class ScrollViewer_UpdatesMode : Page
 	{
 		private List<(bool isIntermediate, CoreDispatcherPriority priority)> ViewChangesOutput { get; } = new List<(bool isIntermediate, CoreDispatcherPriority priority)>();

@@ -12,7 +12,7 @@ using Uno.Logging;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_ItemClick", typeof(ListViewViewModel))]
+	[Sample("ListView", "ListView_ItemClick", typeof(ListViewViewModel))]
 	public sealed partial class ListView_ItemClick : UserControl
 	{
 #pragma warning disable CS0109

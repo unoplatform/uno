@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "List_With_Transformed_Ancestor", description: "Items can be swiped. This shouldn't cause visual 'tearing' on Android.")]
+	[Sample("Transform", "List_With_Transformed_Ancestor", description: "Items can be swiped. This shouldn't cause visual 'tearing' on Android.")]
 	public sealed partial class List_With_Transformed_Ancestor : UserControl
 	{
 		public List_With_Transformed_Ancestor()

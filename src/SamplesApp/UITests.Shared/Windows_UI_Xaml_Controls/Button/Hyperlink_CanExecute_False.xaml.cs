@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace nVentive.Umbrella.Views.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "Hyperlink_CanExecute_False", typeof(ButtonTestsViewModel))]
+	[Sample("Buttons", "Hyperlink_CanExecute_False", typeof(ButtonTestsViewModel))]
 	public sealed partial class Hyperlink_CanExecute_False : UserControl
 	{
 		public Hyperlink_CanExecute_False()

@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewFirstVisibleIndex", description: "ListView with FirstVisibleIndex and LastVisibleIndex shown")]
+	[Sample("ListView", "ListViewFirstVisibleIndex", description: "ListView with FirstVisibleIndex and LastVisibleIndex shown")]
 	public sealed partial class ListViewFirstVisibleIndex : UserControl
 	{
 		public ListViewFirstVisibleIndex()

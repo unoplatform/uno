@@ -7,7 +7,7 @@ using static System.Math;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "Path_Dynamic")]
+	[Sample("Path", "Path_Dynamic")]
 	public sealed partial class Path_Dynamic : UserControl
 	{
 		public Path_Dynamic()

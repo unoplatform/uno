@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Flyout
 {
-	[SampleControlInfo("Flyouts", "Flyout_Simple")]
+	[Sample("Flyouts", "Flyout_Simple")]
 	public sealed partial class Flyout_Simple : UserControl
 	{
 		public Flyout_Simple()

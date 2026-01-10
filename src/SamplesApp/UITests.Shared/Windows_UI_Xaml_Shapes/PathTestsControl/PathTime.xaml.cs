@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "PathTime")]
+	[Sample("Path", "PathTime")]
 	public sealed partial class PathTime : UserControl
 	{
 		public PathTime()

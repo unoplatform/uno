@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "Hyperlink_Button", typeof(ButtonTestsViewModel))]
+	[Sample("Buttons", "Hyperlink_Button", typeof(ButtonTestsViewModel))]
 
 	public sealed partial class Hyperlink_Button : UserControl
 	{

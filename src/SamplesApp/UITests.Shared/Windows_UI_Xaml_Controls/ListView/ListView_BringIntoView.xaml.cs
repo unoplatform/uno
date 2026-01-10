@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_BringIntoView",
+	[Sample("ListView", "ListView_BringIntoView",
 		typeof(ListViewViewModel),
 		isManualTest: true,
 		description: "Select item scroll and then click on the button")]

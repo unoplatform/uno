@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", "Simple_Text_Arabic")]
+	[Sample("TextBlock", "Simple_Text_Arabic")]
 	public sealed partial class Simple_Text_Arabic : UserControl
 	{
 		public Simple_Text_Arabic()

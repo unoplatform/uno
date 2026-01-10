@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.VisualStatesTests
 {
-	[SampleControlInfo("Gesture Recognizer", "VisualStates TextBox")]
+	[Sample("Gesture Recognizer", "VisualStates TextBox")]
 	public sealed partial class TextBox_VisualStates : Page
 	{
 		public TextBox_VisualStates()

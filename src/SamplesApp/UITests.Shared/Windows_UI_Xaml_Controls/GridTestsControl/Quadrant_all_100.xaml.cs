@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Quadrant_all_100")]
+	[Sample("Grid", "Quadrant_all_100")]
 	public sealed partial class Quadrant_all_100 : UserControl
 	{
 		public Quadrant_all_100()

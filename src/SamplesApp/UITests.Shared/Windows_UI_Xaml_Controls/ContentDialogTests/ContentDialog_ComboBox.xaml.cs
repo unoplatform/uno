@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfo("Dialogs", "ContentDialog_ComboBox", description: "ContentDialog with a ComboBox inside")]
+	[Sample("Dialogs", "ContentDialog_ComboBox", description: "ContentDialog with a ComboBox inside")]
 	public sealed partial class ContentDialog_ComboBox : UserControl
 	{
 		public ContentDialog_ComboBox()

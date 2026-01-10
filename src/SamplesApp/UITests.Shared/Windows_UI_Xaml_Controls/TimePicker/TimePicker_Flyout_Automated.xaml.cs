@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker
 {
 
-	[SampleControlInfo("Pickers", nameof(TimePicker_Flyout_Automated))]
+	[Sample("Pickers", Name = nameof(TimePicker_Flyout_Automated))]
 	public sealed partial class TimePicker_Flyout_Automated : UserControl
 	{
 		public TimePicker_Flyout_Automated()

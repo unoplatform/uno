@@ -9,7 +9,7 @@ namespace SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("NavigationView", "NavigationView_BasicNavigation")]
+	[Sample("NavigationView", "NavigationView_BasicNavigation")]
 	public sealed partial class NavigationView_BasicNavigation : Page
 	{
 		public NavigationView_BasicNavigation()

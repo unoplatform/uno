@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.CaptureTests
 {
-	[SampleControlInfo("Gesture Recognizer", "Capture with overlap")]
+	[Sample("Gesture Recognizer", "Capture with overlap")]
 	public sealed partial class OverlappedControls : Page
 	{
 		public OverlappedControls()

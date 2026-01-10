@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.ViusalStateTests
 {
-	[SampleControlInfo("Visual states")]
+	[Sample("Visual states")]
 	public sealed partial class VisualState_AdaptiveTrigger_Storyboard : Page
 	{
 		public VisualState_AdaptiveTrigger_Storyboard()

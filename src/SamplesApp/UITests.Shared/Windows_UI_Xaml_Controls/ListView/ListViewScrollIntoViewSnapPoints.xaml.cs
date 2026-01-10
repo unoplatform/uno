@@ -5,7 +5,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewScrollIntoViewSnapPoints", typeof(ListViewViewModel))]
+	[Sample("ListView", "ListViewScrollIntoViewSnapPoints", typeof(ListViewViewModel))]
 	public sealed partial class ListViewScrollIntoViewSnapPoints : UserControl
 	{
 		public ListViewScrollIntoViewSnapPoints()

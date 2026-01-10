@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlock",
+	[Sample("TextBlock",
 		"TextBlock_Multiline_In_StarStackPanel",
 		typeof(TextBlockViewModel),
 		description: "A multiline textblock that contains data-bound runs that should wrap properly.",

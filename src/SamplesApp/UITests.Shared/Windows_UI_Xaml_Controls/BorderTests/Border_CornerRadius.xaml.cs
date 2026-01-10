@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "Border_CornerRadius")]
+	[Sample("Border", "Border_CornerRadius")]
 	public sealed partial class Border_CornerRadius : Page
 	{
 		public Border_CornerRadius()

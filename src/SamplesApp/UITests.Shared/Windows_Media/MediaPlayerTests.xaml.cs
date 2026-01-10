@@ -22,7 +22,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace UITests.Windows_Media
 {
-	[SampleControlInfo("Windows.Media", "MediaPlayer", IgnoreInSnapshotTests = true)]
+	[Sample("Windows.Media", Name = "MediaPlayer")]
 	public sealed partial class MediaPlayerTests : Page
 	{
 		public MediaPlayerTests()

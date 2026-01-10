@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "Test3")]
+	[Sample("Path", "Test3")]
 	public sealed partial class Test3 : UserControl
 	{
 		public Test3()

@@ -10,7 +10,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[SampleControlInfo("WebView", "WebView_JavascriptInvoke", typeof(WebViewViewModel))]
+	[Sample("WebView", "WebView_JavascriptInvoke", typeof(WebViewViewModel))]
 	public sealed partial class WebView_JavascriptInvoke : UserControl
 	{
 #if HAS_UNO

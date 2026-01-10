@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfo("ContentPresenter", "ContentPresenter_Content_DataContext")]
+	[Sample("ContentPresenter", "ContentPresenter_Content_DataContext")]
 	public sealed partial class ContentPresenter_Content_DataContext : UserControl
 	{
 		public ContentPresenter_Content_DataContext()
