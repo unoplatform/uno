@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
@@ -70,7 +71,13 @@ public sealed partial class StoreContext
 		{
 			await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				SKStoreReviewController.RequestReview(UIApplication.SharedApplication.KeyWindow.WindowScene);
+				var windowScene = GetActiveWindowScene();
+				if (windowScene is null)
+				{
+					throw new InvalidOperationException("Unable to find an active window scene.");
+				}
+
+				SKStoreReviewController.RequestReview(windowScene);
 			});
 
 			return new StoreRateAndReviewResult(StoreRateAndReviewStatus.Succeeded);
@@ -78,6 +85,22 @@ public sealed partial class StoreContext
 		catch (Exception ex)
 		{
 			return new StoreRateAndReviewResult(StoreRateAndReviewStatus.Error, ex);
+		}
+	}
+
+	private static UIWindowScene GetActiveWindowScene()
+	{
+		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+		{
+			var scenes = UIApplication.SharedApplication.ConnectedScenes;
+			var activeScene = scenes.FirstOrDefault(scene => scene.ActivationState == UISceneActivationState.ForegroundActive);
+			return activeScene as UIWindowScene;
+		}
+		else
+		{
+#pragma warning disable CA1422 // KeyWindow is deprecated in iOS 13+
+			return UIApplication.SharedApplication.KeyWindow?.WindowScene;
+#pragma warning restore CA1422
 		}
 	}
 #endif
