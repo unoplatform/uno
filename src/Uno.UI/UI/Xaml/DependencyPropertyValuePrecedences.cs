@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Microsoft.UI.Xaml
@@ -22,20 +23,22 @@ namespace Microsoft.UI.Xaml
 		Local,
 
 		/// <summary>
-		/// Values inherited from the templated parent
+		/// This is obsoleted and should not be used within the codebase.
+		/// It is only kept for public API compatibility.
 		/// </summary>
-		TemplatedParent,
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		TemplatedParent = 3,
 
 		/// <summary>
-		/// Defined when setting a style from the style property
+		/// Defined when setting a style from the style property or resolving an implicit style
 		/// </summary>
-		ExplicitStyle,
+		ExplicitOrImplicitStyle = 4,
 
-		/// <summary>
-		/// Values defined by an implicitly defined style
-		/// </summary>
-		/// <remarks>On Uno, this is actually used for values set by the default style, to allow for them to correctly take precedence over inherited values.</remarks>
-		ImplicitStyle,
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		ExplicitStyle = 4,
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		ImplicitStyle = 5,
 
 		/// <summary>
 		/// Defined by the inheritance of a FrameworkElement property of the same name
@@ -43,7 +46,7 @@ namespace Microsoft.UI.Xaml
 		Inheritance,
 
 		/// <summary>
-		/// Defined by the default style from Generic.xaml
+		/// Values defined by a default style
 		/// </summary>
 		DefaultStyle,
 
