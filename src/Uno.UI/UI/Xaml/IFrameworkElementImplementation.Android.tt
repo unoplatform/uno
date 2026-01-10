@@ -232,7 +232,7 @@ namespace <#= mixin.NamespaceName #>
 
 		protected virtual void OnStyleChanged(Style oldValue, Style newValue)
 		{
-			OnStyleChanged(oldValue, newValue, DependencyPropertyValuePrecedences.ExplicitStyle);
+			OnStyleChanged(oldValue, newValue, DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle);
 		}
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
