@@ -69,11 +69,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var hOffset = HorizontalOffset;
 			var vOffset = VerticalOffset;
 
+			// When zoomed, the effective extent is scaled by the zoom factor
+			var scaledExtentWidth = ExtentWidth * _zoomFactor;
+			var scaledExtentHeight = ExtentHeight * _zoomFactor;
+
 			double up, down, left, right;
 			if (CanVerticallyScroll)
 			{
 				up = -vOffset;
-				down = Math.Max(0, ExtentHeight - ViewportHeight) - vOffset;
+				down = Math.Max(0, scaledExtentHeight - ViewportHeight) - vOffset;
 			}
 			else
 			{
@@ -83,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (CanHorizontallyScroll)
 			{
 				left = -hOffset;
-				right = Math.Max(0, ExtentWidth - ViewportWidth) - hOffset;
+				right = Math.Max(0, scaledExtentWidth - ViewportWidth) - hOffset;
 			}
 			else
 			{
@@ -96,6 +100,12 @@ namespace Microsoft.UI.Xaml.Controls
 		public double HorizontalOffset { get; private set; }
 
 		public double VerticalOffset { get; private set; }
+
+		// Zoom state
+		private float _zoomFactor = 1.0f;
+		private float _minZoomFactor = 0.1f;
+		private float _maxZoomFactor = 10.0f;
+		internal float ZoomFactor => _zoomFactor;
 
 		public double ExtentHeight { get; internal set; }
 
@@ -178,6 +188,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (oldValue is UIElement oldElt)
 			{
+				// Reset old content's transform
 				Update(oldElt, 0, 0, 1, new(DisableAnimation: true));
 			}
 
@@ -185,13 +196,30 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (newValue is UIElement newElt)
 			{
-				Update(newElt, HorizontalOffset, VerticalOffset, 1, new(DisableAnimation: true));
+				// Apply current scroll and zoom state to new content
+				Update(newElt, HorizontalOffset, VerticalOffset, _zoomFactor, new(DisableAnimation: true));
 			}
 		}
 
-		internal void OnMinZoomFactorChanged(float newValue) { }
+		internal void OnMinZoomFactorChanged(float newValue)
+		{
+			_minZoomFactor = Math.Max(0.1f, newValue);
+			// Clamp current zoom if it's now below the new minimum
+			if (_zoomFactor < _minZoomFactor)
+			{
+				Set(zoomFactor: _minZoomFactor, disableAnimation: true);
+			}
+		}
 
-		internal void OnMaxZoomFactorChanged(float newValue) { }
+		internal void OnMaxZoomFactorChanged(float newValue)
+		{
+			_maxZoomFactor = Math.Max(_minZoomFactor, newValue);
+			// Clamp current zoom if it's now above the new maximum
+			if (_zoomFactor > _maxZoomFactor)
+			{
+				Set(zoomFactor: _maxZoomFactor, disableAnimation: true);
+			}
+		}
 
 		internal bool Set(
 			double? horizontalOffset = null,
@@ -241,7 +269,22 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | opts: {options})");
+			// Handle zoom factor
+			var zoomUpdated = false;
+			if (zoomFactor is float zoom)
+			{
+				var targetZoom = Math.Clamp(zoom, _minZoomFactor, _maxZoomFactor);
+				success &= Math.Abs(targetZoom - zoom) < 0.0001f;
+
+				if (Math.Abs(_zoomFactor - targetZoom) > 0.0001f)
+				{
+					_zoomFactor = targetZoom;
+					updated = true;
+					zoomUpdated = true;
+				}
+			}
+
+			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} z={zoomFactor} | actual: h={HorizontalOffset} v={VerticalOffset} z={_zoomFactor} | opts: {options})");
 
 			if (!options.IsTouch)
 			{
@@ -256,8 +299,14 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (Content is UIElement contentElt)
 				{
-					Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
+					Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, _zoomFactor, options);
 				}
+			}
+
+			// Notify ScrollViewer of zoom change
+			if (zoomUpdated)
+			{
+				Scroller?.OnPresenterZoomed(_zoomFactor);
 			}
 
 			return success;
@@ -301,9 +350,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
+		private void Update(UIElement view, double horizontalOffset, double verticalOffset, float zoom, ScrollOptions options)
 		{
 			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
+			var targetScale = new Vector3(zoom, zoom, 1);
 			var visual = view.Visual;
 
 			// No matter the `options.DisableAnimation`, if we have an animation running
@@ -315,6 +365,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// We keep the animation running, making sure that we are not abruptly stopping scrolling animation
 				// due to completion of the inertia processor a bit earlier than the animation itself.
+				// But still apply zoom if needed
+				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)
+				{
+					visual.Scale = targetScale;
+				}
 				return;
 			}
 
@@ -322,29 +377,42 @@ namespace Microsoft.UI.Xaml.Controls
 			if (options is { DisableAnimation: true } or { IsTouch: true })
 			{
 				visual.StopAnimation(nameof(Visual.AnchorPoint));
+				visual.StopAnimation(nameof(Visual.Scale));
 				visual.AnchorPoint = target;
+				visual.Scale = targetScale;
 				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
 			}
 			else
 			{
 				var compositor = visual.Compositor;
 				var easing = CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10);
-				var animation = compositor.CreateVector2KeyFrameAnimation();
-				animation.InsertKeyFrame(1.0f, target, easing);
-				animation.Duration = TimeSpan.FromSeconds(1);
+
+				// Scroll offset animation
+				var scrollAnimation = compositor.CreateVector2KeyFrameAnimation();
+				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
+				scrollAnimation.Duration = TimeSpan.FromSeconds(1);
 				void OnFrame(CompositionAnimation? _) => Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), true);
 				void OnStopped(object? _, EventArgs __)
 				{
-					animation.AnimationFrame -= OnFrame;
-					animation.Stopped -= OnStopped;
+					scrollAnimation.AnimationFrame -= OnFrame;
+					scrollAnimation.Stopped -= OnStopped;
 
 					Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), false);
 				}
 
-				animation.AnimationFrame += OnFrame;
-				animation.Stopped += OnStopped;
+				scrollAnimation.AnimationFrame += OnFrame;
+				scrollAnimation.Stopped += OnStopped;
 
-				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
+				visual.StartAnimation(nameof(Visual.AnchorPoint), scrollAnimation);
+
+				// Zoom animation (if zoom is changing)
+				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)
+				{
+					var zoomAnimation = compositor.CreateVector3KeyFrameAnimation();
+					zoomAnimation.InsertKeyFrame(1.0f, targetScale, easing);
+					zoomAnimation.Duration = TimeSpan.FromMilliseconds(300); // Shorter duration for zoom per WinUI style
+					visual.StartAnimation(nameof(Visual.Scale), zoomAnimation);
+				}
 			}
 		}
 
@@ -392,6 +460,12 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					mode |= ManipulationModes.TranslateRailsY;
 				}
+
+				// Enable pinch-to-zoom when ZoomMode is Enabled
+				if (sv.ZoomMode == ZoomMode.Enabled)
+				{
+					mode |= ManipulationModes.Scale;
+				}
 			}
 
 			return mode;
@@ -418,6 +492,31 @@ namespace Microsoft.UI.Xaml.Controls
 			var deltaX = Math.Clamp(-unhandledDelta.Translation.X, scrollable.Left, scrollable.Right);
 			var deltaY = Math.Clamp(-unhandledDelta.Translation.Y, scrollable.Up, scrollable.Down);
 
+			// Handle zoom (pinch gesture)
+			float? newZoomFactor = null;
+			if (sv.ZoomMode == ZoomMode.Enabled && Math.Abs(unhandledDelta.Scale - 1.0f) > 0.0001f)
+			{
+				var proposedZoom = _zoomFactor * unhandledDelta.Scale;
+				newZoomFactor = Math.Clamp(proposedZoom, _minZoomFactor, _maxZoomFactor);
+
+				// Adjust scroll offsets to keep the pinch center point fixed
+				// When zooming around a center point, we need to adjust offsets so that
+				// the content point under the center stays in the same screen position
+				var center = args.Position;
+				var zoomRatio = newZoomFactor.Value / _zoomFactor;
+
+				// Formula: new_offset = center + (old_offset - center) * zoomRatio
+				// But we're computing delta, so: delta = (old_offset - center) * (zoomRatio - 1)
+				var zoomOffsetDeltaX = (HorizontalOffset + center.X) * (zoomRatio - 1);
+				var zoomOffsetDeltaY = (VerticalOffset + center.Y) * (zoomRatio - 1);
+
+				deltaX += (float)zoomOffsetDeltaX;
+				deltaY += (float)zoomOffsetDeltaY;
+
+				// Mark scale as handled
+				unhandledDelta.Scale = 1.0f;
+			}
+
 			if (args.IsInertial)
 			{
 				if (_touchInertia is null)
@@ -433,6 +532,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
+					zoomFactor: newZoomFactor,
 					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
 			}
 			else
@@ -443,6 +543,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
+					zoomFactor: newZoomFactor,
 					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
 
 				if (!sv.IsHorizontalScrollChainingEnabled)
