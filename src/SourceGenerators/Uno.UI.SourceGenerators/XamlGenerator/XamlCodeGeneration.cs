@@ -878,8 +878,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private static bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
-		
-		
+
 		private static string GetGeneratorVersion()
 		{
 			var assembly = typeof(XamlCodeGeneration).Assembly;
