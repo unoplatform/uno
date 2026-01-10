@@ -56,7 +56,7 @@ function docfx(done) {
 }
 
 function pagefind(done) {
-    exec('npx pagefind --site _site', (err, stdout, stderr) => {
+    exec('npx pagefind --site _site --exclude-selectors "nav, .affix, footer"', (err, stdout, stderr) => {
         console.log(stdout);
         if (err) {
             console.error(stderr);
