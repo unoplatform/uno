@@ -33,6 +33,14 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 	private static int _vlcInitialized;
 	private static LibVLC _vlc = null!;
 
+	// LibVLC initialization arguments used across the class. Keep these in one place
+	// so the options and the explanatory comment are not duplicated.
+	// Disable device discovery and network announcements to prevent permission prompts on app startup.
+	// --no-sap: Disable SAP (Session Announcement Protocol) announcements
+	// --no-zeroconf: Disable Zeroconf/Bonjour/mDNS device discovery
+	// --no-video-title-show: Don't show video title overlay
+	private static readonly string[] VlcInitArgs = new[] { "--start-paused", "--no-video-title-show", "--no-sap", "--no-zeroconf" };
+
 	private const string MsAppXScheme = "ms-appx";
 	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
 
@@ -138,11 +146,7 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (Volatile.Read(ref _vlcInitialized) == 0)
 			{
-				// Disable device discovery and network announcements to prevent permission prompts on app startup.
-				// --no-sap: Disable SAP (Session Announcement Protocol) announcements
-				// --no-zeroconf: Disable Zeroconf/Bonjour/mDNS device discovery
-				// --no-video-title-show: Don't show video title overlay
-				var vlc = new LibVLC("--start-paused", "--no-video-title-show", "--no-sap", "--no-zeroconf");
+				var vlc = new LibVLC(VlcInitArgs);
 				try
 				{
 					var mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(vlc);
@@ -178,12 +182,8 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 	{
 		if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
 		{
-			// Disable device discovery and network announcements to prevent permission prompts on app startup.
-			// --no-sap: Disable SAP (Session Announcement Protocol) announcements
-			// --no-zeroconf: Disable Zeroconf/Bonjour/mDNS device discovery
-			// --no-video-title-show: Don't show video title overlay
-			// See internal tracking notes for additional context.
-			_vlc = new LibVLC("--start-paused", "--no-video-title-show", "--no-sap", "--no-zeroconf");
+			// Initialize shared LibVLC instance using the centralized argument list above.
+			_vlc = new LibVLC(VlcInitArgs);
 		}
 
 		VlcPlayer = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
