@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.Loader;
 using System.Text;
 using System.Web;
 using Microsoft.UI.Xaml.Data;
@@ -55,6 +58,10 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public partial class Application
 	{
+		private static readonly ConditionalWeakTable<AssemblyLoadContext, Application> _applicationsByAlc = new();
+		private static readonly object _applicationsByAlcSync = new();
+		private static Application _current;
+
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark; // Default theme in WinUI is Dark.
@@ -100,6 +107,50 @@ namespace Microsoft.UI.Xaml
 			InitializePartial();
 		}
 
+		private static void SetCurrentApplication(Application app)
+		{
+			if (app is null)
+			{
+				_current = null;
+				return;
+			}
+
+			var alc = AssemblyLoadContext.GetLoadContext(app.GetType().Assembly) ?? AssemblyLoadContext.Default;
+
+			if (alc == AssemblyLoadContext.Default)
+			{
+				_current = app;
+				return;
+			}
+
+			lock (_applicationsByAlcSync)
+			{
+				// ConditionalWeakTable lacks an update helper; remove the previous entry first so re-registration succeeds when the
+				// same ALC bootstraps multiple Application instances (e.g., AlcApp runtime tests).
+				_applicationsByAlc.Remove(alc);
+				_applicationsByAlc.Add(alc, app);
+			}
+		}
+
+		internal static Application GetForInstance(object instance)
+			=> instance is null ? null : GetForType(instance.GetType());
+
+		internal static Application GetForType(Type type)
+			=> type is null ? Current : GetForAssemblyLoadContext(AssemblyLoadContext.GetLoadContext(type.Assembly));
+
+		internal static Application GetForAssemblyLoadContext(AssemblyLoadContext alc)
+		{
+			if (alc is null || alc == AssemblyLoadContext.Default)
+			{
+				return Current;
+			}
+
+			lock (_applicationsByAlcSync)
+			{
+				return _applicationsByAlc.TryGetValue(alc, out var app) ? app : null;
+			}
+		}
+
 		internal bool InitializationComplete => _initializationComplete;
 
 		partial void InitializePartial();
@@ -126,7 +177,11 @@ namespace Microsoft.UI.Xaml
 			public const int LauchedStop = 2;
 		}
 
-		public static Application Current { get; private set; }
+		public static Application Current
+		{
+			get => _current;
+			private set => SetCurrentApplication(value);
+		}
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
 
@@ -292,10 +347,26 @@ namespace Microsoft.UI.Xaml
 
 		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
+			StartPartial(p =>
+			{
+				callback(p);
+				return null;
+			});
+		}
+
+		/// <summary>
+		/// Boots an <see cref="Application"/> instance when hosting scenarios require returning the created app
+		/// (e.g., secondary AssemblyLoadContext projections).
+		/// This overload mirrors <see cref="Microsoft.UI.Xaml.Application.Start(ApplicationInitializationCallback)"/>
+		/// but allows the callback to return the constructed <see cref="Application"/> so the caller can capture it.
+		/// </summary>
+		/// <param name="callback">Factory invoked with initialization parameters; must return the created application instance.</param>
+		internal static void Start(Func<ApplicationInitializationCallbackParams, Application> callback)
+		{
 			StartPartial(callback);
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback);
+		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 

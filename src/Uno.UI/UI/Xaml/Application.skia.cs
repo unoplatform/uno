@@ -20,6 +20,7 @@ using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
 using Windows.Storage;
+using System.Runtime.Loader;
 
 
 #if HAS_UNO_WINUI || WINAPPSDK
@@ -35,9 +36,6 @@ namespace Microsoft.UI.Xaml
 		private static bool _startInvoked;
 
 		[ThreadStatic]
-		private static Application _current;
-
-		[ThreadStatic]
 		private static string? _argumentsOverride;
 
 		[ThreadStatic]
@@ -51,7 +49,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePartial()
 		{
-			_current = this;
+			SetCurrentApplication(this);
 			SetCurrentLanguage();
 
 			if (!_startInvoked)
@@ -100,27 +98,47 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
 		{
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
-			callback(new ApplicationInitializationCallbackParams());
+			var currentApp = callback(new ApplicationInitializationCallbackParams()) ?? _current;
+
+			if (currentApp is null)
+			{
+				throw new InvalidOperationException("Application.Start callback must return a non-null Application instance. Ensure your callback returns a valid Application.");
+			}
 
 			if (OperatingSystem.IsBrowser())
 			{
-				_ = ApplicationData.Current.EnablePersistenceAsync();
+				if (AssemblyLoadContext.GetLoadContext(currentApp.GetType().Assembly) == AssemblyLoadContext.Default)
+				{
+					// Ensure the assembly containing Application is not unloaded while running in WASM
+					_ = ApplicationData.Current.EnablePersistenceAsync();
+				}
+				else
+				{
+					// Secondary ALC uses the primary ALC's ApplicationData, so no need to initialize it again
+
+					if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(Application).Log().Debug("Skipping secondary ALC persistence initialization");
+					}
+				}
 
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);
 			}
 			else
 			{
 				// Other platforms can be synchronous, except iOS that requires
 				// the creation of the window to be synchronous to avoid a black screen.
-				_current.InvokeOnLaunched();
+				currentApp.InvokeOnLaunched();
 			}
+
+			return currentApp;
 		}
 
 		private void InvokeOnLaunched()

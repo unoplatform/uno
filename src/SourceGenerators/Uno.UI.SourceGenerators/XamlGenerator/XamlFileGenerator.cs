@@ -487,49 +487,74 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildApplicationInitializerBody(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			writer.AppendLineIndented($"var __that = this;");
+			writer.AppendLineIndented($"var __isDefaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly) == global::System.Runtime.Loader.AssemblyLoadContext.Default;");
 
-			TryAnnotateWithGeneratorSource(writer);
-			InitializeRemoteControlClient(writer);
-			GenerateApiExtensionRegistrations(writer);
-
-			GenerateResourceLoader(writer);
-			writer.AppendLine();
-			ApplyLiteralProperties();
-			writer.AppendLine();
-
-			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
-			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
-
-			if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
+			using (writer.BlockInvariant($"if (__isDefaultAlc)"))
 			{
-				writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
+				TryAnnotateWithGeneratorSource(writer);
+				InitializeRemoteControlClient(writer);
+				GenerateApiExtensionRegistrations(writer);
+
+				GenerateResourceLoader(writer);
+				writer.AppendLine();
+				ApplyLiteralProperties();
+				writer.AppendLine();
+
+				ApplyAppGlobalResources();
+
+				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
+				{
+					writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
+				}
+
+				if (_isWasm
+					// Only applicable when building for Wasm DOM support
+					&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
+				{
+					writer.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
+					writer.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
+				}
 			}
-
-			if (_isWasm
-				// Only applicable when building for Wasm DOM support
-				&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
+			using (writer.BlockInvariant($"else"))
 			{
-				writer.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
-				writer.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
+				ApplyAppGlobalResources();
+
+				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
+				{
+					// In secondary AssemblyLoadContext (ALC), BindableMetadata.Provider is set to null to prevent
+					// sharing bindable type metadata across ALC boundaries. This avoids issues with type resolution
+					// and ensures that data binding metadata is only available in the default ALC. As a result,
+					// reflection-based data binding may not function in secondary ALCs (e.g., plugin or hot-reload scenarios).
+					writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = null;");
+				}
 			}
 
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 			Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
 
-			ApplyFontsOverride(writer);
-
-			if (_isUiAutomationMappingEnabled)
+			using (writer.BlockInvariant($"if (__isDefaultAlc)"))
 			{
-				writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
+				ApplyFontsOverride(writer);
 
-				if (_isWasm)
+				if (_isUiAutomationMappingEnabled)
 				{
-					// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
-					writer.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
+					writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
+
+					if (_isWasm)
+					{
+						// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
+						writer.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
+					}
 				}
+
+				AttachUnhandledExceptionHandler();
 			}
 
-			AttachUnhandledExceptionHandler();
+			void ApplyAppGlobalResources()
+			{
+				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
+				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
+			}
 
 			void ApplyLiteralProperties()
 			{

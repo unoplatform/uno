@@ -2,6 +2,7 @@
 
 using System;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml;
@@ -31,4 +32,13 @@ public static class WindowHelper
 	/// <param name="window">Window.</param>
 	/// <returns>Native window type or null.</returns>
 	public static object? GetNativeWindow(this Window window) => window.NativeWindow;
+
+	/// <summary>
+	/// Gets or sets the global content host override used for secondary AssemblyLoadContext hosting scenarios.
+	/// </summary>
+	public static ContentControl? ContentHostOverride
+	{
+		get => Window.ContentHostOverride;
+		set => Window.ContentHostOverride = value;
+	}
 }
