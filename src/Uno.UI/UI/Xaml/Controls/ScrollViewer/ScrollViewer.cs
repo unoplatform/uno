@@ -1663,6 +1663,34 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+			// Handle Ctrl+Plus/Minus for zoom
+			if (ZoomMode == ZoomMode.Enabled)
+			{
+				var isCtrlDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+				if (isCtrlDown)
+				{
+					// Check for zoom keys: Plus (=), Minus (-), Numpad Add, Numpad Subtract
+					var isZoomIn = key is VirtualKey.Add || key == (VirtualKey)187; // VirtualKey.Add = Numpad+, 187 = OemPlus (=/+)
+					var isZoomOut = key is VirtualKey.Subtract || key == (VirtualKey)189; // VirtualKey.Subtract = Numpad-, 189 = OemMinus (-/_)
+
+					if (isZoomIn || isZoomOut)
+					{
+						var zoomDelta = isZoomIn ? 1.1f : 0.9f; // 10% zoom per key press
+						var newZoom = Math.Clamp(ZoomFactor * zoomDelta, MinZoomFactor, MaxZoomFactor);
+
+						if (Math.Abs(newZoom - ZoomFactor) > 0.001f)
+						{
+							// Zoom toward center of viewport (no cursor position available for keyboard zoom)
+							ChangeView(null, null, newZoom, disableAnimation: false);
+							args.Handled = true;
+						}
+						return;
+					}
+				}
+			}
+#endif
+
 			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;
 
