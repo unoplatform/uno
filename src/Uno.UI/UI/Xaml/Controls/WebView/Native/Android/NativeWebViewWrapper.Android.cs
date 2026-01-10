@@ -204,7 +204,7 @@ internal partial class NativeWebViewWrapper : INativeWebView
 
 	private void ScheduleNavigationStarting(string url, Action loadAction)
 	{
-		// For programmatically-triggered navigations the ShouldOverrideUrlLoading method is not called,
+		// For programmatically-triggered navigation the ShouldOverrideUrlLoading method is not called,
 		// to workaround this, we raise the NavigationStarting event here, asynchronously to be in line with
 		// the WinUI behavior.
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
