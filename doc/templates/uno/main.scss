@@ -429,6 +429,7 @@ h5 {
 }
 
 .sidefilter {
+  display: none !important;
   @media only screen {
     @include media-breakpoint-up(md) {
       width: 24%;

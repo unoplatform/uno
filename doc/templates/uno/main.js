@@ -4,14 +4,8 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
+
         initializeNavbar();
-        
-        // Move SDK badge into the .subnav container
-        const sdkBadge = document.getElementById('sdk-version-info');
-        const subnav = document.querySelector('.subnav');
-        if (sdkBadge && subnav) {
-            subnav.appendChild(sdkBadge);
-        }
         
         // Cache key and expiration (1 hour)
         const CACHE_KEY = 'uno_sdk_versions';
