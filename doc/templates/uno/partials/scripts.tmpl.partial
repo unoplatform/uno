@@ -116,27 +116,6 @@ mermaid.init(undefined, ".lang-mermaid");
     window.addEventListener('load', () => {
         console.log("Load event fired");
 
-        // Ensure the search container exists and inject the search div
-        // We target the header/breadcrumb area instead of .sidefilter
-        const sdkInfo = document.getElementById('sdk-version-info');
-        const searchTarget = sdkInfo ? sdkInfo.parentElement : document.querySelector('header');
-
-        if (searchTarget && !document.getElementById('search')) {
-            console.log("Injecting search div into header area");
-            
-            // Create and inject the search div
-            const searchDiv = document.createElement('div');
-            searchDiv.id = 'search';
-            
-            if (sdkInfo) {
-                // Insert before the SDK info badge so it sits to its left (visually, with flex/absolute)
-                searchTarget.insertBefore(searchDiv, sdkInfo);
-            } else {
-                searchTarget.appendChild(searchDiv);
-            }
-            console.log("Search div injected");
-        }
-
         // Check if the 'search' element already exists in the DOM
         if (document.getElementById('search')) {
             console.log("'search' element already present in DOM");

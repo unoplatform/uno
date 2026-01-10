@@ -1,4 +1,4 @@
-const sidefilterHeight = 94; //94px from sidefilter height
+const sidefilterHeight = 0; //94px from sidefilter height
 
 function setTocHeight() {
     if($(window).width() < 768) {
