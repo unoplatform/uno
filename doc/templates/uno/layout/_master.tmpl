@@ -15,14 +15,21 @@
         {{^_disableNavbar}}
             {{>partials/_navbar}}
         {{/_disableNavbar}}
-        {{^_disableBreadcrumb}}
-            {{>partials/breadcrumb}}
-        {{/_disableBreadcrumb}}
-        <div id="sdk-version-info">
-            <span class="sdk-version-badge" title="Latest stable Uno SDK version" role="button" tabindex="0" onkeydown="if (event.key === 'Enter') { event.preventDefault(); this.click(); } else if (event.key === ' ') { event.preventDefault(); }" onkeyup="if (event.key === ' ') { this.click(); }">
-                <span class="sdk-label">SDK</span>
-                <span class="sdk-version">Loading...</span>
-            </span>
+        <div id="header-controls">
+            <div class="container">
+                {{^_disableBreadcrumb}}
+                    {{>partials/breadcrumb}}
+                {{/_disableBreadcrumb}}
+                <div id="search"></div>
+                <div id="header-right" class="subnav">
+                    <div id="sdk-version-info">
+                        <span class="sdk-version-badge" title="Latest stable Uno SDK version" role="button" tabindex="0" onkeydown="if (event.key === 'Enter') { event.preventDefault(); this.click(); } else if (event.key === ' ') { event.preventDefault(); }" onkeyup="if (event.key === ' ') { this.click(); }">
+                            <span class="sdk-label">SDK</span>
+                            <span class="sdk-version">Loading...</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
     <div role="main" class="container body-content">

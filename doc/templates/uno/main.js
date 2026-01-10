@@ -4,61 +4,8 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
+
         initializeNavbar();
-        
-        // Move SDK badge into the .subnav container
-        const sdkBadge = document.getElementById('sdk-version-info');
-        const subnav = document.querySelector('.subnav');
-        if (sdkBadge && subnav) {
-            subnav.appendChild(sdkBadge);
-        }
-        
-        // Check for overlap between SDK badge and breadcrumb
-        function checkBadgeOverlap() {
-            const badge = document.getElementById('sdk-version-info');
-            const breadcrumbList = document.querySelector('#breadcrumb .breadcrumb');
-            
-            if (!badge || !breadcrumbList) return;
-            
-            // Get the last breadcrumb item (the actual visible content, not the container)
-            const breadcrumbItems = breadcrumbList.children;
-            if (breadcrumbItems.length === 0) return;
-            
-            const lastItem = breadcrumbItems[breadcrumbItems.length - 1];
-            const badgeRect = badge.getBoundingClientRect();
-            const lastItemRect = lastItem.getBoundingClientRect();
-            
-            // Check if last breadcrumb item extends into the badge's horizontal space
-            // Add 16px margin to give some breathing room
-            const margin = 16;
-            const hasOverlap = lastItemRect.right + margin > badgeRect.left;
-            
-            if (hasOverlap) {
-                badge.classList.add('hidden-overlap');
-            } else {
-                badge.classList.remove('hidden-overlap');
-            }
-        }
-        
-        // Check on load and resize
-        if (sdkBadge) {
-            // Initial check after a short delay to ensure layout is complete
-            setTimeout(checkBadgeOverlap, 100);
-            
-            // Check on window resize
-            window.addEventListener('resize', checkBadgeOverlap);
-            
-            // Check when breadcrumb content changes (using MutationObserver)
-            const breadcrumbContainer = document.getElementById('breadcrumb');
-            if (breadcrumbContainer) {
-                const observer = new MutationObserver(checkBadgeOverlap);
-                observer.observe(breadcrumbContainer, {
-                    childList: true,
-                    subtree: true,
-                    characterData: true
-                });
-            }
-        }
         
         // Cache key and expiration (1 hour)
         const CACHE_KEY = 'uno_sdk_versions';
@@ -85,7 +32,7 @@ document.addEventListener(
         }
         
         // Fetch and update SDK version dynamically from NuGet
-        fetch('https://api.nuget.org/v3-flatcontainer/uno.sdk/index.json')
+        fetch('https://api.nuget.org/v3-flatcontainer/uno.templates/index.json')
             .then(r => r.json())
             .then(data => {
                 if (data.versions) {
@@ -188,16 +135,6 @@ document.addEventListener(
                     const body = document.createElement('div');
                     body.className = 'sdk-modal-body';
                     
-                    // Top instruction note
-                    const topNote = document.createElement('p');
-                    topNote.className = 'sdk-note sdk-instruction';
-                    topNote.textContent = 'Update the ';
-                    const topCode = document.createElement('code');
-                    topCode.textContent = 'global.json';
-                    topNote.appendChild(topCode);
-                    topNote.appendChild(document.createTextNode(' file at the root of your solution with this version.'));
-                    body.appendChild(topNote);
-                    
                     // Helper function to create version section with safe text content
                     function createVersionSection(icon, title, version, description, command) {
                         const section = document.createElement('div');
@@ -242,24 +179,19 @@ document.addEventListener(
                     
                     // Stable version section
                     const stableCommand = latestStableVersion
-                        ? `"msbuild-sdks": {
-  "Uno.Sdk": "${latestStableVersion}"
-}`
+                        ? 'dotnet new install Uno.Templates::' + latestStableVersion
                         : null;
-                    const stableSection = createVersionSection(
+                    body.appendChild(createVersionSection(
                         '📦',
                         'Latest Stable Version',
                         latestStableVersion,
                         'Recommended for production',
                         stableCommand
-                    );
-                    body.appendChild(stableSection);
+                    ));
                     
                     // Dev version section
                     const devCommand = latestDevVersion
-                        ? `"msbuild-sdks": {
-  "Uno.Sdk": "${latestDevVersion}"
-}`
+                        ? 'dotnet new install Uno.Templates::' + latestDevVersion
                         : null;
                     const devSection = createVersionSection(
                         '🚀',
@@ -268,40 +200,45 @@ document.addEventListener(
                         'Preview features & fixes',
                         devCommand
                     );
-                    body.appendChild(devSection);
-                    
-                    // Important note about VS restart
-                    const importantNote = document.createElement('p');
-                    importantNote.className = 'sdk-note sdk-important';
-                    importantNote.textContent = '⚠️ ';
-                    const impStrong = document.createElement('strong');
-                    impStrong.textContent = 'Important:';
-                    importantNote.appendChild(impStrong);
-                    importantNote.appendChild(document.createTextNode(' In Visual Studio, once the Uno.Sdk version is updated, a banner will ask to restart the IDE. Once the solution is reopened the changes will take effect.'));
-                    body.appendChild(importantNote);
-                    
-                    // Combined info note
-                    const infoNote = document.createElement('p');
-                    infoNote.className = 'sdk-note';
-                    infoNote.textContent = '💡 ';
-                    const infoStrong = document.createElement('strong');
-                    infoStrong.textContent = 'More Info:';
-                    infoNote.appendChild(infoStrong);
-                    infoNote.appendChild(document.createTextNode(' '));
+                    const devNote = document.createElement('p');
+                    devNote.className = 'sdk-note';
+                    devNote.textContent = '📍 ';
+                    const noteStrong = document.createElement('strong');
+                    noteStrong.textContent = 'NuGet Package:';
+                    devNote.appendChild(noteStrong);
+                    devNote.appendChild(document.createTextNode(' '));
                     const nugetLink = document.createElement('a');
-                    nugetLink.href = 'https://www.nuget.org/packages/Uno.Sdk';
+                    nugetLink.href = 'https://www.nuget.org/packages/Uno.Templates';
                     nugetLink.target = '_blank';
                     nugetLink.rel = 'noopener';
-                    nugetLink.textContent = 'Uno.Sdk on NuGet.org';
-                    infoNote.appendChild(nugetLink);
-                    infoNote.appendChild(document.createTextNode(' • '));
-                    const docLink = document.createElement('a');
-                    docLink.href = 'https://aka.platform.uno/upgrade-uno-packages';
-                    docLink.target = '_blank';
-                    docLink.rel = 'noopener';
-                    docLink.textContent = 'Upgrade guide';
-                    infoNote.appendChild(docLink);
-                    body.appendChild(infoNote);
+                    nugetLink.textContent = 'Uno.Templates on NuGet.org';
+                    devNote.appendChild(nugetLink);
+                    devSection.appendChild(devNote);
+                    body.appendChild(devSection);
+                    
+                    // Check version section
+                    body.appendChild(createVersionSection(
+                        'ℹ️',
+                        'Check Installed Version',
+                        null,
+                        null,
+                        'dotnet new details Uno.Templates'
+                    ));
+                    
+                    // Tip note
+                    const tipNote = document.createElement('p');
+                    tipNote.className = 'sdk-note';
+                    tipNote.textContent = '💡 ';
+                    const tipStrong = document.createElement('strong');
+                    tipStrong.textContent = 'Tip:';
+                    tipNote.appendChild(tipStrong);
+                    tipNote.appendChild(document.createTextNode(' If you have an older version installed, uninstall it first using:'));
+                    const br = document.createElement('br');
+                    tipNote.appendChild(br);
+                    const tipCode = document.createElement('code');
+                    tipCode.textContent = 'dotnet new uninstall Uno.Templates';
+                    tipNote.appendChild(tipCode);
+                    body.appendChild(tipNote);
                     
                     // Assemble modal
                     content.appendChild(header);
