@@ -8,445 +8,71 @@
   --pagefind-ui-border-width: 1px !important;
 }
 
-// Unified header controls container
-#header-controls {
-  position: fixed;
-  top: 75px; /* Height of the navbar */
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 48px; /* Standard breadcrumb height */
-  z-index: 10; /* Below navbar (9999) but above content */
-  background-color: $offWhite; /* standard subnav background */
-  border-bottom: 1px solid #e7e7e7;
+// Position the search box in the header (breadcrumb bar area)
+#search {
+  position: absolute;
+  right: 180px; // Position to the left of the SDK version info
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  z-index: 900;
+  display: block;
+
+  @media (max-width: 1024px) {
+    width: 200px;
+    right: 140px;
+  }
   
-  // Use container for flex layout now
-  .container {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding-left: 15px; // Standard container padding
-    padding-right: 15px; // Standard container padding
-
-    // 1. Breadcrumb (Left)
-    // Target the first child, which is the breadcrumb partial container
-    > :first-child {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        min-width: 0; // Prevent overflow from breaking flex
-        height: 100%;
-        
-        // Strip default DocFX styling that breaks alignment
-        &, #breadcrumb {
-            margin: 0 !important;
-            padding: 0 !important;
-            background: transparent !important;
-            width: auto !important;
-            position: static !important;
-        }
-
-        .breadcrumb {
-            margin: 0 !important;
-            padding: 0 !important;
-            background: transparent !important;
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-            
-            > li {
-                display: inline-flex;
-                align-items: center;
-                line-height: normal;
-            }
-        }
-    }
-
-    // 2. Search Box (Center)
-    #search {
-        flex: 0 0 auto; // Do not grow or shrink
-        margin: 0 20px;
-        display: flex;
-        justify-content: center;
-        position: relative;
-        width: 300px;
-        z-index: 900;
-        
-        @media (max-width: 1024px) {
-            width: 200px;
-        }
-        
-        // Hide on mobile for now as it needs specific mobile UI work
-        @media (max-width: 768px) {
-            display: none; 
-        }
-
-        // Customize Pagefind UI
-        .pagefind-ui {
-            width: 100%;
-            margin: 0;
-            box-shadow: none;
-            border-radius: 0;
-            
-            &__form {
-                &::before {
-                    top: 11px !important; // Vertically center the icon (36px container - 14px icon / 2)
-                }
-            }
-
-            &__search-input {
-                height: 36px;
-                border-radius: 18px;
-                padding-left: 40px;
-                padding-right: 48px !important; // Comfortable spacing from Clear button (20px button + 12px right + 16px spacing)
-                font-size: 14px;
-                border: 1px solid #e7e7e7;
-                background-color: #f9f9f9;
-
-                &:focus {
-                    outline: none;
-                    border: 1px solid $blue;
-                    background-color: #ffffff;
-                }
-            }
-
-            &__search-clear {
-                top: 50% !important;
-                transform: translateY(-50%) !important;
-                right: 12px !important;
-                background-color: transparent !important;
-                width: 20px !important;
-                height: 20px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-            }
-
-            // Floating results drawer
-            &__drawer {
-                position: absolute !important;
-                top: 45px !important; // Just below the input
-                left: 50% !important;
-                right: auto !important;
-                transform: translateX(-50%);
-                width: 33vw !important; // Wider than input for better reading
-                background: white !important;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
-                max-height: 80vh !important;
-                overflow-y: auto !important;
-                border: 1px solid #e7e7e7 !important;
-                border-radius: 8px !important;
-                z-index: 10001 !important;
-            }
-
-          
-
-            &__result {
-                padding: 0 !important;
-                margin: 0 !important;
-                border-bottom: none !important;
-                border-left: 3px solid transparent !important;
-                transition: all 0.2s ease !important;
-                
-                &:hover {
-                    background-color: rgba(21, 155, 255, 0.08) !important; // Light blue background on hover
-                    border-left-color: $blue !important;
-                }
-            }
-
-            &__result-link {
-                display: block !important;
-                padding: 6px 12px !important;
-                font-weight: 400 !important;
-                text-decoration: none !important;
-                color: $black !important;
-                line-height: 20px !important;
-                transition: color 0.2s ease !important;
-
-                &:hover {
-                    background-color: transparent !important;
-                    color: $blue !important;
-                }
-            }
-
-            &__result-title {
-                font-size: 18px !important;
-                font-weight: bold !important;
-                color: $black !important;
-                margin: 0 0 4px 0 !important;
-                transition: color 0.2s ease !important;
-                letter-spacing: -0.01em !important;
-                
-                &:hover {
-                    color: $blue !important; // Blue title on hover
-                }
-                
-                mark {
-                    background: rgba(21, 155, 255, 0.35) !important; // Stronger blue highlight
-                    color: darken($blue, 10%) !important; // Darker blue text in highlights
-                    border-radius: 2px !important;
-                }
-            }
-
-            // Hide the excerpt/preview text
-            &__result-excerpt {
-                display: none !important;
-            }
-
-            // Style breadcrumb/location path
-            &__result-nested {
-                margin-top: 4px !important;
-                padding-left: 48px !important; // Indent the children
-                font-size: 12px !important;
-                color: lighten($blue, 15%) !important; // Blue-tinted breadcrumb text
-                
-                mark {
-                    background: rgba(21, 155, 255, 0.3) !important; // More prominent blue highlight
-                    color: $blue !important;
-                    padding: 1px 3px !important;
-                    border-radius: 2px !important;
-                }
-            }
-
-            // Message states
-            &__message {
-                padding: 16px !important;
-                text-align: center !important;
-                color: $gray !important;
-                font-size: 14px !important;
-            }
-            
-            // Loading state
-            &__loading {
-                padding: 16px !important;
-                text-align: center !important;
-                color: $gray !important;
-            }
-            
-            // Load more button
-            &__button {
-                background-color: $blue !important;
-                color: white !important;
-                border: none !important;
-                padding: 10px 10px !important;
-                border-radius: 0 !important;
-                font-size: 14px !important;
-                font-weight: 400 !important;
-                cursor: pointer !important;
-                transition: all 0.2s ease !important;
-                margin: 12px auto !important;
-                display: block !important;
-                
-                &:hover {
-                    background-color: darken($blue, 8%) !important;
-                    transform: translateY(-1px) !important;
-                    box-shadow: 0 4px 8px rgba(21, 155, 255, 0.3) !important;
-                }
-                
-                &:active {
-                    transform: translateY(0) !important;
-                    box-shadow: 0 2px 4px rgba(21, 155, 255, 0.2) !important;
-                }
-            }
-        }
-    }
-
-    // Search history pills
-    .search-history-pills {
-        padding: 16px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        background-color: rgba(21, 155, 255, 0.02);
-        max-width: 25%;
-        overflow: hidden;
-    }
-    
-    // Empty state message - replaces "no results" area
-    .search-empty-state {
-        padding: 32px 24px;
-        text-align: center;
-        color: $gray;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 200px;
-        
-        &__icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.3;
-        }
-        
-        &__title {
-            font-size: 18px;
-            font-weight: 600;
-            color: $black;
-            margin-bottom: 8px;
-        }
-        
-        &__description {
-            font-size: 14px;
-            color: $gray;
-            line-height: 1.5;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-    }
-    
-    .search-no-results-state {
-        padding: 32px 24px;
-        text-align: center;
-        color: $gray;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 220px;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-        background-color: rgba(21, 155, 255, 0.015);
-
-        &__icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-            opacity: 0.4;
-        }
-
-        &__title {
-            font-size: 20px;
-            font-weight: 600;
-            color: $black;
-            margin-bottom: 8px;
-        }
-
-        &__description {
-            font-size: 14px;
-            color: $gray;
-            line-height: 1.6;
-            max-width: 380px;
-            margin: 0 auto;
-        }
-
-        &__query {
-            color: $blue;
-            font-weight: 600;
-        }
-    }
-    
-    .search-history-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-    }
-    
-    .search-history-title {
-        font-size: 12px;
-        font-weight: 600;
-        color: $gray;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .search-history-clear {
-        padding: 4px 10px;
-        font-size: 11px;
-        font-weight: 500;
-        color: $gray;
-        background-color: transparent;
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        
-        &:hover {
-            color: #c44;
-            border-color: rgba(204, 68, 68, 0.3);
-            background-color: rgba(204, 68, 68, 0.05);
-        }
-        
-        &:active {
-            transform: scale(0.95);
-        }
-    }
-    
-    .search-history-pills-wrapper {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        max-width: 100%;
-    }
-    
-    .search-history-pill {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 12px;
-        background-color: rgba(21, 155, 255, 0.1);
-        color: $blue;
-        border: 1px solid rgba(21, 155, 255, 0.3);
-        border-radius: 16px;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        max-width: 200px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        flex-shrink: 0;
-        
-        &:hover {
-            background-color: rgba(21, 155, 255, 0.2);
-            border-color: rgba(21, 155, 255, 0.5);
-            transform: translateY(-1px);
-        }
-        
-        &:active {
-            transform: translateY(0);
-        }
-    }
-
-    // 3. Header Right / Badge (Right)
-    #header-right {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        height: 100%;
-        gap: 16px; 
-        float: none !important;
-
-        @media (max-width: 768px) {
-            gap: 8px;
-        }
-    }
+  // Hide on mobile for now as it needs specific mobile UI work
+  @media (max-width: 768px) {
+    display: none; 
   }
 }
 
-  // Override the default subnav behavior to sit inside our flex container
-  #header-controls .subnav {
-      position: static !important;
-      top: auto !important;
-      margin-bottom: 0 !important;
-      border-bottom: none !important;
-      background: transparent !important; /* Let container background show */
-      width: auto !important;
-      
-      // Reset absolute positioning of the inner info block
-      #sdk-version-info {
-          position: static !important;
-          right: auto !important;
-          top: auto !important;
-          transform: none !important;
-          display: flex !important;
-          margin: 0 !important;
-      }
-      
-      // Fix the container inside subnav to width auto to prevent centering issues
-      .container {
-        width: auto;
-        margin: 0;
-        padding: 0;
-      }
-  }
+// Customize Pagefind UI
+#search .pagefind-ui {
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+}
 
+#search .pagefind-ui__search-input {
+    height: 36px;
+    border-radius: 18px;
+    padding-left: 40px;
+    font-size: 14px;
+    border: 1px solid #e7e7e7;
+    background-color: #f9f9f9;
+}
+
+#search .pagefind-ui__search-clear {
+    top: 9px;
+    background-color: transparent;
+}
+
+// Floating results drawer
+#search .pagefind-ui__drawer {
+  position: absolute !important;
+  top: 45px !important; // Just below the input
+  left: auto !important;
+  right: 0 !important;
+  width: 400px !important; // Wider than input for better reading
+  background: white !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  border: 1px solid #e7e7e7 !important;
+  border-radius: 8px !important;
+  z-index: 10001 !important;
+}
+
+// Adjust padding in results
+#search .pagefind-ui__result {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#search .pagefind-ui__result:last-child {
+    border-bottom: none;
+}

@@ -4,6 +4,11 @@
     <div>
         <div class="sidefilter">
             <div id="search"></div>
+            <form class="toc-filter" style="display:none;">
+                <span class="glyphicon glyphicon-filter filter-icon"></span>
+                <span class="glyphicon glyphicon-remove clear-icon" id="toc_filter_clear"></span>
+                <input type="text" id="toc_filter_input" placeholder="Filter by title" onkeypress="if(event.keyCode==13) {return false;}">
+            </form>
         </div>
         <div class="sidetoc">
             <div class="toc" id="toc">
