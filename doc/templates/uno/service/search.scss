@@ -8,71 +8,182 @@
   --pagefind-ui-border-width: 1px !important;
 }
 
-// Position the search box in the header (breadcrumb bar area)
-#search {
-  position: absolute;
-  right: 180px; // Position to the left of the SDK version info
-  top: 50%;
-  transform: translateY(-50%);
-  width: 300px;
-  z-index: 900;
-  display: block;
-
-  @media (max-width: 1024px) {
-    width: 200px;
-    right: 140px;
-  }
+// Unified header controls container
+#header-controls {
+  position: fixed;
+  top: 75px; /* Height of the navbar */
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 48px; /* Standard breadcrumb height */
+  z-index: 10; /* Below navbar (9999) but above content */
+  background-color: $offWhite; /* standard subnav background */
+  border-bottom: 1px solid #e7e7e7;
   
-  // Hide on mobile for now as it needs specific mobile UI work
-  @media (max-width: 768px) {
-    display: none; 
+  // Use container for flex layout now
+  .container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-left: 15px; // Standard container padding
+    padding-right: 15px; // Standard container padding
+
+    // 1. Breadcrumb (Left)
+    // Target the first child, which is the breadcrumb partial container
+    > :first-child {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        min-width: 0; // Prevent overflow from breaking flex
+        height: 100%;
+        
+        // Strip default DocFX styling that breaks alignment
+        &, #breadcrumb {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            width: auto !important;
+            position: static !important;
+        }
+
+        .breadcrumb {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            
+            > li {
+                display: inline-flex;
+                align-items: center;
+                line-height: normal;
+            }
+        }
+    }
+
+    // 2. Search Box (Center)
+    #search {
+        flex: 0 0 auto; // Do not grow or shrink
+        margin: 0 20px;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        width: 300px;
+        z-index: 900;
+        
+        @media (max-width: 1024px) {
+            width: 200px;
+        }
+        
+        // Hide on mobile for now as it needs specific mobile UI work
+        @media (max-width: 768px) {
+            display: none; 
+        }
+
+        // Customize Pagefind UI
+        .pagefind-ui {
+            width: 100%;
+            margin: 0;
+            box-shadow: none;
+            border-radius: 0;
+            
+            &__form {
+                &::before {
+                    top: 11px !important; // Vertically center the icon (36px container - 14px icon / 2)
+                }
+            }
+
+            &__search-input {
+                height: 36px;
+                border-radius: 18px;
+                padding-left: 40px;
+                font-size: 14px;
+                border: 1px solid #e7e7e7;
+                background-color: #f9f9f9;
+
+                &:focus {
+                    outline: none;
+                    border: 1px solid $blue;
+                    background-color: #ffffff;
+                }
+            }
+
+            &__search-clear {
+                top: 9px;
+                background-color: transparent;
+            }
+
+            // Floating results drawer
+            &__drawer {
+                position: absolute !important;
+                top: 45px !important; // Just below the input
+                left: auto !important;
+                right: -50px !important; // Center align with box approx
+                width: 400px !important; // Wider than input for better reading
+                background: white !important;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+                max-height: 80vh !important;
+                overflow-y: auto !important;
+                border: 1px solid #e7e7e7 !important;
+                border-radius: 8px !important;
+                z-index: 10001 !important;
+            }
+
+            // Adjust padding in results
+            &__result {
+                padding: 12px 16px !important;
+                border-bottom: 1px solid #f0f0f0;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+
+    // 3. Header Right / Badge (Right)
+    #header-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        gap: 16px; 
+        float: none !important;
+
+        @media (max-width: 768px) {
+            gap: 8px;
+        }
+    }
   }
 }
 
-// Customize Pagefind UI
-#search .pagefind-ui {
-    width: 100%;
-    margin: 0;
-    box-shadow: none;
-    border-radius: 0;
-}
+  // Override the default subnav behavior to sit inside our flex container
+  #header-controls .subnav {
+      position: static !important;
+      top: auto !important;
+      margin-bottom: 0 !important;
+      border-bottom: none !important;
+      background: transparent !important; /* Let container background show */
+      width: auto !important;
+      
+      // Reset absolute positioning of the inner info block
+      #sdk-version-info {
+          position: static !important;
+          right: auto !important;
+          top: auto !important;
+          transform: none !important;
+          display: flex !important;
+          margin: 0 !important;
+      }
+      
+      // Fix the container inside subnav to width auto to prevent centering issues
+      .container {
+        width: auto;
+        margin: 0;
+        padding: 0;
+      }
+  }
 
-#search .pagefind-ui__search-input {
-    height: 36px;
-    border-radius: 18px;
-    padding-left: 40px;
-    font-size: 14px;
-    border: 1px solid #e7e7e7;
-    background-color: #f9f9f9;
-}
-
-#search .pagefind-ui__search-clear {
-    top: 9px;
-    background-color: transparent;
-}
-
-// Floating results drawer
-#search .pagefind-ui__drawer {
-  position: absolute !important;
-  top: 45px !important; // Just below the input
-  left: auto !important;
-  right: 0 !important;
-  width: 400px !important; // Wider than input for better reading
-  background: white !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
-  max-height: 80vh !important;
-  overflow-y: auto !important;
-  border: 1px solid #e7e7e7 !important;
-  border-radius: 8px !important;
-  z-index: 10001 !important;
-}
-
-// Adjust padding in results
-#search .pagefind-ui__result {
-    padding: 12px 16px !important;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-#search .pagefind-ui__result:last-child {
-    border-bottom: none;
-}
