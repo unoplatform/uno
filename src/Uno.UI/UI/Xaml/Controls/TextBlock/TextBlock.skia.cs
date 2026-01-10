@@ -81,6 +81,7 @@ namespace Microsoft.UI.Xaml.Controls
 				FlowDirection,
 				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
+				InvalidateInlineAndRequireRepaint,
 				out var desiredSize);
 
 			desiredSize = desiredSize.Add(padding);
@@ -142,6 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 				FlowDirection,
 				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
+				InvalidateInlineAndRequireRepaint,
 				out var arrangedSize);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 

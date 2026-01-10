@@ -23,6 +23,7 @@
       "AddIns\\Uno.UI.WebView.Skia.X11\\Uno.UI.WebView.Skia.X11.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Crossruntime.csproj",
       "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",
+      "FontFallbackPreprocessor\\FontFallbackPreprocessor.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Generic\\SamplesApp.Skia.Generic.csproj",

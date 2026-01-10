@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
@@ -15,8 +16,10 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
@@ -97,6 +100,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
+	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(UnicodeText), out var service) ? service : null;
 	private static readonly SKPaint _spareDrawPaint = new();
 
 	private readonly Size _size;
@@ -122,6 +126,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		FlowDirection flowDirection,
 		TextAlignment? textAlignment, // null to determine from text. This will also infer the directionality of the text from the content
 		TextWrapping textWrapping,
+		Action onFontCacheUpdate,
 		out Size desiredSize)
 	{
 		CI.Assert(maxLines >= 0);
@@ -187,7 +192,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
-		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth, textWrapping);
+		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth, textWrapping, onFontCacheUpdate);
 		var lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 
 		_lines = maxLines == 0 || maxLines >= lines.Count ? lines : lines[..maxLines];
@@ -204,23 +209,23 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
-	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth, TextWrapping textWrapping)
+	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth, TextWrapping textWrapping, Action onFontCacheUpdate)
 	{
 		var logicallyOrderedRuns = new List<BidiRun>();
 		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
 		foreach (var inline in inlines)
 		{
-			logicallyOrderedRuns.AddRange(SplitTextIntoLogicallyOrderedBidiRuns(inline));
+			logicallyOrderedRuns.AddRange(SplitTextIntoLogicallyOrderedBidiRuns(inline, onFontCacheUpdate));
 			logicallyOrderedLineBreakingOpportunities.AddRange(GetLineBreakingOpportunities(inline.Text).Select(b => (b, inline)));
 		}
 
 		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidth, logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities, rtl, textWrapping);
-		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns);
+		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns, onFontCacheUpdate);
 
 		return linesWithBidiReordering;
 	}
 
-	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns)
+	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns, Action onFontCacheUpdate)
 	{
 		var shapedLines = new List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)>();
 		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
@@ -265,7 +270,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						FontDetails newFontDetails;
 						if (char.ConvertToUtf32(inline.Text, startInInline + i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
 						{
-							newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle) ?? inline.FontDetails;
+							newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, onFontCacheUpdate) ?? inline.FontDetails;
 						}
 						else
 						{
@@ -315,26 +320,35 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapedLines;
 	}
 
-	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle)
+	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, Action onFontCacheUpdate)
 	{
-		var symbolsFont = FontDetailsCache.GetFont(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle).details;
-		if (symbolsFont.SKFont.ContainsGlyph(codepoint))
+		if (FontDetailsCache.GetFontOrDefault(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var symbolsFont) && symbolsFont.SKFont.ContainsGlyph(codepoint))
 		{
 			return symbolsFont;
 		}
-		if (OperatingSystem.IsAndroid())
+
+		if (_fontFallbackService is not null)
 		{
-			foreach (var file in Directory.EnumerateFiles("/system/fonts"))
+			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodepoint(codepoint);
+			if (fallbackServiceTask.IsCompleted)
 			{
-				var font = FontDetailsCache.GetFont(file, fontSize, fontWeight, fontStretch, fontStyle).details;
-				if (font.SKFont.ContainsGlyph(codepoint))
+				if (fallbackServiceTask is { IsCompletedSuccessfully: true, Result: { } fallbackFontName } && FontDetailsCache.GetFontOrDefault(fallbackFontName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))
 				{
-					return font;
+					return fallbackFont;
 				}
 			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(onFontCacheUpdate);
+			}
 		}
-		var typeface = SKFontManager.Default.MatchCharacter(codepoint);
-		return typeface is not null ? FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle).details : null;
+
+		if (SKFontManager.Default.MatchCharacter(codepoint) is { } typeface)
+		{
+			return FontDetails.Create(typeface, fontSize);
+		}
+
+		return null;
 	}
 
 	private static IEnumerable<(ReadonlyInlineCopy Inline, int startInInline, int endInInline)> GroupByInline(List<BidiRun> line)
@@ -662,7 +676,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		return chunks;
 	}
 
-	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline)
+	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, Action onFontCacheUpdate)
 	{
 		using var _ = ICU.CreateBiDiAndSetPara(inline.Text, 0, inline.Text.Length, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? UBIDI_LTR : UBIDI_RTL), out var bidi);
 
@@ -683,7 +697,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				FontDetails newFontDetails;
 				if (char.ConvertToUtf32(inline.Text, i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
 				{
-					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle) ?? inline.FontDetails;
+					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, onFontCacheUpdate) ?? inline.FontDetails;
 				}
 				else
 				{
