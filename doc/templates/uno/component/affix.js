@@ -59,6 +59,7 @@ function renderAffix() {
                 if (editLink.length > 0) {
                     const editIcon = $('<i></i>').addClass('fa fa-edit');
                     editLink.prepend(editIcon);
+                    editLink.attr('target', '_blank').attr('rel', 'noopener noreferrer');
                 }
                 // Add "Send feedback" link using DOM methods to prevent XSS
                 const feedbackLink = $('<li></li>');
