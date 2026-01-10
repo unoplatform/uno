@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
-			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
+			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, zoomFactor: (float?)zoomFactor, disableAnimation: disableAnimation) ?? true;
 
 		private partial void OnLoadedPartial() { }
 		private partial void OnUnloadedPartial() { }
