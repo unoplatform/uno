@@ -268,7 +268,33 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
-					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					if (Scroller?.ZoomMode == ZoomMode.Enabled)
+					{
+						// Get mouse position relative to this presenter for zoom center point
+						var pointerPosition = e.GetCurrentPoint(this).Position;
+
+						// Calculate zoom change (positive delta = zoom in, negative = zoom out)
+						var zoomDelta = delta > 0 ? 1.1f : 0.9f; // 10% zoom per wheel tick
+						var newZoom = Math.Clamp(_zoomFactor * zoomDelta, _minZoomFactor, _maxZoomFactor);
+
+						if (Math.Abs(newZoom - _zoomFactor) > 0.001f)
+						{
+							// Adjust offsets to zoom toward cursor position
+							// When zooming around a point, the offset needs to change so the content
+							// under the cursor stays in the same position on screen
+							var zoomRatio = newZoom / _zoomFactor;
+							var newHOffset = pointerPosition.X + (HorizontalOffset - pointerPosition.X) * zoomRatio;
+							var newVOffset = pointerPosition.Y + (VerticalOffset - pointerPosition.Y) * zoomRatio;
+
+							success = Set(
+								horizontalOffset: newHOffset,
+								verticalOffset: newVOffset,
+								zoomFactor: newZoom,
+								disableAnimation: false);
+						}
+					}
+#endif
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
