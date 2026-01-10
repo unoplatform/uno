@@ -155,16 +155,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Over scroll support
 		/// <summary>
-		/// Trim excess scroll, which can be present if the content size is reduced.
+		/// Trim excess scroll, which can be present if the content size is reduced or zoom level changed.
 		/// </summary>
 		partial void TrimOverscroll(Orientation orientation)
 		{
 			if (_presenter is not null)
 			{
+				// Use scaled extent to account for zoom
 				var (contentExtent, presenterViewportSize, offset) = orientation switch
 				{
-					Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
-					_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
+					Orientation.Vertical => (ExtentHeight * ZoomFactor, ViewportHeight, VerticalOffset),
+					_ => (ExtentWidth * ZoomFactor, ViewportWidth, HorizontalOffset),
 				};
 				var viewportEnd = offset + presenterViewportSize;
 				var overscroll = contentExtent - viewportEnd;

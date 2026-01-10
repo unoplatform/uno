@@ -352,7 +352,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void Update(UIElement view, double horizontalOffset, double verticalOffset, float zoom, ScrollOptions options)
 		{
-			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
+			// Calculate centering offset when zoomed content is smaller than viewport
+			// This matches WinUI behavior where content stays centered when zoomed out
+			var scaledExtentWidth = ExtentWidth * zoom;
+			var scaledExtentHeight = ExtentHeight * zoom;
+
+			var centeringOffsetX = scaledExtentWidth < ViewportWidth
+				? (ViewportWidth - scaledExtentWidth) / 2
+				: 0;
+			var centeringOffsetY = scaledExtentHeight < ViewportHeight
+				? (ViewportHeight - scaledExtentHeight) / 2
+				: 0;
+
+			var target = new Vector2(
+				(float)(-horizontalOffset + centeringOffsetX),
+				(float)(-verticalOffset + centeringOffsetY));
 			var targetScale = new Vector3(zoom, zoom, 1);
 			var visual = view.Visual;
 
@@ -365,10 +379,22 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// We keep the animation running, making sure that we are not abruptly stopping scrolling animation
 				// due to completion of the inertia processor a bit earlier than the animation itself.
-				// But still apply zoom if needed
+				// But still apply zoom if needed (with animation if enabled)
 				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)
 				{
-					visual.Scale = targetScale;
+					if (options.DisableAnimation)
+					{
+						visual.Scale = targetScale;
+					}
+					else
+					{
+						var compositor = visual.Compositor;
+						var easing = CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10);
+						var zoomAnimation = compositor.CreateVector3KeyFrameAnimation();
+						zoomAnimation.InsertKeyFrame(1.0f, targetScale, easing);
+						zoomAnimation.Duration = TimeSpan.FromMilliseconds(300);
+						visual.StartAnimation(nameof(Visual.Scale), zoomAnimation);
+					}
 				}
 				return;
 			}

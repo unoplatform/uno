@@ -809,12 +809,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// to ensure there is no unwanted difference caused by double
 			// precision, which could then cause the scroll bars to appear
 			// for no reason.
+			// When zoomed, the effective extent is scaled by the zoom factor.
 
-			var scrollableHeight = Math.Max(Math.Round(ExtentHeight - ViewportHeight, 4), 0);
+			var scaledExtentHeight = ExtentHeight * ZoomFactor;
+			var scaledExtentWidth = ExtentWidth * ZoomFactor;
+
+			var scrollableHeight = Math.Max(Math.Round(scaledExtentHeight - ViewportHeight, 4), 0);
 
 			ScrollableHeight = scrollableHeight;
 
-			var scrollableWidth = Math.Max(Math.Round(ExtentWidth - ViewportWidth, 4), 0);
+			var scrollableWidth = Math.Max(Math.Round(scaledExtentWidth - ViewportWidth, 4), 0);
 
 			ScrollableWidth = scrollableWidth;
 
@@ -1309,6 +1313,9 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnPresenterZoomed(float zoomFactor)
 		{
 			ZoomFactor = zoomFactor;
+
+			// Recalculate scrollable dimensions with new zoom factor
+			UpdateDimensionProperties();
 
 			// Note: We should also defer the intermediate zoom changes
 			Update(isIntermediate: false);
