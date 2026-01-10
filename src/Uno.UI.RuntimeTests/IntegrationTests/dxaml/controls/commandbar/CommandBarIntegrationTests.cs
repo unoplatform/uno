@@ -255,12 +255,10 @@ namespace Windows.UI.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Func<CommandBar, Task> openFunc = async (cmdBar) => await RunOnUIThread(() => cmdBar.IsOpen = true);
-			Func<CommandBar, Task> closeFunc = (cmdBar) =>
+			Func<CommandBar, Task> closeFunc = async (cmdBar) =>
 			{
-				bool backButtonPressHandled = false;
-				TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
+				bool backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
 				VERIFY_IS_TRUE(backButtonPressHandled);
-				return Task.CompletedTask;
 			};
 
 			await ValidateOpenAndCloseWorker(openFunc, closeFunc);
@@ -4419,7 +4417,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await WindowHelper.WaitForIdle();
 
-			FlyoutHelper.OpenFlyout(commandBarFlyout, flyoutButton, FlyoutOpenMethod.Programmatic_ShowAt);
+			await FlyoutHelper.OpenFlyout(commandBarFlyout, flyoutButton, FlyoutOpenMethod.Programmatic_ShowAt);
 
 			// Since the CommandBar starts with IsOpen already true, we don't get an Opened event the first time.
 			// We'll listen for the loaded event on MenuFlyoutAppBarButton1 instead.
@@ -4505,7 +4503,7 @@ namespace Windows.UI.Tests.Enterprise
 			await commandBarClosedEvent.WaitForDefault();
 			await TestServices.WindowHelper.WaitForIdle();
 
-			FlyoutHelper.HideFlyout(commandBarFlyout);
+			await FlyoutHelper.HideFlyout(commandBarFlyout);
 		}
 
 		[TestMethod]
