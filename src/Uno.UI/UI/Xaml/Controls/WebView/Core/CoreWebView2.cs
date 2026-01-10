@@ -181,7 +181,22 @@ public partial class CoreWebView2
 		DocumentTitleChanged?.Invoke(this, null);
 	}
 
+	/// <summary>
+	/// Raises the NavigationStarting event, generating a new NavigationId internally.
+	/// Use this overload for platforms without native WebView2 SDK.
+	/// </summary>
 	internal void RaiseNavigationStarting(object? navigationData, out bool cancel)
+	{
+		var newNavigationId = (ulong)Interlocked.Increment(ref _navigationId);
+		RaiseNavigationStarting(navigationData, newNavigationId, out cancel);
+	}
+
+	/// <summary>
+	/// Raises the NavigationStarting event with a specific NavigationId.
+	/// Use this overload for platforms with native WebView2 SDK (Win32, WPF) to pass through
+	/// the native NavigationId and ensure consistency with the documented WebView2 behavior.
+	/// </summary>
+	internal void RaiseNavigationStarting(object? navigationData, ulong navigationId, out bool cancel)
 	{
 		string? uriString = null;
 		if (navigationData is Uri uri)
@@ -196,8 +211,9 @@ public partial class CoreWebView2
 			uriString = string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String);
 		}
 
-		var newNavigationId = Interlocked.Increment(ref _navigationId);
-		var args = new CoreWebView2NavigationStartingEventArgs((ulong)newNavigationId, uriString);
+		// Store the current navigation ID for use in NavigationCompleted
+		_navigationId = (long)navigationId;
+		var args = new CoreWebView2NavigationStartingEventArgs(navigationId, uriString);
 		NavigationStarting?.Invoke(this, args);
 
 		cancel = args.Cancel;
@@ -211,14 +227,28 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
+	/// <summary>
+	/// Raises the NavigationCompleted event using the internally tracked NavigationId.
+	/// Use this overload for platforms without native WebView2 SDK.
+	/// </summary>
 	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
+	{
+		RaiseNavigationCompleted((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus, shouldSetSource);
+	}
+
+	/// <summary>
+	/// Raises the NavigationCompleted event with a specific NavigationId.
+	/// Use this overload for platforms with native WebView2 SDK (Win32, WPF) to pass through
+	/// the native NavigationId and ensure consistency with the documented WebView2 behavior.
+	/// </summary>
+	internal void RaiseNavigationCompleted(ulong navigationId, Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
 	{
 		if (shouldSetSource)
 		{
 			Source = (uri ?? BlankUri).ToString();
 		}
 
-		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
+		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs(navigationId, uri, isSuccess, httpStatusCode, errorStatus));
 	}
 
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
