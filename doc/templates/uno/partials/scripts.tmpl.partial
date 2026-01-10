@@ -17,21 +17,21 @@ startOnLoad: false
 mermaid.init(undefined, ".lang-mermaid");
 </script>
 
-<!-- Algolia DocSearch -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<!-- Pagefind Search -->
+<link href="{{_rel}}pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="{{_rel}}pagefind/pagefind-ui.js"></script>
 <script>
     /**
-     * Initialize Algolia DocSearch
-     * This function initializes DocSearch for the element with id 'docsearch'.
+     * Initialize Pagefind Search
+     * This function initializes Pagefind for the element with id 'search'.
      */
-    function initializeDocSearch() {
-        console.log("initializeDocSearch called");
+    function initializePagefind() {
+        console.log("initializePagefind called");
         try {
-            const searchBox = document.getElementById("docsearch");
+            const searchBox = document.getElementById("search");
 
             if (searchBox) {
-                console.log("Found 'docsearch' element");
+                console.log("Found 'search' element");
                 // Check if the search box is already initialized
                 if (searchBox.children.length > 0) {
                     console.log("Search box already initialized.");
@@ -41,16 +41,15 @@ mermaid.init(undefined, ".lang-mermaid");
                         console.log("MutationObserver disconnected.");
                     }
                 } else {
-                    // Initialize DocSearch if not already initialized
-                    console.log("Initializing DocSearch...");
-                    docsearch({
-                        container: '#docsearch',
-                        appId: 'PHB9D8WS99',
-                        indexName: 'platform',
-                        apiKey: '7877394996f96cde1a9b795dce3f7787',
+                    // Initialize Pagefind if not already initialized
+                    console.log("Initializing Pagefind...");
+                    new PagefindUI({
+                        element: '#search',
+                        showSubResults: true,
+                        showImages: false,
                         placeholder: 'Search Docs...'
                     });
-                    console.log("DocSearch initialized.");
+                    console.log("Pagefind initialized.");
                     // Disconnect the observer after initialization
                     if (observer) {
                         observer.disconnect();
@@ -58,28 +57,28 @@ mermaid.init(undefined, ".lang-mermaid");
                     }
                 }
             } else {
-                console.warn("'docsearch' element not found.");
+                console.warn("'search' element not found.");
             }
         } catch (error) {
-            console.error("Error initializing DocSearch:", error);
+            console.error("Error initializing Pagefind:", error);
         }
     }
 
     /**
      * Set up MutationObserver to watch for additions to the DOM
      * This function sets up a MutationObserver to monitor the entire document for added nodes.
-     * If the 'docsearch' element is added, it will call initializeDocSearch().
+     * If the 'search' element is added, it will call initializePagefind().
      */
     let observer;
-    function observeDocSearch() {
+    function observePagefind() {
         observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.addedNodes.length) {
                     mutation.addedNodes.forEach((node) => {
-                        // Check if the added node is the 'docsearch' element
-                        if (node.id === 'docsearch') {
-                            console.log("'docsearch' element added to DOM");
-                            initializeDocSearch();
+                        // Check if the added node is the 'search' element
+                        if (node.id === 'search') {
+                            console.log("'search' element added to DOM");
+                            initializePagefind();
                         }
                     });
                 }
@@ -92,38 +91,59 @@ mermaid.init(undefined, ".lang-mermaid");
             subtree: true
         });
 
-        console.log("MutationObserver set up to observe 'docsearch' element");
+        console.log("MutationObserver set up to observe 'search' element");
     }
 
     /**
      * Retry initialization using requestAnimationFrame
-     * This function tries to initialize DocSearch using requestAnimationFrame for better timing handling for some browsers like Firefox.
+     * This function tries to initialize Pagefind using requestAnimationFrame for better timing handling for some browsers like Firefox.
      */
     function retryInitialization() {
-        if (!document.getElementById('docsearch')) {
-            console.log("Retrying DocSearch initialization using requestAnimationFrame");
+        if (!document.getElementById('search')) {
+            console.log("Retrying Pagefind initialization using requestAnimationFrame");
             requestAnimationFrame(retryInitialization);
         } else {
-            initializeDocSearch();
+            initializePagefind();
         }
     }
 
     /**
      * Load event handler
      * This function handles the load event to ensure the entire page is fully loaded.
-     * It then checks if the 'docsearch' element is present and initializes DocSearch.
-     * If the element is not present, it sets up the MutationObserver and starts the retry mechanism.
+     * It then checks if the 'search' element is present and initializes Pagefind.
+     * If the element is not present, it creates it in the .sidefilter div.
      */
     window.addEventListener('load', () => {
         console.log("Load event fired");
 
-        // Check if the 'docsearch' element already exists in the DOM
-        if (document.getElementById('docsearch')) {
-            console.log("'docsearch' element already present in DOM");
-            initializeDocSearch();
+        // Ensure the search container exists and inject the search div
+        // We target the header/breadcrumb area instead of .sidefilter
+        const sdkInfo = document.getElementById('sdk-version-info');
+        const searchTarget = sdkInfo ? sdkInfo.parentElement : document.querySelector('header');
+
+        if (searchTarget && !document.getElementById('search')) {
+            console.log("Injecting search div into header area");
+            
+            // Create and inject the search div
+            const searchDiv = document.createElement('div');
+            searchDiv.id = 'search';
+            
+            if (sdkInfo) {
+                // Insert before the SDK info badge so it sits to its left (visually, with flex/absolute)
+                searchTarget.insertBefore(searchDiv, sdkInfo);
+            } else {
+                searchTarget.appendChild(searchDiv);
+            }
+            console.log("Search div injected");
+        }
+
+        // Check if the 'search' element already exists in the DOM
+        if (document.getElementById('search')) {
+            console.log("'search' element already present in DOM");
+            initializePagefind();
         } else {
-            console.log("'docsearch' element not present in DOM, setting up MutationObserver");
-            observeDocSearch();
+            console.log("'search' element not present in DOM, setting up MutationObserver");
+            observePagefind();
             // Start retrying using requestAnimationFrame
             retryInitialization();
         }
