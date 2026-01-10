@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<Compile Include="..\Uno.UI\UI\Xaml\ApplicationActivity.BackPressed.Android.cs" Link="UI\Xaml\ApplicationActivity.BackPressed.Android.cs" />
 		<Compile Include="..\Uno.UI\ActivityHelper.Android.cs" Link="Helpers\ActivityHelper.Android.cs" />
 		<Compile Include="..\Uno.UI\Extensions\PermissionsHelper.Android.cs" Link="Helpers\PermissionsHelper.Android.cs" />
 		<Compile Include="..\Uno.UI\GlobalUsings.cs" Link="Helpers\GlobalUsings.cs" />
