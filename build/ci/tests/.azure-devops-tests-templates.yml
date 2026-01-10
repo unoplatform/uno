@@ -277,7 +277,7 @@ jobs:
     displayName: Install .NET 10 SDK
     inputs:
       packageType: 'sdk'
-      version: '10.0.100'
+      version: '10.0.101'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml

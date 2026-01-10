@@ -1,11 +1,14 @@
 {
 	"sdk": {
-		"version": "10.0.100",
+		"version": "10.0.101",
 		"allowPrerelease": true,
 		"rollForward": "latestMinor"
 	},
+	"test": {
+		"runner": "Microsoft.Testing.Platform"
+	},
 	"tools": {
-		"dotnet": "10.0.100"
+		"dotnet": "10.0.101"
 	},
 	"msbuild-sdks": {
 		"MSBuild.Sdk.Extras": "3.0.44",
