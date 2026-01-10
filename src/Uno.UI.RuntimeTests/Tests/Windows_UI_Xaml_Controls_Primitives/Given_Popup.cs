@@ -5,7 +5,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
@@ -112,6 +114,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			// Should not throw
 			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task VerifyBackButtonClosesLightDismissPopup()
+		{
+			Popup popup1 = null;
+
+			var popupOpenedEvent = new Event();
+			var popupClosedEvent = new Event();
+
+			var openedRegistration = CreateSafeEventRegistration<Popup, EventHandler<object>>("Opened");
+			var closedRegistration = CreateSafeEventRegistration<Popup, EventHandler<object>>("Closed");
+
+			await RunOnUIThread(() =>
+			{
+				var rootPanel = (StackPanel)(XamlReader.Load(
+					"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' Width='400' Height='400' >" +
+					"  <Popup x:Name='popup1' IsLightDismissEnabled='True' >" +
+					"    <Border Background='Red' Width='100' Height='100' />" +
+					"  </Popup>" +
+					"</StackPanel>"));
+
+				TestServices.WindowHelper.WindowContent = rootPanel;
+
+				popup1 = (Popup)(rootPanel.FindName("popup1"));
+
+				openedRegistration.Attach(popup1, (sender, e) =>
+				{
+					popupOpenedEvent.Set();
+				});
+
+				closedRegistration.Attach(popup1, (sender, e) =>
+				{
+					popupClosedEvent.Set();
+				});
+
+				popup1.IsOpen = true;
+			});
+
+			await popupOpenedEvent.WaitForDefault();
+
+			LOG_OUTPUT("Close the Light Dismiss enabled Popup using the Back button.");
+			bool backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+			VERIFY_IS_TRUE(backButtonPressHandled);
+			await popupClosedEvent.WaitForDefault();
+
+			LOG_OUTPUT("After closing a Popup, further back button presses should not get handled");
+			backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+			VERIFY_IS_FALSE(backButtonPressHandled);
+
+			await RunOnUIThread(() =>
+			{
+				popup1.IsLightDismissEnabled = false;
+				popup1.IsOpen = true;
+			});
+			await popupOpenedEvent.WaitForDefault();
+
+			LOG_OUTPUT("A Back button press should not dismiss a Popup that is not Light Dismiss enabled");
+			backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+			VERIFY_IS_FALSE(backButtonPressHandled);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread(() =>
+			{
+				VERIFY_IS_TRUE(popup1.IsOpen);
+			});
 		}
 
 		[TestMethod]
