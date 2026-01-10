@@ -230,6 +230,12 @@ public
 		RaiseNavigationCompleted(destinationUrl, true, 200, CoreWebView2WebErrorStatus.Unknown);
 		_lastNavigationData = destinationUrl;
 		_isNavigationCompleted = false;
+
+#if __IOS__ || __MACOS__
+		// Inject the JavaScript interceptor for fetch/XMLHttpRequest header injection
+		// This is done after navigation completes so the DOM is available
+		InjectWebResourceInterceptor();
+#endif
 	}
 
 	private bool IsAnchorNavigation(string url) => WebViewUtils.IsAnchorNavigation(_lastNavigationUrl, url);

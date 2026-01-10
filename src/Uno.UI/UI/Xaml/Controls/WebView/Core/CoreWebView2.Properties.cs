@@ -76,4 +76,10 @@ public partial class CoreWebView2
 	public event TypedEventHandler<CoreWebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
 
 	internal event TypedEventHandler<CoreWebView2, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
+
+
+	/// <summary>
+	/// Occurs when an HTTP request is made in the WebView for a web resource.
+	/// </summary>
+	public event TypedEventHandler<CoreWebView2, CoreWebView2WebResourceRequestedEventArgs> WebResourceRequested;
 }
