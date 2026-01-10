@@ -119,9 +119,10 @@
             &__drawer {
                 position: absolute !important;
                 top: 45px !important; // Just below the input
-                left: auto !important;
-                right: -50px !important; // Center align with box approx
-                width: 400px !important; // Wider than input for better reading
+                left: 50% !important;
+                right: auto !important;
+                transform: translateX(-50%);
+                width: 33vw !important; // Wider than input for better reading
                 background: white !important;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
                 max-height: 80vh !important;
