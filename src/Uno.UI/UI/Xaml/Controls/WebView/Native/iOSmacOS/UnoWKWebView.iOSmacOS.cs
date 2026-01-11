@@ -36,7 +36,7 @@ internal
 #else
 public
 #endif
-	partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
+	partial class UnoWKWebView : WKWebView, INativeWebView, INativeWebViewCookieManager, IWKScriptMessageHandler
 {
 	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
@@ -988,5 +988,171 @@ public
 			_previousTitle = currentTitle;
 			_coreWebView!.OnDocumentTitleChanged();
 		}
+	}
+
+	// Cookie Management Implementation
+	async Task<IReadOnlyList<CoreWebView2Cookie>> INativeWebViewCookieManager.GetCookiesAsync(string uri)
+	{
+		var cookies = new List<CoreWebView2Cookie>();
+		var cookieStore = Configuration.WebsiteDataStore.HttpCookieStore;
+		
+		var allCookies = await cookieStore.GetAllCookiesAsync();
+		var parsedUri = new Uri(uri);
+		
+		foreach (var nsCookie in allCookies)
+		{
+			// Filter cookies that match the URI
+			if (CookieMatchesUri(nsCookie, parsedUri))
+			{
+				var cookie = ConvertFromNSHttpCookie(nsCookie);
+				cookies.Add(cookie);
+			}
+		}
+
+		return cookies;
+	}
+
+	void INativeWebViewCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
+	{
+		var nsCookie = ConvertToNSHttpCookie(cookie);
+		Configuration.WebsiteDataStore.HttpCookieStore.SetCookie(nsCookie, null);
+	}
+
+	void INativeWebViewCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
+	{
+		var nsCookie = ConvertToNSHttpCookie(cookie);
+		Configuration.WebsiteDataStore.HttpCookieStore.DeleteCookie(nsCookie, null);
+	}
+
+	async void INativeWebViewCookieManager.DeleteCookies(string name, string uri)
+	{
+		var cookieStore = Configuration.WebsiteDataStore.HttpCookieStore;
+		var allCookies = await cookieStore.GetAllCookiesAsync();
+		var parsedUri = new Uri(uri);
+
+		foreach (var nsCookie in allCookies)
+		{
+			if (nsCookie.Name == name && CookieMatchesUri(nsCookie, parsedUri))
+			{
+				cookieStore.DeleteCookie(nsCookie, null);
+			}
+		}
+	}
+
+	async void INativeWebViewCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
+	{
+		var cookieStore = Configuration.WebsiteDataStore.HttpCookieStore;
+		var allCookies = await cookieStore.GetAllCookiesAsync();
+
+		foreach (var nsCookie in allCookies)
+		{
+			if (nsCookie.Name == name && 
+				nsCookie.Domain == domain && 
+				nsCookie.Path == path)
+			{
+				cookieStore.DeleteCookie(nsCookie, null);
+			}
+		}
+	}
+
+	async void INativeWebViewCookieManager.DeleteAllCookies()
+	{
+		var cookieStore = Configuration.WebsiteDataStore.HttpCookieStore;
+		var allCookies = await cookieStore.GetAllCookiesAsync();
+
+		foreach (var cookie in allCookies)
+		{
+			cookieStore.DeleteCookie(cookie, null);
+		}
+	}
+
+	private bool CookieMatchesUri(NSHttpCookie cookie, Uri uri)
+	{
+		// Check if the cookie's domain matches the URI
+		var cookieDomain = cookie.Domain;
+		var uriHost = uri.Host;
+
+		// Handle domain matching (cookies with .domain.com match subdomain.domain.com)
+		bool domainMatches = uriHost.Equals(cookieDomain, StringComparison.OrdinalIgnoreCase) ||
+			(cookieDomain.StartsWith(".") && uriHost.EndsWith(cookieDomain.Substring(1), StringComparison.OrdinalIgnoreCase));
+
+		// Check if the cookie's path matches the URI path
+		bool pathMatches = uri.AbsolutePath.StartsWith(cookie.Path, StringComparison.Ordinal);
+
+		return domainMatches && pathMatches;
+	}
+
+	private CoreWebView2Cookie ConvertFromNSHttpCookie(NSHttpCookie nsCookie)
+	{
+		var cookie = new CoreWebView2Cookie(
+			nsCookie.Name,
+			nsCookie.Value,
+			nsCookie.Domain,
+			nsCookie.Path)
+		{
+			IsHttpOnly = nsCookie.IsHttpOnly,
+			IsSecure = nsCookie.IsSecure
+		};
+
+		if (nsCookie.ExpiresDate != null)
+		{
+			var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			var expiresDate = ((DateTime)nsCookie.ExpiresDate).ToUniversalTime();
+			cookie.Expires = (expiresDate - epoch).TotalSeconds;
+		}
+
+		// Map SameSite policy if available
+		if (Foundation.NSProcessInfo.ProcessInfo.IsOperatingSystemAtLeastVersion(new Foundation.NSOperatingSystemVersion(13, 0, 0)))
+		{
+			cookie.SameSite = nsCookie.SameSitePolicy switch
+			{
+				NSHttpCookieStringPolicy.SameSiteStrict => CoreWebView2CookieSameSiteKind.Strict,
+				NSHttpCookieStringPolicy.SameSiteLax => CoreWebView2CookieSameSiteKind.Lax,
+				_ => CoreWebView2CookieSameSiteKind.None
+			};
+		}
+
+		return cookie;
+	}
+
+	private NSHttpCookie ConvertToNSHttpCookie(CoreWebView2Cookie cookie)
+	{
+		var properties = new NSMutableDictionary<NSString, NSObject>
+		{
+			[NSHttpCookie.KeyName] = new NSString(cookie.Name),
+			[NSHttpCookie.KeyValue] = new NSString(cookie.Value),
+			[NSHttpCookie.KeyDomain] = new NSString(cookie.Domain),
+			[NSHttpCookie.KeyPath] = new NSString(cookie.Path)
+		};
+
+		if (!cookie.IsSession)
+		{
+			var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			var expiresDate = epoch.AddSeconds(cookie.Expires);
+			properties[NSHttpCookie.KeyExpires] = NSDate.FromTimeIntervalSince1970((expiresDate - epoch).TotalSeconds);
+		}
+
+		if (cookie.IsSecure)
+		{
+			properties[NSHttpCookie.KeySecure] = new NSString("TRUE");
+		}
+
+		if (cookie.IsHttpOnly)
+		{
+			properties[NSHttpCookie.KeyHttpOnly] = new NSString("TRUE");
+		}
+
+		if (Foundation.NSProcessInfo.ProcessInfo.IsOperatingSystemAtLeastVersion(new Foundation.NSOperatingSystemVersion(13, 0, 0)))
+		{
+			var sameSiteValue = cookie.SameSite switch
+			{
+				CoreWebView2CookieSameSiteKind.Strict => NSHttpCookieStringPolicy.SameSiteStrict,
+				CoreWebView2CookieSameSiteKind.Lax => NSHttpCookieStringPolicy.SameSiteLax,
+				_ => NSHttpCookieStringPolicy.SameSiteNone
+			};
+			properties[NSHttpCookie.KeySameSitePolicy] = new NSString(sameSiteValue);
+		}
+
+		return NSHttpCookie.CookieFromProperties(properties);
 	}
 }
