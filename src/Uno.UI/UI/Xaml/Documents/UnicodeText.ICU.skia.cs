@@ -89,23 +89,6 @@ internal readonly partial struct UnicodeText
 			}
 			else if (OperatingSystem.IsBrowser())
 			{
-				var stream = AppDomain.CurrentDomain
-					.GetAssemblies()
-					.Select(a => (a, a.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture))))
-					.Where(t => t.Item2 != null)
-					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
-					.First()!;
-				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
-				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
-				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
-				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
-				var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)data);
-				var errorString = Marshal.PtrToStringUTF8(errorPtr);
-				if (errorString is not null)
-				{
-					throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
-				}
-
 				// ICU is included in the unoicu.a static library without version postfixes, so the version doesn't matter
 				_icuVersion = 1;
 				libicuuc = IntPtr.Zero;
@@ -122,6 +105,26 @@ internal readonly partial struct UnicodeText
 			GetMethod<u_versionToString>()((IntPtr)(&versionInfo), ptr);
 			typeof(ICU).LogDebug()?.Debug($"Found ICU version {Marshal.PtrToStringAnsi(ptr)}.");
 			Marshal.FreeHGlobal(ptr);
+
+			if (OperatingSystem.IsBrowser() || OperatingSystem.IsMacOS() || OperatingSystem.IsWindows())
+			{
+				var stream = AppDomain.CurrentDomain
+					.GetAssemblies()
+					.Select(a => (a, a.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture))))
+					.Where(t => t.Item2 != null)
+					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
+					.First()!;
+				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
+				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
+				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
+				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
+				GetMethod<udata_setCommonData>()((IntPtr)data, out var errorCode);
+				if (errorCode > 0)
+				{
+					var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(errorCode));
+					throw new InvalidOperationException($"{nameof(udata_setCommonData)} failed: {errorString}");
+				}
+			}
 		}
 
 		public static T GetMethod<T>()
@@ -222,6 +225,12 @@ internal readonly partial struct UnicodeText
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void u_versionToString(IntPtr versionArray, IntPtr versionString);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void udata_setCommonData(IntPtr bytes, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate IntPtr u_errorName(int code);
+
 		[StructLayout(LayoutKind.Sequential)]
 		private struct UVersionInfo
 		{
@@ -233,12 +242,6 @@ internal readonly partial struct UnicodeText
 
 		public class BrowserICUSymbols
 		{
-			// These methods are supplied by our own unoicu.a static library and includes support for the BreakIterator
-			// API. The dotnet runtime version of ICU complains about mising resources when calling ubrk_open even
-			// when udata_setCommonData is called.
-			[DllImport("unoicu")]
-			public static extern IntPtr uno_udata_setCommonData(IntPtr bytes);
-
 			[DllImport("unoicu", CharSet = CharSet.Unicode)]
 			public static extern IntPtr init_line_breaker(string bytes);
 
@@ -248,6 +251,10 @@ internal readonly partial struct UnicodeText
 			// These are methods from ICU that are redeclared under the uno_ prefix for WASM linking purposes.
 			// These methods are also present in the dotnet runtime ICU build (through __Internal), except that
 			// the symbols are not available on NativeAOT.
+
+			[DllImport("unoicu")]
+			static extern void uno_udata_setCommonData(IntPtr bytes, out int errorCode);
+
 			[DllImport("unoicu")]
 			static extern IntPtr uno_ubidi_open();
 
@@ -271,10 +278,16 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("unoicu")]
 			static extern void uno_u_versionToString(IntPtr versionArray, IntPtr versionString);
+
+			[DllImport("unoicu")]
+			static extern IntPtr uno_u_errorName(int code);
 		}
 
 		private static class IOSICUSymbols
 		{
+			[DllImport("__Internal")]
+			static extern void udata_setCommonData_77(IntPtr bytes, out int errorCode);
+
 			[DllImport("__Internal")]
 			static extern IntPtr ubidi_open_77();
 
@@ -310,6 +323,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern void u_versionToString_77(IntPtr versionArray, IntPtr versionString);
+
+			[DllImport("__Internal")]
+			static extern IntPtr u_errorName_77(int code);
 		}
 	}
 }
