@@ -246,10 +246,12 @@ The `AddWebResourceRequestedFilter` method accepts three parameters:
 #### iOS/macOS (WKWebView)
 
 The implementation uses two mechanisms:
+
 1. **Navigation interception**: Fires `WebResourceRequested` for main document navigation (read-only headers)
 2. **JavaScript injection**: Automatically injects a script that overrides `window.fetch()` and `XMLHttpRequest.prototype` to apply custom headers to AJAX requests
 
 This means you can inject authentication tokens into API calls made via JavaScript:
+
 ```csharp
 webView.CoreWebView2.WebResourceRequested += (sender, args) =>
 {
@@ -261,6 +263,7 @@ webView.CoreWebView2.WebResourceRequested += (sender, args) =>
 #### Android
 
 When headers are modified, the resource is re-fetched using `HttpClient`. The implementation includes:
+
 - **Cookie synchronization**: Session cookies from the WebView are automatically included in re-fetched requests
 - **Set-Cookie handling**: Response cookies are synchronized back to the WebView's `CookieManager`
 
@@ -269,10 +272,10 @@ This ensures authenticated sessions work correctly when using `WebResourceReques
 #### WebAssembly
 
 For HTML element requests that cannot be intercepted:
+
 - Use Service Workers for more comprehensive request interception
 - Proxy requests through your server
 - Use JavaScript-based loading for resources that need custom headers
-
 
 ## WinAppSDK Specifics
 
