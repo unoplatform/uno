@@ -772,4 +772,85 @@ public class Given_Binding
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestBindingOnControlWhenExtensionTypeExistsInSameNamespace()
+	{
+		// Reproduces: https://github.com/unoplatform/uno/issues/18983
+		// When a control (e.g., FluentIcon) has a corresponding MarkupExtension (e.g., FluentIconExtension)
+		// in the same namespace, binding code should still be generated for the control.
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d">
+
+				<StackPanel>
+					<TextBlock Text="{x:Bind Icon}" />
+					<local:MyControl MyProperty="StaticValue" />
+					<local:MyControl MyProperty="{x:Bind Icon}" />
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Markup;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+
+							public string Icon => "TestIcon";
+						}
+
+						// A custom control with a dependency property
+						public partial class MyControl : Control
+						{
+							public string MyProperty
+							{
+								get { return (string)GetValue(MyPropertyProperty); }
+								set { SetValue(MyPropertyProperty, value); }
+							}
+
+							public static readonly DependencyProperty MyPropertyProperty =
+								DependencyProperty.Register(nameof(MyProperty), typeof(string), typeof(MyControl), new PropertyMetadata("Default"));
+						}
+
+						// A markup extension with the same base name + "Extension"
+						// This should NOT interfere with binding generation on MyControl
+						[MarkupExtensionReturnType(ReturnType = typeof(MyControl))]
+						public partial class MyControlExtension : MarkupExtension
+						{
+							public string Value { get; set; }
+
+							protected override object ProvideValue(IXamlServiceProvider serviceProvider)
+							{
+								return new MyControl { MyProperty = Value };
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
