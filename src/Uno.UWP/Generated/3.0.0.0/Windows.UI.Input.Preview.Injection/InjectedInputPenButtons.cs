@@ -3,22 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-	[global::System.FlagsAttribute]
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum InjectedInputPenButtons : uint
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		None = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Barrel = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Inverted = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Eraser = 4,
-#endif
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenButtons.None
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenButtons.Barrel
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenButtons.Inverted
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenButtons.Eraser
 	}
 #endif
 }
