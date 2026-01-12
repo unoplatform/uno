@@ -228,7 +228,7 @@
                 background-color: $blue !important;
                 color: white !important;
                 border: none !important;
-                padding: 10px 20px !important;
+                padding: 10px 10px !important;
                 border-radius: 0 !important;
                 font-size: 14px !important;
                 font-weight: 400 !important;
@@ -248,6 +248,60 @@
                     box-shadow: 0 2px 4px rgba(21, 155, 255, 0.2) !important;
                 }
             }
+        }
+    }
+
+    // Search history pills
+    .search-history-pills {
+        padding: 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        background-color: rgba(21, 155, 255, 0.02);
+        max-width: 25%;
+        overflow: hidden;
+    }
+    
+    .search-history-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: $gray;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+    
+    .search-history-pills-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        max-width: 100%;
+    }
+    
+    .search-history-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        background-color: rgba(21, 155, 255, 0.1);
+        color: $blue;
+        border: 1px solid rgba(21, 155, 255, 0.3);
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex-shrink: 0;
+        
+        &:hover {
+            background-color: rgba(21, 155, 255, 0.2);
+            border-color: rgba(21, 155, 255, 0.5);
+            transform: translateY(-1px);
+        }
+        
+        &:active {
+            transform: translateY(0);
         }
     }
 
