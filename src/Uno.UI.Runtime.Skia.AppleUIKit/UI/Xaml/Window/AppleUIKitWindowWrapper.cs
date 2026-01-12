@@ -49,10 +49,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
-		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
-		// otherwise, a black screen may appear. 
-		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
-
 		_inputPane = InputPane.GetForCurrentView();
 
 #if !__TVOS__
