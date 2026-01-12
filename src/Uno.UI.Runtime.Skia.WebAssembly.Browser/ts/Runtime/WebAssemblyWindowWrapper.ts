@@ -49,7 +49,14 @@ namespace Uno.UI.Runtime.Skia {
 
 			await Accessibility.setup();
 
-			window.addEventListener("resize", x => this.resize());
+			// Use visualViewport events when available (for soft keyboard support on mobile)
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener("resize", x => this.resize());
+				window.visualViewport.addEventListener("scroll", x => this.resize());
+			} else {
+				// Fallback for browsers without visualViewport API
+				window.addEventListener("resize", x => this.resize());
+			}
 
 			window.addEventListener("contextmenu", x => {
 				x.preventDefault();
@@ -103,8 +110,22 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private resize() {
-			var rect = document.documentElement.getBoundingClientRect();
-			this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
+			// Use visualViewport when available (for mobile soft keyboard support)
+			// visualViewport gives us the actual visible area, excluding soft keyboard
+			let width: number;
+			let height: number;
+
+			if (window.visualViewport) {
+				width = window.visualViewport.width;
+				height = window.visualViewport.height;
+			} else {
+				// Fallback for browsers without visualViewport API
+				var rect = document.documentElement.getBoundingClientRect();
+				width = rect.width;
+				height = rect.height;
+			}
+
+			this.onResize(this.owner, width, height, globalThis.devicePixelRatio);
 		}
 
 		public static setCursor(cssCursor: string) {
