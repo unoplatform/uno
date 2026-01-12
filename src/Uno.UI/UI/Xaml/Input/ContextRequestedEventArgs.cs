@@ -1,4 +1,5 @@
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Input;
@@ -44,17 +45,37 @@ public partial class ContextRequestedEventArgs : RoutedEventArgs, IHandleableRou
 			return false;
 		}
 
-		if (relativeTo != null)
+		var targetElement = relativeTo;
+
+		// WinUI: For Popup not in the live tree, use its child since Popup has no visuals of its own
+		if (targetElement is Popup popup && !targetElement.IsInLiveTree)
 		{
-			var transform = relativeTo.TransformToVisual(null);
+			targetElement = popup.Child;
+		}
+
+		// WinUI: Return (0, 0) for inactive elements (not in visual tree)
+		if (targetElement != null && !targetElement.IsInLiveTree)
+		{
+			point = default;
+			return true;
+		}
+
+		if (targetElement != null)
+		{
+			var transform = targetElement.TransformToVisual(null);
 			var inverse = transform.Inverse;
 			if (inverse != null)
 			{
 				point = inverse.TransformPoint(_globalPoint);
 				return true;
 			}
+
+			// Transform failed - return (0, 0) per WinUI behavior
+			point = default;
+			return true;
 		}
 
+		// relativeTo is null - return global point
 		point = _globalPoint;
 		return true;
 	}
