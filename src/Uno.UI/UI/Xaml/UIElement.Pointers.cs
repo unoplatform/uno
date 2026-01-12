@@ -26,12 +26,8 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-
-#if HAS_UNO_WINUI
+using MuxPointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -447,9 +443,9 @@ namespace Microsoft.UI.Xaml
 			// Raise ContextRequested for mouse/pen input after RightTapped.
 			// For touch input, ContextRequested is raised via Holding gesture instead.
 			// This matches WinUI behavior where right-click triggers context menu.
-			var deviceType = (int)args.PointerDeviceType;
-			if (deviceType == (int)PointerDeviceType.Mouse ||
-				deviceType == (int)PointerDeviceType.Pen)
+			var deviceType = args.PointerDeviceType;
+			if (deviceType == MuxPointerDeviceType.Mouse ||
+				deviceType == MuxPointerDeviceType.Pen)
 			{
 				var contentRoot = VisualTree.GetContentRootForElement(src);
 				contentRoot?.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
@@ -468,7 +464,7 @@ namespace Microsoft.UI.Xaml
 
 			// Handle ContextRequested/ContextCanceled for touch input.
 			// This matches WinUI behavior where touch-and-hold triggers context menu.
-			if ((int)args.PointerDeviceType == (int)PointerDeviceType.Touch)
+			if (args.PointerDeviceType == MuxPointerDeviceType.Touch)
 			{
 				var contentRoot = VisualTree.GetContentRootForElement(src);
 				if (contentRoot != null)
