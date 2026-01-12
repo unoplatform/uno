@@ -49,10 +49,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/AppleUIKitWindowWrapper.cs
 		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
 		// otherwise, a black screen may appear. 
 		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
 
+=======
+>>>>>>> 008d9e15 (fix: Remove redundant splash screen call from AppleUIKitWindowWrapper constructor):src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/AppleUIKitWindowWrapper.cs
 		_inputPane = InputPane.GetForCurrentView();
 
 #if !__TVOS__
@@ -81,8 +84,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #endif
 
 		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
-		// otherwise, a black screen may appear. 
-		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+		// otherwise, a black screen may appear.
+		//
+		// Skip the extended-splash transition when a secondary ALC is being hosted
+		// (Window.ContentHostOverride != null). TryCreateExtendedSplashScreen calls
+		// UIWindow.MakeKeyAndVisible eagerly — a secondary ALC window created via
+		// `new Window()` would otherwise immediately cover the host's UIWindow.
+		// ALC-mode windows never reach ShowCore because Window.Activate routes to
+		// ActivateAlcWindow once _alcState is set.
+		if (Window.ContentHostOverride is null)
+		{
+			NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+		}
 
 		ObserveOrientationAndSize();
 
