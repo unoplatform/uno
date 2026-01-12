@@ -16,10 +16,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	public class WatchHotReloadService
 	{
-		private Func<Solution, CancellationToken, Task>? _startSessionAsync;
-		private Func<Solution, CancellationToken, Task<ITuple>>? _emitSolutionUpdateAsync;
-		private Action? _endSession;
-		private object? _targetInstance;
+		private readonly Func<Solution, CancellationToken, Task>? _startSessionAsync;
+		private readonly Func<Solution, CancellationToken, Task<ITuple>>? _emitSolutionUpdateAsync;
+		private readonly Action? _endSession;
+		private readonly object? _targetInstance;
 
 		public readonly record struct Update
 		{

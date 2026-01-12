@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Composition.Hosting;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Elfie.Model.Tree;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging;
@@ -78,8 +80,30 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			};
 
 			var currentSolution = workspace.AddSolution(data.Solution.GetInfo(analyzerLoader));
-			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
+			
 
+			//// Warm up the compilation. This would help make the deltas for first edit appear much more quickly
+			//foreach (var project in currentSolution.Projects)
+			//{
+			//	var compilation = await project.GetCompilationAsync(ct);
+			//	await using var dll = File.Create(project.OutputFilePath!);
+			//	await using var pdb = File.Create(Path.ChangeExtension(project.OutputFilePath!, ".pdb"));
+			//	var result = compilation!.Emit(peStream: dll, pdbStream: pdb);
+			//	result.ToString();
+			//}
+
+			//workspace = new AdhocWorkspace();
+			//analyzerLoader = workspace.Services.GetRequiredService<IAnalyzerService>().GetLoader();
+			//workspace.WorkspaceFailed += (_sender, diag) =>
+			//{
+			//	// In some cases, load failures may be incorrectly reported such as this one:
+			//	// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
+			//	// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
+			//	reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
+			//};
+
+			//currentSolution = workspace.AddSolution(data.Solution.GetInfo(analyzerLoader));
+			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 			await hotReloadService.StartSessionAsync(currentSolution, ct);
 
 			// Read the documents to memory

@@ -37,6 +37,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
+		private readonly CancellationTokenSource _ct = new();
 		private readonly IRemoteControlServer _remoteControlServer;
 		private readonly ITelemetry _telemetry;
 
@@ -81,11 +82,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				case UpdateFileRequest.Name:
 					await ProcessUpdateFile(frame.GetContent<UpdateFileRequest>());
 					break;
-				case DumpWorkspaceRequest.Name:
-					await ProcessDumpWorkspace(frame.GetContent<DumpWorkspaceRequest>());
+				case PackWorkspaceRequest.Name:
+					await ProcessPackWorkspaceAsync(frame.GetContent<PackWorkspaceRequest>(), _ct.Token);
 					break;
-				case "bla":
-					await DoBlaBla();
+				case LoadWorkspaceRequest.Name:
+					await ProcessLoadWorkspaceAsync(frame.GetContent<LoadWorkspaceRequest>(), _ct.Token);
 					break;
 			}
 		}
@@ -831,78 +832,62 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
-		private async Task ProcessDumpWorkspace(DumpWorkspaceRequest req)
+		private async Task ProcessPackWorkspaceAsync(PackWorkspaceRequest req, CancellationToken ct)
 		{
 			try
 			{
 				if (await GetWorkspaceAsync() is { } workspace)
 				{
-					var targetFile = req.TargetFile ?? Path.Combine(Path.GetTempPath(), $"hotreload-workspace-dump-{req.RequestId}.json");
-					await Dump(workspace.CurrentSolution, targetFile);
-					await _remoteControlServer.SendFrame(new DumpWorkspaceResponse(req.RequestId, targetFile, null));
+					var packagePath = await WorkspacePackage.Create(workspace.CurrentSolution, req.TargetFile, true, ct);
+					await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, packagePath, null));
 				}
 				else
 				{
-					await _remoteControlServer.SendFrame(new DumpWorkspaceResponse(req.RequestId, null, Error: "Hot-reload workspace not initialized"));
+					await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: "Hot-reload workspace not initialized"));
 				}
 			}
 			catch (Exception ex)
 			{
-				await _remoteControlServer.SendFrame(new DumpWorkspaceResponse(req.RequestId, null, Error: $"Dumped failed\r\n{ex}"));
+				await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: $"Pack failed\r\n{ex}"));
 			}
 		}
 
-		private async Task DoBlaBla(string? packagePath = null)
+		private async Task ProcessLoadWorkspaceAsync(LoadWorkspaceRequest req, CancellationToken ct)
 		{
-			var ct = _workspace!.Value.Ct;
+			try
+			{
+				if (_configureServer is null)
+				{
+					throw new InvalidOperationException("Server not configured yet");
+				}
 
-			packagePath ??= $@"C:\Tmp\workspace_dump.zip";
+				// Abort current workspace
+				await (_workspace?.Ct.CancelAsync() ?? Task.CompletedTask);
 
-			var properties = GetWorkspaceProperties(_configureServer!, out var outputPath, out var intermediateOutputPath, out _, out _);
-			var data = await WorkspacePackage.Extract(packagePath, packagePath[..^Path.GetExtension(packagePath).Length], true, ct.Token);
+				var manifest = await WorkspacePackage.Extract(req.PackageFile, req.WorkingDir, true, ct);
+				var workspaceCt = new CancellationTokenSource();
+				var workspace = await CreateAdHoc(_configureServer, manifest, ct);
+				workspaceCt.Token.Register(() => workspace.Dispose());
 
-			var (workspace, hotReloadService) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
-				data,
-				_reporter,
-				_configureServer!.MetadataUpdateCapabilities,
-				properties,
-				ct.Token);
+				var fileSystemWatch = ObserveSolutionPaths(workspace.CurrentSolution, workspace.OutputPaths);
+				workspaceCt.Token.Register(() => fileSystemWatch.Dispose());
 
-			_originalWorkspace ??= await GetWorkspaceAsync();
-			_workspace = new(Task.FromResult(new HotReloadWorkspace(workspace, hotReloadService, [outputPath, intermediateOutputPath])), ct);
-		}
+				_originalWorkspace ??= await GetWorkspaceAsync();
+				_workspace = new(Task.FromResult(workspace), workspaceCt);
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-		private async Task Dump(Solution solution, string targetFile)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-		{
-			var packagePath = await WorkspacePackage.Create(solution, targetFile, true, CancellationToken.None);
-
-//			var workspace = new WorkspaceData(
-//				Solution: solution.GetData()
-//			);
-
-//#pragma warning disable CA1869
-
-//#pragma warning restore CA1869
-
-//			await using (var target = File.Create(targetFile))
-//			{
-//				await System.Text.Json.JsonSerializer.SerializeAsync(target, workspace, _workspaceDumpJsonOptions);
-//			}
-
-			//abc.ToString();
-
-			//ProjectData GetData(Project project)
-			//{
-			//	return new ProjectData(project.GetInfo(RoslynInfoOptions.NoLoader));
-			//}
-
-			await DoBlaBla(packagePath);
+				await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: null));
+			}
+			catch (Exception ex)
+			{
+				await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: $"Load failed\r\n{ex}"));
+			}
 		}
 
 		public void Dispose()
-			=> _workspace?.Ct.Cancel();
+		{
+			_ct.Cancel();
+			_workspace?.Ct.Cancel();
+		}
 
 		#region Helpers - IDE Channel SendAndWaitForResult
 		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingRequestsToIde = new();
