@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Foundation;
 using UIKit;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
@@ -33,6 +34,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 	[Export("scene:willConnectToSession:options:")]
 	public override void WillConnect(UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"WillConnect: Scene={scene.Session.PersistentIdentifier}, Role={session.Role}");
+		}
+
 		var windowScene = scene as UIWindowScene;
 
 		// Always instantiate UIWindow within WillConnect
@@ -41,11 +47,22 @@ public class UnoUISceneDelegate : UISceneDelegate
 
 		if (NativeWindowWrapper.AwaitingScene.Count == 0)
 		{
-			throw new InvalidOperationException("No window wrapper available for the scene.");
+			this.Log().Error(
+				$"No window wrapper available for scene. " +
+				$"Scene={scene.Session.PersistentIdentifier}, Role={session.Role}. " +
+				$"Ensure a Window is created before the scene connects.");
+			throw new InvalidOperationException(
+				$"No window wrapper available for the scene (PersistentIdentifier={scene.Session.PersistentIdentifier}). " +
+				$"Ensure a Window is created before the scene connects.");
 		}
 
 		var wrapper = NativeWindowWrapper.AwaitingScene.Dequeue();
 		wrapper.SetNativeWindow(window);
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"WillConnect: Window attached to scene successfully");
+		}
 	}
 
 	public override void DidDisconnect(UIScene scene)
