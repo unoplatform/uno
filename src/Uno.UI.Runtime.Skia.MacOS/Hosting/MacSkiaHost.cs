@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Runtime.Skia.MacOS.Accessibility;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -36,6 +37,9 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();
 		MacOSMediaPlayerPresenterExtension.Register();
+
+		// Initialize accessibility support
+		MacOSAccessibilityBridge.Instance.Initialize();
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

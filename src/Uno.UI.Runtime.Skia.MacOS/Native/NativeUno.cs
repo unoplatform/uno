@@ -145,6 +145,30 @@ internal static unsafe class ClipboardDataMarshaller
 	}
 }
 
+// Accessibility element data passed to/from native code
+[StructLayout(LayoutKind.Sequential)]
+internal struct NativeAccessibilityElementData
+{
+	public int ElementId;
+	public int ParentId;
+	public double FrameX;
+	public double FrameY;
+	public double FrameWidth;
+	public double FrameHeight;
+	public nint Label;       // UTF8 string pointer
+	public nint Hint;        // UTF8 string pointer
+	public nint Value;       // UTF8 string pointer
+	public nint Role;        // UTF8 string pointer
+	[MarshalAs(UnmanagedType.I1)]
+	public bool IsEnabled;
+	[MarshalAs(UnmanagedType.I1)]
+	public bool IsFocusable;
+	[MarshalAs(UnmanagedType.I1)]
+	public bool IsSelected;
+	[MarshalAs(UnmanagedType.I1)]
+	public bool IsExpanded;
+}
+
 internal static partial class NativeUno
 {
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -498,4 +522,25 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
+
+	// Accessibility
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_accessibility_is_voiceover_running();
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_post_notification(nint window, int elementId, string notificationType);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_invalidate(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_accessibility_callbacks(
+		delegate* unmanaged[Cdecl]<nint, int> getChildCount,
+		delegate* unmanaged[Cdecl]<nint, int, NativeAccessibilityElementData*, int> getChildData,
+		delegate* unmanaged[Cdecl]<nint, double, double, int> hitTest,
+		delegate* unmanaged[Cdecl]<nint, int> getFocusedElement,
+		delegate* unmanaged[Cdecl]<nint, int, sbyte*, int> performAction,
+		delegate* unmanaged[Cdecl]<nint, int, void> elementFreed);
 }
