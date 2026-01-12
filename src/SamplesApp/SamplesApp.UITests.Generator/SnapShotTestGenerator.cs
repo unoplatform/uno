@@ -67,7 +67,7 @@ namespace Uno.Samples.UITest.Generator
 		{
 			var compilation = GetCompilation(context);
 
-						var sampleSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
+			var sampleSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
 			if (sampleSymbol is null)
 			{
 				throw new Exception("Cannot find 'SampleAttribute'.");
