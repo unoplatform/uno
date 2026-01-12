@@ -439,6 +439,169 @@ document.addEventListener(
             },
             true
         );
+        
+        // Light-dismiss for Pagefind search flyout
+        document.addEventListener('click', function(e) {
+            const searchContainer = document.querySelector('#search');
+            const pagefindDrawer = document.querySelector('.pagefind-ui__drawer');
+            
+            if (!searchContainer || !pagefindDrawer) return;
+            
+            // Check if the drawer is visible
+            const drawerIsVisible = pagefindDrawer.offsetParent !== null;
+            
+            if (drawerIsVisible) {
+                // Check if click is outside the search container
+                if (!searchContainer.contains(e.target)) {
+                    // Clear the search input to dismiss the drawer
+                    const searchInput = searchContainer.querySelector('.pagefind-ui__search-input');
+                    if (searchInput) {
+                        searchInput.value = '';
+                        // Trigger input event to update Pagefind UI
+                        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }
+            }
+        }, true);
+        
+        // Store and display search history as pills
+        const SEARCH_HISTORY_KEY = 'uno_search_history';
+        const MAX_SEARCH_HISTORY = 5;
+        
+        // Wait for Pagefind to initialize
+        const initializeSearchKeywords = setInterval(function() {
+            const searchInput = document.querySelector('.pagefind-ui__search-input');
+            const searchContainer = document.querySelector('#search');
+            
+            if (searchInput && searchContainer) {
+                clearInterval(initializeSearchKeywords);
+                
+                // Get search history
+                function getSearchHistory() {
+                    const history = localStorage.getItem(SEARCH_HISTORY_KEY);
+                    return history ? JSON.parse(history) : [];
+                }
+                
+                // Save search to history
+                function saveSearchToHistory(query) {
+                    let history = getSearchHistory();
+                    // Remove if already exists
+                    history = history.filter(item => item !== query);
+                    // Add to beginning
+                    history.unshift(query);
+                    // Keep only last MAX_SEARCH_HISTORY items
+                    history = history.slice(0, MAX_SEARCH_HISTORY);
+                    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
+                }
+                
+                // Create or update pills container
+                function updatePillsContainer() {
+                    const history = getSearchHistory();
+                    
+                    // Remove existing container from anywhere
+                    const existingPills = document.querySelector('.search-history-pills');
+                    if (existingPills) {
+                        existingPills.remove();
+                    }
+                    
+                    // Only show if there's history and input is empty
+                    if (history.length === 0 || searchInput.value.trim()) {
+                        return;
+                    }
+                    
+                    // Wait for drawer to exist
+                    const drawer = document.querySelector('.pagefind-ui__drawer');
+                    if (!drawer) {
+                        return; // Drawer not available yet
+                    }
+                    
+                    // Create new container
+                    const pillsContainer = document.createElement('div');
+                    pillsContainer.className = 'search-history-pills';
+                    
+                    const title = document.createElement('div');
+                    title.className = 'search-history-title';
+                    title.textContent = 'Recent searches';
+                    pillsContainer.appendChild(title);
+                    
+                    const pillsWrapper = document.createElement('div');
+                    pillsWrapper.className = 'search-history-pills-wrapper';
+                    
+                    history.forEach(function(term) {
+                        const pill = document.createElement('button');
+                        pill.className = 'search-history-pill';
+                        pill.textContent = term;
+                        pill.setAttribute('type', 'button');
+                        pill.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            searchInput.value = term;
+                            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                            searchInput.focus();
+                        });
+                        pillsWrapper.appendChild(pill);
+                    });
+                    
+                    pillsContainer.appendChild(pillsWrapper);
+                    
+                    // Insert at the top of the drawer
+                    drawer.insertBefore(pillsContainer, drawer.firstChild);
+                }
+                
+                // Show pills on focus
+                searchInput.addEventListener('focus', function() {
+                    // If input is empty and we have history, show pills immediately
+                    if (!searchInput.value.trim() && getSearchHistory().length > 0) {
+                        // Trigger empty search to open drawer without visible text
+                        const originalValue = searchInput.value;
+                        
+                        // Use a zero-width space to trigger drawer without showing results
+                        searchInput.value = '\u200B'; // Zero-width space
+                        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                        
+                        // Wait a moment for drawer to potentially appear
+                        setTimeout(function() {
+                            // Restore original empty value
+                            searchInput.value = originalValue;
+                            
+                            // Check for drawer and show pills
+                            const checkDrawer = setInterval(function() {
+                                const drawer = document.querySelector('.pagefind-ui__drawer');
+                                if (drawer) {
+                                    clearInterval(checkDrawer);
+                                    updatePillsContainer();
+                                }
+                            }, 50);
+                            
+                            // Stop checking after 1 second
+                            setTimeout(function() { clearInterval(checkDrawer); }, 1000);
+                        }, 10);
+                    }
+                });
+                
+                // Hide pills when typing
+                searchInput.addEventListener('input', function() {
+                    const query = searchInput.value.trim();
+                    const pillsContainer = document.querySelector('.search-history-pills');
+                    if (pillsContainer && query) {
+                        pillsContainer.remove();
+                    }
+                });
+                
+                // Save search on blur if there's a value
+                searchInput.addEventListener('blur', function() {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        saveSearchToHistory(query);
+                    }
+                });
+            }
+        }, 100);
+        
+        // Clear initialization check after 5 seconds to avoid memory leak
+        setTimeout(function() {
+            clearInterval(initializeSearchKeywords);
+        }, 5000);
     },
     false
 );
