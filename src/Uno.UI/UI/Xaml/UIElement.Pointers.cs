@@ -479,7 +479,6 @@ namespace Microsoft.UI.Xaml
 					{
 						// Cancel context menu if holding was canceled (e.g., user moved finger)
 						// Ported from WinUI PointerInputProcessor.cpp:494-509
-						contentRoot.InputManager.ContextMenuProcessor.StopContextMenuTimer();
 						if (contentRoot.InputManager.ContextMenuProcessor.IsContextMenuOnHolding)
 						{
 							// Check if we're in a flyout/popup layer
