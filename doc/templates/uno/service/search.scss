@@ -111,8 +111,15 @@
             }
 
             &__search-clear {
-                top: 9px;
-                background-color: transparent;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                right: 12px !important;
+                background-color: transparent !important;
+                width: 20px !important;
+                height: 20px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
 
             // Floating results drawer
@@ -132,13 +139,113 @@
                 z-index: 10001 !important;
             }
 
-            // Adjust padding in results
-            &__result {
-                padding: 12px 16px !important;
-                border-bottom: 1px solid #f0f0f0;
+          
 
-                &:last-child {
-                    border-bottom: none;
+            &__result {
+                padding: 0 !important;
+                margin: 0 !important;
+                border-bottom: none !important;
+                border-left: 3px solid transparent !important;
+                transition: all 0.2s ease !important;
+                
+                &:hover {
+                    background-color: rgba(21, 155, 255, 0.08) !important; // Light blue background on hover
+                    border-left-color: $blue !important;
+                }
+            }
+
+            &__result-link {
+                display: block !important;
+                padding: 6px 12px !important;
+                font-weight: 400 !important;
+                text-decoration: none !important;
+                color: $black !important;
+                line-height: 20px !important;
+                transition: color 0.2s ease !important;
+
+                &:hover {
+                    background-color: transparent !important;
+                    color: $blue !important;
+                }
+            }
+
+            &__result-title {
+                font-size: 18px !important;
+                font-weight: bold !important;
+                color: $black !important;
+                margin: 0 0 4px 0 !important;
+                transition: color 0.2s ease !important;
+                letter-spacing: -0.01em !important;
+                
+                &:hover {
+                    color: $blue !important; // Blue title on hover
+                }
+                
+                mark {
+                    background: rgba(21, 155, 255, 0.35) !important; // Stronger blue highlight
+                    color: darken($blue, 10%) !important; // Darker blue text in highlights
+                    border-radius: 2px !important;
+                }
+            }
+
+            // Hide the excerpt/preview text
+            &__result-excerpt {
+                display: none !important;
+            }
+
+            // Style breadcrumb/location path
+            &__result-nested {
+                margin-top: 4px !important;
+                padding-left: 48px !important; // Indent the children
+                font-size: 12px !important;
+                color: lighten($blue, 15%) !important; // Blue-tinted breadcrumb text
+                
+                mark {
+                    background: rgba(21, 155, 255, 0.3) !important; // More prominent blue highlight
+                    color: $blue !important;
+                    padding: 1px 3px !important;
+                    border-radius: 2px !important;
+                }
+            }
+
+            // Message states
+            &__message {
+                padding: 16px !important;
+                text-align: center !important;
+                color: $gray !important;
+                font-size: 14px !important;
+            }
+            
+            // Loading state
+            &__loading {
+                padding: 16px !important;
+                text-align: center !important;
+                color: $gray !important;
+            }
+            
+            // Load more button
+            &__button {
+                background-color: $blue !important;
+                color: white !important;
+                border: none !important;
+                padding: 10px 20px !important;
+                border-radius: 0 !important;
+                font-size: 14px !important;
+                font-weight: 400 !important;
+                cursor: pointer !important;
+                transition: all 0.2s ease !important;
+                margin: 12px auto !important;
+                display: block !important;
+                
+                &:hover {
+                    background-color: darken($blue, 8%) !important;
+                    transform: translateY(-1px) !important;
+                    box-shadow: 0 4px 8px rgba(21, 155, 255, 0.3) !important;
+                }
+                
+                &:active {
+                    transform: translateY(0) !important;
+                    box-shadow: 0 2px 4px rgba(21, 155, 255, 0.2) !important;
                 }
             }
         }
