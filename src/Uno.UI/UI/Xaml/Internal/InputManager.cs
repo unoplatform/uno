@@ -20,13 +20,13 @@ internal partial class InputManager : IInputInjectorTarget
 
 	public InputManager(ContentRoot contentRoot)
 	{
+		_contextMenuProcessor = new ContextMenuProcessor(contentRoot);
+
 		ContentRoot = contentRoot;
 
 		ConstructKeyboardManager();
 
 		ConstructPointerManager();
-
-		_contextMenuProcessor = new ContextMenuProcessor(contentRoot);
 	}
 
 	internal ContextMenuProcessor ContextMenuProcessor => _contextMenuProcessor;
