@@ -62,6 +62,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
+	private static int _visibleWindowCount;
+
 	[MemberNotNull(nameof(_nativeWindow))]
 	internal void SetNativeWindow(NativeWindow nativeWindow)
 	{
@@ -86,7 +88,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
-	protected override void ShowCore() => NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
+	protected override void ShowCore()
+	{
+		_visibleWindowCount++;
+		NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
+	}
 
 	internal RootViewController MainController => _mainController;
 
@@ -193,33 +199,48 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void SubscribeBackgroundNotifications()
 	{
-		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+		// For non-scene-manifest apps, the app delegate handles lifecycle events.
+		// For scene-manifest apps, we handle per-window with visible count tracking.
+		if (!Application.HasSceneManifest())
 		{
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
-		}
-		else
-		{
-			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
+			// Subscribe to app-level notifications for activation state only
 			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
 			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
+			return;
 		}
+
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
 	}
 
 	private void OnEnteredBackground(NSNotification notification)
 	{
 		OnNativeVisibilityChanged(false);
 
-		Application.Current.RaiseEnteredBackground(() => Application.Current.RaiseSuspending());
+		_visibleWindowCount--;
+		if (_visibleWindowCount == 0)
+		{
+			// Last window backgrounded - raise app-level events
+			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
+		}
 	}
 
 	private void OnLeavingBackground(NSNotification notification)
 	{
-		Application.Current.RaiseResuming();
-		Application.Current.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+		if (_visibleWindowCount == 0)
+		{
+			// First window returning to foreground - raise app-level events
+			Application.Current?.RaiseResuming();
+			Application.Current?.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+		}
+		else
+		{
+			OnNativeVisibilityChanged(true);
+		}
+
+		_visibleWindowCount++;
 	}
 
 	private void OnActivated(NSNotification notification) => ActivationState = CoreWindowActivationState.CodeActivated;
