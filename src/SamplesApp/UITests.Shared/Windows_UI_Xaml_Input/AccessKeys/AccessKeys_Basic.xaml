@@ -1,0 +1,59 @@
+<Page
+	x:Class="UITests.Windows_UI_Xaml_Input.AccessKeys.AccessKeys_Basic"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<StackPanel Padding="20" Spacing="10">
+		<TextBlock Text="Access Keys Test" FontSize="24" FontWeight="Bold" />
+		<TextBlock TextWrapping="Wrap">
+			Press Alt to enter access key mode. Key tips should appear on elements with access keys.
+			Type the access key character to invoke the element. Press Escape to exit access key mode.
+		</TextBlock>
+
+		<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,20,0,0">
+			<Button x:Name="ButtonA" Content="Button A" AccessKey="A" Click="Button_Click" />
+			<Button x:Name="ButtonB" Content="Button B" AccessKey="B" Click="Button_Click" />
+			<Button x:Name="ButtonC" Content="Button C" AccessKey="C" Click="Button_Click" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal" Spacing="10">
+			<Button x:Name="Button1" Content="Button 1" AccessKey="1" Click="Button_Click" />
+			<Button x:Name="Button2" Content="Button 2" AccessKey="2" Click="Button_Click" />
+			<Button x:Name="Button3" Content="Button 3" AccessKey="3" Click="Button_Click" />
+		</StackPanel>
+
+		<TextBlock Text="Nested Scope Test:" FontWeight="SemiBold" Margin="0,20,0,0" />
+		<Border BorderBrush="Gray" BorderThickness="1" Padding="10" IsAccessKeyScope="True">
+			<StackPanel Spacing="10">
+				<TextBlock Text="This is an access key scope. Press 'S' to enter this scope." />
+				<Button x:Name="ScopeButton" Content="Scope Container (S)" AccessKey="S" IsAccessKeyScope="True">
+					<Button.Flyout>
+						<Flyout>
+							<StackPanel Spacing="10">
+								<TextBlock Text="Nested scope content - press X, Y, or Z" />
+								<Button x:Name="NestedX" Content="Nested X" AccessKey="X" Click="Button_Click" />
+								<Button x:Name="NestedY" Content="Nested Y" AccessKey="Y" Click="Button_Click" />
+								<Button x:Name="NestedZ" Content="Nested Z" AccessKey="Z" Click="Button_Click" />
+							</StackPanel>
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+			</StackPanel>
+		</Border>
+
+		<TextBlock Text="Status:" FontWeight="SemiBold" Margin="0,20,0,0" />
+		<TextBlock x:Name="ModeStatus" Text="Access Key Mode: Inactive" />
+		<TextBlock x:Name="LastAction" Text="Last Action: None" />
+
+		<TextBlock Text="Event Log:" FontWeight="SemiBold" Margin="0,10,0,0" />
+		<ScrollViewer Height="150" BorderBrush="Gray" BorderThickness="1">
+			<TextBlock x:Name="EventLog" TextWrapping="Wrap" Padding="5" />
+		</ScrollViewer>
+
+		<Button Content="Clear Log" Click="ClearLog_Click" Margin="0,10,0,0" />
+	</StackPanel>
+</Page>

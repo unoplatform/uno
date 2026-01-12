@@ -79,10 +79,12 @@ internal partial class ContentRoot
 		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
 		CompositionTarget.Root.CompositionTarget = CompositionTarget;
 
+#if __SKIA__
 		// Initialize AccessKeyExport with visual tree and focus manager
 		AccessKeyExport.SetVisualTree(VisualTree);
 		AccessKeyExport.SetFocusManager(FocusManager);
 		AccessKeyExport.ModeContainer.IsActiveChanged += OnAccessKeyModeChanged;
+#endif
 
 		switch (type)
 		{
@@ -287,9 +289,11 @@ internal partial class ContentRoot
 		};
 	}
 
+#if __SKIA__
 	private void OnAccessKeyModeChanged(object? sender, EventArgs e)
 	{
 		// Notify AccessKeyManager of the mode change so it can update IsDisplayModeEnabled
 		AccessKeyManager.OnAccessKeyModeChanged(FocusManager);
 	}
+#endif
 }
