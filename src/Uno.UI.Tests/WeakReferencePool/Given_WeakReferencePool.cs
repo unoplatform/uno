@@ -308,17 +308,17 @@ namespace Uno.UI.Tests
 			public ManagedWeakReference WeakReference { get; }
 		}
 
-		class MyClass
+		private class MyClass
 		{
 			public int Value { get; set; }
 		}
 
-		class MyOtherClass
+		private class MyOtherClass
 		{
 			public string Text { get; set; }
 		}
 
-		class MyDerivedClass : MyClass
+		private class MyDerivedClass : MyClass
 		{
 			public int DerivedValue { get; set; }
 		}
