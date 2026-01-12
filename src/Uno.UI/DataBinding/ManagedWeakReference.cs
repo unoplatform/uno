@@ -130,13 +130,28 @@ namespace Uno.UI.DataBinding
 		/// <returns>true if the target is alive and was successfully cast to type T; otherwise, false.</returns>
 		public bool TryGetTarget<T>(out T target) where T : class
 		{
-			if (IsAlive && Target is T castTarget)
+			target = default;
+
+			// Return false if disposed, without throwing
+			if (_disposed)
+			{
+				return false;
+			}
+
+			// Get the target once and check if it's alive
+			var rawTarget = _targetHandle?.Target;
+			if (!IsNativeAlive(rawTarget) || rawTarget == null)
+			{
+				return false;
+			}
+
+			// Try to cast to the requested type
+			if (rawTarget is T castTarget)
 			{
 				target = castTarget;
 				return true;
 			}
 
-			target = default;
 			return false;
 		}
 
