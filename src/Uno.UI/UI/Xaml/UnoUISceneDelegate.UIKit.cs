@@ -67,7 +67,14 @@ public class UnoUISceneDelegate : UISceneDelegate
 
 	public override void DidDisconnect(UIScene scene)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"DidDisconnect: Scene={scene.Session.PersistentIdentifier}");
+		}
 
+		// Clear the window reference. The scene has already gone to background
+		// before disconnecting, so visibility count is already updated.
+		Window = null;
 	}
 
 	public override void WillEnterForeground(UIScene scene)
