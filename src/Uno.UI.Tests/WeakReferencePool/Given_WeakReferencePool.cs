@@ -198,6 +198,88 @@ namespace Uno.UI.Tests
 			Assert.AreEqual(0, WeakReferencePool.PooledReferences);
 		}
 
+		[TestMethod]
+		public void When_TryGetTarget_With_Alive_Target()
+		{
+			var target = new MyClass { Value = 42 };
+			var mr = WeakReferencePool.RentWeakReference(this, target);
+
+			var result = mr.TryGetTarget<MyClass>(out var retrieved);
+
+			Assert.IsTrue(result);
+			Assert.IsNotNull(retrieved);
+			Assert.AreEqual(42, retrieved.Value);
+			Assert.AreSame(target, retrieved);
+		}
+
+		[TestMethod]
+		public void When_TryGetTarget_With_Wrong_Type()
+		{
+			var target = new MyClass { Value = 42 };
+			var mr = WeakReferencePool.RentWeakReference(this, target);
+
+			var result = mr.TryGetTarget<MyOtherClass>(out var retrieved);
+
+			Assert.IsFalse(result);
+			Assert.IsNull(retrieved);
+		}
+
+		[TestMethod]
+		public void When_TryGetTarget_With_Base_Type()
+		{
+			var target = new MyDerivedClass { Value = 42, DerivedValue = 100 };
+			var mr = WeakReferencePool.RentWeakReference(this, target);
+
+			var result = mr.TryGetTarget<MyClass>(out var retrieved);
+
+			Assert.IsTrue(result);
+			Assert.IsNotNull(retrieved);
+			Assert.AreEqual(42, retrieved.Value);
+		}
+
+		[TestMethod]
+		public void When_TryGetTarget_With_Disposed_Reference()
+		{
+			var target = new MyClass { Value = 42 };
+			var mr = WeakReferencePool.RentWeakReference(this, target);
+			mr.Dispose();
+
+			var result = mr.TryGetTarget<MyClass>(out var retrieved);
+
+			Assert.IsFalse(result);
+			Assert.IsNull(retrieved);
+		}
+
+		[TestMethod]
+		public void When_TryGetTarget_With_Collected_Target()
+		{
+			var mr = CreateWeakReferenceToCollectedObject();
+
+			GCCondition(50, () => !mr.IsAlive);
+
+			var result = mr.TryGetTarget<MyClass>(out var retrieved);
+
+			Assert.IsFalse(result);
+			Assert.IsNull(retrieved);
+		}
+
+		[TestMethod]
+		public void When_TryGetTarget_With_Null_Target()
+		{
+			var mr = WeakReferencePool.RentWeakReference(this, null);
+
+			var result = mr.TryGetTarget<MyClass>(out var retrieved);
+
+			Assert.IsFalse(result);
+			Assert.IsNull(retrieved);
+		}
+
+		private ManagedWeakReference CreateWeakReferenceToCollectedObject()
+		{
+			var target = new MyClass { Value = 99 };
+			return WeakReferencePool.RentWeakReference(this, target);
+		}
+
 		private void GCCondition(int count, Func<bool> predicate)
 		{
 			int i = count;
@@ -224,6 +306,21 @@ namespace Uno.UI.Tests
 			}
 
 			public ManagedWeakReference WeakReference { get; }
+		}
+
+		class MyClass
+		{
+			public int Value { get; set; }
+		}
+
+		class MyOtherClass
+		{
+			public string Text { get; set; }
+		}
+
+		class MyDerivedClass : MyClass
+		{
+			public int DerivedValue { get; set; }
 		}
 	}
 }
