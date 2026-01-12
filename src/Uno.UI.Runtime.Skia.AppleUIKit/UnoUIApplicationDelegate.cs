@@ -58,26 +58,34 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		}
 	}
 
+	// For non-scene-manifest apps, these handlers manage app lifecycle (same as master).
+	// For scene-manifest apps, per-window handlers in NativeWindowWrapper track visible
+	// window count and raise app events on last background / first foreground.
+
 	private void OnEnteredBackground(NSNotification notification)
 	{
-		Application.Current?.RaiseEnteredBackground(() => Application.Current.RaiseSuspending());
+		if (!UnoUISceneDelegate.HasSceneManifest())
+		{
+			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
+		}
 	}
 
 	private void OnLeavingBackground(NSNotification notification)
 	{
 		this.LogDebug()?.LogDebug($"Application leaving background");
-		Application.Current?.RaiseResuming();
-		//Application.Current?.RaiseLeavingBackground(() => NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true));
+		if (!UnoUISceneDelegate.HasSceneManifest())
+		{
+			Application.Current?.RaiseResuming();
+			Application.Current?.RaiseLeavingBackground(null);
+		}
 	}
 
 	private void OnActivated(NSNotification notification)
 	{
 		this.LogDebug()?.LogDebug($"Application activated");
-		//NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 	}
 
 	private void OnDeactivated(NSNotification notification)
 	{
-		//NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 	}
 }
