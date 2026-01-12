@@ -140,20 +140,6 @@ partial class UIElement
 		args.Handled = true;
 	}
 
-	/// <summary>
-	/// Handler for ContextCanceled event.
-	/// </summary>
-	/// <remarks>
-	/// Ported from WinUI uielement.cpp:12615-12623
-	/// No core element overrides this yet, so no need to have a virtual in the vtable bloating us
-	/// until that is needed. Note that overriding this in the DXAML layer or via the public
-	/// API is still fine, you just don't get a handy virtual in core until someone needs it.
-	/// </remarks>
-	internal static void OnContextCanceled(DependencyObject sender, RoutedEventArgs args)
-	{
-		// No-op for now (matches WinUI)
-	}
-
 	private static bool IsTextControl(DependencyObject element)
 	{
 		return element is TextBox ||
