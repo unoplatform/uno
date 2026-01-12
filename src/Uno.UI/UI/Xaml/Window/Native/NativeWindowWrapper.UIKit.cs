@@ -34,6 +34,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private NSObject? _orientationRegistration;
 #endif
 	private readonly DisplayInformation _displayInformation;
+	private bool _isPendingShow;
 
 	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
@@ -81,6 +82,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			throw new InvalidOperationException("Window must be set before calling NotifyContentLoaded");
 		}
 		Window.NotifyContentLoaded();
+
+		if (_isPendingShow)
+		{
+			ShowCore();
+		}
 	}
 
 	public override NativeWindow? NativeWindow => _nativeWindow;
@@ -90,6 +96,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	protected override void ShowCore()
 	{
+		if (_nativeWindow is null)
+		{
+			// For scene delegate apps, the native window may be created after Show is called.
+			_isPendingShow = true;
+			return;
+		}
+
+		_isPendingShow = false;
 		_visibleWindowCount++;
 		NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
 	}
