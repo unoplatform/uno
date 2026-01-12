@@ -67,6 +67,18 @@ partial class InputManager
 				Handled = args.Handled
 			};
 
+			// Process access keys before regular key events.
+			// Access key mode is entered with Alt key and characters are used for navigation.
+			if (down)
+			{
+				_inputManager.ContentRoot.AccessKeyExport.TryProcessInputForAccessKey(routedArgs, out var keyProcessed);
+				if (keyProcessed)
+				{
+					args.Handled = true;
+					return;
+				}
+			}
+
 			originalSource1.RaiseTunnelingEvent(down ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent, routedArgs);
 
 			// On WinUI, if the focus changes during PreviewKey<Down|Up>, the Key<Up|Down> event bubbles from the new focused element.

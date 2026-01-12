@@ -395,6 +395,9 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			// Exit access key mode when pointer is pressed
+			_inputManager.ContentRoot.AccessKeyExport.ProcessPointerInput();
+
 			// If 2+ mouse buttons are pressed, we only respond to the first.
 			if (args.CurrentPoint is { PointerDeviceType: PointerDeviceType.Mouse, Properties.HasMultipleButtonsPressed: true })
 			{
