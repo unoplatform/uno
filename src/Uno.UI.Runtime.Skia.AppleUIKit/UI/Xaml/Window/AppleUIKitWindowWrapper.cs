@@ -51,6 +51,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		_inputPane = InputPane.GetForCurrentView();
 
+		SubscribeBackgroundNotifications();
+
 #if !__TVOS__
 		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
 		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
@@ -89,6 +91,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
+	private static int _visibleWindowCount;
+
 	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
@@ -105,6 +109,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 
 		_isPendingShow = false;
+		_visibleWindowCount++;
 
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
@@ -228,6 +233,53 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
+
+	private void SubscribeBackgroundNotifications()
+	{
+		// For non-scene-manifest apps, the app delegate handles lifecycle events (same as master).
+		// For scene-manifest apps, we handle per-window with visible count tracking.
+		if (!UnoUISceneDelegate.HasSceneManifest())
+		{
+			return;
+		}
+
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+	}
+
+	private void OnEnteredBackground(NSNotification notification)
+	{
+		OnNativeVisibilityChanged(false);
+
+		_visibleWindowCount--;
+		if (_visibleWindowCount == 0)
+		{
+			// Last window backgrounded - raise app-level events
+			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
+		}
+	}
+
+	private void OnLeavingBackground(NSNotification notification)
+	{
+		if (_visibleWindowCount == 0)
+		{
+			// First window returning to foreground - raise app-level events
+			Application.Current?.RaiseResuming();
+			Application.Current?.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+		}
+		else
+		{
+			OnNativeVisibilityChanged(true);
+		}
+
+		_visibleWindowCount++;
+	}
+
+	private void OnActivated(NSNotification notification) => OnNativeActivated(CoreWindowActivationState.CodeActivated);
+
+	private void OnDeactivated(NSNotification notification) => OnNativeActivated(CoreWindowActivationState.Deactivated);
 
 #if !__TVOS__
 	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
