@@ -91,7 +91,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 				if (!_supportsMetadataUpdates)
 				{
-					_status.ReportInvalidRuntime();
+					_status.ReportLocallyDisabledState("Environment not supported");
 				}
 
 				var hrDebug = Debugger.IsAttached && Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";

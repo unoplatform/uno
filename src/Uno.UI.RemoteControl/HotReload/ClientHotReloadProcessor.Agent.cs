@@ -35,7 +35,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			// This mean that HR won't work with the debugger attached.
 			if (Debugger.IsAttached && !_runningInsideVSCodeExtension)
 			{
-				_status.ReportInvalidRuntime();
+				_status.ReportLocallyDisabledState("Cannot initialize with debugger attached");
 			}
 			_hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
 		}
