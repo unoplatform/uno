@@ -8,13 +8,10 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-    <StackPanel Spacing="20" Padding="20">
-        <TextBlock Text="Test for Issue #22232: Focus navigation on Enter key" 
-                   FontWeight="Bold" 
-                   TextWrapping="Wrap"/>
-        
+    <StackPanel Spacing="20" Padding="20">        
         <TextBlock x:Name="StatusText" 
-                   Text="Focus a TextBox and press Enter to test focus navigation" 
+                   Text="Currently focused: None" 
+                   FontWeight="Bold" 
                    TextWrapping="Wrap"/>
 
         <TextBox x:Name="TextBox1" 
