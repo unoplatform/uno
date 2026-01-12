@@ -140,7 +140,7 @@ namespace Uno.UI.DataBinding
 
 			// Get the target once and check if it's alive
 			var rawTarget = _targetHandle?.Target;
-			if (!IsNativeAlive(rawTarget) || rawTarget == null)
+			if (rawTarget == null || !IsNativeAlive(rawTarget))
 			{
 				return false;
 			}
