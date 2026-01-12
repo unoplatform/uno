@@ -7,21 +7,19 @@ using Windows.System;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl;
 
-[Sample("TextBox", Description = "Tests focus navigation with Enter key (Issue #22232)", IsManualTest = true)]
+[Sample("TextBox", Description = "Focus a TextBox and press Enter to test focus navigation", IsManualTest = true)]
 public sealed partial class TextBox_FocusNavigation_Enter : UserControl
 {
 	public TextBox_FocusNavigation_Enter()
 	{
 		this.InitializeComponent();
 
-		// Setup focus navigation on Enter for single-line TextBoxes
 		TextBox1.KeyDown += OnTextBoxKeyDown;
 		TextBox2.KeyDown += OnTextBoxKeyDown;
 		TextBox3.KeyDown += OnTextBoxKeyDown;
 		TextBox4.KeyDown += OnTextBoxKeyDown;
 		TextBox5.KeyDown += OnTextBoxKeyDown;
 
-		// Track focus changes
 		TextBox1.GotFocus += OnTextBoxGotFocus;
 		TextBox2.GotFocus += OnTextBoxGotFocus;
 		TextBox3.GotFocus += OnTextBoxGotFocus;
@@ -38,13 +36,30 @@ public sealed partial class TextBox_FocusNavigation_Enter : UserControl
 
 			if (!textBox.AcceptsReturn)
 			{
-				// Move to next focusable element
-				var nextElement = FocusManager.FindNextElement(FocusNavigationDirection.Next);
-				if (nextElement is Control control)
+				var options = new FindNextElementOptions()
 				{
-					Log($"Moving focus to {(nextElement as FrameworkElement)?.Name ?? nextElement.GetType().Name}");
-					control.Focus(FocusState.Programmatic);
-					e.Handled = true;
+					SearchRoot = XamlRoot?.Content
+				};
+
+				Log($"Attempting to find next element (SearchRoot: {options.SearchRoot?.GetType().Name ?? "null"})");
+
+				try
+				{
+					var nextElement = FocusManager.FindNextElement(FocusNavigationDirection.Next, options);
+					if (nextElement is Control control)
+					{
+						Log($"Moving focus to {(nextElement as FrameworkElement)?.Name ?? nextElement.GetType().Name}");
+						control.Focus(FocusState.Programmatic);
+						e.Handled = true;
+					}
+					else
+					{
+						Log($"FindNextElement returned: {nextElement?.GetType().Name ?? "null"}");
+					}
+				}
+				catch (Exception ex)
+				{
+					Log($"ERROR: {ex.Message}");
 				}
 			}
 			else
