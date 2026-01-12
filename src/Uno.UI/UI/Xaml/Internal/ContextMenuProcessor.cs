@@ -8,10 +8,8 @@ using System;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
-using Uno.UI.DataBinding;
 
 namespace Uno.UI.Xaml.Internal;
 
@@ -66,7 +64,12 @@ internal partial class ContextMenuProcessor
 	/// <param name="point">The global point, or (-1, -1) for keyboard invocation.</param>
 	/// <param name="isTouchInput">Whether the input is from touch.</param>
 	/// <remarks>
-	/// Ported from WinUI ContextMenuProcessor.cpp:46-76
+	/// Ported from WinUI ContextMenuProcessor.cpp:46-76.
+	///
+	/// In WinUI, the class handler (which shows ContextFlyout) is invoked at each element
+	/// during event bubbling via the CControl::Delegates table mechanism. This is now
+	/// handled by UIElement.InvokeClassHandler called from RaiseEvent, so we just need
+	/// to raise the event here.
 	/// </remarks>
 	public void RaiseContextRequestedEvent(
 		DependencyObject source,
@@ -80,22 +83,8 @@ internal partial class ContextMenuProcessor
 		{
 			args.OriginalSource = source;
 
-			// WinUI behavior: Class handler runs FIRST as part of the event mechanism.
-			// This shows the ContextFlyout before user handlers can set Handled=true.
-			// See WinUI eventmgr.cpp:RaiseUIElementEvents which calls the Delegates array
-			// handlers during event raising.
-			if (uiElement is Control control)
-			{
-				// For Controls, invoke OnContextRequestedImpl which can be overridden
-				control.InvokeOnContextRequestedImpl(args);
-			}
-			else
-			{
-				// For non-Controls, just try to show flyout on the element
-				UIElement.OnContextRequestedCore(uiElement, uiElement, args);
-			}
-
-			// Then raise the user event for notification purposes.
+			// Raise the event - class handlers (OnContextRequestedImpl/OnContextRequestedCore)
+			// will be invoked at each element during bubbling via UIElement.InvokeClassHandler.
 			// This is a synchronous callout to application code that allows
 			// the application to re-enter XAML. The application could
 			// change state and release objects, so protect against
