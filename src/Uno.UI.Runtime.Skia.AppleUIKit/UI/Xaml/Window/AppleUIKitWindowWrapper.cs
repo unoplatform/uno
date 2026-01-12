@@ -78,7 +78,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
 		// otherwise, a black screen may appear. 
-		TryCreateExtendedSplashscreen();
+		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
 
 		ObserveOrientationAndSize();
 
