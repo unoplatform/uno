@@ -92,6 +92,54 @@ internal static class AccessKeys
 
 	//	template<class Element = CDependencyObject, typename CValue = CValue >
 
+	internal const char ALT = (char)18;
+	internal const char ESC = (char)27;
+
+	/// <summary>
+	/// Gets the access key string from an element.
+	/// </summary>
+	internal static string? GetAccessKey(DependencyObject element)
+	{
+		if (element is UIElement uiElement)
+		{
+			return uiElement.AccessKey;
+		}
+		else if (element is TextElement textElement)
+		{
+			return textElement.AccessKey;
+		}
+
+		return null;
+	}
+
+	/// <summary>
+	/// Returns true if the element should dismiss access key mode when invoked.
+	/// </summary>
+	internal static bool DismissOnInvoked(DependencyObject element)
+	{
+		if (element is UIElement uiElement)
+		{
+			return uiElement.ExitDisplayModeOnAccessKeyInvoked;
+		}
+		else if (element is TextElement textElement)
+		{
+			return textElement.ExitDisplayModeOnAccessKeyInvoked;
+		}
+
+		return false;
+	}
+
+	/// <summary>
+	/// Returns true if the element is a valid access key owner type.
+	/// </summary>
+	internal static bool IsValidAKOwnerType(DependencyObject element)
+	{
+		return element is FlyoutBase || element is UIElement || element is TextElement;
+	}
+
+	/// <summary>
+	/// Returns true if the element is an access key scope boundary.
+	/// </summary>
 	internal static bool IsAccessKeyScope(DependencyObject element)
 	{
 		if (element is FlyoutBase)
