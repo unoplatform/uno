@@ -86,6 +86,16 @@
 				ev.preventDefault();
 			};
 
+			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
+			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" instead.
+			input.addEventListener("beforeinput", (ev: InputEvent) => {
+				if (ev.inputType === "insertLineBreak" && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+					ev.preventDefault();
+
+					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+				}
+			});
+
 			input.onkeydown = ev => {
 				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
