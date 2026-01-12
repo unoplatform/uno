@@ -49,23 +49,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
-		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
-		// otherwise, a black screen may appear.
-		//
-		// Skip the extended-splash transition when a secondary ALC is being hosted
-		// (Window.ContentHostOverride != null). TryCreateExtendedSplashScreen calls
-		// UIWindow.MakeKeyAndVisible eagerly inside this constructor — that happens
-		// BEFORE ShowCore/Activate would otherwise gate visibility, so a secondary ALC
-		// window created via `new Window()` would immediately MakeKeyAndVisible and
-		// cover the host's UIWindow. ALC-mode windows never reach ShowCore because
-		// Window.Activate routes to ActivateAlcWindow once _alcState is set.
-		// This mirrors the gating already applied to the native UIKit
-		// NativeWindowWrapper (Uno.UI) for the Skia AppleUIKit runtime.
-		if (Window.ContentHostOverride is null)
-		{
-			NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
-		}
-
 		_inputPane = InputPane.GetForCurrentView();
 
 #if !__TVOS__
@@ -90,8 +73,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #endif
 
 		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
-		// otherwise, a black screen may appear. 
-		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+		// otherwise, a black screen may appear.
+		//
+		// Skip the extended-splash transition when a secondary ALC is being hosted
+		// (Window.ContentHostOverride != null). TryCreateExtendedSplashScreen calls
+		// UIWindow.MakeKeyAndVisible eagerly — a secondary ALC window created via
+		// `new Window()` would otherwise immediately cover the host's UIWindow.
+		// ALC-mode windows never reach ShowCore because Window.Activate routes to
+		// ActivateAlcWindow once _alcState is set.
+		if (Window.ContentHostOverride is null)
+		{
+			NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+		}
 
 		ObserveOrientationAndSize();
 
