@@ -17,6 +17,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 #if __APPLE_UIKIT__
@@ -654,7 +655,16 @@ namespace Microsoft.UI.Xaml
 				TrackKeyState(routedEvent, args);
 			}
 
-			// [3] Any local handlers?
+			// [3a] Invoke class handler FIRST (WinUI's FireEvent/Delegates equivalent)
+			// Class handlers run before instance handlers at each element during bubbling.
+			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
+				&& !ctx.IsInternal
+				&& !ctx.IsCleanup)
+			{
+				InvokeClassHandler(routedEvent, args);
+			}
+
+			// [3b] Any local handlers?
 			var isHandled = IsHandled(args);
 			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
@@ -1072,5 +1082,34 @@ namespace Microsoft.UI.Xaml
 		// Those methods are part of the internal UWP API
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool ShouldRaiseEvent(Delegate eventHandler) => eventHandler != null;
+
+		/// <summary>
+		/// Invokes class handlers for the specified routed event.
+		/// This is equivalent to WinUI's CControl::Delegates table + FireEvent mechanism.
+		/// Class handlers run before instance handlers at each element during bubbling.
+		/// </summary>
+		/// <remarks>
+		/// In WinUI:
+		/// - For Controls: Control::FireEvent calls OnContextRequestedImpl (virtual, can be overridden)
+		/// - For UIElements: CUIElement::OnContextRequested static delegate calls OnContextRequestedCore directly
+		/// </remarks>
+		private void InvokeClassHandler(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if (routedEvent == ContextRequestedEvent)
+			{
+				// WinUI: Class handler shows ContextFlyout if present
+				if (this is Control control)
+				{
+					// Controls go through virtual OnContextRequestedImpl (can be overridden by subclasses like SelectorItem)
+					control.InvokeOnContextRequestedImpl((ContextRequestedEventArgs)args);
+				}
+				else
+				{
+					// Non-Controls go directly to OnContextRequestedCore
+					OnContextRequestedCore(this, this, (ContextRequestedEventArgs)args);
+				}
+			}
+			// Future: Add other class handlers here (ContextCanceled, etc.)
+		}
 	}
 }
