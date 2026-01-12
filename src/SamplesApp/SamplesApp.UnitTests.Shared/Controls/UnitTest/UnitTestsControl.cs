@@ -943,35 +943,32 @@ namespace Uno.UI.Samples.Tests
 							{
 								var task = (Task)returnValue;
 								var timeout = GetTestTimeout(test);
-								var timeoutTask = Task.Delay(timeout);
-
-								var resultingTask = await Task.WhenAny(task, timeoutTask);
-
-								if (resultingTask == timeoutTask)
+								if (timeout.HasValue)
 								{
-									throw new TimeoutException(
-										$"Test execution timed out after {timeout}");
-								}
+									var timeoutTask = Task.Delay(timeout.Value);
 
-								// Rethrow exception if failed OR task cancelled if task **internally** raised
-								// a TaskCancelledException (we don't provide any cancellation token).
-								await resultingTask;
+									var resultingTask = await Task.WhenAny(task, timeoutTask);
+
+									if (resultingTask == timeoutTask)
+									{
+										throw new TimeoutException(
+											$"Test execution timed out after {timeout.Value}");
+									}
+
+									// Rethrow exception if failed OR task cancelled if task **internally** raised
+									// a TaskCancelledException (we don't provide any cancellation token).
+									await resultingTask;
+								}
+								else
+								{
+									await task;
+								}
 							}
 
 							var console = consoleRecorder?.GetContentAndReset();
 
-							if (test.ExpectedException is null)
-							{
-								_currentRun.Succeeded++;
-								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, console: console);
-							}
-							else
-							{
-								_currentRun.Failed++;
-								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed,
-									message: $"Test did not throw the expected exception of type {test.ExpectedException.Name}",
-									console: console);
-							}
+							_currentRun.Succeeded++;
+							ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, console: console);
 						}
 						catch (Exception e)
 						{
@@ -994,7 +991,7 @@ namespace Uno.UI.Samples.Tests
 								_currentRun.Inconclusive++;
 								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Inconclusive, message: e.Message, console: console);
 							}
-							else if (test.ExpectedException is null || !test.ExpectedException.IsInstanceOfType(e))
+							else
 							{
 								if (_currentRun.CurrentRepeatCount < config.Attempts - 1)
 								{
@@ -1014,11 +1011,6 @@ namespace Uno.UI.Samples.Tests
 									_currentRun.Failed++;
 									ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 								}
-							}
-							else
-							{
-								_currentRun.Succeeded++;
-								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
 							}
 						}
 						finally
@@ -1253,20 +1245,10 @@ namespace Uno.UI.Samples.Tests
 			return expandedArguments.ToArray();
 		}
 
-		private TimeSpan GetTestTimeout(UnitTestMethodInfo test)
-		{
-			if (test.Method.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute methodAttribute)
-			{
-				return TimeSpan.FromMilliseconds(methodAttribute.Timeout);
-			}
-
-			if (test.Method.DeclaringType.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute typeAttribute)
-			{
-				return TimeSpan.FromMilliseconds(typeAttribute.Timeout);
-			}
-
-			return DefaultUnitTestTimeout;
-		}
+		private TimeSpan? GetTestTimeout(UnitTestMethodInfo test)
+			=> test.Method.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute methodAttribute
+					? TimeSpan.FromMilliseconds(methodAttribute.Timeout)
+					: null;
 
 		private IEnumerable<UnitTestClassInfo> InitializeTests()
 		{

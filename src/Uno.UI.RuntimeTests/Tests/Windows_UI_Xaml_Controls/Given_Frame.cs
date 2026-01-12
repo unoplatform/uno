@@ -530,7 +530,6 @@ public class Given_Frame
 	[Ignore("This test specifically tests Android's NativeFramePresenter")]
 #endif
 	[CombinatorialData]
-	[Timeout(5 * 60 * 1000)] // test is really slow in CI
 	public async Task When_Navigating_NativeFrame_Pages_Get_Collected(bool backAndForth)
 	{
 		// to clean up residual pages from a previous test run
