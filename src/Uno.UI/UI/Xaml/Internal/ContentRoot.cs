@@ -79,6 +79,11 @@ internal partial class ContentRoot
 		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
 		CompositionTarget.Root.CompositionTarget = CompositionTarget;
 
+		// Initialize AccessKeyExport with visual tree and focus manager
+		AccessKeyExport.SetVisualTree(VisualTree);
+		AccessKeyExport.SetFocusManager(FocusManager);
+		AccessKeyExport.ModeContainer.IsActiveChanged += OnAccessKeyModeChanged;
+
 		switch (type)
 		{
 			case ContentRootType.CoreWindow:
@@ -121,7 +126,6 @@ internal partial class ContentRoot
 	/// </summary>
 	internal FocusAdapter FocusAdapter { get; }
 
-	//TODO Uno: Initialize properly when Access Keys are supported (see #3219)
 	/// <summary>
 	/// Access key export.
 	/// </summary>
@@ -281,5 +285,11 @@ internal partial class ContentRoot
 			ContentRootType.XamlIslandRoot when XamlIslandRoot is not null => XamlIslandRoot.OwnerWindow,
 			_ => null
 		};
+	}
+
+	private void OnAccessKeyModeChanged(object? sender, EventArgs e)
+	{
+		// Notify AccessKeyManager of the mode change so it can update IsDisplayModeEnabled
+		AccessKeyManager.OnAccessKeyModeChanged(FocusManager);
 	}
 }
