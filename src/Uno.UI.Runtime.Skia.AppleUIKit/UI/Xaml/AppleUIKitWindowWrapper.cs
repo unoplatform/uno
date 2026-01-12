@@ -71,7 +71,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
 
-		AwaitingScene.Enqueue(this);
+		if (UnoUISceneDelegate.HasSceneManifest())
+		{
+			AwaitingScene.Enqueue(this);
+		}
 	}
 
 	[MemberNotNull(nameof(_nativeWindow))]
