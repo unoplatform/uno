@@ -33,8 +33,4 @@
 		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.4.1-preview.1" />
 		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <Folder Include="Services\" />
-	</ItemGroup>
 </Project>
