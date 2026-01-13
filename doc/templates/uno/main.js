@@ -509,14 +509,21 @@ document.addEventListener(
                 function updatePillsContainer() {
                     const history = getSearchHistory();
                     
-                    // Remove existing container from anywhere
+                    // Remove existing pills container
                     const existingPills = document.querySelector('.search-history-pills');
                     if (existingPills) {
                         existingPills.remove();
                     }
                     
-                    // Only show if there's history and input is empty
-                    if (history.length === 0 || searchInput.value.trim()) {
+                    // Remove any existing empty state from results area
+                    const existingEmptyState = document.querySelector('.search-empty-state');
+                    if (existingEmptyState) {
+                        existingEmptyState.remove();
+                    }
+                    
+                    // Only show if input is empty
+                    const hasQuery = searchInput.value.trim().length > 0;
+                    if (hasQuery) {
                         return;
                     }
                     
@@ -526,9 +533,10 @@ document.addEventListener(
                         return; // Drawer not available yet
                     }
                     
-                    // Create new container
-                    const pillsContainer = document.createElement('div');
-                    pillsContainer.className = 'search-history-pills';
+                    // Show pills if history exists
+                    if (history.length > 0) {
+                        const pillsContainer = document.createElement('div');
+                        pillsContainer.className = 'search-history-pills';
                     
                     // Create header with title and clear button
                     const header = document.createElement('div');
@@ -571,15 +579,47 @@ document.addEventListener(
                     });
                     
                     pillsContainer.appendChild(pillsWrapper);
+                        
+                        // Insert pills at the top of the drawer
+                        drawer.insertBefore(pillsContainer, drawer.firstChild);
+                    }
                     
-                    // Insert at the top of the drawer
-                    drawer.insertBefore(pillsContainer, drawer.firstChild);
+                    // Show empty state in the results area (always shown, even with history)
+                    // Poll for the results area with retries
+                    let attempts = 0;
+                    const maxAttempts = 20;
+                    const checkInterval = setInterval(function() {
+                        attempts++;
+                        const resultsArea = drawer.querySelector('.pagefind-ui__results-area');
+                        
+                        if (resultsArea || attempts >= maxAttempts) {
+                            clearInterval(checkInterval);
+                            
+                            if (resultsArea) {
+                                // Hide/remove the Pagefind "No results" message
+                                const pagefindMessage = resultsArea.querySelector('.pagefind-ui__message');
+                                if (pagefindMessage) {
+                                    pagefindMessage.style.display = 'none';
+                                }
+                                
+                                // Create and inject empty state
+                                const emptyState = document.createElement('div');
+                                emptyState.className = 'search-empty-state';
+                                emptyState.innerHTML = `
+                                    <div class="search-empty-state__icon">🔍</div>
+                                    <div class="search-empty-state__title">Start searching</div>
+                                    <div class="search-empty-state__description">Type a keyword or phrase to search through the Uno Platform documentation</div>
+                                `;
+                                resultsArea.appendChild(emptyState);
+                            }
+                        }
+                    }, 50); // Check every 50ms
                 }
                 
-                // Show pills on focus
+                // Show pills or empty state on focus
                 searchInput.addEventListener('focus', function() {
-                    // If input is empty and we have history, show pills immediately
-                    if (!searchInput.value.trim() && getSearchHistory().length > 0) {
+                    // If input is empty, show drawer with pills or empty state
+                    if (!searchInput.value.trim()) {
                         // Trigger empty search to open drawer without visible text
                         const originalValue = searchInput.value;
                         
@@ -607,12 +647,23 @@ document.addEventListener(
                     }
                 });
                 
-                // Hide pills when typing
+                // Hide pills and empty state when typing
                 searchInput.addEventListener('input', function() {
                     const query = searchInput.value.trim();
                     const pillsContainer = document.querySelector('.search-history-pills');
-                    if (pillsContainer && query) {
-                        pillsContainer.remove();
+                    const emptyState = document.querySelector('.search-empty-state');
+                    
+                    if (query) {
+                        // Hide pills and empty state when there's a query
+                        if (pillsContainer) {
+                            pillsContainer.remove();
+                        }
+                        if (emptyState) {
+                            emptyState.remove();
+                        }
+                    } else {
+                        // Show appropriate state when query is cleared
+                        updatePillsContainer();
                     }
                 });
                 
