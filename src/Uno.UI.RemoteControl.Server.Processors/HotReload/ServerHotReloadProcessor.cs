@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host;
@@ -838,6 +839,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				if (await GetWorkspaceAsync() is { } workspace)
 				{
+					if (req.RequestId == "0") // Test purposes!
+					{
+						var manifest = new WorkspaceData(Solution: workspace.CurrentSolution.GetData());
+
+						//await (_workspace?.Ct.CancelAsync() ?? Task.CompletedTask);
+
+						var workspaceCt = new CancellationTokenSource();
+						var newWorkspace = await CreateAdHoc(_configureServer!, manifest, ct);
+						workspaceCt.Token.Register(() => newWorkspace.Dispose());
+
+						var fileSystemWatch = ObserveSolutionPaths(newWorkspace.CurrentSolution, newWorkspace.OutputPaths);
+						workspaceCt.Token.Register(() => fileSystemWatch.Dispose());
+
+						_originalWorkspace ??= await GetWorkspaceAsync();
+						_workspace = new(Task.FromResult(newWorkspace), workspaceCt);
+					}
+
 					var packagePath = await WorkspacePackage.Create(workspace.CurrentSolution, req.TargetFile, true, ct);
 					await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, packagePath, null));
 				}

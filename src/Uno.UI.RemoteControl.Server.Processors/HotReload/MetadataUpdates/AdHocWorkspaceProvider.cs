@@ -112,7 +112,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			// Warm up the compilation. This would help make the deltas for first edit appear much more quickly
 			foreach (var project in currentSolution.Projects)
 			{
-				await project.GetCompilationAsync(ct);
+				var compilation = await project.GetCompilationAsync(ct);
+				await using var dll = File.Create(project.OutputFilePath! + ".adhoc.dll");
+				await using var pdb = File.Create(Path.ChangeExtension(project.OutputFilePath!, ".pdb") + ".adhoc.pdb");
+				var result = compilation!.Emit(peStream: dll, pdbStream: pdb);
+				result.ToString();
 			}
 
 			return (workspace, hotReloadService);

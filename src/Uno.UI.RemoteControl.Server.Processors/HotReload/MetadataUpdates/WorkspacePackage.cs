@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -17,6 +18,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Elfie.Model.Tree;
 using Uno.UI.RemoteControl.Helpers;
 using static System.Net.Mime.MediaTypeNames;
+using static Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates.WatchHotReloadService;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
@@ -73,6 +75,11 @@ internal static class WorkspacePackage
 			{
 				await System.Text.Json.JsonSerializer.SerializeAsync(manifestFile, packagedData, _jsonOptions, ct);
 			}
+
+			//foreach (var analyzerConfig in packager.Files.Where(file => Path.GetExtension(file.DestinationPath).Equals(".editorconfig", _pathComparison)))
+			//{
+			//	await EditorConfigPathUpdaterMan.MakeRelativeToAsync(analyzerConfig.DestinationPath, "/", ct);
+			//}
 
 			await ZipFile.CreateFromDirectoryAsync(workingDir, targetFile, CompressionLevel.Optimal, includeBaseDirectory: false, ct);
 
@@ -147,7 +154,14 @@ internal static class WorkspacePackage
 			var data = await System.Text.Json.JsonSerializer.DeserializeAsync<WorkspaceData>(manifestStream, _jsonOptions, ct)
 				?? throw new InvalidOperationException("Unable to read workspace manifest.");
 
-			return new Extractor(workingDir).ExtractWorkspace(data);
+			var extractor = new Extractor(workingDir);
+
+			return extractor.ExtractWorkspace(data);
+
+			//foreach (var analyzerConfig in packager.Files.Where(file => Path.GetExtension(file.DestinationPath).Equals(".editorconfig", _pathComparison)))
+			//{
+			//	await EditorConfigPathUpdaterMan.MakeRelativeToAsync(analyzerConfig.DestinationPath, "/", ct);
+			//}
 		}
 		catch (Exception) when (deleteOnError)
 		{
@@ -164,8 +178,21 @@ internal static class WorkspacePackage
 		}
 	}
 
-	private sealed class Extractor(string baseDirectory)
+	private sealed class Extractor
 	{
+		public record struct ExtractedFile(string Path);
+
+		private readonly Dictionary<string, ExtractedFile> _files = new(_pathComparer);
+		private readonly string _baseDirectory;
+		private readonly EditorConfigPathUpdaterMan _editorConfigUpdater;
+
+
+		public Extractor(string baseDirectory)
+		{
+			_baseDirectory = baseDirectory.TrimEnd('\\', '/') + Path.DirectorySeparatorChar;
+			_editorConfigUpdater = new(ResolvePath, isPacking: false);
+		}
+
 		public WorkspaceData ExtractWorkspace(WorkspaceData workspace)
 			=> workspace with { Solution = ExtractSolution(workspace.Solution) };
 
@@ -191,10 +218,10 @@ internal static class WorkspacePackage
 				CompilationOutputInfo = ExtractCompilationOutput(project.CompilationOutputInfo)
 			};
 
-			var pathsMap = BuildPathMap(project, ResolvePath);
+			////var pathsMap = BuildPathMap(project, ResolvePath);
 			foreach (var configDocument in result.AnalyzerConfigDocuments.Where(doc => doc.FilePath is not null))
 			{
-				PatchPaths(configDocument.FilePath!, pathsMap);
+				_editorConfigUpdater.MakeRelativeToAsync(Path.GetDirectoryName(result.FilePath)!, configDocument.FilePath!, CancellationToken.None).AsTask().Wait();
 			}
 
 			return result;
@@ -224,18 +251,56 @@ internal static class WorkspacePackage
 				return path;
 			}
 
-			if (Path.IsPathRooted(path))
-			{
-				return Path.GetFullPath(path);
-			}
+			return ResolvePath(path.AsSpan()).ToString();
 
-			return Path.GetFullPath(Path.Combine(baseDirectory, path));
+			//var absolutePath = Path.GetFullPath(Path.IsPathRooted(path) ? path : Path.Combine(baseDirectory, path));
+			//_files[path] = new ExtractedFile(absolutePath);
+			//return absolutePath;
+		}
+
+		public ReadOnlySpan<char> ResolvePath(ReadOnlySpan<char> value)
+		{
+			//var root = Path.GetPathRoot(path);
+			//var relative = root is {Length: >0}
+			//	? Path.GetFileName(path)
+			//	: Path.GetRelativePath(root, fullPath);
+
+			//if (Path.GetPathRoot(value) is not { Length: > 0 } root
+			//	|| !Path.Exists(value.ToString()))
+			//{
+			//	updated = default;
+			//	return false;
+			//}
+
+			//	private static bool TryUpdateValue(ReadOnlySpan<char> value, ReadOnlySpan<char> basePath, char separator, out Span<char> updated)
+			//{
+
+			var root = Path.GetPathRoot(value);
+			var updated = new Span<char>(new char[_baseDirectory.Length + value.Length - root.Length]);
+			_baseDirectory.CopyTo(updated);
+			value[root.Length..].CopyTo(updated.Slice(_baseDirectory.Length));
+
+			//// Patch the root
+			//updated.Slice(basePath.Length, root.Length).ReplaceAny(_pathInvalidChars, '_');
+
+			// Patch dir separator in the whole path (including the root which may contains a '\' (e.g. "C:\"))
+			updated.Slice(_baseDirectory.Length).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+			return updated;
 		}
 	}
 
-	private sealed class Packager(string workingDirectory)
+	private sealed class Packager
 	{
-		private readonly Dictionary<string, string> _files = new(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, CopiedFile> _files = new(StringComparer.OrdinalIgnoreCase);
+		private readonly string _workingDirectory;
+		private readonly EditorConfigPathUpdaterMan _editorConfigUpdater;
+
+		public Packager(string workingDirectory)
+		{
+			_workingDirectory = workingDirectory.TrimEnd('\\', '/') + Path.DirectorySeparatorChar;
+			_editorConfigUpdater = new(GetRelativePath, isPacking: true);
+		}
 
 		public WorkspaceData PackWorkspace(WorkspaceData workspace)
 			=> workspace with { Solution = PackSolution(workspace.Solution) };
@@ -250,19 +315,29 @@ internal static class WorkspacePackage
 
 		private ProjectData PackProject(ProjectData project)
 		{
-			var pathsMap = BuildPathMap(project, GetRelativePath);
+			//var pathsMap = BuildPathMap(project, GetRelativePath);
 			CopyDirectory(Path.GetDirectoryName(project.OutputFilePath));
-			return project with
+			CopyDirectory(Path.GetDirectoryName(project.FilePath));
+
+			var editorConfigs = new HashSet<CopiedFile>();
+			var result = project with
 			{
 				FilePath = CopyFile(project.FilePath),
 				OutputFilePath = CopyFile(project.OutputFilePath),
 				Documents = [.. project.Documents.Select(document => document with { FilePath = CopyFile(document.FilePath) })],
 				AdditionalDocuments = [.. project.AdditionalDocuments.Select(document => document with { FilePath = CopyFile(document.FilePath) })],
-				AnalyzerConfigDocuments = [.. project.AnalyzerConfigDocuments.Select(document => document with { FilePath = CopyFile(document.FilePath, pathsMap) })],
+				AnalyzerConfigDocuments = [.. project.AnalyzerConfigDocuments.Select(document => document with { FilePath = CopyFile(document.FilePath, ref editorConfigs) })],
 				MetadataReferences = [.. project.MetadataReferences.Select(reference => reference with { FilePath = CopyFile(reference.FilePath) })],
 				AnalyzerReferences = [.. project.AnalyzerReferences.Select(reference => reference with { FilePath = CopyFile(reference.FilePath) })],
 				CompilationOutputInfo = PackCompilationOutput(project.CompilationOutputInfo)
 			};
+
+			foreach (var configDocument in editorConfigs)
+			{
+				_editorConfigUpdater.MakeRelativeToAsync(Path.GetDirectoryName(project.FilePath)!, configDocument.DestinationPath, CancellationToken.None).AsTask().Wait();
+			}
+
+			return result;
 		}
 
 		private CompilationOutputInfo? PackCompilationOutput(CompilationOutputInfo? info)
@@ -272,8 +347,46 @@ internal static class WorkspacePackage
 					.WithGeneratedFilesOutputDirectory(CopyDirectory(output.GeneratedFilesOutputDirectory))
 				: default;
 
+		private HashSet<CopiedFile>? _null;
+
 		[return: NotNullIfNotNull(nameof(path))]
-		private string? CopyFile(string? path, IReadOnlyDictionary<string, string>? patchPathsMap = null)
+		private string? CopyFile(string? path)
+			=> CopyFile(path, ref _null);
+		//{
+		//	if (string.IsNullOrWhiteSpace(path))
+		//	{
+		//		return null;
+		//	}
+
+		//	var src = Path.GetFullPath(path);
+		//	if (!File.Exists(src))
+		//	{
+		//		throw new InvalidOperationException($"File '{src}' does not exist and cannot be packaged.");
+		//	}
+
+		//	if (_files.TryGetValue(src, out var existing))
+		//	{
+		//		return existing.RelativePath;
+		//	}
+
+		//	var rel = GetRelativePath(src);
+		//	var dst = Path.Combine(_workingDirectory, rel[1..].ToString());
+		//	Directory.CreateDirectory(Path.GetDirectoryName(dst)!);
+		//	File.Copy(src, dst, overwrite: true);
+
+		//	//if (patchPathsMap is { Count: > 0 })
+		//	//{
+		//	//	PatchPaths(dst, patchPathsMap, "/");
+		//	//}
+
+		//	//var normalizedRel = rel.Replace('\\', '/');
+		//	var result = new CopiedFile(src, dst, rel.ToString());
+		//	_files[src] = result;
+		//	return result.RelativePath;
+		//}
+
+		[return: NotNullIfNotNull(nameof(path))]
+		private string? CopyFile(string? path, ref HashSet<CopiedFile>? aggregator)
 		{
 			if (string.IsNullOrWhiteSpace(path))
 			{
@@ -288,23 +401,39 @@ internal static class WorkspacePackage
 
 			if (_files.TryGetValue(src, out var existing))
 			{
-				return existing;
+				aggregator?.Add(existing);
+				return existing.RelativePath;
 			}
 
 			var rel = GetRelativePath(src);
-			var dst = Path.Combine(workingDirectory, rel);
+			var dst = Path.Combine(_workingDirectory, rel[1..].ToString());
 			Directory.CreateDirectory(Path.GetDirectoryName(dst)!);
 			File.Copy(src, dst, overwrite: true);
 
-			if (patchPathsMap is { Count: > 0 })
-			{
-				PatchPaths(dst, patchPathsMap);
-			}
+			//if (patchPathsMap is { Count: > 0 })
+			//{
+			//	PatchPaths(dst, patchPathsMap, "/");
+			//}
 
-			var normalizedPath = rel.Replace('\\', '/');
-			_files[src] = normalizedPath;
-			return normalizedPath;
+			//var normalizedRel = rel.Replace('\\', '/');
+			//var info = new CopiedFile(src, dst, normalizedRel);
+			//_files[src] = info;
+			//aggregator.Add(info);
+			//return normalizedRel;
+
+			var result = new CopiedFile(src, dst, rel.ToString());
+			_files[src] = result;
+			aggregator?.Add(result);
+			return result.RelativePath;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="SourcePath">The original absolute path of the file on the disk.</param>
+		/// <param name="DestinationPath">The absolute temporary path where the file has been copied for packaging.</param>
+		/// <param name="RelativePath">The relative path used in manifest.</param>
+		public record struct CopiedFile(string SourcePath, string DestinationPath, string RelativePath);
 
 		[return: NotNullIfNotNull(nameof(sourceDirectory))]
 		private string? CopyDirectory(string? sourceDirectory)
@@ -314,214 +443,257 @@ internal static class WorkspacePackage
 				return null;
 			}
 
-			var fullPath = Path.GetFullPath(sourceDirectory);
-			if (!Directory.Exists(fullPath))
+			var dirSrc = Path.GetFullPath(sourceDirectory);
+			if (!Directory.Exists(dirSrc))
 			{
-				throw new InvalidOperationException($"Directory '{fullPath}' does not exist and cannot be packaged.");
+				throw new InvalidOperationException($"Directory '{dirSrc}' does not exist and cannot be packaged.");
 			}
 
-			var rel = GetRelativePath(fullPath);
-			var dst = Path.Combine(workingDirectory, rel);
-			Directory.CreateDirectory(dst);
+			var dirRel = GetRelativePath(dirSrc);
+			var dirDst = Path.Combine(_workingDirectory, dirRel[1..].ToString());
+			Directory.CreateDirectory(dirDst);
 
-			foreach (var directory in Directory.EnumerateDirectories(fullPath, "*", SearchOption.AllDirectories))
+			foreach (var directory in Directory.EnumerateDirectories(dirSrc, "*", SearchOption.AllDirectories))
 			{
-				var destinationSubDir = Path.Combine(dst, Path.GetRelativePath(fullPath, directory));
+				var destinationSubDir = Path.Combine(dirDst, Path.GetRelativePath(dirSrc, directory));
 				Directory.CreateDirectory(destinationSubDir);
 			}
 
-			foreach (var file in Directory.EnumerateFiles(fullPath, "*", SearchOption.AllDirectories))
+			//var dirRelFileBase = dirRel[1..].ToString();
+			foreach (var file in Directory.EnumerateFiles(dirSrc, "*", SearchOption.AllDirectories))
 			{
-				var fileSrc = Path.GetFullPath(file);
-				if (_files.ContainsKey(fileSrc))
-				{
-					continue;
-				}
+				CopyFile(file);
+				//var fileSrc = Path.GetFullPath(file);
+				//if (_files.ContainsKey(fileSrc))
+				//{
+				//	continue;
+				//}
 
-				var fileRel = Path.Combine(rel, Path.GetRelativePath(fullPath, file));
-				var fileDst = Path.Combine(workingDirectory, fileRel);
-				Directory.CreateDirectory(Path.GetDirectoryName(fileDst)!);
-				File.Copy(fileSrc, fileDst, overwrite: true);
+				//var fileRel = Path.Combine(dirRelFileBase, Path.GetRelativePath(dirSrc, file));
+				//var fileDst = Path.Combine(_workingDirectory, fileRel);
+				//Directory.CreateDirectory(Path.GetDirectoryName(fileDst)!);
+				//File.Copy(fileSrc, fileDst, overwrite: true);
 
-				_files[fileSrc] = fileRel.Replace('\\', '/');
+				//_files[fileSrc] = new CopiedFile(fileSrc, fileDst, fileRel.Replace('\\', '/'));
 			}
 
-			return rel.Replace('\\', '/');
+			return dirRel.ToString();
 		}
 
-		[return: NotNullIfNotNull(nameof(fullPath))]
-		private static string? GetRelativePath(string? fullPath)
-		{
-			if (fullPath is null)
-			{
-				return null;
-			}
-
-			var root = Path.GetPathRoot(fullPath);
-			var relative = root is null
-				? Path.GetFileName(fullPath)
-				: Path.GetRelativePath(root, fullPath);
-
-			relative = relative.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-
-			if (!string.IsNullOrWhiteSpace(root))
-			{
-				var sanitizedRoot = root
-					.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-					.Replace(':', '_')
-					.Replace('\\', '_')
-					.Replace('/', '_');
-
-				relative = Path.Combine(sanitizedRoot, relative);
-			}
-
-			return relative.Replace(':', '_').Replace('\\', '/');
-		}
-	}
-
-	private static void PatchPaths(string path, IReadOnlyDictionary<string, string> pathsMap)
-	{
-		var text = File.ReadAllText(path);
-		var updatedText = new StringBuilder(Math.Min(text.Length + pathsMap.Count * 128, 4096));
-		var normalizedText = text.Replace('\\', '/');
-		var replacements = pathsMap
-			.Select((pair, priority) => new Replacement(normalizedText, priority, pair.Key, pair.Value, _pathComparison))
-			.ToList();
-
-		var updated = false;
-		var shift = 0;
-		var index = 0;
-		while (index < text.Length)
-		{
-			var replacement = replacements
-				.Where(r => r.MoveNext(index))
-				.OrderBy(r => r.CurrentIndex)
-				.ThenBy(r => r.Priority)
-				.FirstOrDefault(Replacement.Null);
-			if (Replacement.Null.Equals(replacement))
-			{
-				break;
-			}
-
-			updated = true;
-			updatedText.Append(text.AsSpan()[index..replacement.CurrentIndex]);
-			updatedText.Append(replacement.NewValue.AsSpan());
-			index = replacement.CurrentIndex + replacement.OldValue.Length;
-		}
-
-		if (updated)
-		{
-			updatedText.Append(text.AsSpan()[(index + shift)..]);
-			File.WriteAllText(path, updatedText.ToString());
-		}
-
-		//static IEnumerable<int> IndexOf(string text, int start, Dictionary<string, string> replacements, [NotNullWhen(true)] out KeyValuePair<string, string>? replacement)
+		//[return: NotNullIfNotNull(nameof(fullPath))]
+		//private static string? GetRelativePath(string? fullPath)
 		//{
-		//	replacements.Where()
-
-		//	foreach (var r in replacements)
+		//	if (fullPath is null)
 		//	{
-		//		var index = text.IndexOf(r.Key, start);
-		//		if ( is >0)
+		//		return null;
 		//	}
+
+		//	return GetRelativePath(fullPath.AsSpan()).ToString();
+
+		//	//var root = Path.GetPathRoot(fullPath);
+		//	//var relative = root is null
+		//	//	? Path.GetFileName(fullPath)
+		//	//	: Path.GetRelativePath(root, fullPath);
+
+		//	//relative = relative.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+		//	//if (!string.IsNullOrWhiteSpace(root))
+		//	//{
+		//	//	var sanitizedRoot = root
+		//	//		.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+		//	//		.Replace(':', '_')
+		//	//		.Replace('\\', '_')
+		//	//		.Replace('/', '_');
+
+		//	//	relative = Path.Combine(sanitizedRoot, relative);
+		//	//}
+
+		//	//return relative.Replace(':', '_').Replace('\\', '/');
 		//}
 
-		//static IEnumerable<int> IndicesOf(string text, string value, StringComparison comparison)
-		//{
-		//	var index = 0;
-		//	while ((index = text.IndexOf(value, index, comparison)) > 0)
-		//	{
-		//		yield return index;
-		//	}
-		//}
-	}
-
-	private record struct Replacement
-	{
-		private readonly IEnumerator<int> _indices;
-		private bool _hasIndex;
-
-		public static readonly Replacement Null = new Replacement(string.Empty, int.MinValue, string.Empty, string.Empty, StringComparison.Ordinal);
-
-		public Replacement(string text, int priority, string oldValue, string newValue, StringComparison comparison)
+		public static ReadOnlySpan<char> GetRelativePath(ReadOnlySpan<char> value)
 		{
-			Priority = priority;
-			OldValue = oldValue;
-			NewValue = newValue;
-			Shift = newValue.Length - oldValue.Length;
+			//var root = Path.GetPathRoot(path);
+			//var relative = root is {Length: >0}
+			//	? Path.GetFileName(path)
+			//	: Path.GetRelativePath(root, fullPath);
 
-			_indices = IndicesOf(text, oldValue, comparison);
-			_hasIndex = _indices.MoveNext();
-		}
+			//if (Path.GetPathRoot(value) is not { Length: > 0 } root
+			//	|| !Path.Exists(value.ToString()))
+			//{
+			//	updated = default;
+			//	return false;
+			//}
 
-		public int CurrentIndex => _hasIndex ? _indices.Current : -1;
+			//	private static bool TryUpdateValue(ReadOnlySpan<char> value, ReadOnlySpan<char> basePath, char separator, out Span<char> updated)
+			//{
 
-		public int Priority { get; }
+			var root = Path.GetPathRoot(value);
+			var updated = new Span<char>(new char[1 + value.Length]) { [0] = '/' };
+			value.CopyTo(updated.Slice(1));
 
-		public int Shift { get; }
+			// Patch the root
+			updated.Slice(1, root.Length).ReplaceAny(_pathInvalidChars, '_');
 
-		public string OldValue { get; }
+			// Patch dir separator in the whole path (including the root which may contains a '\' (e.g. "C:\"))
+			updated.Slice(1).Replace('\\', '/');
 
-		public string NewValue { get; }
-
-		public bool MoveNext(int startIndex)
-		{
-			while (_hasIndex)
-			{
-				if (_indices.Current >= startIndex)
-				{
-					return true;
-				}
-
-				_hasIndex = _indices.MoveNext();
-			}
-
-			return false;
+			return updated;
 		}
 	}
 
-	static IEnumerator<int> IndicesOf(string text, string value, StringComparison comparison)
-	{
-		var index = 0;
-		while ((index = text.IndexOf(value, index, comparison)) > 0)
-		{
-			yield return index;
-			index += value.Length;
-		}
-	}
+	private static readonly SearchValues<char> _pathInvalidChars = SearchValues.Create([.. Path.GetInvalidPathChars(), ':']);
+	private static readonly SearchValues<char> _pathSeparators = SearchValues.Create(['\\', '/']);
 
-	[return: NotNullIfNotNull(nameof(path))]
-	private delegate string? PathTransformation(string? path);
+	//private static void PatchPaths(string path, IReadOnlyDictionary<string, string> pathsMap, string basePath)
+	//{
+	//	if (Path.GetExtension(path).Equals(".editorconfig", StringComparison.OrdinalIgnoreCase))
+	//	{
+	//		EditorConfigPathUpdaterMan.MakeRelativeToAsync(path, basePath, out _, default).Wait();
+	//		return;
+	//	}
 
-	private static IReadOnlyDictionary<string, string> BuildPathMap(ProjectData project, PathTransformation transformation)
-	{
-		var map = new Dictionary<string, string>(_pathComparer);
-		
-		// First we add exact full path of documents that will allow us to replace the complete path. not only the base dir
-		Add(project.Documents);
-		Add(project.AdditionalDocuments);
+	//	var text = File.ReadAllText(path);
+	//	var updatedText = new StringBuilder(Math.Min(text.Length + pathsMap.Count * 128, 4096));
+	//	var normalizedText = text.Replace('\\', '/');
+	//	var replacements = pathsMap
+	//		.Select((pair, priority) => new Replacement(normalizedText, priority, pair.Key, pair.Value, _pathComparison))
+	//		.ToList();
 
-		// Then, as a fallback, we add the base dir of the project to attempt to patch unknown path.
-		// WARNING: This means that some paths may be mixing `\` and `/` which could drive to undefined behavior
-		//			when building and using package on a different OS, but is usually a better solution as modern OS supports both.
-		if (Path.GetDirectoryName(project.FilePath) is { } projectDir)
-		{
-			map[projectDir.Replace('\\', '/')] = transformation(projectDir);
-		}
+	//	var updated = false;
+	//	var shift = 0;
+	//	var index = 0;
+	//	while (index < text.Length)
+	//	{
+	//		var replacement = replacements
+	//			.Where(r => r.MoveNext(index))
+	//			.OrderBy(r => r.CurrentIndex)
+	//			.ThenBy(r => r.Priority)
+	//			.FirstOrDefault(Replacement.Null);
+	//		if (Replacement.Null.Equals(replacement))
+	//		{
+	//			break;
+	//		}
 
-		return map;
+	//		updated = true;
+	//		updatedText.Append(text.AsSpan()[index..replacement.CurrentIndex]);
+	//		updatedText.Append(replacement.NewValue.AsSpan());
+	//		index = replacement.CurrentIndex + replacement.OldValue.Length;
+	//	}
 
-		void Add(ImmutableArray<DocumentData> documents)
-		{
-			foreach (var document in documents)
-			{
-				if (document.FilePath is not null)
-				{
-					map[document.FilePath.Replace('\\', '/')] = transformation(document.FilePath);
-				}
-			}
-		}
-	}
+	//	if (updated)
+	//	{
+	//		updatedText.Append(text.AsSpan()[(index + shift)..]);
+	//		File.WriteAllText(path, updatedText.ToString());
+	//	}
+
+	//	//static IEnumerable<int> IndexOf(string text, int start, Dictionary<string, string> replacements, [NotNullWhen(true)] out KeyValuePair<string, string>? replacement)
+	//	//{
+	//	//	replacements.Where()
+
+	//	//	foreach (var r in replacements)
+	//	//	{
+	//	//		var index = text.IndexOf(r.Key, start);
+	//	//		if ( is >0)
+	//	//	}
+	//	//}
+
+	//	//static IEnumerable<int> IndicesOf(string text, string value, StringComparison comparison)
+	//	//{
+	//	//	var index = 0;
+	//	//	while ((index = text.IndexOf(value, index, comparison)) > 0)
+	//	//	{
+	//	//		yield return index;
+	//	//	}
+	//	//}
+	//}
+
+	//private record struct Replacement
+	//{
+	//	private readonly IEnumerator<int> _indices;
+	//	private bool _hasIndex;
+
+	//	public static readonly Replacement Null = new Replacement(string.Empty, int.MinValue, string.Empty, string.Empty, StringComparison.Ordinal);
+
+	//	public Replacement(string text, int priority, string oldValue, string newValue, StringComparison comparison)
+	//	{
+	//		Priority = priority;
+	//		OldValue = oldValue;
+	//		NewValue = newValue;
+	//		Shift = newValue.Length - oldValue.Length;
+
+	//		_indices = IndicesOf(text, oldValue, comparison);
+	//		_hasIndex = _indices.MoveNext();
+	//	}
+
+	//	public int CurrentIndex => _hasIndex ? _indices.Current : -1;
+
+	//	public int Priority { get; }
+
+	//	public int Shift { get; }
+
+	//	public string OldValue { get; }
+
+	//	public string NewValue { get; }
+
+	//	public bool MoveNext(int startIndex)
+	//	{
+	//		while (_hasIndex)
+	//		{
+	//			if (_indices.Current >= startIndex)
+	//			{
+	//				return true;
+	//			}
+
+	//			_hasIndex = _indices.MoveNext();
+	//		}
+
+	//		return false;
+	//	}
+	//}
+
+	//static IEnumerator<int> IndicesOf(string text, string value, StringComparison comparison)
+	//{
+	//	var index = 0;
+	//	while ((index = text.IndexOf(value, index, comparison)) > 0)
+	//	{
+	//		yield return index;
+	//		index += value.Length;
+	//	}
+	//}
+
+	//[return: NotNullIfNotNull(nameof(path))]
+	//private delegate string? PathTransformation(string? path);
+
+	//private static IReadOnlyDictionary<string, string> BuildPathMap(ProjectData project, PathTransformation transformation)
+	//{
+	//	var map = new Dictionary<string, string>(_pathComparer);
+
+	//	// First we add exact full path of documents that will allow us to replace the complete path. not only the base dir
+	//	Add(project.Documents);
+	//	Add(project.AdditionalDocuments);
+
+	//	// Then, as a fallback, we add the base dir of the project to attempt to patch unknown path.
+	//	// WARNING: This means that some paths may be mixing `\` and `/` which could drive to undefined behavior
+	//	//			when building and using package on a different OS, but is usually a better solution as modern OS supports both.
+	//	if (Path.GetDirectoryName(project.FilePath) is { } projectDir)
+	//	{
+	//		map[projectDir.Replace('\\', '/')] = transformation(projectDir);
+	//	}
+
+	//	return map;
+
+	//	void Add(ImmutableArray<DocumentData> documents)
+	//	{
+	//		foreach (var document in documents)
+	//		{
+	//			if (document.FilePath is not null)
+	//			{
+	//				map[document.FilePath.Replace('\\', '/')] = transformation(document.FilePath);
+	//			}
+	//		}
+	//	}
+	//}
 
 	private static readonly StringComparison _pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 	private static readonly IEqualityComparer<string> _pathComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
