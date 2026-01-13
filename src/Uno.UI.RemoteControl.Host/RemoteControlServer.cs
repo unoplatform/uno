@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -18,6 +18,7 @@ using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
+using Uno.UI.RemoteControl.Messaging;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Helpers;
@@ -35,7 +36,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private readonly List<DiscoveredProcessor> _discoveredProcessors = new();
 	private readonly CancellationTokenSource _ct = new();
 
-	private WebSocket? _socket;
+	private IFrameTransport? _transport;
 	private readonly List<string> _appInstanceIds = new();
 	private readonly IConfiguration _configuration;
 	private readonly IIdeChannel _ideChannel;
@@ -54,7 +55,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		_globalServiceProvider = _serviceProvider.GetKeyedService<IServiceProvider>("global") ?? _serviceProvider;
 
 		// Use connection-specific telemetry for this RemoteControlServer instance
-		// This telemetry is scoped to the current WebSocket connection (Kestrel request)
+		// This telemetry is scoped to the current transport connection (Kestrel request)
 		_telemetry = _serviceProvider.GetService<ITelemetry>();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -179,16 +180,19 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		=> _processors[hotReloadProcessor.Scope] = hotReloadProcessor;
 
-	public async Task RunAsync(WebSocket socket, CancellationToken ct)
+	public Task RunAsync(WebSocket socket, CancellationToken ct)
+		=> RunAsync(new WebSocketFrameTransport(socket), ct);
+
+	public async Task RunAsync(IFrameTransport transport, CancellationToken ct)
 	{
-		_socket = socket;
+		_transport = transport;
 
 		if (_ideChannel is IdeChannelServer srv)
 		{
 			await srv.WaitForReady(ct);
 		}
 
-		while (await WebSocketHelper.ReadFrame(socket, ct) is Frame frame)
+		while (await transport.ReceiveAsync(ct) is Frame frame)
 		{
 			try
 			{
@@ -238,7 +242,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 					}
 				}
 			}
-			catch (WebSocketException) when (socket.State == WebSocketState.Closed)
+			catch (WebSocketException) when (!transport.IsConnected)
 			{
 				// Ignore "The remote party closed the WebSocket connection without completing the close handshake."
 				// It's making noise in the logs.
@@ -626,23 +630,22 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 	public async Task SendFrame(IMessage message)
 	{
-		if (_socket is not null)
+		if (_transport is not null)
 		{
-			await WebSocketHelper.SendFrame(
-				_socket,
+			await _transport.SendAsync(
 				Frame.Create(
 					1,
 					message.Scope,
 					message.Name,
 					message
-					),
+				),
 				CancellationToken.None);
 		}
 		else
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogWarning("Tried to send frame, but WebSocket is null.");
+				this.Log().LogWarning("Tried to send frame, but transport is null.");
 			}
 		}
 	}
