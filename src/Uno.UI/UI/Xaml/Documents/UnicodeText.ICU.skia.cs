@@ -184,8 +184,9 @@ internal readonly partial struct UnicodeText
 			}
 			else if (status < 0)
 			{
-				// ICU has a very low bar for what it considers a "warning", so this can be very spammy. 
-				typeof(ICU).LogTrace()?.Warn($"{typeof(T).Name} raised a warning code {status.ToString("X", CultureInfo.InvariantCulture)}");
+				// ICU has a very low bar for what it considers a "warning", so this can be very spammy.
+				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
+				typeof(ICU).LogTrace()?.Trace($"{typeof(T).Name} raised a warning code: {errorString}");
 			}
 		}
 
