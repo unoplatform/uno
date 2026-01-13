@@ -1,0 +1,263 @@
+<Page
+	x:Class="UITests.Shared.Windows_UI_Xaml_Input.ContextMenu.ContextRequested_Sample"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid Padding="12">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<!-- Header -->
+		<StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
+			<TextBlock Text="ContextRequested and ContextCanceled Test Sample" FontSize="18" FontWeight="SemiBold" />
+			<TextBlock Text="Right-click, long-press (touch), or press Shift+F10/Application key on focused elements to trigger context menus."
+					   TextWrapping="Wrap" Foreground="Gray" />
+		</StackPanel>
+
+		<!-- Test Areas -->
+		<ScrollViewer Grid.Row="1">
+			<StackPanel Spacing="16">
+
+				<!-- Test 1: Basic ContextFlyout -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="1. Basic ContextFlyout" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click on the button to show a context menu" Foreground="Gray" TextWrapping="Wrap" />
+
+						<Button x:Name="BasicContextFlyoutButton"
+								Content="Right-click me"
+								HorizontalAlignment="Left"
+								ContextRequested="OnContextRequested"
+								ContextCanceled="OnContextCanceled">
+							<Button.ContextFlyout>
+								<MenuFlyout>
+									<MenuFlyoutItem Text="Cut" Click="OnMenuItemClick" />
+									<MenuFlyoutItem Text="Copy" Click="OnMenuItemClick" />
+									<MenuFlyoutItem Text="Paste" Click="OnMenuItemClick" />
+									<MenuFlyoutSeparator />
+									<MenuFlyoutItem Text="Delete" Click="OnMenuItemClick" />
+								</MenuFlyout>
+							</Button.ContextFlyout>
+						</Button>
+					</StackPanel>
+				</Border>
+
+				<!-- Test 2: Event Bubbling -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="2. Event Bubbling" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click on the inner element. Events bubble up through the visual tree." Foreground="Gray" TextWrapping="Wrap" />
+
+						<Border x:Name="OuterBorder"
+								Background="LightBlue"
+								Width="250" Height="150"
+								ContextRequested="OnOuterContextRequested"
+								ContextCanceled="OnContextCanceled">
+							<Border x:Name="InnerBorder"
+									Background="LightCoral"
+									Width="150" Height="80"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									ContextRequested="OnInnerContextRequested"
+									ContextCanceled="OnContextCanceled">
+								<Border.ContextFlyout>
+									<MenuFlyout>
+										<MenuFlyoutItem Text="Inner Menu Item" Click="OnMenuItemClick" />
+									</MenuFlyout>
+								</Border.ContextFlyout>
+								<TextBlock Text="Inner (with flyout)"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center" />
+							</Border>
+						</Border>
+						<TextBlock Text="Outer Border (LightBlue) - No ContextFlyout" Foreground="Gray" FontSize="12" />
+						<TextBlock Text="Inner Border (LightCoral) - Has ContextFlyout" Foreground="Gray" FontSize="12" />
+					</StackPanel>
+				</Border>
+
+				<!-- Test 3: Handled=true prevents bubbling -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="3. Handled Property" FontWeight="SemiBold" />
+						<TextBlock Text="Toggle the checkbox to see how Handled=true prevents event bubbling." Foreground="Gray" TextWrapping="Wrap" />
+
+						<CheckBox x:Name="HandleEventCheckbox" Content="Set Handled=true in child handler" IsChecked="False" />
+
+						<Border x:Name="HandledTestOuter"
+								Background="LightGreen"
+								Width="250" Height="100"
+								ContextRequested="OnHandledTestOuterContextRequested">
+							<Border x:Name="HandledTestInner"
+									Background="LightYellow"
+									Width="150" Height="60"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									ContextRequested="OnHandledTestInnerContextRequested">
+								<TextBlock Text="Click me"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center" />
+							</Border>
+						</Border>
+					</StackPanel>
+				</Border>
+
+				<!-- Test 4: Position Information -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="4. Position Information (TryGetPosition)" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click anywhere in the area below. Position will be shown relative to the element." Foreground="Gray" TextWrapping="Wrap" />
+
+						<Border x:Name="PositionTestBorder"
+								Background="LightSteelBlue"
+								Width="300" Height="150"
+								ContextRequested="OnPositionTestContextRequested">
+							<Border.ContextFlyout>
+								<MenuFlyout>
+									<MenuFlyoutItem Text="Position Test Item" Click="OnMenuItemClick" />
+								</MenuFlyout>
+							</Border.ContextFlyout>
+							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+								<TextBlock Text="Right-click here" HorizontalAlignment="Center" />
+								<TextBlock x:Name="PositionText" Text="Position: (waiting...)" HorizontalAlignment="Center" Foreground="Gray" />
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</Border>
+
+				<!-- Test 5: Keyboard Invocation -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="5. Keyboard Invocation" FontWeight="SemiBold" />
+						<TextBlock Text="Focus the button and press Shift+F10 or the Application key (context menu key). TryGetPosition returns false for keyboard invocation." Foreground="Gray" TextWrapping="Wrap" />
+
+						<Button x:Name="KeyboardTestButton"
+								Content="Focus me, then press Shift+F10"
+								HorizontalAlignment="Left"
+								ContextRequested="OnKeyboardTestContextRequested">
+							<Button.ContextFlyout>
+								<MenuFlyout>
+									<MenuFlyoutItem Text="Keyboard Triggered Item" Click="OnMenuItemClick" />
+								</MenuFlyout>
+							</Button.ContextFlyout>
+						</Button>
+						<TextBlock x:Name="KeyboardInvocationText" Text="Invocation type: (waiting...)" Foreground="Gray" />
+					</StackPanel>
+				</Border>
+
+				<!-- Test 6: TextBox with ContextFlyout -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="6. TextBox Context Menu" FontWeight="SemiBold" />
+						<TextBlock Text="TextBox with custom ContextFlyout. Right-click or long-press to show menu." Foreground="Gray" TextWrapping="Wrap" />
+
+						<TextBox x:Name="TestTextBox"
+								 Text="Select some text and right-click"
+								 Width="300"
+								 HorizontalAlignment="Left"
+								 ContextRequested="OnContextRequested"
+								 ContextCanceled="OnContextCanceled">
+							<TextBox.ContextFlyout>
+								<MenuFlyout>
+									<MenuFlyoutItem Text="Custom Cut" Click="OnMenuItemClick" />
+									<MenuFlyoutItem Text="Custom Copy" Click="OnMenuItemClick" />
+									<MenuFlyoutItem Text="Custom Paste" Click="OnMenuItemClick" />
+								</MenuFlyout>
+							</TextBox.ContextFlyout>
+						</TextBox>
+					</StackPanel>
+				</Border>
+
+				<!-- Test 7: ListView with ContextFlyout -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="7. ListView Context Menu" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click on a list item to show context menu." Foreground="Gray" TextWrapping="Wrap" />
+
+						<ListView x:Name="TestListView"
+								  Width="300" Height="150"
+								  HorizontalAlignment="Left"
+								  SelectionMode="Single"
+								  ContextRequested="OnContextRequested"
+								  ContextCanceled="OnContextCanceled">
+							<ListView.ContextFlyout>
+								<MenuFlyout>
+									<MenuFlyoutItem Text="Edit Item" Click="OnMenuItemClick" />
+									<MenuFlyoutItem Text="Delete Item" Click="OnMenuItemClick" />
+									<MenuFlyoutSeparator />
+									<MenuFlyoutItem Text="View Details" Click="OnMenuItemClick" />
+								</MenuFlyout>
+							</ListView.ContextFlyout>
+							<ListViewItem Content="Item 1" />
+							<ListViewItem Content="Item 2" />
+							<ListViewItem Content="Item 3" />
+							<ListViewItem Content="Item 4" />
+						</ListView>
+					</StackPanel>
+				</Border>
+
+				<!-- Test 8: Prevent ContextFlyout -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="8. Prevent ContextFlyout from Opening" FontWeight="SemiBold" />
+						<TextBlock Text="Set Handled=true in ContextRequested to prevent the flyout from opening." Foreground="Gray" TextWrapping="Wrap" />
+
+						<CheckBox x:Name="PreventFlyoutCheckbox" Content="Prevent flyout from opening" IsChecked="False" />
+
+						<Button x:Name="PreventFlyoutButton"
+								Content="Right-click me"
+								HorizontalAlignment="Left"
+								ContextRequested="OnPreventFlyoutContextRequested">
+							<Button.ContextFlyout>
+								<MenuFlyout>
+									<MenuFlyoutItem Text="This should not show when checkbox is checked" />
+								</MenuFlyout>
+							</Button.ContextFlyout>
+						</Button>
+					</StackPanel>
+				</Border>
+
+			</StackPanel>
+		</ScrollViewer>
+
+		<!-- Event Log -->
+		<Border Grid.Row="2"
+				Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+				CornerRadius="8" Padding="12" Margin="0,12,0,0"
+				MaxHeight="200">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="0" Margin="0,0,0,8">
+					<TextBlock Text="Event Log" FontWeight="SemiBold" VerticalAlignment="Center" />
+					<Button Content="Clear" Click="OnClearLogClick" HorizontalAlignment="Right" Padding="8,4" />
+				</Grid>
+
+				<ScrollViewer Grid.Row="1" x:Name="LogScrollViewer">
+					<TextBlock x:Name="EventLogText"
+							   Text="Events will be logged here..."
+							   TextWrapping="Wrap"
+							   FontFamily="Consolas"
+							   FontSize="12" />
+				</ScrollViewer>
+			</Grid>
+		</Border>
+	</Grid>
+</Page>
