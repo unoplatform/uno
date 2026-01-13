@@ -170,11 +170,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
 	private readonly List<IRemoteControlPreProcessor> _preprocessors = new();
 	private readonly Lock _connectionGate = new();
-	private Task<Connection?> _connection; // null if no server, socket only null if connection was established once but lost since then
+	private Task<Connection?> _connection; // null if no server, transport only null if connection was established once but lost since then
 	private Timer? _keepAliveTimer;
 	private KeepAliveMessage _ping = new();
 
-	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, WebSocket? Socket)
+	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, IFrameTransport? Transport)
 		: IAsyncDisposable
 	{
 		private static class States
@@ -185,14 +185,16 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 
 		private readonly CancellationTokenSource _ct = new();
-		private int _state = Socket is null ? States.Disposed : States.Ready;
+		private int _state = Transport is null ? States.Disposed : States.Ready;
+
+		public bool IsConnected => Transport is { IsConnected: true };
 
 		public void EnsureActive()
 		{
 			if (Interlocked.CompareExchange(ref _state, States.Active, States.Ready) is States.Ready)
 			{
 				DevServerDiagnostics.Current = Owner._status;
-				_ = Owner.ProcessMessages(Socket!, _ct.Token);
+				_ = Owner.ProcessMessages(Transport!, _ct.Token);
 			}
 		}
 
@@ -203,15 +205,15 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			await _ct.CancelAsync();
 			_ct.Dispose();
 
-			if (Socket is not null)
+			if (Transport is not null)
 			{
 				try
 				{
-					await Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client disconnected", CancellationToken.None);
+					await Transport.CloseAsync();
 				}
 				catch { }
 
-				Socket.Dispose();
+				Transport.Dispose();
 			}
 		}
 	}
@@ -338,11 +340,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	public void RegisterPreProcessor(IRemoteControlPreProcessor preprocessor)
 		=> _preprocessors.Add(preprocessor);
 
-	private async ValueTask<WebSocket?> GetActiveSocket()
+	private async ValueTask<IFrameTransport?> GetActiveTransport()
 	{
 		var connectionTask = _connection;
 		var connection = await connectionTask;
-		if (connection is ({ Socket: null } or { Socket.State: not WebSocketState.Open }) and { Since.ElapsedMilliseconds: >= _connectionRetryInterval })
+		if (connection is { } && (!connection.IsConnected || connection.Transport is null) && connection.Since.ElapsedMilliseconds >= _connectionRetryInterval)
 		{
 			// We have a socket (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
 			lock (_connectionGate)
@@ -361,7 +363,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		_status.ReportActiveConnection(connection);
 
-		return connection?.Socket;
+		return connection?.Transport;
 	}
 
 	private async Task<Connection?> StartConnection()
@@ -410,7 +412,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					if (TryParse(srv.endpoint, srv.port, isHttps, out var serverUri))
 					{
 						// Note: If we have a preferred endpoint (last known to be successful), we delay a bit the connection to other endpoints.
-						//		 This is to reduce the number of (task cancelled / socket) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
+						//		 This is to reduce the number of (task cancelled / transport) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
 						var cts = new CancellationTokenSource();
 						var delay = preferred is null || preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase) ? 0 : 3000;
 						var task = Connect(serverUri, delay, cts.Token);
@@ -448,7 +450,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				pending.Remove(task);
 
 				// If the connection is successful, break the loop
-				if (task is Task<Connection?> { IsCompleted: true, Result: { Socket: not null } successfulConnection })
+				if (task is Task<Connection?> { IsCompleted: true, Result: { Transport: not null } successfulConnection })
 				{
 					try
 					{
@@ -496,9 +498,10 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				foreach (var connection in pending.Values)
 				{
 					connection.cts.Cancel(throwOnFirstException: false);
-					if (connection is { task.Status: TaskStatus.RanToCompletion, task.Result.Socket: { } socket })
+					if (connection is { task.Status: TaskStatus.RanToCompletion, task.Result.Transport: { } transport })
 					{
-						_ = socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+						_ = transport.CloseAsync();
+						transport.Dispose();
 					}
 				}
 			}
@@ -608,7 +611,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 			await client.ConnectAsync(serverUri, ct);
 
-			return new(this, serverUri, watch, client);
+			var transport = new WebSocketFrameTransport(client);
+			return new(this, serverUri, watch, transport);
 		}
 		catch (Exception e)
 		{
@@ -622,7 +626,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 	}
 
-	private async Task ProcessMessages(WebSocket socket, CancellationToken ct)
+	private async Task ProcessMessages(IFrameTransport transport, CancellationToken ct)
 	{
 		_ = InitializeServerProcessors();
 
@@ -643,7 +647,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		StartKeepAliveTimer();
 
-		while (await WebSocketHelper.ReadFrame(socket, ct) is { } frame)
+		while (await transport.ReceiveAsync(ct) is { } frame)
 		{
 			try
 			{
@@ -912,8 +916,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 
 
-		var socket = await GetActiveSocket();
-		if (socket is null)
+		var transport = await GetActiveTransport();
+		if (transport is null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -925,8 +929,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			return;
 		}
 
-		await WebSocketHelper.SendFrame(
-			socket,
+		await transport.SendAsync(
 			HotReload.Messages.Frame.Create(
 				1,
 				message.Scope,
