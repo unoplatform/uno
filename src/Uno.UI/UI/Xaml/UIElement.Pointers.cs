@@ -709,6 +709,14 @@ namespace Microsoft.UI.Xaml
 			// 3. It's not harmful to keep them enabled
 		}
 
+		partial void EnableContextMenuGestures()
+		{
+			// Enable both RightTap (for mouse/pen) and Hold (for touch) gesture settings.
+			// Accessing GestureRecognizer creates it if needed, and the settings enable
+			// the gesture detection that triggers ContextRequested via ContextMenuProcessor.
+			GestureRecognizer.GestureSettings |= GestureSettings.RightTap | GestureSettings.Hold;
+		}
+
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
 			if (routedEvent != HoldingEvent && FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention)

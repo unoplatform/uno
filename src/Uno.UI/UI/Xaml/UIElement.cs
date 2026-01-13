@@ -733,27 +733,14 @@ namespace Microsoft.UI.Xaml
 		{
 			if (newValue != null)
 			{
-				RightTapped += OpenContextFlyout;
-			}
-			else
-			{
-				RightTapped -= OpenContextFlyout;
+				// Enable gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
+				// This ensures the GestureRecognizer is created and configured to detect these gestures,
+				// which then raise ContextRequested via ContextMenuProcessor.
+				EnableContextMenuGestures();
 			}
 		}
 
-		private void OpenContextFlyout(object sender, RightTappedRoutedEventArgs args)
-		{
-			if (this is FrameworkElement fe)
-			{
-				ContextFlyout?.ShowAt(
-					placementTarget: fe,
-					showOptions: new FlyoutShowOptions()
-					{
-						Position = args.GetPosition(this)
-					}
-				);
-			}
-		}
+		partial void EnableContextMenuGestures();
 
 		internal bool IsRenderingSuspended { get; set; }
 
