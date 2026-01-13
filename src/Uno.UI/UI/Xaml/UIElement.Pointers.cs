@@ -690,6 +690,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		partial void AddContextMenuHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
+		{
+			if (handlersCount == 1 && routedEvent == ContextRequestedEvent)
+			{
+				// When subscribing to ContextRequested, enable both RightTap (for mouse/pen)
+				// and Hold (for touch) gesture settings so the GestureRecognizer can detect
+				// the gestures that trigger the context menu.
+				GestureRecognizer.GestureSettings |= GestureSettings.RightTap | GestureSettings.Hold;
+			}
+		}
+
+		partial void RemoveContextMenuHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		{
+			// Note: We don't remove the gesture settings when unsubscribing because:
+			// 1. Other handlers might still need them (e.g., ContextFlyout)
+			// 2. The GestureRecognizer doesn't support removing individual settings easily
+			// 3. It's not harmful to keep them enabled
+		}
+
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
 			if (routedEvent != HoldingEvent && FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention)
