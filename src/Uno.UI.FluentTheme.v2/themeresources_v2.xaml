@@ -16612,6 +16612,10 @@
                   </Storyboard>
                 </VisualState>
               </VisualStateGroup>
+              <VisualStateGroup x:Name="MultiSelectStates">
+                <VisualState x:Name="MultiSelectDisabled" />
+                <VisualState x:Name="MultiSelectEnabled" />
+              </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <!-- Background -->
             <Rectangle x:Name="BorderBackground" Fill="{ThemeResource GridViewItemBackground}" RadiusX="4" RadiusY="4" Opacity="0" />
