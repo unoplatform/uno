@@ -113,7 +113,12 @@ internal readonly partial struct UnicodeText
 					.Select(a => (a, a.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture))))
 					.Where(t => t.Item2 != null)
 					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
-					.First()!;
+					.FirstOrDefault();
+
+				if (stream is null)
+				{
+					throw new InvalidOperationException("Failed to find icudt.dat resource in any loaded assembly. Ensure the Uno.ICU package is properly referenced.");
+				}
 				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
 				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
 				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
