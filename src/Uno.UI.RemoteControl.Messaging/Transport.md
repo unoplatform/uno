@@ -10,3 +10,4 @@ alternative transports to be added without changing client/server logic.
 
 ## Planned extensions
 An in-process transport (for embedded dev server hosting) will be added in a later phase.
+The `FrameTransportPair.Create()` helper is intended to provide a paired in-process transport.
