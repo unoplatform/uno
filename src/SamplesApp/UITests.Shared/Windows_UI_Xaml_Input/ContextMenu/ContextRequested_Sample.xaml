@@ -17,7 +17,7 @@
 		<!-- Header -->
 		<StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
 			<TextBlock Text="ContextRequested and ContextCanceled Test Sample" FontSize="18" FontWeight="SemiBold" />
-			<TextBlock Text="Right-click, long-press (touch), or press Shift+F10/Application key on focused elements to trigger context menus."
+			<TextBlock Text="Right-click, long-press (touch), or press Shift+F10/Application key to trigger ContextRequested. Move pointer away during long-press to trigger ContextCanceled."
 					   TextWrapping="Wrap" Foreground="Gray" />
 		</StackPanel>
 
@@ -25,85 +25,92 @@
 		<ScrollViewer Grid.Row="1">
 			<StackPanel Spacing="16">
 
-				<!-- Test 1: Basic ContextFlyout -->
+				<!-- Test 1: Basic ContextRequested (no ContextFlyout) -->
 				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="8" Padding="16">
 					<StackPanel Spacing="8">
-						<TextBlock Text="1. Basic ContextFlyout" FontWeight="SemiBold" />
-						<TextBlock Text="Right-click on the button to show a context menu" Foreground="Gray" TextWrapping="Wrap" />
+						<TextBlock Text="1. Basic ContextRequested Event" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click on the button. No ContextFlyout is set, so the event handler is called and logged." Foreground="Gray" TextWrapping="Wrap" />
 
-						<Button x:Name="BasicContextFlyoutButton"
-								Content="Right-click me"
+						<Button x:Name="BasicButton"
+								Content="Right-click me (no ContextFlyout)"
 								HorizontalAlignment="Left"
-								ContextRequested="OnContextRequested"
-								ContextCanceled="OnContextCanceled">
-							<Button.ContextFlyout>
-								<MenuFlyout>
-									<MenuFlyoutItem Text="Cut" Click="OnMenuItemClick" />
-									<MenuFlyoutItem Text="Copy" Click="OnMenuItemClick" />
-									<MenuFlyoutItem Text="Paste" Click="OnMenuItemClick" />
-									<MenuFlyoutSeparator />
-									<MenuFlyoutItem Text="Delete" Click="OnMenuItemClick" />
-								</MenuFlyout>
-							</Button.ContextFlyout>
-						</Button>
+								ContextRequested="OnBasicContextRequested" />
 					</StackPanel>
 				</Border>
 
-				<!-- Test 2: Event Bubbling -->
+				<!-- Test 2: ContextFlyout blocks ContextRequested handler -->
 				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="8" Padding="16">
 					<StackPanel Spacing="8">
-						<TextBlock Text="2. Event Bubbling" FontWeight="SemiBold" />
-						<TextBlock Text="Right-click on the inner element. Events bubble up through the visual tree." Foreground="Gray" TextWrapping="Wrap" />
+						<TextBlock Text="2. ContextFlyout Blocks Handler" FontWeight="SemiBold" />
+						<TextBlock Text="When ContextFlyout is set, the ContextRequested handler is NOT called. The flyout is shown directly by the default class handler." Foreground="Gray" TextWrapping="Wrap" />
 
-						<Border x:Name="OuterBorder"
+						<StackPanel Orientation="Horizontal" Spacing="12">
+							<Button x:Name="WithFlyoutButton"
+									Content="With ContextFlyout"
+									ContextRequested="OnWithFlyoutContextRequested">
+								<Button.ContextFlyout>
+									<MenuFlyout>
+										<MenuFlyoutItem Text="Menu Item (handler NOT called)" Click="OnMenuItemClick" />
+									</MenuFlyout>
+								</Button.ContextFlyout>
+							</Button>
+
+							<Button x:Name="WithoutFlyoutButton"
+									Content="Without ContextFlyout"
+									ContextRequested="OnWithoutFlyoutContextRequested" />
+						</StackPanel>
+						<TextBlock x:Name="FlyoutBlockingStatus" Text="Compare: Right-click both buttons and check the log" Foreground="Gray" />
+					</StackPanel>
+				</Border>
+
+				<!-- Test 3: Event Bubbling -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="3. Event Bubbling" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click on inner or outer areas. Events bubble up through the visual tree. No ContextFlyout is set." Foreground="Gray" TextWrapping="Wrap" />
+
+						<Border x:Name="BubblingOuter"
 								Background="LightBlue"
-								Width="250" Height="150"
-								ContextRequested="OnOuterContextRequested"
-								ContextCanceled="OnContextCanceled">
-							<Border x:Name="InnerBorder"
+								Width="300" Height="150"
+								ContextRequested="OnBubblingOuterContextRequested">
+							<Border x:Name="BubblingInner"
 									Background="LightCoral"
-									Width="150" Height="80"
+									Width="180" Height="80"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
-									ContextRequested="OnInnerContextRequested"
-									ContextCanceled="OnContextCanceled">
-								<Border.ContextFlyout>
-									<MenuFlyout>
-										<MenuFlyoutItem Text="Inner Menu Item" Click="OnMenuItemClick" />
-									</MenuFlyout>
-								</Border.ContextFlyout>
-								<TextBlock Text="Inner (with flyout)"
+									ContextRequested="OnBubblingInnerContextRequested">
+								<TextBlock Text="Inner"
 										   HorizontalAlignment="Center"
 										   VerticalAlignment="Center" />
 							</Border>
 						</Border>
-						<TextBlock Text="Outer Border (LightBlue) - No ContextFlyout" Foreground="Gray" FontSize="12" />
-						<TextBlock Text="Inner Border (LightCoral) - Has ContextFlyout" Foreground="Gray" FontSize="12" />
+						<TextBlock Text="Click inner (LightCoral) - both handlers fire. Click outer only (LightBlue) - only outer handler fires." Foreground="Gray" FontSize="12" />
 					</StackPanel>
 				</Border>
 
-				<!-- Test 3: Handled=true prevents bubbling -->
+				<!-- Test 4: Handled=true prevents bubbling -->
 				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="8" Padding="16">
 					<StackPanel Spacing="8">
-						<TextBlock Text="3. Handled Property" FontWeight="SemiBold" />
-						<TextBlock Text="Toggle the checkbox to see how Handled=true prevents event bubbling." Foreground="Gray" TextWrapping="Wrap" />
+						<TextBlock Text="4. Handled Property Prevents Bubbling" FontWeight="SemiBold" />
+						<TextBlock Text="Toggle the checkbox. When Handled=true in child, the event stops bubbling to parent." Foreground="Gray" TextWrapping="Wrap" />
 
 						<CheckBox x:Name="HandleEventCheckbox" Content="Set Handled=true in child handler" IsChecked="False" />
 
-						<Border x:Name="HandledTestOuter"
+						<Border x:Name="HandledOuter"
 								Background="LightGreen"
-								Width="250" Height="100"
-								ContextRequested="OnHandledTestOuterContextRequested">
-							<Border x:Name="HandledTestInner"
+								Width="300" Height="120"
+								ContextRequested="OnHandledOuterContextRequested">
+							<Border x:Name="HandledInner"
 									Background="LightYellow"
-									Width="150" Height="60"
+									Width="180" Height="70"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
-									ContextRequested="OnHandledTestInnerContextRequested">
-								<TextBlock Text="Click me"
+									ContextRequested="OnHandledInnerContextRequested">
+								<TextBlock Text="Right-click me"
 										   HorizontalAlignment="Center"
 										   VerticalAlignment="Center" />
 							</Border>
@@ -111,22 +118,17 @@
 					</StackPanel>
 				</Border>
 
-				<!-- Test 4: Position Information -->
+				<!-- Test 5: Position Information -->
 				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="8" Padding="16">
 					<StackPanel Spacing="8">
-						<TextBlock Text="4. Position Information (TryGetPosition)" FontWeight="SemiBold" />
-						<TextBlock Text="Right-click anywhere in the area below. Position will be shown relative to the element." Foreground="Gray" TextWrapping="Wrap" />
+						<TextBlock Text="5. Position Information (TryGetPosition)" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click anywhere in the area. Position is shown relative to the element and globally." Foreground="Gray" TextWrapping="Wrap" />
 
 						<Border x:Name="PositionTestBorder"
 								Background="LightSteelBlue"
 								Width="300" Height="150"
-								ContextRequested="OnPositionTestContextRequested">
-							<Border.ContextFlyout>
-								<MenuFlyout>
-									<MenuFlyoutItem Text="Position Test Item" Click="OnMenuItemClick" />
-								</MenuFlyout>
-							</Border.ContextFlyout>
+								ContextRequested="OnPositionContextRequested">
 							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 								<TextBlock Text="Right-click here" HorizontalAlignment="Center" />
 								<TextBlock x:Name="PositionText" Text="Position: (waiting...)" HorizontalAlignment="Center" Foreground="Gray" />
@@ -135,99 +137,137 @@
 					</StackPanel>
 				</Border>
 
-				<!-- Test 5: Keyboard Invocation -->
+				<!-- Test 6: Keyboard Invocation -->
 				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="8" Padding="16">
 					<StackPanel Spacing="8">
-						<TextBlock Text="5. Keyboard Invocation" FontWeight="SemiBold" />
-						<TextBlock Text="Focus the button and press Shift+F10 or the Application key (context menu key). TryGetPosition returns false for keyboard invocation." Foreground="Gray" TextWrapping="Wrap" />
+						<TextBlock Text="6. Keyboard Invocation" FontWeight="SemiBold" />
+						<TextBlock Text="Focus the button and press Shift+F10 or Application key. TryGetPosition returns false for keyboard." Foreground="Gray" TextWrapping="Wrap" />
 
-						<Button x:Name="KeyboardTestButton"
+						<Button x:Name="KeyboardButton"
 								Content="Focus me, then press Shift+F10"
 								HorizontalAlignment="Left"
-								ContextRequested="OnKeyboardTestContextRequested">
-							<Button.ContextFlyout>
-								<MenuFlyout>
-									<MenuFlyoutItem Text="Keyboard Triggered Item" Click="OnMenuItemClick" />
-								</MenuFlyout>
-							</Button.ContextFlyout>
-						</Button>
-						<TextBlock x:Name="KeyboardInvocationText" Text="Invocation type: (waiting...)" Foreground="Gray" />
+								ContextRequested="OnKeyboardContextRequested" />
+						<TextBlock x:Name="KeyboardText" Text="Invocation type: (waiting...)" Foreground="Gray" />
 					</StackPanel>
 				</Border>
 
-				<!-- Test 6: TextBox with ContextFlyout -->
+				<!-- Test 7: ContextCanceled -->
 				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="8" Padding="16">
 					<StackPanel Spacing="8">
-						<TextBlock Text="6. TextBox Context Menu" FontWeight="SemiBold" />
-						<TextBlock Text="TextBox with custom ContextFlyout. Right-click or long-press to show menu." Foreground="Gray" TextWrapping="Wrap" />
+						<TextBlock Text="7. ContextCanceled Event" FontWeight="SemiBold" />
+						<TextBlock Text="Long-press (touch) on the area, then move your finger away before releasing. This triggers ContextCanceled." Foreground="Gray" TextWrapping="Wrap" />
 
-						<TextBox x:Name="TestTextBox"
-								 Text="Select some text and right-click"
-								 Width="300"
-								 HorizontalAlignment="Left"
-								 ContextRequested="OnContextRequested"
-								 ContextCanceled="OnContextCanceled">
-							<TextBox.ContextFlyout>
-								<MenuFlyout>
-									<MenuFlyoutItem Text="Custom Cut" Click="OnMenuItemClick" />
-									<MenuFlyoutItem Text="Custom Copy" Click="OnMenuItemClick" />
-									<MenuFlyoutItem Text="Custom Paste" Click="OnMenuItemClick" />
-								</MenuFlyout>
-							</TextBox.ContextFlyout>
-						</TextBox>
+						<Border x:Name="CancelTestBorder"
+								Background="Plum"
+								Width="300" Height="150"
+								ContextRequested="OnCancelTestContextRequested"
+								ContextCanceled="OnCancelTestContextCanceled">
+							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+								<TextBlock Text="Long-press, then move away" HorizontalAlignment="Center" />
+								<TextBlock x:Name="CancelStatusText" Text="Status: (waiting...)" HorizontalAlignment="Center" Foreground="Gray" />
+							</StackPanel>
+						</Border>
+						<TextBlock Text="Note: ContextCanceled fires when touch/pen is moved away during hold gesture before context menu appears." Foreground="Gray" FontSize="12" TextWrapping="Wrap" />
 					</StackPanel>
 				</Border>
 
-				<!-- Test 7: ListView with ContextFlyout -->
+				<!-- Test 8: ContextCanceled with ContextFlyout -->
 				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="8" Padding="16">
 					<StackPanel Spacing="8">
-						<TextBlock Text="7. ListView Context Menu" FontWeight="SemiBold" />
-						<TextBlock Text="Right-click on a list item to show context menu." Foreground="Gray" TextWrapping="Wrap" />
+						<TextBlock Text="8. ContextCanceled with ContextFlyout" FontWeight="SemiBold" />
+						<TextBlock Text="Long-press, then move away. ContextCanceled should fire even when ContextFlyout is set." Foreground="Gray" TextWrapping="Wrap" />
 
-						<ListView x:Name="TestListView"
-								  Width="300" Height="150"
+						<Border x:Name="CancelWithFlyoutBorder"
+								Background="PaleGoldenrod"
+								Width="300" Height="150"
+								ContextRequested="OnCancelWithFlyoutContextRequested"
+								ContextCanceled="OnCancelWithFlyoutContextCanceled">
+							<Border.ContextFlyout>
+								<MenuFlyout>
+									<MenuFlyoutItem Text="This shows on successful long-press" Click="OnMenuItemClick" />
+								</MenuFlyout>
+							</Border.ContextFlyout>
+							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+								<TextBlock Text="Long-press, then move away" HorizontalAlignment="Center" />
+								<TextBlock x:Name="CancelWithFlyoutStatusText" Text="Status: (waiting...)" HorizontalAlignment="Center" Foreground="Gray" />
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</Border>
+
+				<!-- Test 9: OriginalSource tracking -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="9. OriginalSource Tracking" FontWeight="SemiBold" />
+						<TextBlock Text="Right-click on different nested elements. OriginalSource shows where the event originated." Foreground="Gray" TextWrapping="Wrap" />
+
+						<Border x:Name="SourceOuter"
+								Background="LightSalmon"
+								Width="300" Height="150"
+								Padding="10"
+								ContextRequested="OnSourceContextRequested">
+							<StackPanel Spacing="8">
+								<Button x:Name="SourceButton" Content="Button inside" HorizontalAlignment="Left" />
+								<TextBlock x:Name="SourceTextBlock" Text="TextBlock inside" />
+								<Border x:Name="SourceInnerBorder" Background="Wheat" Padding="8">
+									<TextBlock Text="Nested Border" />
+								</Border>
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</Border>
+
+				<!-- Test 10: SelectorItem.OnContextRequestedImpl - ListView ContextFlyout fallback -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="10. ListView/GridView ContextFlyout Fallback (SelectorItem)" FontWeight="SemiBold" />
+						<TextBlock Text="ListViewItem/GridViewItem have special behavior: if the item has no ContextFlyout, it falls back to the parent ListView's ContextFlyout. This is handled by OnContextRequestedImpl in SelectorItem.cs." Foreground="Gray" TextWrapping="Wrap" />
+
+						<TextBlock Text="ListView with ContextFlyout (items inherit it):" FontWeight="SemiBold" Margin="0,8,0,0" />
+						<ListView x:Name="ListViewWithFlyout"
+								  Width="300" Height="120"
 								  HorizontalAlignment="Left"
 								  SelectionMode="Single"
-								  ContextRequested="OnContextRequested"
-								  ContextCanceled="OnContextCanceled">
+								  ContextRequested="OnListViewContextRequested">
 							<ListView.ContextFlyout>
 								<MenuFlyout>
-									<MenuFlyoutItem Text="Edit Item" Click="OnMenuItemClick" />
-									<MenuFlyoutItem Text="Delete Item" Click="OnMenuItemClick" />
-									<MenuFlyoutSeparator />
-									<MenuFlyoutItem Text="View Details" Click="OnMenuItemClick" />
+									<MenuFlyoutItem Text="ListView's ContextFlyout - Edit" Click="OnMenuItemClick" />
+									<MenuFlyoutItem Text="ListView's ContextFlyout - Delete" Click="OnMenuItemClick" />
 								</MenuFlyout>
 							</ListView.ContextFlyout>
-							<ListViewItem Content="Item 1" />
-							<ListViewItem Content="Item 2" />
-							<ListViewItem Content="Item 3" />
-							<ListViewItem Content="Item 4" />
+							<ListViewItem Content="Item 1 (no own flyout - uses ListView's)" />
+							<ListViewItem Content="Item 2 (no own flyout - uses ListView's)" />
+							<ListViewItem Content="Item 3 (no own flyout - uses ListView's)" />
 						</ListView>
-					</StackPanel>
-				</Border>
 
-				<!-- Test 8: Prevent ContextFlyout -->
-				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-						CornerRadius="8" Padding="16">
-					<StackPanel Spacing="8">
-						<TextBlock Text="8. Prevent ContextFlyout from Opening" FontWeight="SemiBold" />
-						<TextBlock Text="Set Handled=true in ContextRequested to prevent the flyout from opening." Foreground="Gray" TextWrapping="Wrap" />
-
-						<CheckBox x:Name="PreventFlyoutCheckbox" Content="Prevent flyout from opening" IsChecked="False" />
-
-						<Button x:Name="PreventFlyoutButton"
-								Content="Right-click me"
-								HorizontalAlignment="Left"
-								ContextRequested="OnPreventFlyoutContextRequested">
-							<Button.ContextFlyout>
+						<TextBlock Text="ListView where Item 2 has its own ContextFlyout:" FontWeight="SemiBold" Margin="0,8,0,0" />
+						<ListView x:Name="ListViewMixedFlyout"
+								  Width="300" Height="120"
+								  HorizontalAlignment="Left"
+								  SelectionMode="Single"
+								  ContextRequested="OnListViewMixedContextRequested">
+							<ListView.ContextFlyout>
 								<MenuFlyout>
-									<MenuFlyoutItem Text="This should not show when checkbox is checked" />
+									<MenuFlyoutItem Text="ListView's Flyout" Click="OnMenuItemClick" />
 								</MenuFlyout>
-							</Button.ContextFlyout>
-						</Button>
+							</ListView.ContextFlyout>
+							<ListViewItem Content="Item 1 (uses ListView's flyout)" />
+							<ListViewItem Content="Item 2 (has OWN flyout)" ContextRequested="OnItemWithOwnFlyoutContextRequested">
+								<ListViewItem.ContextFlyout>
+									<MenuFlyout>
+										<MenuFlyoutItem Text="Item's OWN ContextFlyout" Click="OnMenuItemClick" />
+									</MenuFlyout>
+								</ListViewItem.ContextFlyout>
+							</ListViewItem>
+							<ListViewItem Content="Item 3 (uses ListView's flyout)" />
+						</ListView>
+
+						<TextBlock Text="Expected: Items without ContextFlyout show ListView's flyout. Item with its own ContextFlyout shows that instead." Foreground="Gray" FontSize="12" TextWrapping="Wrap" />
 					</StackPanel>
 				</Border>
 
