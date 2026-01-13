@@ -35,7 +35,7 @@ public partial class Given_UIElement_ContextRequested
 		var contentRoot = Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(button);
 		Assert.IsNotNull(contentRoot, "ContentRoot should not be null");
 
-		contentRoot.ContextMenuProcessor.RaiseContextRequestedEvent(
+		contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
 			button,
 			new Point(100, 100),
 			isTouchInput: false);
@@ -65,7 +65,7 @@ public partial class Given_UIElement_ContextRequested
 		Assert.IsNotNull(contentRoot);
 
 		// Raise with a specific position
-		contentRoot.ContextMenuProcessor.RaiseContextRequestedEvent(
+		contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
 			button,
 			new Point(50, 75),
 			isTouchInput: false);
@@ -93,7 +93,7 @@ public partial class Given_UIElement_ContextRequested
 		Assert.IsNotNull(contentRoot);
 
 		// Raise with (-1, -1) which indicates keyboard invocation
-		contentRoot.ContextMenuProcessor.RaiseContextRequestedEvent(
+		contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
 			button,
 			new Point(-1, -1),
 			isTouchInput: false);
@@ -124,7 +124,7 @@ public partial class Given_UIElement_ContextRequested
 		var contentRoot = Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(button);
 		Assert.IsNotNull(contentRoot);
 
-		contentRoot.ContextMenuProcessor.RaiseContextRequestedEvent(
+		contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
 			button,
 			new Point(100, 100),
 			isTouchInput: false);
@@ -153,7 +153,7 @@ public partial class Given_UIElement_ContextRequested
 		var contentRoot = Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(button);
 		Assert.IsNotNull(contentRoot);
 
-		contentRoot.ContextMenuProcessor.RaiseContextRequestedEvent(
+		contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
 			button,
 			new Point(100, 100),
 			isTouchInput: false);
@@ -186,7 +186,7 @@ public partial class Given_UIElement_ContextRequested
 		Assert.IsNotNull(contentRoot);
 
 		// Raise on inner button, should bubble to border
-		contentRoot.ContextMenuProcessor.RaiseContextRequestedEvent(
+		contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
 			innerButton,
 			new Point(50, 50),
 			isTouchInput: false);

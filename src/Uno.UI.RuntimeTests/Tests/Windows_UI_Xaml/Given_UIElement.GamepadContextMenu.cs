@@ -46,7 +46,7 @@ public partial class Given_UIElement_GamepadContextMenu
 		var contentRoot = VisualTree.GetContentRootForElement(button);
 		Assert.IsNotNull(contentRoot, "ContentRoot should not be null");
 
-		var processor = contentRoot.ContextMenuProcessor;
+		var processor = contentRoot.InputManager.ContextMenuProcessor;
 		Assert.IsNotNull(processor, "ContextMenuProcessor should not be null");
 
 		// Trigger context menu via GamepadMenu key
@@ -95,7 +95,7 @@ public partial class Given_UIElement_GamepadContextMenu
 		await UITestHelper.Load(button);
 
 		var contentRoot = VisualTree.GetContentRootForElement(button);
-		var processor = contentRoot.ContextMenuProcessor;
+		var processor = contentRoot.InputManager.ContextMenuProcessor;
 
 		// Trigger context menu via Shift+F10 (keyboard default)
 		processor.ProcessContextRequestOnKeyboardInput(
@@ -136,7 +136,7 @@ public partial class Given_UIElement_GamepadContextMenu
 		await UITestHelper.Load(button);
 
 		var contentRoot = VisualTree.GetContentRootForElement(button);
-		var processor = contentRoot.ContextMenuProcessor;
+		var processor = contentRoot.InputManager.ContextMenuProcessor;
 
 		// Trigger context menu via Application key (keyboard default)
 		processor.ProcessContextRequestOnKeyboardInput(
@@ -177,7 +177,7 @@ public partial class Given_UIElement_GamepadContextMenu
 		await UITestHelper.Load(button);
 
 		var contentRoot = VisualTree.GetContentRootForElement(button);
-		var processor = contentRoot.ContextMenuProcessor;
+		var processor = contentRoot.InputManager.ContextMenuProcessor;
 
 		// Trigger context menu via GamepadMenu key on zero-size element
 		processor.ProcessContextRequestOnKeyboardInput(
