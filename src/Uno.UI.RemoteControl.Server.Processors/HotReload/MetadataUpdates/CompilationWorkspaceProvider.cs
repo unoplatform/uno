@@ -6,24 +6,22 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
-{
-	internal static class CompilationWorkspaceProvider
-	{
-		private static string MSBuildBasePath = "";
+namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
-		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
-			string projectPath,
-			IReporter reporter,
-			string[] metadataUpdateCapabilities,
-			Dictionary<string, string> properties,
-			CancellationToken ct)
+public static class CompilationWorkspaceProvider
+{
+	public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
+		string projectPath,
+		IReporter reporter,
+		string[] metadataUpdateCapabilities,
+		Dictionary<string, string> properties,
+		CancellationToken ct)
+	{
+		if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
 		{
-			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
-			{
-				// Sets Roslyn's environment variable for troubleshooting HR, see:
-				// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
-				Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", logPath);
+			// Sets Roslyn's environment variable for troubleshooting HR, see:
+			// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
+			Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", logPath);
 
 			// Unconditionally enable binlog generation in msbuild. See https://github.com/dotnet/project-system/blob/4210ce79cfd35154dbd858f056bfb9101f290e69/docs/design-time-builds.md?L61
 			Environment.SetEnvironmentVariable("MSBUILDDEBUGENGINE", "1");

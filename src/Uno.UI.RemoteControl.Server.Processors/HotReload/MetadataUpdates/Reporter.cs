@@ -2,7 +2,7 @@
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
-	internal class Reporter : IReporter
+	public class Reporter : IReporter
 	{
 		public void Error(string message) => System.Console.WriteLine($"[Error] {message}");
 		public void Output(string message) => System.Console.WriteLine($"[Output] {message}");
