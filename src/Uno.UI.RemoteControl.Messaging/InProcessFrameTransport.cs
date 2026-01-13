@@ -26,6 +26,10 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 		public Task SendAsync(Frame frame, CancellationToken ct)
 		{
 			ct.ThrowIfCancellationRequested();
+			if (frame is null)
+			{
+				throw new ArgumentNullException(nameof(frame));
+			}
 
 			if (_isRemoteClosed != 0)
 			{
@@ -62,6 +66,11 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 				}
 
 				await _signal.WaitAsync(ct);
+
+				if (_queue.TryDequeue(out frame))
+				{
+					return frame;
+				}
 			}
 		}
 
@@ -106,6 +115,11 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 				// Ignore spurious releases.
 			}
 		}
+
+		public void Dispose()
+		{
+			_signal.Dispose();
+		}
 	}
 
 	private readonly Endpoint _endpoint;
@@ -128,7 +142,11 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 	public Task CloseAsync() => _endpoint.CloseAsync();
 
 	/// <inheritdoc />
-	public void Dispose() => _ = CloseAsync();
+	public void Dispose()
+	{
+		_ = CloseAsync();
+		_endpoint.Dispose();
+	}
 
 	internal static FrameTransportPair CreatePair()
 	{
