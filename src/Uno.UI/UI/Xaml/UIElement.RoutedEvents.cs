@@ -528,6 +528,10 @@ namespace Microsoft.UI.Xaml
 			{
 				AddDragAndDropHandler(routedEvent, handlersCount, handler, handledEventsToo);
 			}
+			else if (routedEvent.IsContextEvent)
+			{
+				AddContextMenuHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
 		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
@@ -536,6 +540,7 @@ namespace Microsoft.UI.Xaml
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 		partial void AddDragAndDropHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddContextMenuHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 
 		public void RemoveHandler(RoutedEvent routedEvent, object handler)
 		{
@@ -582,6 +587,10 @@ namespace Microsoft.UI.Xaml
 			{
 				RemoveDragAndDropHandler(routedEvent, remainingHandlersCount, handler);
 			}
+			else if (routedEvent.IsContextEvent)
+			{
+				RemoveContextMenuHandler(routedEvent, remainingHandlersCount, handler);
+			}
 		}
 
 		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
@@ -590,6 +599,7 @@ namespace Microsoft.UI.Xaml
 		partial void RemoveManipulationHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 		partial void RemoveDragAndDropHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveContextMenuHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 
 		private int CountHandler(RoutedEvent routedEvent)
 			=> _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
