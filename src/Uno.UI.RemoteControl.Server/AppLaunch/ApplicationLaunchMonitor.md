@@ -1,4 +1,4 @@
-﻿# Application Launch Monitoring
+# Application Launch Monitoring
 
 ## What it is
 - Small in-memory helper used by the Uno Remote Control Dev Server to correlate “I launched an app” with “that app connected back.”
@@ -47,16 +47,16 @@ That’s it. The monitor pairs the connection with the oldest pending launch for
 ## Analytics Events (emitted by dev-server)
 Events emitted by the monitor are prefixed with `uno/dev-server/app-launch/`. See `Telemetry.md` in the `.Host` project for more info.
 
-## Integration points (IDE, WebSocket, HTTP)
+## Integration points (IDE, transport, HTTP)
 The dev-server can receive registration and connection events through multiple channels:
 
 - IDE → DevServer: `AppLaunchRegisterIdeMessage` (scope: `AppLaunch`) carrying MVID, Platform, IsDebug. Triggers `RegisterLaunch`.
-- Runtime → DevServer over WebSocket (scope: `DevServerChannel`): `AppLaunchMessage` with `Step = Launched`. Triggers `RegisterLaunch`.
+- Runtime → DevServer over transport (WebSocket by default) (scope: `DevServerChannel`): `AppLaunchMessage` with `Step = Launched`. Triggers `RegisterLaunch`.
 - HTTP GET → DevServer: `GET /applaunch/{mvid}?platform={platform}&isDebug={true|false}`. Triggers `RegisterLaunch`.
 
-Connections are reported by the runtime after establishing the WebSocket connection:
+Connections are reported by the runtime after establishing the transport connection (WebSocket by default):
 
-- Runtime → DevServer over WebSocket (scope: `DevServerChannel`): `AppLaunchMessage` with `Step = Connected`. Triggers `ReportConnection`.
+- Runtime → DevServer over transport (WebSocket by default) (scope: `DevServerChannel`): `AppLaunchMessage` with `Step = Connected`. Triggers `ReportConnection`.
 
 If no matching `Connected` message arrives before timeout, a timeout event is emitted.
 
