@@ -243,7 +243,7 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			try
 			{
-				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				if (FrameworkTemplatePool.IsRecycling && _view.TryGetTarget<IFrameworkTemplatePoolAware>(out _))
 				{
 					return;
 				}
@@ -272,7 +272,7 @@ namespace Microsoft.UI.Xaml.Data
 
 			try
 			{
-				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				if (FrameworkTemplatePool.IsRecycling && _view.TryGetTarget<IFrameworkTemplatePoolAware>(out _))
 				{
 					return;
 				}

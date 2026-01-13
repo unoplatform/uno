@@ -136,7 +136,7 @@ partial class TimePicker
 
 			void OnWindowActivated(object sender, object args)
 			{
-				if (!weakThis!.IsAlive && weakThis.Target is TimePicker timePicker)
+				if (weakThis.TryGetTarget<TimePicker>(out var timePicker))
 				{
 					timePicker.RefreshSetup();
 				}
