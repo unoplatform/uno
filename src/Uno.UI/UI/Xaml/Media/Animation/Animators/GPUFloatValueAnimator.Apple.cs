@@ -521,8 +521,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				for (int i = _weakActiveInstanceCache.Count - 1; i >= 0; i--)
 				{
 					if (_weakActiveInstanceCache[i] is var pInstance &&
-						pInstance.IsAlive &&
-						pInstance.Target is GPUFloatValueAnimator instance)
+						pInstance.TryGetTarget<GPUFloatValueAnimator>(out var instance))
 					{
 						instance.OnCoreWindowVisibilityChangedImpl(args);
 					}
