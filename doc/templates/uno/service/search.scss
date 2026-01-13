@@ -261,6 +261,39 @@
         overflow: hidden;
     }
     
+    // Empty state message - replaces "no results" area
+    .search-empty-state {
+        padding: 32px 24px;
+        text-align: center;
+        color: $gray;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+        
+        &__icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        &__title {
+            font-size: 18px;
+            font-weight: 600;
+            color: $black;
+            margin-bottom: 8px;
+        }
+        
+        &__description {
+            font-size: 14px;
+            color: $gray;
+            line-height: 1.5;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    }
+    
     .search-history-header {
         display: flex;
         align-items: center;
