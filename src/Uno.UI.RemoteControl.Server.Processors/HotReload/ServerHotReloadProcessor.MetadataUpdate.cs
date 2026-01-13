@@ -18,6 +18,7 @@ using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
+using Uno.UI.RemoteControl.Server.Processors.Helpers;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
@@ -32,12 +33,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private readonly BufferGate _solutionWatchersGate = new();
 
 		private (Task<HotReloadManager> GetAsync, CancellationTokenSource Ct)? _workspace;
-		private HotReloadManager? _originalWorkspace;
 		private readonly IReporter _reporter = new Reporter();
 
 		private bool _useRoslynHotReload;
 		private bool _useHotReloadThruDebugger;
-		private ConfigureServer? _configureServer;
 
 		private bool InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
@@ -48,9 +47,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			if (_useRoslynHotReload)
 			{
-				// Store configuration for later use when adding files
-				_configureServer = configureServer;
-
 				InitializeInner(configureServer);
 
 				return true;
@@ -140,30 +136,30 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			return new HotReloadManager(workspace, watch, outputPaths, SendUpdates, _reporter, this, detector);
 		}
 
-		private async Task<HotReloadManager> CreateAdHoc(ConfigureServer configureServer, WorkspaceData data, CancellationToken ct)
-		{
-			var properties = GetWorkspaceProperties(configureServer, out var outputPaths);
-			var (workspace, watch) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
-				data,
-				_reporter,
-				configureServer.MetadataUpdateCapabilities,
-				properties,
-				ct);
-			var detector = new ChangesDetector(
-				async ct =>
-				{
-					var (ws, _) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
-						data,
-						_reporter,
-						configureServer.MetadataUpdateCapabilities,
-						properties,
-						ct);
-					return ws;
-				},
-				_reporter);
+		//private async Task<HotReloadManager> CreateAdHoc(ConfigureServer configureServer, WorkspaceData data, CancellationToken ct)
+		//{
+		//	var properties = GetWorkspaceProperties(configureServer, out var outputPaths);
+		//	var (workspace, watch) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
+		//		data,
+		//		_reporter,
+		//		configureServer.MetadataUpdateCapabilities,
+		//		properties,
+		//		ct);
+		//	var detector = new ChangesDetector(
+		//		async ct =>
+		//		{
+		//			var (ws, _) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
+		//				data,
+		//				_reporter,
+		//				configureServer.MetadataUpdateCapabilities,
+		//				properties,
+		//				ct);
+		//			return ws;
+		//		},
+		//		_reporter);
 
-			return new HotReloadManager(workspace, watch, outputPaths, SendUpdates, _reporter, this, detector);
-		}
+		//	return new HotReloadManager(workspace, watch, outputPaths, SendUpdates, _reporter, this, detector);
+		//}
 
 		private static Dictionary<string, string> GetWorkspaceProperties(ConfigureServer configureServer, out string?[] outputPaths)
 		{
@@ -310,12 +306,5 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return null;
 			}
 		}
-	}
-
-	internal interface IHotReloadTracker
-	{
-		ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? files = null);
-
-		ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? files);
 	}
 }

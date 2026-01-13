@@ -25,7 +25,7 @@ internal record HotReloadManager : IDisposable
 		string?[] OutputPaths,
 		Func<ImmutableHashSet<string>, ImmutableArray<WatchHotReloadService.Update>, CancellationToken, ValueTask> SendUpdates,
 		IReporter Reporter,
-		IHotReloadTracker Processor,
+		IHotReloadTracker tracker,
 		ChangesDetector changesDetector)
 	{
 		_changesDetector = changesDetector;
@@ -34,7 +34,7 @@ internal record HotReloadManager : IDisposable
 		this.OutputPaths = OutputPaths;
 		this.SendUpdates = SendUpdates;
 		_reporter = Reporter;
-		processor = Processor;
+		Tracker = tracker;
 		CurrentSolution = InnerWorkspace.CurrentSolution;
 	}
 
@@ -44,7 +44,7 @@ internal record HotReloadManager : IDisposable
 	public string?[] OutputPaths { get; init; }
 	public Func<ImmutableHashSet<string>, ImmutableArray<WatchHotReloadService.Update>, CancellationToken, ValueTask> SendUpdates { get; init; }
 	public IReporter _reporter { get; init; }
-	public IHotReloadTracker processor { get; init; }
+	private IHotReloadTracker Tracker { get; init; }
 
 	/// <inheritdoc />
 	public void Dispose()
@@ -56,11 +56,11 @@ internal record HotReloadManager : IDisposable
 	public async Task ProcessFileChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
 	{
 		// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
-		var hotReload = await processor.StartOrContinueHotReload();
+		var hotReload = await Tracker.StartOrContinueHotReload();
 		var files = await filesAsync;
 		if (!hotReload.TryMerge(files))
 		{
-			hotReload = await processor.StartHotReload(files);
+			hotReload = await Tracker.StartHotReload(files);
 		}
 
 		// Process the batch of files (sequentially!)

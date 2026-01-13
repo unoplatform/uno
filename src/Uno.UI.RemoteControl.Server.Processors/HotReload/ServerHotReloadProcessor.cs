@@ -83,12 +83,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				case UpdateFileRequest.Name:
 					await ProcessUpdateFile(frame.GetContent<UpdateFileRequest>());
 					break;
-				case PackWorkspaceRequest.Name:
-					await ProcessPackWorkspaceAsync(frame.GetContent<PackWorkspaceRequest>(), _ct.Token);
-					break;
-				case LoadWorkspaceRequest.Name:
-					await ProcessLoadWorkspaceAsync(frame.GetContent<LoadWorkspaceRequest>(), _ct.Token);
-					break;
+				//case PackWorkspaceRequest.Name:
+				//	await ProcessPackWorkspaceAsync(frame.GetContent<PackWorkspaceRequest>(), _ct.Token);
+				//	break;
+				//case LoadWorkspaceRequest.Name:
+				//	await ProcessLoadWorkspaceAsync(frame.GetContent<LoadWorkspaceRequest>(), _ct.Token);
+				//	break;
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		#region Hot-reload state
 		private HotReloadState _globalState; // This actually contains only the initializing stat (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
-		private ServerHotReloadProcessor.HotReloadServerOperation? _current; // I.e. head of the operation chain list
+		private HotReloadServerOperation? _current; // I.e. head of the operation chain list
 
 		public enum HotReloadEventSource
 		{
@@ -833,56 +833,56 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
-		private async Task ProcessPackWorkspaceAsync(PackWorkspaceRequest req, CancellationToken ct)
-		{
-			try
-			{
-				if (await GetWorkspaceAsync() is { } workspace)
-				{
-					var packagePath = await WorkspacePackage.Create(workspace.CurrentSolution, req.TargetFile, true, ct);
-					await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, packagePath, null));
-				}
-				else
-				{
-					await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: "Hot-reload workspace not initialized"));
-				}
-			}
-			catch (Exception ex)
-			{
-				await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: $"Pack failed\r\n{ex}"));
-			}
-		}
+		//private async Task ProcessPackWorkspaceAsync(PackWorkspaceRequest req, CancellationToken ct)
+		//{
+		//	try
+		//	{
+		//		if (await GetWorkspaceAsync() is { } workspace)
+		//		{
+		//			var packagePath = await WorkspacePackage.Create(workspace.CurrentSolution, req.TargetFile, true, ct);
+		//			await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, packagePath, null));
+		//		}
+		//		else
+		//		{
+		//			await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: "Hot-reload workspace not initialized"));
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: $"Pack failed\r\n{ex}"));
+		//	}
+		//}
 
-		private async Task ProcessLoadWorkspaceAsync(LoadWorkspaceRequest req, CancellationToken ct)
-		{
-			try
-			{
-				if (_configureServer is null)
-				{
-					throw new InvalidOperationException("Server not configured yet");
-				}
+		//private async Task ProcessLoadWorkspaceAsync(LoadWorkspaceRequest req, CancellationToken ct)
+		//{
+		//	try
+		//	{
+		//		if (_configureServer is null)
+		//		{
+		//			throw new InvalidOperationException("Server not configured yet");
+		//		}
 
-				// Abort current workspace
-				await (_workspace?.Ct.CancelAsync() ?? Task.CompletedTask);
+		//		// Abort current workspace
+		//		await (_workspace?.Ct.CancelAsync() ?? Task.CompletedTask);
 
-				var manifest = await WorkspacePackage.Extract(req.PackageFile, req.WorkingDir, true, ct);
-				var workspaceCt = new CancellationTokenSource();
-				var manager = await CreateAdHoc(_configureServer, manifest, ct);
-				workspaceCt.Token.Register(() => manager.Dispose());
+		//		var manifest = await WorkspacePackage.Extract(req.PackageFile, req.WorkingDir, true, ct);
+		//		var workspaceCt = new CancellationTokenSource();
+		//		var manager = await CreateAdHoc(_configureServer, manifest, ct);
+		//		workspaceCt.Token.Register(() => manager.Dispose());
 
-				var fileSystemWatch = new FileSystemObserver(manager, _reporter, _solutionWatchersGate);
-				ct.Register(() => fileSystemWatch.Dispose());
+		//		var fileSystemWatch = new FileSystemObserver(manager, _reporter, _solutionWatchersGate);
+		//		ct.Register(() => fileSystemWatch.Dispose());
 
-				_originalWorkspace ??= await GetWorkspaceAsync();
-				_workspace = new(Task.FromResult(manager), workspaceCt);
+		//		_originalWorkspace ??= await GetWorkspaceAsync();
+		//		_workspace = new(Task.FromResult(manager), workspaceCt);
 
-				await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: null));
-			}
-			catch (Exception ex)
-			{
-				await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: $"Load failed\r\n{ex}"));
-			}
-		}
+		//		await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: null));
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: $"Load failed\r\n{ex}"));
+		//	}
+		//}
 
 		public void Dispose()
 		{
@@ -926,61 +926,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 		#endregion
-
-		
-		
 	}
 
-	internal class BufferGate
+	internal interface IHotReloadTracker
 	{
-		private int _holders;
-		private ImmutableHashSet<Action> _onRelease = ImmutableHashSet<Action>.Empty;
+		ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? files = null);
 
-		public IDisposable Acquire()
-		{
-			Interlocked.Increment(ref _holders);
-			return new Holder(this);
-		}
-
-		public class Holder(BufferGate owner) : IDisposable
-		{
-			private int _disposed;
-			public void Dispose()
-			{
-				if (Interlocked.CompareExchange(ref _disposed, 1, 0) is 0
-					&& Interlocked.Decrement(ref owner._holders) is 0)
-				{
-					owner.ProcessCallbacks();
-				}
-			}
-		}
-
-		public void RunOrPlan(Action action)
-		{
-			if (_holders is 0)
-			{
-				action();
-			}
-			else
-			{
-				ImmutableInterlocked.Update(ref _onRelease, static (set, action) => set.Add(action), action);
-				if (_holders is 0) // The gate has been released while we were adding the callback, process it now
-				{
-					ProcessCallbacks();
-				}
-			}
-		}
-
-		private void ProcessCallbacks()
-		{
-			foreach (var callback in Interlocked.Exchange(ref _onRelease, ImmutableHashSet<Action>.Empty))
-			{
-				try
-				{
-					callback();
-				}
-				catch (Exception) { }
-			}
-		}
+		ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? files);
 	}
 }
