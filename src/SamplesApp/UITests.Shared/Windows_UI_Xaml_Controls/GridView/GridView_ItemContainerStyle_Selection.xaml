@@ -7,13 +7,6 @@
     
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                 Padding="16">
-        <TextBlock Text="GridView with ItemContainerStyle - Selection should still work"
-                   Margin="0,0,0,16"
-                   Style="{ThemeResource TitleTextBlockStyle}" />
-        
-        <TextBlock Text="Tap an item to select it. The selection border should be visible."
-                   Margin="0,0,0,16"
-                   Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
         
         <GridView SelectionMode="Single"
                   x:Name="TestGridView"
