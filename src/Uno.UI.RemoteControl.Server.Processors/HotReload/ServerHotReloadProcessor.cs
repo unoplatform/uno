@@ -35,7 +35,7 @@ using static Uno.UI.RemoteControl.Helpers.RoslynExtensions;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
-	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
+	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable, IHotReloadTracker
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly CancellationTokenSource _ct = new();
@@ -113,7 +113,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		#region Hot-reload state
 		private HotReloadState _globalState; // This actually contains only the initializing stat (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
-		private HotReloadServerOperation? _current; // I.e. head of the operation chain list
+		private ServerHotReloadProcessor.HotReloadServerOperation? _current; // I.e. head of the operation chain list
 
 		public enum HotReloadEventSource
 		{
@@ -129,13 +129,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask<HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
+		public async ValueTask<HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
 		{
 			var previous = _current;
 			HotReloadServerOperation? @new;
 			while (true)
 			{
-				@new = new HotReloadServerOperation(this, previous, filesPaths);
+				@new = new ServerHotReloadProcessor.HotReloadServerOperation(this, previous, filesPaths);
 				var current = Interlocked.CompareExchange(ref _current, @new, previous);
 				if (current == previous)
 				{
@@ -153,7 +153,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			return @new;
 		}
 
-		private async ValueTask<HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? filesPaths = null)
+		public async ValueTask<HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? filesPaths = null)
 			=> _current is { } current && (filesPaths is null || current.TryMerge(filesPaths))
 				? current
 				: await StartHotReload(filesPaths);
@@ -253,7 +253,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask SendUpdate(HotReloadServerOperation? completing = null, string? serverError = null)
+		private async ValueTask SendUpdate(ServerHotReloadProcessor.HotReloadServerOperation? completing = null, string? serverError = null)
 		{
 			var state = _globalState;
 			var operations = ImmutableList<HotReloadServerOperationData>.Empty;
@@ -270,7 +270,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				operations = infos.ToImmutable();
 
-				void LoadInfos(HotReloadServerOperation? operation)
+				void LoadInfos(ServerHotReloadProcessor.HotReloadServerOperation? operation)
 				{
 					while (operation is not null)
 					{
@@ -298,7 +298,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		/// <summary>
 		/// A hot-reload operation that is in progress.
 		/// </summary>
-		private class HotReloadServerOperation
+		internal class HotReloadServerOperation
 		{
 			private static readonly int DefaultAutoRetryIfNoChangesAttempts = 3;
 
@@ -307,7 +307,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			// Delay to wait without any update to consider operation was aborted.
 			private static readonly TimeSpan _timeoutDelay = TimeSpan.FromSeconds(30);
 
-			private static readonly ImmutableHashSet<string> _empty = ImmutableHashSet<string>.Empty.WithComparer(_pathsComparer);
+			private static readonly ImmutableHashSet<string> _empty = ImmutableHashSet<string>.Empty.WithComparer(PathComparer.Comparer);
 			private static long _count;
 
 			private readonly ServerHotReloadProcessor _owner;
@@ -331,7 +331,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			public DateTimeOffset? CompletionTime { get; private set; }
 
-			public HotReloadServerOperation? Previous => _previous;
+			public ServerHotReloadProcessor.HotReloadServerOperation? Previous => _previous;
 
 			/// <summary>
 			/// List of all file paths that have been considered for this hot-reload operation.
@@ -352,14 +352,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			public HotReloadServerResult? Result => _result is -1 ? null : (HotReloadServerResult)_result;
 
 			/// <param name="previous">The previous hot-reload operation which has to be considered as aborted when this new one completes.</param>
-			public HotReloadServerOperation(ServerHotReloadProcessor owner, HotReloadServerOperation? previous, ImmutableHashSet<string>? filePaths = null)
+			public HotReloadServerOperation(ServerHotReloadProcessor owner, ServerHotReloadProcessor.HotReloadServerOperation? previous, ImmutableHashSet<string>? filePaths = null)
 			{
 				_owner = owner;
 				_previous = previous;
 				_consideredFilePaths = filePaths ?? _empty;
 
 				_timeout = new Timer(
-					static that => _ = ((HotReloadServerOperation)that!).Complete(HotReloadServerResult.Aborted),
+					static that => _ = ((ServerHotReloadProcessor.HotReloadServerOperation)that!).Complete(HotReloadServerResult.Aborted),
 					this,
 					_timeoutDelay,
 					Timeout.InfiniteTimeSpan);
@@ -616,7 +616,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				return new UpdateFileResponse(request.RequestId, "No edit to process", []);
 			}
-			else if (request.Edits.DistinctBy(edit => Path.GetFullPath(edit.FilePath), _pathsComparer).Count() != request.Edits.Length)
+			else if (request.Edits.DistinctBy(edit => Path.GetFullPath(edit.FilePath), PathComparer.Comparer).Count() != request.Edits.Length)
 			{
 				return new UpdateFileResponse(request.RequestId, "Detected multiple updates on the same file", []);
 			}
@@ -807,7 +807,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask WriteHotReloadInfo(IUpdateFileRequest request, HotReloadServerOperation hotReload)
+		private async ValueTask WriteHotReloadInfo(IUpdateFileRequest request, ServerHotReloadProcessor.HotReloadServerOperation hotReload)
 		{
 			if (_config?.HotReloadInfoPath is not { Length: > 0 } path)
 			{
@@ -867,11 +867,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				var manifest = await WorkspacePackage.Extract(req.PackageFile, req.WorkingDir, true, ct);
 				var workspaceCt = new CancellationTokenSource();
-				var workspace = await CreateAdHoc(_configureServer, manifest, ct);
-				workspaceCt.Token.Register(() => workspace.Dispose());
+				var manager = await CreateAdHoc(_configureServer, manifest, ct);
+				workspaceCt.Token.Register(() => manager.Dispose());
+
+				var fileSystemWatch = new FileSystemObserver(manager, _reporter, _solutionWatchersGate);
+				ct.Register(() => fileSystemWatch.Dispose());
 
 				_originalWorkspace ??= await GetWorkspaceAsync();
-				_workspace = new(Task.FromResult(workspace), workspaceCt);
+				_workspace = new(Task.FromResult(manager), workspaceCt);
 
 				await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: null));
 			}
@@ -924,133 +927,60 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
-		#region Helpers - FileSystemWatcher buffering
-		private class BufferGate
+		
+		
+	}
+
+	internal class BufferGate
+	{
+		private int _holders;
+		private ImmutableHashSet<Action> _onRelease = ImmutableHashSet<Action>.Empty;
+
+		public IDisposable Acquire()
 		{
-			private int _holders;
-			private ImmutableHashSet<Action> _onRelease = ImmutableHashSet<Action>.Empty;
+			Interlocked.Increment(ref _holders);
+			return new Holder(this);
+		}
 
-			public IDisposable Acquire()
+		public class Holder(BufferGate owner) : IDisposable
+		{
+			private int _disposed;
+			public void Dispose()
 			{
-				Interlocked.Increment(ref _holders);
-				return new Holder(this);
-			}
-
-			public class Holder(BufferGate owner) : IDisposable
-			{
-				private int _disposed;
-				public void Dispose()
+				if (Interlocked.CompareExchange(ref _disposed, 1, 0) is 0
+					&& Interlocked.Decrement(ref owner._holders) is 0)
 				{
-					if (Interlocked.CompareExchange(ref _disposed, 1, 0) is 0
-						&& Interlocked.Decrement(ref owner._holders) is 0)
-					{
-						owner.ProcessCallbacks();
-					}
-				}
-			}
-
-			public void RunOrPlan(Action action)
-			{
-				if (_holders is 0)
-				{
-					action();
-				}
-				else
-				{
-					ImmutableInterlocked.Update(ref _onRelease, static (set, action) => set.Add(action), action);
-					if (_holders is 0) // The gate has been released while we were adding the callback, process it now
-					{
-						ProcessCallbacks();
-					}
-				}
-			}
-
-			private void ProcessCallbacks()
-			{
-				foreach (var callback in Interlocked.Exchange(ref _onRelease, ImmutableHashSet<Action>.Empty))
-				{
-					try
-					{
-						callback();
-					}
-					catch (Exception) { }
+					owner.ProcessCallbacks();
 				}
 			}
 		}
 
-		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter, BufferGate bufferGate)
-			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
+		public void RunOrPlan(Action action)
+		{
+			if (_holders is 0)
 			{
-				// Create an observable instead of using the FromEventPattern which
-				// does not register to events properly.
-				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
-				// Visual Studio uses to save files.
-
-				var gate = new object();
-				var buffer = default((ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task)?);
-				var bufferTimer = new Timer(_ => bufferGate.RunOrPlan(CloseBuffer));
-
-				void changed(object s, FileSystemEventArgs args) => OnNext(args.FullPath);
-				void renamed(object s, RenamedEventArgs args) => OnNext(args.FullPath);
-
-				foreach (var watcher in watchers)
+				action();
+			}
+			else
+			{
+				ImmutableInterlocked.Update(ref _onRelease, static (set, action) => set.Add(action), action);
+				if (_holders is 0) // The gate has been released while we were adding the callback, process it now
 				{
-					watcher.Changed += changed;
-					watcher.Created += changed;
-					watcher.Deleted += changed;
-					watcher.Renamed += renamed;
+					ProcessCallbacks();
 				}
+			}
+		}
 
-				void OnNext(string file)
+		private void ProcessCallbacks()
+		{
+			foreach (var callback in Interlocked.Exchange(ref _onRelease, ImmutableHashSet<Action>.Empty))
+			{
+				try
 				{
-					if (!filter(file))
-					{
-						return;
-					}
-
-					lock (gate)
-					{
-						if (buffer is null)
-						{
-							buffer = (ImmutableHashSet.CreateBuilder<string>(_pathsComparer), new());
-							o.OnNext(buffer.Value.task.Task);
-						}
-
-						buffer.Value.items.Add(file);
-						bufferTimer.Change(250, Timeout.Infinite); // Wait for 250 ms without any file change
-					}
+					callback();
 				}
-
-				void CloseBuffer()
-				{
-					(ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task) completingBuffer;
-					if (buffer is null)
-					{
-						Debug.Fail("Should not happen.");
-						return;
-					}
-
-					lock (gate)
-					{
-						completingBuffer = buffer.Value;
-						buffer = default;
-					}
-
-					completingBuffer.task.SetResult(completingBuffer.items.ToImmutable());
-				}
-
-				return Disposable.Create(() =>
-				{
-					foreach (var watcher in watchers)
-					{
-						watcher.Changed -= changed;
-						watcher.Created -= changed;
-						watcher.Renamed -= renamed;
-					}
-
-					bufferTimer.Dispose();
-				});
-			});
-		#endregion
+				catch (Exception) { }
+			}
+		}
 	}
 }
