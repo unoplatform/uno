@@ -3,19 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
@@ -23,7 +17,7 @@ using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
-using Windows.Networking.Sockets;
+using Uno.UI.RemoteControl.Messaging;
 using Windows.Storage;
 using static Uno.UI.RemoteControl.RemoteControlStatus;
 
@@ -346,7 +340,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		var connection = await connectionTask;
 		if (connection is { } && (!connection.IsConnected || connection.Transport is null) && connection.Since.ElapsedMilliseconds >= _connectionRetryInterval)
 		{
-			// We have a socket (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
+			// We have a transport (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
 			lock (_connectionGate)
 			{
 				_status.Report(ConnectionState.Reconnecting);
