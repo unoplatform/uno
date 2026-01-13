@@ -18,6 +18,7 @@ using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using Newtonsoft.Json.Converters;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Threading;
@@ -34,7 +35,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private static readonly StringComparer _pathsComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
 		private static readonly StringComparison _pathsComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-		private readonly FastAsyncLock _solutionUpdateGate = new();
 		private readonly BufferGate _solutionWatchersGate = new();
 
 		private (Task<HotReloadWorkspace> GetAsync, CancellationTokenSource Ct)? _workspace;
@@ -102,9 +102,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					var workspace = await CreateCompilation(configureServer, ct);
 					ct.Register(() => workspace.Dispose());
 
-					var fileSystemWatch = ObserveSolutionPaths(workspace.CurrentSolution, workspace.OutputPaths);
-					ct.Register(() => fileSystemWatch.Dispose());
-
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);
 
@@ -122,18 +119,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private record HotReloadWorkspace(Workspace InnerWorkspace, WatchHotReloadService WatchService, string?[] OutputPaths) : IDisposable
-		{
-			public Solution CurrentSolution { get; set; } = InnerWorkspace.CurrentSolution;
-
-			/// <inheritdoc />
-			public void Dispose()
-			{
-				WatchService.EndSession();
-				InnerWorkspace.Dispose();
-			}
-		}
-
 		private async Task<HotReloadWorkspace> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
 		{
 			var properties = GetWorkspaceProperties(configureServer, out var outputPaths);
@@ -144,7 +129,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				properties,
 				ct);
 
-			return new HotReloadWorkspace(workspace, watch, outputPaths);
+			return new HotReloadWorkspace(workspace, watch, outputPaths, SendUpdates, _reporter, this, _solutionWatchersGate);
 		}
 
 		private async Task<HotReloadWorkspace> CreateAdHoc(ConfigureServer configureServer, WorkspaceData data, CancellationToken ct)
@@ -157,7 +142,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				properties,
 				ct);
 
-			return new HotReloadWorkspace(workspace, watch, outputPaths);
+			return new HotReloadWorkspace(workspace, watch, outputPaths, SendUpdates, _reporter, this, _solutionWatchersGate);
 		}
 
 		private static Dictionary<string, string> GetWorkspaceProperties(ConfigureServer configureServer, out string?[] outputPaths)
@@ -231,186 +216,271 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private IDisposable ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
+		private record HotReloadWorkspace : IDisposable
 		{
-			// TODO: Resolve the bin and obj folders from the project (instead of assuming same config for all projects)
-			// e.g.: projectDir.First().AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.intermediateoutputpath", out string value)
-			// Not implemented yet: for a netstd2.0 project, we don't have properties such intermediateoutputpath available!
-			ImmutableArray<string> excludedDir =
-			[
-				.. from pattern in excludedDirPattern
-				where pattern is not null
-				from project in solution.Projects
-				let projectDir = Path.GetDirectoryName(project.FilePath)!
-				select Path.Combine(projectDir, pattern).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-			];
+			private readonly FastAsyncLock _solutionUpdateGate = new();
+			private readonly BufferGate _solutionWatchersGate;
+			private readonly IDisposable _fileSystemWatch;
 
-			var watchers = solution
-				.Projects
-				.Select(project => Path.GetDirectoryName(project.FilePath))
-				.Distinct()
-				.Select(dir =>
-				{
-					_reporter.Verbose($"Observing '{dir}' project directories for metadata changes.");
-
-					return new FileSystemWatcher
-					{
-						Path = dir!,
-						Filter = "*.*",
-						NotifyFilter = NotifyFilters.LastWrite |
-							NotifyFilters.Attributes |
-							NotifyFilters.Size |
-							NotifyFilters.CreationTime |
-							NotifyFilters.FileName,
-						EnableRaisingEvents = true,
-						IncludeSubdirectories = true // Required for added files in subfolders
-					};
-				})
-				.ToArray();
-			var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
-			var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate).Subscribe(
-				filePaths => _ = ProcessFileChanges(filePaths, processing.Token),
-				e => Console.WriteLine($"Error {e}"));
-
-			return new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
-
-			bool HasInterest(string path)
+			public HotReloadWorkspace(Workspace InnerWorkspace,
+				WatchHotReloadService WatchService,
+				string?[] OutputPaths,
+				Func<ImmutableHashSet<string>, ImmutableArray<WatchHotReloadService.Update>, CancellationToken, ValueTask> SendUpdates,
+				IReporter Reporter,
+				ServerHotReloadProcessor Processor,
+				BufferGate solutionWatchersGate)
 			{
-				if (Path.GetExtension(path).ToLowerInvariant() is ".csproj" or ".editorconfig")
-				{
-					return false;
-				}
+				this.InnerWorkspace = InnerWorkspace;
+				this.WatchService = WatchService;
+				this.OutputPaths = OutputPaths;
+				this.SendUpdates = SendUpdates;
+				_reporter = Reporter;
+				processor = Processor;
+				CurrentSolution = InnerWorkspace.CurrentSolution;
+				_solutionWatchersGate = solutionWatchersGate;
 
-				if (!File.Exists(path) && Directory.Exists(path))
-				{
-					return false;
-				}
+				_fileSystemWatch = ObserveSolutionPaths(CurrentSolution, OutputPaths);
+			}
 
-				if (path.Contains("\\.vs\\")) // No need to check for AltDirectorySeparatorChar as VS is windows only and always uses '\'
-				{
-					// Ignore changes in the .vs cache folder
-					return false;
-				}
+			public Solution CurrentSolution { get; set; }
+			public Workspace InnerWorkspace { get; init; }
+			public WatchHotReloadService WatchService { get; init; }
+			public string?[] OutputPaths { get; init; }
+			public Func<ImmutableHashSet<string>, ImmutableArray<WatchHotReloadService.Update>, CancellationToken, ValueTask> SendUpdates { get; init; }
+			public IReporter _reporter { get; init; }
+			public ServerHotReloadProcessor processor { get; init; }
 
-				if (excludedDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
+			/// <inheritdoc />
+			public void Dispose()
+			{
+				_fileSystemWatch.Dispose();
+				WatchService.EndSession();
+				InnerWorkspace.Dispose();
+			}
+
+			private IDisposable ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
+			{
+				// TODO: Resolve the bin and obj folders from the project (instead of assuming same config for all projects)
+				// e.g.: projectDir.First().AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.intermediateoutputpath", out string value)
+				// Not implemented yet: for a netstd2.0 project, we don't have properties such intermediateoutputpath available!
+				ImmutableArray<string> excludedDir =
+				[
+					.. from pattern in excludedDirPattern
+					where pattern is not null
+					from project in solution.Projects
+					let projectDir = Path.GetDirectoryName(project.FilePath)!
+					select Path.Combine(projectDir, pattern).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+				];
+
+				var watchers = solution
+					.Projects
+					.Select(project => Path.GetDirectoryName(project.FilePath))
+					.Distinct()
+					.Select(dir =>
+					{
+						_reporter.Verbose($"Observing '{dir}' project directories for metadata changes.");
+
+						return new FileSystemWatcher
+						{
+							Path = dir!,
+							Filter = "*.*",
+							NotifyFilter = NotifyFilters.LastWrite |
+								NotifyFilters.Attributes |
+								NotifyFilters.Size |
+								NotifyFilters.CreationTime |
+								NotifyFilters.FileName,
+							EnableRaisingEvents = true,
+							IncludeSubdirectories = true // Required for added files in subfolders
+						};
+					})
+					.ToArray();
+				var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
+				var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate)
+					.Subscribe(
+						filePaths => _ = ProcessFileChanges(filePaths, processing.Token),
+						e => Console.WriteLine($"Error {e}"));
+
+				return new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
+
+				bool HasInterest(string path)
 				{
-					// File is in an excluded directory (bin or obj)
-					// However, we still allow changes from the HotReloadInfo
-					if (!path.EndsWith(HotReloadInfoHelper.HotReloadInfoFilePath, _pathsComparison))
+					if (Path.GetExtension(path).ToLowerInvariant() is ".csproj" or ".editorconfig")
 					{
 						return false;
 					}
+
+					if (!File.Exists(path) && Directory.Exists(path))
+					{
+						return false;
+					}
+
+					if (path.Contains("\\.vs\\")) // No need to check for AltDirectorySeparatorChar as VS is windows only and always uses '\'
+					{
+						// Ignore changes in the .vs cache folder
+						return false;
+					}
+
+					if (excludedDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
+					{
+						// File is in an excluded directory (bin or obj)
+						// However, we still allow changes from the HotReloadInfo
+						if (!path.EndsWith(HotReloadInfoHelper.HotReloadInfoFilePath, _pathsComparison))
+						{
+							return false;
+						}
+					}
+
+					return true;
+				}
+			}
+
+			private async Task ProcessFileChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
+			{
+				// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
+				var hotReload = await processor.StartOrContinueHotReload();
+				var files = await filesAsync;
+				if (!hotReload.TryMerge(files))
+				{
+					hotReload = await processor.StartHotReload(files);
 				}
 
-				return true;
-			}
-		}
-
-		private async Task ProcessFileChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
-		{
-			// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
-			var hotReload = await StartOrContinueHotReload();
-			var files = await filesAsync;
-			if (!hotReload.TryMerge(files))
-			{
-				hotReload = await StartHotReload(files);
-			}
-
-			// Process the batch of files (sequentially!)
-			try
-			{
-				using var _ = await _solutionUpdateGate.LockAsync(ct);
-				await ProcessSolutionChanged(hotReload, files, ct);
-			}
-			catch (Exception e)
-			{
-				_reporter.Warn($"Internal error while processing hot-reload ({e.Message}).");
-				_reporter.Verbose(e.ToString());
-
-				await hotReload.Complete(HotReloadServerResult.InternalError, e);
-			}
-		}
-
-		private async ValueTask ProcessSolutionChanged(HotReloadServerOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
-		{
-			if (await GetWorkspaceAsync() is not { } workspace)
-			{
-				await hotReload.Complete(HotReloadServerResult.Failed); // Failed to init the workspace
-				return;
-			}
-
-			var sw = Stopwatch.StartNew();
-
-			// Detects the changes and try to update the solution
-			var originalSolution = workspace.CurrentSolution;
-			var changeSet = await DiscoverChangesAsync(originalSolution, files, ct);
-			var solution = await Apply(originalSolution, changeSet, hotReload, ct);
-
-			if (solution == originalSolution)
-			{
-				_reporter.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
-
-				await hotReload.Complete(HotReloadServerResult.NoChanges);
-				return;
-			}
-
-			// No matter if the build will succeed or not, we update the _currentSolution.
-			// Files needs to be updated again to fix the compilation errors.
-			workspace.CurrentSolution = solution;
-
-			// Compile the solution and get deltas
-			var (updates, hotReloadDiagnostics) = await workspace.WatchService.EmitSolutionUpdateAsync(solution, ct);
-			// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
-			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
-			var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
-
-			_reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
-			sw.Stop();
-
-			if (rudeEdits.IsEmpty && updates.IsEmpty)
-			{
-				var compilationErrors = GetCompilationErrors(solution, ct);
-				if (compilationErrors.IsEmpty)
+				// Process the batch of files (sequentially!)
+				try
 				{
-					_reporter.Output("No hot reload changes to apply.");
+					using var _ = await _solutionUpdateGate.LockAsync(ct);
+					await ProcessSolutionChanged(hotReload, files, ct);
+				}
+				catch (Exception e)
+				{
+					_reporter.Warn($"Internal error while processing hot-reload ({e.Message}).");
+					_reporter.Verbose(e.ToString());
+
+					await hotReload.Complete(HotReloadServerResult.InternalError, e);
+				}
+			}
+
+			private async ValueTask ProcessSolutionChanged(HotReloadServerOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
+			{
+				var workspace = this;
+				//if (await GetWorkspaceAsync() is not { } workspace)
+				//{
+				//	await hotReload.Complete(HotReloadServerResult.Failed); // Failed to init the workspace
+				//	return;
+				//}
+
+				var sw = Stopwatch.StartNew();
+
+				// Detects the changes and try to update the solution
+				var originalSolution = workspace.CurrentSolution;
+				var changeSet = await processor.DiscoverChangesAsync(originalSolution, files, ct);
+				var solution = await Apply(originalSolution, changeSet, hotReload, ct);
+
+				if (solution == originalSolution)
+				{
+					_reporter.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
+
 					await hotReload.Complete(HotReloadServerResult.NoChanges);
-				}
-				else
-				{
-					await hotReload.Complete(HotReloadServerResult.Failed, diagnostics: hotReloadDiagnostics);
+					return;
 				}
 
-				return;
+				// No matter if the build will succeed or not, we update the _currentSolution.
+				// Files needs to be updated again to fix the compilation errors.
+				workspace.CurrentSolution = solution;
+
+				// Compile the solution and get deltas
+				var (updates, hotReloadDiagnostics) = await workspace.WatchService.EmitSolutionUpdateAsync(solution, ct);
+				// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
+				// of unrecoverable errors that a user cannot fix and requires an app rebuild.
+				var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
+
+				_reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
+				sw.Stop();
+
+				if (rudeEdits.IsEmpty && updates.IsEmpty)
+				{
+					var compilationErrors = GetCompilationErrors(solution, ct);
+					if (compilationErrors.IsEmpty)
+					{
+						_reporter.Output("No hot reload changes to apply.");
+						await hotReload.Complete(HotReloadServerResult.NoChanges);
+					}
+					else
+					{
+						await hotReload.Complete(HotReloadServerResult.Failed, diagnostics: hotReloadDiagnostics);
+					}
+
+					return;
+				}
+
+				if (!rudeEdits.IsEmpty)
+				{
+					// Rude edit.
+					_reporter.Output("Unable to apply hot reload because of a rude edit.");
+					foreach (var diagnostic in hotReloadDiagnostics)
+					{
+						_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
+					}
+
+					await hotReload.Complete(HotReloadServerResult.RudeEdit, diagnostics: hotReloadDiagnostics);
+					return;
+				}
+
+				await SendUpdates(files, updates, ct);
+
+				await hotReload.Complete(HotReloadServerResult.Success);
 			}
 
-			if (!rudeEdits.IsEmpty)
+			private ImmutableArray<string> GetCompilationErrors(Solution solution, CancellationToken cancellationToken)
 			{
-				// Rude edit.
-				_reporter.Output("Unable to apply hot reload because of a rude edit.");
-				foreach (var diagnostic in hotReloadDiagnostics)
-				{
-					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
-				}
+				var @lock = new object();
+				var builder = ImmutableArray<string>.Empty;
+				Parallel.ForEach(solution.Projects,
+					project =>
+					{
+						if (!project.TryGetCompilation(out var compilation))
+						{
+							return;
+						}
 
-				await hotReload.Complete(HotReloadServerResult.RudeEdit, diagnostics: hotReloadDiagnostics);
-				return;
+						var compilationDiagnostics = compilation.GetDiagnostics(cancellationToken);
+						if (compilationDiagnostics.IsEmpty)
+						{
+							return;
+						}
+
+						var projectDiagnostics = ImmutableArray<string>.Empty;
+						foreach (var item in compilationDiagnostics)
+						{
+							if (item.Severity == DiagnosticSeverity.Error)
+							{
+								var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
+								_reporter.Output("\x1B[40m\x1B[31m" + diagnostic);
+								projectDiagnostics = projectDiagnostics.Add(diagnostic);
+							}
+						}
+
+						lock (@lock)
+						{
+							builder = builder.AddRange(projectDiagnostics);
+						}
+					});
+
+				return builder;
 			}
+		}
 
-			await SendUpdates(updates);
 
-			await hotReload.Complete(HotReloadServerResult.Success);
-
-			async Task SendUpdates(ImmutableArray<WatchHotReloadService.Update> updates)
-			{
+		private async ValueTask SendUpdates(ImmutableHashSet<string> files, ImmutableArray<WatchHotReloadService.Update> updates, CancellationToken ct)
+		{
 #if DEBUG
-				_reporter.Output($"Sending {updates.Length} metadata updates for {string.Join(",", files.Select(Path.GetFileName))}");
+			_reporter.Output($"Sending {updates.Length} metadata updates for {string.Join(",", files.Select(Path.GetFileName))}");
 #endif
 
-				for (var i = 0; i < updates.Length; i++)
+			for (var i = 0; i < updates.Length; i++)
+			{
+				if (_useHotReloadThruDebugger)
 				{
-					if (_useHotReloadThruDebugger)
-					{
-						if (!await _remoteControlServer.TrySendMessageToIDEAsync(
+					if (!await _remoteControlServer.TrySendMessageToIDEAsync(
 							new Uno.UI.RemoteControl.Messaging.IdeChannel.HotReloadThruDebuggerIdeMessage(
 								updates[i].ModuleId.ToString(),
 								Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
@@ -418,100 +488,43 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 								Convert.ToBase64String(updates[i].PdbDelta.ToArray())
 							),
 							ct))
+					{
+						throw new InvalidOperationException("No active connection with the IDE to send update thru debugger.");
+					}
+				}
+				else
+				{
+					var updateTypesWriterStream = new MemoryStream();
+					var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
+					WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
+
+					await _remoteControlServer.SendFrame(
+						new AssemblyDeltaReload
 						{
-							throw new InvalidOperationException("No active connection with the IDE to send update thru debugger.");
-						}
-					}
-					else
-					{
-						var updateTypesWriterStream = new MemoryStream();
-						var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
-						WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
-
-						await _remoteControlServer.SendFrame(
-							new AssemblyDeltaReload
-							{
-								FilePaths = files,
-								ModuleId = updates[i].ModuleId.ToString(),
-								PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
-								ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
-								MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
-								UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
-							});
-					}
-				}
-			}
-
-			static void WriteIntArray(BinaryWriter binaryWriter, int[] values)
-			{
-				if (values is null)
-				{
-					binaryWriter.Write(0);
-					return;
-				}
-
-				binaryWriter.Write(values.Length);
-				foreach (var value in values)
-				{
-					binaryWriter.Write(value);
+							FilePaths = files,
+							ModuleId = updates[i].ModuleId.ToString(),
+							PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
+							ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
+							MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
+							UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
+						});
 				}
 			}
 		}
 
-		private static async ValueTask<SourceText> GetSourceTextAsync(string filePath, CancellationToken ct)
+		static void WriteIntArray(BinaryWriter binaryWriter, int[] values)
 		{
-			for (var attemptIndex = 0; attemptIndex < 6; attemptIndex++)
+			if (values is null)
 			{
-				try
-				{
-					await using var stream = File.OpenRead(filePath);
-					return SourceText.From(stream, Encoding.UTF8);
-				}
-				catch (IOException) when (attemptIndex < 5)
-				{
-					await Task.Delay(20 * (attemptIndex + 1), ct);
-				}
+				binaryWriter.Write(0);
+				return;
 			}
 
-			Debug.Fail("This shouldn't happen.");
-			return null;
-		}
-
-		private ImmutableArray<string> GetCompilationErrors(Solution solution, CancellationToken cancellationToken)
-		{
-			var @lock = new object();
-			var builder = ImmutableArray<string>.Empty;
-			Parallel.ForEach(solution.Projects, project =>
+			binaryWriter.Write(values.Length);
+			foreach (var value in values)
 			{
-				if (!project.TryGetCompilation(out var compilation))
-				{
-					return;
-				}
-
-				var compilationDiagnostics = compilation.GetDiagnostics(cancellationToken);
-				if (compilationDiagnostics.IsEmpty)
-				{
-					return;
-				}
-
-				var projectDiagnostics = ImmutableArray<string>.Empty;
-				foreach (var item in compilationDiagnostics)
-				{
-					if (item.Severity == DiagnosticSeverity.Error)
-					{
-						var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
-						_reporter.Output("\x1B[40m\x1B[31m" + diagnostic);
-						projectDiagnostics = projectDiagnostics.Add(diagnostic);
-					}
-				}
-
-				lock (@lock)
-				{
-					builder = builder.AddRange(projectDiagnostics);
-				}
-			});
-
-			return builder;
+				binaryWriter.Write(value);
+			}
 		}
 
 		private async ValueTask<HotReloadWorkspace?> GetWorkspaceAsync()
@@ -753,6 +766,25 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			hotReload.NotifyIgnored(changeSet.IgnoredFiles);
 
 			return solution;
+		}
+
+		private static async ValueTask<SourceText> GetSourceTextAsync(string filePath, CancellationToken ct)
+		{
+			for (var attemptIndex = 0; attemptIndex < 6; attemptIndex++)
+			{
+				try
+				{
+					await using var stream = File.OpenRead(filePath);
+					return SourceText.From(stream, Encoding.UTF8);
+				}
+				catch (IOException) when (attemptIndex < 5)
+				{
+					await Task.Delay(20 * (attemptIndex + 1), ct);
+				}
+			}
+
+			Debug.Fail("This shouldn't happen.");
+			return null;
 		}
 
 		private record ChangeSet(
