@@ -244,8 +244,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			}
 			catch (WebSocketException) when (!transport.IsConnected)
 			{
-				// Ignore "The remote party closed the WebSocket connection without completing the close handshake."
-				// It's making noise in the logs.
+				// Ignore transport closure exceptions without proper handshake to reduce log noise.
 			}
 			catch (Exception error)
 			{

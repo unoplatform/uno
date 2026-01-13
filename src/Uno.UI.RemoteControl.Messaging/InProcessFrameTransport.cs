@@ -144,6 +144,7 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 	/// <inheritdoc />
 	public void Dispose()
 	{
+		// netstandard2.0 can't use IAsyncDisposable, and blocking is unsafe on WASM. Best-effort close only.
 		_ = CloseAsync();
 		_endpoint.Dispose();
 	}
