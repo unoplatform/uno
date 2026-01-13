@@ -27,6 +27,11 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 		{
 			ct.ThrowIfCancellationRequested();
 
+			if (_isRemoteClosed != 0)
+			{
+				throw new InvalidOperationException("Remote transport is closed.");
+			}
+
 			if (_isClosed != 0)
 			{
 				throw new ObjectDisposedException(nameof(InProcessFrameTransport));
@@ -80,6 +85,7 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 				return;
 			}
 
+			Interlocked.Exchange(ref _isClosed, 1);
 			Signal();
 		}
 
