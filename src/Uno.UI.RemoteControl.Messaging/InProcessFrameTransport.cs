@@ -124,13 +124,13 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 	/// <inheritdoc />
 	public void Dispose() => _ = CloseAsync();
 
-	internal static (IFrameTransport Peer1, IFrameTransport Peer2) CreatePair()
+	internal static FrameTransportPair CreatePair()
 	{
 		var peer1 = new Endpoint();
 		var peer2 = new Endpoint();
 		peer1.AttachRemote(peer2);
 		peer2.AttachRemote(peer1);
 
-		return (new InProcessFrameTransport(peer1), new InProcessFrameTransport(peer2));
+		return new FrameTransportPair(new InProcessFrameTransport(peer1), new InProcessFrameTransport(peer2));
 	}
 }

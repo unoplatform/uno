@@ -270,7 +270,10 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					|| OperatingSystem.IsLinux()
 					|| OperatingSystem.IsMacOS()))
 				{
-					var serverPort = _serverAddresses.Select(addr => addr.port).Where(p => p > 0).FirstOrDefault();
+					var serverPort = _serverAddresses
+						.Select(addr => addr.port)
+						.FirstOrDefault(p => p > 0);
+
 					if (serverPort > 0)
 					{
 						var loopbackAddress = IPAddress.Loopback.ToString().ToLowerInvariant();
@@ -406,7 +409,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					if (TryParse(srv.endpoint, srv.port, isHttps, out var serverUri))
 					{
 						// Note: If we have a preferred endpoint (last known to be successful), we delay a bit the connection to other endpoints.
-						//		 This is to reduce the number of (task cancelled / transport) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
+						//		 This is to reduce the number of (task canceled / transport) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
 						var cts = new CancellationTokenSource();
 						var delay = preferred is null || preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase) ? 0 : 3000;
 						var task = Connect(serverUri, delay, cts.Token);
