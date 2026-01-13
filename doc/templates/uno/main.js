@@ -466,7 +466,7 @@ document.addEventListener(
         
         // Store and display search history as pills
         const SEARCH_HISTORY_KEY = 'uno_search_history';
-        const MAX_SEARCH_HISTORY = 5;
+        const MAX_SEARCH_HISTORY = 10;
         
         // Wait for Pagefind to initialize
         const initializeSearchKeywords = setInterval(function() {
@@ -494,6 +494,15 @@ document.addEventListener(
                     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
                 }
                 
+                // Clear search history
+                function clearSearchHistory() {
+                    localStorage.removeItem(SEARCH_HISTORY_KEY);
+                    const pillsContainer = document.querySelector('.search-history-pills');
+                    if (pillsContainer) {
+                        pillsContainer.remove();
+                    }
+                }
+                
                 // Create or update pills container
                 function updatePillsContainer() {
                     const history = getSearchHistory();
@@ -519,10 +528,27 @@ document.addEventListener(
                     const pillsContainer = document.createElement('div');
                     pillsContainer.className = 'search-history-pills';
                     
+                    // Create header with title and clear button
+                    const header = document.createElement('div');
+                    header.className = 'search-history-header';
+                    
                     const title = document.createElement('div');
                     title.className = 'search-history-title';
                     title.textContent = 'Recent searches';
-                    pillsContainer.appendChild(title);
+                    header.appendChild(title);
+                    
+                    const clearButton = document.createElement('button');
+                    clearButton.className = 'search-history-clear';
+                    clearButton.textContent = 'Clear all';
+                    clearButton.setAttribute('type', 'button');
+                    clearButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        clearSearchHistory();
+                    });
+                    header.appendChild(clearButton);
+                    
+                    pillsContainer.appendChild(header);
                     
                     const pillsWrapper = document.createElement('div');
                     pillsWrapper.className = 'search-history-pills-wrapper';

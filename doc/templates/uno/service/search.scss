@@ -99,6 +99,7 @@
                 height: 36px;
                 border-radius: 18px;
                 padding-left: 40px;
+                padding-right: 48px !important; // Comfortable spacing from Clear button (20px button + 12px right + 16px spacing)
                 font-size: 14px;
                 border: 1px solid #e7e7e7;
                 background-color: #f9f9f9;
@@ -260,13 +261,41 @@
         overflow: hidden;
     }
     
+    .search-history-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+    
     .search-history-title {
         font-size: 12px;
         font-weight: 600;
         color: $gray;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 12px;
+    }
+    
+    .search-history-clear {
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 500;
+        color: $gray;
+        background-color: transparent;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        
+        &:hover {
+            color: #c44;
+            border-color: rgba(204, 68, 68, 0.3);
+            background-color: rgba(204, 68, 68, 0.05);
+        }
+        
+        &:active {
+            transform: scale(0.95);
+        }
     }
     
     .search-history-pills-wrapper {
