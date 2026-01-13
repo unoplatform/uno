@@ -124,11 +124,7 @@ internal readonly partial struct UnicodeText
 				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
 				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
 				GetMethod<udata_setCommonData>()((IntPtr)data, out var errorCode);
-				if (errorCode > 0)
-				{
-					var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(errorCode));
-					throw new InvalidOperationException($"{nameof(udata_setCommonData)} failed: {errorString}");
-				}
+				CheckErrorCode<udata_setCommonData>(errorCode);
 			}
 		}
 
