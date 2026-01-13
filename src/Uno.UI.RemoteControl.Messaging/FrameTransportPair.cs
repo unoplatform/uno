@@ -43,7 +43,7 @@ public sealed class FrameTransportPair : IDisposable
 	{
 		try
 		{
-			Peer1.CloseAsync().GetAwaiter().GetResult();
+			_ = Peer1.CloseAsync();
 		}
 		catch
 		{
@@ -51,7 +51,7 @@ public sealed class FrameTransportPair : IDisposable
 
 		try
 		{
-			Peer2.CloseAsync().GetAwaiter().GetResult();
+			_ = Peer2.CloseAsync();
 		}
 		catch
 		{
