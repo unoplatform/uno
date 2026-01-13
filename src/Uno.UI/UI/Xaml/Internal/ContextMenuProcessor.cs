@@ -27,7 +27,6 @@ internal partial class ContextMenuProcessor
 	private readonly ContentRoot _contentRoot;
 	private bool _isContextMenuOnHolding;
 	private DispatcherTimer? _contextMenuTimer;
-	private ManagedWeakReference? _timerTargetElement;
 	private Point _contextMenuOnHoldingTouchPoint = new(-1, -1);
 
 	public ContextMenuProcessor(ContentRoot contentRoot)
