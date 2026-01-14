@@ -634,6 +634,12 @@
                                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem Command="{Binding OpenHelpCommand}" Text="Help">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE897;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
                                 </MenuFlyout>
                             </Button.Flyout>
                         </Button>
