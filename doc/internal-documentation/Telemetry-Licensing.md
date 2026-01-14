@@ -73,6 +73,19 @@ Server-side licensing API events:
 |------------|-----------|--------------|-------------|
 | `license-manager-start` | `Feature` (string) | - | License manager started in DevServer |
 
+## Property Value Examples
+
+Common property values across Licensing events:
+
+- **Error**: "NetworkError", "AuthenticationFailed", "ServerTimeout", "InvalidCredentials", "ConnectionRefused"
+- **error / errorDescription**: Human-readable error messages like "Unable to connect to authentication server", "Invalid username or password"
+- **LicenseName**: "Community", "Professional", "Enterprise", "Trial"
+- **LicenseStatus**: "Active", "Expired", "Suspended", "NotFound", "Invalid"
+- **TrialDaysRemaining**: 0-30 (integer representing days)
+- **Feature**: "HotDesign", "HotReload", "XAML Designer", "Mobile Support"
+- **ErrorType**: "NetworkException", "TimeoutException", "AuthException", "ValidationException"
+- **Details** (get-offers-success): JSON string containing offer information
+
 ## Reference
 
 For more detailed information, see the [Uno Licensing Repository](https://github.com/unoplatform/uno.licensing).

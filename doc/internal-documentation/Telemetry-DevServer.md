@@ -33,6 +33,21 @@ App launches are tracked via the `AppLaunchMessage` with the following propertie
 | `Plugin` | String | Plugin/extension name and version |
 | `Step` | Enum | Launch step: `Launched` or `Connected` |
 
+## Property Value Examples
+
+Example values for Dev Server telemetry properties:
+
+- **Id**: "8b3c9f45-7a21-4e68-b9d2-1f5c6a8d3e4f" (GUID format)
+- **SessionType**: "Root", "Connection"
+- **ConnectionId**: "conn_12345", "client_abc789"
+- **SolutionPath**: "/Users/developer/Projects/MyApp/MyApp.sln", "C:\\Projects\\MyApp\\MyApp.sln" (hashed in actual telemetry)
+- **Mvid**: "a1b2c3d4-e5f6-7890-abcd-ef1234567890" (GUID format)
+- **Platform**: "WebAssembly", "iOS", "Android", "Windows", "macOS", "Linux", "Skia.Gtk", "Skia.Wpf"
+- **IsDebug**: `true`, `false`
+- **Ide**: "VisualStudio", "VSCode", "Rider", "Unknown"
+- **Plugin**: "Uno.VSCode.Extension v1.2.3", "Uno.Rider.Plugin v2.0.1", "Uno.VisualStudio.Extension v1.5.0"
+- **Step**: "Launched", "Connected"
+
 ## Reference
 
 For more detailed information, see the [Uno Platform Telemetry Source](https://github.com/unoplatform/uno).

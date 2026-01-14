@@ -62,6 +62,42 @@ Errors and exceptions are tracked with:
 | `screenshot-frequency` | Counter | How often screenshots are taken |
 | `interaction-patterns` | String | Common sequences of tool usage |
 
+## Property Value Examples
+
+Example values for App MCP telemetry properties:
+
+### Tool Properties
+- **Platform**: "WebAssembly", "iOS", "Android", "Windows", "macOS", "Linux", "Skia"
+- **OS**: "Windows 11", "macOS 14.2", "Ubuntu 22.04", "iOS 17.0"
+- **ProcessId**: 12345, 67890 (integer)
+- **Width**: 1920, 1366, 800 (pixels)
+- **Height**: 1080, 768, 600 (pixels)
+- **Format**: "png", "jpeg"
+- **X/Y** (coordinates): 0-screen width/height (integers)
+- **Button**: "left", "right", "middle"
+- **Key**: "Enter", "Escape", "A", "Control+C"
+- **Modifiers**: "Control", "Shift", "Alt", "Control+Shift"
+- **TextLength**: 1-1000+ (integer)
+- **ElementCount**: 10-500+ (integer)
+- **Depth**: 1-20 (visual tree depth)
+- **ElementType**: "Button", "TextBox", "Grid", "ListView", "Border"
+- **ActionType**: "Click", "Invoke", "Select", "Toggle"
+- **PeerAction**: "Click", "Invoke", "Expand", "Collapse", "Select"
+- **DataContextType**: "ViewModel", "Model", "ObservableCollection", "String"
+- **ExitCode**: 0 (success), 1 (error), -1 (terminated)
+
+### Session Properties
+- **SessionId**: "f7a3b2c1-4d5e-6789-a0b1-c2d3e4f56789" (GUID format)
+- **AgentType**: "Claude", "Copilot", "Codex", "Cursor", "Windsurf"
+- **AppPlatform**: "WebAssembly", "Android", "iOS", "Windows"
+- **ToolsUsed**: ["uno_app_get_screenshot", "uno_app_pointer_click", "uno_app_type_text"]
+
+### Error Properties
+- **ErrorType**: "ConnectionError", "ToolExecutionError", "TimeoutError", "InvalidParameterError"
+- **ToolName**: "uno_app_get_screenshot", "uno_app_pointer_click", etc.
+- **ErrorMessage**: Sanitized messages like "Connection refused", "Tool execution timed out"
+- **StackTraceHash**: "a1b2c3d4e5f6..." (SHA256 hash)
+
 ## Privacy Notes
 
 - **No PII**: No user input text, file paths, or application data is logged

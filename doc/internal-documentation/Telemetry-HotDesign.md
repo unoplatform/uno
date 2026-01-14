@@ -120,6 +120,24 @@ Client-side events are organized by category and forwarded to the server via the
 | `ElementsSearch` | `ElementsSearchText` (string) | - | User searched in elements tree |
 | `PropertyFilterSwitch` | `SelectedFilter` (string) | - | Property filter changed |
 
+## Property Value Examples
+
+Common property values across Hot Design events:
+
+- **ExceptionType**: "NullReferenceException", "ArgumentException", "InvalidOperationException", etc.
+- **SelectedFormFactor**: "Phone", "Tablet", "Desktop", "Custom"
+- **IsDark**: `true`, `false`
+- **IsEnabled**: `true`, `false`
+- **Success**: `true`, `false`
+- **PropertyName**: "Margin", "Padding", "Background", "Foreground", "Width", "Height", etc.
+- **Source**: "StaticResource", "Binding", "x:Bind", "ThemeResource", "Direct"
+- **Name** (toolbox items): "Button", "TextBox", "ListView", "Grid", "StackPanel", etc.
+- **OptionType**: "Element", "Resource", "Style", "Template", "Page"
+- **Method** (image attach): "Clipboard", "FilePicker", "DragDrop"
+- **PreviewVersion**: "v1", "v2", "v3", etc.
+- **Phase** (XAML generation): "Analyzing", "Generating", "Validating", "Complete"
+- **SelectedFilter**: "All", "Common", "Layout", "Text", "Input", "Data"
+
 ## Event Flow
 
 1. **Client** generates usage events during user interaction

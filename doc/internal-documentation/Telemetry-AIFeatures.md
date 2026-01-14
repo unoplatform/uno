@@ -30,6 +30,15 @@ The `CallDetailsEntry` entity in Azure Tables includes:
 | `OperationPhase` | Current operation phase |
 | `LoopIteration` | Loop iteration number |
 
+## Field Value Examples
+
+Example values for AI Features telemetry fields:
+
+- **design_thread_id**: "3fa85f64-5717-4562-b3fc-2c963f66afa6" (GUID format)
+- **parent_design_thread_id**: "7d4c8a91-2b45-4f89-a1c3-9e7f6d5c4b3a" (GUID format, or null for root operations)
+- **operation_phase**: "UxDesign", "XamlGeneration", "UiImprovement", "FitnessEvaluation"
+- **loop_iteration**: "1", "2", "3", etc. (string representation of iteration count)
+
 ## Privacy Notes
 
 - **No PII**: No personally identifiable information is collected
