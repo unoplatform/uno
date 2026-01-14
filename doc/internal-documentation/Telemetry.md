@@ -1,6 +1,6 @@
 # Uno Platform Telemetry Documentation
 
-This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, covering all major components such as Hot Design, AI Features, Dev Server, Licensing, IDE Extensions, App MCP, and Docs MCP.
+This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, covering all major components such as Hot Design, AI Features, Dev Server, Licensing, IDE Extensions, App MCP, Docs MCP, and Wizard.
 
 ## Table of Contents
 
@@ -13,6 +13,7 @@ This document provides a comprehensive overview of telemetry across the Uno Plat
 - [IDE Extensions](Telemetry-IDEExtensions.md)
 - [App MCP](Telemetry-AppMCP.md)
 - [Docs MCP](Telemetry-DocsMCP.md)
+- [Wizard](Telemetry-Wizard.md)
 - [Privacy & Compliance](Telemetry-Privacy.md)
 - [Additional Resources](#additional-resources)
 
@@ -32,6 +33,7 @@ All telemetry events use a prefixed naming convention based on the feature area:
 - `uno/visual-studio` - Visual Studio Extension telemetry
 - `uno/app-mcp` - App MCP (Model Context Protocol) telemetry
 - `uno/docs-mcp` - Docs MCP (Documentation search and retrieval) telemetry
+- `uno/wizard` - Wizard (Project template wizard) telemetry
 
 ---
 
@@ -130,6 +132,18 @@ Docs MCP (Model Context Protocol) is an Azure-hosted service providing documenta
 - **Performance Metrics** - Search performance, caching efficiency, system health
 
 [View detailed Docs MCP telemetry documentation →](Telemetry-DocsMCP.md)
+
+### [Wizard](Telemetry-Wizard.md)
+
+**Event Name Prefix:** `uno/wizard`
+
+Wizard telemetry tracks project template creation and configuration through the Uno Platform project wizard:
+- **Project Creation** - Template selections, platform choices, configuration options
+- **CLI Command Generation** - Command generation for dotnet CLI
+- **Configuration Tracking** - Individual template parameter selections (preset, platforms, markup, tests, theme, etc.)
+- **Performance Metrics** - Template processing duration, replacement counts
+
+[View detailed Wizard telemetry documentation →](Telemetry-Wizard.md)
 
 ### [Privacy & Compliance](Telemetry-Privacy.md)
 
