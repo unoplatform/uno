@@ -1,6 +1,6 @@
 # Uno Platform Telemetry Documentation
 
-This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, including Hot Design, AI Features, Dev Server, Licensing, and IDE Extensions.
+This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, covering all major components such as Hot Design, AI Features, Dev Server, Licensing, IDE Extensions, App MCP, and Docs MCP.
 
 ## Table of Contents
 
