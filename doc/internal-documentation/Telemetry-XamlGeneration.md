@@ -23,7 +23,8 @@ XAML code generation telemetry tracks the performance and behavior of the Uno Pl
 - **IsBuildingUnoSolution**: Whether the Uno.UI solution itself is being built
 - **IsUiAutomationMappingEnabled**: Whether UI automation mapping is enabled
 - **DefaultLanguage**: The default language for the project
-- **BuildingInsideVisualStudio**: Whether building inside Visual Studio
+- **BuildingInsideVisualStudio**: Whether building inside Visual Studio. This property is a boolean flag that indicates whether a build is being executed from within Visual Studio or externally, such as via the command line or CI/CD systems. When set to `true`, it means the build was triggered from inside Visual Studio. When set to `false` or `empty`, it implies the build was initiated outside Visual Studio, such as via dotnet build, msbuild.exe, or other automation tools.
+
 - **IDE**: The IDE being used (vswin, vscode, rider, unknown)
 
 ### Failure Properties
