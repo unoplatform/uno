@@ -76,6 +76,7 @@ To add a new sample to the SamplesApp:
 5. **CRITICAL: Register your XAML file in `UITests.Shared.projitems`**
    * Open `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
    * Add an entry for your XAML page and code-behind file:
+
      ```xml
      <Page Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml">
        <SubType>Designer</SubType>
@@ -85,6 +86,7 @@ To add a new sample to the SamplesApp:
        <DependentUpon>YourSample.xaml</DependentUpon>
      </Compile>
      ```
+
    * **Without this step, your sample will NOT be visible in SamplesApp**
 6. Double-check that the category name matches other samples for the control.
 7. Run the `SamplesApp` to check that your sample appears in the browser and works as expected.
