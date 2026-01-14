@@ -20,7 +20,7 @@ Client-side license manager events:
 | `login-timeout` | `error` (string), `errorDescription` (string) | - | Login timed out |
 | `license-status` | `LicenseName` (string), `LicenseStatus` (string), `TrialDaysRemaining` (int), `LicenseExpiryDate` (date) | - | License status checked |
 | `manager-started` | `Feature` (string) | - | License manager started for a feature |
-| `manager-failed` | `ErrorType` (string), `ErrorStackTrace` (string) | - | License manager failed |
+| `manager-failed` | `errorType` (string), `errorStackTrace` (string) | - | License manager failed |
 
 ## Navigation Events
 

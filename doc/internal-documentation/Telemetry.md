@@ -1,6 +1,6 @@
 # Uno Platform Telemetry Documentation
 
-This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, covering all major components such as Hot Design, AI Features, Dev Server, Licensing, IDE Extensions, App MCP, Docs MCP, Wizard, and Uno.Check.
+This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, covering all major components such as Hot Design, AI Features, Dev Server, Licensing, IDE Extensions, App MCP, Docs MCP, Wizard, Uno.Check, and XAML Generation.
 
 ## Table of Contents
 
@@ -15,6 +15,7 @@ This document provides a comprehensive overview of telemetry across the Uno Plat
 - [Docs MCP](Telemetry-DocsMCP.md)
 - [Wizard](Telemetry-Wizard.md)
 - [Uno.Check](Telemetry-UnoCheck.md)
+- [XAML Generation](Telemetry-XamlGeneration.md)
 - [Privacy & Compliance](Telemetry-Privacy.md)
 - [Additional Resources](#additional-resources)
 
@@ -36,6 +37,7 @@ All telemetry events use a prefixed naming convention based on the feature area:
 - `uno/docs-mcp` - Docs MCP (Documentation search and retrieval) telemetry
 - `uno/wizard` - Wizard (Project template wizard) telemetry
 - `uno/uno-check` - Uno.Check (Environment validation tool) telemetry
+- `uno/generation` - XAML Generation (Source generator) telemetry
 
 ---
 
@@ -159,6 +161,18 @@ Uno.Check is an environment validation tool that checks .NET SDK installations, 
 
 [View detailed Uno.Check telemetry documentation →](Telemetry-UnoCheck.md)
 
+### [XAML Generation](Telemetry-XamlGeneration.md)
+
+**Event Name Prefix:** `uno/generation`
+
+XAML code generation telemetry tracks the performance and behavior of the Uno Platform source generator that processes XAML files into C# code:
+- **Generation Tracking** - Start, completion, and failure events
+- **Build Configuration** - Target framework, runtime, debug mode, IDE detection
+- **Performance Metrics** - File count, generation duration
+- **Error Tracking** - Exception type tracking for failed generations
+
+[View detailed XAML Generation telemetry documentation →](Telemetry-XamlGeneration.md)
+
 ### [Privacy & Compliance](Telemetry-Privacy.md)
 
 Comprehensive privacy and compliance information including:
@@ -186,6 +200,7 @@ Comprehensive privacy and compliance information including:
 - **Uno App MCP**: [unoplatform/uno.app-mcp](https://github.com/unoplatform/uno.app-mcp)
 - **Uno Docs MCP**: [unoplatform/uno.docs-mcp](https://github.com/unoplatform/uno.docs-mcp)
 - **Uno.Check**: [unoplatform/uno.check](https://github.com/unoplatform/uno.check)
+- **XAML Generation**: [uno/XamlCodeGeneration.Telemetry.cs](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)
 
 ### Repository Search Links
 
