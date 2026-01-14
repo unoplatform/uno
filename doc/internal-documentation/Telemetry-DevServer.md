@@ -1,6 +1,6 @@
 # Dev Server Telemetry
 
-**Event Name Prefix:** `uno/devserver` (also `uno/dev-server`)
+**Event Name Prefix:** `uno/dev-server`
 
 Dev Server telemetry tracks server sessions and client connections, including app launch tracking, add-in discovery, processor loading, and connection lifecycle.
 
