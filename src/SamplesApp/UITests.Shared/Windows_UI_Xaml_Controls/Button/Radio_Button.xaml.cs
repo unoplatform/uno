@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[Sample("Buttons", "Radio_Button", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Buttons", "Radio_Button", typeof(ButtonTestsViewModel), IgnoreInSnapshotTests: true)]
 
 	public sealed partial class Radio_Button : UserControl
 	{

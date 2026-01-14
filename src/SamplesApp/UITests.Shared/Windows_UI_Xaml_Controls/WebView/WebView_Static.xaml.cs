@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[Sample("WebView", "WebView_Static", typeof(WebViewStaticViewModel), description: "Simple WebView navigation using Source property")]
+	[Sample("WebView", "WebView_Static", typeof(WebViewStaticViewModel), Description: "Simple WebView navigation using Source property")]
 	public sealed partial class WebView_Static : UserControl
 	{
 		public WebView_Static()

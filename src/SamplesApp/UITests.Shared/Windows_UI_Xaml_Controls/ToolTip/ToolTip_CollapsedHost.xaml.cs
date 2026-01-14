@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ToolTip
 {
-	[Sample(nameof(ToolTip), nameof(ToolTip_CollapsedHost), description: SampleDescription)]
+	[Sample(nameof(ToolTip), nameof(ToolTip_CollapsedHost), Description: SampleDescription)]
 	public sealed partial class ToolTip_CollapsedHost : Page
 	{
 		private const string SampleDescription =

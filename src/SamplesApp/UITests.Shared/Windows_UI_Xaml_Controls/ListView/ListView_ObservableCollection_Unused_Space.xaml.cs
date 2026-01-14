@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample(description: "ListView inside StackPanel that can have items added to its ItemsSource. Should remeasure correctly.")]
+	[Sample(Description: "ListView inside StackPanel that can have items added to its ItemsSource. Should remeasure correctly.")]
 	public sealed partial class ListView_ObservableCollection_Unused_Space : UserControl
 	{
 		private MyViewModel _vm;

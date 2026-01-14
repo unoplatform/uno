@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[Sample("TextBox", "TextBox_Disabled", description: "Illustrates that disabling TextBox actually disables it.")]
+	[Sample("TextBox", "TextBox_Disabled", Description: "Illustrates that disabling TextBox actually disables it.")]
 	public sealed partial class TextBox_Disabled : UserControl
 	{
 		public TextBox_Disabled()

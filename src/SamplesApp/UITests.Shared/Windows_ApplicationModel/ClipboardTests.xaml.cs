@@ -25,7 +25,7 @@ using Windows.Storage.Streams;
 
 namespace UITests.Windows_ApplicationModel
 {
-	[Sample("Windows.ApplicationModel", viewModelType: typeof(ClipboardTestsViewModel))]
+	[Sample("Windows.ApplicationModel", ViewModelType: typeof(ClipboardTestsViewModel))]
 	public sealed partial class ClipboardTests : Page
 	{
 		public ClipboardTests()

@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[Sample("Grid", "GridDataboundGridColumn", typeof(GridTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Grid", "GridDataboundGridColumn", typeof(GridTestsViewModel), IgnoreInSnapshotTests: true)]
 	public sealed partial class GridDataboundGridColumn : UserControl
 	{
 		public GridDataboundGridColumn()

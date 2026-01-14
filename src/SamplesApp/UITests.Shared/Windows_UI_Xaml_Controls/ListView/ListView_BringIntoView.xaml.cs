@@ -9,8 +9,8 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
 	[Sample("ListView", "ListView_BringIntoView",
 		typeof(ListViewViewModel),
-		isManualTest: true,
-		description: "Select item scroll and then click on the button")]
+		IsManualTest: true,
+		Description: "Select item scroll and then click on the button")]
 	public sealed partial class ListView_BringIntoView : UserControl
 	{
 		private string[] items;

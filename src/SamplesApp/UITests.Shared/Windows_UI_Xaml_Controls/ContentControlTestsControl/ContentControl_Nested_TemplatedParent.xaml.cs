@@ -23,7 +23,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 	[Sample(
 		"ContentControl",
 		"ContentControl_Nested_TemplatedParent",
-		description: "This test validates the TemplatedParent propagation with loaded/unloaded content cycles"
+		Description: "This test validates the TemplatedParent propagation with loaded/unloaded content cycles"
 	)]
 	public sealed partial class ContentControl_Nested_TemplatedParent : UserControl
 	{

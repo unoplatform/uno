@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxControl
 {
-	[Sample("TextBox", description: "Demonstrates that TextBox shouldn't push binding on losing focus unless user has edited text")]
+	[Sample("TextBox", Description: "Demonstrates that TextBox shouldn't push binding on losing focus unless user has edited text")]
 	public sealed partial class TextBox_Binding_Null : UserControl
 	{
 		public TextBox_Binding_Null()

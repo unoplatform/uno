@@ -14,7 +14,7 @@ using Monaco;
 
 namespace UITests.Playground;
 
-[Sample("Playground", "Playground", ignoreInSnapshotTests: true)]
+[Sample("Playground", "Playground", IgnoreInSnapshotTests: true)]
 public sealed partial class Playground : UserControl
 {
 #if __WASM__

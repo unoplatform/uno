@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample("Path", "PathBindingOnData", description: "Path with Data property bound to string")]
+	[Sample("Path", "PathBindingOnData", Description: "Path with Data property bound to string")]
 	public sealed partial class PathBindingOnData : UserControl
 	{
 		private static readonly Random Random = new Random(1204);

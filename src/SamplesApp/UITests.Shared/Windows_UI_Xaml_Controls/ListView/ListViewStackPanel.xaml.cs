@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListViewStackPanel", description: "ListView using StackPanel as ItemsPanel")]
+	[Sample("ListView", "ListViewStackPanel", Description: "ListView using StackPanel as ItemsPanel")]
 	public sealed partial class ListViewStackPanel : UserControl
 	{
 		private readonly Random _random = new Random(1812);

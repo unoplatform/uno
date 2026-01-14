@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[Sample("WebView", "WebView_Mailto", description: "This sample will open a mailto: link")]
+	[Sample("WebView", "WebView_Mailto", Description: "This sample will open a mailto: link")]
 	public sealed partial class WebView_Mailto : UserControl
 	{
 		public WebView_Mailto()

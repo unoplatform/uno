@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
-	[Uno.UI.Samples.Controls.Sample("Flyouts", "MenuFlyoutItem_Click", description: "Testing click on MenuFlyoutItem")]
+	[Uno.UI.Samples.Controls.Sample("Flyouts", "MenuFlyoutItem_Click", Description: "Testing click on MenuFlyoutItem")]
 	public sealed partial class MenuFlyoutItem_Click : UserControl
 	{
 		public MenuFlyoutItem_Click()

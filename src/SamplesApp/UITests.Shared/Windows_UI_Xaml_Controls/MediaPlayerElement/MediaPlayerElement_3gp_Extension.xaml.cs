@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[Sample("MediaPlayerElement", "Using .3gp", description: "Test .3gp video", IgnoreInSnapshotTests = true)]
+	[Sample("MediaPlayerElement", "Using .3gp", Description: "Test .3gp video", IgnoreInSnapshotTests = true)]
 	public sealed partial class MediaPlayerElement_3gp_Extension : UserControl
 	{
 		public MediaPlayerElement_3gp_Extension()

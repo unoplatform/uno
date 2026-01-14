@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 
 namespace SamplesApp.Windows_UI_Xaml_Media.Animation
 {
-	[Sample("Animations", "Sequential Animations", ignoreInSnapshotTests: true)]
+	[Sample("Animations", "Sequential Animations", IgnoreInSnapshotTests: true)]
 	public sealed partial class SequentialAnimationsPage : Page
 	{
 		private readonly TimeSpan DURATION = TimeSpan.FromMilliseconds(250);

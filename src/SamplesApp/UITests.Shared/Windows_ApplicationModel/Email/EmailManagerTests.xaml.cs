@@ -30,8 +30,8 @@ namespace UITests.Shared.Windows_ApplicationModel.Email
 	[Sample(
 		"Windows.ApplicationModel",
 		"EmailManager",
-		description: "Test the EmailManager.ShowComposeNewEmailAsync API.",
-		viewModelType: typeof(EmailManagerViewModel))]
+		Description: "Test the EmailManager.ShowComposeNewEmailAsync API.",
+		ViewModelType: typeof(EmailManagerViewModel))]
 	public sealed partial class EmailManagerTests : Page
 	{
 		public EmailManagerTests()

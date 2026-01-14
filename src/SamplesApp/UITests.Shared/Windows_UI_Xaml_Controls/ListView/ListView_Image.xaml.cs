@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListView_Image", typeof(ListViewViewModel), description: "On Android, images don't appear until items are recycled.")]
+	[Sample("ListView", "ListView_Image", typeof(ListViewViewModel), Description: "On Android, images don't appear until items are recycled.")]
 	public sealed partial class ListView_Image : UserControl
 	{
 		public ListView_Image()

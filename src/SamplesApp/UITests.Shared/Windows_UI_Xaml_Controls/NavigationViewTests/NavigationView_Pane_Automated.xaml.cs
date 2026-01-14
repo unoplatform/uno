@@ -21,7 +21,7 @@ namespace SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("NavigationView", viewModelType: typeof(NavigationViewItemsViewModel))]
+	[Sample("NavigationView", ViewModelType: typeof(NavigationViewItemsViewModel))]
 	public sealed partial class NavigationView_Pane_Automated : Page
 	{
 		public NavigationView_Pane_Automated()

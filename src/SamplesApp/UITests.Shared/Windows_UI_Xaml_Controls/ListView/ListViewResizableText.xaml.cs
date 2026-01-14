@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
 	[Sample("ListView", "ListViewResizableText", typeof(ListViewViewModel),
-		description: "Resizable ListView. Items should resize to match. Checked box should stay in same item as list resizes.")]
+		Description: "Resizable ListView. Items should resize to match. Checked box should stay in same item as list resizes.")]
 	public sealed partial class ListViewResizableText : UserControl
 	{
 		public ListViewResizableText()

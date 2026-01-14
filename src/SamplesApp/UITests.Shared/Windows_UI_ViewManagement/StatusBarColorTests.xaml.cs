@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {
-	[Sample("Windows.UI.ViewManagement", "StatusBar_Color", isManualTest: true, description: "Status bar can be styled at runtime for mobile targets")]
+	[Sample("Windows.UI.ViewManagement", "StatusBar_Color", IsManualTest: true, Description: "Status bar can be styled at runtime for mobile targets")]
 	public sealed partial class StatusBarColorTests : UserControl
 	{
 		public StatusBarColorTests()

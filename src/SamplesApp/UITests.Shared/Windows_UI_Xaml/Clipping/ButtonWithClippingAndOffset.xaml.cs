@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
-	[Sample("Clipping", description: "Button with Clip set to offset rectangle. Touch should be detected correctly.")]
+	[Sample("Clipping", Description: "Button with Clip set to offset rectangle. Touch should be detected correctly.")]
 	public sealed partial class ButtonWithClippingAndOffset : UserControl
 	{
 		public ButtonWithClippingAndOffset()

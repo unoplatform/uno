@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample(description: "ListView containing a ProportionalPanel, which must be measured with correct width to work properly")]
+	[Sample(Description: "ListView containing a ProportionalPanel, which must be measured with correct width to work properly")]
 	public sealed partial class ListView_ProportionalPanel : UserControl
 	{
 		public ListView_ProportionalPanel()

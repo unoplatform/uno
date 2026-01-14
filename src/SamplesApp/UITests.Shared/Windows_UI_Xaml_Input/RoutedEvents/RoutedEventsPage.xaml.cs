@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace SamplesApp.Samples.RoutedEvents
 {
-	[Sample("Routed Events", "Test Page", description: "Test surface for routed events.")]
+	[Sample("Routed Events", "Test Page", Description: "Test surface for routed events.")]
 	public sealed partial class RoutedEventsPage : Page
 	{
 		public RoutedEventsPage()

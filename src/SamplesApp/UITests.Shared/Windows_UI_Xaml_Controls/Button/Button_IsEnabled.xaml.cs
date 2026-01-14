@@ -10,7 +10,7 @@ using EventHandler = System.EventHandler;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[Sample("Buttons", "Button_IsEnabled", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Buttons", "Button_IsEnabled", typeof(ButtonTestsViewModel), IgnoreInSnapshotTests: true)]
 	public sealed partial class Button_IsEnabled : UserControl
 	{
 		public Button_IsEnabled()

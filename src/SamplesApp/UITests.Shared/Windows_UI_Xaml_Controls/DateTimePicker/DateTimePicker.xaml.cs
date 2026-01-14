@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DateTimePicker
 {
-	[Sample("Pickers", "DateTimePicker", typeof(DateTimePickerViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Pickers", "DateTimePicker", typeof(DateTimePickerViewModel), IgnoreInSnapshotTests: true)]
 	public sealed partial class DateTimePicker : UserControl
 	{
 		public DateTimePicker()

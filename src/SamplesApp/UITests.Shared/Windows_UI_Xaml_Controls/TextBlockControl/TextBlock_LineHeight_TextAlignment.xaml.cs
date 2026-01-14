@@ -4,7 +4,7 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "TextBlock_LineHeight_TextAlignment", description: "TextBlock LineHeight TextAlignment Tests")]
+	[Sample("TextBlock", "TextBlock_LineHeight_TextAlignment", Description: "TextBlock LineHeight TextAlignment Tests")]
 	public sealed partial class TextBlock_LineHeight_TextAlignment : UserControl
 	{
 		public TextBlock_LineHeight_TextAlignment()

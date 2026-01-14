@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[Sample("TextBox", "TextBox_Simple", ignoreInSnapshotTests: true /*Cursor blinks in TextBox*/)]
+	[Sample("TextBox", "TextBox_Simple", IgnoreInSnapshotTests: true /*Cursor blinks in TextBox*/)]
 	public sealed partial class TextBox_Simple : UserControl
 	{
 		public TextBox_Simple()

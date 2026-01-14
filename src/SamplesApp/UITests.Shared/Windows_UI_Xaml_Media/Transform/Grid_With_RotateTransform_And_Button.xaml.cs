@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 {
-	[Sample("Transform", "Grid_With_RotateTransform_And_Button", description: "Rotated Grid with Button inside. Button should be clickable.")]
+	[Sample("Transform", "Grid_With_RotateTransform_And_Button", Description: "Rotated Grid with Button inside. Button should be clickable.")]
 	public sealed partial class Grid_With_RotateTransform_And_Button : UserControl
 	{
 		public Grid_With_RotateTransform_And_Button()

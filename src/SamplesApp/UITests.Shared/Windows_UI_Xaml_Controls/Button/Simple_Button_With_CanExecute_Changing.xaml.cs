@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[Sample("Buttons", "Simple_Button_With_CanExecute_Changing", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Buttons", "Simple_Button_With_CanExecute_Changing", typeof(ButtonTestsViewModel), IgnoreInSnapshotTests: true)]
 
 	public sealed partial class Simple_Button_With_CanExecute_Changing : UserControl
 	{

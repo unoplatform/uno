@@ -10,7 +10,7 @@ using Windows.Foundation;
 
 namespace SamplesApp.Wasm.Windows_UI_Core
 {
-	[Sample("Windows.UI.Core", "SetCursor", isManualTest: true, description: "Demonstrates use of CoreWindow.PointerCursor / CoreCursor / CoreCursorType")]
+	[Sample("Windows.UI.Core", "SetCursor", IsManualTest: true, Description: "Demonstrates use of CoreWindow.PointerCursor / CoreCursor / CoreCursorType")]
 	public sealed partial class SetCursor : Page
 	{
 		public SetCursor()

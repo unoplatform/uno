@@ -4,7 +4,7 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "TextBox_Size_Changing", typeof(TextBlockViewModel), ignoreInSnapshotTests: true /*TextBlock Width is dynamically varying*/)]
+	[Sample("TextBlock", "TextBox_Size_Changing", typeof(TextBlockViewModel), IgnoreInSnapshotTests: true /*TextBlock Width is dynamically varying*/)]
 	public sealed partial class TextBox_Size_Changing : UserControl
 	{
 		public TextBox_Size_Changing()

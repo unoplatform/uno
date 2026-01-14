@@ -23,7 +23,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollBar
 	/// </summary>
 	[Sample("Scrolling"
 #if __WASM__
-		, ignoreInSnapshotTests: true
+		, IgnoreInSnapshotTests: true
 #endif
 		)]
 	public sealed partial class ScrollBar_Simple : Page

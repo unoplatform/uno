@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[Sample("Buttons", viewModelType: typeof(ButtonTestsViewModel))]
+	[Sample("Buttons", ViewModelType: typeof(ButtonTestsViewModel))]
 
 	public sealed partial class Custom_Button_With_ContentTemplate_And_StackPanel : Page
 	{

@@ -11,7 +11,7 @@ using Windows.Graphics.Display;
 
 namespace UITests.Shared.Windows_Graphics_Display
 {
-	[Sample("Windows.Graphics.Display", "DisplayInformation", description: "Shows the values and events from DisplayInformation class properties. N/A for not implemented.", viewModelType: typeof(DisplayInformationTestsViewModel))]
+	[Sample("Windows.Graphics.Display", "DisplayInformation", Description: "Shows the values and events from DisplayInformation class properties. N/A for not implemented.", ViewModelType: typeof(DisplayInformationTestsViewModel))]
 	public sealed partial class DisplayInformationTests : Page
 	{
 		public DisplayInformationTests()

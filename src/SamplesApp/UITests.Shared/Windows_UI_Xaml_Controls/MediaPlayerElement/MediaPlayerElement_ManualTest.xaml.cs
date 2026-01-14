@@ -19,7 +19,7 @@ using Windows.Media.Core;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement;
 
-[Sample("MediaPlayerElement", "ManualTest", ignoreInSnapshotTests: true, IsManualTest = true)]
+[Sample("MediaPlayerElement", "ManualTest", IgnoreInSnapshotTests: true, IsManualTest = true)]
 public sealed partial class MediaPlayerElement_ManualTest : UserControl
 {
 	public MediaPlayerElement_ManualTest()

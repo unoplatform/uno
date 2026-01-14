@@ -8,9 +8,9 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 		"ContentControl",
 		"ContentControl_ComboBoxSetNull",
 		typeof(Presentation.SamplePages.ContentControlTestViewModel),
-		description: "Shows a ComboBox and a Button. \n" +
+		Description: "Shows a ComboBox and a Button. \n" +
 		"On WASM, and any other platform, when the `remove` button is clicked, the application should not throw an exception.",
-		isManualTest: true)]
+		IsManualTest: true)]
 	public sealed partial class ContentControl_ComboBoxSetNull : UserControl
 	{
 		public ContentControl_ComboBoxSetNull()

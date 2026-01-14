@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", description: "Demonstrates the Id Items Cache When ItemSource Length change")]
+	[Sample("ListView", Description: "Demonstrates the Id Items Cache When ItemSource Length change")]
 	public sealed partial class ListView_VirtualizePanelAdaptaterIdCache : UserControl
 	{
 		public List<int> LotsOfNumbers { get; } = Enumerable.Range(0, 500).ToList();

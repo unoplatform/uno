@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListView_TextBox", typeof(ListViewViewModel), description: "On iOS, Textbox crashes with TextWrapping or AcceptsReturn")]
+	[Sample("ListView", "ListView_TextBox", typeof(ListViewViewModel), Description: "On iOS, Textbox crashes with TextWrapping or AcceptsReturn")]
 	public sealed partial class ListView_TextBox : UserControl
 	{
 		public ListView_TextBox()

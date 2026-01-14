@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[Sample("MediaPlayerElement", "Sources", description: "Test for dynamic sources", IgnoreInSnapshotTests = true)]
+	[Sample("MediaPlayerElement", "Sources", Description: "Test for dynamic sources", IgnoreInSnapshotTests = true)]
 	public sealed partial class MediaPlayerElement_Sources : UserControl
 	{
 		public MediaPlayerElement_Sources()

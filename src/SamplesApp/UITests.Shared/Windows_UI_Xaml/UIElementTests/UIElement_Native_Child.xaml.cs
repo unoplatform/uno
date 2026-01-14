@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[Sample("UIElement", description: "(Android-only) The native content should be clipped by its UIElement container")]
+	[Sample("UIElement", Description: "(Android-only) The native content should be clipped by its UIElement container")]
 	public sealed partial class UIElement_Native_Child : UserControl
 	{
 		public UIElement_Native_Child()
