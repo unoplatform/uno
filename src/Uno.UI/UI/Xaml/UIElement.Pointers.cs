@@ -159,7 +159,7 @@ namespace Microsoft.UI.Xaml
 			DependencyObject current = element;
 			while (current != null)
 			{
-				if (current is UIElement uiElement && uiElement.IsDraggableOrPannableImpl())
+				if (current is UIElement uiElement && uiElement.IsDraggableOrPannable())
 				{
 					return true;
 				}
@@ -173,7 +173,7 @@ namespace Microsoft.UI.Xaml
 		/// Override in derived classes like ScrollViewer and ListViewBase.
 		/// </summary>
 		/// <returns>True if this element is draggable or pannable.</returns>
-		internal virtual bool IsDraggableOrPannableImpl() => CanDrag;
+		internal virtual bool IsDraggableOrPannable() => CanDrag;
 
 		#endregion
 
