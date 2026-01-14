@@ -85,7 +85,7 @@ Dev Server telemetry tracks server sessions (Root and Connection types) and clie
 
 **Event Name Prefix:** `uno/licensing`
 
-Licensing telemetry tracks 41 events covering:
+Licensing telemetry tracks 43 events covering:
 - License Manager Events (Client)
 - Navigation Events
 - License API Events (Server)

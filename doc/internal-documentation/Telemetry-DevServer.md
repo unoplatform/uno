@@ -28,7 +28,7 @@ Dev Server telemetry tracks server sessions and client connections, including ap
 |------------|-----------|--------------|-------|-------------|
 | `startup` | `StartupHasSolution` (bool) | - | Global | DevServer started and is ready to receive connections |
 | `shutdown` | `ShutdownType` (string) | `UptimeSeconds` (double) | Global | DevServer shutdown. This is the last event before `parent-process-lost` |
-| `startup-failure` | `StartupErrorMessage` (string), `StartupErrorType` (string), `StartupStackTrace` (string) | `UptimeSeconds` (double) | Global | A catastophic error occured with the dev server (not only during startup) |
+| `startup-failure` | `StartupErrorMessage` (string), `StartupErrorType` (string), `StartupStackTrace` (string) | `UptimeSeconds` (double) | Global | A catastrophic error occurred with the dev server (not only during startup) |
 | `parent-process-lost` | - | - | Global | Parent process (process that started the dev server (i.e. IDE)) lost, graceful shutdown attempted. If unable to gracefully shut down, the process is killed and `parent-process-lost-forced-exit` even will be triggered |
 | `parent-process-lost-forced-exit` | - | - | Global | Forced exit after graceful shutdown timeout |
 
