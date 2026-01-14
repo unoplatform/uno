@@ -69,6 +69,48 @@ Platform-runtime unit tests run in the platform environment using real Uno.UI bi
   - `await WindowHelper.WaitFor(() => condition)` - Wait for specific condition
 - Always close popups in `try/finally` to avoid interfering with other tests
 
+### Running Runtime Tests from Command Line (Skia Desktop)
+
+Runtime tests can be executed from the command line without the interactive UI. This is how CI runs tests and is useful for validating new tests locally.
+
+**Build SamplesApp.Skia.Generic:**
+```bash
+dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
+```
+
+**Run all runtime tests:**
+```bash
+cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+```
+
+**Run specific tests with a filter:**
+
+The `UITEST_RUNTIME_TESTS_FILTER` environment variable accepts a base64-encoded, pipe-separated list of fully qualified test names.
+
+Windows PowerShell:
+```powershell
+$filter = "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario"
+$env:UITEST_RUNTIME_TESTS_FILTER = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filter))
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+```
+
+Linux/macOS:
+```bash
+export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario" | base64)
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+```
+
+**Test results:** Output is in NUnit XML format at the path specified by `--runtime-tests`.
+
+**Agent workflow for new tests:**
+When adding new runtime tests that should run on desktop (Skia), always:
+1. Build and run the test using the commands above
+2. Verify the test passes
+3. Fix any failures before committing
+
+Skip this validation only if the test is explicitly for non-desktop platforms (e.g., iOS/Android-specific features).
+
 ### Running SamplesApp
 
 The SamplesApp contains UI and non-UI samples for manual testing and automated UI tests.
