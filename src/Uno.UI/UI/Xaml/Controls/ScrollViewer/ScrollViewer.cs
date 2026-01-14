@@ -1786,7 +1786,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Determines whether this ScrollViewer is pannable.
 		/// Returns false only if both vertical and horizontal scrolling are disabled.
 		/// </summary>
-		internal override bool IsDraggableOrPannableImpl()
+		internal override bool IsDraggableOrPannable()
 		{
 			// If both vertical and horizontal scrolling are disabled, return false.
 			// This matches WinUI's ScrollViewer::IsDraggableOrPannableImpl.
