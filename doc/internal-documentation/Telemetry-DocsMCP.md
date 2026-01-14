@@ -78,57 +78,50 @@ Based on the MonitoringService.cs implementation:
 ## Property Value Examples
 
 ### SearchRequest Example
-```
-Query: "uno platform xaml binding"
-TopK: "10"
-ContentType: "documentation"
-UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-```
+
+- **Query**: "uno platform xaml binding"
+- **TopK**: "10"
+- **ContentType**: "documentation"
+- **UserAgent**: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 ### SearchResults Example
-```
-Query: "uno platform xaml binding"
-ResultCount: "8"
-FromCache: "true"
-UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-ResponseTimeMs: 45.3
-ResultsPerSecond: 176.82
-```
+
+- **Query**: "uno platform xaml binding"
+- **ResultCount**: "8"
+- **FromCache**: "true"
+- **UserAgent**: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+- **ResponseTimeMs**: 45.3
+- **ResultsPerSecond**: 176.82
 
 ### CacheHit Example
-```
-CacheKeyHash: "A1B2C3D4"
-OperationType: "Search"
-```
+
+- **CacheKeyHash**: "A1B2C3D4"
+- **OperationType**: "Search"
 
 ### CacheMiss Example
-```
-CacheKeyHash: "E5F6G7H8"
-OperationType: "Document"
-```
+
+- **CacheKeyHash**: "E5F6G7H8"
+- **OperationType**: "Document"
 
 ### ThrottleEvent Example
-```
-ClientId: "client-abc123"
-EventType: "throttled"
-WaitDurationMs: 500.0
-CurrentRequestCount: 15
-```
+
+- **ClientId**: "client-abc123"
+- **EventType**: "throttled"
+- **WaitDurationMs**: 500.0
+- **CurrentRequestCount**: 15
 
 ### IngestionEvent Example
-```
-EventType: "completed"
-DocumentCount: 1250
-ProcessingTimeMs: 5432.1
-DocumentsPerSecond: 230.08
-```
+
+- **EventType**: "completed"
+- **DocumentCount**: 1250
+- **ProcessingTimeMs**: 5432.1
+- **DocumentsPerSecond**: 230.08
 
 ### SearchError Example
-```
-Query: "invalid search query"
-UserAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
-Message: "Search service unavailable"
-```
+
+- **Query**: "invalid search query"
+- **UserAgent**: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+- **Message**: "Search service unavailable"
 
 ---
 
