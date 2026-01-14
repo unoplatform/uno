@@ -76,7 +76,7 @@ internal partial class PopupRoot : Canvas
 		while (node != null)
 		{
 			var next = node.Next;
-			if (!node.Value.IsDisposed && node.Value.Target is Popup { IsLightDismissEnabled: true } popup)
+			if (node.Value.TryGetTarget<Popup>(out var popup) && popup.IsLightDismissEnabled)
 			{
 				if (popup.AssociatedFlyout is { } flyout)
 				{
@@ -157,7 +157,7 @@ internal partial class PopupRoot : Canvas
 		CleanupPopupReferences();
 
 		var popupRegistration = _openPopups.FirstOrDefault(
-			p => !p.IsDisposed && p.Target == popup);
+			p => p.TryGetTarget<IPopup>(out var target) && target == popup);
 
 		if (popupRegistration is null)
 		{
@@ -176,7 +176,7 @@ internal partial class PopupRoot : Canvas
 		while (node != null)
 		{
 			var next = node.Next;
-			if (node.Value.IsDisposed || node.Value.Target is null)
+			if (!node.Value.TryGetTarget<object>(out _))
 			{
 				_openPopups.Remove(node);
 			}

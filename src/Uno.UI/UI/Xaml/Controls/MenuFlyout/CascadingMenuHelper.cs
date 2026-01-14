@@ -619,17 +619,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void CloseChildSubMenus()
 		{
-			// WeakRefPtr fails an assert if we attempt to AsOrNull() to a type
-			// that we aren't sure if the contents of the weak reference
-			// implement that type.  To avoid that assert, we first As() the
-			// weak reference contents to a known type that it's guaranteed
-			// to be (if it isn't null), and we then AsOrNull() the ComPtr,
-			// once it's safe to ask about a type that we're not sure of.
-			var subMenuPresenterAsFE = m_wpSubMenuPresenter?.IsAlive == true ? m_wpSubMenuPresenter.Target as FrameworkElement : null;
-
 			IMenuPresenter subMenuPresenter = null;
 
-			if (subMenuPresenterAsFE != null)
+			if (m_wpSubMenuPresenter?.TryGetTarget<FrameworkElement>(out var subMenuPresenterAsFE) == true)
 			{
 				subMenuPresenter = subMenuPresenterAsFE as IMenuPresenter;
 			}
