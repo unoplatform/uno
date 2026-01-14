@@ -82,16 +82,16 @@ Hot Reload processor events track the state transitions and operations of the Ho
 | Event Name | Properties | Measurements | Description |
 |------------|-----------|--------------|-------------|
 | `notify-start` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload notification started |
-| `notify-disabled` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is disabled |
-| `notify-initializing` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is initializing |
+| `notify-disabled` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is unable to initialize and has been disabled |
+| `notify-initializing` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is initializing. |
 | `notify-ready` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is ready |
-| `notify-processing-files` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is processing files |
-| `notify-completed` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload operation completed |
-| `notify-no-changes` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | No changes detected |
+| `notify-processing-files` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is processing files. This event will only be triggered when using Rider, VS Code or when Hot Design modifies a file on disk |
+| `notify-completed` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload operation completed (i.e., the modifications have been successfully applied) |
+| `notify-no-changes` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | No changes detected that have an impact on the application |
 | `notify-failed` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload operation failed |
-| `notify-rude-edit` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Rude edit detected (requires restart) |
+| `notify-rude-edit` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Rude edit detected (requires restart). Code is OK and could compile, but (Rosalyn) .NET compiler cannot create a diff to update the code and compile.|
 | `notify-complete` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload state transition complete |
-| `notify-error` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool), `ErrorMessage` (string), `ErrorType` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload error occurred |
+| `notify-error` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool), `ErrorMessage` (string), `ErrorType` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload error occurred; usually when the parent dev-server encoutered a catastrophic error |
 
 **Property Notes:**
 - All properties are prefixed with `hotreload/` in the actual telemetry
