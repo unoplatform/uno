@@ -22,8 +22,8 @@ Client-side events are organized by category and forwarded to the server via the
 
 | Event Name | Properties | Measurements | Description |
 |------------|-----------|--------------|-------------|
-| `DebugSessionStarted` | - | - | Client debugging session started |
-| `DebugSessionEnded` | - | - | Client debugging session ended |
+| `DebugSessionStarted` | - | - | Client debugging session started. Currently tracked when HotDesignClientHost is created. When licensing services are available we should be able to track the start of a debug session. **Triggered when HD is open for the first active session of the app** |
+| `DebugSessionEnded` | - | - | Client debugging session ended. **If another exception is thrown by the IDE, this event may not be triggered** |
 | `Crash` | `ExceptionType` (string) | - | Application crash occurred |
 | `EnterHotDesign` | - | - | User entered Hot Design mode |
 | `LeaveHotDesign` | - | - | User left Hot Design mode |
@@ -35,13 +35,13 @@ Client-side events are organized by category and forwarded to the server via the
 | Event Name | Properties | Measurements | Description |
 |------------|-----------|--------------|-------------|
 | `HotReloadDisabled` | - | - | Hot Reload is disabled |
-| `HotDesignLicenseUnavailable` | - | - | Hot Design license is not available |
-| `HotDesignUnlicensedShowInfo` | - | - | Unlicensed Hot Design info shown to user |
-| `HotDesignTrialPeriod` | - | - | User is in Hot Design trial period |
-| `HotDesignTrialExpired` | - | - | Hot Design trial period expired |
-| `HotDesignIsAvailable` | - | - | Hot Design is available and licensed |
+| `HotDesignLicenseUnavailable` | - | - | Hot Design license is not available because the **user is not signed in** |
+| `HotDesignUnlicensedShowInfo` | - | - | Unlicensed Hot Design info shown to user. Tracks when user clicks "Show Info" button in licensing dialog |
+| `HotDesignTrialPeriod` | - | - | User is in Hot Design trial period **(i.e., active community license + Studio trial)**|
+| `HotDesignTrialExpired` | - | - | Hot Design trial period expired **(i.e., active community license + expired Studio trial)**|
+| `HotDesignIsAvailable` | - | - | Hot Design is available (dev-server is connected) and licensed |
 | `GettingStartedUriLaunched` | - | - | Getting started URI was launched |
-| `StudioAppLaunchedNotLicensed` | - | - | Studio app launched but not licensed |
+| `StudioAppLaunchedNotLicensed` | - | - | Studio app launched but not licensed (i.e., user clicks button to launch Studio app from licensing dialog) |
 | `StudioSignedOut` | - | - | User signed out of Studio |
 | `UnknownHotDesignStatus` | - | - | Hot Design status is unknown |
 
