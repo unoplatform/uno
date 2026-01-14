@@ -70,11 +70,17 @@ Data is automatically purged after the retention period.
 
 ## Instrumentation Keys
 
-| Environment | Instrumentation Key |
-|-------------|---------------------|
-| **Production** | `9a44058e-1913-4721-a979-9582ab8bedce` |
-| **Development** | `81286976-e3a4-49fb-b03b-30315092dbc4` |
+Application Insights instrumentation keys are environment-specific and may be rotated at any time.
+To avoid stale documentation and reduce the risk of misuse, the concrete key values are not listed here.
 
+The current keys are defined in the source code and/or environment-specific configuration for each deployment
+(for example, app settings or telemetry configuration files). Refer to those configuration sources for the
+up-to-date values:
+
+| Environment   | Location of configuration (example)              |
+|---------------|--------------------------------------------------|
+| **Production**   | Production telemetry configuration in source/control plane |
+| **Development**  | Development/test telemetry configuration in source         |
 ## Contact
 
 For privacy concerns or questions about telemetry:
