@@ -9,7 +9,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[Sample("UIElement", IgnoreInSnapshotTests: true)]
+	[Sample("UIElement", IgnoreInSnapshotTests = true)]
 	public sealed partial class TransformToVisual_ScrollViewer : Page
 	{
 		private readonly TestRunner _tests;

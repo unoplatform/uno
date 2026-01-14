@@ -17,9 +17,9 @@ using Microsoft.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Input.Keyboard
 {
 	[Sample("Keyboard", nameof(Keyboard_iOS_Theme),
-		Description: SampleDescription,
-		IgnoreInSnapshotTests: true,
-		IsManualTest: true)]
+		Description = SampleDescription,
+		IgnoreInSnapshotTests = true,
+		IsManualTest = true)]
 	public sealed partial class Keyboard_iOS_Theme : Page
 	{
 		private const string SampleDescription = "[iOS-only] Keyboard theme should be determined based on the following precedences: KeyboardAppearance > RequestedTheme > Device Theme.";

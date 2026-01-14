@@ -7,8 +7,8 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 	[Sample(
 		"ContentPresenter",
 		"ContentPresenter_Changing_ContentTemplate",
-		Description: "ContentPresenter where ContentTemplate can be toggled between non-null and null. Content view should be visible when null.",
-		IgnoreInSnapshotTests: true)]
+		Description = "ContentPresenter where ContentTemplate can be toggled between non-null and null. Content view should be visible when null.",
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class ContentPresenter_Changing_ContentTemplate : UserControl
 	{
 		public ContentPresenter_Changing_ContentTemplate()
