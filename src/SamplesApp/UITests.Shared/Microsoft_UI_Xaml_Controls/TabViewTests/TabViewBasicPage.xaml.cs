@@ -16,7 +16,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
-	[Sample("TabView", Name = "MUX")]
+	[Sample("TabView", "MUX")]
 	public sealed partial class TabViewBasicPage : Page
 	{
 		public TabViewBasicPage()

@@ -15,7 +15,7 @@ using MUXControlsTestApp.Utilities;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", Name = "MUX")]
+	[Sample("NavigationView", "MUX")]
 	public sealed partial class NavigationViewCustomThemeResourcesPage : TestPage
 	{
 		private Style defaultPaneTitleTextBlockStyle = null;

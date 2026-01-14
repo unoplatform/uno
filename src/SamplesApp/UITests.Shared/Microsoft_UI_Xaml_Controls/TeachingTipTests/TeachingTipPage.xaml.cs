@@ -42,7 +42,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
 		Resources = 1
 	}
 
-	[Sample("TeachingTip", Name = "WinUI")]
+	[Sample("TeachingTip", "WinUI")]
 	public sealed partial class TeachingTipPage : MUXTestPage, INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;

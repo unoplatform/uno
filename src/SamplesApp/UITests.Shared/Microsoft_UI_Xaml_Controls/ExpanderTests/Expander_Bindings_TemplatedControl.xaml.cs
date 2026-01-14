@@ -10,7 +10,7 @@ using System;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests;
 
-[Sample("Expander", Name = "MUX",
+[Sample("Expander", "MUX",
 	Name = "Expander_Bindings_TemplatedControl",
 	IsManualTest = true,
 	Description =

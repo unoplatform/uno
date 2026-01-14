@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", Name = "MUX")]
+	[Sample("NavigationView", "MUX")]
 	public sealed partial class NavigationViewMinimalPage : TestPage
 	{
 		public NavigationViewMinimalPage()

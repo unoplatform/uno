@@ -21,7 +21,7 @@ using Microsoft.UI.Xaml.Automation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
-	[Sample("Buttons", Name = "MUX")]
+	[Sample("Buttons", "MUX")]
 	public sealed partial class RadioButtonsPage : Page
 	{
 		ObservableCollection<string> m_stringItemCollection;

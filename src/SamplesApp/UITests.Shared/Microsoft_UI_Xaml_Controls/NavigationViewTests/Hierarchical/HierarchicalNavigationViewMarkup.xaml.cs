@@ -16,7 +16,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", Name = "MUX")]
+	[Sample("NavigationView", "MUX")]
 	public sealed partial class HierarchicalNavigationViewMarkup : TestPage
 	{
 

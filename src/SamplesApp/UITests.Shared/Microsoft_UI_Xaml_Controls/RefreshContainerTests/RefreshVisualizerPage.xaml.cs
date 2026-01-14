@@ -38,7 +38,7 @@ using RefreshVizualizer_TestUI;
 
 namespace MUXControlsTestApp
 {
-	[Sample("MUX", Name = "WinUI", "PullToRefresh")]
+	[Sample("MUX", "WinUI", "PullToRefresh")]
 	public sealed partial class RefreshVisualizerPage : TestPage
 	{
 		private DispatcherTimer timer = new DispatcherTimer();

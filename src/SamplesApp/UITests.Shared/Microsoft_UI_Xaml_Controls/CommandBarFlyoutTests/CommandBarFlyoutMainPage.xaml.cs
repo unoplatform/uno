@@ -12,7 +12,7 @@ using MUXControlsTestHooks = Microsoft.UI.Private.Controls.MUXControlsTestHooks;
 
 namespace MUXControlsTestApp;
 
-[Sample("CommandBarFlyout", Name = "WinUI")]
+[Sample("CommandBarFlyout", "WinUI")]
 public sealed partial class CommandBarFlyoutMainPage : TestPage
 {
 	public CommandBarFlyoutMainPage()

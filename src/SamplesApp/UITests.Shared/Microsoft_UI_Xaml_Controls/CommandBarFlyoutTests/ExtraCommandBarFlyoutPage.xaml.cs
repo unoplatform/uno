@@ -22,7 +22,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace MUXControlsTestApp;
 
-[Sample("CommandBarFlyout", Name = "WinUI")]
+[Sample("CommandBarFlyout", "WinUI")]
 public sealed partial class ExtraCommandBarFlyoutPage : TestPage
 {
 	private int customButtonsFlyoutOpenCount = 0;

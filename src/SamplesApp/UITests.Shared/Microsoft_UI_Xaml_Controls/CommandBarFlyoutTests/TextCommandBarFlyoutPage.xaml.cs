@@ -21,7 +21,7 @@ using TextCommandBarFlyout = Microsoft.UI.Xaml.Controls.TextCommandBarFlyout;
 
 namespace MUXControlsTestApp;
 
-[Sample("CommandBarFlyout", Name = "WinUI")]
+[Sample("CommandBarFlyout", "WinUI")]
 public sealed partial class TextCommandBarFlyoutPage : TestPage
 {
 	public TextCommandBarFlyoutPage()
