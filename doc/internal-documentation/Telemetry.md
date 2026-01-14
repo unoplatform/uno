@@ -10,6 +10,7 @@ This document provides a comprehensive overview of telemetry across the Uno Plat
 - [Dev Server](Telemetry-DevServer.md)
 - [Licensing](Telemetry-Licensing.md)
 - [IDE Extensions](Telemetry-IDEExtensions.md)
+- [App MCP](Telemetry-AppMCP.md)
 - [Privacy & Compliance](Telemetry-Privacy.md)
 - [Additional Resources](#additional-resources)
 
@@ -27,6 +28,7 @@ All telemetry events use a prefixed naming convention based on the feature area:
 - `uno/vscode` - VS Code Extension telemetry
 - `uno/rider` - Rider Plugin telemetry
 - `uno/visual-studio` - Visual Studio Extension telemetry
+- `uno/app-mcp` - App MCP (Model Context Protocol) telemetry
 
 ---
 
@@ -85,6 +87,19 @@ IDE extensions track extension lifecycle, user interactions, and dev server oper
 
 [View detailed IDE Extensions telemetry documentation →](Telemetry-IDEExtensions.md)
 
+### [App MCP](Telemetry-AppMCP.md)
+
+**Event Name Prefix:** `uno/app-mcp`
+
+App MCP (Model Context Protocol) telemetry tracks agent interactions with running Uno applications:
+- **Community License Tools** - 8 tools (runtime info, screenshot, pointer click, key press, type text, visual tree snapshot, element peer action, close)
+- **Pro License Tools** - 2 tools (element peer action, element DataContext)
+- **Session Tracking** - Agent type, platform, tools used
+- **Error Tracking** - Connection errors, tool execution errors, timeouts
+- **Agent Interaction Metrics** - Tool invocation counts, success rates, session durations
+
+[View detailed App MCP telemetry documentation →](Telemetry-AppMCP.md)
+
 ### [Privacy & Compliance](Telemetry-Privacy.md)
 
 Comprehensive privacy and compliance information including:
@@ -109,6 +124,7 @@ Comprehensive privacy and compliance information including:
 - **Visual Studio Extension Telemetry**: [uno.studio/docs/Telemetry.md](https://github.com/unoplatform/uno.studio/blob/main/docs/Telemetry.md)
 - **Uno Licensing API**: [unoplatform/uno.licensing](https://github.com/unoplatform/uno.licensing)
 - **Uno AI Features**: [unoplatform/uno.ai-private](https://github.com/unoplatform/uno.ai-private)
+- **Uno App MCP**: [unoplatform/uno.app-mcp](https://github.com/unoplatform/uno.app-mcp)
 
 ### Repository Search Links
 
@@ -118,6 +134,7 @@ Comprehensive privacy and compliance information including:
 - [Visual Studio Extension (unoplatform/uno.studio)](https://github.com/unoplatform/uno.studio/search?q=telemetry)
 - [Licensing (unoplatform/uno.licensing)](https://github.com/unoplatform/uno.licensing/search?q=telemetry)
 - [Dev Server (unoplatform/uno)](https://github.com/unoplatform/uno/search?q=devserver+telemetry)
+- [App MCP (unoplatform/uno.app-mcp)](https://github.com/unoplatform/uno.app-mcp/search?q=telemetry)
 
 ---
 
