@@ -25,6 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
+[Ignore("Touch input for holding is not working correctly with injection #22353")]
 public partial class Given_ContextRequested_Injection
 {
 	// Hold duration needed to trigger context menu (slightly more than GestureRecognizer.HoldMinDelayMicroseconds)
