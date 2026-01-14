@@ -25,7 +25,7 @@ Telemetry is collected across the Uno Platform ecosystem to understand usage pat
 All telemetry events use a prefixed naming convention based on the feature area:
 - `uno/hot-design` - Hot Design telemetry
 - `uno/ai` - AI Features telemetry
-- `uno/devserver` - Dev Server telemetry
+- `uno/dev-server` - Dev Server telemetry
 - `uno/licensing` - Licensing telemetry
 - `uno/vscode` - VS Code Extension telemetry
 - `uno/rider` - Rider Plugin telemetry
