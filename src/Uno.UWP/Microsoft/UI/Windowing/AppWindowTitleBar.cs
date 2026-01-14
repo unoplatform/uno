@@ -94,8 +94,7 @@ public partial class AppWindowTitleBar
 	/// Gets a value that indicates whether the title bar can be customized.
 	/// </summary>
 	/// <returns>True if the title bar can be customized; otherwise, false.</returns>
-	/// <remarks>Title bar customization is currently not available on any Uno Platform target except WinAppSDK.</remarks>
-	public static bool IsCustomizationSupported() => OperatingSystem.IsWindows();
+	public static bool IsCustomizationSupported() => OperatingSystem.IsWindows() || OperatingSystem.IsMacOS();
 
 	/// <summary>
 	/// Resets the title bar to its default state.

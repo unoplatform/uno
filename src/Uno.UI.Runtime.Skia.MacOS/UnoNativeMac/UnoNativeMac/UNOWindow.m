@@ -419,6 +419,48 @@ void uno_window_set_resizable(NSWindow *window, bool isResizable)
     window.styleMask = style;
 }
 
+void uno_window_set_extends_content_into_titlebar(UNOWindow *window, bool extends)
+{
+#if DEBUG
+    NSLog(@"uno_window_set_extends_content_into_titlebar %@ extends: %s", window, extends ? "true" : "false");
+#endif
+    NSWindowStyleMask style = window.styleMask;
+    if (extends) {
+        style |= NSWindowStyleMaskFullSizeContentView;
+        window.titlebarAppearsTransparent = YES;
+        window.titleVisibility = NSWindowTitleHidden;
+    } else {
+        style &= ~NSWindowStyleMaskFullSizeContentView;
+        window.titlebarAppearsTransparent = NO;
+        window.titleVisibility = NSWindowTitleVisible;
+    }
+    window.styleMask = style;
+    window.extendsContentIntoTitleBar = extends;
+}
+
+void uno_window_set_drag_rectangles(UNOWindow *window, int count, double *rects)
+{
+#if DEBUG
+    NSLog(@"uno_window_set_drag_rectangles %@ count: %d", window, count);
+#endif
+    [window.dragRectangles removeAllObjects];
+
+    if (rects != NULL && count > 0) {
+        for (int i = 0; i < count; i++) {
+            // Each rectangle is 4 doubles: x, y, width, height (in logical pixels)
+            CGFloat x = rects[i * 4 + 0];
+            CGFloat y = rects[i * 4 + 1];
+            CGFloat width = rects[i * 4 + 2];
+            CGFloat height = rects[i * 4 + 3];
+            NSRect rect = NSMakeRect(x, y, width, height);
+#if DEBUG
+            NSLog(@"  drag rect[%d]: x=%g y=%g w=%g h=%g", i, x, y, width, height);
+#endif
+            [window.dragRectangles addObject:[NSValue valueWithRect:rect]];
+        }
+    }
+}
+
 inline window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void)
 {
     return window_did_change_screen;
@@ -832,6 +874,8 @@ NSOperatingSystemVersion _osVersion;
     if (self) {
         self.delegate = self;
         self.overlappedPresenterState = OverlappedPresenterStateRestored;
+        self.extendsContentIntoTitleBar = NO;
+        self.dragRectangles = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -841,6 +885,8 @@ NSOperatingSystemVersion _osVersion;
 }
 
 @synthesize overlappedPresenterState;
+@synthesize extendsContentIntoTitleBar;
+@synthesize dragRectangles;
 
 - (BOOL) getPositionFrom:(NSEvent*)event x:(CGFloat*)px y:(CGFloat *)py
 {
@@ -853,10 +899,40 @@ NSOperatingSystemVersion _osVersion;
     return YES;
 }
 
+- (BOOL) isPointInDragRectangles:(NSPoint)point
+{
+    if (self.dragRectangles.count == 0) {
+        return NO;
+    }
+    for (NSValue *value in self.dragRectangles) {
+        NSRect rect = [value rectValue];
+        if (NSPointInRect(point, rect)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (void)sendEvent:(NSEvent *)event {
     if (![[NSApplication sharedApplication] isActive]) {
         [super sendEvent:event];
         return;
+    }
+
+    // Handle drag rectangle hit testing for title bar extension
+    if (self.extendsContentIntoTitleBar && event.type == NSEventTypeLeftMouseDown) {
+        // Get position in content view coordinates (flipped, origin at top-left)
+        CGFloat x = event.locationInWindow.x;
+        CGFloat y = self.contentView.frame.size.height - event.locationInWindow.y;
+        NSPoint point = NSMakePoint(x, y);
+
+        if ([self isPointInDragRectangles:point]) {
+#if DEBUG
+            NSLog(@"Drag rectangle hit at (%g, %g) - initiating window drag", x, y);
+#endif
+            [self performWindowDragWithEvent:event];
+            return;
+        }
     }
 
     bool handled = false;

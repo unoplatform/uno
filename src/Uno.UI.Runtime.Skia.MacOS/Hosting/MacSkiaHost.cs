@@ -2,9 +2,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using Windows.UI.Core;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.UI.Input.Internal;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -36,6 +39,10 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();
 		MacOSMediaPlayerPresenterExtension.Register();
+
+		// Register title bar extension support
+		ApiExtensibility.Register<AppWindow>(typeof(INativeInputNonClientPointerSource),
+			appWindow => (MacOSWindowWrapper)appWindow.NativeAppWindow);
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

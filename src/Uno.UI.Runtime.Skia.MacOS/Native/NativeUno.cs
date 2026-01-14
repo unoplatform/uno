@@ -297,6 +297,12 @@ internal static partial class NativeUno
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_clip_svg(nint window, string? svg);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_extends_content_into_titlebar(nint window, [MarshalAs(UnmanagedType.I1)] bool extends);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_drag_rectangles(nint window, int count, nint rects);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder(string? prompt, string? identifier, int suggestedStartLocation);
 

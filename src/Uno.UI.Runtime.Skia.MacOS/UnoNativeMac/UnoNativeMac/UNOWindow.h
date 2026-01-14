@@ -41,6 +41,10 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 
 @property OverlappedPresenterState overlappedPresenterState;
 
+// Title bar extension support
+@property BOOL extendsContentIntoTitleBar;
+@property (strong) NSMutableArray<NSValue *> *dragRectangles;
+
 - (void)sendEvent:(NSEvent *)event;
 
 - (void)windowWillMiniaturize:(NSNotification *)notification;
@@ -90,6 +94,10 @@ bool uno_window_set_modal(NSWindow *window, bool isModal);
 void uno_window_set_resizable(NSWindow *window, bool isResizable);
 void uno_window_set_min_size(NSWindow* window, double width, double height);
 void uno_window_set_max_size(NSWindow* window, double width, double height);
+
+// Title bar extension support
+void uno_window_set_extends_content_into_titlebar(UNOWindow *window, bool extends);
+void uno_window_set_drag_rectangles(UNOWindow *window, int count, double *rects);
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkey?view=winrt-22621
 typedef NS_ENUM(sint32, VirtualKey) {

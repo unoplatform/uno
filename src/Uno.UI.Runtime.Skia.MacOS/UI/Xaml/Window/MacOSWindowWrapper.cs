@@ -1,16 +1,22 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.UI.Input.Internal;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSWindowWrapper : NativeWindowWrapperBase
+internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClientPointerSource
 {
 	private readonly MacOSWindowNative _nativeWindow;
+	private readonly Dictionary<NonClientRegionKind, RectInt32[]> _regionRects = new();
 
 	public MacOSWindowWrapper(MacOSWindowNative nativeWindow, Window window, XamlRoot xamlRoot, Size initialSize) : base(window, xamlRoot)
 	{
@@ -26,6 +32,10 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		OnHostPositionChanged(x, y);
 
 		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
+
+		// Subscribe to title bar events
+		window.AppWindow.TitleBar.Changed += OnTitleBarChanged;
+		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
 	}
 
 	private void Host_RasterizationScaleChanged(object? sender, EventArgs args)
@@ -104,4 +114,86 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
+
+	#region Title Bar Support
+
+	private void OnTitleBarChanged(object? sender, EventArgs e)
+	{
+		UpdateDragRectangles();
+	}
+
+	private void OnExtendsContentIntoTitleBarChanged(bool extends)
+	{
+		NativeUno.uno_window_set_extends_content_into_titlebar(_nativeWindow.Handle, extends);
+		UpdateDragRectangles();
+	}
+
+	private unsafe void UpdateDragRectangles()
+	{
+		// Combine Caption regions from WindowChrome with AppWindowTitleBar.DragRectangles
+		var captionRects = GetRegionRects(NonClientRegionKind.Caption);
+		var allRects = captionRects;
+
+		if (allRects.Length == 0)
+		{
+			NativeUno.uno_window_set_drag_rectangles(_nativeWindow.Handle, 0, IntPtr.Zero);
+			return;
+		}
+
+		// Convert RectInt32 (physical pixels) to logical pixels for native layer
+		// Each rectangle is 4 doubles: x, y, width, height
+		var nativeRects = stackalloc double[allRects.Length * 4];
+		for (var i = 0; i < allRects.Length; i++)
+		{
+			var rect = allRects[i];
+			nativeRects[i * 4 + 0] = rect.X / RasterizationScale;
+			nativeRects[i * 4 + 1] = rect.Y / RasterizationScale;
+			nativeRects[i * 4 + 2] = rect.Width / RasterizationScale;
+			nativeRects[i * 4 + 3] = rect.Height / RasterizationScale;
+		}
+
+		NativeUno.uno_window_set_drag_rectangles(_nativeWindow.Handle, allRects.Length, (nint)nativeRects);
+	}
+
+	#endregion
+
+	#region INativeInputNonClientPointerSource
+
+	public void ClearAllRegionRects()
+	{
+		_regionRects.Clear();
+		UpdateDragRectangles();
+	}
+
+	public void ClearRegionRects(NonClientRegionKind region)
+	{
+		_regionRects.Remove(region);
+		if (region == NonClientRegionKind.Caption)
+		{
+			UpdateDragRectangles();
+		}
+	}
+
+	public RectInt32[] GetRegionRects(NonClientRegionKind region)
+		=> _regionRects.TryGetValue(region, out var list) ? list : Array.Empty<RectInt32>();
+
+	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects)
+	{
+		if (rects.Length == 0)
+		{
+			_regionRects.Remove(region);
+		}
+		else
+		{
+			_regionRects[region] = rects;
+		}
+
+		// Update native drag rectangles when Caption region changes
+		if (region == NonClientRegionKind.Caption)
+		{
+			UpdateDragRectangles();
+		}
+	}
+
+	#endregion
 }
