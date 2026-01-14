@@ -1,6 +1,6 @@
 # Uno Platform Telemetry Documentation
 
-This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, covering all major components such as Hot Design, AI Features, Dev Server, Licensing, IDE Extensions, App MCP, Docs MCP, and Wizard.
+This document provides a comprehensive overview of telemetry across the Uno Platform ecosystem, covering all major components such as Hot Design, AI Features, Dev Server, Licensing, IDE Extensions, App MCP, Docs MCP, Wizard, and Uno.Check.
 
 ## Table of Contents
 
@@ -14,6 +14,7 @@ This document provides a comprehensive overview of telemetry across the Uno Plat
 - [App MCP](Telemetry-AppMCP.md)
 - [Docs MCP](Telemetry-DocsMCP.md)
 - [Wizard](Telemetry-Wizard.md)
+- [Uno.Check](Telemetry-UnoCheck.md)
 - [Privacy & Compliance](Telemetry-Privacy.md)
 - [Additional Resources](#additional-resources)
 
@@ -34,6 +35,7 @@ All telemetry events use a prefixed naming convention based on the feature area:
 - `uno/app-mcp` - App MCP (Model Context Protocol) telemetry
 - `uno/docs-mcp` - Docs MCP (Documentation search and retrieval) telemetry
 - `uno/wizard` - Wizard (Project template wizard) telemetry
+- `uno/uno-check` - Uno.Check (Environment validation tool) telemetry
 
 ---
 
@@ -145,6 +147,18 @@ Wizard telemetry tracks project template creation and configuration through the 
 
 [View detailed Wizard telemetry documentation →](Telemetry-Wizard.md)
 
+### [Uno.Check](Telemetry-UnoCheck.md)
+
+**Event Name Prefix:** `uno/uno-check`
+
+Uno.Check is an environment validation tool that checks .NET SDK installations, workloads, and dependencies required for Uno Platform development:
+- **Check Execution** - Start, success, warning, and failure events
+- **Framework Validation** - Target framework validation tracking
+- **Performance** - Check duration measurements
+- **Issue Tracking** - Failed/warning check identification
+
+[View detailed Uno.Check telemetry documentation →](Telemetry-UnoCheck.md)
+
 ### [Privacy & Compliance](Telemetry-Privacy.md)
 
 Comprehensive privacy and compliance information including:
@@ -171,6 +185,7 @@ Comprehensive privacy and compliance information including:
 - **Uno AI Features**: [unoplatform/uno.ai-private](https://github.com/unoplatform/uno.ai-private)
 - **Uno App MCP**: [unoplatform/uno.app-mcp](https://github.com/unoplatform/uno.app-mcp)
 - **Uno Docs MCP**: [unoplatform/uno.docs-mcp](https://github.com/unoplatform/uno.docs-mcp)
+- **Uno.Check**: [unoplatform/uno.check](https://github.com/unoplatform/uno.check)
 
 ### Repository Search Links
 
@@ -182,6 +197,7 @@ Comprehensive privacy and compliance information including:
 - [Dev Server (unoplatform/uno)](https://github.com/unoplatform/uno/search?q=devserver+telemetry)
 - [App MCP (unoplatform/uno.app-mcp)](https://github.com/unoplatform/uno.app-mcp/search?q=telemetry)
 - [Docs MCP (unoplatform/uno.docs-mcp)](https://github.com/unoplatform/uno.docs-mcp/search?q=telemetry)
+- [Uno.Check (unoplatform/uno.check)](https://github.com/unoplatform/uno.check/search?q=telemetry)
 
 ---
 
