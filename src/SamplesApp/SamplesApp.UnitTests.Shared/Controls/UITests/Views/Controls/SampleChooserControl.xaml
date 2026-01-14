@@ -219,6 +219,20 @@
     </UserControl.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.KeyboardAccelerators>
+            <!-- Ctrl+F: Focus search box -->
+            <KeyboardAccelerator Key="F" Modifiers="Control" Invoked="FocusSearchAccelerator_Invoked" />
+            <!-- F5: Reload current sample -->
+            <KeyboardAccelerator Key="F5" Invoked="ReloadSampleAccelerator_Invoked" />
+            <!-- Alt+Left: Previous sample -->
+            <KeyboardAccelerator Key="Left" Modifiers="Menu" Invoked="PreviousSampleAccelerator_Invoked" />
+            <!-- Alt+Right: Next sample -->
+            <KeyboardAccelerator Key="Right" Modifiers="Menu" Invoked="NextSampleAccelerator_Invoked" />
+            <!-- Ctrl+Shift+F: Toggle favorites view -->
+            <KeyboardAccelerator Key="F" Modifiers="Control,Shift" Invoked="FavoritesViewAccelerator_Invoked" />
+            <!-- Ctrl+H: Toggle history/recents view -->
+            <KeyboardAccelerator Key="H" Modifiers="Control" Invoked="HistoryViewAccelerator_Invoked" />
+        </Grid.KeyboardAccelerators>
         <SplitView
             x:Name="SplitView"
             DisplayMode="Overlay"
