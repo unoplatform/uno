@@ -288,6 +288,24 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYUP)} message.");
 				OnKey(wParam, lParam, false);
 				break;
+			case PInvoke.WM_SYSKEYDOWN:
+				// Handles Alt & F10 keys
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SYSKEYDOWN)} message.");
+				OnKey(wParam, lParam, true);
+				break;
+			case PInvoke.WM_SYSKEYUP:
+				// Handles Alt & F10 keys
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SYSKEYUP)} message.");
+				OnKey(wParam, lParam, false);
+				break;
+			case PInvoke.WM_SYSCOMMAND:
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SYSCOMMAND)} message.");
+				// Disable system handling of Alt & F10 keys.
+				if (wParam == PInvoke.SC_KEYMENU && Win32Helper.HIWORD(lParam) <= 0)
+				{
+					return new LRESULT(0);
+				}
+				break;
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
 				OnPointer(msg, wParam, _hwnd);
