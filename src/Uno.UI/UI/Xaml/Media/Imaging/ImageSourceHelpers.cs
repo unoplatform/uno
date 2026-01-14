@@ -128,7 +128,7 @@ internal static partial class ImageSourceHelpers
 	{
 		try
 		{
-			var stream = await AppDataUriEvaluator.ToStream(uri, ct);
+			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
 			// add more animation formats here if needed
 			return await ReadFromStreamAsCompositionSurface(stream, ct, !uri.AbsolutePath.EndsWith(".gif", StringComparison.InvariantCultureIgnoreCase));
 		}
