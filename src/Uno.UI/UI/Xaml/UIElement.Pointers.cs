@@ -448,10 +448,17 @@ namespace Microsoft.UI.Xaml
 				deviceType == MuxPointerDeviceType.Pen)
 			{
 				var contentRoot = VisualTree.GetContentRootForElement(src);
-				contentRoot?.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
-					src,
-					args.Position,
-					isTouchInput: false);
+				if (contentRoot != null)
+				{
+					// Convert element-relative position to global (app window) coordinates.
+					// args.Position is relative to 'that' (the element with the GestureRecognizer),
+					// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
+					var globalPosition = that.TransformToVisual(null).TransformPoint(args.Position);
+					contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
+						src,
+						globalPosition,
+						isTouchInput: false);
+				}
 			}
 		};
 
@@ -471,8 +478,11 @@ namespace Microsoft.UI.Xaml
 				{
 					if (args.HoldingState == HoldingState.Started)
 					{
-						// Store the touch point for the context menu processor
-						contentRoot.InputManager.ContextMenuProcessor.SetContextMenuOnHoldingTouchPoint(args.Position);
+						// Convert element-relative position to global (app window) coordinates.
+						// args.Position is relative to 'that' (the element with the GestureRecognizer),
+						// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
+						var globalPosition = that.TransformToVisual(null).TransformPoint(args.Position);
+						contentRoot.InputManager.ContextMenuProcessor.SetContextMenuOnHoldingTouchPoint(globalPosition);
 						contentRoot.InputManager.ContextMenuProcessor.ProcessContextRequestOnHoldingGesture(src);
 					}
 					else if (args.HoldingState == HoldingState.Canceled)
