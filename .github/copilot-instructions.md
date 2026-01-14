@@ -116,9 +116,33 @@ dotnet clean && rm -rf */bin */obj **/bin **/obj
 
 **Online SamplesApp**: https://aka.platform.uno/wasm-samples-app
 
-### XAML Sample Guidelines
+### Adding Samples to SamplesApp
 
-When adding XAML samples to the SamplesApp, follow these theming guidelines to ensure samples work well in both light and dark themes:
+When adding XAML samples to the SamplesApp, follow these steps:
+
+**CRITICAL: Register XAML files in UITests.Shared.projitems**
+- **ALWAYS add your XAML file to `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`**
+- Without this registration, your sample will NOT be visible in SamplesApp
+- Add both the XAML page and code-behind file:
+  ```xml
+  <Page Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml">
+    <SubType>Designer</SubType>
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Compile Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml.cs">
+    <DependentUpon>YourSample.xaml</DependentUpon>
+  </Compile>
+  ```
+
+**Sample Creation Steps:**
+1. Create your sample XAML and code-behind in the appropriate folder under `UITests.Shared`
+2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class
+3. **Register the files in `UITests.Shared.projitems`** (see above - this is required!)
+4. Build and run SamplesApp to verify your sample appears
+
+**Theming Guidelines:**
+
+Follow these theming guidelines to ensure samples work well in both light and dark themes:
 
 **Use ThemeResource for UI Elements:**
 - **Always use `{ThemeResource}` colors** for backgrounds and foregrounds in UI elements
