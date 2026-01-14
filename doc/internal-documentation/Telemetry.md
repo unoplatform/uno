@@ -12,6 +12,7 @@ This document provides a comprehensive overview of telemetry across the Uno Plat
 - [Licensing](Telemetry-Licensing.md)
 - [IDE Extensions](Telemetry-IDEExtensions.md)
 - [App MCP](Telemetry-AppMCP.md)
+- [Docs MCP](Telemetry-DocsMCP.md)
 - [Privacy & Compliance](Telemetry-Privacy.md)
 - [Additional Resources](#additional-resources)
 
@@ -30,6 +31,7 @@ All telemetry events use a prefixed naming convention based on the feature area:
 - `uno/rider` - Rider Plugin telemetry
 - `uno/visual-studio` - Visual Studio Extension telemetry
 - `uno/app-mcp` - App MCP (Model Context Protocol) telemetry
+- `uno/docs-mcp` - Docs MCP (Documentation search and retrieval) telemetry
 
 ---
 
@@ -115,6 +117,20 @@ App MCP (Model Context Protocol) telemetry tracks agent interactions with runnin
 
 [View detailed App MCP telemetry documentation →](Telemetry-AppMCP.md)
 
+### [Docs MCP](Telemetry-DocsMCP.md)
+
+**Event Name Prefix:** `uno/docs-mcp`
+
+Docs MCP (Model Context Protocol) is an Azure-hosted service providing documentation search and retrieval:
+- **Search Tracking** - Query patterns, response times, result counts
+- **Cache Performance** - Cache hit/miss rates, operation types
+- **Throttling** - Rate limiting, wait durations, client tracking
+- **Ingestion** - Document processing, ingestion performance
+- **Error Tracking** - Search failures, exception monitoring
+- **Performance Metrics** - Search performance, caching efficiency, system health
+
+[View detailed Docs MCP telemetry documentation →](Telemetry-DocsMCP.md)
+
 ### [Privacy & Compliance](Telemetry-Privacy.md)
 
 Comprehensive privacy and compliance information including:
@@ -140,6 +156,7 @@ Comprehensive privacy and compliance information including:
 - **Uno Licensing API**: [unoplatform/uno.licensing](https://github.com/unoplatform/uno.licensing)
 - **Uno AI Features**: [unoplatform/uno.ai-private](https://github.com/unoplatform/uno.ai-private)
 - **Uno App MCP**: [unoplatform/uno.app-mcp](https://github.com/unoplatform/uno.app-mcp)
+- **Uno Docs MCP**: [unoplatform/uno.docs-mcp](https://github.com/unoplatform/uno.docs-mcp)
 
 ### Repository Search Links
 
@@ -150,6 +167,7 @@ Comprehensive privacy and compliance information including:
 - [Licensing (unoplatform/uno.licensing)](https://github.com/unoplatform/uno.licensing/search?q=telemetry)
 - [Dev Server (unoplatform/uno)](https://github.com/unoplatform/uno/search?q=devserver+telemetry)
 - [App MCP (unoplatform/uno.app-mcp)](https://github.com/unoplatform/uno.app-mcp/search?q=telemetry)
+- [Docs MCP (unoplatform/uno.docs-mcp)](https://github.com/unoplatform/uno.docs-mcp/search?q=telemetry)
 
 ---
 
