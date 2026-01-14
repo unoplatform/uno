@@ -12,13 +12,20 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 public partial class Given_UIElement_RightTappedUnhandled
 {
 	/// <summary>
 	/// Test control that tracks OnRightTappedUnhandled calls.
 	/// </summary>
-	private partial class TestControl : Control
+	private partial class TestControl : Button
 	{
+		public TestControl()
+		{
+			Width = 100;
+			Height = 100;
+		}
+
 		public bool RightTappedUnhandledCalled { get; private set; }
 		public RightTappedRoutedEventArgs ReceivedArgs { get; private set; }
 
@@ -33,8 +40,14 @@ public partial class Given_UIElement_RightTappedUnhandled
 	/// <summary>
 	/// Test control that handles RightTappedUnhandled by setting Handled = true.
 	/// </summary>
-	private partial class HandlingTestControl : Control
+	private partial class HandlingTestControl : Button
 	{
+		public HandlingTestControl()
+		{
+			Width = 100;
+			Height = 100;
+		}
+
 		public bool RightTappedUnhandledCalled { get; private set; }
 
 		private protected override void OnRightTappedUnhandled(RightTappedRoutedEventArgs e)

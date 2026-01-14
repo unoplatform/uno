@@ -13,6 +13,7 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 public partial class Given_UIElement_ContextFlyoutParentChain
 {
 	[TestMethod]
