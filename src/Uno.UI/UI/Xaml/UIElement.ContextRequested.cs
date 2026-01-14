@@ -92,7 +92,7 @@ partial class UIElement
 					}
 				}
 #endif
-				// TODO: Support RichEditBox and PasswordBox
+				// TODO: Support RichEditBox
 			}
 
 			if (isTextControl)

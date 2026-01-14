@@ -13,6 +13,7 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 public partial class Given_UIElement_FlyoutLayerDetection
 {
 	[TestMethod]
@@ -48,7 +49,8 @@ public partial class Given_UIElement_FlyoutLayerDetection
 		var popup = new Popup
 		{
 			Child = popupContent,
-			IsLightDismissEnabled = true
+			IsLightDismissEnabled = true,
+			XamlRoot = TestServices.WindowHelper.XamlRoot
 		};
 
 		var hostButton = new Button { Content = "Host" };

@@ -1,3 +1,4 @@
+#if __SKIA__
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,7 +15,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public partial class Given_TextBox_ContextMenuPosition
 {
-#if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_GetContextMenuShowPosition_Returns_Valid_Position()
@@ -175,5 +175,5 @@ public partial class Given_TextBox_ContextMenuPosition
 
 		flyout.Hide();
 	}
-#endif
 }
+#endif
