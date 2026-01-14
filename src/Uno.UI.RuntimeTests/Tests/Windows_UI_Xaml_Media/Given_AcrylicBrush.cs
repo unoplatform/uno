@@ -112,6 +112,60 @@ public class Given_AcrylicBrush
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Nearby_Dark_Element_Should_Not_Bleed_Through()
+	{
+		// Test that adjacent dark elements don't bleed through the acrylic blur
+		// This verifies edge clamping is working correctly
+		var layout = new StackPanel
+		{
+			Orientation = Orientation.Horizontal,
+			Background = new SolidColorBrush(Windows.UI.Colors.White)
+		};
+
+		// Dark element on the left that should NOT affect the acrylic
+		var darkBorder = new Border
+		{
+			Width = 50,
+			Height = 100,
+			Background = new SolidColorBrush(Windows.UI.Colors.Black)
+		};
+
+		// Acrylic element on the right
+		var acrylicBorder = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new AcrylicBrush
+			{
+				TintColor = Windows.UI.Colors.White,
+				TintOpacity = 0.8
+			}
+		};
+
+		layout.Children.Add(darkBorder);
+		layout.Children.Add(acrylicBorder);
+
+		await UITestHelper.Load(layout);
+		await Task.Delay(500); // Allow rendering to complete
+
+		var screenshot = await UITestHelper.ScreenShot(layout);
+
+		// Check that the left edge of the acrylic (pixels at x=51) is NOT darkened by the black sibling
+		// If edge clamping is working, the left edge should be mostly white (from the white background)
+		// rather than darkened by the black border
+		var leftEdgeX = 51; // Just inside the acrylic border
+		var midY = 50; // Middle of the element
+
+		var pixel = screenshot.GetPixel(leftEdgeX, midY);
+		var luminance = (pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114);
+
+		// The luminance should be relatively high (light) since the backdrop is white
+		// If the black border is bleeding through, luminance would be much lower
+		luminance.Should().BeGreaterThan(150, "Left edge of acrylic should not be darkened by adjacent black element");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20634")]
 	public async Task When_Idle()
 	{

@@ -8,7 +8,6 @@ using System.Numerics;
 using Uno.UI.Composition;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Composition;
@@ -33,6 +32,11 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal bool UseBlurPadding { get; set; }
 
+	// Fields for edge-clamped blur (BorderMode.Hard)
+	private bool _needsClampedBackdropBlur;
+	private float _clampedBlurSigma;
+	private SKRect _clampedBlurBounds;
+
 	private SKImageFilter? GenerateGaussianBlurEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
 		if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
@@ -43,14 +47,34 @@ public partial class CompositionEffectBrush : CompositionBrush
 				return null;
 			}
 
+			bool wasBackdropInput = _isCurrentInputBackdrop;
 			_isCurrentInputBackdrop = false;
 
-			// TODO: Support "Optimization" and "BorderMode" properties
+			// Get blur amount
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
 
+			// Check BorderMode property (index 2)
+			effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderModeProp, out _);
+			bool isHardBorderMode = borderModeProp != 0xFF &&
+				(uint)(effectInterop.GetProperty(borderModeProp) ?? 0) == 1; // EffectBorderMode.Hard = 1
+
+			if (isHardBorderMode && wasBackdropInput)
+			{
+				// For hard border mode with backdrop input, we need to handle blur in Paint()
+				// to properly capture and clamp the backdrop content
+				_needsClampedBackdropBlur = true;
+				_clampedBlurSigma = sigma;
+				_clampedBlurBounds = bounds;
+
+				// Return an identity filter - the actual blur will be applied in Paint()
+				// with proper edge clamping
+				return SKImageFilter.CreateOffset(0, 0, sourceFilter, bounds);
+			}
+
+			// Standard blur for Soft border mode or non-backdrop sources
 			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter,
-				UseBlurPadding ?
+				UseBlurPadding && !isHardBorderMode ?
 				bounds with
 				{
 					Left = -100,
@@ -1592,8 +1616,191 @@ $$"""
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		UpdateFilter(bounds);
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
+
+		if (_needsClampedBackdropBlur && HasBackdropBrushInput)
+		{
+			PaintWithClampedBackdrop(canvas, opacity, bounds);
+		}
+		else
+		{
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+			canvas.Restore();
+		}
+	}
+
+	private void PaintWithClampedBackdrop(SKCanvas canvas, float opacity, SKRect bounds)
+	{
+		// Calculate padding for blur kernel
+		float sigma = _clampedBlurSigma;
+		float padding = sigma * 3;
+
+		// Get the canvas transformation matrix
+		var totalMatrix = canvas.TotalMatrix;
+
+		// Calculate the device-space bounds (accounting for any transforms)
+		var deviceBounds = totalMatrix.MapRect(bounds);
+
+		// Padded bounds for capturing enough backdrop for the blur
+		var paddedDeviceBounds = new SKRect(
+			deviceBounds.Left - padding,
+			deviceBounds.Top - padding,
+			deviceBounds.Right + padding,
+			deviceBounds.Bottom + padding
+		);
+
+		// Ensure we don't go negative
+		var captureBounds = new SKRectI(
+			Math.Max(0, (int)paddedDeviceBounds.Left),
+			Math.Max(0, (int)paddedDeviceBounds.Top),
+			(int)Math.Ceiling(paddedDeviceBounds.Right),
+			(int)Math.Ceiling(paddedDeviceBounds.Bottom)
+		);
+
+		int captureWidth = captureBounds.Width;
+		int captureHeight = captureBounds.Height;
+
+		if (captureWidth <= 0 || captureHeight <= 0)
+		{
+			// Fallback to standard blur
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+			canvas.Restore();
+			return;
+		}
+
+		// Try to read pixels from the canvas surface (this captures what's been drawn so far - the "backdrop")
+		var surface = canvas.Surface;
+		if (surface is null)
+		{
+			// No surface available - fallback to standard blur
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+			canvas.Restore();
+			return;
+		}
+
+		// Create bitmap to capture the backdrop
+		var imageInfo = new SKImageInfo(captureWidth, captureHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+		using var backdropBitmap = new SKBitmap(imageInfo);
+
+		// Read the backdrop pixels in device coordinates
+		if (!surface.ReadPixels(imageInfo, backdropBitmap.GetPixels(), backdropBitmap.RowBytes, captureBounds.Left, captureBounds.Top))
+		{
+			// Failed to read - fallback to standard blur
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+			canvas.Restore();
+			return;
+		}
+
+		// Extend edges by clamping - copy edge pixels outward into the padding area
+		// This ensures the blur samples edge pixels instead of adjacent content
+		ExtendEdges(backdropBitmap, captureBounds, deviceBounds, (int)padding);
+
+		// Create an image from the edge-extended bitmap
+		using var backdropImage = SKImage.FromBitmap(backdropBitmap);
+
+		// Create a surface to apply the blur
+		using var blurSurface = SKSurface.Create(imageInfo);
+		if (blurSurface is null)
+		{
+			// Fallback to standard blur
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+			canvas.Restore();
+			return;
+		}
+
+		var blurCanvas = blurSurface.Canvas;
+
+		// Apply native Skia blur to the edge-extended image
+		// The blur will now sample from the extended edges instead of transparent/adjacent pixels
+		using var blurPaint = new SKPaint
+		{
+			ImageFilter = SKImageFilter.CreateBlur(sigma, sigma)
+		};
+
+		blurCanvas.Clear(SKColors.Transparent);
+		blurCanvas.DrawImage(backdropImage, 0, 0, blurPaint);
+
+		// Get the blurred result
+		using var blurredImage = blurSurface.Snapshot();
+
+		// Calculate the source rect (the non-padded portion of the blurred image)
+		var srcRect = new SKRect(
+			deviceBounds.Left - captureBounds.Left,
+			deviceBounds.Top - captureBounds.Top,
+			deviceBounds.Right - captureBounds.Left,
+			deviceBounds.Bottom - captureBounds.Top
+		);
+
+		// Draw the blurred backdrop to the canvas at the correct position
+		canvas.Save();
+		canvas.SetMatrix(SKMatrix.Identity);
+		canvas.ClipRect(deviceBounds);
+
+		// Draw just the center portion (excluding padding) at the device bounds location
+		canvas.DrawImage(blurredImage, srcRect, deviceBounds);
+
 		canvas.Restore();
+
+		// Now apply the rest of the effect chain (luminosity, tint, noise) on top
+		// The _filter contains the effect chain with Identity at the blur step,
+		// so it processes what we just drew (the clamped blur) with luminosity/tint/noise
+		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+		canvas.Restore();
+	}
+
+	private static void ExtendEdges(SKBitmap bitmap, SKRectI captureBounds, SKRect contentBounds, int padding)
+	{
+		// Calculate the content region within the bitmap (in bitmap coordinates)
+		int contentLeft = Math.Max(0, (int)(contentBounds.Left - captureBounds.Left));
+		int contentTop = Math.Max(0, (int)(contentBounds.Top - captureBounds.Top));
+		int contentRight = Math.Min(bitmap.Width, (int)(contentBounds.Right - captureBounds.Left));
+		int contentBottom = Math.Min(bitmap.Height, (int)(contentBounds.Bottom - captureBounds.Top));
+
+		if (contentLeft >= contentRight || contentTop >= contentBottom)
+		{
+			return; // Invalid content region
+		}
+
+		// Extend left edge
+		for (int y = contentTop; y < contentBottom; y++)
+		{
+			var edgePixel = bitmap.GetPixel(contentLeft, y);
+			for (int x = 0; x < contentLeft; x++)
+			{
+				bitmap.SetPixel(x, y, edgePixel);
+			}
+		}
+
+		// Extend right edge
+		for (int y = contentTop; y < contentBottom; y++)
+		{
+			var edgePixel = bitmap.GetPixel(contentRight - 1, y);
+			for (int x = contentRight; x < bitmap.Width; x++)
+			{
+				bitmap.SetPixel(x, y, edgePixel);
+			}
+		}
+
+		// Extend top edge (including corners)
+		for (int y = 0; y < contentTop; y++)
+		{
+			for (int x = 0; x < bitmap.Width; x++)
+			{
+				int clampedX = Math.Clamp(x, contentLeft, contentRight - 1);
+				var edgePixel = bitmap.GetPixel(clampedX, contentTop);
+				bitmap.SetPixel(x, y, edgePixel);
+			}
+		}
+
+		// Extend bottom edge (including corners)
+		for (int y = contentBottom; y < bitmap.Height; y++)
+		{
+			for (int x = 0; x < bitmap.Width; x++)
+			{
+				int clampedX = Math.Clamp(x, contentLeft, contentRight - 1);
+				var edgePixel = bitmap.GetPixel(clampedX, contentBottom - 1);
+				bitmap.SetPixel(x, y, edgePixel);
+			}
+		}
 	}
 
 	private void UpdateFilter(SKRect bounds)
@@ -1602,6 +1809,7 @@ $$"""
 		{
 			_isCurrentInputBackdrop = false;
 			_hasBackdropBrushInputPrivate = false;
+			_needsClampedBackdropBlur = false;
 			_filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException($"Unsupported effect description.\r\nEffect name: {_effect.Name}");
 			HasBackdropBrushInput = _hasBackdropBrushInputPrivate;
 			_currentBounds = bounds;
