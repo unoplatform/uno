@@ -19,7 +19,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("Info", "MUX")]
+	[Sample("Info", Name = "MUX")]
 	public sealed partial class InfoBarPage : TestPage
 	{
 		private ButtonBase _actionButton = null;

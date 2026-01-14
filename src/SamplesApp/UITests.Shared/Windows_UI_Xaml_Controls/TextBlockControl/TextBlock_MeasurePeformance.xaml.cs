@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[Sample("TextBlock", "MeasurePerformance", IgnoreInSnapshotTests = true)]
+	[Sample("TextBlock", Name = "MeasurePerformance", IgnoreInSnapshotTests = true)]
 	public sealed partial class TextBlock_MeasurePeformance : UserControl
 	{
 		public TextBlock_MeasurePeformance()

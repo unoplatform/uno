@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 {
-	[Sample("Geometry", "LineSegment")]
+	[Sample("Geometry", Name = "LineSegment")]
 	public sealed partial class LineSegmentPage : Page
 	{
 		public LineSegmentPage()

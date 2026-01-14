@@ -24,7 +24,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.InfoBadgeTests
 {
-	[Sample("Info", "MUX")]
+	[Sample("Info", Name = "MUX")]
 	public sealed partial class InfoBadgePage : Page
 	{
 		IconSource pageIconSource = null;

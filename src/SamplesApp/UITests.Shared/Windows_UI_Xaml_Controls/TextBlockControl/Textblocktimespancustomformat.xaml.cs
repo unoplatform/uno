@@ -4,7 +4,7 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "Textblocktimespancustomformat", typeof(TextBlockViewModel))]
+	[Sample("TextBlock", Name = "Textblocktimespancustomformat", typeof(TextBlockViewModel))]
 	public sealed partial class Textblocktimespancustomformat : UserControl
 	{
 		public Textblocktimespancustomformat()

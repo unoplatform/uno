@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListViewDynamicOrientation", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ListViewDynamicOrientation", typeof(ListViewViewModel))]
 	public sealed partial class ListViewDynamicOrientation : UserControl
 	{
 		public ListViewDynamicOrientation()

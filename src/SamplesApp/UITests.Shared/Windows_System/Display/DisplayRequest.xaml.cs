@@ -19,7 +19,7 @@ using UwpDisplayRequest = Windows.System.Display.DisplayRequest;
 
 namespace UITests.Shared.Windows_System.Display
 {
-	[Sample("Windows.System", "Display.DisplayRequest",
+	[Sample("Windows.System", Name = "Display.DisplayRequest",
 		Description = "Demonstrates DisplayRequest class to keep screen awake. Make sure to test without debugger attached (that keeps screen on all the time).")]
 	public sealed partial class DisplayRequest : UserControl
 	{

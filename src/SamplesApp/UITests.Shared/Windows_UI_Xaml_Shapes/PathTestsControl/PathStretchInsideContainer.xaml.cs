@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample("Path", "PathStretchInsideContainer")]
+	[Sample("Path", Name = "PathStretchInsideContainer")]
 	public sealed partial class PathStretchInsideContainer : UserControl
 	{
 		public PathStretchInsideContainer()

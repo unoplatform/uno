@@ -36,7 +36,7 @@ namespace MUXControlsTestApp
 		public String Content { get; set; }
 	}
 
-	[Sample("TabView", "MUX")]
+	[Sample("TabView", Name = "MUX")]
 	public sealed partial class TabViewPage : TestPage
 	{
 		int _newTabNumber = 1;

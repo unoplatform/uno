@@ -46,7 +46,7 @@ using System.Threading.Tasks;
 
 namespace MUXControlsTestApp
 {
-	[Sample("MUX", "WinUI", "PullToRefresh")]
+	[Sample("MUX", Name = "WinUI", "PullToRefresh")]
 	public sealed partial class RefreshContainerPage : TestPage
 	{
 		private DispatcherTimer containerTimer = new DispatcherTimer();

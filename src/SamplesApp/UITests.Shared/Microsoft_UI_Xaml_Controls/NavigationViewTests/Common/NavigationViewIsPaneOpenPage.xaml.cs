@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", Name = "MUX")]
 	public sealed partial class NavigationViewIsPaneOpenPage : TestPage
 	{
 		public NavigationViewIsPaneOpenPage()

@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListViewVariableItemHeightLong", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ListViewVariableItemHeightLong", typeof(ListViewViewModel))]
 	public sealed partial class ListViewVariableItemHeightLong : UserControl
 	{
 		public ListViewVariableItemHeightLong()

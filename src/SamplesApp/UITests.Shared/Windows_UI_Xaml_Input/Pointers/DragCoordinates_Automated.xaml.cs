@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.Pointers
 {
-	[Sample("Pointers", "DragCoordinates_Automated")]
+	[Sample("Pointers", Name = "DragCoordinates_Automated")]
 	public sealed partial class DragCoordinates_Automated : UserControl
 	{
 		public DragCoordinates_Automated()

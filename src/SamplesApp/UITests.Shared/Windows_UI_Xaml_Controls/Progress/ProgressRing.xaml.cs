@@ -21,7 +21,7 @@ namespace SamplesApp.Samples.Progress
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("Progress", "ProgressRing", IgnoreInSnapshotTests = true)]
+	[Sample("Progress", Name = "ProgressRing", IgnoreInSnapshotTests = true)]
 	public sealed partial class ProgressRing : Page
 	{
 		public ProgressRing()

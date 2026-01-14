@@ -26,7 +26,7 @@ using MUXControlsTestApp.Utilities;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", Name = "MUX")]
 	public sealed partial class NavigationViewRS4Page : TestPage
 	{
 		private int m_newItemIndex = 0;

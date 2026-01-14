@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ThumbTests;
 
-[Sample("Thumb", "Slider")]
+[Sample("Thumb", Name = "Slider")]
 public sealed partial class Thumb_DragEvents : Page
 {
 	public Thumb_DragEvents()

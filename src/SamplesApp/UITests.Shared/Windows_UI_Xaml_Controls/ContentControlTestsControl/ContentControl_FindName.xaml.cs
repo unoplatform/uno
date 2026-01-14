@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[Sample("ContentControl", "ContentControl_FindName")]
+	[Sample("ContentControl", Name = "ContentControl_FindName")]
 	public sealed partial class ContentControl_FindName : UserControl
 	{
 		public ContentControl_FindName()

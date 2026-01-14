@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListViewLegacy", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ListViewLegacy", typeof(ListViewViewModel))]
 	public sealed partial class ListViewLegacy : UserControl
 	{
 		public ListViewLegacy()

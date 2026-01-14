@@ -7,7 +7,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Services_Store;
 
-[Sample("Windows.Services.Store", "StoreContext", Description = "This page provides tests for StoreContext APIs as In App Reviews. When the StoreContext.TestMode is set to true, it should open the Fake Review Manager from Google Play.", ViewModelType = typeof(StoreContextTestsViewModel), IgnoreInSnapshotTests = true)]
+[Sample("Windows.Services.Store", Name = "StoreContext", Description = "This page provides tests for StoreContext APIs as In App Reviews. When the StoreContext.TestMode is set to true, it should open the Fake Review Manager from Google Play.", ViewModelType = typeof(StoreContextTestsViewModel), IgnoreInSnapshotTests = true)]
 public sealed partial class StoreContextTests : UserControl
 {
 	public StoreContextTests()

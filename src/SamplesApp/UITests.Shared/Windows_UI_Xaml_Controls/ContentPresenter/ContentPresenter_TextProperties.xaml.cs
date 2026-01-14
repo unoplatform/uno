@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[Sample("ContentPresenter", "ContentPresenter_TextProperties")]
+	[Sample("ContentPresenter", Name = "ContentPresenter_TextProperties")]
 	public sealed partial class ContentPresenter_TextProperties : UserControl
 	{
 		public ContentPresenter_TextProperties()

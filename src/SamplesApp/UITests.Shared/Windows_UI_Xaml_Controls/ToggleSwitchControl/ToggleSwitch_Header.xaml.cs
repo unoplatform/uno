@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 {
-	[Sample("ToggleSwitch", "ToggleSwitch_Header", typeof(ToggleSwitchViewModel))]
+	[Sample("ToggleSwitch", Name = "ToggleSwitch_Header", typeof(ToggleSwitchViewModel))]
 	public sealed partial class ToggleSwitch_Header : UserControl
 	{
 		public ToggleSwitch_Header()

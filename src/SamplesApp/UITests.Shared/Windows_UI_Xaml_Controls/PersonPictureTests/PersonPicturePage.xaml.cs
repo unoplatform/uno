@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace MUXControlsTestApp
 {
-	[Sample("MUX", "PersonPicture")]
+	[Sample("MUX", Name = "PersonPicture")]
 #pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class PersonPicturePage
 #pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.

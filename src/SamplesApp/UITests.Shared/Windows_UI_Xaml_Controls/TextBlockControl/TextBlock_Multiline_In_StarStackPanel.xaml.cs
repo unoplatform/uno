@@ -4,8 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock",
-		"TextBlock_Multiline_In_StarStackPanel",
+	[Sample("TextBlock", Name = "TextBlock_Multiline_In_StarStackPanel",
 		typeof(TextBlockViewModel),
 		Description = "A multiline textblock that contains data-bound runs that should wrap properly.",
 		IgnoreInSnapshotTests = true /*TextBlock Text is dynamically varying*/)]

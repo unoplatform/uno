@@ -13,7 +13,7 @@ using Uno.Extensions;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
-	[Sample("Animations", "Transform", Description = _description, IgnoreInSnapshotTests = true)]
+	[Sample("Animations", Name = "Transform", Description = _description, IgnoreInSnapshotTests = true)]
 	public sealed partial class DoubleAnimation_TransformGroup : Page
 	{
 		private const string _description = @"This (automated) test validates animations of a TranformGroup.";

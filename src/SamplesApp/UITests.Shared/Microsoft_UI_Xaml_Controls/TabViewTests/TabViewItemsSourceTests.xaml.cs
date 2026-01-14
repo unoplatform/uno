@@ -20,7 +20,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
-	[Sample("TabView", "MUX")]
+	[Sample("TabView", Name = "MUX")]
 	public sealed partial class TabViewItemsSourceTests : Page
 	{
 		public TabViewItemsSourceTests()

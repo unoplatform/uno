@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[Sample("TextBox", "TextBox_TextChanging")]
+	[Sample("TextBox", Name = "TextBox_TextChanging")]
 	public sealed partial class TextBox_TextChanging : UserControl
 	{
 		public TextBox_TextChanging()

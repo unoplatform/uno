@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("Pointers", "Popup")]
+	[Sample("Pointers", Name = "Popup")]
 	public sealed partial class HitTest_LightDismiss : Page
 	{
 		private Popup _popup;

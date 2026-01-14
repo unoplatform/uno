@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 {
-	[Sample("Geometry", "ArcSegment")]
+	[Sample("Geometry", Name = "ArcSegment")]
 	public sealed partial class ArcSegmentPage : Page
 	{
 		public ArcSegmentPage()

@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Documents;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "TextBlock_Hyperlink")]
+	[Sample("TextBlock", Name = "TextBlock_Hyperlink")]
 	public sealed partial class TextBlock_Hyperlink : UserControl
 	{
 		public TextBlock_Hyperlink()

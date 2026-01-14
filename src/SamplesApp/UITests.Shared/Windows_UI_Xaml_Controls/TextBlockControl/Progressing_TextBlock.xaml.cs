@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "Progressing_TextBlock")]
+	[Sample("TextBlock", Name = "Progressing_TextBlock")]
 	public sealed partial class Progressing_TextBlock : UserControl
 	{
 		public Progressing_TextBlock()

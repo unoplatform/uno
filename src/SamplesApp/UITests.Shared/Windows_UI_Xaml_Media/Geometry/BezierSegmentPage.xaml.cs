@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 {
-	[Sample("Geometry", "BezierSegment")]
+	[Sample("Geometry", Name = "BezierSegment")]
 	public sealed partial class BezierSegmentPage : Page
 	{
 		public BezierSegmentPage()

@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.PointersTests
 {
-	[Sample("Pointers", "Capture")]
+	[Sample("Pointers", Name = "Capture")]
 	public sealed partial class Capture : Page
 	{
 		public Capture()

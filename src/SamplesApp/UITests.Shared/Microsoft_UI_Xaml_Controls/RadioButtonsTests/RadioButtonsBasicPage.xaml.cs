@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
-	[Sample("Buttons", "MUX")]
+	[Sample("Buttons", Name = "MUX")]
 	public sealed partial class RadioButtonsBasicPage : Page
 	{
 		public RadioButtonsBasicPage()

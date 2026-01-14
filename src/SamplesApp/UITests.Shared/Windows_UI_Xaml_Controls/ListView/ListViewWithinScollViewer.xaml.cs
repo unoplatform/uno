@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListViewWithinScollViewer", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ListViewWithinScollViewer", typeof(ListViewViewModel))]
 	public sealed partial class ListViewWithinScollViewer : UserControl
 	{
 		public ListViewWithinScollViewer()

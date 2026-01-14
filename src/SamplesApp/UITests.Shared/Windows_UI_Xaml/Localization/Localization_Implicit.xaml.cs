@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.Localization
 {
-	[Sample("Resources", "Localization_Implicit")]
+	[Sample("Resources", Name = "Localization_Implicit")]
 	public sealed partial class Localization_Implicit : UserControl
 	{
 		public Localization_Implicit()

@@ -49,7 +49,7 @@ namespace MUXControlsTestApp
 		}
 	}
 
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", Name = "MUX")]
 	public sealed partial class NavigationViewItemTemplatePage : TestPage
 	{
 		public NavigationViewItemTemplatePage()

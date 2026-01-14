@@ -13,7 +13,7 @@ using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewP
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", Name = "MUX")]
 	public sealed partial class NavigationViewAnimationPage : TestPage
 	{
 		public NavigationViewAnimationPage()

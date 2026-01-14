@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "TextBlockSimpleContrainedHorizontalCenterWrap2")]
+	[Sample("TextBlock", Name = "TextBlockSimpleContrainedHorizontalCenterWrap2")]
 	public sealed partial class TextBlockSimpleContrainedHorizontalCenterWrap2 : UserControl
 	{
 		public TextBlockSimpleContrainedHorizontalCenterWrap2()

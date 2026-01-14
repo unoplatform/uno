@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListViewResizable", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ListViewResizable", typeof(ListViewViewModel))]
 	public sealed partial class ListViewResizable : UserControl
 	{
 		public ListViewResizable()

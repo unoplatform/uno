@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
 {
-	[Sample("DragAndDrop", "ListView",
+	[Sample("DragAndDrop", Name = "ListView",
 		Description = "This automated tests validate that items reordering in ListView is working properly.",
 		IgnoreInSnapshotTests = true)]
 	public sealed partial class DragDrop_ListView : Page

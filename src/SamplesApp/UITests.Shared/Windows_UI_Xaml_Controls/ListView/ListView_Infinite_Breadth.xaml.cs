@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListView_Infinite_Breadth", typeof(ListViewViewModel),
+	[Sample("ListView", Name = "ListView_Infinite_Breadth", typeof(ListViewViewModel),
 		Description = "Vertical ListView in a horizontal StackPanel (ie with infinite available width) with variable-width item text. Correct behavior is to resize as list scrolls.")]
 	public sealed partial class ListView_Infinite_Breadth : UserControl
 	{

@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ScrollIntoViewTest", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ScrollIntoViewTest", typeof(ListViewViewModel))]
 	public sealed partial class ScrollIntoViewTest : UserControl
 	{
 		public ScrollIntoViewTest()

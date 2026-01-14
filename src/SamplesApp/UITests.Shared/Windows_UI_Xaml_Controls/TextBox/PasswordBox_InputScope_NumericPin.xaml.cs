@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[Sample("TextBox", "PasswordBox_InputScope_NumericPin")]
+	[Sample("TextBox", Name = "PasswordBox_InputScope_NumericPin")]
 	public sealed partial class PasswordBox_InputScope_NumericPin : UserControl
 	{
 		public PasswordBox_InputScope_NumericPin()

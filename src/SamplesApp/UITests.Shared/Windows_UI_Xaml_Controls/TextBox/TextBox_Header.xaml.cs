@@ -4,7 +4,7 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[Sample("TextBox", "TextBox_Header", typeof(TextBoxViewModel))]
+	[Sample("TextBox", Name = "TextBox_Header", typeof(TextBoxViewModel))]
 	public sealed partial class TextBox_Header : UserControl
 	{
 		public TextBox_Header()

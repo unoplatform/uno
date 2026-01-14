@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml.UIElementTests
 {
-	[Sample("UIElement", "Clipping")]
+	[Sample("UIElement", Name = "Clipping")]
 	public sealed partial class UIElement_Clipping : UserControl
 	{
 		public UIElement_Clipping()

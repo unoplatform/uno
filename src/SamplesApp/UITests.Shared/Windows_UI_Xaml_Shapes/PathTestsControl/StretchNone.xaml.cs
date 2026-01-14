@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample("Path", "StretchNone")]
+	[Sample("Path", Name = "StretchNone")]
 	public sealed partial class StretchNone : UserControl
 	{
 		public StretchNone()

@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Shapes
 {
-	[Sample("Shapes", "Measure")]
+	[Sample("Shapes", Name = "Measure")]
 	public sealed partial class MeasurePage : Page
 	{
 		public MeasurePage()

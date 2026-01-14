@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Input.PointersTests
 {
-	[Sample("Pointers", "Geometry")]
+	[Sample("Pointers", Name = "Geometry")]
 	public sealed partial class HitTest_GeometryGroup : Page
 	{
 		public HitTest_GeometryGroup()

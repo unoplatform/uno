@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.VisualStatesTests
 {
-	[Sample("Gesture Recognizer", "VisualStates ComboBoxItem")]
+	[Sample("Gesture Recognizer", Name = "VisualStates ComboBoxItem")]
 	public sealed partial class ComboBoxItem : Page
 	{
 		public ComboBoxItem()

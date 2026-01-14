@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[Sample("Border", "OnepxThicknessandRadius")]
+	[Sample("Border", Name = "OnepxThicknessandRadius")]
 	public sealed partial class OnepxThicknessandRadius : UserControl
 	{
 		public OnepxThicknessandRadius()

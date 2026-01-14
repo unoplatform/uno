@@ -8,7 +8,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-	[Sample("FrameworkElement", "LoadEvents", Description = "Tests the Loaded/Unloaded events")]
+	[Sample("FrameworkElement", Name = "LoadEvents", Description = "Tests the Loaded/Unloaded events")]
 	public sealed partial class LoadEvents : UserControl
 	{
 		public LoadEvents()

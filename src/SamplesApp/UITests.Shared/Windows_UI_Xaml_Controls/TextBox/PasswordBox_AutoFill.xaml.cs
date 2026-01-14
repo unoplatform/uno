@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[Sample("TextBox", "PasswordBox_AutoFill", IsManualTest = true)]
+	[Sample("TextBox", Name = "PasswordBox_AutoFill", IsManualTest = true)]
 	public sealed partial class PasswordBox_AutoFill : UserControl
 	{
 		public PasswordBox_AutoFill()

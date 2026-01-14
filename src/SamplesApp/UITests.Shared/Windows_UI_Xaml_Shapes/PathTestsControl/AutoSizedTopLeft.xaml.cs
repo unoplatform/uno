@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample("Path", "AutoSizedTopLeft")]
+	[Sample("Path", Name = "AutoSizedTopLeft")]
 	public sealed partial class AutoSizedTopLeft : UserControl
 	{
 		public AutoSizedTopLeft()

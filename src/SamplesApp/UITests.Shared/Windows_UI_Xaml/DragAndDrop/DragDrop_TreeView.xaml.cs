@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
 {
-	[Sample("DragAndDrop", "TreeView")]
+	[Sample("DragAndDrop", Name = "TreeView")]
 	public sealed partial class DragDrop_TreeView : Page
 	{
 		public DragDrop_TreeView()

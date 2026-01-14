@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "TextBlock_Inlines_TemplatedParent")]
+	[Sample("TextBlock", Name = "TextBlock_Inlines_TemplatedParent")]
 	public sealed partial class TextBlock_Inlines_TemplatedParent : UserControl
 	{
 		public TextBlock_Inlines_TemplatedParent()

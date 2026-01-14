@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace GenericApp.Views.Content.UITests.Animations
 {
-	[Sample("Animations", "DoubleAnimation_TranslateX")]
+	[Sample("Animations", Name = "DoubleAnimation_TranslateX")]
 	public sealed partial class DoubleAnimation_TranslateX : UserControl
 	{
 		public DoubleAnimation_TranslateX()

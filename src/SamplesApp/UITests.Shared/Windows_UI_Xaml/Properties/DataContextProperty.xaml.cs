@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.Properties
 {
-	[Sample("XAML", "DataContextProperty")]
+	[Sample("XAML", Name = "DataContextProperty")]
 	public sealed partial class DataContextProperty : Page
 	{
 		public DataContextProperty()

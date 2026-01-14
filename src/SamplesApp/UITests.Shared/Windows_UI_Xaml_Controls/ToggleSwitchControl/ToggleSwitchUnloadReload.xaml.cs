@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 {
-	[Sample("ToggleSwitch", "ToggleSwitchUnloadReload")]
+	[Sample("ToggleSwitch", Name = "ToggleSwitchUnloadReload")]
 	public sealed partial class ToggleSwitchUnloadReload : Page
 	{
 		public ToggleSwitchUnloadReload()

@@ -6,7 +6,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.WebView;
 
 namespace UITests.Shared.Windows_UI_Xaml
 {
-	[Sample("WebView", "WebView_Alert", typeof(WebViewViewModel))]
+	[Sample("WebView", Name = "WebView_Alert", typeof(WebViewViewModel))]
 	public sealed partial class WebView_Alert : Page
 	{
 #if HAS_UNO

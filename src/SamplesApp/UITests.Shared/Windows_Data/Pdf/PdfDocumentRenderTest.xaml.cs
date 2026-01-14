@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace UITests.Shared.Windows_Data_Pdf
 {
-	[Sample("Windows.Data.Pdf", "PdfDocument", Description = "Demonstrates use of Windows.Data.Pdf.PdfDocument", IgnoreInSnapshotTests = true)]
+	[Sample("Windows.Data.Pdf", Name = "PdfDocument", Description = "Demonstrates use of Windows.Data.Pdf.PdfDocument", IgnoreInSnapshotTests = true)]
 	public sealed partial class PdfDocumentRenderTest : UserControl
 	{
 		const int WrongPassword = unchecked((int)0x8007052b); // HRESULT_FROM_WIN32(ERROR_WRONG_PASSWORD)

@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[Sample("Brushes", "EllipsemaskingEllipseSuperpositionPanel")]
+	[Sample("Brushes", Name = "EllipsemaskingEllipseSuperpositionPanel")]
 	public sealed partial class EllipsemaskingEllipseSuperpositionPanel : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

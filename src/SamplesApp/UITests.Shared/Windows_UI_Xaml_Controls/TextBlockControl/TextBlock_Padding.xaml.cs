@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample("TextBlock", "TextBlock_Padding")]
+	[Sample("TextBlock", Name = "TextBlock_Padding")]
 	public sealed partial class TextBlock_Padding : UserControl
 	{
 		public TextBlock_Padding()

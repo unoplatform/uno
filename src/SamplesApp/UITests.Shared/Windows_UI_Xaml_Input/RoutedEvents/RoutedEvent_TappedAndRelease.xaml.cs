@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents
 {
-	[Sample("Routed Events", "TappedAndReleaseEvents")]
+	[Sample("Routed Events", Name = "TappedAndReleaseEvents")]
 	public sealed partial class RoutedEvent_TappedAndRelease : Page
 	{
 		public RoutedEvent_TappedAndRelease()

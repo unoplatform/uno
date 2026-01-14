@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TouchEventsTests
 {
-	[Sample("Pointers", "Touch", typeof(TouchViewModel), Description = "Description for sample of Touch")]
+	[Sample("Pointers", Name = "Touch", typeof(TouchViewModel), Description = "Description for sample of Touch")]
 	public sealed partial class Touch : UserControl
 	{
 		public Touch()

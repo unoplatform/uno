@@ -18,7 +18,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[Sample("Brushes", "ImageBrushWithLateSource")]
+	[Sample("Brushes", Name = "ImageBrushWithLateSource")]
 	public sealed partial class ImageBrushWithLateSource : UserControl
 	{
 		public ImageBrushWithLateSource()

@@ -35,7 +35,7 @@ using Uno.Extensions.Specialized;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	[Sample("MUX", "TreeView")]
+	[Sample("MUX", Name = "TreeView")]
 	public sealed partial class TreeViewPage : MUXTestPage
 	{
 		bool _disableClickToExpand;

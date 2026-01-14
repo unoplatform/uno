@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", Name = "MUX")]
 	public sealed partial class NavigationViewBlankPage1 : Page
 	{
 		public NavigationViewBlankPage1()

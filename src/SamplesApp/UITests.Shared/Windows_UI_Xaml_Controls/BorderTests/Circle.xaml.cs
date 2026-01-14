@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[Sample("Border", "Circle")]
+	[Sample("Border", Name = "Circle")]
 	public sealed partial class Circle : Page
 	{
 		public Circle()

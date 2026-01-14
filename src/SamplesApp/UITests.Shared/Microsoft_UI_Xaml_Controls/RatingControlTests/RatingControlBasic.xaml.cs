@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 {
-	[Sample("RatingControl", "MUX")]
+	[Sample("RatingControl", Name = "MUX")]
 	public sealed partial class RatingControlBasic : Page
 	{
 		public RatingControlBasic()

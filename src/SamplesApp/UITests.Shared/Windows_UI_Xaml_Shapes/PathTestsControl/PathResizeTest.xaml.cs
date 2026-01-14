@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample("Path", "PathResize")]
+	[Sample("Path", Name = "PathResize")]
 	public sealed partial class PathResizeTest : UserControl
 	{
 		public PathResizeTest()

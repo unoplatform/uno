@@ -20,7 +20,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp;
 
-[Sample("CommandBarFlyout", "WinUI")]
+[Sample("CommandBarFlyout", Name = "WinUI")]
 public sealed partial class CommandBarFlyoutPage : TestPage
 {
 	private Style animatedCommandBarFlyoutCommandBarStyle;

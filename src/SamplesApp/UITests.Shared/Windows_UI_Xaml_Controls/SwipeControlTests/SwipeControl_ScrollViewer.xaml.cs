@@ -14,7 +14,7 @@ using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEve
 
 namespace UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 {
-	[Sample("SwipeControl", "ScrollViewer")]
+	[Sample("SwipeControl", Name = "ScrollViewer")]
 	public sealed partial class SwipeControl_ScrollViewer : Page
 	{
 		public SwipeControl_ScrollViewer()

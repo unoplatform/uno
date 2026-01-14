@@ -22,7 +22,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests
 		}
 	}
 
-	[Sample("Expander", "MUX", Name = "WinUIExpanderPage")]
+	[Sample("Expander", Name = "MUX", Name = "WinUIExpanderPage")]
 	public sealed partial class WinUIExpanderPage : UserControl
 	{
 		public WinUIExpanderPage()

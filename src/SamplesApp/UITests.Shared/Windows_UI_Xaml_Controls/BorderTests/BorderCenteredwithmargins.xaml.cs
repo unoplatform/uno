@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[Sample("Border", "BorderCenteredwithmargins")]
+	[Sample("Border", Name = "BorderCenteredwithmargins")]
 	public sealed partial class BorderCenteredwithmargins : UserControl
 	{
 		public BorderCenteredwithmargins()

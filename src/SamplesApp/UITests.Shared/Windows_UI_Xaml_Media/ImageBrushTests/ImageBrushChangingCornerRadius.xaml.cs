@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[Sample("Brushes", "ImageBrushChangingCornerRadius")]
+	[Sample("Brushes", Name = "ImageBrushChangingCornerRadius")]
 	public sealed partial class ImageBrushChangingCornerRadius : UserControl
 	{
 		public ImageBrushChangingCornerRadius()

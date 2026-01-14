@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "HorizontalListViewTest", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "HorizontalListViewTest", typeof(ListViewViewModel))]
 	public sealed partial class HorizontalListViewTest : UserControl
 	{
 		public HorizontalListViewTest()

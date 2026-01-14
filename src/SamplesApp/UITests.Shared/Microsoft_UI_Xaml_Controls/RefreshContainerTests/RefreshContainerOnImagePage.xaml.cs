@@ -33,7 +33,7 @@ using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualiz
 
 namespace MUXControlsTestApp
 {
-	[Sample("MUX", "WinUI", "PullToRefresh")]
+	[Sample("MUX", Name = "WinUI", "PullToRefresh")]
 	public sealed partial class RefreshContainerOnImagePage : TestPage
 	{
 		public RefreshContainerOnImagePage()

@@ -5,7 +5,7 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[Sample("TextBox", "Input_Multiline_AutoHeight", typeof(TextBoxViewModel))]
+	[Sample("TextBox", Name = "Input_Multiline_AutoHeight", typeof(TextBoxViewModel))]
 	public sealed partial class Input_Multiline_AutoHeight : UserControl
 	{
 		public Input_Multiline_AutoHeight()

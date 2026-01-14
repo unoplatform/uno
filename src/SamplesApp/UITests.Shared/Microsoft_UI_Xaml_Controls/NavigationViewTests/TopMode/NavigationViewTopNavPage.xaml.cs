@@ -26,7 +26,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", Name = "MUX")]
 	public sealed partial class NavigationViewTopNavPage : TestPage
 	{
 		private int m_newItemIndex = 0;

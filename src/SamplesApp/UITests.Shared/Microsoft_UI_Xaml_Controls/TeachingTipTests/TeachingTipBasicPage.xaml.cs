@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests;
 
-[Sample("TeachingTip", "WinUI")]
+[Sample("TeachingTip", Name = "WinUI")]
 public sealed partial class TeachingTipBasicPage : Page
 {
 	public TeachingTipBasicPage()

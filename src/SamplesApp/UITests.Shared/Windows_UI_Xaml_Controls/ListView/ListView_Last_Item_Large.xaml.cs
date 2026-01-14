@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "ListView_Last_Item_Large")]
+	[Sample("ListView", Name = "ListView_Last_Item_Large")]
 	public sealed partial class ListView_Last_Item_Large : UserControl
 	{
 		public ListView_Last_Item_Large()

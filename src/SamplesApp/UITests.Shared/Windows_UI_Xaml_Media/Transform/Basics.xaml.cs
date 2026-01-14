@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 {
-	[Sample("Transform", "Basics")]
+	[Sample("Transform", Name = "Basics")]
 	public sealed partial class Basics : Page
 	{
 		public Basics()

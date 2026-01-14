@@ -12,7 +12,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
-	[Sample("Animations", "Transform", Name = "DoubleAnimation transforms final state", Description = _description)]
+	[Sample("Animations", Name = "Transform", Name = "DoubleAnimation transforms final state", Description = _description)]
 	public sealed partial class DoubleAnimation_FinalState_Transforms : Page
 	{
 		private const string _description = @"This (automated) test validates the final state of when animating transformation using a double animation.

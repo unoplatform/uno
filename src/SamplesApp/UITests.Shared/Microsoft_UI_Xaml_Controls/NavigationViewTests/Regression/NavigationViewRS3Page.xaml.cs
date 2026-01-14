@@ -34,7 +34,7 @@ namespace MUXControlsTestApp
 	/// <summary>
 	/// Verify ShouldPreserveNavigationViewRS3Behavior
 	/// </summary>
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", Name = "MUX")]
 	public sealed partial class NavigationViewRS3Page : TestPage
 	{
 		public NavigationViewRS3Page()

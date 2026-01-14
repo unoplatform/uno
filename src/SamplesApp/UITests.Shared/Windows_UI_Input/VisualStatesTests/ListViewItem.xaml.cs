@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.VisualStatesTests
 {
-	[Sample("Gesture Recognizer", "VisualStates ListViewItem")]
+	[Sample("Gesture Recognizer", Name = "VisualStates ListViewItem")]
 	public sealed partial class ListViewItem : Page
 	{
 		public ListViewItem()

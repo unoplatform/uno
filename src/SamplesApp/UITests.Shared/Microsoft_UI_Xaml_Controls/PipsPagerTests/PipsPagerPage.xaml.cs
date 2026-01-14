@@ -17,7 +17,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("PipsPager", "WinUI")]
+	[Sample("PipsPager", Name = "WinUI")]
 	public sealed partial class PipsPagerPage : Page
 	{
 		Button previousPageButton;

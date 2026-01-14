@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentPresenter
 {
-	[Sample("ContentPresenter", "ContentPresenter_ImplicitContent")]
+	[Sample("ContentPresenter", Name = "ContentPresenter_ImplicitContent")]
 	public sealed partial class ContentPresenter_ImplicitContent : Page
 	{
 		public ContentPresenter_ImplicitContent()

@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample("Path", "PathVerticalOffset")]
+	[Sample("Path", Name = "PathVerticalOffset")]
 	public sealed partial class PathVerticalOffset : UserControl
 	{
 		public PathVerticalOffset()

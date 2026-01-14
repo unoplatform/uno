@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[Sample("Border", "Border_Simple")]
+	[Sample("Border", Name = "Border_Simple")]
 	public sealed partial class Border_Simple : UserControl
 	{
 		public Border_Simple()
