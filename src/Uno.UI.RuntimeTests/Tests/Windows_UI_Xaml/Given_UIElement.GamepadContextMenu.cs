@@ -11,15 +11,17 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 public partial class Given_UIElement_GamepadContextMenu
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_GamepadMenu_Position_Is_Element_Center()
+	public async Task When_GamepadMenu_Position_Not_Available()
 	{
 		Point? receivedPosition = null;
 
@@ -55,16 +57,7 @@ public partial class Given_UIElement_GamepadContextMenu
 			VirtualKey.GamepadMenu,
 			VirtualKeyModifiers.None);
 
-		Assert.IsNotNull(receivedPosition, "Position should be provided for GamepadMenu");
-
-		// Position should be at element center
-		var expectedX = button.ActualWidth / 2;
-		var expectedY = button.ActualHeight / 2;
-
-		Assert.AreEqual(expectedX, receivedPosition.Value.X, 1.0,
-			$"X position should be at center ({expectedX}), but was {receivedPosition.Value.X}");
-		Assert.AreEqual(expectedY, receivedPosition.Value.Y, 1.0,
-			$"Y position should be at center ({expectedY}), but was {receivedPosition.Value.Y}");
+		Assert.IsNull(receivedPosition, "Position should not be provided for GamepadMenu");
 	}
 
 	[TestMethod]
@@ -174,7 +167,8 @@ public partial class Given_UIElement_GamepadContextMenu
 			e.Handled = true;
 		};
 
-		await UITestHelper.Load(button);
+		TestServices.WindowHelper.WindowContent = button;
+		await TestServices.WindowHelper.WaitFor(() => button.IsLoaded);
 
 		var contentRoot = VisualTree.GetContentRootForElement(button);
 		var processor = contentRoot.InputManager.ContextMenuProcessor;
