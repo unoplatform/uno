@@ -79,5 +79,5 @@ Data is automatically purged after the retention period.
 
 For privacy concerns or questions about telemetry:
 
-- **Email**: privacy@platform.uno
+- **Email**: info@platform.uno
 - **GitHub Issues**: [unoplatform/uno/issues](https://github.com/unoplatform/uno/issues)
