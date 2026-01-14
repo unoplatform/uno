@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
 {
-	[Sample("DragAndDrop", Name = "ListView")]
+	[Sample("DragAndDrop", "ListView")]
 	public sealed partial class DragDrop_ListView_Custom_States : UserControl
 	{
 		public DragDrop_ListView_Custom_States()

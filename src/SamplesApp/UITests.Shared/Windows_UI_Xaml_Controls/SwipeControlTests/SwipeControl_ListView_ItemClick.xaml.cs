@@ -8,7 +8,7 @@ using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEve
 
 namespace UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 {
-	[Sample("SwipeControl", Name = "ListView")]
+	[Sample("SwipeControl", "ListView")]
 	public sealed partial class SwipeControl_ListView_ItemClick : Page
 	{
 		public SwipeControl_ListView_ItemClick()

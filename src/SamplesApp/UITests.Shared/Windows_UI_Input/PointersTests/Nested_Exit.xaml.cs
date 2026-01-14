@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Input.PointersTests;
 
-[Sample("Pointers", Name = "Nested_Exit")]
+[Sample("Pointers", "Nested_Exit")]
 public sealed partial class Nested_Exit : Page
 {
 	private bool _case1_exitedBlue;

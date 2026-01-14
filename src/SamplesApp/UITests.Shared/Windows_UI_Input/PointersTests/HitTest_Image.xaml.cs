@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Input.PointersTests
 {
-	[Sample("Pointers", Name = "Image")]
+	[Sample("Pointers", "Image")]
 	public sealed partial class HitTest_Image : Page
 	{
 		public HitTest_Image()

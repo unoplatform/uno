@@ -12,7 +12,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ComboBox
 {
-	[Sample("ComboBox", Name = "Pointers",
+	[Sample("ComboBox", "Pointers",
 		IgnoreInSnapshotTests = true,
 		Description = "The PointerPressed and PointerReleased have to be flagged as handled by the ComboBox")]
 	public sealed partial class ComboBox_Pointers : Page
