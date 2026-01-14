@@ -12,7 +12,8 @@ namespace SamplesApp.Samples.UnitTests
 		Description = "Test bench to run UI tests that does not require interaction (a.k.a. runtime tests)",
 		UsesFrame = false,
 		IgnoreInSnapshotTests = true,
-		DisableKeyboardShortcuts = true)]
+		DisableKeyboardShortcuts = true,
+		HideFromBrowser = true)]
 	public sealed partial class UnitTestsPage : Page
 	{
 		public UnitTestsPage()
