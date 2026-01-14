@@ -294,6 +294,45 @@
         }
     }
     
+    .search-no-results-state {
+        padding: 32px 24px;
+        text-align: center;
+        color: $gray;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 220px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        background-color: rgba(21, 155, 255, 0.015);
+
+        &__icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        &__title {
+            font-size: 20px;
+            font-weight: 600;
+            color: $black;
+            margin-bottom: 8px;
+        }
+
+        &__description {
+            font-size: 14px;
+            color: $gray;
+            line-height: 1.6;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        &__query {
+            color: $blue;
+            font-weight: 600;
+        }
+    }
+    
     .search-history-header {
         display: flex;
         align-items: center;

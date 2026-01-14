@@ -476,6 +476,234 @@ document.addEventListener(
             if (searchInput && searchContainer) {
                 clearInterval(initializeSearchKeywords);
                 
+                const ZERO_WIDTH_SPACE = '\u200B';
+                const MIN_TOKEN_LENGTH = 3;
+                const MAX_RESULTS_TO_CHECK = 20;
+                let hasActiveQuery = false;
+                let pendingNoResultsUpdate = null;
+                let drawerMutationObserver = null;
+
+                function removeElements(selector, root = document) {
+                    const scope = root || document;
+                    if (!scope) {
+                        return;
+                    }
+                    scope.querySelectorAll(selector).forEach(element => element.remove());
+                }
+
+                function sanitizeQuery(value) {
+                    return (value || '').replace(/\u200B/g, '').trim();
+                }
+
+                function tokenizeQuery(value) {
+                    return sanitizeQuery(value)
+                        .toLowerCase()
+                        .split(/\s+/)
+                        .map(token => token.trim())
+                        .filter(token => token.length >= MIN_TOKEN_LENGTH);
+                }
+
+                function marksContainTokens(tokens, marks) {
+                    if (!tokens.length) {
+                        return true;
+                    }
+
+                    if (!marks || marks.length === 0) {
+                        return false;
+                    }
+
+                    for (const mark of marks) {
+                        const content = (mark.textContent || mark.innerText || '').trim().toLowerCase();
+                        if (!content) {
+                            continue;
+                        }
+
+                        for (const token of tokens) {
+                            if (content.includes(token)) {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                function getResultsArea() {
+                    const drawer = document.querySelector('.pagefind-ui__drawer');
+                    if (!drawer) {
+                        return null;
+                    }
+
+                    return drawer.querySelector('.pagefind-ui__results-area');
+                }
+
+                function hideNoResultsState() {
+                    const resultsArea = getResultsArea();
+                    if (!resultsArea) {
+                        return;
+                    }
+
+                    const resultsList = resultsArea.querySelector('.pagefind-ui__results');
+                    if (resultsList) {
+                        resultsList.style.removeProperty('display');
+                        resultsList.removeAttribute('aria-hidden');
+                    }
+
+                    const message = resultsArea.querySelector('.pagefind-ui__message');
+                    if (message) {
+                        message.style.removeProperty('display');
+                    }
+
+                    const loadMoreButton = resultsArea.querySelector('.pagefind-ui__button');
+                    if (loadMoreButton) {
+                        loadMoreButton.style.removeProperty('display');
+                    }
+
+                    removeElements('.search-no-results-state', resultsArea);
+                }
+
+                function showNoResultsState(query) {
+                    const resultsArea = getResultsArea();
+                    if (!resultsArea) {
+                        return;
+                    }
+
+                    removeElements('.search-empty-state', resultsArea);
+
+                    let emptyState = resultsArea.querySelector('.search-no-results-state');
+                    if (!emptyState) {
+                        emptyState = document.createElement('div');
+                        emptyState.className = 'search-no-results-state';
+
+                        const icon = document.createElement('div');
+                        icon.className = 'search-no-results-state__icon';
+                        icon.textContent = '🔍';
+                        emptyState.appendChild(icon);
+
+                        const title = document.createElement('div');
+                        title.className = 'search-no-results-state__title';
+                        title.textContent = 'No results found';
+                        emptyState.appendChild(title);
+
+                        const description = document.createElement('div');
+                        description.className = 'search-no-results-state__description';
+
+                        const intro = document.createElement('span');
+                        intro.textContent = "We couldn't find any matches for ";
+                        description.appendChild(intro);
+
+                        const querySpan = document.createElement('span');
+                        querySpan.className = 'search-no-results-state__query';
+                        description.appendChild(querySpan);
+
+                        const outro = document.createElement('span');
+                        outro.textContent = '. Try different keywords or check your spelling.';
+                        description.appendChild(outro);
+
+                        emptyState.appendChild(description);
+                        resultsArea.appendChild(emptyState);
+                    }
+
+                    const queryTarget = emptyState.querySelector('.search-no-results-state__query');
+                    if (queryTarget) {
+                        queryTarget.textContent = `"${query}"`;
+                    }
+
+                    const resultsList = resultsArea.querySelector('.pagefind-ui__results');
+                    if (resultsList) {
+                        resultsList.style.display = 'none';
+                        resultsList.setAttribute('aria-hidden', 'true');
+                    }
+
+                    const message = resultsArea.querySelector('.pagefind-ui__message');
+                    if (message) {
+                        message.style.display = 'none';
+                    }
+
+                    const loadMoreButton = resultsArea.querySelector('.pagefind-ui__button');
+                    if (loadMoreButton) {
+                        loadMoreButton.style.display = 'none';
+                    }
+                }
+
+                function updateNoResultsState() {
+                    const normalizedQuery = sanitizeQuery(searchInput.value);
+                    if (!hasActiveQuery || !normalizedQuery) {
+                        hideNoResultsState();
+                        return;
+                    }
+
+                    const resultsArea = getResultsArea();
+                    if (!resultsArea) {
+                        return;
+                    }
+
+                    if (resultsArea.querySelector('.pagefind-ui__loading')) {
+                        hideNoResultsState();
+                        return;
+                    }
+
+                    const resultsList = resultsArea.querySelector('.pagefind-ui__results');
+                    const resultItems = resultsList ? Array.from(resultsList.querySelectorAll('.pagefind-ui__result')) : [];
+                    const visibleResults = resultItems.filter(item => !item.classList.contains('pagefind-ui__loading'));
+                    const tokens = tokenizeQuery(normalizedQuery);
+                    let hasMatchingHighlight = tokens.length === 0;
+
+                    for (let i = 0; i < visibleResults.length && i < MAX_RESULTS_TO_CHECK; i++) {
+                        const marks = visibleResults[i].querySelectorAll('mark');
+                        if (marksContainTokens(tokens, marks)) {
+                            hasMatchingHighlight = true;
+                            break;
+                        }
+                    }
+
+                    if (visibleResults.length === 0 || !hasMatchingHighlight) {
+                        showNoResultsState(normalizedQuery);
+                    } else {
+                        hideNoResultsState();
+                    }
+                }
+
+                function scheduleNoResultsEvaluation() {
+                    startDrawerObserver();
+                    if (pendingNoResultsUpdate) {
+                        cancelAnimationFrame(pendingNoResultsUpdate);
+                    }
+                    pendingNoResultsUpdate = requestAnimationFrame(() => {
+                        pendingNoResultsUpdate = null;
+                        updateNoResultsState();
+                    });
+                }
+
+                function startDrawerObserver() {
+                    if (drawerMutationObserver) {
+                        return;
+                    }
+                    const drawer = document.querySelector('.pagefind-ui__drawer');
+                    if (!drawer) {
+                        return;
+                    }
+                    drawerMutationObserver = new MutationObserver(() => {
+                        scheduleNoResultsEvaluation();
+                    });
+                    drawerMutationObserver.observe(drawer, {
+                        childList: true,
+                        subtree: true,
+                        characterData: true
+                    });
+                }
+
+                const drawerObserverPoll = setInterval(() => {
+                    if (drawerMutationObserver) {
+                        clearInterval(drawerObserverPoll);
+                        return;
+                    }
+                    startDrawerObserver();
+                    if (drawerMutationObserver) {
+                        clearInterval(drawerObserverPoll);
+                    }
+                }, 250);
+                
                 // Get search history
                 function getSearchHistory() {
                     const history = localStorage.getItem(SEARCH_HISTORY_KEY);
@@ -484,11 +712,15 @@ document.addEventListener(
                 
                 // Save search to history
                 function saveSearchToHistory(query) {
+                    const normalizedQuery = sanitizeQuery(query);
+                    if (!normalizedQuery) {
+                        return;
+                    }
                     let history = getSearchHistory();
                     // Remove if already exists
-                    history = history.filter(item => item !== query);
+                    history = history.filter(item => item !== normalizedQuery);
                     // Add to beginning
-                    history.unshift(query);
+                    history.unshift(normalizedQuery);
                     // Keep only last MAX_SEARCH_HISTORY items
                     history = history.slice(0, MAX_SEARCH_HISTORY);
                     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
@@ -508,22 +740,21 @@ document.addEventListener(
                     const history = getSearchHistory();
                     
                     // Remove existing pills container
-                    const existingPills = document.querySelector('.search-history-pills');
-                    if (existingPills) {
-                        existingPills.remove();
-                    }
+                    removeElements('.search-history-pills');
                     
                     // Remove any existing empty state from results area
-                    const existingEmptyState = document.querySelector('.search-empty-state');
-                    if (existingEmptyState) {
-                        existingEmptyState.remove();
-                    }
+                    removeElements('.search-empty-state');
                     
                     // Only show if input is empty
-                    const hasQuery = searchInput.value.trim().length > 0;
+                    const hasQuery = sanitizeQuery(searchInput.value).length > 0;
                     if (hasQuery) {
                         return;
                     }
+                    
+                    hasActiveQuery = false;
+                    hideNoResultsState();
+                    
+                    startDrawerObserver();
                     
                     // Wait for drawer to exist
                     const drawer = document.querySelector('.pagefind-ui__drawer');
@@ -617,12 +848,14 @@ document.addEventListener(
                 // Show pills or empty state on focus
                 searchInput.addEventListener('focus', function() {
                     // If input is empty, show drawer with pills or empty state
-                    if (!searchInput.value.trim()) {
+                    if (!sanitizeQuery(searchInput.value)) {
+                        hasActiveQuery = false;
+                        hideNoResultsState();
                         // Trigger empty search to open drawer without visible text
                         const originalValue = searchInput.value;
                         
                         // Use a zero-width space to trigger drawer without showing results
-                        searchInput.value = '\u200B'; // Zero-width space
+                        searchInput.value = ZERO_WIDTH_SPACE;
                         searchInput.dispatchEvent(new Event('input', { bubbles: true }));
                         
                         // Wait a moment for drawer to potentially appear
@@ -635,7 +868,9 @@ document.addEventListener(
                                 const drawer = document.querySelector('.pagefind-ui__drawer');
                                 if (drawer) {
                                     clearInterval(checkDrawer);
+                                    startDrawerObserver();
                                     updatePillsContainer();
+                                    scheduleNoResultsEvaluation();
                                 }
                             }, 50);
                             
@@ -647,27 +882,27 @@ document.addEventListener(
                 
                 // Hide pills and empty state when typing
                 searchInput.addEventListener('input', function() {
-                    const query = searchInput.value.trim();
-                    const pillsContainer = document.querySelector('.search-history-pills');
-                    const emptyState = document.querySelector('.search-empty-state');
+                    const normalizedQuery = sanitizeQuery(searchInput.value);
                     
-                    if (query) {
+                    hasActiveQuery = normalizedQuery.length > 0;
+                    
+                    if (hasActiveQuery) {
                         // Hide pills and empty state when there's a query
-                        if (pillsContainer) {
-                            pillsContainer.remove();
-                        }
-                        if (emptyState) {
-                            emptyState.remove();
-                        }
+                        removeElements('.search-history-pills');
+                        removeElements('.search-empty-state');
+                        hideNoResultsState();
                     } else {
                         // Show appropriate state when query is cleared
+                        hideNoResultsState();
                         updatePillsContainer();
                     }
+
+                    scheduleNoResultsEvaluation();
                 });
                 
                 // Save search on blur if there's a value
                 searchInput.addEventListener('blur', function() {
-                    const query = searchInput.value.trim();
+                    const query = sanitizeQuery(searchInput.value);
                     if (query) {
                         saveSearchToHistory(query);
                     }
