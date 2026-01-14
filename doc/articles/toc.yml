@@ -587,6 +587,8 @@
           href: features/working-with-animations.md
         - name: Assets and image display
           href: features/working-with-assets.md
+        - name: Telemetry (Overview)
+          href: uno-platform-telemetry.md
         - name: Build telemetry
           href: uno-toolchain-telemetry.md
         - name: Composition API
