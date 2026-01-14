@@ -204,6 +204,40 @@ cd src/Uno.UI.RuntimeTests
 # Use the Given_When_Then naming convention
 ```
 
+**Running runtime tests from command line (Skia Desktop)**:
+
+Runtime tests can be executed headlessly without the interactive UI. This is how CI runs tests and is useful for validating new tests locally.
+
+```bash
+# Build SamplesApp.Skia.Generic
+dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
+
+# Run all runtime tests
+cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+```
+
+**Running specific tests with a filter**:
+
+The `UITEST_RUNTIME_TESTS_FILTER` environment variable accepts a base64-encoded, pipe-separated list of fully qualified test names.
+
+Windows PowerShell:
+```powershell
+$filter = "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario"
+$env:UITEST_RUNTIME_TESTS_FILTER = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filter))
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+```
+
+Linux/macOS:
+```bash
+export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario" | base64)
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+```
+
+Test results are output in NUnit XML format at the path specified by `--runtime-tests`.
+
+**Agent workflow**: When adding new runtime tests for desktop (Skia), always build and run them using the commands above to verify they pass before committing. Skip this only for tests targeting non-desktop platforms (iOS/Android-specific features).
+
 ## Common Tasks
 
 ### Repository Structure
@@ -250,9 +284,12 @@ Uno.UI.sln                       - Full solution (heavy, avoid)
 ### Common Build Issues
 
 **"Assets file doesn't have a target"**: Delete `obj/` and `bin/` folders, then restore
-**"Windows XAML targets not found"**: Expected on Linux/macOS, use WebAssembly or Skia targets instead  
+**"Windows XAML targets not found"**: Expected on Linux/macOS, use WebAssembly or Skia targets instead
 **"Package restore timeout"**: Network issue, retry with longer timeout
 **"Solution filter fails"**: Ensure `crosstargeting_override.props` target matches the solution filter
+**Persistent build issues**: Close VS 2022, delete `src/.vs` folder, then rebuild
+**Last resort cleanup**: Run `git clean -fdx` (after closing VS) to remove all untracked files
+**Windows long paths error**: Enable long paths: `reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1`
 
 ### Development Workflow Commands
 
