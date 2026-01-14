@@ -77,7 +77,7 @@ AI Features use Application Insights with custom telemetry initializers to track
 
 ### [Dev Server](Telemetry-DevServer.md)
 
-**Event Name Prefix:** `uno/devserver`
+**Event Name Prefix:** `uno/dev-server`
 
 Dev Server telemetry tracks server sessions (Root and Connection types) and client connections, including comprehensive app launch tracking with platform, IDE, and plugin information.
 
