@@ -91,7 +91,7 @@ Hot Reload processor events track the state transitions and operations of the Ho
 | `notify-failed` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload operation failed |
 | `notify-rude-edit` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Rude edit detected (requires restart). Code is OK and could compile, but (Rosalyn) .NET compiler cannot create a diff to update the code and compile.|
 | `notify-complete` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload state transition complete |
-| `notify-error` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool), `ErrorMessage` (string), `ErrorType` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload error occurred; usually when the parent dev-server encoutered a catastrophic error |
+| `notify-error` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool), `ErrorMessage` (string), `ErrorType` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload error occurred; usually when the parent dev-server encountered a catastrophic error |
 
 **Property Notes:**
 - All properties are prefixed with `hotreload/` in the actual telemetry
