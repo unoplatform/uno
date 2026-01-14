@@ -11,7 +11,7 @@ using Uno.Extensions;
 namespace UITests.Shared.Wasm
 {
 #if __WASM__
-	[Sample("Wasm", nameof(Wasm_CustomEvent))]
+	[Sample("Wasm")]
 #endif
 	public sealed partial class Wasm_CustomEvent : Page
 	{

@@ -29,7 +29,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Email
 	/// </summary>
 	[Sample(
 		"Windows.ApplicationModel",
-		"EmailManager",
+		Name = "EmailManager",
 		Description = "Test the EmailManager.ShowComposeNewEmailAsync API.",
 		ViewModelType = typeof(EmailManagerViewModel))]
 	public sealed partial class EmailManagerTests : Page
