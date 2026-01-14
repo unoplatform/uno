@@ -39,13 +39,13 @@ For more detailed information, see the [VS Code Extension Telemetry Documentatio
 
 | Event Name | Properties | Measurements | Description |
 |------------|-----------|--------------|-------------|
-| `extension-loaded` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Extension loaded successfully |
-| `extension-unloaded` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Extension unloaded |
-| `extension-failure` | `Exception` (string), `Message` (string) | - | Extension failure occurred |
-| `project-created` | `ProjectName` (string) | - | New Uno project created |
-| `solution-build` | - | - | Solution built |
-| `debugger-launched` | - | - | Debugger launched successfully |
-| `no-debugger-launch` | - | - | Debugger launch skipped |
+| `extension-loaded` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Extension loaded successfully. Extension gets loaded when any project\solution is opened in IDE.  You can also see when it's triggered by "Telemetry event: extension-loaded" row in Uno Platform log |
+| `extension-unloaded` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Extension unloaded. Triggered when you're re-creating solution's, closing Rider, closing solution |
+| `extension-failure` | `Exception` (string), `Message` (string) | - | Extension failure occurred. Triggered on exception\critical failure in any part of code. "Telemetry event: extension-failure." is written to the Uno Platform log when it occurs |
+| `project-created` | `ProjectName` (string) | - | New Uno project created. Triggered when you create a solution with our Rider templates. "Telemetry event: project-created." is written to the Uno Platform log |
+| `solution-build` | - | - | Solution built. Triggered every time solution is being built. "Telemetry event: solution-build" ." is written to the Uno Platform log |
+| `debugger-launched` | - | - | Debugger launched successfully. Triggered when you launch the app with the debugger. "Telemetry event: debugger-launched" is written to the Uno Platform log |
+| `no-debugger-launch` | - | - | Debugger launch skipped. Triggered when you launch the app without the debugger. "Telemetry event: no-debugger-launch" is written to the Uno Platform log |
 | `udei-opened` | - | - | Uno Design Experience Interface opened |
 | `udei-action-clicked` | `ActionName` (string) | - | Action clicked in UDEI |
 | `dev-server-restart` | - | - | Dev Server restarted |
