@@ -317,6 +317,7 @@
                         IsTabStop="True"
                         Spacing="4">
                         <AutoSuggestBox
+                            x:Name="SearchBox"
                             HorizontalAlignment="Stretch"
                             ItemsSource="{Binding FilteredSamples}"
                             PlaceholderText="Search..."
