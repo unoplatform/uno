@@ -29,6 +29,9 @@
 		<Compile Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml.cs">
 			<DependentUpon>UnitTestsPage.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)Samples\Help\HelpPage.xaml.cs">
+			<DependentUpon>HelpPage.xaml</DependentUpon>
+		</Compile>
 		<Compile Include="$(MSBuildThisFileDirectory)StringToStyleDictionary.cs" />
 	</ItemGroup>
 	<ItemGroup>
@@ -41,6 +44,10 @@
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="$(MSBuildThisFileDirectory)Samples\Help\HelpPage.xaml">
 			<SubType>Designer</SubType>
 			<Generator>MSBuild:Compile</Generator>
 		</Page>

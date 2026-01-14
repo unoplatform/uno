@@ -461,6 +461,20 @@ namespace SampleControl.Presentation
 			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 		}
 
+		internal async Task OpenHelp(CancellationToken ct)
+		{
+			IsSplitVisible = false;
+
+			var helpPage = GetContent(typeof(SamplesApp.Samples.Help.HelpPage).GetTypeInfo());
+
+			if (helpPage == null)
+			{
+				throw new InvalidOperationException($"Unable to find HelpPage");
+			}
+
+			await UpdateContent(ct, helpPage);
+		}
+
 		internal async Task OpenSample(CancellationToken ct, SampleChooserContent content)
 		{
 			await SetSelectedSample(ct, content.ControlType.FullName);
@@ -792,7 +806,9 @@ namespace SampleControl.Presentation
 			var categories =
 				from type in _allSamples
 				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
-				where sampleAttribute != null && (!manualTestsOnly || sampleAttribute.IsManualTest)
+				where sampleAttribute != null
+					&& (!manualTestsOnly || sampleAttribute.IsManualTest)
+					&& !sampleAttribute.HideFromBrowser
 				let content = GetContent(type.GetTypeInfo(), sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
@@ -818,7 +834,8 @@ namespace SampleControl.Presentation
 				IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
 				IsManualTest = attribute.IsManualTest,
 				UsesFrame = attribute.UsesFrame,
-				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts
+				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts,
+				HideFromBrowser = attribute.HideFromBrowser
 			};
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)

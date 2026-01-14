@@ -26,6 +26,7 @@ namespace SampleControl.Entities
 		public bool IsManualTest { get; set; }
 		public bool UsesFrame { get; set; }
 		public bool DisableKeyboardShortcuts { get; set; }
+		public bool HideFromBrowser { get; set; }
 
 		bool _isFavorite;
 		public bool IsFavorite
