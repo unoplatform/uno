@@ -4,9 +4,15 @@
 
 Licensing telemetry tracks license management operations, user navigation, and API interactions.
 
-## License Manager Events (Client)
+## License Manager Events (Client/Studio App)
 
-Client-side license manager events:
+### Licensing Event
+
+| Event Name | Properties | Measurements | Description |
+|------------|-----------|--------------|-------------|
+| `license-status` | `LicenseName` (string), `LicenseStatus` (string), `TrialDaysRemaining` (int), `LicenseExpiryDate` (date) | - | License status checked |
+
+### Authentication Events
 
 | Event Name | Properties | Measurements | Description |
 |------------|-----------|--------------|-------------|
@@ -18,13 +24,8 @@ Client-side license manager events:
 | `login-failure` | `error` (string), `errorDescription` (string) | - | Login failed |
 | `login-canceled` | - | - | User canceled login |
 | `login-timeout` | `error` (string), `errorDescription` (string) | - | Login timed out |
-| `license-status` | `LicenseName` (string), `LicenseStatus` (string), `TrialDaysRemaining` (int), `LicenseExpiryDate` (date) | - | License status checked |
-| `manager-started` | `Feature` (string) | - | License manager started for a feature |
-| `manager-failed` | `errorType` (string), `errorStackTrace` (string) | - | License manager failed |
 
-## Navigation Events
-
-User navigation events:
+### Navigation Events
 
 | Event Name | Description |
 |------------|-------------|
@@ -42,36 +43,42 @@ User navigation events:
 | `nav-to-purchase-now` | User navigated to Purchase |
 | `nav-to-trial-extension` | User navigated to Trial Extension |
 
-## License API Events (Server)
+## LicenseSpring API Events (Server)
 
-Server-side licensing API events:
+**Event Name Prefix:** `uno/licensing/api`
 
 | Event Name | Properties | Measurements | Description |
 |------------|-----------|--------------|-------------|
-| `get-user` | - | - | User info requested |
 | `get-user-success` | - | `DurationMs` | User info retrieved successfully |
 | `get-user-failure` | `Error` (string) | `DurationMs` | User info retrieval failed |
-| `get-licenses` | - | - | Licenses requested |
+| `get-licenses-requested` | - | - | Licenses requested |
 | `get-licenses-success` | - | `DurationMs` | Licenses retrieved successfully |
 | `get-licenses-failure` | `Error` (string) | `DurationMs` | License retrieval failed |
-| `get-offers` | - | - | Offers requested |
+| `get-offers-requested` | - | - | Offers retrieved successfully | Offers requested (trial days left, purchase link, etc.) for the current user.) 
 | `get-offers-success` | `Details` (string) | `DurationMs` | Offers retrieved successfully |
 | `get-offers-failure` | `Error` (string) | `DurationMs` | Offer retrieval failed |
-| `get-features` | - | - | Features requested |
+| `get-features-requested` | - | - | Features requested |
 | `get-features-success` | - | `DurationMs` | Features retrieved successfully |
 | `get-features-failure` | - | `DurationMs` | Feature retrieval failed |
-| `invalid-api-key` | - | - | API key validation failed |
+| `invalid-api-key` | - | - | LicenseSpring API key validation failed |
 | `invalid-token` | - | - | Token validation failed |
-| `no-license-id` | - | - | No license ID provided |
-| `id-not-found` | - | - | License ID not found |
-| `license-feature-not-granted` | `Feature` (string) | - | Feature not granted by license |
-| `license-feature-info-returned` | `Feature` (string) | - | Feature info returned |
+| `no-license-id` | - | - | No LicenseSpring ID for the ysuer |
+| `id-not-found` | - | - | Customer ID not found for the user in LicenseSpring |
 
 ## DevServer Licensing Events
 
+**Event Name Prefix:** `uno/licensing/devserver`
+
 | Event Name | Properties | Measurements | Description |
 |------------|-----------|--------------|-------------|
-| `license-manager-start` | `Feature` (string) | - | License manager started in DevServer |
+| `license-manager-start` | `Feature` (string) | - | License manager started in DevServer (i.e., attempting to start the **Studio app**) |
+| `license-feature-not-granted` | `Feature` (string) | - | Feature not granted by license. Either the user does not have a valid license to access a feature (e.g., Hot Design) |
+| `license-feature-info-returned` | `Feature` (string) | - | Feature info returned |
+| `manager-started` | `Feature` (string) | - | License manager started for a feature (i.e., **Studio app** started) |
+| `manager-failed` | `errorType` (string), `errorStackTrace` (string) | - | License manager failed |
+| `service-started` | - | - | Service (i.e., addin) started |
+| `service-stopped` | - | - | Service (i.e., addin) stopped|
+| `service-failed` | `errorType` (string), `errorStackTrace` (string) | - | Service (i.e., addin) failed |
 
 ## Property Value Examples
 
