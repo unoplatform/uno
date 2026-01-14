@@ -12,7 +12,6 @@ using System.Threading;
 using SampleControl.Entities;
 using Windows.System;
 
-
 #if WINAPPSDK
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Controls;
@@ -35,69 +34,89 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
-			KeyDown += OnKeyDown;
 		}
 
 		private SampleChooserViewModel ViewModel => (SampleChooserViewModel)DataContext;
 
-		private void OnKeyDown(object sender, KeyRoutedEventArgs e)
+		private void FocusSearchAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
 		{
 			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
 			{
 				return;
 			}
 
-			var ctrl = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
-			var shift = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
-			var alt = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
-
-			switch (e.Key)
+			// Ensure the pane is open before focusing the search box
+			if (!SplitView.IsPaneOpen)
 			{
-				case VirtualKey.F when ctrl && !shift && !alt:
-					// Ctrl+F: Focus search box
-					SearchBox.Focus(FocusState.Keyboard);
-					e.Handled = true;
-					break;
-
-				case VirtualKey.F5 when !ctrl && !shift && !alt:
-					// F5: Reload current sample
-					if (ViewModel.ReloadCurrentTestCommand.CanExecute(null))
-					{
-						ViewModel.ReloadCurrentTestCommand.Execute(null);
-					}
-					e.Handled = true;
-					break;
-
-				case VirtualKey.Left when alt && !ctrl && !shift:
-					// Alt+Left: Previous sample
-					if (ViewModel.LoadPreviousTestCommand.CanExecute(null))
-					{
-						ViewModel.LoadPreviousTestCommand.Execute(null);
-					}
-					e.Handled = true;
-					break;
-
-				case VirtualKey.Right when alt && !ctrl && !shift:
-					// Alt+Right: Next sample
-					if (ViewModel.LoadNextTestCommand.CanExecute(null))
-					{
-						ViewModel.LoadNextTestCommand.Execute(null);
-					}
-					e.Handled = true;
-					break;
-
-				case VirtualKey.F when ctrl && shift && !alt:
-					// Ctrl+Shift+F: Toggle favorites view
-					ViewModel.ShowNewSectionCommand.Execute("Favorites");
-					e.Handled = true;
-					break;
-
-				case VirtualKey.H when ctrl && !shift && !alt:
-					// Ctrl+H: Toggle history/recents view
-					ViewModel.ShowNewSectionCommand.Execute("Recents");
-					e.Handled = true;
-					break;
+				SplitView.IsPaneOpen = true;
 			}
+
+			SearchBox.Focus(FocusState.Keyboard);
+			args.Handled = true;
+		}
+
+		private void ReloadSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.ReloadCurrentTestCommand.CanExecute(null))
+			{
+				ViewModel.ReloadCurrentTestCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void PreviousSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.LoadPreviousTestCommand.CanExecute(null))
+			{
+				ViewModel.LoadPreviousTestCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void NextSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.LoadNextTestCommand.CanExecute(null))
+			{
+				ViewModel.LoadNextTestCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void FavoritesViewAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			ViewModel.ShowNewSectionCommand.Execute("Favorites");
+			args.Handled = true;
+		}
+
+		private void HistoryViewAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			ViewModel.ShowNewSectionCommand.Execute("Recents");
+			args.Handled = true;
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
