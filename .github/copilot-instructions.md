@@ -121,9 +121,11 @@ dotnet clean && rm -rf */bin */obj **/bin **/obj
 When adding XAML samples to the SamplesApp, follow these steps:
 
 **CRITICAL: Register XAML files in UITests.Shared.projitems**
+
 - **ALWAYS add your XAML file to `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`**
 - Without this registration, your sample will NOT be visible in SamplesApp
 - Add both the XAML page and code-behind file:
+
   ```xml
   <Page Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml">
     <SubType>Designer</SubType>
@@ -135,6 +137,7 @@ When adding XAML samples to the SamplesApp, follow these steps:
   ```
 
 **Sample Creation Steps:**
+
 1. Create your sample XAML and code-behind in the appropriate folder under `UITests.Shared`
 2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class
 3. **Register the files in `UITests.Shared.projitems`** (see above - this is required!)
