@@ -73,5 +73,11 @@ namespace Uno.UI.Samples.Controls
 		/// </summary>
 		/// <remarks>Defaults to true.</remarks>
 		public bool UsesFrame { get; set; } = true;
+
+		/// <summary>
+		/// Set to true to disable global keyboard shortcuts (Ctrl+F, F5, etc.) when this sample is displayed.
+		/// Use this for samples that need to handle keyboard input themselves, such as the runtime tests runner.
+		/// </summary>
+		public bool DisableKeyboardShortcuts { get; set; }
 	}
 }

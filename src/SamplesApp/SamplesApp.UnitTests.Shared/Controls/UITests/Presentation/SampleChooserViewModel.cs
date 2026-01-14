@@ -817,7 +817,8 @@ namespace SampleControl.Presentation
 				ControlType = type.AsType(),
 				IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
 				IsManualTest = attribute.IsManualTest,
-				UsesFrame = attribute.UsesFrame
+				UsesFrame = attribute.UsesFrame,
+				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts
 			};
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
