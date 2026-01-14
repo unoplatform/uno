@@ -1,3 +1,4 @@
+#if __SKIA__
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,19 +22,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
 
 /// <summary>
 /// Input injection tests for ContextRequested and ContextCanceled events.
-/// These tests use touch input (press-and-hold) to trigger context menu.
+/// These tests use mouse right-click to trigger context menu.
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
-[Ignore("Touch input for holding is not working correctly with injection #22353")]
 public partial class Given_ContextRequested_Injection
 {
-	// Hold duration needed to trigger context menu (slightly more than GestureRecognizer.HoldMinDelayMicroseconds)
-	private const int HoldDurationMs = 850;
-
-#if HAS_INPUT_INJECTOR
 	[TestMethod]
-	public async Task When_TouchHold_Raises_ContextRequested()
+	public async Task When_RightClick_Raises_ContextRequested()
 	{
 		var target = new Border
 		{
@@ -58,23 +54,22 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(target);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var bounds = target.GetAbsoluteBounds();
 		var center = bounds.GetCenter();
 
-		// Press and hold to trigger context menu
-		finger.Press(center);
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click to trigger context menu
+		mouse.PressRight(center);
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.IsTrue(contextRequestedRaised, "ContextRequested should be raised on touch hold");
-		Assert.IsNotNull(receivedPosition, "Position should be available for touch invocation");
+		Assert.IsTrue(contextRequestedRaised, "ContextRequested should be raised on right-click");
+		Assert.IsNotNull(receivedPosition, "Position should be available for mouse invocation");
 	}
 
 	[TestMethod]
-	public async Task When_TouchHold_Position_Is_Correct()
+	public async Task When_RightClick_Position_Is_Correct()
 	{
 		var target = new Border
 		{
@@ -95,15 +90,14 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(target);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var bounds = target.GetAbsoluteBounds();
 		var center = bounds.GetCenter();
 
-		// Press and hold to trigger context menu
-		finger.Press(center);
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click to trigger context menu
+		mouse.PressRight(center);
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsNotNull(receivedPosition);
@@ -115,7 +109,7 @@ public partial class Given_ContextRequested_Injection
 	}
 
 	[TestMethod]
-	public async Task When_TouchHold_ContextFlyout_Shows()
+	public async Task When_RightClick_ContextFlyout_Shows()
 	{
 		var flyoutOpened = false;
 		var flyout = new MenuFlyout();
@@ -133,24 +127,23 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(target);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var bounds = target.GetAbsoluteBounds();
 
-		// Press and hold to trigger context menu
-		finger.Press(bounds.GetCenter());
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click to trigger context menu
+		mouse.PressRight(bounds.GetCenter());
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 		await Task.Delay(100); // Allow flyout to open
 
-		Assert.IsTrue(flyoutOpened, "ContextFlyout should open on touch hold");
+		Assert.IsTrue(flyoutOpened, "ContextFlyout should open on right-click");
 
 		flyout.Hide();
 	}
 
 	[TestMethod]
-	public async Task When_TouchHold_Child_Without_ContextFlyout_Parent_Flyout_Shows()
+	public async Task When_RightClick_Child_Without_ContextFlyout_Parent_Flyout_Shows()
 	{
 		var parentFlyoutOpened = false;
 		var parentFlyout = new MenuFlyout();
@@ -177,14 +170,13 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(parentBorder);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var childBounds = childButton.GetAbsoluteBounds();
 
-		// Press and hold on child to trigger context menu
-		finger.Press(childBounds.GetCenter());
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click on child to trigger context menu
+		mouse.PressRight(childBounds.GetCenter());
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 		await Task.Delay(100);
 
@@ -194,7 +186,7 @@ public partial class Given_ContextRequested_Injection
 	}
 
 	[TestMethod]
-	public async Task When_TouchHold_Child_With_ContextFlyout_Child_Flyout_Shows()
+	public async Task When_RightClick_Child_With_ContextFlyout_Child_Flyout_Shows()
 	{
 		var parentFlyoutOpened = false;
 		var childFlyoutOpened = false;
@@ -227,14 +219,13 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(parentBorder);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var childBounds = childButton.GetAbsoluteBounds();
 
-		// Press and hold on child to trigger context menu
-		finger.Press(childBounds.GetCenter());
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click on child to trigger context menu
+		mouse.PressRight(childBounds.GetCenter());
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 		await Task.Delay(100);
 
@@ -245,7 +236,7 @@ public partial class Given_ContextRequested_Injection
 	}
 
 	[TestMethod]
-	public async Task When_TouchHold_Event_Bubbles_To_Parent()
+	public async Task When_RightClick_Event_Bubbles_To_Parent()
 	{
 		bool childHandlerCalled = false;
 		bool parentHandlerCalled = false;
@@ -280,14 +271,13 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(parentBorder);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var childBounds = childButton.GetAbsoluteBounds();
 
-		// Press and hold on child to trigger context menu
-		finger.Press(childBounds.GetCenter());
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click on child to trigger context menu
+		mouse.PressRight(childBounds.GetCenter());
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsTrue(childHandlerCalled, "Child handler should be called");
@@ -295,7 +285,7 @@ public partial class Given_ContextRequested_Injection
 	}
 
 	[TestMethod]
-	public async Task When_TouchHold_Event_Does_Not_Bubble_When_Handled()
+	public async Task When_RightClick_Event_Does_Not_Bubble_When_Handled()
 	{
 		bool childHandlerCalled = false;
 		bool parentHandlerCalled = false;
@@ -329,14 +319,13 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(parentBorder);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var childBounds = childButton.GetAbsoluteBounds();
 
-		// Press and hold on child to trigger context menu
-		finger.Press(childBounds.GetCenter());
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click on child to trigger context menu
+		mouse.PressRight(childBounds.GetCenter());
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsTrue(childHandlerCalled, "Child handler should be called");
@@ -344,7 +333,7 @@ public partial class Given_ContextRequested_Injection
 	}
 
 	[TestMethod]
-	public async Task When_TouchHold_OriginalSource_Is_Correct()
+	public async Task When_RightClick_OriginalSource_Is_Correct()
 	{
 		object capturedOriginalSource = null;
 
@@ -372,62 +361,19 @@ public partial class Given_ContextRequested_Injection
 		await UITestHelper.Load(outerBorder);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
+		using var mouse = injector.GetMouse();
 
 		var innerBounds = innerButton.GetAbsoluteBounds();
 
-		// Press and hold on inner button to trigger context menu
-		finger.Press(innerBounds.GetCenter());
-		await Task.Delay(HoldDurationMs);
-		finger.Release();
+		// Right-click on inner button to trigger context menu
+		mouse.PressRight(innerBounds.GetCenter());
+		mouse.ReleaseRight();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsNotNull(capturedOriginalSource, "OriginalSource should be set");
 		// OriginalSource should be the innermost element that received the input
 		Assert.IsTrue(innerButton.Equals(capturedOriginalSource) || VisualTreeUtils.FindVisualParentByType<Button>(capturedOriginalSource as DependencyObject) == innerButton,
-			"OriginalSource should be the inner button where touch hold occurred");
+			"OriginalSource should be the inner button where right-click occurred");
 	}
-
-	[TestMethod]
-	public async Task When_ShortTap_ContextRequested_Not_Raised()
-	{
-		var target = new Border
-		{
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
-			Width = 100,
-			Height = 100
-		};
-
-		bool contextRequestedRaised = false;
-
-		target.ContextRequested += (sender, args) =>
-		{
-			contextRequestedRaised = true;
-			args.Handled = true;
-		};
-
-		await UITestHelper.Load(target);
-
-		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-		using var finger = injector.GetFinger();
-
-		var bounds = target.GetAbsoluteBounds();
-		var center = bounds.GetCenter();
-
-		// Short tap - should NOT trigger context menu
-		finger.Press(center);
-		await Task.Delay(100); // Short delay, not enough for hold
-		finger.Release();
-		await TestServices.WindowHelper.WaitForIdle();
-
-		Assert.IsFalse(contextRequestedRaised, "ContextRequested should NOT be raised on short tap");
-	}
-#else
-	[TestMethod]
-	[Ignore("InputInjector is not supported on this platform.")]
-	public void InputInjector_Not_Available()
-	{
-		// Placeholder test to indicate InputInjector is not available
-	}
-#endif
 }
+#endif
