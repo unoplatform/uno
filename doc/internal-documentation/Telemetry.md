@@ -107,8 +107,8 @@ IDE extensions track extension lifecycle, user interactions, and dev server oper
 **Event Name Prefix:** `uno/app-mcp`
 
 App MCP (Model Context Protocol) telemetry tracks agent interactions with running Uno applications:
-- **Community License Tools** - 8 tools (runtime info, screenshot, pointer click, key press, type text, visual tree snapshot, element peer action, close)
-- **Pro License Tools** - 2 tools (element peer action, element DataContext)
+- **Community License Tools** - 8 tools (runtime info, screenshot, pointer click, key press, type text, visual tree snapshot, element peer default action, close)
+- **Pro License Tools** - 2 tools (element peer action for specific peer actions, element DataContext)
 - **Session Tracking** - Agent type, platform, tools used
 - **Error Tracking** - Connection errors, tool execution errors, timeouts
 - **Agent Interaction Metrics** - Tool invocation counts, success rates, session durations

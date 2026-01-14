@@ -19,7 +19,7 @@ Uno Platform telemetry is designed to be GDPR compliant:
 - Anonymous user IDs (hashed tokens, hashed MAC addresses)
 - Performance measurements (durations, counts)
 - Feature usage patterns (which features are used, how often)
-- Error types (exception types only, no stack traces)
+- Error types (exception types only; stack traces only in specific diagnostic events)
 - Operating system and architecture information
 - Target frameworks and platforms
 - Hashed directory paths (SHA256)
@@ -28,7 +28,7 @@ Uno Platform telemetry is designed to be GDPR compliant:
 
 - **Personal Information**: No usernames, email addresses, or account details
 - **User Content**: No file paths, source code, or project-specific information
-- **Detailed Errors**: No stack traces or detailed error messages that could contain sensitive data
+- **Detailed Errors**: Generally no stack traces or detailed error messages. Exception: DevServer startup failures and Licensing manager failures may include raw ErrorMessage and StackTrace for diagnostic purposes
 - **Raw Tokens**: Bearer tokens are never logged; only SHA256 hashes for opaque tokens
 
 ## Disabling Telemetry

@@ -100,7 +100,7 @@ All global properties follow these privacy principles:
 - **MAC Address**: Hashed with SHA256 to create stable, anonymous machine ID
 - **Working Directory**: Hashed with SHA256 to avoid exposing file paths
 - **User Tokens**: Hashed with SHA256 when used as user identifiers
-- **Stack Traces**: Only exception types are logged, not full stack traces
+- **Stack Traces**: For most telemetry, only exception types are logged, not full stack traces. However, certain diagnostic events (DevServer startup-failure, Licensing manager-failed) may include raw stack traces for troubleshooting purposes.
 
 ### What is NOT Collected
 
@@ -190,8 +190,8 @@ Example values for common global properties:
 
 ### Application Information Examples
 - **SessionId**: "3fa85f64-5717-4562-b3fc-2c963f66afa6" (GUID format)
-- **UserId**: "a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2" (SHA256 hash, 64 hex characters)
-- **MachineId**: "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p" (SHA256 hash, 64 hex characters)
+- **UserId**: "a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8" (SHA256 hash, 64 hex characters)
+- **MachineId**: "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2" (SHA256 hash, 64 hex characters)
 
 ### Build Information Examples
 - **ProjectType**: "app", "library", "test"

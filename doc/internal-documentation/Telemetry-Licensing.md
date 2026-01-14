@@ -12,12 +12,12 @@ Client-side license manager events:
 |------------|-----------|--------------|-------------|
 | `logout-requested` | - | - | User requested logout |
 | `logout-success` | - | - | Logout completed successfully |
-| `logout-failure` | `Error` (string) | - | Logout failed |
+| `logout-failure` | `error` (string) | - | Logout failed |
 | `login-requested` | - | - | User requested login |
 | `login-success` | - | - | Login completed successfully |
 | `login-failure` | `error` (string), `errorDescription` (string) | - | Login failed |
 | `login-canceled` | - | - | User canceled login |
-| `login-timeout` | `Error` (string), `ErrorDescription` (string) | - | Login timed out |
+| `login-timeout` | `error` (string), `errorDescription` (string) | - | Login timed out |
 | `license-status` | `LicenseName` (string), `LicenseStatus` (string), `TrialDaysRemaining` (int), `LicenseExpiryDate` (date) | - | License status checked |
 | `manager-started` | `Feature` (string) | - | License manager started for a feature |
 | `manager-failed` | `ErrorType` (string), `ErrorStackTrace` (string) | - | License manager failed |

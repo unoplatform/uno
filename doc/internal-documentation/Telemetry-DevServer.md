@@ -73,6 +73,36 @@ App launches are tracked via the `AppLaunchMessage` with the following propertie
 | `app-launch/connected` | `TargetPlatform` (string), `IsDebug` (string), `IDE` (string), `PluginVersion` (string), `WasTimedOut` (string), `WasIdeInitiated` (string) | `LatencyMs` (double) | Global | App connected to DevServer |
 | `app-launch/connection-timeout` | `TargetPlatform` (string), `IsDebug` (string), `IDE` (string), `PluginVersion` (string) | `TimeoutSeconds` (double) | Global | App connection timed out |
 
+## Hot Reload Events
+
+**Event Name Prefix:** `uno/dev-server/hot-reload`
+
+Hot Reload processor events track the state transitions and operations of the Hot Reload system:
+
+| Event Name | Properties | Measurements | Description |
+|------------|-----------|--------------|-------------|
+| `notify-start` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload notification started |
+| `notify-disabled` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is disabled |
+| `notify-initializing` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is initializing |
+| `notify-ready` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is ready |
+| `notify-processing-files` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload is processing files |
+| `notify-completed` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload operation completed |
+| `notify-no-changes` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | No changes detected |
+| `notify-failed` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload operation failed |
+| `notify-rude-edit` | `Event` (string), `Source` (string), `PreviousState` (string) | `FileCount` (double), `DurationMs` (double, optional) | Rude edit detected (requires restart) |
+| `notify-complete` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload state transition complete |
+| `notify-error` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool), `ErrorMessage` (string), `ErrorType` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload error occurred |
+
+**Property Notes:**
+- All properties are prefixed with `hotreload/` in the actual telemetry
+- All measurements are prefixed with `hotreload/` in the actual telemetry
+- **Event**: Type of event that triggered the notification
+- **Source**: Source of the event (IDE, DevServer, etc.)
+- **PreviousState/NewState**: State before/after the operation (Ready, Disabled, Initializing, Processing)
+- **HasCurrentOperation**: Indicates if a Hot Reload operation is in progress
+- **FileCount**: Number of files affected (only present if there is a current operation)
+- **DurationMs**: Duration of the operation in milliseconds (only present if operation has completed)
+
 ### Legacy App Launch Properties
 
 | Property | Type | Description |
@@ -133,6 +163,14 @@ Example values for Dev Server telemetry properties:
 - **Ide**: "VisualStudio", "VSCode", "Rider", "Unknown"
 - **Plugin**: "Uno.VSCode.Extension v1.2.3", "Uno.Rider.Plugin v2.0.1", "Uno.VisualStudio.Extension v1.5.0"
 - **Step**: "Launched", "Connected"
+
+### Hot Reload Properties
+- **Event** (Hot Reload): "ProcessingFiles", "Completed", "NoChanges", "Failed", "RudeEdit"
+- **Source** (Hot Reload): "IDE", "DevServer", "FileWatcher"
+- **PreviousState** / **NewState**: "Ready", "Disabled", "Initializing", "Processing"
+- **HasCurrentOperation**: `true`, `false`
+- **ErrorMessage** (Hot Reload): "Compilation failed", "Syntax error in file", "Type not found"
+- **ErrorType** (Hot Reload): "CompilationException", "SyntaxException", "TypeLoadException"
 
 ## Privacy Notes
 
