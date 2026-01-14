@@ -15,7 +15,9 @@ Uno.Check is an environment verification tool that validates .NET SDK installati
 | `check-start` | `RequestedFrameworks` (string) | - | Check process started. Records which frameworks were requested for validation (e.g., "net8.0,net8.0-android,net8.0-ios"). Max 10 frameworks, each truncated to 32 characters |
 | `check-success` | - | `Duration` (double) | Check completed successfully with all validations passing. Duration in seconds |
 | `check-warn` | `ReportedChecks` (string) | `Duration` (double) | Check completed with warnings. Some checks reported issues but process continued. Duration in seconds |
-| `check-fail` | `ReportedChecks` (string) | `Duration` (double) | Check failed. One or more checks detected missing or incorrect dependencies. Duration in seconds |
+| `check-fail` | `ReportedChecks` (string) | `Duration` (double) | Check failed. One or more checks detected missing or incorrect dependencies. Duration in seconds. `~aaaaaa` means that the user explicitly skipped the check |
+
+> **check-fail** and **check-warn** are non-catastrophic, meaning that uno-check did not fail but rather one of its checks did either because of an issue with the environment or because the user explicitly skipped the check.
 
 ## Properties
 
