@@ -26,17 +26,17 @@ Dev Server telemetry tracks server sessions and client connections, including ap
 
 | Event Name | Properties | Measurements | Scope | Description |
 |------------|-----------|--------------|-------|-------------|
-| `startup` | `StartupHasSolution` (bool) | - | Global | DevServer started |
-| `shutdown` | `ShutdownType` (string) | `UptimeSeconds` (double) | Global | DevServer shutdown |
-| `startup-failure` | `StartupErrorMessage` (string), `StartupErrorType` (string), `StartupStackTrace` (string) | `UptimeSeconds` (double) | Global | DevServer startup failed |
-| `parent-process-lost` | - | - | Global | Parent process lost, graceful shutdown attempted |
+| `startup` | `StartupHasSolution` (bool) | - | Global | DevServer started and is ready to receive connections |
+| `shutdown` | `ShutdownType` (string) | `UptimeSeconds` (double) | Global | DevServer shutdown. This is the last event before `parent-process-lost` |
+| `startup-failure` | `StartupErrorMessage` (string), `StartupErrorType` (string), `StartupStackTrace` (string) | `UptimeSeconds` (double) | Global | A catastophic error occured with the dev server (not only during startup) |
+| `parent-process-lost` | - | - | Global | Parent process (process that started the dev server (i.e. IDE)) lost, graceful shutdown attempted. If unable to gracefully shut down, the process is killed and `parent-process-lost-forced-exit` even will be triggered |
 | `parent-process-lost-forced-exit` | - | - | Global | Forced exit after graceful shutdown timeout |
 
 ### Add-In Discovery Events
 
 | Event Name | Properties | Measurements | Scope | Description |
 |------------|-----------|--------------|-------|-------------|
-| `addin-discovery-start` | - | - | Global | Add-in discovery started |
+| `addin-discovery-start` | - | - | Global | Add-in discovery started. An add-in is a service offered by the dev server global to the solution (can interact with the IDE) |
 | `addin-discovery-complete` | `DiscoveryResult` (string), `DiscoveryAddInList` (string) | `DiscoveryAddInCount` (double), `DiscoveryDurationMs` (double) | Global | Add-in discovery completed |
 | `addin-discovery-error` | `DiscoveryErrorMessage` (string), `DiscoveryErrorType` (string) | `DiscoveryDurationMs` (double) | Global | Add-in discovery failed |
 
@@ -52,7 +52,7 @@ Dev Server telemetry tracks server sessions and client connections, including ap
 
 | Event Name | Properties | Measurements | Scope | Description |
 |------------|-----------|--------------|-------|-------------|
-| `processor-discovery-start` | `AppInstanceId` (string), `DiscoveryIsFile` (bool) | - | Per-connection | Processor discovery started for connection |
+| `processor-discovery-start` | `AppInstanceId` (string), `DiscoveryIsFile` (bool) | - | Per-connection | Processor discovery started for connection, A processor is an agent that the client (connected application) asks the dev server to load.|
 | `processor-discovery-complete` | `AppInstanceId` (string), `DiscoveryIsFile` (bool), `DiscoveryResult` (string), `DiscoveryFailedProcessors` (string) | `DiscoveryDurationMs` (double), `DiscoveryAssembliesProcessed` (double), `DiscoveryProcessorsLoadedCount` (double), `DiscoveryProcessorsFailedCount` (double) | Per-connection | Processor discovery completed |
 | `processor-discovery-error` | `DiscoveryErrorMessage` (string), `DiscoveryErrorType` (string) | `DiscoveryDurationMs` (double), `DiscoveryAssembliesCount` (double), `DiscoveryProcessorsLoadedCount` (double), `DiscoveryProcessorsFailedCount` (double) | Per-connection | Processor discovery failed |
 
@@ -60,7 +60,7 @@ Dev Server telemetry tracks server sessions and client connections, including ap
 
 | Event Name | Properties | Measurements | Scope | Description |
 |------------|-----------|--------------|-------|-------------|
-| `client-connection-opened` | `ConnectionId` (string) | - | Per-connection | Client connection opened (metadata anonymized) |
+| `client-connection-opened` | `ConnectionId` (string) | - | Per-connection | Client connection opened (metadata anonymized) and connected to the dev server |
 | `client-connection-closed` | `ConnectionId` (string) | `ConnectionDurationSeconds` (double) | Per-connection | Client connection closed |
 
 ## App Launch Tracking
