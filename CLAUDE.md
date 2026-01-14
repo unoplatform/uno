@@ -2,156 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Start
+
+For environment setup, build commands, testing workflows, and commit guidelines, see **[.github/copilot-instructions.md](.github/copilot-instructions.md)**.
+
+This document focuses on deep architecture knowledge for implementing features and understanding the codebase.
+
 ## Project Overview
 
-Uno Platform is an open-source cross-platform framework (Apache 2.0) for building .NET applications from a single codebase that run natively on Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), Mobile (iOS, Android via .NET), and Embedded systems. It uses the WinUI 3 API surface, allowing developers to leverage existing C# and XAML skills across all platforms.
-
-## Building Uno.UI
-
-### Prerequisites
-- Visual Studio 2022 (18.0+) with:
-  - ASP.NET and Web Development workload
-  - .NET Multi-Platform App UI development workload
-  - .NET desktop development workload
-  - UWP Development (install all recent UWP SDKs starting from 10.0.19041)
-- Install all Android SDKs starting from 7.1 (via Tools → Android → Android SDK manager)
-- Run [Uno.Check](https://github.com/unoplatform/uno.check) to setup .NET Android/iOS workloads
-- Latest [.NET SDK](https://aka.ms/dotnet/download)
-
-### Single-Target Build (Recommended)
-
-Building for a single target platform is considerably faster and less RAM-intensive. Follow these steps:
-
-1. **Close all Visual Studio instances** (changing target while VS is open can cause crashes)
-2. Copy `src/crosstargeting_override.props.sample` to `src/crosstargeting_override.props`
-3. In `crosstargeting_override.props`, uncomment and set `<UnoTargetFrameworkOverride>xxx</UnoTargetFrameworkOverride>` to your desired platform:
-   - `net10.0-windows10.0.19041.0` - Windows → use `Uno.UI-Windows-only.slnf`
-   - `net10.0` - WebAssembly/Skia → use `Uno.UI-Wasm-only.slnf` or `Uno.UI-Skia-only.slnf`
-   - `net10.0-ios` - iOS Native → use `Uno.UI-netcoremobile-only.slnf`
-   - `net10.0-android` - Android Native → use `Uno.UI-netcoremobile-only.slnf`
-   - `net10.0-maccatalyst` - macOS Catalyst → use `Uno.UI-netcoremobile-only.slnf`
-4. Open the corresponding solution filter (`.slnf`) file from the `src` folder
-5. Build the appropriate project to verify:
-   - iOS/Android native: `Uno.UI` project
-   - WebAssembly/native: `Uno.UI.Runtime.WebAssembly` project
-   - Skia: corresponding `Uno.UI.Runtime.Skia.[Win32|X11|macOS|iOS|Android|Wpf]` project
-
-**Important**: Close VS before changing the `UnoTargetFrameworkOverride` value.
-
-### Troubleshooting Build Issues
-- Ensure you're on the latest master commit
-- Close VS 2022, delete `src/.vs` folder, rebuild
-- If `.vs` deletion doesn't help, run `git clean -fdx` (after closing VS)
-- Verify `UnoTargetFrameworkOverride` matches your solution filter
-- Ensure Windows SDK `19041` is installed
-- Enable Windows long paths: `reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1`
-
-## Testing
-
-### Running Runtime Tests (Uno.UI.RuntimeTests)
-
-Platform-runtime unit tests run in the platform environment using real Uno.UI binaries. They run from within SamplesApp:
-
-1. Build and launch SamplesApp (use tablet layout on mobile if possible)
-2. Navigate to 'Unit Tests' → 'Unit Tests Runner' (or click top-left button)
-3. (Optional) Add a filter string to run specific tests
-4. Press 'Run'
-
-**Creating Runtime Tests:**
-- Test files location: `Uno.UI.RuntimeTests/Tests/Namespace_In_Snake_Case/Given_ControlName.cs`
-- Use `[TestClass]` on class and `[TestMethod]` on methods
-- Use naming convention: `When_Your_Scenario` (Given-When-Then style)
-- Add `[RunsOnUIThread]` attribute for UI-related tests (on method or class)
-- Use `WindowHelper` class helpers:
-  - `WindowHelper.WindowContent` - Add/remove elements from visual tree
-  - `await WindowHelper.WaitForLoaded(element)` - Wait for element to load/measure/arrange
-  - `await WindowHelper.WaitForIdle()` - Wait for UI thread to settle
-  - `await WindowHelper.WaitFor(() => condition)` - Wait for specific condition
-- Always close popups in `try/finally` to avoid interfering with other tests
-
-### Running Runtime Tests from Command Line (Skia Desktop)
-
-Runtime tests can be executed from the command line without the interactive UI. This is how CI runs tests and is useful for validating new tests locally.
-
-**Build SamplesApp.Skia.Generic:**
-```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
-```
-
-**Run all runtime tests:**
-```bash
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
-```
-
-**Run specific tests with a filter:**
-
-The `UITEST_RUNTIME_TESTS_FILTER` environment variable accepts a base64-encoded, pipe-separated list of fully qualified test names.
-
-Windows PowerShell:
-```powershell
-$filter = "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario"
-$env:UITEST_RUNTIME_TESTS_FILTER = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filter))
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
-```
-
-Linux/macOS:
-```bash
-export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario" | base64)
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
-```
-
-**Test results:** Output is in NUnit XML format at the path specified by `--runtime-tests`.
-
-**Agent workflow for new tests:**
-When adding new runtime tests that should run on desktop (Skia), always:
-1. Build and run the test using the commands above
-2. Verify the test passes
-3. Fix any failures before committing
-
-Skip this validation only if the test is explicitly for non-desktop platforms (e.g., iOS/Android-specific features).
-
-### Running SamplesApp
-
-The SamplesApp contains UI and non-UI samples for manual testing and automated UI tests.
-
-1. Open Uno.UI with correct target override and solution filter for your platform
-2. Select `SamplesApp.[Platform]` as startup app (e.g., `SamplesApp.iOS`)
-3. Run the app
-
-**Adding New Samples:**
-- Location: `UITests.Shared` project → `Namespace_In_Snake_Case/ControlNameTests`
-- Create a `UserControl` with meaningful name
-- Add `[Uno.UI.Samples.Controls.Sample]` attribute to code-behind
-- Sample attribute auto-determines category/name from namespace/classname (or specify manually)
-
-## Common Commands
-
-### Restore and Build
-```bash
-# Restore and build all packages (CI)
-msbuild build/Uno.UI.Build.csproj /t:BuildCIPackages /p:Configuration=Release
-
-# Restore and build reference assemblies
-msbuild build/filters/Uno.UI-packages-reference.slnf /t:Restore;Build /p:Configuration=Release
-```
-
-### Running SyncGenerator Tool
-Synchronizes WinRT/WinUI APIs with Uno implementations (Windows only):
-```bash
-# From uno\build folder (not uno\src\build)
-run-api-sync-tool.cmd
-```
-
-### Running Tests
-```bash
-# Build and run runtime tests through SamplesApp (see above)
-
-# WebAssembly snapshot tests
-cd src/SamplesApp/SamplesApp.Wasm.UITests
-npm i
-# Run tests via F5 in VS or build SamplesApp.Wasm.UITests.njsproj
-```
+Uno Platform is an open-source cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), Mobile (iOS, Android), and Embedded systems.
 
 ## Architecture and Code Organization
 
@@ -577,48 +436,16 @@ TypeMappings.Pause();   // Pause updates
 TypeMappings.Resume();  // Resume updates
 ```
 
-## Commit Message Format
+## Runtime Tests
 
-All commits **must** follow [Conventional Commits](https://www.conventionalcommits.org/) format:
+For running and creating runtime tests, see [.github/copilot-instructions.md](.github/copilot-instructions.md#5-runtime-test-validation-preferred-for-ui-features).
 
-```
-<type>([optional scope]): <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-**Common types:**
-- `fix:` - Bug fix
-- `feat:` - New functionality
-- `docs:` - Documentation changes
-- `test:` - Adding tests
-- `perf:` - Performance improvement
-- `chore:` - Catch-all for other commits
-
-**Scope examples:** `fix(listview)`, `feat(webview)`, `fix(reg)` (regression)
-
-**Breaking changes:** Add `BREAKING CHANGE:` in message body, optionally append `!` after type/scope
-
-**Examples:**
-```
-fix(webview): Fixed video display in WebView on Android
-
-feat(imageBrush): [iOS][macOS] Add support of WriteableBitmap
-
-fix(resourcedictionary)!: Make ResourceDictionary.Lookup() internal
-
-BREAKING CHANGE: This method isn't part of the public .NET contract on WinUI. Use item indexing or TryGetValue() instead.
-```
-
-## Pull Requests
-
-- Submit all PRs to the **master** branch
-- Ensure repository builds and all tests pass
-- Follow current coding guidelines
-- Provide tests for every bug/feature (except scenarios deemed "too hard" by team)
-- Close popups/cleanup state in tests to avoid interference
+**Key helpers for test implementation:**
+- `WindowHelper.WindowContent` - Add/remove elements from visual tree
+- `await WindowHelper.WaitForLoaded(element)` - Wait for element to load/measure/arrange
+- `await WindowHelper.WaitForIdle()` - Wait for UI thread to settle
+- `await WindowHelper.WaitFor(() => condition)` - Wait for specific condition
+- Always close popups in `try/finally` to avoid interfering with other tests
 
 ## Key Build Properties
 
@@ -630,18 +457,6 @@ BREAKING CHANGE: This method isn't part of the public .NET contract on WinUI. Us
 - `XamlSourceGeneratorTracingFolder` - Dump source generator diagnostics
 - `UnoDisableNetAnalyzers` - Disable .NET analyzers for faster builds
 
-## Technology Stack
-
-- **.NET 9.0/10.0** - Multi-target framework support
-- **C# & XAML** - Primary languages
-- **TypeScript** - WebAssembly and Web APIs
-- **Skia Graphics** - Cross-platform rendering engine
-- **MSBuild** - Build orchestration
-- **Roslyn** - Source generators and analyzers
-- **NerdBank.GitVersioning** - Semantic versioning
-- **NUnit/MSTest** - Testing frameworks
-- **DocFx** - Documentation generation
-
 ## Common Pitfalls and Gotchas
 
 1. **DependencyObject is an interface**: On Android/iOS/macOS, don't expect to inherit from DependencyObject - implement the interface
@@ -650,8 +465,17 @@ BREAKING CHANGE: This method isn't part of the public .NET contract on WinUI. Us
 4. **Partial methods**: Used extensively for user extensibility points (e.g., `OnLoaded()`, `OnUnloaded()`)
 5. **Platform conditionals**: Use `#if __ANDROID__`, `#if __IOS__`, `#if __WASM__`, `#if __SKIA__`
 6. **NuGet cache corruption**: If debugging with override fails, delete `%USERPROFILE%\.nuget\packages\uno.ui` and rebuild
-7. **Long paths**: Windows requires registry setting for long path support (see build troubleshooting)
+7. **Long paths**: Windows requires registry setting for long path support
 8. **Android Resource.designer.cs**: Generation is disabled for performance - manually copy needed IDs (see building-uno-ui.md)
+
+## Technology Stack
+
+- **.NET 9.0/10.0** - Multi-target framework support
+- **C# & XAML** - Primary languages
+- **TypeScript** - WebAssembly and Web APIs
+- **Skia Graphics** - Cross-platform rendering engine
+- **MSBuild** - Build orchestration
+- **Roslyn** - Source generators and analyzers
 
 ## Reference Documentation
 
