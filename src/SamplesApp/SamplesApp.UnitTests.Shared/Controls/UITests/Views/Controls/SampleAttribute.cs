@@ -79,5 +79,11 @@ namespace Uno.UI.Samples.Controls
 		/// Use this for samples that need to handle keyboard input themselves, such as the runtime tests runner.
 		/// </summary>
 		public bool DisableKeyboardShortcuts { get; set; }
+
+		/// <summary>
+		/// Set to true to hide this sample from the category browser and search results.
+		/// Hidden samples can still be navigated to programmatically (e.g., via menu items).
+		/// </summary>
+		public bool HideFromBrowser { get; set; }
 	}
 }
