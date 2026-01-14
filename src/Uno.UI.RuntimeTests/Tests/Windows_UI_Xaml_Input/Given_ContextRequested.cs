@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,6 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 public partial class Given_ContextRequested
 {
 	#region Event Subscription Tests
@@ -141,8 +143,7 @@ public partial class Given_ContextRequested
 
 		var target = new Button
 		{
-			Content = "Test Button",
-			ContextFlyout = flyout
+			Content = "Test Button"
 		};
 
 		bool handlerCalled = false;
@@ -157,8 +158,36 @@ public partial class Given_ContextRequested
 
 		await UITestHelper.Load(target);
 
-		// Handler is registered but not yet called (needs input trigger)
-		Assert.IsFalse(handlerCalled);
+		RaiseContextRequestedEvent(target, new Point(10, 10), isTouchInput: false);
+		Assert.IsTrue(handlerCalled, "ContextRequested handler should be called");
+	}
+
+	[TestMethod]
+	public async Task When_ContextFlyout_ContextRequest_Is_Not_Raised()
+	{
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Test Item" });
+
+		var target = new Button
+		{
+			Content = "Test Button",
+			ContextFlyout = flyout
+		};
+
+		bool handlerCalled = false;
+		target.ContextRequested += (sender, args) =>
+		{
+			handlerCalled = true;
+		};
+
+		await UITestHelper.Load(target);
+		var popupsBefore = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
+
+		RaiseContextRequestedEvent(target, new Point(10, 10), isTouchInput: false);
+		var popupsAfter = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
+		Assert.AreEqual(popupsBefore + 1, popupsAfter, "A popup should be opened for the ContextFlyout");
+
+		Assert.IsFalse(handlerCalled, "ContextRequested handler should not be called");
 	}
 
 	[TestMethod]
@@ -179,17 +208,23 @@ public partial class Given_ContextRequested
 			Child = child
 		};
 
+		bool handlerCalled = false;
 		object capturedSource = null;
 		parent.ContextRequested += (sender, args) =>
 		{
 			capturedSource = args.OriginalSource;
+			Assert.AreEqual(child, capturedSource, "OriginalSource should be the child element where the event was raised");
 			args.Handled = true;
+			handlerCalled = true;
 		};
 
 		await UITestHelper.Load(parent);
 
 		// Handler registered, source will be set when event is raised
 		Assert.IsNull(capturedSource);
+
+		RaiseContextRequestedEvent(child, new Point(10, 10), isTouchInput: false);
+		Assert.IsTrue(handlerCalled, "ContextRequested handler should be called");
 	}
 
 	#endregion
@@ -283,6 +318,14 @@ public partial class Given_ContextRequested
 		// Both handlers should be registered without errors
 		Assert.AreEqual(0, handler1CallCount);
 		Assert.AreEqual(0, handler2CallCount);
+
+		RaiseContextRequestedEvent(target, new Point(10, 10), isTouchInput: false);
+		Assert.AreEqual(1, handler1CallCount, "Handler 1 should be called once");
+		Assert.AreEqual(1, handler2CallCount, "Handler 2 should be called once");
+
+		RaiseContextRequestedEvent(target, new Point(20, 20), isTouchInput: false);
+		Assert.AreEqual(2, handler1CallCount, "Handler 1 should be called twice");
+		Assert.AreEqual(2, handler2CallCount, "Handler 2 should be called twice");
 	}
 
 	[TestMethod]
@@ -306,6 +349,9 @@ public partial class Given_ContextRequested
 
 		// Handler should be removed successfully
 		Assert.AreEqual(0, callCount);
+
+		RaiseContextRequestedEvent(target, new Point(10, 10), isTouchInput: false);
+		Assert.AreEqual(0, callCount, "Handler should not be called after removal");
 	}
 
 	#endregion
@@ -462,19 +508,6 @@ public partial class Given_ContextRequested
 		Assert.IsTrue(args.Handled, "Handled should be settable");
 	}
 
-	[TestMethod]
-	public void When_ContextRequestedEventArgs_TryGetPosition_Without_Point()
-	{
-		// Test TryGetPosition on freshly created args (no position set)
-		var args = new ContextRequestedEventArgs();
-
-		// Without any position set, behavior depends on implementation
-		bool hasPosition = args.TryGetPosition(null, out var point);
-
-		// The result depends on whether a position was set internally
-		// For keyboard invocation, this should return false
-	}
-
 	#endregion
 
 	#region MenuFlyout Content Tests
@@ -560,4 +593,24 @@ public partial class Given_ContextRequested
 	}
 
 	#endregion
+
+	private void RaiseContextRequestedEvent(
+		DependencyObject source,
+		Point point,
+		bool isTouchInput)
+	{
+		var contextMenuProcessor = TestServices.WindowHelper.XamlRoot.VisualTree?.ContentRoot?.InputManager?.ContextMenuProcessor;
+		if (contextMenuProcessor is null)
+		{
+			Assert.Fail("ContextMenuProcessor is not available.");
+		}
+
+		// In a real implementation, we would set additional properties on args
+		// such as the position and input type, but these are not exposed publicly.
+		if (source is UIElement uiElement)
+		{
+			contextMenuProcessor.RaiseContextRequestedEvent(source, point, isTouchInput);
+		}
+	}
 }
+#endif
