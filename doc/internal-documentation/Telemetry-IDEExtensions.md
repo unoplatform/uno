@@ -1,0 +1,83 @@
+# IDE Extensions Telemetry
+
+IDE extensions track extension lifecycle, user interactions, and dev server operations.
+
+## Visual Studio Code
+
+**Event Name Prefix:** `uno/vscode`
+
+| Event Name | Properties | Measurements | Description |
+|------------|-----------|--------------|-------------|
+| `extension-loaded` | `PluginVersion` (string), `IDE` (string) | - | Extension loaded successfully |
+| `extension-unloaded` | `PluginVersion` (string), `IDE` (string) | - | Extension unloaded |
+| `extension-failure` | `PluginVersion` (string), `IDE` (string), `Exception` (string), `Message` (string) | - | Extension failure occurred |
+| `udei-opened` | `PluginVersion` (string), `IDE` (string) | - | Uno Design Experience Interface opened |
+| `udei-action-clicked` | `PluginVersion` (string), `IDE` (string), `ActionName` (string) | - | Action clicked in UDEI |
+| `dev-server-restart` | `PluginVersion` (string), `IDE` (string) | - | Dev Server restarted |
+
+**Automatic Properties:**
+- All events automatically include `PluginVersion` and `IDE` properties
+- `IDE` property is automatically set to "vscode"
+
+**App Launch Tracking:**
+- Requires Uno.Sdk version 6.4.0 or higher
+- Automatically tracks when apps are launched from VS Code
+
+**Reference:**
+For more detailed information, see the [VS Code Extension Telemetry Documentation](https://github.com/unoplatform/uno.vscode/blob/main/documentation/Telemetry.md).
+
+## Rider
+
+**Event Name Prefix:** `uno/rider`
+
+| Event Name | Properties | Measurements | Description |
+|------------|-----------|--------------|-------------|
+| `extension-loaded` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Extension loaded successfully |
+| `extension-unloaded` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Extension unloaded |
+| `extension-failure` | `Exception` (string), `Message` (string) | - | Extension failure occurred |
+| `project-created` | `ProjectName` (string) | - | New Uno project created |
+| `solution-build` | - | - | Solution built |
+| `debugger-launched` | - | - | Debugger launched successfully |
+| `no-debugger-launch` | - | - | Debugger launch skipped |
+| `udei-opened` | - | - | Uno Design Experience Interface opened |
+| `udei-action-clicked` | `ActionName` (string) | - | Action clicked in UDEI |
+| `dev-server-restart` | - | - | Dev Server restarted |
+
+**Automatic Properties:**
+- `IDE`: Always set to "rider"
+- `IDEVersion`: Rider version
+- `PluginVersion`: Uno Rider plugin version
+
+**App Launch Tracking:**
+- Automatically tracks when apps are launched from Rider
+- Includes platform, debug mode, and IDE information
+
+**Reference:**
+For more detailed information, see the [Rider Plugin Telemetry Documentation](https://github.com/unoplatform/uno.rider/blob/main/src/dotnet/uno.rider/Telemetry/Telemetry.md).
+
+## Visual Studio
+
+**Event Name Prefix:** `uno/visual-studio`
+
+| Event Name | Properties | Measurements | Description |
+|------------|-----------|--------------|-------------|
+| `udei-opened` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Uno Design Experience Interface opened |
+| `udei-action-clicked` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string), `ActionName` (string) | - | Action clicked in UDEI |
+| `udei-failure` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | UDEI failure occurred |
+| `enumeration-fail` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | `Duration` (ms) | Project enumeration failed |
+| `server-start-failure` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string), `ServerPackage` (string) | `Duration` (ms) | Dev Server start failed |
+| `server-start-success` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string), `ServerPackage` (string), `ServerAPIPackage` (string) | `Duration` (ms) | Dev Server started successfully |
+| `server-start-package-layout-failure` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string), `ServerPackage` (string) | `Duration` (ms) | Package layout failed during server start |
+| `server-start-enumeration-exception` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string), `ExceptionType` (string) | `Duration` (ms) | Exception during enumeration at server start |
+
+**Property Examples:**
+- `PluginVersion`: "1.2.3"
+- `IDE`: "visualstudio"
+- `IDEVersion`: "17.8.4"
+- `ActionName`: "OpenDesigner", "RefreshPreview", etc.
+- `ServerPackage`: "Uno.WinUI.DevServer"
+- `ServerAPIPackage`: "Uno.WinUI.DevServer.API"
+- `ExceptionType`: Exception type name
+
+**Reference:**
+For more detailed information, see the [Visual Studio Extension Telemetry Documentation](https://github.com/unoplatform/uno.studio/blob/main/docs/Telemetry.md).
