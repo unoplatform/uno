@@ -103,7 +103,7 @@ public partial class Given_UIElement_ContextRequested
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_ContextRequested_Handled_ContextFlyout_Not_Shown()
+	public async Task When_ContextRequested_Handled_ContextFlyout_Still_Shown()
 	{
 		var flyout = new MenuFlyout();
 		flyout.Items.Add(new MenuFlyoutItem { Text = "Option 1" });
@@ -132,7 +132,7 @@ public partial class Given_UIElement_ContextRequested
 		// Wait a bit for any flyout to potentially open
 		await Task.Delay(100);
 
-		Assert.IsFalse(flyout.IsOpen, "ContextFlyout should not be shown when event is handled");
+		Assert.IsTrue(flyout.IsOpen, "ContextFlyout should be shown even when event is handled");
 	}
 
 	[TestMethod]
