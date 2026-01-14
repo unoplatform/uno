@@ -43,7 +43,7 @@ For more detailed information, see the [VS Code Extension Telemetry Documentatio
 | `extension-unloaded` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string) | - | Extension unloaded. Triggered when you're re-creating solutions, closing Rider, closing solutions |
 | `extension-failure` | `Exception` (string), `Message` (string) | - | Extension failure occurred. Triggered on exception or critical failure in any part of code. "Telemetry event: extension-failure." is written to the Uno Platform log when it occurs |
 | `project-created` | `ProjectName` (string) | - | New Uno project created. Triggered when you create a solution with our Rider templates. "Telemetry event: project-created." is written to the Uno Platform log |
-| `solution-build` | - | - | Solution built. Triggered every time solution is being built. "Telemetry event: solution-build" ." is written to the Uno Platform log |
+| `solution-build` | - | - | Solution built. Triggered every time solution is being built. "Telemetry event: solution-build". is written to the Uno Platform log |
 | `debugger-launched` | - | - | Debugger launched successfully. Triggered when you launch the app with the debugger. "Telemetry event: debugger-launched" is written to the Uno Platform log |
 | `no-debugger-launch` | - | - | Debugger launch skipped. Triggered when you launch the app without the debugger. "Telemetry event: no-debugger-launch" is written to the Uno Platform log |
 | `udei-opened` | - | - | Uno Design Experience Interface opened |
