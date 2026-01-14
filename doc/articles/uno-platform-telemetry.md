@@ -12,10 +12,25 @@ The Uno Platform includes telemetry features that collect anonymous usage inform
 
 Uno Platform telemetry is organized into the following categories:
 
+### Uno Platform Core (`unoplatform/uno`)
+
 - [Build Tools Telemetry](#build-tools-telemetry) - XAML code generation during compilation
 - [Dev Server Telemetry](#dev-server-telemetry) - Development server operations and lifecycle
 - [Hot Reload Telemetry](#hot-reload-telemetry) - Hot reload operations and status
 - [App Launch Monitoring](#app-launch-monitoring) - Application launch tracking and connection monitoring
+
+### Other Uno Platform Repositories
+
+Telemetry may also be collected by other Uno Platform repositories. If you use these components, please refer to their respective documentation:
+
+- **Uno.Extensions** (`unoplatform/uno.extensions`) - Enhanced application features and extensions
+- **Uno.Themes** (`unoplatform/uno.themes`) - Material, Fluent, and Cupertino design system implementations
+- **Uno.Toolkit** (`unoplatform/uno.toolkit.ui`) - Additional UI controls and utilities
+- **Uno Hot Design** (Internal) - Visual design tools and features
+- **Uno AI/MCP Features** - AI-assisted development tools
+
+> [!NOTE]
+> This document currently covers telemetry from the main `uno` repository. For telemetry information from other unoplatform repositories, please check their respective documentation or repository README files.
 
 ## How to Opt Out
 
@@ -223,6 +238,51 @@ The Uno Platform team is committed to protecting your privacy:
 
 If you suspect that telemetry is collecting sensitive data or that data is being handled insecurely or inappropriately, please file an issue in the [unoplatform/uno](https://github.com/unoplatform/uno/issues) repository for investigation.
 
+## Telemetry in Other Uno Platform Repositories
+
+The following Uno Platform repositories may also collect telemetry. Please check their documentation for specific details:
+
+### Uno.Extensions
+
+**Repository:** [unoplatform/uno.extensions](https://github.com/unoplatform/uno.extensions)
+
+Uno.Extensions provides enhanced application features including navigation, configuration, dependency injection, and more. Check the repository for telemetry documentation if applicable.
+
+### Uno.Themes
+
+**Repository:** [unoplatform/uno.themes](https://github.com/unoplatform/uno.themes)
+
+Uno.Themes provides Material, Fluent, and Cupertino design system implementations. Check the repository for telemetry documentation if applicable.
+
+### Uno.Toolkit
+
+**Repository:** [unoplatform/uno.toolkit.ui](https://github.com/unoplatform/uno.toolkit.ui)
+
+Uno.Toolkit provides additional UI controls such as Card, TabBar, NavigationBar, and more. Check the repository for telemetry documentation if applicable.
+
+### Uno Hot Design / Studio
+
+Hot Design and Studio features may collect telemetry related to visual design tools and development experience enhancements. Please refer to internal documentation or the Studio documentation for details.
+
+### AI and MCP Features
+
+AI-assisted development features and Model Context Protocol (MCP) implementations may collect telemetry to improve AI-powered tools. Check the relevant feature documentation for details.
+
+> [!IMPORTANT]
+> If you use components from multiple Uno Platform repositories, each component's telemetry can be disabled using the same opt-out methods described in the [How to Opt Out](#how-to-opt-out) section. The `UNO_PLATFORM_TELEMETRY_OPTOUT` environment variable should disable telemetry across all Uno Platform components.
+
+## Contributing Telemetry Documentation
+
+If you maintain an Uno Platform repository that collects telemetry:
+
+1. Create a `Telemetry.md` file in your repository documenting:
+   - Event names and prefixes
+   - Properties and measurements collected
+   - Privacy considerations
+   - Opt-out instructions
+2. Link to this centralized documentation for consistency
+3. Submit updates to this document to include your repository's telemetry summary
+
 ## See Also
 
 - [Build Tools Telemetry](xref:Uno.Development.ToolchainTelemetry)
@@ -230,3 +290,6 @@ If you suspect that telemetry is collecting sensitive data or that data is being
 - [Hot Reload Telemetry](../../src/Uno.UI.RemoteControl.Server.Processors/Telemetry.md)
 - [Application Launch Monitor](../../src/Uno.UI.RemoteControl.Server/AppLaunch/ApplicationLaunchMonitor.md)
 - [.NET Core Telemetry](https://learn.microsoft.com/dotnet/core/tools/telemetry)
+- [Uno.Extensions Repository](https://github.com/unoplatform/uno.extensions)
+- [Uno.Themes Repository](https://github.com/unoplatform/uno.themes)
+- [Uno.Toolkit Repository](https://github.com/unoplatform/uno.toolkit.ui)
