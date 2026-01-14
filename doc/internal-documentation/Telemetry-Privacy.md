@@ -81,6 +81,7 @@ up-to-date values:
 |---------------|--------------------------------------------------|
 | **Production**   | Production telemetry configuration in source/control plane |
 | **Development**  | Development/test telemetry configuration in source         |
+
 ## Contact
 
 For privacy concerns or questions about telemetry:
