@@ -830,6 +830,11 @@ document.addEventListener(
                                 if (pagefindMessage) {
                                     pagefindMessage.style.display = 'none';
                                 }
+
+                                // Avoid duplicating the custom empty state when initialization fires twice
+                                if (resultsArea.querySelector('.search-empty-state')) {
+                                    return;
+                                }
                                 
                                 // Create and inject empty state
                                 const emptyState = document.createElement('div');
