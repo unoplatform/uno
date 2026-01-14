@@ -141,6 +141,7 @@ public sealed partial class ContextRequested_Sample : Page
 	private void OnCancelTestContextRequested(UIElement sender, ContextRequestedEventArgs args)
 	{
 		CancelStatusText.Text = "ContextRequested fired!";
+		args.Handled = true;
 		LogEvent("[7] ContextRequested fired");
 	}
 
