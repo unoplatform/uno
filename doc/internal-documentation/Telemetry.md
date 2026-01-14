@@ -5,6 +5,7 @@ This document provides a comprehensive overview of telemetry across the Uno Plat
 ## Table of Contents
 
 - [Overview](#overview)
+- [Global Telemetry Properties](Telemetry-GlobalProperties.md)
 - [Hot Design Telemetry](Telemetry-HotDesign.md)
 - [AI Features](Telemetry-AIFeatures.md)
 - [Dev Server](Telemetry-DevServer.md)
@@ -33,6 +34,20 @@ All telemetry events use a prefixed naming convention based on the feature area:
 ---
 
 ## Telemetry Categories
+
+### [Global Telemetry Properties](Telemetry-GlobalProperties.md)
+
+Common properties automatically included with telemetry events across all Uno Platform components:
+- **System Information** - OS, version, architecture, kernel version, timestamp
+- **Environment Information** - Culture, CI detection, CI provider
+- **Version Information** - Uno Platform version, SDK version, target frameworks
+- **IDE and Tooling** - IDE type, version, plugin version
+- **Application Information** - Session ID, anonymous user ID, machine ID
+- **Build Information** - Project type, debug mode, working directory (hashed)
+
+All properties follow strict privacy principles with hashing/anonymization of sensitive data.
+
+[View detailed Global Properties documentation →](Telemetry-GlobalProperties.md)
 
 ### [Hot Design Telemetry](Telemetry-HotDesign.md)
 
