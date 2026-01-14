@@ -103,5 +103,3 @@ Telemetry.FlushAsync()
 ↓
 Telemetry.Dispose()
 ```
-
-
