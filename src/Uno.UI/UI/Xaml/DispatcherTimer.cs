@@ -58,5 +58,5 @@ public partial class DispatcherTimer : IDispatcherTimer
 
 	private void OnTick(DispatcherQueueTimer sender, object args) => Tick?.Invoke(this, null);
 
-	public DependencyObject TargetObject { get; set; }
+	internal DependencyObject TargetObject { get; set; }
 }
