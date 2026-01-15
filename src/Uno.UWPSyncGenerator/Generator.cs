@@ -25,11 +25,7 @@ namespace Uno.UWPSyncGenerator
 		private const string WasmDefine = "__WASM__";
 		private const string SkiaDefine = "__SKIA__";
 
-#if HAS_UNO_WINUI
 		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";
-#else
-		private const string BaseXamlNamespace = "Windows.UI.Xaml";
-#endif
 
 		private static readonly string[] _skipBaseTypes = new[]
 		{
@@ -114,7 +110,6 @@ namespace Uno.UWPSyncGenerator
 			"Windows.UI.Dispatching",
 			"Microsoft.UI.Xaml",
 			"Microsoft.Web",
-#if HAS_UNO_WINUI
 			"Microsoft.Foundation",
 			"Microsoft.UI.Xaml",
 			"Microsoft.UI.Composition",
@@ -127,8 +122,7 @@ namespace Uno.UWPSyncGenerator
 			"Microsoft.Graphics",
 			"Microsoft.Windows.ApplicationModel.Resources",
 			"Microsoft.Web",
-#endif
-			};
+		};
 
 		static Generator()
 		{
@@ -169,24 +163,6 @@ namespace Uno.UWPSyncGenerator
 
 			var excludeNamespaces = new List<string>();
 			var includeNamespaces = new List<string>();
-
-#if !HAS_UNO_WINUI
-			// For UWP compilation we need to ignore these namespaces when not explicitly generating
-			// for related projects.
-			if (baseName == "Uno.UI.Dispatching")
-			{
-				includeNamespaces.Add("Windows.UI.Dispatching");
-			}
-			else if (baseName == "Uno.UI.Composition")
-			{
-				includeNamespaces.Add("Windows.UI.Composition");
-			}
-			else
-			{
-				excludeNamespaces.Add("Windows.UI.Dispatching");
-				excludeNamespaces.Add("Windows.UI.Composition");
-			}
-#endif
 
 			var q = from asm in origins
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
@@ -285,12 +261,6 @@ namespace Uno.UWPSyncGenerator
 			}
 
 			var containingNamespaceName = type.ContainingNamespace.ToString();
-#if !HAS_UNO_WINUI
-			if (containingNamespaceName.StartsWith("Windows.UI.Composition", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
-			}
-#else
 			if (containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Graphics", StringComparison.Ordinal))
 			{
@@ -300,11 +270,9 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
-#endif
 			else if (containingNamespaceName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
-#if HAS_UNO_WINUI
 				|| containingNamespaceName.StartsWith("Microsoft.System", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
@@ -314,7 +282,6 @@ namespace Uno.UWPSyncGenerator
 				|| containingNamespaceName.StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
-#endif
 			)
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
@@ -588,7 +555,6 @@ namespace Uno.UWPSyncGenerator
 					// Skipped because the types are hidden from the projections in WinAppSDK
 					return true;
 
-#if HAS_UNO_WINUI
 				case "Windows.UI.Text.FontWeights":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
@@ -596,14 +562,6 @@ namespace Uno.UWPSyncGenerator
 				case "Windows.UI.Colors":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
-#else
-				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
-				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
-				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
-				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
-					// Skipped because the implementation is currently incorrectly placed in WUX namespace
-					return true;
-#endif
 			}
 
 
@@ -1150,7 +1108,6 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
-#if HAS_UNO_WINUI
 			if (method.ContainingType.Name == "SwapChainPanel")
 			{
 				switch (method.Name)
@@ -1190,28 +1147,6 @@ namespace Uno.UWPSyncGenerator
 						return true;
 				}
 			}
-#else
-			if (method.ContainingType.Name == "CoreIndependentInputSourceController")
-			{
-				switch (method.Name)
-				{
-					// Avoid circular reference in UWP
-					case "CreateForVisual":
-					case "CreateForIVisualElement":
-						return true;
-				}
-			}
-
-			if (method.ContainingType.Name == "ElementCompositionPreview")
-			{
-				switch (method.Name)
-				{
-					// Adjust for already implemented member
-					case "SetElementChildVisual":
-						return true;
-				}
-			}
-#endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
 			{
