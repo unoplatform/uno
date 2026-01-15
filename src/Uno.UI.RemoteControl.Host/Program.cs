@@ -17,12 +17,14 @@ using System.Runtime.Versioning;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
+using Uno.UI.RemoteControl.Host.Configuration;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Host.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Server.AppLaunch;
+using Uno.UI.RemoteControl.ServerCore.Configuration;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -102,6 +104,7 @@ namespace Uno.UI.RemoteControl.Host
 				// This contains services that live for the entire duration of the server process
 				var globalServices = new ServiceCollection();
 				globalServices.AddSingleton<IConfiguration>(globalConfiguration);
+				globalServices.AddSingleton<IRemoteControlConfiguration>(_ => new ConfigurationRemoteControlConfiguration(globalConfiguration));
 
 				// Add logging services to the global container
 				// This is necessary for services like IdeChannelServer that require ILogger<T>
@@ -163,8 +166,11 @@ namespace Uno.UI.RemoteControl.Host
 					globalServiceProvider.GetRequiredService<IIdeChannel>());
 				builder.Services.AddSingleton<UnoDevEnvironmentService>();
 
-				builder.Services.AddSingleton<ApplicationLaunchMonitor>(_ =>
-					globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
+				builder.Services.AddSingleton<IApplicationLaunchMonitor>(_ =>
+					globalServiceProvider.GetRequiredService<IApplicationLaunchMonitor>());
+
+				builder.Services.AddSingleton<IRemoteControlConfiguration>(_ =>
+					globalServiceProvider.GetRequiredService<IRemoteControlConfiguration>());
 
 				// Add the global service provider to the DI container
 				builder.Services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);

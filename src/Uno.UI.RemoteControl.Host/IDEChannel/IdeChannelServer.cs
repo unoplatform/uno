@@ -78,9 +78,9 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	#endregion
 
 	/// <inheritdoc />
-	public async ValueTask<bool> WaitForReady(CancellationToken ct = default)
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-		=> await _initializeTask;
+	public Task<bool> WaitForReady(CancellationToken ct = default)
+		=> _initializeTask;
 #pragma warning restore VSTHRD003
 
 	/// <summary>

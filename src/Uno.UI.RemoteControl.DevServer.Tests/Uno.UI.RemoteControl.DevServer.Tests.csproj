@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<!-- Link sources directly so unit tests can compile without directly referencing the project output -->
 		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\IApplicationLaunchMonitor.cs" Link="AppLaunch\IApplicationLaunchMonitor.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AppLaunch\VsAppLaunchStateService.cs" Link="AppLaunch\VsAppLaunchStateService.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
 

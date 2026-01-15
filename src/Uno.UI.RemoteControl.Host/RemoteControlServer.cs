@@ -9,13 +9,11 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
-using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging;
@@ -24,6 +22,7 @@ using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
+using Uno.UI.RemoteControl.ServerCore.Configuration;
 
 namespace Uno.UI.RemoteControl.Host;
 
@@ -38,21 +37,22 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 	private IFrameTransport? _transport;
 	private readonly List<string> _appInstanceIds = new();
-	private readonly IConfiguration _configuration;
+	private readonly IRemoteControlConfiguration _configuration;
 	private readonly IIdeChannel _ideChannel;
 	private readonly IServiceProvider _serviceProvider;
-	private readonly IServiceProvider _globalServiceProvider;
 	private readonly ITelemetry? _telemetry;
+	private readonly IApplicationLaunchMonitor _launchMonitor;
 
-	public RemoteControlServer(IConfiguration configuration, IIdeChannel ideChannel, IServiceProvider serviceProvider)
+	public RemoteControlServer(
+		IRemoteControlConfiguration configuration,
+		IIdeChannel ideChannel,
+		IApplicationLaunchMonitor launchMonitor,
+		IServiceProvider serviceProvider)
 	{
 		_configuration = configuration;
 		_ideChannel = ideChannel;
+		_launchMonitor = launchMonitor;
 		_serviceProvider = serviceProvider;
-
-		// Get the global service provider from the connection services
-		// This allows access to both global and connection-specific services
-		_globalServiceProvider = _serviceProvider.GetKeyedService<IServiceProvider>("global") ?? _serviceProvider;
 
 		// Use connection-specific telemetry for this RemoteControlServer instance
 		// This telemetry is scoped to the current transport connection (Kestrel request)
@@ -67,7 +67,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	}
 
 	string IRemoteControlServer.GetServerConfiguration(string key)
-		=> _configuration[key] ?? "";
+		=> _configuration.GetValue(key) ?? string.Empty;
 
 	private AssemblyLoadContext GetAssemblyLoadContext(string applicationId)
 	{
@@ -187,10 +187,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
 		_transport = transport;
 
-		if (_ideChannel is IdeChannelServer srv)
-		{
-			await srv.WaitForReady(ct);
-		}
+		await _ideChannel.WaitForReady(ct);
 
 		while (await transport.ReceiveAsync(ct) is Frame frame)
 		{
@@ -268,9 +265,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			{
 				this.Log().LogDebug("Received app launch register message from IDE: {Msg}", appLaunchRegisterIdeMessage);
 			}
-			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
-
-			monitor.RegisterLaunch(
+			_launchMonitor.RegisterLaunch(
 				appLaunchRegisterIdeMessage.Mvid,
 				appLaunchRegisterIdeMessage.Platform,
 				appLaunchRegisterIdeMessage.IsDebug,
@@ -313,8 +308,6 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				this.Log().LogDebug("App {Step}: {Msg}", appLaunch.Step, appLaunch);
 			}
 
-			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
-
 			switch (appLaunch.Step)
 			{
 				case AppLaunchStep.Launched:
@@ -335,11 +328,11 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 						}
 						break;
 					}
-					monitor.RegisterLaunch(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug, appLaunch.Ide, appLaunch.Plugin);
+					_launchMonitor.RegisterLaunch(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug, appLaunch.Ide, appLaunch.Plugin);
 					break;
 
 				case AppLaunchStep.Connected:
-					var success = monitor.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+					var success = _launchMonitor.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
 					if (!success && this.Log().IsEnabled(LogLevel.Debug))
 					{
 						this.Log().LogDebug("App Connected: MVID={Mvid} Platform={Platform} Debug={Debug} - No immediate match, pending handled by ApplicationLaunchMonitor.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);

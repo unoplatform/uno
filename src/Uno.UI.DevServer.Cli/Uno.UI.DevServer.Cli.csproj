@@ -26,9 +26,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
 		<PackageReference Include="ModelContextProtocol" Version="0.4.1-preview.1" />
 		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.4.1-preview.1" />
 		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />

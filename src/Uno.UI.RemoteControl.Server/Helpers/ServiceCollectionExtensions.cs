@@ -105,6 +105,8 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 				return new AppLaunch.ApplicationLaunchMonitor(options: launchOptions);
 			});
 
+			services.AddSingleton<AppLaunch.IApplicationLaunchMonitor>(sp => sp.GetRequiredService<AppLaunch.ApplicationLaunchMonitor>());
+
 			return services;
 		}
 
