@@ -126,16 +126,21 @@ public class Given_ApplicationData
 		var currentVersion = appData.Version;
 
 		int handlerCallCount = 0;
+		uint reportedCurrentVersion = 0;
+		uint reportedDesiredVersion = 0;
 
 		// Act - set to same version
 		await appData.SetVersionAsync(currentVersion, new ApplicationDataSetVersionHandler((setVersionRequest) =>
 		{
 			handlerCallCount++;
+			reportedCurrentVersion = setVersionRequest.CurrentVersion;
+			reportedDesiredVersion = setVersionRequest.DesiredVersion;
 		}));
 
 		// Assert - validate behavior when setting same version
 		appData.Version.Should().Be(currentVersion);
-		// Does WinUI call the handler even when version is the same?
-		// Record actual behavior here
+		Assert.AreEqual(1, handlerCallCount, "Handler should be called exactly once");
+		Assert.AreEqual(currentVersion, reportedCurrentVersion);
+		Assert.AreEqual(currentVersion, reportedDesiredVersion);
 	}
 }
