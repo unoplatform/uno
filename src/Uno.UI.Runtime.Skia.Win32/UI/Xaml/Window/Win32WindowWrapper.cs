@@ -301,7 +301,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_SYSCOMMAND:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SYSCOMMAND)} message.");
 				// Disable system handling of Alt & F10 keys.
-				if (wParam == PInvoke.SC_KEYMENU && Win32Helper.HIWORD(lParam) <= 0)
+				// Per Win32 conventions, HIWORD(lParam) == 0 indicates a keyboard-generated system command.
+				if (wParam == PInvoke.SC_KEYMENU && Win32Helper.HIWORD(lParam) == 0)
 				{
 					return new LRESULT(0);
 				}
