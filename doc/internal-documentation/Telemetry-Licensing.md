@@ -54,7 +54,7 @@ Licensing telemetry tracks license management operations, user navigation, and A
 | `get-licenses-requested` | - | - | Licenses requested |
 | `get-licenses-success` | - | `DurationMs` | Licenses retrieved successfully |
 | `get-licenses-failure` | `Error` (string) | `DurationMs` | License retrieval failed |
-| `get-offers-requested` | - | - | Offers requested (trial days left, purchase link, etc.) for the current user. | 
+| `get-offers-requested` | - | - | Offers requested (trial days left, purchase link, etc.) for the current user |
 | `get-offers-success` | `Details` (string) | `DurationMs` | Offers retrieved successfully |
 | `get-offers-failure` | `Error` (string) | `DurationMs` | Offer retrieval failed |
 | `get-features-requested` | - | - | Features requested |
