@@ -9,6 +9,7 @@ Wizard telemetry tracks template project creation, CLI command generation, and u
 The Wizard service tracks user interactions with the Uno Platform project template wizard, capturing template parameter selections and project creation outcomes. Telemetry is implemented in the `WizardService.cs` class and uses the `ITelemetryClient` interface to send events.
 
 **Event Name Prefixing:**
+
 - Desktop/Native: Events use the base prefix from `WizardService.TelemetryData.Wizard_EventNamePrefix`
 - WebAssembly: Events are prefixed with `{Wizard_EventNamePrefix}/live/`
 
@@ -28,6 +29,7 @@ All wizard events are tracked through the `TrackEventReplacements` method:
 ### AllCreationOptions (string)
 
 A semi-colon separated string containing all template parameter key-value pairs:
+
 - Keys are sorted alphabetically
 - Format: "key1=value1;key2=value2;key3=value3"
 - Only includes **exportable symbols** defined in wizard metadata (filtered by `CanTrackReplacement`)
@@ -36,6 +38,7 @@ A semi-colon separated string containing all template parameter key-value pairs:
 ### CreationOption (string)
 
 A single key-value pair representing one configuration choice:
+
 - Format: "key=value"
 - Allows pivoting and analysis of individual configuration options
 - One event is sent per configuration parameter
@@ -60,21 +63,27 @@ A single key-value pair representing one configuration choice:
 Example values for common wizard configuration properties:
 
 ### Template Presets
+
 - **preset**: "blank", "default", "recommended", "mobile", "desktop"
 
 ### Platforms
+
 - **platforms**: "Android;iOS;WebAssembly", "Windows;macOS;Linux", "Android;iOS;Windows"
 
 ### Markup Language
+
 - **markup**: "xaml", "csharp"
 
 ### Testing Framework
+
 - **tests**: "none", "xunit", "nunit", "mstest"
 
 ### Theme/Design System
+
 - **theme**: "material", "fluent", "cupertino", "native"
 
 ### Project Configuration
+
 - **authentication**: "none", "msal", "oidc"
 - **extensions**: "navigation", "http", "localization"
 - **logging**: "true", "false"
