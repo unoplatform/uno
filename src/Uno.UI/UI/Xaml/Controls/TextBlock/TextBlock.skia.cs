@@ -59,6 +59,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal TextBox? OwningTextBox { private get; init; }
 
+		internal bool IsSpellCheckEnabled { get; set; }
+
 #if DEBUG
 		private protected override void OnLoaded()
 		{
@@ -108,6 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 						? null
 						: TextAlignment,
 				TextWrapping,
+				IsSpellCheckEnabled,
 				this,
 				out size);
 
