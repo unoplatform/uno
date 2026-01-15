@@ -116,10 +116,7 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 			}
 		}
 
-		public void Dispose()
-		{
-			_signal.Dispose();
-		}
+		public void Dispose() => _signal.Dispose();
 	}
 
 	private readonly Endpoint _endpoint;
