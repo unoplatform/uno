@@ -1,4 +1,3 @@
-#if __WASM__ || WASM_SKIA
 #nullable enable
 
 using System;
@@ -122,4 +121,3 @@ internal partial class NativeCoreWebView2HttpRequestHeaders : INativeHttpRequest
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
-#endif

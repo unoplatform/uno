@@ -1,4 +1,3 @@
-#if __WASM__
 #nullable enable
 
 using System;
@@ -84,17 +83,23 @@ internal partial class NativeWebView : ISupportsWebResourceRequested
     const originalFetch = window.fetch;
     window.fetch = function(input, init) {
         init = init || {};
-        init.headers = init.headers || {};
+        
+        // Handle Headers object or plain object consistently
+        let headers;
+        if (init.headers instanceof Headers) {
+            headers = init.headers;
+        } else {
+            headers = new Headers(init.headers || {});
+        }
         
         // Apply custom headers
         for (const [key, value] of Object.entries(window.__unoCustomHeaders)) {
-            if (init.headers instanceof Headers) {
-                init.headers.set(key, value);
-            } else {
-                init.headers[key] = value;
+            if (value) {
+                headers.set(key, value);
             }
         }
         
+        init.headers = headers;
         return originalFetch.call(this, input, init);
     };
 
@@ -102,19 +107,26 @@ internal partial class NativeWebView : ISupportsWebResourceRequested
     const originalOpen = XMLHttpRequest.prototype.open;
     const originalSend = XMLHttpRequest.prototype.send;
     
-    XMLHttpRequest.prototype.open = function(method, url) {
+    XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
         this.__unoUrl = url;
         this.__unoMethod = method;
+        this.__unoHeadersApplied = false;
         return originalOpen.apply(this, arguments);
     };
     
     XMLHttpRequest.prototype.send = function(body) {
-        // Apply custom headers before send
-        for (const [key, value] of Object.entries(window.__unoCustomHeaders)) {
-            try {
-                this.setRequestHeader(key, value);
-            } catch (e) {
-                // Some headers cannot be set
+        // Apply custom headers before send (only once)
+        if (!this.__unoHeadersApplied) {
+            this.__unoHeadersApplied = true;
+            for (const [key, value] of Object.entries(window.__unoCustomHeaders)) {
+                if (value) {
+                    try {
+                        this.setRequestHeader(key, value);
+                    } catch (e) {
+                        // Some headers cannot be set (e.g., restricted headers)
+                        console.warn('Uno WebResourceRequested: Could not set header ' + key + ': ' + e.message);
+                    }
+                }
             }
         }
         return originalSend.call(this, body);

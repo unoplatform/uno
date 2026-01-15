@@ -452,6 +452,11 @@ public
 
 		_isCancelling = false;
 
+		// When starting a new navigation, ensure the JavaScript interceptor will be reinjected
+		// for the new document. Reset the injected flag so InjectWebResourceInterceptor
+		// will run after navigation completes.
+		_interceptorInjected = false;
+
 		RaiseNavigationStarting(targetUrl ?? _lastNavigationData!, out var cancel); //TODO:MZ: For HTML content
 
 		if (cancel)

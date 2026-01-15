@@ -26,24 +26,24 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebViewTests
 			};
 
 			WebView.CoreWebView2.WebResourceRequested += (s, e) =>
-		{
-			try
 			{
-				Console.WriteLine($"[Test] Event handler called. e type: {e.GetType().Name}");
-				Console.WriteLine($"[Test] e.Request type: {e.Request.GetType().Name}");
-				Console.WriteLine($"[Test] e.Request.Headers type: {e.Request.Headers.GetType().Name}");
+				try
+				{
+					Console.WriteLine($"[Test] Event handler called. e type: {e.GetType().Name}");
+					Console.WriteLine($"[Test] e.Request type: {e.Request.GetType().Name}");
+					Console.WriteLine($"[Test] e.Request.Headers type: {e.Request.Headers.GetType().Name}");
 
-				// Inject an Authorization header so you can verify it on an echo endpoint
-				e.Request.Headers.SetHeader("Authorization", "Session TEST_TOKEN");
-				var authHeader = e.Request.Headers.GetHeader("Authorization");
-				_ = DispatcherQueue.TryEnqueue(() => StatusText.Text = $"WebResourceRequested: {e.Request.Uri}\nAuth header: {authHeader}");
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"[Test] EXCEPTION: {ex}");
-				_ = DispatcherQueue.TryEnqueue(() => StatusText.Text = "WebResourceRequested handler error: " + ex.Message);
-			}
-		};
+					// Inject an Authorization header so you can verify it on an echo endpoint
+					e.Request.Headers.SetHeader("Authorization", "Session TEST_TOKEN");
+					var authHeader = e.Request.Headers.GetHeader("Authorization");
+					_ = DispatcherQueue.TryEnqueue(() => StatusText.Text = $"WebResourceRequested: {e.Request.Uri}\nAuth header: {authHeader}");
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"[Test] EXCEPTION: {ex}");
+					_ = DispatcherQueue.TryEnqueue(() => StatusText.Text = "WebResourceRequested handler error: " + ex.Message);
+				}
+			};
 
 			NavigateButton.Click += (s, e) =>
 			{
