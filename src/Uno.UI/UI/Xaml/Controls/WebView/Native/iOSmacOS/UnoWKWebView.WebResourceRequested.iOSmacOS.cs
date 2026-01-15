@@ -1,4 +1,3 @@
-#if __IOS__ || __MACOS__
 #nullable enable
 
 using System;
@@ -16,12 +15,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Partial class extension for UnoWKWebView to implement ISupportsWebResourceRequested.
 /// </summary>
-#if UIKIT_SKIA
-internal
-#else
-public
-#endif
-	partial class UnoWKWebView : ISupportsWebResourceRequested
+partial class UnoWKWebView : ISupportsWebResourceRequested
 {
 	private readonly List<WebResourceFilter> _webResourceFilters = new();
 	private readonly Dictionary<string, string> _customHeaders = new(StringComparer.OrdinalIgnoreCase);
@@ -281,4 +275,3 @@ public
 ";
 	}
 }
-#endif

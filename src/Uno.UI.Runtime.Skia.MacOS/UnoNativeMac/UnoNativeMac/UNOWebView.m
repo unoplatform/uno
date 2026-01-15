@@ -630,8 +630,25 @@ createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration
             }
 
             if (headersJson != NULL) {
+                // headersJson contains potentially sensitive header names and values (e.g. Authorization tokens).
+                // Avoid logging header values to prevent leaking secrets in debug output. Log only the header names.
+                
 #if DEBUG
-                NSLog(@"decidePolicyForNavigationAction webView %p - injecting headers: %s", webView, headersJson);
+                @try {
+                    NSString *h = [NSString stringWithUTF8String:headersJson];
+                    NSData *d = [h dataUsingEncoding:NSUTF8StringEncoding];
+                    NSError *parseError = nil;
+                    NSDictionary *parsed = [NSJSONSerialization JSONObjectWithData:d options:0 error:&parseError];
+                    if (parsed && !parseError) {
+                        NSArray *keys = [parsed allKeys];
+                        NSLog(@"decidePolicyForNavigationAction webView %p - injecting headers (keys only): %@", webView, keys);
+                    } else {
+                        // Fallback: do not log the raw JSON
+                        NSLog(@"decidePolicyForNavigationAction webView %p - injecting headers (keys unavailable)", webView);
+                    }
+                } @catch (NSException *ex) {
+                    NSLog(@"decidePolicyForNavigationAction webView %p - injecting headers (parse error)", webView);
+                }
 #endif
                 decisionHandler(WKNavigationActionPolicyCancel);
 

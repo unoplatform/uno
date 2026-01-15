@@ -1,4 +1,3 @@
-#if __IOS__ || UIKIT_SKIA
 #nullable enable
 
 using System;
@@ -58,4 +57,3 @@ internal partial class NativeCoreWebView2WebResourceRequest : INativeWebResource
 	internal Dictionary<string, string>? GetEffectiveHeaders()
 		=> _headers?.GetEffectiveHeaders();
 }
-#endif
