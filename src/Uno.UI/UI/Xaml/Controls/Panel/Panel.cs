@@ -98,6 +98,8 @@ public partial class Panel : FrameworkElement, IPanel
 
 	public UIElementCollection Children => _children;
 
+	private protected UIElementCollection GetUnsortedChildren() => Children;
+
 	#region ChildrenTransitions Dependency Property
 
 	public TransitionCollection ChildrenTransitions

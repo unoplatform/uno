@@ -258,6 +258,8 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
 			RaiseConfigurationChanges();
+
+			InitializeBackPressedCallback();
 		}
 
 		protected override void OnStart()
@@ -355,6 +357,8 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.Stop();
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
+
+			CleanupBackPressedCallback();
 
 			NativeWindowWrapper.Instance.OnNativeClosed();
 		}

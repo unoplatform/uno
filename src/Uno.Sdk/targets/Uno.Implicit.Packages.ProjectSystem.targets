@@ -118,4 +118,9 @@
 	<ItemGroup>
 		<PackageReference Include="@(_UnoProjectSystemPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>
+
+	<ItemGroup Condition=" '$(PublishTrimmed)' == 'true' ">
+		<RuntimeHostConfigurationOption Include="Is_System_Dynamic_DynamicObject_Available" Value="false" Trim="true" />
+		<RuntimeHostConfigurationOption Include="Is_System_Dynamic_ExpandoObject_Available" Value="false" Trim="true" />
+	</ItemGroup>
 </Project>

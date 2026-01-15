@@ -120,7 +120,7 @@ internal readonly partial struct UnicodeText
 			GetMethod<u_getVersion>()(out var versionInfo);
 			var ptr = Marshal.AllocHGlobal(1000);
 			GetMethod<u_versionToString>()((IntPtr)(&versionInfo), ptr);
-			typeof(ICU).LogInfo()?.Info($"Found ICU version {Marshal.PtrToStringAnsi(ptr)}.");
+			typeof(ICU).LogDebug()?.Debug($"Found ICU version {Marshal.PtrToStringAnsi(ptr)}.");
 			Marshal.FreeHGlobal(ptr);
 		}
 

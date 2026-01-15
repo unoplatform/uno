@@ -57,6 +57,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22207")]
+		public async Task When_12HourClock_Should_Display_12_Instead_Of_0()
+		{
+			var timePicker = new TimePicker();
+#if HAS_UNO
+			timePicker.UseNativeStyle = false;
+#endif
+			timePicker.ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour;
+			// Set time to midnight (0:00) or noon (12:00)
+			timePicker.Time = new TimeSpan(0, 0, 0);
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
+			Assert.IsNotNull(timePickerFlyoutPresenter);
+
+			// Find the hour looping selector
+			(var hourLoopingSelector, _, _) = await DateTimePickerHelper.GetHourMinutePeriodLoopingSelectorsFromOpenFlyout();
+
+			Assert.IsNotNull(hourLoopingSelector, "HourLoopingSelector should be found");
+
+			var items = hourLoopingSelector.Items;
+			Assert.IsTrue(items.Count > 0, "Hour items should be populated");
+
+			var firstItem = items[0] as DatePickerFlyoutItem;
+			Assert.IsNotNull(firstItem, "First item should be a DatePickerFlyoutItem");
+
+			// In 12-hour clock, the first hour should represent 12 (not 0), regardless of formatting or digit shapes
+			Assert.IsTrue(int.TryParse(firstItem.PrimaryText, out var firstHourValue), "First hour text should be a valid integer");
+			Assert.AreEqual(12, firstHourValue, "First hour in 12-hour clock should represent 12");
+		}
+
+		[TestMethod]
 		public async Task When_MinuteIncrement_Not_In_Range_Should_Throw_And_Keep_OldValue()
 		{
 			var timePicker = new TimePicker();
@@ -385,6 +422,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 #endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21958")]
+		public async Task When_Fast_Scrolling_Items_Should_Remain_Visible()
+		{
+			TimePicker timePicker = new()
+			{
+				Time = new TimeSpan(12, 30, 0)
+			};
+#if HAS_UNO
+			timePicker.UseNativeStyle = false;
+#endif
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			(var hourLoopingSelector, _, _) = await DateTimePickerHelper.GetHourMinutePeriodLoopingSelectorsFromOpenFlyout();
+
+			Assert.IsNotNull(hourLoopingSelector, "HourLoopingSelector should be found");
+
+			ScrollViewer scrollViewer = null;
+			LoopingSelectorPanel panel = null;
+			var initialRealizedItemCount = 0;
+
+			await TestServices.RunOnUIThread(() =>
+			{
+				scrollViewer = (ScrollViewer)VisualTreeUtils.FindVisualChildByName(hourLoopingSelector, "ScrollViewer");
+				Assert.IsNotNull(scrollViewer, "ScrollViewer should be found");
+
+				panel = scrollViewer.Content as LoopingSelectorPanel;
+				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
+
+				initialRealizedItemCount = panel.Children.Count;
+				Assert.IsGreaterThan(0, initialRealizedItemCount, "Should have realized items initially");
+			});
+
+			// Simulate fast scrolling by rapidly changing the scroll position
+			// This triggers multiple intermediate ViewChanged events
+			var scrollPositions = new[] { 100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0 };
+
+			foreach (var scrollPosition in scrollPositions)
+			{
+				await TestServices.RunOnUIThread(() =>
+				{
+					scrollViewer.ChangeView(null, scrollPosition, null, disableAnimation: false);
+				});
+
+				await Task.Delay(10); // Small delay to allow event processing
+
+				var currentItemCount = 0;
+				await TestServices.RunOnUIThread(() =>
+				{
+					currentItemCount = panel.Children.Count;
+				});
+
+				Assert.IsGreaterThan(0,
+currentItemCount, $"Should have visible items during fast scrolling at position {scrollPosition}, but found {currentItemCount} items");
+			}
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var finalRealizedItemCount = 0;
+			await TestServices.RunOnUIThread(() =>
+			{
+				finalRealizedItemCount = panel.Children.Count;
+			});
+
+			Assert.IsGreaterThan(0, finalRealizedItemCount, "Should have realized items after scrolling completes");
+
+			await ControlHelper.ClickFlyoutCloseButton(timePicker, false /* isAccept */);
+			await TestServices.WindowHelper.WaitForIdle();
+		}
 
 		class MyContext
 		{

@@ -94,6 +94,9 @@ public class Given_ProgressRing
 	}
 
 	[TestMethod]
+#if !__SKIA__
+	[Ignore("The test is unreliable when DPI scaling is not 1")]
+#endif
 	public async Task When_Stretch_Fill()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -109,19 +112,16 @@ public class Given_ProgressRing
 
 		var screenshot1 = await UITestHelper.ScreenShot(pr1);
 		var screenshot2 = await UITestHelper.ScreenShot(pr2);
+		var pixels1 = screenshot1.GetPixels();
+		var pixels2 = screenshot2.GetPixels();
 
 		var different = false;
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < screenshot2.Bitmap.PixelHeight; i++)
 		{
-			for (int j = 0; j < 30; j++)
+			different = 0 != pixels1.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth).SequenceCompareTo(pixels2.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth));
+			if (different)
 			{
-				var pixel1 = screenshot1.GetPixel(i, j);
-				var pixel2 = screenshot2.GetPixel(i, j);
-				if (pixel1 != pixel2)
-				{
-					different = true;
-					break;
-				}
+				break;
 			}
 		}
 		Assert.IsTrue(different);
