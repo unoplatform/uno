@@ -461,6 +461,58 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		public void When_Nested_Container_Create_Existing_NotFound()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
+			Assert.IsNull(container);
+			Assert.AreEqual(0, SUT.Containers.Count);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Found()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			container.Values["test"] = "42";
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+
+			var container2 = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Existing);
+			Assert.IsNotNull(container2);
+			Assert.AreEqual("nested", container2.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.AreEqual("42", container2.Values["test"]);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Nested_NotFound()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+
+			var nestedContainer = container.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
+			Assert.IsNull(nestedContainer);
+			Assert.AreEqual(0, container.Containers.Count);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Nested_Found()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			var innerContainer = container.CreateContainer("inner", ApplicationDataCreateDisposition.Always);
+			innerContainer.Values["innerValue"] = "123";
+
+			var foundContainer = container.CreateContainer("inner", ApplicationDataCreateDisposition.Existing);
+			Assert.IsNotNull(foundContainer);
+			Assert.AreEqual("inner", foundContainer.Name);
+			Assert.AreEqual("123", foundContainer.Values["innerValue"]);
+		}
+
+		[TestMethod]
 		public void When_Multiple_Nesting_Containers_Structure()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
