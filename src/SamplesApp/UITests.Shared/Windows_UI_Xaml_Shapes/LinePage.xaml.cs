@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes", "LinePage")]
+	[Sample("Shapes", Name = "LinePage")]
 	public sealed partial class LinePage : Page
 	{
 		public LinePage()

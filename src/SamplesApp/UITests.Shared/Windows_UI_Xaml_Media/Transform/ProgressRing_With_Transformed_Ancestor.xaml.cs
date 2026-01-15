@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "ProgressRing_With_Transformed_Ancestor", ignoreInSnapshotTests: true)]
+	[Sample("Transform", Name = "ProgressRing_With_Transformed_Ancestor", IgnoreInSnapshotTests = true)]
 	public sealed partial class ProgressRing_With_Transformed_Ancestor : UserControl
 	{
 		public ProgressRing_With_Transformed_Ancestor()

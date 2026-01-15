@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.Flue
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("NavigationView", "FluentStyle_NavigationViewSample")]
+	[Sample("NavigationView", Name = "FluentStyle_NavigationViewSample")]
 #pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class FluentStyle_NavigationViewSample
 #pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.

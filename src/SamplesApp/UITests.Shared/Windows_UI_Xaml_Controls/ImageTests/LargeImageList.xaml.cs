@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.UITests
 {
-	[SampleControlInfo("Image", "LargeImageList")]
+	[Sample("Image", Name = "LargeImageList")]
 	public sealed partial class LargeImageList : UserControl
 	{
 		public LargeImageList()

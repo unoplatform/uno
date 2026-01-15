@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.BorderTests
 {
-	[SampleControlInfo("Border", description: "Outline should look the same (aside from corners) with/without CornerRadius")]
+	[Sample("Border", Description = "Outline should look the same (aside from corners) with/without CornerRadius")]
 	public sealed partial class Border_CornerRadius_Toggle : UserControl
 	{
 		public Border_CornerRadius_Toggle()

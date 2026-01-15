@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "StretchUniform")]
+	[Sample("Path", Name = "StretchUniform")]
 	public sealed partial class StretchUniform : UserControl
 	{
 		public StretchUniform()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "EmptyImageFixedWidth", Description = "EmptyImageFixedWidth - the Aquamarine-coloured StarStackPanel below should stretch to the fixed Width given by the Image control, even though the Image is empty.")]
+	[Sample("Image", Name = "EmptyImageFixedWidth", Description = "EmptyImageFixedWidth - the Aquamarine-coloured StarStackPanel below should stretch to the fixed Width given by the Image control, even though the Image is empty.")]
 	public sealed partial class EmptyImageFixedWidth : UserControl
 	{
 		public EmptyImageFixedWidth()

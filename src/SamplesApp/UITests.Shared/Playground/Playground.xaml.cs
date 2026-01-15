@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -14,7 +14,7 @@ using Monaco;
 
 namespace UITests.Playground;
 
-[SampleControlInfo("Playground", "Playground", ignoreInSnapshotTests: true)]
+[Sample("Playground", Name = "Playground", IgnoreInSnapshotTests = true)]
 public sealed partial class Playground : UserControl
 {
 #if __WASM__

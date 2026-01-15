@@ -1,11 +1,11 @@
-﻿using Uno.UI.Extensions;
+using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewFirstVisibleIndex", description: "ListView with FirstVisibleIndex and LastVisibleIndex shown")]
+	[Sample("ListView", Name = "ListViewFirstVisibleIndex", Description = "ListView with FirstVisibleIndex and LastVisibleIndex shown")]
 	public sealed partial class ListViewFirstVisibleIndex : UserControl
 	{
 		public ListViewFirstVisibleIndex()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,7 +15,7 @@ using TextBlock = Microsoft.UI.Xaml.Controls.TextBlock;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", "TransformToVisual_Transform")]
+	[Sample("UIElement", Name = "TransformToVisual_Transform")]
 	public sealed partial class TransformToVisual_Transform : UserControl
 	{
 		private readonly TestRunner _tests;
@@ -225,7 +225,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 					{
 						(play = new Button
 						{
-							Content = "▶",
+							Content = "?",
 						}),
 						test.Output
 					}
@@ -299,7 +299,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 				Output = new TextBlock
 				{
 					Name = Name + "_Result",
-					Text = "🟨 " + Name,
+					Text = "?? " + Name,
 					TextWrapping = TextWrapping.Wrap,
 					VerticalAlignment = VerticalAlignment.Center
 				};
@@ -326,19 +326,19 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 					}
 
 					LastResult = TestResult.Success;
-					Output.Text = $"🟩 {_testMethod.Name}: SUCCESS";
+					Output.Text = $"?? {_testMethod.Name}: SUCCESS";
 				}
 				catch (TargetInvocationException e)
 				{
 					LastResult = TestResult.Failure;
-					Output.Text = $"🟥 {_testMethod.Name}: FAILED ({e.InnerException?.Message ?? e.Message})";
+					Output.Text = $"?? {_testMethod.Name}: FAILED ({e.InnerException?.Message ?? e.Message})";
 					Console.WriteLine($"{_testMethod.Name}: FAILED");
 					Console.WriteLine(e.InnerException ?? e);
 				}
 				catch (Exception e)
 				{
 					LastResult = TestResult.Failure;
-					Output.Text = $"🟥 {_testMethod.Name}: FAILED ({e.Message})";
+					Output.Text = $"?? {_testMethod.Name}: FAILED ({e.Message})";
 					Console.WriteLine($"{_testMethod.Name}: FAILED");
 					Console.WriteLine(e);
 				}

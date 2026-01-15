@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "RadioTests", description: "Demonstrates use of Windows.Devices.Radio.GetRadiosAsync", ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "RadioTests", Description = "Demonstrates use of Windows.Devices.Radio.GetRadiosAsync", IgnoreInSnapshotTests = true)]
 	public sealed partial class RadioTests : UserControl
 	{
 		public RadioTests()
