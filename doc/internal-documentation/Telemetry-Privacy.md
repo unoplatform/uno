@@ -36,25 +36,31 @@ Uno Platform telemetry is designed to be GDPR compliant:
 Users can disable telemetry in multiple ways:
 
 ### Visual Studio
+
 1. Tools → Options → Uno Platform → Telemetry
 2. Uncheck "Enable telemetry"
 
 ### VS Code
+
 1. Open Settings (Ctrl+,)
 2. Search for "Uno Platform Telemetry"
 3. Uncheck "Enable Telemetry"
 
 ### Rider
+
 1. File → Settings → Tools → Uno Platform
 2. Uncheck "Send usage statistics"
 
 ### Environment Variable
+
 Set the environment variable:
+
 ```bash
 export UNO_PLATFORM_TELEMETRY_OPTOUT=true
 ```
 
 Or in Windows:
+
 ```powershell
 $env:UNO_PLATFORM_TELEMETRY_OPTOUT = "true"
 ```
