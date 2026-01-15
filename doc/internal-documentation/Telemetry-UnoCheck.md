@@ -22,20 +22,23 @@ Uno.Check is an environment verification tool that validates .NET SDK installati
 ## Properties
 
 ### RequestedFrameworks
+
 - **Type**: String (comma-separated list)
 - **Description**: Target frameworks requested for validation
 - **Format**: Comma-separated list of .NET TFMs matching pattern `net\d+(\.0)(?:-[a-zA-Z0-9.]+)*$`
 - **Examples**:
   - `"net8.0"` - Single framework
   - `"net8.0,net8.0-android,net8.0-ios"` - Multiple mobile frameworks
-  - `"net8.0-android,net8.0-ios,net8.0-maccatalyst,net8.0-windows"` - All platforms
-- **Notes**: 
+  - `"net8.0-android,net8.0-ios,net8.0-maccatalyst,net8.0-windows"`
+  - - All platforms
+- **Notes**:
   - Only frameworks matching .NET TFM pattern are included
   - Maximum of 10 frameworks tracked
   - Each framework name truncated to 32 characters
   - Alphabetically sorted
 
 ### ReportedChecks
+
 - **Type**: String
 - **Description**: Names or identifiers of checks that failed or warned
 - **Examples**:
@@ -46,6 +49,7 @@ Uno.Check is an environment verification tool that validates .NET SDK installati
 ## Measurements
 
 ### Duration
+
 - **Type**: Double (seconds)
 - **Description**: Total execution time for check process
 - **Examples**:
