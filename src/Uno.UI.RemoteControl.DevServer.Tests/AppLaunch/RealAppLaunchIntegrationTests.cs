@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
@@ -170,19 +171,19 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 		{
 			var projectDir = Path.GetDirectoryName(projectPath)!;
 			var appOutputDir = Path.Combine(projectDir, "bin", "Debug", appTfm);
-			var freshRcDll = typeof(Uno.UI.RemoteControl.RemoteControlClient).Assembly.Location;
-			var destRcDll = Path.Combine(appOutputDir, Path.GetFileName(freshRcDll));
-
 			Directory.CreateDirectory(appOutputDir);
-			File.Copy(freshRcDll, destRcDll, overwrite: true);
-			// Also copy PDB if available for better diagnostics
-			var freshRcPdb = Path.ChangeExtension(freshRcDll, ".pdb");
-			var destRcPdb = Path.ChangeExtension(destRcDll, ".pdb");
-			if (File.Exists(freshRcPdb))
+
+			var assembliesToCopy = new[]
 			{
-				File.Copy(freshRcPdb, destRcPdb, overwrite: true);
+				typeof(Uno.UI.RemoteControl.RemoteControlClient).Assembly.Location,
+				typeof(Uno.UI.RemoteControl.Messaging.IFrameTransport).Assembly.Location,
+			};
+
+			foreach (var assemblyPath in assembliesToCopy.Distinct(StringComparer.OrdinalIgnoreCase))
+			{
+				CopyAssemblyWithSymbols(assemblyPath, appOutputDir);
+				TestContext.WriteLine($"Overwrote dependency: {Path.GetFileName(assemblyPath)}");
 			}
-			TestContext.WriteLine($"Overwrote RemoteControlClient assembly: {destRcDll}");
 		}
 		catch (Exception copyEx)
 		{
@@ -240,6 +241,20 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 		}
 
 		return process;
+	}
+
+	private static void CopyAssemblyWithSymbols(string assemblyPath, string destinationDirectory)
+	{
+		var fileName = Path.GetFileName(assemblyPath);
+		var destinationPath = Path.Combine(destinationDirectory, fileName);
+		File.Copy(assemblyPath, destinationPath, overwrite: true);
+
+		var sourcePdb = Path.ChangeExtension(assemblyPath, ".pdb");
+		if (File.Exists(sourcePdb))
+		{
+			var destinationPdb = Path.ChangeExtension(destinationPath, ".pdb");
+			File.Copy(sourcePdb, destinationPdb, overwrite: true);
+		}
 	}
 
 	/// <summary>
