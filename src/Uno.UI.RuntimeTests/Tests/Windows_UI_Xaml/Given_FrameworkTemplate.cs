@@ -140,7 +140,7 @@ partial class Given_FrameworkTemplate // tests
 
 partial class Given_FrameworkTemplate
 {
-	public class XamlPageSetup : Page
+	public partial class XamlPageSetup : Page
 	{
 		public DataTemplate GetTemplate(string name)
 		{
