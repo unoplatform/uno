@@ -117,7 +117,7 @@
 		</SDKReference>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250907003" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
 	</ItemGroup>
 	<PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
 		<VisualStudioVersion>14.0</VisualStudioVersion>
