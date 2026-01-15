@@ -180,7 +180,14 @@ public partial class TextBox
 
 	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
 
-	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
+	{
+		if (TextBoxView is not null)
+		{
+			TextBoxView.DisplayBlock.IsSpellCheckEnabled = newValue;
+			TextBoxView.UpdateProperties();
+		}
+	}
 
 	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
 

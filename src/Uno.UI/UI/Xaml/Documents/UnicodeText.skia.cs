@@ -144,6 +144,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		FlowDirection flowDirection,
 		TextAlignment? textAlignment, // null to determine from text. This will also infer the directionality of the text from the content
 		TextWrapping textWrapping,
+		bool isSpellCheckEnabled,
 		IFontCacheUpdateListener fontListener,
 		out Size desiredSize)
 	{
@@ -221,7 +222,16 @@ internal readonly partial struct UnicodeText : IParsedText
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
 		_wordBoundaries = GetWords(text);
-		_corrections = GetSpellCheckSuggestions(_wordBoundaries, text);
+		if (isSpellCheckEnabled)
+		{
+			_corrections = GetSpellCheckSuggestions(_wordBoundaries, text);
+		}
+		else
+		{
+			var arr = new List<string>?[_wordBoundaries.Count];
+			Array.Fill(arr, null);
+			_corrections = arr.ToList();
+		}
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
@@ -1001,6 +1011,60 @@ internal readonly partial struct UnicodeText : IParsedText
 						DrawText(glyphs, positions, session, run.inline.Foreground);
 					}
 
+					var parentRunStartIndex = run.startInInline + run.inline.StartIndex;
+					var parentRunEndIndex = run.endInInline + run.inline.StartIndex;
+
+					var wordStart = 0;
+					for (var correctionIndex = 0; correctionIndex < _corrections.Count; correctionIndex++)
+					{
+						var wordEnd = _wordBoundaries[correctionIndex];
+						var correction = _corrections[correctionIndex];
+
+						if (correction is not null && wordStart < parentRunEndIndex && parentRunStartIndex < wordEnd)
+						{
+							// we have an intersection
+							int correctionLeft;
+							int correctionRight;
+							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart, parentRunStartIndex)];
+							var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordEnd, parentRunEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
+
+							if (run.rtl)
+							{
+								correctionLeft = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : 0;
+								correctionRight = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
+							}
+							else
+							{
+								correctionLeft = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart : 0;
+								correctionRight = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexStart + 1 : run.glyphs.Length; // +1 to include the last char
+							}
+
+							if (correctionRight > correctionLeft)
+							{
+								var leftX = positions[correctionLeft].X;
+								var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
+								using var p = new SKPath();
+								var y = line.y + line.baselineOffset + 2; // +2 to be below the text
+								p.MoveTo(currentLineX + leftX, y);
+								for (float x = currentLineX + leftX; x < currentLineX + rightX; x += 4)
+								{
+									p.LineTo(x + 2, y + 2);
+									p.LineTo(x + 4, y);
+								}
+
+								using var paint = new SKPaint();
+								paint.Color = SKColors.Red;
+								paint.Style = SKPaintStyle.Stroke;
+								paint.StrokeWidth = 1;
+								paint.IsAntialias = true;
+
+								session.Canvas.DrawPath(p, paint);
+							}
+						}
+
+						wordStart = wordEnd;
+					}
+
 					currentLineX += run.width;
 				}
 			}
@@ -1419,13 +1483,17 @@ internal readonly partial struct UnicodeText : IParsedText
 		foreach (var end in wordBoundaries)
 		{
 			var word = text.Substring(start, end - start);
-			var trimmedWord = word.Trim();
+			var trimmedWord = word.TrimEnd();
 
-			if (trimmedWord.Length > 0)
+			if (trimmedWord.Length > 0 && !trimmedWord.Any(c => char.IsPunctuation(c) || char.IsNumber(c) || char.IsSeparator(c) || char.IsWhiteSpace(c)))
 			{
-				ret.Add(_wordList.Check(word)
+				ret.Add(_wordList.Check(trimmedWord)
 					? null
-					: _wordList.Suggest(word).ToList());
+					: _wordList.Suggest(trimmedWord).ToList());
+			}
+			else
+			{
+				ret.Add(null);
 			}
 
 			start = end;
