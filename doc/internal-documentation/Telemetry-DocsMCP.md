@@ -36,6 +36,7 @@ The Uno Platform Docs MCP (Model Context Protocol) is an Azure-hosted service pr
 | `SearchError` | Tracks search failures and exceptions | `Query` (string), `UserAgent` (string, optional) | None |
 
 **Implementation Notes:**
+
 - **SearchRequest**: Uses `RequestTelemetry` to track incoming HTTP requests
 - **SearchResults**: Uses `EventTelemetry` with calculated `ResultsPerSecond` metric (resultCount / (responseTimeMs / 1000.0))
 - **CacheHit/CacheMiss**: Uses `EventTelemetry` for cache performance tracking
@@ -128,6 +129,7 @@ Based on the MonitoringService.cs implementation:
 ## Automatic ASP.NET Core Telemetry
 
 Application Insights automatically tracks:
+
 - HTTP request/response tracking with correlation IDs
 - Dependency calls to Azure AI Search API
 - Exception tracking with full stack traces
@@ -169,6 +171,7 @@ Application Insights is configured in `appsettings.json`:
 ## Example KQL Queries
 
 ### Cache Hit Rate Over Time
+
 ```kql
 // Cache hit rate over time
 customMetrics
@@ -178,6 +181,7 @@ customMetrics
 ```
 
 ### Top Search Patterns
+
 ```kql
 // Top search patterns
 customEvents
@@ -189,6 +193,7 @@ customEvents
 ```
 
 ### Throttling Analysis
+
 ```kql
 // Throttling analysis
 customEvents
@@ -199,6 +204,7 @@ customEvents
 ```
 
 ### Search Performance Analysis
+
 ```kql
 // Search performance analysis
 customEvents
@@ -215,6 +221,7 @@ customEvents
 ```
 
 ### Ingestion Monitoring
+
 ```kql
 // Ingestion monitoring
 customEvents
