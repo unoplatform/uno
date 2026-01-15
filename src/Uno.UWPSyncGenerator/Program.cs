@@ -41,7 +41,6 @@ namespace Uno.UWPSyncGenerator
 
 				// When adding support for a new WinRT contract here, ensure to add it to the list of supported contracts in ApiInformation.shared.cs
 
-#if HAS_UNO_WINUI
 				await new SyncGenerator().Build("Uno.Foundation", "Microsoft.Foundation");
 
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.Foundation");
@@ -62,20 +61,10 @@ namespace Uno.UWPSyncGenerator
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Windowing");
 
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Xaml");
-
-#else
-				await new SyncGenerator().Build("Uno.UI.Composition", "Windows.Foundation.UniversalApiContract");
-				await new SyncGenerator().Build("Uno.UI.Dispatching", "Windows.Foundation.UniversalApiContract");
-				await new SyncGenerator().Build("Uno.UI", "Windows.Foundation.UniversalApiContract");
-				await new SyncGenerator().Build("Uno.UI", "Windows.UI.Xaml.Hosting.HostingContract");
-				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Xaml");
-				await new SyncGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
-#endif
 			}
 
 			if (mode == DocMode || mode == AllMode)
 			{
-#if HAS_UNO_WINUI
 				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Content");
 				await new DocGenerator().Build("Uno.UI", "Microsoft.Windows.ApplicationModel.Resources");
 				await new DocGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
@@ -92,9 +81,6 @@ namespace Uno.UWPSyncGenerator
 				await new DocGenerator().Build("Uno.UI", "Microsoft.UI");
 
 				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Xaml");
-#else
-				await new DocGenerator().Build("Uno.UI", "Windows.Foundation.UniversalApiContract");
-#endif
 			}
 		}
 
