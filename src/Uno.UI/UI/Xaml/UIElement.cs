@@ -3,6 +3,7 @@
 #endif
 
 using Windows.Foundation;
+using System.Linq;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
@@ -133,14 +134,13 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
+			var implementedEvents = GetImplementedRoutedEvents();
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.BringIntoViewRequested))
 			{
@@ -148,11 +148,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal static RoutedEventFlag GetImplementedRoutedEventsForType(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-			Type type)
+		internal RoutedEventFlag GetImplementedRoutedEvents()
 		{
-			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(type, out var result))
+			var type = GetType();
+
+			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(GetType(), out var result))
 			{
 				return result;
 			}
@@ -166,11 +166,11 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				implementedRoutedEvents = EvaluateImplementedUIElementRoutedEvents(type);
+				implementedRoutedEvents = EvaluateImplementedUIElementRoutedEvents();
 
-				if (typeof(Control).IsAssignableFrom(type))
+				if (this is Control c)
 				{
-					implementedRoutedEvents |= Control.EvaluateImplementedControlRoutedEvents(type);
+					implementedRoutedEvents |= c.EvaluateImplementedControlRoutedEvents();
 				}
 			}
 
@@ -179,13 +179,11 @@ namespace Microsoft.UI.Xaml
 			return implementedRoutedEvents;
 		}
 
-		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-			Type type)
+		internal RoutedEventFlag EvaluateImplementedUIElementRoutedEvents()
 		{
 			RoutedEventFlag result = RoutedEventFlag.None;
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnBringIntoViewRequested), _bringIntoViewRequestedArgs))
+			if (GetIsEventOverrideImplemented(OnBringIntoViewRequested))
 			{
 				result |= RoutedEventFlag.BringIntoViewRequested;
 			}
@@ -198,20 +196,14 @@ namespace Microsoft.UI.Xaml
 			InvalidateMeasure();
 		}
 
-		private protected static bool GetIsEventOverrideImplemented(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-			Type type,
-			string name,
-			Type[] args)
+		private protected static bool GetIsEventOverrideImplemented<T>(Action<T> action)
 		{
-			var method = type
-				.GetMethod(
-					name,
-					BindingFlags.NonPublic | BindingFlags.Instance,
-					null,
-					args,
-					null);
+			return GetIsEventOverrideImplemented((Delegate)action);
+		}
 
+		private protected static bool GetIsEventOverrideImplemented(Delegate d)
+		{
+			var method = d.Method;
 			return method != null
 				&& method.IsVirtual
 				&& method.DeclaringType != typeof(UIElement)
