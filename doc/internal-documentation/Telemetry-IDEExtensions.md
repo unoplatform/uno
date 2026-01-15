@@ -16,14 +16,17 @@ IDE extensions track extension lifecycle, user interactions, and dev server oper
 | `dev-server-restart` | `PluginVersion` (string), `IDE` (string) | - | Dev Server restarted |
 
 **Automatic Properties:**
+
 - All events automatically include `PluginVersion` and `IDE` properties
 - `IDE` property is automatically set to "vscode"
 
 **App Launch Tracking:**
+
 - Requires Uno.Sdk version 6.4.0 or higher
 - Automatically tracks when apps are launched from VS Code
 
 **Property Value Examples:**
+
 - `PluginVersion`: "1.0.0", "1.2.5", "2.1.3"
 - `IDE`: "vscode" (always)
 - `Exception`: "Error", "TypeError", "NetworkError"
@@ -31,6 +34,7 @@ IDE extensions track extension lifecycle, user interactions, and dev server oper
 - `ActionName`: "OpenDesigner", "RefreshPreview", "RestartDevServer", "OpenDocumentation"
 
 **Reference:**
+
 For more detailed information, see the [VS Code Extension Telemetry Documentation](https://github.com/unoplatform/uno.vscode/blob/main/documentation/Telemetry.md).
 
 ## Rider
@@ -51,15 +55,18 @@ For more detailed information, see the [VS Code Extension Telemetry Documentatio
 | `dev-server-restart` | - | - | Dev Server restarted |
 
 **Automatic Properties:**
+
 - `IDE`: Always set to "rider"
 - `IDEVersion`: Rider version
 - `PluginVersion`: Uno Rider plugin version
 
 **App Launch Tracking:**
+
 - Automatically tracks when apps are launched from Rider
 - Includes platform, debug mode, and IDE information
 
 **Property Value Examples:**
+
 - `PluginVersion`: "1.0.0", "1.3.2", "2.0.5"
 - `IDE`: "rider" (always)
 - `IDEVersion`: "2023.1", "2023.2.2", "2024.1"
@@ -69,6 +76,7 @@ For more detailed information, see the [VS Code Extension Telemetry Documentatio
 - `ActionName`: "OpenDesigner", "RefreshPreview", "RestartDevServer", "ViewDocumentation"
 
 **Reference:**
+
 For more detailed information, see the [Rider Plugin Telemetry Documentation](https://github.com/unoplatform/uno.rider/blob/main/src/dotnet/uno.rider/Telemetry/Telemetry.md).
 
 ## Visual Studio
@@ -87,6 +95,7 @@ For more detailed information, see the [Rider Plugin Telemetry Documentation](ht
 | `server-start-enumeration-exception` | `PluginVersion` (string), `IDE` (string), `IDEVersion` (string), `ExceptionType` (string) | `Duration` (ms) | Exception during enumeration at server start |
 
 **Property Examples:**
+
 - `PluginVersion`: "1.2.3"
 - `IDE`: "visualstudio"
 - `IDEVersion`: "17.8.4"
