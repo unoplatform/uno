@@ -112,8 +112,6 @@ internal partial class ContextMenuProcessor
 
 		if (isDraggableOrPannable)
 		{
-			_contextMenuTimer = null;
-
 			// Create and start the contextmenu timer, and attach the timeout handler to fire ShowContextMenu
 			_contextMenuTimer = new DispatcherTimer();
 			_contextMenuTimer.Interval = TimeSpan.FromMilliseconds(ContextRequestOnHoldDelayMs);
