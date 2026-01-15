@@ -26,6 +26,7 @@ This document provides a comprehensive overview of telemetry across the Uno Plat
 Telemetry is collected across the Uno Platform ecosystem to understand usage patterns, improve features, and diagnose issues. All telemetry data is collected with privacy in mind, with no personally identifiable information (PII) being transmitted.
 
 All telemetry events use a prefixed naming convention based on the feature area:
+
 - `uno/hot-design` - Hot Design telemetry
 - `uno/ai` - AI Features telemetry
 - `uno/dev-server` - Dev Server telemetry
@@ -46,6 +47,7 @@ All telemetry events use a prefixed naming convention based on the feature area:
 ### [Global Telemetry Properties](Telemetry-GlobalProperties.md)
 
 Common properties automatically included with telemetry events across all Uno Platform components:
+
 - **System Information** - OS, version, architecture, kernel version, timestamp
 - **Environment Information** - Culture, CI detection, CI provider
 - **Version Information** - Uno Platform version, SDK version, target frameworks
@@ -62,6 +64,7 @@ All properties follow strict privacy principles with hashing/anonymization of se
 **Event Name Prefix:** `uno/hot-design`
 
 Hot Design telemetry tracks server-side sessions and client-initiated analytics events across 60+ client events organized into 8 categories:
+
 - Session and Lifecycle
 - Licensing
 - UI Controls
@@ -94,6 +97,7 @@ Dev Server telemetry tracks server sessions (Root and Connection types) and clie
 **Event Name Prefix:** `uno/licensing`
 
 Licensing telemetry tracks 43 events covering:
+
 - License Manager Events (Client)
 - Navigation Events
 - License API Events (Server)
@@ -104,6 +108,7 @@ Licensing telemetry tracks 43 events covering:
 ### [IDE Extensions](Telemetry-IDEExtensions.md)
 
 IDE extensions track extension lifecycle, user interactions, and dev server operations across:
+
 - **Visual Studio Code** (`uno/vscode`) - 6 events
 - **Rider** (`uno/rider`) - 10 events
 - **Visual Studio** (`uno/visual-studio`) - 8 events
@@ -115,6 +120,7 @@ IDE extensions track extension lifecycle, user interactions, and dev server oper
 **Event Name Prefix:** `uno/app-mcp`
 
 App MCP (Model Context Protocol) telemetry tracks agent interactions with running Uno applications:
+
 - **Community License Tools** - 8 tools (runtime info, screenshot, pointer click, key press, type text, visual tree snapshot, element peer default action, close)
 - **Pro License Tools** - 2 tools (element peer action for specific peer actions, element DataContext)
 - **Session Tracking** - Agent type, platform, tools used
@@ -128,6 +134,7 @@ App MCP (Model Context Protocol) telemetry tracks agent interactions with runnin
 **Event Name Prefix:** `uno/docs-mcp`
 
 Docs MCP (Model Context Protocol) is an Azure-hosted service providing documentation search and retrieval:
+
 - **Search Tracking** - Query patterns, response times, result counts
 - **Cache Performance** - Cache hit/miss rates, operation types
 - **Throttling** - Rate limiting, wait durations, client tracking
@@ -142,6 +149,7 @@ Docs MCP (Model Context Protocol) is an Azure-hosted service providing documenta
 **Event Name Prefix:** `uno/wizard`
 
 Wizard telemetry tracks project template creation and configuration through the Uno Platform project wizard:
+
 - **Project Creation** - Template selections, platform choices, configuration options
 - **CLI Command Generation** - Command generation for dotnet CLI
 - **Configuration Tracking** - Individual template parameter selections (preset, platforms, markup, tests, theme, etc.)
@@ -154,6 +162,7 @@ Wizard telemetry tracks project template creation and configuration through the 
 **Event Name Prefix:** `uno/uno-check`
 
 Uno.Check is an environment validation tool that checks .NET SDK installations, workloads, and dependencies required for Uno Platform development:
+
 - **Check Execution** - Start, success, warning, and failure events
 - **Framework Validation** - Target framework validation tracking
 - **Performance** - Check duration measurements
@@ -166,6 +175,7 @@ Uno.Check is an environment validation tool that checks .NET SDK installations, 
 **Event Name Prefix:** `uno/generation`
 
 XAML code generation telemetry tracks the performance and behavior of the Uno Platform source generator that processes XAML files into C# code:
+
 - **Generation Tracking** - Start, completion, and failure events
 - **Build Configuration** - Target framework, runtime, debug mode, IDE detection
 - **Performance Metrics** - File count, generation duration
@@ -176,6 +186,7 @@ XAML code generation telemetry tracks the performance and behavior of the Uno Pl
 ### [Privacy & Compliance](Telemetry-Privacy.md)
 
 Comprehensive privacy and compliance information including:
+
 - GDPR Compliance
 - Data Collection Policy (what IS and is NOT collected)
 - Disabling Telemetry (instructions for all IDEs)
