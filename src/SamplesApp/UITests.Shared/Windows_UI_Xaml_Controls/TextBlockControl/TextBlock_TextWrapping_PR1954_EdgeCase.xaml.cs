@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using Uno.UI;
@@ -14,7 +14,7 @@ using Android.Text;
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", nameof(TextBlock_TextWrapping_PR1954_EdgeCase), description: "[Droid]Repro sample for PR1954. When the text is limited to 1 line, due to enough height available for 2 lines, it should take the size of 1 line only. You may need to adjust text lenght and/or container height depending on the device. Expected behavior: text should always be in the center of pink area")]
+	[Sample("TextBlock", Name = nameof(TextBlock_TextWrapping_PR1954_EdgeCase), Description = "[Droid]Repro sample for PR1954. When the text is limited to 1 line, due to enough height available for 2 lines, it should take the size of 1 line only. You may need to adjust text lenght and/or container height depending on the device. Expected behavior: text should always be in the center of pink area")]
 	public sealed partial class TextBlock_TextWrapping_PR1954_EdgeCase : UserControl
 	{
 		public TextBlock_TextWrapping_PR1954_EdgeCase()

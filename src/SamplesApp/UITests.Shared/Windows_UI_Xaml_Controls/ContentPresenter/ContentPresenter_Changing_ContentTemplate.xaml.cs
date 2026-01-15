@@ -1,14 +1,14 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfo(
+	[Sample(
 		"ContentPresenter",
 		"ContentPresenter_Changing_ContentTemplate",
-		description: "ContentPresenter where ContentTemplate can be toggled between non-null and null. Content view should be visible when null.",
-		ignoreInSnapshotTests: true)]
+		Description = "ContentPresenter where ContentTemplate can be toggled between non-null and null. Content view should be visible when null.",
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class ContentPresenter_Changing_ContentTemplate : UserControl
 	{
 		public ContentPresenter_Changing_ContentTemplate()

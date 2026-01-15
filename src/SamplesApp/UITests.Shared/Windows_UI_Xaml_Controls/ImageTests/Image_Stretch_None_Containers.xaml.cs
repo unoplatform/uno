@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[Controls.SampleControlInfo("Image", "Image_Stretch_None_ScrollViewer")]
+	[Controls.Sample("Image", Name = "Image_Stretch_None_ScrollViewer")]
 	public sealed partial class Image_Stretch_None_Containers : UserControl
 	{
 		public Image_Stretch_None_Containers()

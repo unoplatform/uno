@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,8 +19,8 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_Infinite_Breadth", typeof(ListViewViewModel),
-		description: "Vertical ListView in a horizontal StackPanel (ie with infinite available width) with variable-width item text. Correct behavior is to resize as list scrolls.")]
+	[Sample("ListView", Name = "ListView_Infinite_Breadth", ViewModelType = typeof(ListViewViewModel),
+		Description = "Vertical ListView in a horizontal StackPanel (ie with infinite available width) with variable-width item text. Correct behavior is to resize as list scrolls.")]
 	public sealed partial class ListView_Infinite_Breadth : UserControl
 	{
 		public ListView_Infinite_Breadth()

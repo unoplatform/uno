@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_ApplicationModel_Resources_ResourceLoader
 {
-	[SampleControlInfo("Resources", "ResourceLoader_Simple")]
+	[Sample("Resources", Name = "ResourceLoader_Simple")]
 	public sealed partial class ResourceLoader_Simple : UserControl
 	{
 		public ResourceLoader_Simple()

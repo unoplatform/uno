@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel;
 using Windows.System;
@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_ApplicationModel
 {
-	[SampleControlInfo("Windows.ApplicationModel", "Package", ignoreInSnapshotTests: true, description: "Tests the Package and PackageId properties")]
+	[Sample("Windows.ApplicationModel", Name = "Package", IgnoreInSnapshotTests = true, Description = "Tests the Package and PackageId properties")]
 
 	public sealed partial class PackageTests : UserControl
 	{

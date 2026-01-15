@@ -1,4 +1,4 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "BorderBottomwithmargins")]
+	[Sample("Border", Name = "BorderBottomwithmargins")]
 	public sealed partial class BorderBottomwithmargins : UserControl
 	{
 		public BorderBottomwithmargins()

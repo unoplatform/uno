@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewSelectedItems")]
+	[Sample("ListView", Name = "ListViewSelectedItems")]
 	public sealed partial class ListViewSelectedItems : UserControl
 	{
 #pragma warning disable CS0109

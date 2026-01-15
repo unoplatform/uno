@@ -1,9 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "PasswordBox_Header_PlaceholderText")]
+	[Sample("TextBox", Name = "PasswordBox_Header_PlaceholderText")]
 	public sealed partial class PasswordBox_Header_PlaceholderText : UserControl
 	{
 		public PasswordBox_Header_PlaceholderText()
