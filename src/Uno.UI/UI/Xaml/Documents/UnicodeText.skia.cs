@@ -208,7 +208,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
-		_wordBoundaries = GetWordBreakingOpportunities(text);
+		_wordBoundaries = GetWords(text);
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
@@ -603,11 +603,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		return lines;
 	}
 
-	private static unsafe IEnumerable<int> GetLineBreakingOpportunities(string text)
+	private static IEnumerable<int> GetLineBreakingOpportunities(string text)
 	{
-		var ret = new List<int>();
 		if (OperatingSystem.IsBrowser())
 		{
+			var ret = new List<int>();
 			var breaker = ICU.BrowserICUSymbols.init_line_breaker(text);
 			if (breaker == IntPtr.Zero)
 			{
@@ -635,82 +635,50 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				ret.Add(next);
 			}
+			return ret;
 		}
 		else
 		{
-			fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+			return GetBoundaries( /* Line */ 2, text);
+		}
+	}
+
+	private static unsafe List<int> GetBoundaries(int boundaryType, string text)
+	{
+		var ret = new List<int>();
+		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		{
+			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				fixed (char* textPtr = &text.GetPinnableReference())
+				var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(boundaryType, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
+				ICU.CheckErrorCode<ICU.ubrk_open>(status);
+				ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
+				while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
 				{
-					var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(/* Line */ 2, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
-					ICU.CheckErrorCode<ICU.ubrk_open>(status);
-					ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
-					while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
-					{
-						ret.Add(next);
-					}
-					ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
+					ret.Add(next);
 				}
+				ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
 			}
 		}
 		return ret;
 	}
 
-	private static List<int> GetWordBreakingOpportunities(string text)
+	private static List<int> GetWords(string text)
 	{
-		// libICU's BreakIterator does not return what we want here. It only returns what it considers proper words
-		// like sequences of latin characters, but e.g. a sequence of symbols is ignored.
-		var chunks = new List<int>();
+		var boundaries = GetBoundaries(/* Word */ 1, text);
+		var ret = new List<int> { boundaries[0] };
+		for (var index = 1; index < boundaries.Count; index++)
 		{
-			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-			// \r\n, \r, \n and \t are always their own chunks
-			var length = text.Length;
-			for (var i = 0; i < length;)
-			{
-				var start = i;
-				var c = text[i];
-				if (c is '\r' && i < (length - 1) && text[i + 1] == '\n')
-				{
-					i += 2;
-				}
-				else if (c is '\r' or '\t' or '\n')
-				{
-					i++;
-				}
-				else if (c == ' ')
-				{
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else if (char.IsLetterOrDigit(text[i]))
-				{
-					while (i < length && char.IsLetterOrDigit(text[i]))
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else
-				{
-					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
+			var boundary = boundaries[index];
 
-				chunks.Add(i);
+			if (Enumerable.Range(ret[^1], boundary - ret[^1]).All(c => text[c] == ' '))
+			{
+				ret.RemoveAt(ret.Count - 1);
 			}
+			ret.Add(boundary);
 		}
-		return chunks;
+
+		return ret;
 	}
 
 	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, IFontCacheUpdateListener fontListener)
