@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetUWPOrWinUI)</TargetFrameworks>
 	</PropertyGroup>
@@ -65,20 +65,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-
-		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4 " Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" />
 
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 
-		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.19041.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.19041.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.19041.21" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.19041.21" />
 	</ItemGroup>
 
 	<!-- Override existing target, this project cannot be published -->
