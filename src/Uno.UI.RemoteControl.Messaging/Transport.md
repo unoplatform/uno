@@ -21,3 +21,5 @@ await peer1.SendAsync(Frame.Create(1, "scope", "name", new { Value = 42 }), Canc
 
 var received = await peer2.ReceiveAsync(CancellationToken.None);
 ```
+
+Hosts now resolve `RemoteControlServer` from the DI container (via `AddRemoteControlServerCore`) and hand it any `IFrameTransport` they control. The ASP.NET host wraps accepted WebSockets in `WebSocketFrameTransport`, while embedded scenarios can pass one end of an `InProcessFrameTransportPair`. This keeps the server core independent from concrete transport implementations and avoids `System.Net.WebSockets` dependencies.

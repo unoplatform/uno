@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Server.AppLaunch;
+using Uno.UI.RemoteControl.Server;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.ServerCore.Configuration;
 using Uno.UI.RemoteControl.Services;
@@ -67,22 +69,26 @@ namespace Uno.UI.RemoteControl.Host
 				app.Log().LogInformation("Accepted connection from {ConnectionRemoteIpAddress}", context.Connection.RemoteIpAddress);
 			}
 
+			ConnectionContext? connectionContext = null;
+			ITelemetry? telemetry = null;
+			await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
+			var services = scope.ServiceProvider;
 			try
 			{
-				var configuration = context.RequestServices.GetService<IRemoteControlConfiguration>();
-				var launchMonitor = context.RequestServices.GetService<IApplicationLaunchMonitor>();
-				var ideChannel = context.RequestServices.GetService<IIdeChannel>();
+				var hasConfiguration = services.GetService<IRemoteControlConfiguration>() is not null;
+				var hasLaunchMonitor = services.GetService<IApplicationLaunchMonitor>() is not null;
+				var hasIdeChannel = services.GetService<IIdeChannel>() is not null;
 
-				if (configuration is not null && launchMonitor is not null && ideChannel is not null)
+				if (hasConfiguration && hasLaunchMonitor && hasIdeChannel)
 				{
 					// Populate the scoped ConnectionContext with connection metadata
-					var connectionContext = context.RequestServices.GetService<ConnectionContext>();
+					connectionContext = services.GetService<ConnectionContext>();
+					telemetry = services.GetService<ITelemetry>();
 					if (connectionContext != null)
 					{
 						connectionContext.ConnectedAt = DateTimeOffset.UtcNow;
 
 						// Track client connection in telemetry
-						var telemetry = context.RequestServices.GetService<ITelemetry>();
 						if (telemetry != null)
 						{
 							var properties = new Dictionary<string, string>
@@ -99,15 +105,10 @@ namespace Uno.UI.RemoteControl.Host
 						}
 					}
 
-					// Use context.RequestServices directly - it already contains both global and scoped services
-					// The global service provider was injected as Singleton in Program.cs, so it's accessible here
-					using var server = new RemoteControlServer(
-						configuration,
-						ideChannel,
-						launchMonitor,
-						context.RequestServices);
+					using var transport = new WebSocketFrameTransport(await context.WebSockets.AcceptWebSocketAsync());
+					var server = services.GetRequiredService<RemoteControlServer>();
 
-					await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(), context.RequestAborted);
+					await server.RunAsync(transport, context.RequestAborted);
 				}
 				else
 				{
@@ -120,8 +121,6 @@ namespace Uno.UI.RemoteControl.Host
 			finally
 			{
 				// Track client disconnection in telemetry
-				var connectionContext = context.RequestServices.GetService<ConnectionContext>();
-				var telemetry = context.RequestServices.GetService<ITelemetry>();
 				if (telemetry != null && connectionContext != null)
 				{
 					var connectionDuration = DateTimeOffset.UtcNow - connectionContext.ConnectedAt;

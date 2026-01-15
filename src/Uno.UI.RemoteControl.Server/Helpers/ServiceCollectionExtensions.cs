@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
 #if DEBUG
@@ -128,6 +129,16 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			// Register ITelemetry<T> so that it resolves CreateTelemetry with the correct type argument T
 			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
 
+			return services;
+		}
+
+		/// <summary>
+		/// Registers the core devserver services required to run <see cref="RemoteControlServer"/>.
+		/// </summary>
+		public static IServiceCollection AddRemoteControlServerCore(this IServiceCollection services)
+		{
+			services.AddScoped<RemoteControlServer>();
+			services.AddScoped<IRemoteControlServer>(static sp => sp.GetRequiredService<RemoteControlServer>());
 			return services;
 		}
 

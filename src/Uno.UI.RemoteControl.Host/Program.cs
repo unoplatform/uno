@@ -177,6 +177,7 @@ namespace Uno.UI.RemoteControl.Host
 
 				// Add connection-specific telemetry services (Scoped)
 				builder.Services.AddConnectionTelemetry(solution);
+				builder.Services.AddRemoteControlServerCore();
 
 				// Apply Startup.ConfigureServices for compatibility with existing Startup class
 				new Startup(builder.Configuration).ConfigureServices(builder.Services);

@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging;
@@ -24,9 +24,9 @@ using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.ServerCore.Configuration;
 
-namespace Uno.UI.RemoteControl.Host;
+namespace Uno.UI.RemoteControl.Server;
 
-internal class RemoteControlServer : IRemoteControlServer, IDisposable
+public sealed class RemoteControlServer : IRemoteControlServer, IDisposable
 {
 	private readonly object _loadContextGate = new();
 	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
@@ -180,9 +180,6 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		=> _processors[hotReloadProcessor.Scope] = hotReloadProcessor;
 
-	public Task RunAsync(WebSocket socket, CancellationToken ct)
-		=> RunAsync(new WebSocketFrameTransport(socket), ct);
-
 	public async Task RunAsync(IFrameTransport transport, CancellationToken ct)
 	{
 		_transport = transport;
@@ -239,9 +236,12 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 					}
 				}
 			}
-			catch (WebSocketException) when (!transport.IsConnected)
+			catch (Exception error) when (IsTransportClosure(error, transport))
 			{
-				// Ignore transport closure exceptions without proper handshake to reduce log noise.
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().LogTrace("Transport closed while processing frame: {Message}", error.Message);
+				}
 			}
 			catch (Exception error)
 			{
@@ -252,6 +252,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			}
 		}
 	}
+
+	private static bool IsTransportClosure(Exception error, IFrameTransport transport)
+		=> error is OperationCanceledException || !transport.IsConnected;
 
 	private void ProcessIdeMessage(object? sender, IdeMessage message)
 	{
