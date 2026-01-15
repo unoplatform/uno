@@ -208,6 +208,7 @@ namespace SamplesApp
 				_mainWindow;
 		}
 
+#if __SKIA__
 		private static void InitializeIcuData()
 		{
 			// This is done by the IcuDataInitializerGenerator for external projects
@@ -216,6 +217,7 @@ namespace SamplesApp
 			var assembly = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name?.StartsWith("SamplesApp.Skia.", StringComparison.Ordinal) ?? false);
 			setMethod?.Invoke(null, [assembly]);
 		}
+#endif
 
 		private void SetupAndroidEnvironment()
 		{
