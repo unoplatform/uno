@@ -202,4 +202,3 @@ internal partial class NativeWebView : ISupportsWebResourceRequested
 		return false;
 	}
 }
-#endif
