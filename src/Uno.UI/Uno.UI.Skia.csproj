@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="HarfBuzzSharp" />
+		<PackageReference Include="WeCantSpell.Hunspell" Version="3.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
