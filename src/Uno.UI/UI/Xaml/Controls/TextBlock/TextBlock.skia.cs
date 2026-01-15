@@ -58,6 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal bool IsTextBoxDisplay { get; init; }
+		internal bool IsSpellCheckEnabled { get; set; }
 
 #if DEBUG
 		private protected override void OnLoaded()
@@ -81,6 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 				FlowDirection,
 				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
+				IsSpellCheckEnabled,
 				out var desiredSize);
 
 			desiredSize = desiredSize.Add(padding);
@@ -142,6 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 				FlowDirection,
 				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
+				IsSpellCheckEnabled,
 				out var arrangedSize);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
