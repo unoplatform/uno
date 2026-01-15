@@ -21,6 +21,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
+using WeCantSpell.Hunspell;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -105,6 +106,15 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 
+	private static readonly WordList _wordList = ((Func<WordList>)(() =>
+	{
+		var baseDir = @"C:\Users\RamezRagaa\Downloads\hunspell-en_US-2020.12.07";
+		var dictionaryPath = Path.Combine(baseDir, "en_US.dic");
+		var affixPath = Path.Combine(baseDir, "en_US.aff");
+
+		return WordList.CreateFromFiles(dictionaryPath, affixPath);
+	})).Invoke();
+
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
 	private readonly bool _rtl;
@@ -115,6 +125,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
+	private readonly List<List<string>?> _corrections;
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
@@ -193,6 +204,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_textIndexToGlyph = [];
 			_inlines = [];
 			_wordBoundaries = new();
+			_corrections = new();
 			_textAlignment = textAlignment.Value;
 			_text = "";
 			return;
@@ -209,6 +221,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
 		_wordBoundaries = GetWords(text);
+		_corrections = GetSpellCheckSuggestions(_wordBoundaries, text);
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
@@ -1180,7 +1193,6 @@ internal readonly partial struct UnicodeText : IParsedText
 				CI.Assert(line == _lines[^1]);
 				return extendedSelection ? (0, _lines[^2].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)) : (-1, null);
 			}
-
 			{
 				if (line.runs[0] is var firstRun && firstRun.xPosInLine + firstRun.line.xAlignmentOffset > p.X)
 				{
@@ -1398,5 +1410,27 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			throw new ArgumentOutOfRangeException(nameof(lineStackingStrategy));
 		}
+	}
+
+	private static List<List<string>?> GetSpellCheckSuggestions(List<int> wordBoundaries, string text)
+	{
+		var ret = new List<List<string>?>();
+		var start = 0;
+		foreach (var end in wordBoundaries)
+		{
+			var word = text.Substring(start, end - start);
+			var trimmedWord = word.Trim();
+
+			if (trimmedWord.Length > 0)
+			{
+				ret.Add(_wordList.Check(word)
+					? null
+					: _wordList.Suggest(word).ToList());
+			}
+
+			start = end;
+		}
+
+		return ret;
 	}
 }
