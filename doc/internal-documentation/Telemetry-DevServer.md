@@ -94,6 +94,7 @@ Hot Reload processor events track the state transitions and operations of the Ho
 | `notify-error` | `Event` (string), `Source` (string), `PreviousState` (string), `NewState` (string), `HasCurrentOperation` (bool), `ErrorMessage` (string), `ErrorType` (string) | `FileCount` (double), `DurationMs` (double, optional) | Hot Reload error occurred; usually when the parent dev-server encountered a catastrophic error |
 
 **Property Notes:**
+
 - All properties are prefixed with `hotreload/` in the actual telemetry
 - All measurements are prefixed with `hotreload/` in the actual telemetry
 - **Event**: Type of event that triggered the notification
@@ -119,12 +120,14 @@ Hot Reload processor events track the state transitions and operations of the Ho
 Example values for Dev Server telemetry properties:
 
 ### Session Properties
+
 - **Id**: "8b3c9f45-7a21-4e68-b9d2-1f5c6a8d3e4f" (GUID format)
 - **SessionType**: "Root", "Connection"
 - **ConnectionId**: "conn_12345", "client_abc789", "conn-abc123", "conn-xyz789"
 - **SolutionPath**: "/Users/developer/Projects/MyApp/MyApp.sln", "C:\\Projects\\MyApp\\MyApp.sln" (hashed in actual telemetry)
 
 ### Startup/Shutdown Properties
+
 - **StartupHasSolution**: `true`, `false`
 - **ShutdownType**: "Graceful", "Crash"
 - **StartupErrorMessage**: "Failed to bind to address http://[::]:52186: address already in use", "Unable to resolve service"
@@ -132,6 +135,7 @@ Example values for Dev Server telemetry properties:
 - **StartupStackTrace**: "at Program.Main(String[] args) in Program.cs:line 123" (raw stack traces may contain sensitive info)
 
 ### Discovery Properties
+
 - **DiscoveryResult**: "Success", "PartialFailure", "NoTargetFrameworks", "NoAddInsFound"
 - **DiscoveryAddInList**: "Uno.UI.App.Mcp.Server.dll;Uno.Settings.DevServer.dll" (filenames only)
 - **DiscoveryIsFile**: `true`, `false`
@@ -140,15 +144,18 @@ Example values for Dev Server telemetry properties:
 - **DiscoveryFailedProcessors**: "Processor1,Processor2" (comma-separated type names)
 
 ### Loading Properties
+
 - **AssemblyList**: "Assembly1.dll;Assembly2.dll" (filenames only)
 - **Result**: "Success", "PartialFailure", "Failed"
 - **ErrorMessage**: "Assembly load failed", "Type not found"
 - **ErrorType**: "FileLoadException", "TypeLoadException"
 
 ### App Instance Properties
+
 - **AppInstanceId**: "abc123-def456", "instance-789"
 
 ### App Launch Properties
+
 - **TargetPlatform**: "Desktop1.0", "Android35.0", "BrowserWasm1.0", "iOS18.5"
 - **IsDebug**: "True", "False" (string format in newer events)
 - **IDE**: "vswin", "rider-2025.2.0.1", "vscode-1.105.0", "Unknown", "None"
@@ -157,6 +164,7 @@ Example values for Dev Server telemetry properties:
 - **WasIdeInitiated**: "True", "False"
 
 ### Legacy Properties (older events)
+
 - **Mvid**: "a1b2c3d4-e5f6-7890-abcd-ef1234567890" (GUID format, not sent in newer events)
 - **Platform**: "WebAssembly", "iOS", "Android", "Windows", "macOS", "Linux", "Skia.Gtk", "Skia.Wpf"
 - **IsDebug**: `true`, `false` (boolean format)
@@ -165,6 +173,7 @@ Example values for Dev Server telemetry properties:
 - **Step**: "Launched", "Connected"
 
 ### Hot Reload Properties
+
 - **Event** (Hot Reload): "ProcessingFiles", "Completed", "NoChanges", "Failed", "RudeEdit"
 - **Source** (Hot Reload): "IDE", "DevServer", "FileWatcher"
 - **PreviousState** / **NewState**: "Ready", "Disabled", "Initializing", "Processing"
