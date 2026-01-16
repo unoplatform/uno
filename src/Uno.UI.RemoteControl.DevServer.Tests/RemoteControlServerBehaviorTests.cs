@@ -1,5 +1,6 @@
 extern alias RemoteServerCore;
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.UI.RemoteControl;
+using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
@@ -38,10 +40,14 @@ namespace Uno.UI.RemoteControl.DevServer.Tests;
 public class RemoteControlServerBehaviorTests
 {
 	private const short ProtocolVersion = 1;
+	private static readonly ILoggerFactory LoggerFactoryInstance;
+	private static readonly ILogger Logger;
 
 	static RemoteControlServerBehaviorTests()
 	{
-		LogExtensionPoint.AmbientLoggerFactory ??= LoggerFactory.Create(builder => builder.AddDebug());
+		LoggerFactoryInstance = LogExtensionPoint.AmbientLoggerFactory ?? LoggerFactory.Create(builder => builder.AddDebug());
+		LogExtensionPoint.AmbientLoggerFactory ??= LoggerFactoryInstance;
+		Logger = LoggerFactoryInstance.CreateLogger<RemoteControlServerBehaviorTests>();
 	}
 
 	// Ensures the diagnostics sink flowing through DevServerDiagnostics is the instance RemoteControlServer stages
@@ -179,6 +185,41 @@ public class RemoteControlServerBehaviorTests
 		secondTransport.Disposed.Should().BeTrue();
 	}
 
+	// Validates that the default processor factory can service multiple simultaneous discovery requests for the same app instance.
+	[TestMethod]
+	public async Task ProcessorDiscovery_ShouldHandleConcurrentConnections()
+	{
+		var services = new ServiceCollection();
+		services.AddLogging();
+		services.AddScoped<ServerCoreProcessorFactory>(CreateDefaultProcessorFactory);
+		services.AddScoped<ServerCoreRemoteControlServer>();
+		services.AddScoped<IRemoteControlServer>(sp => sp.GetRequiredService<ServerCoreRemoteControlServer>());
+		services.AddScoped<IRemoteControlServerConnection>(sp => sp.GetRequiredService<ServerCoreRemoteControlServer>());
+		services.AddSingleton<ServerCoreConfiguration, InMemoryRemoteControlConfiguration>();
+		services.AddScoped<IIdeChannel, TestIdeChannel>();
+		services.AddScoped<ServerCoreLaunchMonitor, FakeLaunchMonitor>();
+		services.AddScoped<ServerCoreTelemetry, FakeTelemetry>();
+
+		await using var serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+		await using var host = CreateHost(serviceProvider, disposeProvider: false);
+
+		var assemblyPath = typeof(RemoteControlServerBehaviorTests).Assembly.Location;
+		var sharedAppInstanceId = Guid.NewGuid().ToString("N");
+		var transports = new ConcurrentBag<ScriptedFrameTransport>();
+
+		var connectionCount = 4;
+		var tasks = Enumerable.Range(0, connectionCount)
+			.Select(_ => RunConcurrentDiscoveryAsync(host, transports, assemblyPath, sharedAppInstanceId));
+
+		await Task.WhenAll(tasks);
+
+		foreach (var transport in transports)
+		{
+			var response = DeserializeSentMessage<ProcessorsDiscoveryResponse>(transport, ProcessorsDiscoveryResponse.Name);
+			response.Processors.Should().NotBeEmpty();
+		}
+	}
+
 	private sealed class RemoteControlServerTestContext : IDisposable
 	{
 		private readonly ServiceProvider _serviceProvider;
@@ -298,6 +339,59 @@ public class RemoteControlServerBehaviorTests
 
 		private static string GetVersion(Type processorType)
 			=> processorType.Assembly.GetName().Version?.ToString() ?? "--unknown--";
+	}
+
+	private static Task RunConcurrentDiscoveryAsync(
+		ServerCoreRemoteControlServerHost host,
+		ConcurrentBag<ScriptedFrameTransport> transports,
+		string assemblyPath,
+		string appInstanceId)
+	{
+		var frames = new[]
+		{
+			Frame.Create(
+				ProtocolVersion,
+				WellKnownScopes.DevServerChannel,
+				ProcessorsDiscovery.Name,
+				new ProcessorsDiscovery(assemblyPath, appInstanceId))
+		};
+
+		var transport = new ScriptedFrameTransport(frames);
+		transports.Add(transport);
+		return host.RunConnectionAsync((sp, ct) => new ValueTask<IFrameTransport>(transport)).AsTask();
+	}
+
+	private static ServerCoreProcessorFactory CreateDefaultProcessorFactory(IServiceProvider services)
+	{
+		const string qualifiedTypeName = "Uno.UI.RemoteControl.Server.Processors.DefaultRemoteControlProcessorFactory, Uno.UI.RemoteControl.Server";
+		const string typeName = "Uno.UI.RemoteControl.Server.Processors.DefaultRemoteControlProcessorFactory";
+		var factoryType = Type.GetType(qualifiedTypeName, throwOnError: false);
+		if (factoryType is null)
+		{
+			var assemblyPath = GetServerAssemblyPath();
+			var assembly = Assembly.LoadFrom(assemblyPath);
+			factoryType = assembly.GetType(typeName, throwOnError: true) ?? throw new InvalidOperationException("DefaultRemoteControlProcessorFactory type not found.");
+		}
+		return (ServerCoreProcessorFactory)ActivatorUtilities.CreateInstance(services, factoryType);
+	}
+
+	private static string GetServerAssemblyPath()
+	{
+		var discoveredPath = ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
+			Logger,
+			typeof(RemoteControlServerBehaviorTests).Assembly,
+			projectName: "Uno.UI.RemoteControl.Server",
+			dllFileName: "Uno.UI.RemoteControl.Server.dll",
+			environmentVariableName: "UNO_DEVSERVER_SERVER_DLL_PATH");
+
+		if (!string.IsNullOrEmpty(discoveredPath))
+		{
+			return discoveredPath;
+		}
+
+		throw new FileNotFoundException(
+			"""Unable to locate Uno.UI.RemoteControl.Server.dll. Set UNO_DEVSERVER_SERVER_DLL_PATH to override discovery."""
+		);
 	}
 
 	private sealed class ScriptedFrameTransport : IFrameTransport
