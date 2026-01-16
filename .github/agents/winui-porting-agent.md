@@ -746,7 +746,7 @@ No new `public` members should be added unless they are strictly necessary to ma
 
 ## 15. Updating generated files
 
-UWPSyncGenerator is used to synchronize the API surface with WinUI. This creates the types as not implemented in `Generated` folders in each project. When porting new types or members, ensure that the generated files are updated accordingly by modifying the implemented members' `#if` and `[NotImplemented]` attributes. If something is only implemented for specific target platforms, ensure that the appropriate `#if` directives are used to reflect this.
+UWPSyncGenerator is used to synchronize the API surface with WinUI. This creates the types as not implemented in `Generated` folders in each project. When porting new types or members, ensure that the generated files are updated accordingly by modifying the implemented members' `#if` and `[NotImplemented]` attributes. If something is only implemented for specific target platforms, ensure that the appropriate `#if` directives are used to reflect this. You should **NEVER** put any implementation into the `Generated` files, as they will be overwritten by sync generator.
 
 ## 16. Documentation and summary comments
 
