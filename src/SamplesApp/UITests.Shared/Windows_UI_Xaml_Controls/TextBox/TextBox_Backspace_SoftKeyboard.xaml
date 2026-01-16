@@ -1,0 +1,76 @@
+<UserControl
+	x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Backspace_SoftKeyboard"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Padding="20" Spacing="15">
+			<TextBlock Text="Backspace Soft Keyboard Test" FontSize="20" FontWeight="Bold" />
+			<TextBlock TextWrapping="Wrap" Foreground="Gray">
+				This sample tests backspace key functionality on Android soft keyboards (Chrome, Edge).
+				The issue: On Android, keydown events return keyCode 229 (IME processing), making it
+				impossible to detect Backspace reliably via keydown. This sample verifies the fix works.
+			</TextBlock>
+
+			<!-- Single-line TextBox -->
+			<TextBlock Text="1. Single-line TextBox" FontWeight="SemiBold" Margin="0,10,0,5" />
+			<TextBox x:Name="SingleLineTextBox"
+					 PlaceholderText="Type text, then use backspace to delete"
+					 Text="Hello World"
+					 TextChanged="TextBox_TextChanged" />
+			<TextBlock x:Name="SingleLineStatus" Foreground="Gray" FontSize="12" />
+
+			<!-- TextBox with spaces (reported issue) -->
+			<TextBlock Text="2. TextBox with spaces (reported issue)" FontWeight="SemiBold" Margin="0,10,0,5" />
+			<TextBox x:Name="SpacedTextBox"
+					 PlaceholderText="Test backspace with text containing spaces"
+					 Text="Text with multiple spaces here"
+					 TextChanged="SpacedTextBox_TextChanged" />
+			<TextBlock x:Name="SpacedTextStatus" Foreground="Gray" FontSize="12" />
+
+			<!-- PasswordBox (always failed before fix) -->
+			<TextBlock Text="3. PasswordBox (always failed before fix)" FontWeight="SemiBold" Margin="0,10,0,5" />
+			<PasswordBox x:Name="TestPasswordBox"
+						 PlaceholderText="Type password, then use backspace"
+						 Password="secret123"
+						 PasswordChanged="PasswordBox_PasswordChanged" />
+			<TextBlock x:Name="PasswordStatus" Foreground="Gray" FontSize="12" />
+
+			<!-- Multiline TextBox -->
+			<TextBlock Text="4. Multiline TextBox (AcceptsReturn)" FontWeight="SemiBold" Margin="0,10,0,5" />
+			<TextBox x:Name="MultilineTextBox"
+					 PlaceholderText="Type multiple lines, test backspace across lines"
+					 Text="Line 1&#x0d;Line 2&#x0d;Line 3"
+					 AcceptsReturn="True"
+					 TextWrapping="Wrap"
+					 Height="100"
+					 TextChanged="MultilineTextBox_TextChanged" />
+			<TextBlock x:Name="MultilineStatus" Foreground="Gray" FontSize="12" />
+
+			<!-- Test instructions -->
+			<Border Background="#FFF3E0" CornerRadius="8" Padding="15" Margin="0,20,0,0">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Test Instructions:" FontWeight="Bold" />
+					<TextBlock TextWrapping="Wrap" Text="1. Tap each text field to open the soft keyboard" />
+					<TextBlock TextWrapping="Wrap" Text="2. Use the backspace key to delete characters" />
+					<TextBlock TextWrapping="Wrap" Text="3. Verify the text updates correctly after each backspace" />
+					<TextBlock TextWrapping="Wrap" Text="4. Test with different Android keyboards (GBoard, Samsung, SwiftKey)" />
+					<TextBlock TextWrapping="Wrap" Text="5. Test with autocomplete enabled and disabled" />
+				</StackPanel>
+			</Border>
+
+			<!-- Character count display -->
+			<Border Background="#E3F2FD" CornerRadius="8" Padding="15" Margin="0,10,0,0">
+				<StackPanel Spacing="5">
+					<TextBlock Text="Character Counts:" FontWeight="Bold" />
+					<TextBlock x:Name="CharCountDisplay" FontFamily="Consolas" FontSize="12" />
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

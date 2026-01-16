@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.Runtime.Skia {
+namespace Uno.UI.Runtime.Skia {
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
 		private static readonly inputElementId = "uno-input";
@@ -10,6 +10,10 @@
 		private static nextSelectionStart: number;
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
+
+		// Track whether the next keydown should skip preventDefault because
+		// a beforeinput event indicated a delete operation.
+		private static skipPreventDefaultForDelete: boolean = false;
 
 		public static async initialize(): Promise<any> {
 			const module = <any>window.Module;
@@ -86,6 +90,30 @@
 				ev.preventDefault();
 			};
 
+			// Use beforeinput to detect delete operations reliably on Android soft keyboards.
+			// On Android, keydown events return keyCode 229 (IME processing) for all keys,
+			// making it impossible to detect Backspace/Delete via keydown. The beforeinput
+			// event provides inputType which reliably indicates the operation type.
+			input.addEventListener('beforeinput', (ev: InputEvent) => {
+				if (ev.inputType &&
+					(ev.inputType === 'deleteContentBackward' ||
+					 ev.inputType === 'deleteContentForward' ||
+					 ev.inputType === 'deleteByCut' ||
+					 ev.inputType === 'deleteByDrag' ||
+					 ev.inputType === 'deleteContent' ||
+					 ev.inputType === 'deleteWordBackward' ||
+					 ev.inputType === 'deleteWordForward' ||
+					 ev.inputType === 'deleteSoftLineBackward' ||
+					 ev.inputType === 'deleteSoftLineForward' ||
+					 ev.inputType === 'deleteHardLineBackward' ||
+					 ev.inputType === 'deleteHardLineForward')) {
+					// Set flag so onkeydown knows to skip preventDefault for this event.
+					// This allows the browser to handle the deletion natively, and the
+					// oninput event will fire with the updated text.
+					BrowserInvisibleTextBoxViewExtension.skipPreventDefaultForDelete = true;
+				}
+			});
+
 			input.onkeydown = ev => {
 				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
@@ -94,6 +122,21 @@
 						ev.stopPropagation();
 						return;
 					}
+				}
+
+				// Check if beforeinput indicated this is a delete operation.
+				// If so, let the browser handle it natively (don't preventDefault).
+				if (BrowserInvisibleTextBoxViewExtension.skipPreventDefaultForDelete) {
+					BrowserInvisibleTextBoxViewExtension.skipPreventDefaultForDelete = false;
+					ev.stopPropagation();
+					return;
+				}
+
+				// Also check ev.key for desktop browsers where beforeinput may fire after keydown
+				// or for cases where beforeinput isn't supported.
+				if (ev.key === 'Backspace' || ev.key === 'Delete') {
+					ev.stopPropagation();
+					return;
 				}
 
 				ev.preventDefault();
