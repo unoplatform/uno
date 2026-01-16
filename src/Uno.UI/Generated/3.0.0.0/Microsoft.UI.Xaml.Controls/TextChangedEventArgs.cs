@@ -8,5 +8,15 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TextChangedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TextChangedEventArgs, Microsoft.UI.Xaml.Controls.TextChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TextChangedEventArgs, Microsoft.UI.Xaml.Controls.TextChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TextChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

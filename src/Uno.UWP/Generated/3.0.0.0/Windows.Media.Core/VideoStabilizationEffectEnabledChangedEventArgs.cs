@@ -23,6 +23,17 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.operator ==(Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs, Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs)
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.operator !=(Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs, Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs)
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.Equals(Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs)
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.Reason.get
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

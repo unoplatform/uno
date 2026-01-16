@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -38,11 +37,16 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Source.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.set
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.operator ==(Windows.Devices.Perception.PerceptionDepthFrameReader, Windows.Devices.Perception.PerceptionDepthFrameReader)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.operator !=(Windows.Devices.Perception.PerceptionDepthFrameReader, Windows.Devices.Perception.PerceptionDepthFrameReader)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Equals(Windows.Devices.Perception.PerceptionDepthFrameReader)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionDepthFrame TryReadLatestFrame()
@@ -50,6 +54,8 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionDepthFrame PerceptionDepthFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrame%20PerceptionDepthFrameReader.TryReadLatestFrame%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -57,6 +63,10 @@ namespace Windows.Devices.Perception
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "void PerceptionDepthFrameReader.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.set
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Source.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionDepthFrameReader, global::Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs> FrameArrived

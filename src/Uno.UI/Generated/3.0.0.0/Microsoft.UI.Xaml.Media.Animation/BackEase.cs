@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class BackEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Amplitude
 		// Skipping already declared property AmplitudeProperty
+		// Skipping already declared property Amplitude
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.BackEase.BackEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.BackEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.AmplitudeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.operator ==(Microsoft.UI.Xaml.Media.Animation.BackEase, Microsoft.UI.Xaml.Media.Animation.BackEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.operator !=(Microsoft.UI.Xaml.Media.Animation.BackEase, Microsoft.UI.Xaml.Media.Animation.BackEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Equals(Microsoft.UI.Xaml.Media.Animation.BackEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Amplitude.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Amplitude.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.AmplitudeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

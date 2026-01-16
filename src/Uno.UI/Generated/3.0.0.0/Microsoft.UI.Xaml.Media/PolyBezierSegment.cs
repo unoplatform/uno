@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class PolyBezierSegment : global::Microsoft.UI.Xaml.Media.PathSegment
 	{
-		// Skipping already declared property Points
 		// Skipping already declared property PointsProperty
+		// Skipping already declared property Points
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PolyBezierSegment.PolyBezierSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.PolyBezierSegment()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.PointsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.operator ==(Microsoft.UI.Xaml.Media.PolyBezierSegment, Microsoft.UI.Xaml.Media.PolyBezierSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.operator !=(Microsoft.UI.Xaml.Media.PolyBezierSegment, Microsoft.UI.Xaml.Media.PolyBezierSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.Equals(Microsoft.UI.Xaml.Media.PolyBezierSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.PointsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

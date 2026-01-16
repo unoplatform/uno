@@ -11,10 +11,22 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBarItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBarItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Expand()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Invoke()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}

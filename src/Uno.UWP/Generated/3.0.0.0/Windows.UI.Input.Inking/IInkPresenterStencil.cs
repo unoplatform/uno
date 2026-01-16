@@ -42,13 +42,13 @@ namespace Windows.UI.Input.Inking
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.Kind.get
-		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.IsVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.IsVisible.set
 		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.BackgroundColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.BackgroundColor.set
 		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.ForegroundColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.ForegroundColor.set
+		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.IsVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.IsVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.Kind.get
 		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.Transform.get
 		// Forced skipping of method Windows.UI.Input.Inking.IInkPresenterStencil.Transform.set
 	}

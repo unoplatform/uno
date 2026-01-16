@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class KeyboardAcceleratorInvokedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Element
+		// Skipping already declared property Handled
 		// Skipping already declared property KeyboardAccelerator
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.operator ==(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs, Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.operator !=(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs, Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Equals(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.KeyboardAccelerator.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

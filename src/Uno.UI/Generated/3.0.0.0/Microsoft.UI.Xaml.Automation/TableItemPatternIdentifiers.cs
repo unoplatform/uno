@@ -10,7 +10,19 @@ namespace Microsoft.UI.Xaml.Automation
 	{
 		// Skipping already declared property ColumnHeaderItemsProperty
 		// Skipping already declared property RowHeaderItemsProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.ColumnHeaderItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.RowHeaderItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers, Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers, Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

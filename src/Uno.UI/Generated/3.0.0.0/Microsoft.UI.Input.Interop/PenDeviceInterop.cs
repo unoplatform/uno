@@ -8,6 +8,7 @@ namespace Microsoft.UI.Input.Interop
 #endif
 	public static partial class PenDeviceInterop
 	{
+		// Forced skipping of method Microsoft.UI.Input.Interop.PenDeviceInterop.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenDevice FromPointerPoint(global::Microsoft.UI.Input.PointerPoint pointerPoint)

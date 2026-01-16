@@ -33,7 +33,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Transition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs, Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs, Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Element.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Transition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

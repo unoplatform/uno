@@ -33,7 +33,18 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.operator ==(Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.operator !=(Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.Equals(Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.ExtendedStatus.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

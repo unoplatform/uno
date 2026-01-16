@@ -23,6 +23,16 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.operator ==(Windows.Security.Cryptography.Certificates.UserCertificateStore, Windows.Security.Cryptography.Certificates.UserCertificateStore)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.operator !=(Windows.Security.Cryptography.Certificates.UserCertificateStore, Windows.Security.Cryptography.Certificates.UserCertificateStore)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.Equals(Windows.Security.Cryptography.Certificates.UserCertificateStore)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestAddAsync(global::Windows.Security.Cryptography.Certificates.Certificate certificate)
@@ -38,5 +48,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.Name.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

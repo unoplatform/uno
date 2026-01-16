@@ -10,9 +10,23 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property LayoutState
 		// Skipping already declared property LayoutStateCore
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutContext(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.operator ==(Microsoft.UI.Xaml.Controls.LayoutContext, Microsoft.UI.Xaml.Controls.LayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.operator !=(Microsoft.UI.Xaml.Controls.LayoutContext, Microsoft.UI.Xaml.Controls.LayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.Equals(Microsoft.UI.Xaml.Controls.LayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutContext(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.Microsoft.UI.Xaml.Controls.ILayoutContextOverrides.LayoutStateCore.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.Microsoft.UI.Xaml.Controls.ILayoutContextOverrides.LayoutStateCore.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutState.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutStateCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutStateCore.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

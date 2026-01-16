@@ -23,6 +23,17 @@ namespace Windows.Devices.Lights
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.operator ==(Windows.Devices.Lights.LampAvailabilityChangedEventArgs, Windows.Devices.Lights.LampAvailabilityChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.operator !=(Windows.Devices.Lights.LampAvailabilityChangedEventArgs, Windows.Devices.Lights.LampAvailabilityChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.Equals(Windows.Devices.Lights.LampAvailabilityChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.IsAvailable.get
+		// Forced skipping of method Windows.Devices.Lights.LampAvailabilityChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

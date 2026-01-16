@@ -23,7 +23,16 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.Challenge.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.operator ==(Windows.Devices.SmartCards.SmartCardChallengeContext, Windows.Devices.SmartCards.SmartCardChallengeContext)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.operator !=(Windows.Devices.SmartCards.SmartCardChallengeContext, Windows.Devices.SmartCards.SmartCardChallengeContext)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.Equals(Windows.Devices.SmartCards.SmartCardChallengeContext)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.Equals(object)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.GetHashCode()
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> VerifyResponseAsync(global::Windows.Storage.Streams.IBuffer response)
@@ -59,6 +68,8 @@ namespace Windows.Devices.SmartCards
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardChallengeContext", "void SmartCardChallengeContext.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.Challenge.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

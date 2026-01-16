@@ -27,8 +27,16 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Handled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Handled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.operator ==(Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.operator !=(Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Equals(Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -36,5 +44,8 @@ namespace Windows.Media.Playback
 			throw new global::System.NotImplementedException("The member Deferral MediaPlaybackCommandManagerPlayReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20MediaPlaybackCommandManagerPlayReceivedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Handled.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Handled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,7 +9,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class FlyoutBaseClosingEventArgs
 	{
 		// Skipping already declared property Cancel
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs, Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs, Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

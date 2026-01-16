@@ -8,5 +8,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class Transition : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.Transition(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.operator ==(Microsoft.UI.Xaml.Media.Animation.Transition, Microsoft.UI.Xaml.Media.Animation.Transition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.operator !=(Microsoft.UI.Xaml.Media.Animation.Transition, Microsoft.UI.Xaml.Media.Animation.Transition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.Equals(Microsoft.UI.Xaml.Media.Animation.Transition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.Transition(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Transition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

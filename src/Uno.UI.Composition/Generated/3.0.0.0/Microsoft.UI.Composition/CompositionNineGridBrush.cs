@@ -8,39 +8,49 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionNineGridBrush : global::Microsoft.UI.Composition.CompositionBrush
 	{
-		// Skipping already declared property TopInsetScale
-		// Skipping already declared property TopInset
-		// Skipping already declared property Source
-		// Skipping already declared property RightInsetScale
-		// Skipping already declared property RightInset
-		// Skipping already declared property LeftInsetScale
-		// Skipping already declared property LeftInset
-		// Skipping already declared property IsCenterHollow
-		// Skipping already declared property BottomInsetScale
 		// Skipping already declared property BottomInset
-		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float, float, float, float)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsCenterHollow.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Source.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
+		// Skipping already declared property BottomInsetScale
+		// Skipping already declared property IsCenterHollow
+		// Skipping already declared property LeftInset
+		// Skipping already declared property LeftInsetScale
+		// Skipping already declared property RightInset
+		// Skipping already declared property RightInsetScale
+		// Skipping already declared property Source
+		// Skipping already declared property TopInset
+		// Skipping already declared property TopInsetScale
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.operator ==(Microsoft.UI.Composition.CompositionNineGridBrush, Microsoft.UI.Composition.CompositionNineGridBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.operator !=(Microsoft.UI.Composition.CompositionNineGridBrush, Microsoft.UI.Composition.CompositionNineGridBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Equals(Microsoft.UI.Composition.CompositionNineGridBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInsetScale.get
+		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float, float, float, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsetScales(float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsetScales(float, float, float, float)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInsetScale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInsetScale.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsCenterHollow.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsCenterHollow.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInsetScale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInsetScale.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.RightInset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.RightInset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.RightInsetScale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.RightInsetScale.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Source.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Source.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

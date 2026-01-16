@@ -33,8 +33,19 @@ namespace Windows.Foundation
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.FromAbi(nint)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.operator ==(Windows.Foundation.WwwFormUrlDecoderEntry, Windows.Foundation.WwwFormUrlDecoderEntry)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.operator !=(Windows.Foundation.WwwFormUrlDecoderEntry, Windows.Foundation.WwwFormUrlDecoderEntry)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.Equals(Windows.Foundation.WwwFormUrlDecoderEntry)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.Equals(object)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.GetHashCode()
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.Name.get
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.Value.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoderEntry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Foundation.IWwwFormUrlDecoderEntry
 	}
 }

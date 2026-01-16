@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.TextBlockAutomationPeer(Microsoft.UI.Xaml.Controls.TextBlock)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.TextBlockAutomationPeer(Microsoft.UI.Xaml.Controls.TextBlock)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.TextBlockAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.TextBlockAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TextBlockAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

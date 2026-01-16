@@ -8,11 +8,22 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class InertiaRotationBehavior
 	{
-		// Skipping already declared property DesiredRotation
 		// Skipping already declared property DesiredDeceleration
+		// Skipping already declared property DesiredRotation
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.operator ==(Microsoft.UI.Xaml.Input.InertiaRotationBehavior, Microsoft.UI.Xaml.Input.InertiaRotationBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.operator !=(Microsoft.UI.Xaml.Input.InertiaRotationBehavior, Microsoft.UI.Xaml.Input.InertiaRotationBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.Equals(Microsoft.UI.Xaml.Input.InertiaRotationBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.DesiredDeceleration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.DesiredDeceleration.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.DesiredRotation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.DesiredRotation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaRotationBehavior.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

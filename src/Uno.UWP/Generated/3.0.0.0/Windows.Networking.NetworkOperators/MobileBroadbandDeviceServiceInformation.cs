@@ -43,8 +43,19 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation, Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation, Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.Equals(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.DeviceServiceId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.IsDataReadSupported.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.IsDataWriteSupported.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,15 +23,16 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Status.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.FromAbi(nint)
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.operator ==(Windows.System.AppDiagnosticInfoWatcher, Windows.System.AppDiagnosticInfoWatcher)
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.operator !=(Windows.System.AppDiagnosticInfoWatcher, Windows.System.AppDiagnosticInfoWatcher)
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Equals(Windows.System.AppDiagnosticInfoWatcher)
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Equals(object)
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.GetHashCode()
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -46,6 +47,16 @@ namespace Windows.System
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "void AppDiagnosticInfoWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Status.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.AppDiagnosticInfoWatcher, global::Windows.System.AppDiagnosticInfoWatcherEventArgs> Added

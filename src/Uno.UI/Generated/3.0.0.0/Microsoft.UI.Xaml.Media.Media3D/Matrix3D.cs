@@ -8,22 +8,72 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 #endif
 	public partial struct Matrix3D
 	{
+		// Skipping already declared property M11
+		// Skipping already declared property M12
+		// Skipping already declared property M13
+		// Skipping already declared property M14
+		// Skipping already declared property M21
+		// Skipping already declared property M22
+		// Skipping already declared property M23
+		// Skipping already declared property M24
+		// Skipping already declared property M31
+		// Skipping already declared property M32
+		// Skipping already declared property M33
+		// Skipping already declared property M34
+		// Skipping already declared property OffsetX
+		// Skipping already declared property OffsetY
+		// Skipping already declared property OffsetZ
+		// Skipping already declared property M44
+		// Skipping already declared property Identity
+		// Skipping already declared property IsIdentity
+		// Skipping already declared property HasInverse
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Matrix3D()
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M11
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M12
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M13
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M14
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M21
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M22
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M23
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M24
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M31
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M32
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M33
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M34
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetX
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetY
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetZ
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M44
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Matrix3D(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Matrix3D(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M11.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M11.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M12.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M12.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M13.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M13.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M14.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M14.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M21.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M21.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M22.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M22.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M23.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M23.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M24.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M24.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M31.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M31.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M32.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M32.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M33.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M33.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M34.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M34.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetX.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetX.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetY.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetY.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetZ.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.OffsetZ.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M44.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.M44.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Identity.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.IsIdentity.get
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.ToString()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.ToString(System.IFormatProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.System.IFormattable.ToString(string, System.IFormatProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Equals(Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.operator ==(Microsoft.UI.Xaml.Media.Media3D.Matrix3D, Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.operator !=(Microsoft.UI.Xaml.Media.Media3D.Matrix3D, Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.operator *(Microsoft.UI.Xaml.Media.Media3D.Matrix3D, Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.HasInverse.get
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Invert()
 	}
 }

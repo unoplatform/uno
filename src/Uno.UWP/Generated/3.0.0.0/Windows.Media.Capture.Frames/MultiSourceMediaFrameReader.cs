@@ -27,8 +27,16 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FrameArrived.add
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FrameArrived.remove
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.operator ==(Windows.Media.Capture.Frames.MultiSourceMediaFrameReader, Windows.Media.Capture.Frames.MultiSourceMediaFrameReader)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.operator !=(Windows.Media.Capture.Frames.MultiSourceMediaFrameReader, Windows.Media.Capture.Frames.MultiSourceMediaFrameReader)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.Equals(Windows.Media.Capture.Frames.MultiSourceMediaFrameReader)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.Frames.MultiSourceMediaFrameReference TryAcquireLatestFrame()
@@ -50,6 +58,8 @@ namespace Windows.Media.Capture.Frames
 			throw new global::System.NotImplementedException("The member IAsyncAction MultiSourceMediaFrameReader.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MultiSourceMediaFrameReader.StopAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FrameArrived.add
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -57,8 +67,9 @@ namespace Windows.Media.Capture.Frames
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "void MultiSourceMediaFrameReader.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.AcquisitionMode.set
 		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.AcquisitionMode.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.AcquisitionMode.set
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.Frames.MultiSourceMediaFrameReader, global::Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs> FrameArrived

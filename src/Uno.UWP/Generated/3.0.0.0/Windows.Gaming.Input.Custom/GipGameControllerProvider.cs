@@ -63,6 +63,16 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.operator ==(Windows.Gaming.Input.Custom.GipGameControllerProvider, Windows.Gaming.Input.Custom.GipGameControllerProvider)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.operator !=(Windows.Gaming.Input.Custom.GipGameControllerProvider, Windows.Gaming.Input.Custom.GipGameControllerProvider)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.Equals(Windows.Gaming.Input.Custom.GipGameControllerProvider)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendMessage(global::Windows.Gaming.Input.Custom.GipMessageClass messageClass, byte messageId, byte[] messageBuffer)
@@ -89,6 +99,7 @@ namespace Windows.Gaming.Input.Custom
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.HardwareVendorId.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.HardwareVersionInfo.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.IsConnected.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Input.Custom.IGameControllerProvider
 	}
 }

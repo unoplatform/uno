@@ -8,15 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Frame : global::Microsoft.UI.Xaml.Controls.ContentControl, global::Microsoft.UI.Xaml.Controls.INavigate
 	{
-		// Skipping already declared property SourcePageType
-		// Skipping already declared property IsNavigationStackEnabled
-		// Skipping already declared property CacheSize
-		// Skipping already declared property BackStack
-		// Skipping already declared property BackStackDepth
-		// Skipping already declared property CanGoBack
-		// Skipping already declared property CanGoForward
-		// Skipping already declared property CurrentSourcePageType
-		// Skipping already declared property ForwardStack
 		// Skipping already declared property BackStackDepthProperty
 		// Skipping already declared property BackStackProperty
 		// Skipping already declared property CacheSizeProperty
@@ -26,28 +17,37 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ForwardStackProperty
 		// Skipping already declared property IsNavigationStackEnabledProperty
 		// Skipping already declared property SourcePageTypeProperty
+		// Skipping already declared property BackStack
+		// Skipping already declared property BackStackDepth
+		// Skipping already declared property CacheSize
+		// Skipping already declared property CanGoBack
+		// Skipping already declared property CanGoForward
+		// Skipping already declared property CurrentSourcePageType
+		// Skipping already declared property ForwardStack
+		// Skipping already declared property IsNavigationStackEnabled
+		// Skipping already declared property SourcePageType
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.Frame()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Frame()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CacheSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CacheSize.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoBack.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoForward.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CurrentSourcePageType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageType.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStackDepth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStack.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.ForwardStack.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigated.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigated.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigating.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigating.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationFailed.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationFailed.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationStopped.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationStopped.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStackDepthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStackProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CacheSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoBackProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoForwardProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CurrentSourcePageTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.ForwardStackProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Frame(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.operator ==(Microsoft.UI.Xaml.Controls.Frame, Microsoft.UI.Xaml.Controls.Frame)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.operator !=(Microsoft.UI.Xaml.Controls.Frame, Microsoft.UI.Xaml.Controls.Frame)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Equals(Microsoft.UI.Xaml.Controls.Frame)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Frame(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GoBack()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GoBack(Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GoForward()
@@ -57,16 +57,29 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GetNavigationState()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.SetNavigationState(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.SetNavigationState(string, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigated.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigated.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigating.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.Navigating.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationFailed.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationFailed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationStopped.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.NavigationStopped.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.Navigate(System.Type)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CacheSizeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoBackProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoForwardProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CurrentSourcePageTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStackDepthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStackProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.ForwardStackProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStack.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.BackStackDepth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CacheSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CacheSize.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoBack.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoForward.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CurrentSourcePageType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.ForwardStack.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageType.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Frame.Navigated
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Frame.Navigating
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Frame.NavigationFailed

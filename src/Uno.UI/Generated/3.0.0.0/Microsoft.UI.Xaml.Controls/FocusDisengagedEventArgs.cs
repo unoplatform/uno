@@ -8,5 +8,15 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class FocusDisengagedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs, Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs, Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.Equals(Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

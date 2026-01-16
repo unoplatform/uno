@@ -8,17 +8,28 @@ namespace Windows.Globalization.NumberFormatting
 #endif
 	public partial class NumeralSystemTranslator
 	{
-		// Skipping already declared property NumeralSystem
 		// Skipping already declared property Languages
+		// Skipping already declared property NumeralSystem
 		// Skipping already declared property ResolvedLanguage
-		// Skipping already declared method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator(System.Collections.Generic.IEnumerable<string>)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator(System.Collections.Generic.IEnumerable<string>)
 		// Skipping already declared method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator()
+		// Skipping already declared method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator(System.Collections.Generic.IEnumerable<string>)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator(System.Collections.Generic.IEnumerable<string>)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.operator ==(Windows.Globalization.NumberFormatting.NumeralSystemTranslator, Windows.Globalization.NumberFormatting.NumeralSystemTranslator)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.operator !=(Windows.Globalization.NumberFormatting.NumeralSystemTranslator, Windows.Globalization.NumberFormatting.NumeralSystemTranslator)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.Equals(Windows.Globalization.NumberFormatting.NumeralSystemTranslator)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.Equals(object)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.GetHashCode()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.TranslateNumerals(string)
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.Languages.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.ResolvedLanguage.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystem.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystem.set
-		// Skipping already declared method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.TranslateNumerals(string)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.ResolvedLanguage.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

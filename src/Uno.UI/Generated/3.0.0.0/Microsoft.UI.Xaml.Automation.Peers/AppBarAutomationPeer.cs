@@ -9,29 +9,41 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	public partial class AppBarAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider, global::Microsoft.UI.Xaml.Automation.Provider.IToggleProvider, global::Microsoft.UI.Xaml.Automation.Provider.IWindowProvider
 	{
 		// Skipping already declared property ExpandCollapseState
-		// Skipping already declared property ToggleState
 		// Skipping already declared property InteractionState
 		// Skipping already declared property IsModal
 		// Skipping already declared property IsTopmost
 		// Skipping already declared property Maximizable
 		// Skipping already declared property Minimizable
+		// Skipping already declared property ToggleState
 		// Skipping already declared property VisualState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.AppBarAutomationPeer(Microsoft.UI.Xaml.Controls.AppBar)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.AppBarAutomationPeer(Microsoft.UI.Xaml.Controls.AppBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.AppBarAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.AppBarAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Expand()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.ToggleState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Toggle()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Close()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.SetVisualState(Microsoft.UI.Xaml.Automation.WindowVisualState)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.WaitForInputIdle(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.InteractionState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.IsModal.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.IsTopmost.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Maximizable.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Minimizable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.InteractionState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.ToggleState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.VisualState.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Close()
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.SetVisualState(Microsoft.UI.Xaml.Automation.WindowVisualState)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.WaitForInputIdle(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IToggleProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IWindowProvider

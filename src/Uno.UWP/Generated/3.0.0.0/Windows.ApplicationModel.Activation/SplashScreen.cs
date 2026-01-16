@@ -9,9 +9,20 @@ namespace Windows.ApplicationModel.Activation
 	public partial class SplashScreen
 	{
 		// Skipping already declared property ImageLocation
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.ImageLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.operator ==(Windows.ApplicationModel.Activation.SplashScreen, Windows.ApplicationModel.Activation.SplashScreen)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.operator !=(Windows.ApplicationModel.Activation.SplashScreen, Windows.ApplicationModel.Activation.SplashScreen)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Equals(Windows.ApplicationModel.Activation.SplashScreen)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Dismissed.add
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Dismissed.remove
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.ImageLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.ApplicationModel.Activation.SplashScreen.Dismissed
 	}
 }

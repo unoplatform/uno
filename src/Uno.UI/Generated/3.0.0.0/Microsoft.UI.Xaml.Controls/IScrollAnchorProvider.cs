@@ -14,12 +14,12 @@ namespace Microsoft.UI.Xaml.Controls
 			get;
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IScrollAnchorProvider.CurrentAnchor.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void RegisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void UnregisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element);
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IScrollAnchorProvider.CurrentAnchor.get
 	}
 }

@@ -14,13 +14,13 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 		// Skipping already declared property VerticalScrollPercent
 		// Skipping already declared property VerticalViewSize
 		// Skipping already declared property VerticallyScrollable
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.HorizontallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.HorizontalScrollPercent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.HorizontalViewSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.VerticallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.VerticalScrollPercent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.VerticalViewSize.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.Scroll(Microsoft.UI.Xaml.Automation.ScrollAmount, Microsoft.UI.Xaml.Automation.ScrollAmount)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.SetScrollPercent(double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.HorizontalScrollPercent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.HorizontalViewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.HorizontallyScrollable.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.VerticalScrollPercent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.VerticalViewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IScrollProvider.VerticallyScrollable.get
 	}
 }

@@ -8,6 +8,7 @@ namespace Windows.Storage
 #endif
 	public static partial class CachedFileManager
 	{
+		// Forced skipping of method Windows.Storage.CachedFileManager.As<I>()
 		// Skipping already declared method Windows.Storage.CachedFileManager.DeferUpdates(Windows.Storage.IStorageFile)
 		// Skipping already declared method Windows.Storage.CachedFileManager.CompleteUpdatesAsync(Windows.Storage.IStorageFile)
 	}

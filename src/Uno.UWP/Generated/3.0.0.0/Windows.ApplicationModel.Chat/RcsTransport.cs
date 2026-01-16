@@ -63,11 +63,16 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.ExtendedProperties.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.IsActive.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.TransportFriendlyName.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.TransportId.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.Configuration.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.operator ==(Windows.ApplicationModel.Chat.RcsTransport, Windows.ApplicationModel.Chat.RcsTransport)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.operator !=(Windows.ApplicationModel.Chat.RcsTransport, Windows.ApplicationModel.Chat.RcsTransport)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.Equals(Windows.ApplicationModel.Chat.RcsTransport)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsStoreAndForwardEnabled(global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
@@ -84,6 +89,12 @@ namespace Windows.ApplicationModel.Chat
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.ServiceKindSupportedChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.ServiceKindSupportedChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.Configuration.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.ExtendedProperties.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.IsActive.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.TransportFriendlyName.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.TransportId.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.RcsTransport, global::Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs> ServiceKindSupportedChanged

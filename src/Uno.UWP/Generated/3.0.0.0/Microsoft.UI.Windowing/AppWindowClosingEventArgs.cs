@@ -9,7 +9,18 @@ namespace Microsoft.UI.Windowing
 	public partial class AppWindowClosingEventArgs
 	{
 		// Skipping already declared property Cancel
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.operator ==(Microsoft.UI.Windowing.AppWindowClosingEventArgs, Microsoft.UI.Windowing.AppWindowClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.operator !=(Microsoft.UI.Windowing.AppWindowClosingEventArgs, Microsoft.UI.Windowing.AppWindowClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.Equals(Microsoft.UI.Windowing.AppWindowClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,7 +23,16 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.InteractionSourceKind.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.operator ==(Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs, Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.operator !=(Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs, Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.Equals(Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -31,5 +40,7 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialHoldStartedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerPose%20SpatialHoldStartedEventArgs.TryGetPointerPose%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.InteractionSourceKind.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

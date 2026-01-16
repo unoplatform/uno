@@ -40,9 +40,16 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.RampForceEffect()
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Gain.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Gain.set
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.State.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.operator ==(Windows.Gaming.Input.ForceFeedback.RampForceEffect, Windows.Gaming.Input.ForceFeedback.RampForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.operator !=(Windows.Gaming.Input.ForceFeedback.RampForceEffect, Windows.Gaming.Input.ForceFeedback.RampForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Equals(Windows.Gaming.Input.ForceFeedback.RampForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -71,6 +78,10 @@ namespace Windows.Gaming.Input.ForceFeedback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "void RampForceEffect.SetParametersWithEnvelope(Vector3 startVector, Vector3 endVector, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Gain.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Gain.set
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.State.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	}
 }

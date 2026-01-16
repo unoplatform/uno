@@ -13,6 +13,16 @@ namespace Windows.UI.ViewManagement.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.operator ==(Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs, Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.operator !=(Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs, Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.Equals(Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryCancel()
@@ -20,5 +30,6 @@ namespace Windows.UI.ViewManagement.Core
 			throw new global::System.NotImplementedException("The member bool CoreInputViewShowingEventArgs.TryCancel() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputViewShowingEventArgs.TryCancel%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewShowingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,7 +33,18 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Trigger.get
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.operator ==(Windows.ApplicationModel.Background.GattServiceProviderTriggerResult, Windows.ApplicationModel.Background.GattServiceProviderTriggerResult)
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.operator !=(Windows.ApplicationModel.Background.GattServiceProviderTriggerResult, Windows.ApplicationModel.Background.GattServiceProviderTriggerResult)
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Equals(Windows.ApplicationModel.Background.GattServiceProviderTriggerResult)
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Error.get
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Trigger.get
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.AddDeleteThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.AddDeleteThemeTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition, Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition, Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.AddDeleteThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

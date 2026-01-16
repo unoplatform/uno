@@ -8,8 +8,7 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DebugSettings
 	{
-		// Skipping already declared property IsTextPerformanceVisualizationEnabled
-		// Skipping already declared property IsBindingTracingEnabled
+		// Skipping already declared property EnableFrameRateCounter
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool FailFastOnErrors
@@ -24,7 +23,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Skipping already declared property EnableFrameRateCounter
+		// Skipping already declared property IsBindingTracingEnabled
+		// Skipping already declared property IsTextPerformanceVisualizationEnabled
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsXamlResourceReferenceTracingEnabled
@@ -39,7 +39,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Skipping already declared property LayoutCycleTracingLevel
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.LayoutCycleDebugBreakLevel LayoutCycleDebugBreakLevel
@@ -54,24 +53,36 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+		// Skipping already declared property LayoutCycleTracingLevel
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.operator ==(Microsoft.UI.Xaml.DebugSettings, Microsoft.UI.Xaml.DebugSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.operator !=(Microsoft.UI.Xaml.DebugSettings, Microsoft.UI.Xaml.DebugSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.Equals(Microsoft.UI.Xaml.DebugSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.add
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.add
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.EnableFrameRateCounter.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.EnableFrameRateCounter.set
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.set
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsBindingTracingEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsBindingTracingEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsTextPerformanceVisualizationEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsTextPerformanceVisualizationEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.get
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.set
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.add
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsXamlResourceReferenceTracingEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsXamlResourceReferenceTracingEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.add
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.remove
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.get
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.set
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleDebugBreakLevel.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleDebugBreakLevel.set
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.set
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.DebugSettings.BindingFailed
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

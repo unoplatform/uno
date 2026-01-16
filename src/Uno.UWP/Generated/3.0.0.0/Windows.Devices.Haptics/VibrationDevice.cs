@@ -19,8 +19,7 @@ namespace Windows.Devices.Haptics
 		}
 #endif
 		// Skipping already declared property SimpleHapticsController
-		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.Id.get
-		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.SimpleHapticsController.get
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.As<I>()
 		// Skipping already declared method Windows.Devices.Haptics.VibrationDevice.RequestAccessAsync()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -44,5 +43,18 @@ namespace Windows.Devices.Haptics
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<VibrationDevice>> VibrationDevice.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CVibrationDevice%3E%3E%20VibrationDevice.FindAllAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.operator ==(Windows.Devices.Haptics.VibrationDevice, Windows.Devices.Haptics.VibrationDevice)
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.operator !=(Windows.Devices.Haptics.VibrationDevice, Windows.Devices.Haptics.VibrationDevice)
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.Equals(Windows.Devices.Haptics.VibrationDevice)
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.Equals(object)
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.GetHashCode()
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.Id.get
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.SimpleHapticsController.get
+		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

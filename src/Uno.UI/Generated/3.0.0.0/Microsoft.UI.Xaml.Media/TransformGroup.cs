@@ -8,14 +8,25 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class TransformGroup : global::Microsoft.UI.Xaml.Media.Transform
 	{
+		// Skipping already declared property ChildrenProperty
 		// Skipping already declared property Children
 		// Skipping already declared property Value
-		// Skipping already declared property ChildrenProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformGroup.TransformGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.TransformGroup()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.ChildrenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.operator ==(Microsoft.UI.Xaml.Media.TransformGroup, Microsoft.UI.Xaml.Media.TransformGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.operator !=(Microsoft.UI.Xaml.Media.TransformGroup, Microsoft.UI.Xaml.Media.TransformGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Equals(Microsoft.UI.Xaml.Media.TransformGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Children.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.ChildrenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

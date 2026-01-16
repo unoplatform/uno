@@ -16,6 +16,16 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.ContactFieldFactory()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.operator ==(Windows.ApplicationModel.Contacts.ContactFieldFactory, Windows.ApplicationModel.Contacts.ContactFieldFactory)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.operator !=(Windows.ApplicationModel.Contacts.ContactFieldFactory, Windows.ApplicationModel.Contacts.ContactFieldFactory)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.Equals(Windows.ApplicationModel.Contacts.ContactFieldFactory)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactField CreateField(string value, global::Windows.ApplicationModel.Contacts.ContactFieldType type)
@@ -79,6 +89,7 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member ContactInstantMessageField ContactFieldFactory.CreateInstantMessage(string userName, ContactFieldCategory category, string service, string displayText, Uri verb) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactInstantMessageField%20ContactFieldFactory.CreateInstantMessage%28string%20userName%2C%20ContactFieldCategory%20category%2C%20string%20service%2C%20string%20displayText%2C%20Uri%20verb%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Contacts.IContactFieldFactory
 		// Processing: Windows.ApplicationModel.Contacts.IContactLocationFieldFactory
 		// Processing: Windows.ApplicationModel.Contacts.IContactInstantMessageFieldFactory

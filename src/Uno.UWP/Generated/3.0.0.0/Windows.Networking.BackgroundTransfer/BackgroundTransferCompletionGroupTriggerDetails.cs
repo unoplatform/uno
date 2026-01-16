@@ -33,7 +33,18 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.operator ==(Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails, Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.operator !=(Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails, Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.Equals(Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.Downloads.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.Uploads.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,6 +8,7 @@ namespace Windows.Management.Policies
 #endif
 	public static partial class NamedPolicy
 	{
+		// Forced skipping of method Windows.Management.Policies.NamedPolicy.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Management.Policies.NamedPolicyData GetPolicyFromPath(string area, string name)

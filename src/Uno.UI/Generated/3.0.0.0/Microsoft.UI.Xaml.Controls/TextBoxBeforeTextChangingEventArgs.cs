@@ -10,8 +10,19 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property NewText
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.NewText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs, Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs, Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.NewText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

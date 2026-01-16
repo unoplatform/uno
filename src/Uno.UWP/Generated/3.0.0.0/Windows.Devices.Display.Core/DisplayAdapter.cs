@@ -93,14 +93,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Id.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.DeviceInterfacePath.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.SourceCount.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciVendorId.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciDeviceId.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciSubSystemId.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciRevision.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Display.Core.DisplayAdapter FromId(global::Windows.Graphics.DisplayAdapterId id)
@@ -108,5 +101,24 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayAdapter DisplayAdapter.FromId(DisplayAdapterId id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAdapter%20DisplayAdapter.FromId%28DisplayAdapterId%20id%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.operator ==(Windows.Devices.Display.Core.DisplayAdapter, Windows.Devices.Display.Core.DisplayAdapter)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.operator !=(Windows.Devices.Display.Core.DisplayAdapter, Windows.Devices.Display.Core.DisplayAdapter)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Equals(Windows.Devices.Display.Core.DisplayAdapter)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.DeviceInterfacePath.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Id.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciDeviceId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciRevision.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciSubSystemId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciVendorId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.SourceCount.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

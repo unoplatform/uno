@@ -23,6 +23,17 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.operator ==(Windows.UI.Notifications.ToastFailedEventArgs, Windows.UI.Notifications.ToastFailedEventArgs)
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.operator !=(Windows.UI.Notifications.ToastFailedEventArgs, Windows.UI.Notifications.ToastFailedEventArgs)
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.Equals(Windows.UI.Notifications.ToastFailedEventArgs)
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.UI.Notifications.ToastFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

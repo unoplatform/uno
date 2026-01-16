@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Appointments
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.operator ==(Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs, Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.operator !=(Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs, Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.Equals(Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral GetDeferral()
@@ -20,5 +30,6 @@ namespace Windows.ApplicationModel.Appointments
 			throw new global::System.NotImplementedException("The member AppointmentStoreChangedDeferral AppointmentStoreChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentStoreChangedDeferral%20AppointmentStoreChangedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

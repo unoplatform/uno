@@ -23,6 +23,17 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.operator ==(Windows.Networking.Sockets.StreamSocketListenerInformation, Windows.Networking.Sockets.StreamSocketListenerInformation)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.operator !=(Windows.Networking.Sockets.StreamSocketListenerInformation, Windows.Networking.Sockets.StreamSocketListenerInformation)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.Equals(Windows.Networking.Sockets.StreamSocketListenerInformation)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.LocalPort.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

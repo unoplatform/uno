@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.SuppressNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.SuppressNavigationTransitionInfo()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.operator ==(Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.operator !=(Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.Equals(Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

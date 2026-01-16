@@ -8,6 +8,7 @@ namespace Windows.Data.Text
 #endif
 	public static partial class UnicodeCharacters
 	{
+		// Forced skipping of method Windows.Data.Text.UnicodeCharacters.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static uint GetCodepointFromSurrogatePair(uint highSurrogate, uint lowSurrogate)

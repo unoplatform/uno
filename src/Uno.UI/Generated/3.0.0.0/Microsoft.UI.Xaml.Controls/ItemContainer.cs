@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ItemContainer : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property IsSelected
-		// Skipping already declared property Child
 		// Skipping already declared property ChildProperty
 		// Skipping already declared property IsSelectedProperty
+		// Skipping already declared property Child
+		// Skipping already declared property IsSelected
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemContainer.ItemContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ItemContainer()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ChildProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelectedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ItemContainer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.operator ==(Microsoft.UI.Xaml.Controls.ItemContainer, Microsoft.UI.Xaml.Controls.ItemContainer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.operator !=(Microsoft.UI.Xaml.Controls.ItemContainer, Microsoft.UI.Xaml.Controls.ItemContainer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Equals(Microsoft.UI.Xaml.Controls.ItemContainer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ItemContainer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Child.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Child.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ChildProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelectedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

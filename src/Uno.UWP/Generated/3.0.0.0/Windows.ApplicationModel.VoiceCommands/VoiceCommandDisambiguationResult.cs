@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult, Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult, Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.SelectedItem.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

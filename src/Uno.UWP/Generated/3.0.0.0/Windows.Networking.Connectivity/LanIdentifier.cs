@@ -43,8 +43,19 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.operator ==(Windows.Networking.Connectivity.LanIdentifier, Windows.Networking.Connectivity.LanIdentifier)
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.operator !=(Windows.Networking.Connectivity.LanIdentifier, Windows.Networking.Connectivity.LanIdentifier)
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.Equals(Windows.Networking.Connectivity.LanIdentifier)
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.InfrastructureId.get
-		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.PortId.get
 		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.NetworkAdapterId.get
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.PortId.get
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

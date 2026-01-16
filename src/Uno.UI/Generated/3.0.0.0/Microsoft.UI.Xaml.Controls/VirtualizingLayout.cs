@@ -10,10 +10,27 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.operator ==(Microsoft.UI.Xaml.Controls.VirtualizingLayout, Microsoft.UI.Xaml.Controls.VirtualizingLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.operator !=(Microsoft.UI.Xaml.Controls.VirtualizingLayout, Microsoft.UI.Xaml.Controls.VirtualizingLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.Equals(Microsoft.UI.Xaml.Controls.VirtualizingLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.InitializeForContextCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutOverrides.InitializeForContextCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.UninitializeForContextCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutOverrides.UninitializeForContextCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.MeasureOverride(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Windows.Foundation.Size)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutOverrides.MeasureOverride(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.ArrangeOverride(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Windows.Foundation.Size)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.OnItemsChangedCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, object, Microsoft.UI.Xaml.Interop.NotifyCollectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutOverrides.ArrangeOverride(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Windows.Foundation.Size)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.OnItemsChangedCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, object, System.Collections.Specialized.NotifyCollectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutOverrides.OnItemsChangedCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, object, System.Collections.Specialized.NotifyCollectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

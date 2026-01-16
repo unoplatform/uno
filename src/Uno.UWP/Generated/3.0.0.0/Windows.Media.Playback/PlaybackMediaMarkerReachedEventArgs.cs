@@ -9,6 +9,17 @@ namespace Windows.Media.Playback
 	public partial class PlaybackMediaMarkerReachedEventArgs
 	{
 		// Skipping already declared property PlaybackMediaMarker
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.operator ==(Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs, Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.operator !=(Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs, Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.Equals(Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.PlaybackMediaMarker.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

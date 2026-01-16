@@ -11,8 +11,18 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Bounces
 		// Skipping already declared property Bounciness
 		// Skipping already declared property Mode
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.operator ==(Microsoft.UI.Composition.BounceEasingFunction, Microsoft.UI.Composition.BounceEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.operator !=(Microsoft.UI.Composition.BounceEasingFunction, Microsoft.UI.Composition.BounceEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.Equals(Microsoft.UI.Composition.BounceEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.Bounces.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.Bounciness.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.Mode.get
-		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.Bounces.get
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.BounceEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

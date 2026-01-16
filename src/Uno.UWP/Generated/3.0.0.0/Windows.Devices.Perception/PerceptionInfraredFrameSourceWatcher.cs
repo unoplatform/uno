@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,15 +23,16 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceAdded.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceAdded.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceRemoved.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceRemoved.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Stopped.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Stopped.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Status.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.operator ==(Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher, Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.operator !=(Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher, Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Equals(Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -47,6 +47,16 @@ namespace Windows.Devices.Perception
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher", "void PerceptionInfraredFrameSourceWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceAdded.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceAdded.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceRemoved.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.SourceRemoved.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Stopped.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Stopped.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Status.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher, object> EnumerationCompleted

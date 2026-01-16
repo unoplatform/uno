@@ -9,7 +9,17 @@ namespace Microsoft.UI.Composition
 	public partial class ExpressionAnimation : global::Microsoft.UI.Composition.CompositionAnimation
 	{
 		// Skipping already declared property Expression
-		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.set
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.operator ==(Microsoft.UI.Composition.ExpressionAnimation, Microsoft.UI.Composition.ExpressionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.operator !=(Microsoft.UI.Composition.ExpressionAnimation, Microsoft.UI.Composition.ExpressionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Equals(Microsoft.UI.Composition.ExpressionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.get
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.set
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

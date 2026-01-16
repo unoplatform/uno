@@ -4,7 +4,6 @@
 namespace Windows.Security.Authentication.Identity.Provider
 {
 	[global::System.FlagsAttribute]
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	public enum SecondaryAuthenticationFactorDeviceCapabilities : uint
 	{

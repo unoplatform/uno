@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.Transform3D()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.Transform3D(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.operator ==(Microsoft.UI.Xaml.Media.Media3D.Transform3D, Microsoft.UI.Xaml.Media.Media3D.Transform3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.operator !=(Microsoft.UI.Xaml.Media.Media3D.Transform3D, Microsoft.UI.Xaml.Media.Media3D.Transform3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.Equals(Microsoft.UI.Xaml.Media.Media3D.Transform3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.Transform3D(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Transform3D.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

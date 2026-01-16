@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

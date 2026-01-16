@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.RichTextBlockOverflowAutomationPeer(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.RichTextBlockOverflowAutomationPeer(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.RichTextBlockOverflowAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.RichTextBlockOverflowAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockOverflowAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

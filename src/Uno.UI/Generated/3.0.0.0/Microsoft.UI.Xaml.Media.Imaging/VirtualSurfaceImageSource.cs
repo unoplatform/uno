@@ -24,5 +24,15 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.VirtualSurfaceImageSource(int, int, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.operator ==(Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource, Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.operator !=(Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource, Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.Equals(Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

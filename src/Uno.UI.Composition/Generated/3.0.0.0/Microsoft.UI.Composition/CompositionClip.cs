@@ -8,26 +8,38 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionClip : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Skipping already declared property TransformMatrix
-		// Skipping already declared property Scale
-		// Skipping already declared property RotationAngleInDegrees
-		// Skipping already declared property RotationAngle
-		// Skipping already declared property Offset
-		// Skipping already declared property CenterPoint
 		// Skipping already declared property AnchorPoint
+		// Skipping already declared property CenterPoint
+		// Skipping already declared property Offset
+		// Skipping already declared property RotationAngle
+		// Skipping already declared property RotationAngleInDegrees
+		// Skipping already declared property Scale
+		// Skipping already declared property TransformMatrix
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.CompositionClip(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.operator ==(Microsoft.UI.Composition.CompositionClip, Microsoft.UI.Composition.CompositionClip)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.operator !=(Microsoft.UI.Composition.CompositionClip, Microsoft.UI.Composition.CompositionClip)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Equals(Microsoft.UI.Composition.CompositionClip)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.CompositionClip(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.AnchorPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.AnchorPoint.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.TransformMatrix.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngle.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Scale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.CenterPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.CenterPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngleInDegrees.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngle.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngle.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngleInDegrees.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngleInDegrees.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Scale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Scale.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.TransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.TransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.AnchorPoint.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

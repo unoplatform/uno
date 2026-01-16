@@ -43,8 +43,19 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.operator ==(Windows.Gaming.Input.Custom.GipFirmwareUpdateResult, Windows.Gaming.Input.Custom.GipFirmwareUpdateResult)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.operator !=(Windows.Gaming.Input.Custom.GipFirmwareUpdateResult, Windows.Gaming.Input.Custom.GipFirmwareUpdateResult)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.Equals(Windows.Gaming.Input.Custom.GipFirmwareUpdateResult)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.ExtendedErrorCode.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.FinalComponentId.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.Status.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

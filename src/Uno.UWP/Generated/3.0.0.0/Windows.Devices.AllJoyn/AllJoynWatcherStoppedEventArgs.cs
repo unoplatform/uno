@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.AllJoynWatcherStoppedEventArgs(int)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

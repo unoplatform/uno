@@ -23,6 +23,17 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.operator ==(Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs, Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.operator !=(Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs, Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.Equals(Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.InteractionSourceKind.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -14,7 +14,6 @@ namespace Windows.UI.Input.Inking
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.IInkStrokeContainer.BoundingRect.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void AddStroke(global::Windows.UI.Input.Inking.InkStroke stroke);
 #endif
@@ -54,5 +53,6 @@ namespace Windows.UI.Input.Inking
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkRecognitionResult> GetRecognitionResults();
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.IInkStrokeContainer.BoundingRect.get
 	}
 }

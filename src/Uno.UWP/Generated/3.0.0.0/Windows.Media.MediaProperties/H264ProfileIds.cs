@@ -108,15 +108,16 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.ConstrainedBaseline.get
+		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.As<I>()
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.Baseline.get
+		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.ConstrainedBaseline.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.Extended.get
-		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.Main.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.High.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.High10.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.High422.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.High444.get
-		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.StereoHigh.get
+		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.Main.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.MultiviewHigh.get
+		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.StereoHigh.get
 	}
 }

@@ -11,6 +11,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Action
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.DynamicOverflowItemsChangingEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.DynamicOverflowItemsChangingEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs, Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs, Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.Action.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

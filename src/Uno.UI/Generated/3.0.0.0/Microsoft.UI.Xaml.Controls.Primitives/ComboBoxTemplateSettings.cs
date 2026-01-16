@@ -13,10 +13,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property DropDownOffset
 		// Skipping already declared property DropDownOpenedHeight
 		// Skipping already declared property SelectedItemDirection
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOpenedHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownClosedHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.SelectedItemDirection.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownContentMinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOpenedHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.SelectedItemDirection.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

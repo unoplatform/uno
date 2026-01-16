@@ -8,32 +8,43 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class DoubleAnimation : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
-		// Skipping already declared property To
-		// Skipping already declared property From
-		// Skipping already declared property EnableDependentAnimation
-		// Skipping already declared property EasingFunction
-		// Skipping already declared property By
 		// Skipping already declared property ByProperty
 		// Skipping already declared property EasingFunctionProperty
 		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared property FromProperty
 		// Skipping already declared property ToProperty
+		// Skipping already declared property By
+		// Skipping already declared property EasingFunction
+		// Skipping already declared property EnableDependentAnimation
+		// Skipping already declared property From
+		// Skipping already declared property To
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.DoubleAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.DoubleAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.From.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.From.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.ByProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.FromProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.ToProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.DoubleAnimation, Microsoft.UI.Xaml.Media.Animation.DoubleAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.DoubleAnimation, Microsoft.UI.Xaml.Media.Animation.DoubleAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.DoubleAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.By.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.By.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EasingFunction.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.FromProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.ByProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EasingFunctionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.From.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.From.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -93,13 +93,24 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.IsTrial.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.operator ==(Windows.Services.Store.StoreCollectionData, Windows.Services.Store.StoreCollectionData)
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.operator !=(Windows.Services.Store.StoreCollectionData, Windows.Services.Store.StoreCollectionData)
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.Equals(Windows.Services.Store.StoreCollectionData)
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.AcquiredDate.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.CampaignId.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.DeveloperOfferId.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.AcquiredDate.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.StartDate.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.EndDate.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.TrialTimeRemaining.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.ExtendedJsonData.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.IsTrial.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.StartDate.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.TrialTimeRemaining.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

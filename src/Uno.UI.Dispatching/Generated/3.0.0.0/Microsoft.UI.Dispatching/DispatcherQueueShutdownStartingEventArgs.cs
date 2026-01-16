@@ -13,6 +13,16 @@ namespace Microsoft.UI.Dispatching
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.operator ==(Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs, Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.operator !=(Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs, Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.Equals(Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -20,5 +30,6 @@ namespace Microsoft.UI.Dispatching
 			throw new global::System.NotImplementedException("The member Deferral DispatcherQueueShutdownStartingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20DispatcherQueueShutdownStartingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

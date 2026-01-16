@@ -8,8 +8,28 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial struct GridLength
 	{
+		// Skipping already declared property Value
+		// Skipping already declared property GridUnitType
+		// Skipping already declared property IsAbsolute
+		// Skipping already declared property IsAuto
+		// Skipping already declared property IsStar
+		// Skipping already declared property Auto
 		// Forced skipping of method Microsoft.UI.Xaml.GridLength.GridLength()
-		// Skipping already declared field Microsoft.UI.Xaml.GridLength.Value
-		// Skipping already declared field Microsoft.UI.Xaml.GridLength.GridUnitType
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.GridLength(double)
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.GridLength(double)
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.GridLength(double, Microsoft.UI.Xaml.GridUnitType)
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.GridLength(double, Microsoft.UI.Xaml.GridUnitType)
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.GridUnitType.get
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.IsAbsolute.get
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.IsAuto.get
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.IsStar.get
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.Auto.get
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.operator ==(Microsoft.UI.Xaml.GridLength, Microsoft.UI.Xaml.GridLength)
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.operator !=(Microsoft.UI.Xaml.GridLength, Microsoft.UI.Xaml.GridLength)
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.Equals(Microsoft.UI.Xaml.GridLength)
+		// Forced skipping of method Microsoft.UI.Xaml.GridLength.GetHashCode()
+		// Skipping already declared method Microsoft.UI.Xaml.GridLength.ToString()
 	}
 }

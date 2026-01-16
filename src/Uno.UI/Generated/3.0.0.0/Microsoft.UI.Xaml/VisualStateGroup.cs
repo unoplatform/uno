@@ -14,14 +14,24 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Transitions
 		// Skipping already declared method Microsoft.UI.Xaml.VisualStateGroup.VisualStateGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.VisualStateGroup()
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Name.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Transitions.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.States.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentState.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.operator ==(Microsoft.UI.Xaml.VisualStateGroup, Microsoft.UI.Xaml.VisualStateGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.operator !=(Microsoft.UI.Xaml.VisualStateGroup, Microsoft.UI.Xaml.VisualStateGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Equals(Microsoft.UI.Xaml.VisualStateGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanging.add
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanging.remove
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentState.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Name.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.States.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Transitions.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanged
 		// Skipping already declared event Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanging
 	}

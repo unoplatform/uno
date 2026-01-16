@@ -13,6 +13,16 @@ namespace Windows.System.Diagnostics
 		{
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.operator ==(Windows.System.Diagnostics.ProcessDiskUsage, Windows.System.Diagnostics.ProcessDiskUsage)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.operator !=(Windows.System.Diagnostics.ProcessDiskUsage, Windows.System.Diagnostics.ProcessDiskUsage)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.Equals(Windows.System.Diagnostics.ProcessDiskUsage)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.Diagnostics.ProcessDiskUsageReport GetReport()
@@ -20,5 +30,6 @@ namespace Windows.System.Diagnostics
 			throw new global::System.NotImplementedException("The member ProcessDiskUsageReport ProcessDiskUsage.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiskUsageReport%20ProcessDiskUsage.GetReport%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

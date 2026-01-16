@@ -10,7 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property ActualImageBrush
 		// Skipping already declared property ActualInitials
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ActualInitials.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings, Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings, Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ActualImageBrush.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ActualInitials.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

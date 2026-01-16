@@ -14,7 +14,6 @@ namespace Windows.Web.Http
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.IHttpContent.Headers.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> BufferAllAsync();
 #endif
@@ -33,5 +32,6 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync(global::Windows.Storage.Streams.IOutputStream outputStream);
 #endif
+		// Forced skipping of method Windows.Web.Http.IHttpContent.Headers.get
 	}
 }

@@ -13,5 +13,15 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.operator ==(Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter, Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.operator !=(Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter, Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.Equals(Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyoutPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

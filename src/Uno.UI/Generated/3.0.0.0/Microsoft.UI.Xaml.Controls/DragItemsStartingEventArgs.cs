@@ -13,9 +13,20 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Items
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.DragItemsStartingEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.DragItemsStartingEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs, Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs, Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Equals(Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Data.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Items.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

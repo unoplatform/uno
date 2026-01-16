@@ -16,6 +16,16 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.InkStrokeBuilder()
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.operator ==(Windows.UI.Input.Inking.InkStrokeBuilder, Windows.UI.Input.Inking.InkStrokeBuilder)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.operator !=(Windows.UI.Input.Inking.InkStrokeBuilder, Windows.UI.Input.Inking.InkStrokeBuilder)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.Equals(Windows.UI.Input.Inking.InkStrokeBuilder)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void BeginStroke(global::Windows.UI.Input.PointerPoint pointerPoint)
@@ -65,5 +75,6 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member InkStroke InkStrokeBuilder.CreateStrokeFromInkPoints(IEnumerable<InkPoint> inkPoints, Matrix3x2 transform, DateTimeOffset? strokeStartedTime, TimeSpan? strokeDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkStroke%20InkStrokeBuilder.CreateStrokeFromInkPoints%28IEnumerable%3CInkPoint%3E%20inkPoints%2C%20Matrix3x2%20transform%2C%20DateTimeOffset%3F%20strokeStartedTime%2C%20TimeSpan%3F%20strokeDuration%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

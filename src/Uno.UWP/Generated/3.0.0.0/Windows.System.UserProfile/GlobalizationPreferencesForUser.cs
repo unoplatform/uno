@@ -83,12 +83,23 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.User.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.FromAbi(nint)
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.operator ==(Windows.System.UserProfile.GlobalizationPreferencesForUser, Windows.System.UserProfile.GlobalizationPreferencesForUser)
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.operator !=(Windows.System.UserProfile.GlobalizationPreferencesForUser, Windows.System.UserProfile.GlobalizationPreferencesForUser)
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Equals(Windows.System.UserProfile.GlobalizationPreferencesForUser)
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Equals(object)
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.GetHashCode()
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Calendars.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Clocks.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Currencies.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Languages.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.HomeGeographicRegion.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Languages.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.User.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WeekStartsOn.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

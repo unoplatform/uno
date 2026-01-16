@@ -8,10 +8,6 @@ namespace Windows.Globalization.NumberFormatting
 #endif
 	public partial class PermilleFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions, global::Windows.Globalization.NumberFormatting.INumberFormatter, global::Windows.Globalization.NumberFormatting.INumberFormatter2, global::Windows.Globalization.NumberFormatting.INumberParser, global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption, global::Windows.Globalization.NumberFormatting.INumberRounderOption, global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
-		// Skipping already declared property IsDecimalPointAlwaysDisplayed
-		// Skipping already declared property IntegerDigits
-		// Skipping already declared property IsGrouped
-		// Skipping already declared property NumeralSystem
 		// Skipping already declared property FractionDigits
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -23,7 +19,13 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 #endif
+		// Skipping already declared property IntegerDigits
+		// Skipping already declared property IsDecimalPointAlwaysDisplayed
+		// Skipping already declared property IsGrouped
+		// Skipping already declared property IsZeroSigned
 		// Skipping already declared property Languages
+		// Skipping already declared property NumberRounder
+		// Skipping already declared property NumeralSystem
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ResolvedGeographicRegion
@@ -35,9 +37,9 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared property ResolvedLanguage
-		// Skipping already declared property NumberRounder
-		// Skipping already declared property IsZeroSigned
 		// Skipping already declared property SignificantDigits
+		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PermilleFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
@@ -46,22 +48,16 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter(System.Collections.Generic.IEnumerable<string>, string)
-		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.Languages.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.GeographicRegion.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IntegerDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IntegerDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.FractionDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.FractionDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsGrouped.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsGrouped.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsDecimalPointAlwaysDisplayed.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsDecimalPointAlwaysDisplayed.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumeralSystem.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumeralSystem.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.ResolvedLanguage.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.ResolvedGeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.operator ==(Windows.Globalization.NumberFormatting.PermilleFormatter, Windows.Globalization.NumberFormatting.PermilleFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.operator !=(Windows.Globalization.NumberFormatting.PermilleFormatter, Windows.Globalization.NumberFormatting.PermilleFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.Equals(Windows.Globalization.NumberFormatting.PermilleFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.Equals(object)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.GetHashCode()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
@@ -107,12 +103,27 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.ParseDouble(string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.SignificantDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.SignificantDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumberRounder.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumberRounder.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.FractionDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.FractionDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.GeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IntegerDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IntegerDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsDecimalPointAlwaysDisplayed.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsDecimalPointAlwaysDisplayed.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsGrouped.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsGrouped.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsZeroSigned.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.IsZeroSigned.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.Languages.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumberRounder.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumberRounder.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumeralSystem.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.NumeralSystem.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.ResolvedGeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.ResolvedLanguage.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.SignificantDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.SignificantDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatterOptions
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter2

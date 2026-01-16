@@ -23,6 +23,18 @@ namespace Windows.ApplicationModel.Payments.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.As<I>()
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.operator ==(Windows.ApplicationModel.Payments.Provider.PaymentAppManager, Windows.ApplicationModel.Payments.Provider.PaymentAppManager)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.operator !=(Windows.ApplicationModel.Payments.Provider.PaymentAppManager, Windows.ApplicationModel.Payments.Provider.PaymentAppManager)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.Equals(Windows.ApplicationModel.Payments.Provider.PaymentAppManager)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RegisterAsync(global::System.Collections.Generic.IEnumerable<string> supportedPaymentMethodIds)
@@ -37,6 +49,6 @@ namespace Windows.ApplicationModel.Payments.Provider
 			throw new global::System.NotImplementedException("The member IAsyncAction PaymentAppManager.UnregisterAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PaymentAppManager.UnregisterAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

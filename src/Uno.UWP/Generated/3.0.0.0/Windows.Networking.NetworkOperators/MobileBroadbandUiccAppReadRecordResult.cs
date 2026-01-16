@@ -33,7 +33,18 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Status.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult, Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult, Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Equals(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Data.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Status.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

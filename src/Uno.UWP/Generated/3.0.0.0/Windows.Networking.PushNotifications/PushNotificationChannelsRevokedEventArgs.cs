@@ -13,5 +13,16 @@ namespace Windows.Networking.PushNotifications
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.operator ==(Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs, Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.operator !=(Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs, Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.Equals(Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

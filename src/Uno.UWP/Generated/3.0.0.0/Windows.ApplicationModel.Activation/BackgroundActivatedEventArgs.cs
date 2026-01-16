@@ -23,7 +23,18 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs, Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs, Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.TaskInstance.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IBackgroundActivatedEventArgs
 	}
 }

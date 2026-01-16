@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -34,7 +33,18 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.operator ==(Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs, Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.operator !=(Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs, Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.Equals(Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.CollectionChange.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.Key.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -47,9 +47,20 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.IsLocked.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.operator ==(Windows.UI.Input.SystemFunctionLockChangedEventArgs, Windows.UI.Input.SystemFunctionLockChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.operator !=(Windows.UI.Input.SystemFunctionLockChangedEventArgs, Windows.UI.Input.SystemFunctionLockChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.Equals(Windows.UI.Input.SystemFunctionLockChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.IsLocked.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.Timestamp.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

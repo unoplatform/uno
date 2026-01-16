@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.HubAutomationPeer(Microsoft.UI.Xaml.Controls.Hub)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.HubAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.HubAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

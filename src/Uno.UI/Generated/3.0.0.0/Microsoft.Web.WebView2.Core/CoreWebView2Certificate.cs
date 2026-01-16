@@ -83,6 +83,16 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2Certificate, Microsoft.Web.WebView2.Core.CoreWebView2Certificate)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2Certificate, Microsoft.Web.WebView2.Core.CoreWebView2Certificate)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.Equals(Microsoft.Web.WebView2.Core.CoreWebView2Certificate)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.Certificate ToCertificate()
@@ -90,13 +100,6 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Certificate CoreWebView2Certificate.ToCertificate() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20CoreWebView2Certificate.ToCertificate%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.Subject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.Issuer.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.ValidFrom.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.ValidTo.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.DerEncodedSerialNumber.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.DisplayName.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.PemEncodedIssuerCertificateChain.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToPemEncoding()
@@ -104,5 +107,13 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member string CoreWebView2Certificate.ToPemEncoding() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Certificate.ToPemEncoding%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.DerEncodedSerialNumber.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.DisplayName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.Issuer.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.PemEncodedIssuerCertificateChain.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.Subject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.ValidFrom.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.ValidTo.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Certificate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

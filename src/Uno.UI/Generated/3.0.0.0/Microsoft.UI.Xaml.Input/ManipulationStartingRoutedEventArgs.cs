@@ -8,6 +8,9 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class ManipulationStartingRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
+		// Skipping already declared property Container
+		// Skipping already declared property Handled
+		// Skipping already declared property Mode
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Input.ManipulationPivot Pivot
@@ -22,18 +25,25 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 #endif
-		// Skipping already declared property Mode
-		// Skipping already declared property Handled
-		// Skipping already declared property Container
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.ManipulationStartingRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.ManipulationStartingRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Container.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Container.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

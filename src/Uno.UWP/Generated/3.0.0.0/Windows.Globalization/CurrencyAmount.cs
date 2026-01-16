@@ -36,7 +36,18 @@ namespace Windows.Globalization
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.CurrencyAmount.CurrencyAmount(string, string)
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.operator ==(Windows.Globalization.CurrencyAmount, Windows.Globalization.CurrencyAmount)
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.operator !=(Windows.Globalization.CurrencyAmount, Windows.Globalization.CurrencyAmount)
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.Equals(Windows.Globalization.CurrencyAmount)
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.Equals(object)
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.GetHashCode()
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Globalization.CurrencyAmount.Amount.get
 		// Forced skipping of method Windows.Globalization.CurrencyAmount.Currency.get
+		// Forced skipping of method Windows.Globalization.CurrencyAmount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,7 +33,18 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.operator ==(Windows.Networking.Connectivity.NetworkSecuritySettings, Windows.Networking.Connectivity.NetworkSecuritySettings)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.operator !=(Windows.Networking.Connectivity.NetworkSecuritySettings, Windows.Networking.Connectivity.NetworkSecuritySettings)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.Equals(Windows.Networking.Connectivity.NetworkSecuritySettings)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.NetworkAuthenticationType.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.NetworkEncryptionType.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkSecuritySettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

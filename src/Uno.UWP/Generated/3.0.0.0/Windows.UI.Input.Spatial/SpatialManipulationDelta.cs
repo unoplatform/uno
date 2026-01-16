@@ -23,6 +23,17 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.operator ==(Windows.UI.Input.Spatial.SpatialManipulationDelta, Windows.UI.Input.Spatial.SpatialManipulationDelta)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.operator !=(Windows.UI.Input.Spatial.SpatialManipulationDelta, Windows.UI.Input.Spatial.SpatialManipulationDelta)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.Equals(Windows.UI.Input.Spatial.SpatialManipulationDelta)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.Translation.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationDelta.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

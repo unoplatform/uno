@@ -63,10 +63,21 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.operator ==(Windows.ApplicationModel.PackageUninstallingEventArgs, Windows.ApplicationModel.PackageUninstallingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.operator !=(Windows.ApplicationModel.PackageUninstallingEventArgs, Windows.ApplicationModel.PackageUninstallingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Equals(Windows.ApplicationModel.PackageUninstallingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.IsComplete.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

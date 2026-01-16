@@ -13,10 +13,20 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.PointerDeviceType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs, Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs, Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.Handled.set
-		// Skipping already declared method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

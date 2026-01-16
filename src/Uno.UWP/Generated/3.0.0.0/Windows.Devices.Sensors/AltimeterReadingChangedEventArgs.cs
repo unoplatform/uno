@@ -23,6 +23,17 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.AltimeterReadingChangedEventArgs, Windows.Devices.Sensors.AltimeterReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.AltimeterReadingChangedEventArgs, Windows.Devices.Sensors.AltimeterReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.Equals(Windows.Devices.Sensors.AltimeterReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,6 +23,17 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.operator ==(Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs, Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.operator !=(Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs, Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.Equals(Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.Request.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

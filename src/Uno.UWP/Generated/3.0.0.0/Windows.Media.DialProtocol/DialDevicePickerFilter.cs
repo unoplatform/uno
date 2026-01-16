@@ -23,6 +23,17 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.FromAbi(nint)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.operator ==(Windows.Media.DialProtocol.DialDevicePickerFilter, Windows.Media.DialProtocol.DialDevicePickerFilter)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.operator !=(Windows.Media.DialProtocol.DialDevicePickerFilter, Windows.Media.DialProtocol.DialDevicePickerFilter)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.Equals(Windows.Media.DialProtocol.DialDevicePickerFilter)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.Equals(object)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.GetHashCode()
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.SupportedAppNames.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePickerFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

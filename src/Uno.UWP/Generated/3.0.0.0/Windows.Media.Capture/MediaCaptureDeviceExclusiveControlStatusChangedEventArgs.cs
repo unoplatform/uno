@@ -33,7 +33,18 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.operator ==(Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs, Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.operator !=(Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs, Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Equals(Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -17,6 +16,16 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.NDTCPMessenger(string, uint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.operator ==(Windows.Media.Protection.PlayReady.NDTCPMessenger, Windows.Media.Protection.PlayReady.NDTCPMessenger)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.operator !=(Windows.Media.Protection.PlayReady.NDTCPMessenger, Windows.Media.Protection.PlayReady.NDTCPMessenger)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.Equals(Windows.Media.Protection.PlayReady.NDTCPMessenger)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendRegistrationRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes)
@@ -45,6 +54,7 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendLicenseFetchRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CINDSendResult%3E%20NDTCPMessenger.SendLicenseFetchRequestAsync%28byte%5B%5D%20sessionIDBytes%2C%20byte%5B%5D%20challengeDataBytes%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Protection.PlayReady.INDMessenger
 	}
 }

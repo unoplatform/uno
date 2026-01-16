@@ -33,8 +33,16 @@ namespace Windows.Media.Transcoding
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.CanTranscode.get
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.FailureReason.get
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.operator ==(Windows.Media.Transcoding.PrepareTranscodeResult, Windows.Media.Transcoding.PrepareTranscodeResult)
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.operator !=(Windows.Media.Transcoding.PrepareTranscodeResult, Windows.Media.Transcoding.PrepareTranscodeResult)
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.Equals(Windows.Media.Transcoding.PrepareTranscodeResult)
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.Equals(object)
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.GetHashCode()
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<double> TranscodeAsync()
@@ -42,5 +50,8 @@ namespace Windows.Media.Transcoding
 			throw new global::System.NotImplementedException("The member IAsyncActionWithProgress<double> PrepareTranscodeResult.TranscodeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncActionWithProgress%3Cdouble%3E%20PrepareTranscodeResult.TranscodeAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.CanTranscode.get
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.FailureReason.get
+		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

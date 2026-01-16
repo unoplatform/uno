@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Inline.Inline()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.Inline()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.Inline(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.operator ==(Microsoft.UI.Xaml.Documents.Inline, Microsoft.UI.Xaml.Documents.Inline)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.operator !=(Microsoft.UI.Xaml.Documents.Inline, Microsoft.UI.Xaml.Documents.Inline)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.Equals(Microsoft.UI.Xaml.Documents.Inline)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.Inline(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Inline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

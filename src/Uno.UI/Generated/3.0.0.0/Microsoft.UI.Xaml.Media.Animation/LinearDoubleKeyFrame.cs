@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.LinearDoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.LinearDoubleKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

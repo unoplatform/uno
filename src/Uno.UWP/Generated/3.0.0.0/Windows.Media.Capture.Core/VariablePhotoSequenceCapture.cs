@@ -13,6 +13,16 @@ namespace Windows.Media.Capture.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.operator ==(Windows.Media.Capture.Core.VariablePhotoSequenceCapture, Windows.Media.Capture.Core.VariablePhotoSequenceCapture)
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.operator !=(Windows.Media.Capture.Core.VariablePhotoSequenceCapture, Windows.Media.Capture.Core.VariablePhotoSequenceCapture)
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.Equals(Windows.Media.Capture.Core.VariablePhotoSequenceCapture)
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StartAsync()
@@ -45,6 +55,7 @@ namespace Windows.Media.Capture.Core
 			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.UpdateSettingsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VariablePhotoSequenceCapture.UpdateSettingsAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.Core.VariablePhotoSequenceCapture, global::Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs> PhotoCaptured

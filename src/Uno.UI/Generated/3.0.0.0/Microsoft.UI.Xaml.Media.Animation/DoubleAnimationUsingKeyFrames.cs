@@ -8,14 +8,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class DoubleAnimationUsingKeyFrames : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
+		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared property EnableDependentAnimation
 		// Skipping already declared property KeyFrames
-		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.DoubleAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.DoubleAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.operator ==(Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.operator !=(Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.Equals(Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

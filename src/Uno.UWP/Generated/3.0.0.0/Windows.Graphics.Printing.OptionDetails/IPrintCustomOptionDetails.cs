@@ -15,7 +15,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails.DisplayName.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails.DisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails.DisplayName.set
 	}
 }

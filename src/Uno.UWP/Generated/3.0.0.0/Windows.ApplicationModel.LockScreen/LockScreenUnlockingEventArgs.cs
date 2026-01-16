@@ -23,6 +23,16 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.operator ==(Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs, Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.operator !=(Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs, Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.Equals(Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral GetDeferral()
@@ -31,5 +41,6 @@ namespace Windows.ApplicationModel.LockScreen
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.Deadline.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

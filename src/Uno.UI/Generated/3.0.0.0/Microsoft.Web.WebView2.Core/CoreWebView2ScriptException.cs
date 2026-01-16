@@ -63,10 +63,21 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.LineNumber.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ScriptException, Microsoft.Web.WebView2.Core.CoreWebView2ScriptException)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ScriptException, Microsoft.Web.WebView2.Core.CoreWebView2ScriptException)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ScriptException)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.ColumnNumber.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Name.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.LineNumber.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Message.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Name.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.ToJson.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

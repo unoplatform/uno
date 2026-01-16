@@ -10,7 +10,19 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.HyperlinkButtonAutomationPeer(Microsoft.UI.Xaml.Controls.HyperlinkButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.HyperlinkButtonAutomationPeer(Microsoft.UI.Xaml.Controls.HyperlinkButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.HyperlinkButtonAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.HyperlinkButtonAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.Invoke()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}
 }

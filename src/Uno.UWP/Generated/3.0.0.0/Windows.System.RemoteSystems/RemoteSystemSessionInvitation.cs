@@ -33,7 +33,18 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionInvitation, Windows.System.RemoteSystems.RemoteSystemSessionInvitation)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionInvitation, Windows.System.RemoteSystems.RemoteSystemSessionInvitation)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.Equals(Windows.System.RemoteSystems.RemoteSystemSessionInvitation)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.Sender.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.SessionInfo.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

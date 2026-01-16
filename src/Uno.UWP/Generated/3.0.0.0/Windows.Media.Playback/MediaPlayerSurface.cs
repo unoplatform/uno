@@ -23,9 +23,16 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.CompositionSurface.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.Compositor.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.MediaPlayer.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.operator ==(Windows.Media.Playback.MediaPlayerSurface, Windows.Media.Playback.MediaPlayerSurface)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.operator !=(Windows.Media.Playback.MediaPlayerSurface, Windows.Media.Playback.MediaPlayerSurface)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.Equals(Windows.Media.Playback.MediaPlayerSurface)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -33,6 +40,10 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayerSurface", "void MediaPlayerSurface.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.CompositionSurface.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.Compositor.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.MediaPlayer.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

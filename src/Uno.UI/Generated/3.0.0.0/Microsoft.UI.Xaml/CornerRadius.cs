@@ -8,10 +8,28 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial struct CornerRadius
 	{
+		// Skipping already declared property TopLeft
+		// Skipping already declared property TopRight
+		// Skipping already declared property BottomRight
+		// Skipping already declared property BottomLeft
 		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.CornerRadius()
-		// Skipping already declared field Microsoft.UI.Xaml.CornerRadius.TopLeft
-		// Skipping already declared field Microsoft.UI.Xaml.CornerRadius.TopRight
-		// Skipping already declared field Microsoft.UI.Xaml.CornerRadius.BottomRight
-		// Skipping already declared field Microsoft.UI.Xaml.CornerRadius.BottomLeft
+		// Skipping already declared method Microsoft.UI.Xaml.CornerRadius.CornerRadius(double)
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.CornerRadius(double)
+		// Skipping already declared method Microsoft.UI.Xaml.CornerRadius.CornerRadius(double, double, double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.CornerRadius(double, double, double, double)
+		// Skipping already declared method Microsoft.UI.Xaml.CornerRadius.ToString()
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.Equals(Microsoft.UI.Xaml.CornerRadius)
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.operator ==(Microsoft.UI.Xaml.CornerRadius, Microsoft.UI.Xaml.CornerRadius)
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.operator !=(Microsoft.UI.Xaml.CornerRadius, Microsoft.UI.Xaml.CornerRadius)
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.TopLeft.get
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.TopLeft.set
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.TopRight.get
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.TopRight.set
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.BottomRight.get
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.BottomRight.set
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.BottomLeft.get
+		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.BottomLeft.set
 	}
 }

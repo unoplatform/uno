@@ -43,9 +43,16 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ChangeKind.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ShippingAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.SelectedShippingOption.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.operator ==(Windows.ApplicationModel.Payments.PaymentRequestChangedArgs, Windows.ApplicationModel.Payments.PaymentRequestChangedArgs)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.operator !=(Windows.ApplicationModel.Payments.PaymentRequestChangedArgs, Windows.ApplicationModel.Payments.PaymentRequestChangedArgs)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.Equals(Windows.ApplicationModel.Payments.PaymentRequestChangedArgs)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Acknowledge(global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult changeResult)
@@ -53,5 +60,9 @@ namespace Windows.ApplicationModel.Payments
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "void PaymentRequestChangedArgs.Acknowledge(PaymentRequestChangedResult changeResult)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ChangeKind.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.SelectedShippingOption.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ShippingAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

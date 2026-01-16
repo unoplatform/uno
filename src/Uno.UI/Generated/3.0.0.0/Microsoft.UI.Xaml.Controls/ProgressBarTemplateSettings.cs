@@ -19,16 +19,26 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property EllipseDiameter
 		// Skipping already declared property EllipseOffset
 		// Skipping already declared property IndicatorLengthDelta
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationStartPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationEndPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationStartPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationEndPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationMidPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.IndicatorLengthDelta.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings, Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings, Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ClipRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationEndPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationStartPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationEndPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationMidPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationStartPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseAnimationEndPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseAnimationWellPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseDiameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.IndicatorLengthDelta.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

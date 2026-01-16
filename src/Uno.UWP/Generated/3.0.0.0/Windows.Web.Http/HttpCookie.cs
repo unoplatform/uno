@@ -8,26 +8,37 @@ namespace Windows.Web.Http
 #endif
 	public partial class HttpCookie : global::Windows.Foundation.IStringable
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property Secure
-		// Skipping already declared property HttpOnly
-		// Skipping already declared property Expires
 		// Skipping already declared property Domain
+		// Skipping already declared property Expires
+		// Skipping already declared property HttpOnly
 		// Skipping already declared property Name
 		// Skipping already declared property Path
+		// Skipping already declared property Secure
+		// Skipping already declared property Value
 		// Skipping already declared method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
 		// Forced skipping of method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.Name.get
+		// Forced skipping of method Windows.Web.Http.HttpCookie.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpCookie.operator ==(Windows.Web.Http.HttpCookie, Windows.Web.Http.HttpCookie)
+		// Forced skipping of method Windows.Web.Http.HttpCookie.operator !=(Windows.Web.Http.HttpCookie, Windows.Web.Http.HttpCookie)
+		// Forced skipping of method Windows.Web.Http.HttpCookie.Equals(Windows.Web.Http.HttpCookie)
+		// Forced skipping of method Windows.Web.Http.HttpCookie.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpCookie.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Windows.Web.Http.HttpCookie.ToString()
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Domain.get
-		// Forced skipping of method Windows.Web.Http.HttpCookie.Path.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Expires.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Expires.set
 		// Forced skipping of method Windows.Web.Http.HttpCookie.HttpOnly.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.HttpOnly.set
+		// Forced skipping of method Windows.Web.Http.HttpCookie.Name.get
+		// Forced skipping of method Windows.Web.Http.HttpCookie.Path.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Secure.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Secure.set
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Value.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Value.set
-		// Skipping already declared method Windows.Web.Http.HttpCookie.ToString()
+		// Forced skipping of method Windows.Web.Http.HttpCookie.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

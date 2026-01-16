@@ -13,6 +13,16 @@ namespace Windows.UI.WebUI
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.operator ==(Windows.UI.WebUI.LeavingBackgroundEventArgs, Windows.UI.WebUI.LeavingBackgroundEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.operator !=(Windows.UI.WebUI.LeavingBackgroundEventArgs, Windows.UI.WebUI.LeavingBackgroundEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.Equals(Windows.UI.WebUI.LeavingBackgroundEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -20,6 +30,7 @@ namespace Windows.UI.WebUI
 			throw new global::System.NotImplementedException("The member Deferral LeavingBackgroundEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20LeavingBackgroundEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.LeavingBackgroundEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.ILeavingBackgroundEventArgs
 	}
 }

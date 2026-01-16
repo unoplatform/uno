@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Calls
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.operator ==(Windows.ApplicationModel.Calls.PhoneCallHistoryStore, Windows.ApplicationModel.Calls.PhoneCallHistoryStore)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.operator !=(Windows.ApplicationModel.Calls.PhoneCallHistoryStore, Windows.ApplicationModel.Calls.PhoneCallHistoryStore)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.Equals(Windows.ApplicationModel.Calls.PhoneCallHistoryStore)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallHistoryEntry> GetEntryAsync(string callHistoryEntryId)
@@ -97,5 +107,6 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member IAsyncAction PhoneCallHistoryStore.MarkSourcesAsSeenAsync(IEnumerable<string> sourceIds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PhoneCallHistoryStore.MarkSourcesAsSeenAsync%28IEnumerable%3Cstring%3E%20sourceIds%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

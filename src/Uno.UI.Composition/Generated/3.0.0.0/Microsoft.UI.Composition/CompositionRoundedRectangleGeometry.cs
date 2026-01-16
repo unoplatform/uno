@@ -8,14 +8,24 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionRoundedRectangleGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
-		// Skipping already declared property Size
-		// Skipping already declared property Offset
 		// Skipping already declared property CornerRadius
+		// Skipping already declared property Offset
+		// Skipping already declared property Size
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.operator ==(Microsoft.UI.Composition.CompositionRoundedRectangleGeometry, Microsoft.UI.Composition.CompositionRoundedRectangleGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.operator !=(Microsoft.UI.Composition.CompositionRoundedRectangleGeometry, Microsoft.UI.Composition.CompositionRoundedRectangleGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Equals(Microsoft.UI.Composition.CompositionRoundedRectangleGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Size.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

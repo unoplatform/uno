@@ -43,8 +43,19 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.operator ==(Windows.Services.Store.StoreCanAcquireLicenseResult, Windows.Services.Store.StoreCanAcquireLicenseResult)
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.operator !=(Windows.Services.Store.StoreCanAcquireLicenseResult, Windows.Services.Store.StoreCanAcquireLicenseResult)
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.Equals(Windows.Services.Store.StoreCanAcquireLicenseResult)
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.ExtendedError.get
 		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.LicensableSku.get
 		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.Status.get
+		// Forced skipping of method Windows.Services.Store.StoreCanAcquireLicenseResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

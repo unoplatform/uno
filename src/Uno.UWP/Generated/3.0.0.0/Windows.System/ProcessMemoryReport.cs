@@ -33,7 +33,18 @@ namespace Windows.System
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.ProcessMemoryReport.FromAbi(nint)
+		// Forced skipping of method Windows.System.ProcessMemoryReport.operator ==(Windows.System.ProcessMemoryReport, Windows.System.ProcessMemoryReport)
+		// Forced skipping of method Windows.System.ProcessMemoryReport.operator !=(Windows.System.ProcessMemoryReport, Windows.System.ProcessMemoryReport)
+		// Forced skipping of method Windows.System.ProcessMemoryReport.Equals(Windows.System.ProcessMemoryReport)
+		// Forced skipping of method Windows.System.ProcessMemoryReport.Equals(object)
+		// Forced skipping of method Windows.System.ProcessMemoryReport.GetHashCode()
+		// Forced skipping of method Windows.System.ProcessMemoryReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.ProcessMemoryReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.ProcessMemoryReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.ProcessMemoryReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.ProcessMemoryReport.PrivateWorkingSetUsage.get
 		// Forced skipping of method Windows.System.ProcessMemoryReport.TotalWorkingSetUsage.get
+		// Forced skipping of method Windows.System.ProcessMemoryReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

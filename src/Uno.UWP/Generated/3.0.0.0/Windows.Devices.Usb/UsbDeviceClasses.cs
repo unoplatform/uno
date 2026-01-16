@@ -103,14 +103,26 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.CdcControl.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Physical.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PersonalHealthcare.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.As<I>()
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.ActiveSync.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PalmSync.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.CdcControl.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.DeviceFirmwareUpdate.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Irda.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Measurement.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PalmSync.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PersonalHealthcare.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Physical.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.VendorSpecific.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.operator ==(Windows.Devices.Usb.UsbDeviceClasses, Windows.Devices.Usb.UsbDeviceClasses)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.operator !=(Windows.Devices.Usb.UsbDeviceClasses, Windows.Devices.Usb.UsbDeviceClasses)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Equals(Windows.Devices.Usb.UsbDeviceClasses)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

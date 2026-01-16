@@ -11,7 +11,19 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared property Inlines
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Span.Span()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Span()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Span(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.operator ==(Microsoft.UI.Xaml.Documents.Span, Microsoft.UI.Xaml.Documents.Span)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.operator !=(Microsoft.UI.Xaml.Documents.Span, Microsoft.UI.Xaml.Documents.Span)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Equals(Microsoft.UI.Xaml.Documents.Span)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Span(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Inlines.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Inlines.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,14 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RatingControl : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property PlaceholderValue
-		// Skipping already declared property MaxRating
-		// Skipping already declared property ItemInfo
-		// Skipping already declared property IsReadOnly
-		// Skipping already declared property IsClearEnabled
-		// Skipping already declared property InitialSetValue
-		// Skipping already declared property Caption
 		// Skipping already declared property CaptionProperty
 		// Skipping already declared property InitialSetValueProperty
 		// Skipping already declared property IsClearEnabledProperty
@@ -24,8 +16,37 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MaxRatingProperty
 		// Skipping already declared property PlaceholderValueProperty
 		// Skipping already declared property ValueProperty
+		// Skipping already declared property Caption
+		// Skipping already declared property InitialSetValue
+		// Skipping already declared property IsClearEnabled
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property ItemInfo
+		// Skipping already declared property MaxRating
+		// Skipping already declared property PlaceholderValue
+		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RatingControl.RatingControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.RatingControl()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.CaptionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.InitialSetValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsClearEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsReadOnlyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ItemInfoProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.MaxRatingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.PlaceholderValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.RatingControl(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.operator ==(Microsoft.UI.Xaml.Controls.RatingControl, Microsoft.UI.Xaml.Controls.RatingControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.operator !=(Microsoft.UI.Xaml.Controls.RatingControl, Microsoft.UI.Xaml.Controls.RatingControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Equals(Microsoft.UI.Xaml.Controls.RatingControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.RatingControl(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Caption.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Caption.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.InitialSetValue.get
@@ -34,24 +55,16 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsClearEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsReadOnly.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ItemInfo.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ItemInfo.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.MaxRating.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.MaxRating.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.PlaceholderValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.PlaceholderValue.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ItemInfo.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ItemInfo.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.CaptionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.InitialSetValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsClearEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsReadOnlyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.MaxRatingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.PlaceholderValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ItemInfoProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged
 	}
 }

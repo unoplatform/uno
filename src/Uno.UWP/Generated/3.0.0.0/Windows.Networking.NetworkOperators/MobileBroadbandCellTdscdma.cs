@@ -93,6 +93,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma, Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma, Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.Equals(Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.CellId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.CellParameterId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.ChannelNumber.get
@@ -101,5 +111,6 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.ProviderId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.ReceivedSignalCodePowerInDBm.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.TimingAdvanceInBitPeriods.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

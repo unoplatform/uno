@@ -8,7 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class Vector4KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.operator ==(Microsoft.UI.Composition.Vector4KeyFrameAnimation, Microsoft.UI.Composition.Vector4KeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.operator !=(Microsoft.UI.Composition.Vector4KeyFrameAnimation, Microsoft.UI.Composition.Vector4KeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.Equals(Microsoft.UI.Composition.Vector4KeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.Vector4KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector4)
 		// Skipping already declared method Microsoft.UI.Composition.Vector4KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector4, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Vector4KeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

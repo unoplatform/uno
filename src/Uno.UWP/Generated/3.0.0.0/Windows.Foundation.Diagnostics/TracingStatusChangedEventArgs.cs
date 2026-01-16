@@ -33,7 +33,18 @@ namespace Windows.Foundation.Diagnostics
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.operator ==(Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs, Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs)
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.operator !=(Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs, Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs)
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.Equals(Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs)
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.Enabled.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.TraceLevel.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

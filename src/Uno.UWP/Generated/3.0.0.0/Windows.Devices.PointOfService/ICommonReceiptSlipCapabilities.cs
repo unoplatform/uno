@@ -62,12 +62,12 @@ namespace Windows.Devices.PointOfService
 			get;
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.Is180RotationSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.IsBarcodeSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.IsBitmapSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.IsLeft90RotationSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.IsRight90RotationSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.Is180RotationSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.IsPrintAreaSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.IsRight90RotationSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.RuledLineCapabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.SupportedBarcodeRotations.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities.SupportedBitmapRotations.get

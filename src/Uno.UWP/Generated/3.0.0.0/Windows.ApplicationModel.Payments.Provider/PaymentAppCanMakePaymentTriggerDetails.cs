@@ -23,7 +23,16 @@ namespace Windows.ApplicationModel.Payments.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.Request.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.operator ==(Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails, Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.operator !=(Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails, Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.Equals(Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCanMakePaymentResult(global::Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult value)
@@ -31,5 +40,7 @@ namespace Windows.ApplicationModel.Payments.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails", "void PaymentAppCanMakePaymentTriggerDetails.ReportCanMakePaymentResult(PaymentCanMakePaymentResult value)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.Request.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

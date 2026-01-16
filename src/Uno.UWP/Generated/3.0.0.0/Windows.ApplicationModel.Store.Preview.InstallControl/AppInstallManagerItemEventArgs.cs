@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.Item.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

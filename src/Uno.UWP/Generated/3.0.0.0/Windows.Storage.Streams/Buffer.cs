@@ -8,13 +8,11 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class Buffer : global::Windows.Storage.Streams.IBuffer
 	{
-		// Skipping already declared property Length
 		// Skipping already declared property Capacity
+		// Skipping already declared property Length
 		// Skipping already declared method Windows.Storage.Streams.Buffer.Buffer(uint)
 		// Forced skipping of method Windows.Storage.Streams.Buffer.Buffer(uint)
-		// Forced skipping of method Windows.Storage.Streams.Buffer.Capacity.get
-		// Forced skipping of method Windows.Storage.Streams.Buffer.Length.get
-		// Forced skipping of method Windows.Storage.Streams.Buffer.Length.set
+		// Forced skipping of method Windows.Storage.Streams.Buffer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Streams.Buffer CreateCopyFromMemoryBuffer(global::Windows.Foundation.IMemoryBuffer input)
@@ -29,6 +27,20 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member MemoryBuffer Buffer.CreateMemoryBufferOverIBuffer(IBuffer input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MemoryBuffer%20Buffer.CreateMemoryBufferOverIBuffer%28IBuffer%20input%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Streams.Buffer.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Streams.Buffer.operator ==(Windows.Storage.Streams.Buffer, Windows.Storage.Streams.Buffer)
+		// Forced skipping of method Windows.Storage.Streams.Buffer.operator !=(Windows.Storage.Streams.Buffer, Windows.Storage.Streams.Buffer)
+		// Forced skipping of method Windows.Storage.Streams.Buffer.Equals(Windows.Storage.Streams.Buffer)
+		// Forced skipping of method Windows.Storage.Streams.Buffer.Equals(object)
+		// Forced skipping of method Windows.Storage.Streams.Buffer.GetHashCode()
+		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Storage.Streams.Buffer.Capacity.get
+		// Forced skipping of method Windows.Storage.Streams.Buffer.Length.get
+		// Forced skipping of method Windows.Storage.Streams.Buffer.Length.set
+		// Forced skipping of method Windows.Storage.Streams.Buffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IBuffer
 	}
 }

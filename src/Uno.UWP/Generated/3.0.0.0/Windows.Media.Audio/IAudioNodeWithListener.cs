@@ -15,7 +15,7 @@ namespace Windows.Media.Audio
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.IAudioNodeWithListener.Listener.set
 		// Forced skipping of method Windows.Media.Audio.IAudioNodeWithListener.Listener.get
+		// Forced skipping of method Windows.Media.Audio.IAudioNodeWithListener.Listener.set
 	}
 }

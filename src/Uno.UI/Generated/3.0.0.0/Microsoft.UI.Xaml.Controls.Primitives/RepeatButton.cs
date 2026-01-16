@@ -8,17 +8,28 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class RepeatButton : global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase
 	{
-		// Skipping already declared property Interval
-		// Skipping already declared property Delay
 		// Skipping already declared property DelayProperty
 		// Skipping already declared property IntervalProperty
+		// Skipping already declared property Delay
+		// Skipping already declared property Interval
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.RepeatButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.RepeatButton()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.DelayProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.IntervalProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.operator ==(Microsoft.UI.Xaml.Controls.Primitives.RepeatButton, Microsoft.UI.Xaml.Controls.Primitives.RepeatButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.operator !=(Microsoft.UI.Xaml.Controls.Primitives.RepeatButton, Microsoft.UI.Xaml.Controls.Primitives.RepeatButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Equals(Microsoft.UI.Xaml.Controls.Primitives.RepeatButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Delay.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Delay.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Interval.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Interval.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.DelayProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.IntervalProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -103,14 +103,25 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Report.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.operator ==(Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.operator !=(Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Equals(Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.AccountNumber.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.ExpirationDate.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.ServiceCode.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Title.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.FirstName.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.MiddleInitial.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Surname.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Report.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.ServiceCode.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Suffix.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Surname.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Title.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

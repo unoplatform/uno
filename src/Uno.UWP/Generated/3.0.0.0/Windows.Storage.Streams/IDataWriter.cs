@@ -11,11 +11,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property ByteOrder
 		// Skipping already declared property UnicodeEncoding
 		// Skipping already declared property UnstoredBufferLength
-		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnstoredBufferLength.get
-		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnicodeEncoding.get
-		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnicodeEncoding.set
-		// Forced skipping of method Windows.Storage.Streams.IDataWriter.ByteOrder.get
-		// Forced skipping of method Windows.Storage.Streams.IDataWriter.ByteOrder.set
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteByte(byte)
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteBytes(byte[])
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteBuffer(Windows.Storage.Streams.IBuffer)
@@ -40,5 +35,10 @@ namespace Windows.Storage.Streams
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Storage.Streams.IOutputStream DetachStream();
 #endif
+		// Forced skipping of method Windows.Storage.Streams.IDataWriter.ByteOrder.get
+		// Forced skipping of method Windows.Storage.Streams.IDataWriter.ByteOrder.set
+		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnicodeEncoding.get
+		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnicodeEncoding.set
+		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnstoredBufferLength.get
 	}
 }

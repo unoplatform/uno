@@ -8,14 +8,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ColorAnimationUsingKeyFrames : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
+		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared property EnableDependentAnimation
 		// Skipping already declared property KeyFrames
-		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.ColorAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.ColorAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.operator ==(Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.operator !=(Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.Equals(Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

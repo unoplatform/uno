@@ -73,11 +73,22 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.operator ==(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.operator !=(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Equals(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Equals(object)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Position.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Position.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

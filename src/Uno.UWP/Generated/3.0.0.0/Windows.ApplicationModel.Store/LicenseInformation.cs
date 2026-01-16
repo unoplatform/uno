@@ -53,12 +53,23 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.ProductLicenses.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.IsActive.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.IsTrial.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.ExpirationDate.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.operator ==(Windows.ApplicationModel.Store.LicenseInformation, Windows.ApplicationModel.Store.LicenseInformation)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.operator !=(Windows.ApplicationModel.Store.LicenseInformation, Windows.ApplicationModel.Store.LicenseInformation)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.Equals(Windows.ApplicationModel.Store.LicenseInformation)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.LicenseChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.LicenseChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.ExpirationDate.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.IsActive.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.IsTrial.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.ProductLicenses.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.ApplicationModel.Store.LicenseChangedEventHandler LicenseChanged

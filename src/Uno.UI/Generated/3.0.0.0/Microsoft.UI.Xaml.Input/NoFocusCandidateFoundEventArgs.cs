@@ -8,12 +8,22 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class NoFocusCandidateFoundEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Direction
+		// Skipping already declared property Handled
 		// Skipping already declared property InputDevice
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.operator ==(Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs, Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.operator !=(Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs, Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Equals(Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Direction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.InputDevice.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

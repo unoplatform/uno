@@ -63,10 +63,21 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.operator ==(Windows.Services.Store.StoreSubscriptionInfo, Windows.Services.Store.StoreSubscriptionInfo)
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.operator !=(Windows.Services.Store.StoreSubscriptionInfo, Windows.Services.Store.StoreSubscriptionInfo)
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.Equals(Windows.Services.Store.StoreSubscriptionInfo)
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.BillingPeriod.get
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.BillingPeriodUnit.get
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.HasTrialPeriod.get
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.TrialPeriod.get
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.TrialPeriodUnit.get
+		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

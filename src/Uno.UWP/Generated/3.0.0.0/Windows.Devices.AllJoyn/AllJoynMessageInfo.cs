@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.AllJoynMessageInfo(string)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.operator ==(Windows.Devices.AllJoyn.AllJoynMessageInfo, Windows.Devices.AllJoyn.AllJoynMessageInfo)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.operator !=(Windows.Devices.AllJoyn.AllJoynMessageInfo, Windows.Devices.AllJoyn.AllJoynMessageInfo)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.Equals(Windows.Devices.AllJoyn.AllJoynMessageInfo)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.SenderUniqueName.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynMessageInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

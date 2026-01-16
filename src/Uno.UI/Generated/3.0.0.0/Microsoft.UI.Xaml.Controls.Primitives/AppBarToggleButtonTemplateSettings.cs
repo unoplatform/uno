@@ -9,6 +9,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class AppBarToggleButtonTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property KeyboardAcceleratorTextMinWidth
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.KeyboardAcceleratorTextMinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

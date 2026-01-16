@@ -13,5 +13,16 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.operator ==(Windows.ApplicationModel.Contacts.ContactGroup, Windows.ApplicationModel.Contacts.ContactGroup)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.operator !=(Windows.ApplicationModel.Contacts.ContactGroup, Windows.ApplicationModel.Contacts.ContactGroup)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.Equals(Windows.ApplicationModel.Contacts.ContactGroup)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

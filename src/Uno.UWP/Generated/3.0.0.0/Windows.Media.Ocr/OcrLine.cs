@@ -33,7 +33,18 @@ namespace Windows.Media.Ocr
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Ocr.OcrLine.Words.get
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.operator ==(Windows.Media.Ocr.OcrLine, Windows.Media.Ocr.OcrLine)
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.operator !=(Windows.Media.Ocr.OcrLine, Windows.Media.Ocr.OcrLine)
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.Equals(Windows.Media.Ocr.OcrLine)
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.Equals(object)
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.GetHashCode()
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Ocr.OcrLine.Text.get
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.Words.get
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

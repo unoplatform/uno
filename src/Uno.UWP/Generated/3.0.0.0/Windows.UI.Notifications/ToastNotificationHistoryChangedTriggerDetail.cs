@@ -33,7 +33,18 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.operator ==(Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail, Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.operator !=(Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail, Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.Equals(Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.ChangeType.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.CollectionId.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

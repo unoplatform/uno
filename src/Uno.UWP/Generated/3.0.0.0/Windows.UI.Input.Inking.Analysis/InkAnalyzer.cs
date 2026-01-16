@@ -36,8 +36,16 @@ namespace Windows.UI.Input.Inking.Analysis
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.InkAnalyzer()
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.AnalysisRoot.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.IsAnalyzing.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.operator ==(Windows.UI.Input.Inking.Analysis.InkAnalyzer, Windows.UI.Input.Inking.Analysis.InkAnalyzer)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.operator !=(Windows.UI.Input.Inking.Analysis.InkAnalyzer, Windows.UI.Input.Inking.Analysis.InkAnalyzer)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.Equals(Windows.UI.Input.Inking.Analysis.InkAnalyzer)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddDataForStroke(global::Windows.UI.Input.Inking.InkStroke stroke)
@@ -94,5 +102,8 @@ namespace Windows.UI.Input.Inking.Analysis
 			throw new global::System.NotImplementedException("The member IAsyncOperation<InkAnalysisResult> InkAnalyzer.AnalyzeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CInkAnalysisResult%3E%20InkAnalyzer.AnalyzeAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.AnalysisRoot.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.IsAnalyzing.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

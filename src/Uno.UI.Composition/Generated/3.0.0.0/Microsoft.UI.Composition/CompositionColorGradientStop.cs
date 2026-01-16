@@ -8,11 +8,21 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionColorGradientStop : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Skipping already declared property Offset
 		// Skipping already declared property Color
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.set
+		// Skipping already declared property Offset
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.operator ==(Microsoft.UI.Composition.CompositionColorGradientStop, Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.operator !=(Microsoft.UI.Composition.CompositionColorGradientStop, Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Equals(Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

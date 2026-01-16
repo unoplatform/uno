@@ -33,7 +33,18 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Result.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.operator ==(Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult, Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.operator !=(Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult, Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Equals(Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.ProfileMetadata.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Result.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

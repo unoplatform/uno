@@ -12,11 +12,23 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ToggleState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ToggleSplitButtonAutomationPeer(Microsoft.UI.Xaml.Controls.ToggleSplitButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ToggleSplitButtonAutomationPeer(Microsoft.UI.Xaml.Controls.ToggleSplitButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ToggleSplitButtonAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ToggleSplitButtonAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.Expand()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ToggleState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.Toggle()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.ToggleState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSplitButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IToggleProvider
 	}

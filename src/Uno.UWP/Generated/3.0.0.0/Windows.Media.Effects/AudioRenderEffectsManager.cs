@@ -33,8 +33,16 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.AudioRenderEffectsChanged.add
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.AudioRenderEffectsChanged.remove
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.operator ==(Windows.Media.Effects.AudioRenderEffectsManager, Windows.Media.Effects.AudioRenderEffectsManager)
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.operator !=(Windows.Media.Effects.AudioRenderEffectsManager, Windows.Media.Effects.AudioRenderEffectsManager)
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.Equals(Windows.Media.Effects.AudioRenderEffectsManager)
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.Equals(object)
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.GetHashCode()
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Effects.AudioEffect> GetAudioRenderEffects()
@@ -42,8 +50,8 @@ namespace Windows.Media.Effects
 			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioEffect> AudioRenderEffectsManager.GetAudioRenderEffects() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAudioEffect%3E%20AudioRenderEffectsManager.GetAudioRenderEffects%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.EffectsProviderThumbnail.get
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.EffectsProviderSettingsLabel.get
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.AudioRenderEffectsChanged.add
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.AudioRenderEffectsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShowSettingsUI()
@@ -51,6 +59,9 @@ namespace Windows.Media.Effects
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "void AudioRenderEffectsManager.ShowSettingsUI()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.EffectsProviderSettingsLabel.get
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.EffectsProviderThumbnail.get
+		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Effects.AudioRenderEffectsManager, object> AudioRenderEffectsChanged

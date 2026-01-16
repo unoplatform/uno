@@ -8,6 +8,17 @@ namespace Microsoft.UI.Windowing
 #endif
 	public partial class FullScreenPresenter : global::Microsoft.UI.Windowing.AppWindowPresenter
 	{
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.As<I>()
 		// Skipping already declared method Microsoft.UI.Windowing.FullScreenPresenter.Create()
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.operator ==(Microsoft.UI.Windowing.FullScreenPresenter, Microsoft.UI.Windowing.FullScreenPresenter)
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.operator !=(Microsoft.UI.Windowing.FullScreenPresenter, Microsoft.UI.Windowing.FullScreenPresenter)
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.Equals(Microsoft.UI.Windowing.FullScreenPresenter)
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

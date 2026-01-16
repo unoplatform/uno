@@ -103,14 +103,25 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.operator ==(Windows.Devices.PointOfService.MagneticStripeReaderReport, Windows.Devices.PointOfService.MagneticStripeReaderReport)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.operator !=(Windows.Devices.PointOfService.MagneticStripeReaderReport, Windows.Devices.PointOfService.MagneticStripeReaderReport)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Equals(Windows.Devices.PointOfService.MagneticStripeReaderReport)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.AdditionalSecurityInformation.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationData.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationDataLength.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardType.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Properties.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track1.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track2.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track3.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track4.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Properties.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationData.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationDataLength.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.AdditionalSecurityInformation.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

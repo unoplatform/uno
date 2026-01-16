@@ -8,6 +8,7 @@ namespace Windows.Storage.Streams
 #endif
 	public static partial class RandomAccessStream
 	{
+		// Forced skipping of method Windows.Storage.Streams.RandomAccessStream.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> CopyAsync(global::Windows.Storage.Streams.IInputStream source, global::Windows.Storage.Streams.IOutputStream destination)

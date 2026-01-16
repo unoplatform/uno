@@ -13,6 +13,16 @@ namespace Windows.Web.Http
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.operator ==(Windows.Web.Http.HttpCookieManager, Windows.Web.Http.HttpCookieManager)
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.operator !=(Windows.Web.Http.HttpCookieManager, Windows.Web.Http.HttpCookieManager)
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.Equals(Windows.Web.Http.HttpCookieManager)
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool SetCookie(global::Windows.Web.Http.HttpCookie cookie)
@@ -41,5 +51,6 @@ namespace Windows.Web.Http
 			throw new global::System.NotImplementedException("The member HttpCookieCollection HttpCookieManager.GetCookies(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCookieCollection%20HttpCookieManager.GetCookies%28Uri%20uri%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpCookieManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

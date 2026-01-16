@@ -8,20 +8,30 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class Style : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property TargetType
 		// Skipping already declared property BasedOn
 		// Skipping already declared property IsSealed
 		// Skipping already declared property Setters
-		// Skipping already declared method Microsoft.UI.Xaml.Style.Style(System.Type)
-		// Forced skipping of method Microsoft.UI.Xaml.Style.Style(System.Type)
+		// Skipping already declared property TargetType
 		// Skipping already declared method Microsoft.UI.Xaml.Style.Style()
 		// Forced skipping of method Microsoft.UI.Xaml.Style.Style()
+		// Skipping already declared method Microsoft.UI.Xaml.Style.Style(System.Type)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.Style(System.Type)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.operator ==(Microsoft.UI.Xaml.Style, Microsoft.UI.Xaml.Style)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.operator !=(Microsoft.UI.Xaml.Style, Microsoft.UI.Xaml.Style)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.Equals(Microsoft.UI.Xaml.Style)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Style.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Style.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Style.Seal()
+		// Forced skipping of method Microsoft.UI.Xaml.Style.BasedOn.get
+		// Forced skipping of method Microsoft.UI.Xaml.Style.BasedOn.set
 		// Forced skipping of method Microsoft.UI.Xaml.Style.IsSealed.get
 		// Forced skipping of method Microsoft.UI.Xaml.Style.Setters.get
 		// Forced skipping of method Microsoft.UI.Xaml.Style.TargetType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Style.TargetType.set
-		// Forced skipping of method Microsoft.UI.Xaml.Style.BasedOn.get
-		// Forced skipping of method Microsoft.UI.Xaml.Style.BasedOn.set
-		// Skipping already declared method Microsoft.UI.Xaml.Style.Seal()
+		// Forced skipping of method Microsoft.UI.Xaml.Style.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Style.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,8 +33,16 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SetVersionRequest.CurrentVersion.get
-		// Forced skipping of method Windows.Storage.SetVersionRequest.DesiredVersion.get
+		// Forced skipping of method Windows.Storage.SetVersionRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.SetVersionRequest.operator ==(Windows.Storage.SetVersionRequest, Windows.Storage.SetVersionRequest)
+		// Forced skipping of method Windows.Storage.SetVersionRequest.operator !=(Windows.Storage.SetVersionRequest, Windows.Storage.SetVersionRequest)
+		// Forced skipping of method Windows.Storage.SetVersionRequest.Equals(Windows.Storage.SetVersionRequest)
+		// Forced skipping of method Windows.Storage.SetVersionRequest.Equals(object)
+		// Forced skipping of method Windows.Storage.SetVersionRequest.GetHashCode()
+		// Forced skipping of method Windows.Storage.SetVersionRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.SetVersionRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.SetVersionRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.SetVersionRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.SetVersionDeferral GetDeferral()
@@ -42,5 +50,8 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member SetVersionDeferral SetVersionRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SetVersionDeferral%20SetVersionRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SetVersionRequest.CurrentVersion.get
+		// Forced skipping of method Windows.Storage.SetVersionRequest.DesiredVersion.get
+		// Forced skipping of method Windows.Storage.SetVersionRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

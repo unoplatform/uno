@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.operator ==(Windows.ApplicationModel.Core.HostedViewClosingEventArgs, Windows.ApplicationModel.Core.HostedViewClosingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.operator !=(Windows.ApplicationModel.Core.HostedViewClosingEventArgs, Windows.ApplicationModel.Core.HostedViewClosingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.Equals(Windows.ApplicationModel.Core.HostedViewClosingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -20,5 +30,6 @@ namespace Windows.ApplicationModel.Core
 			throw new global::System.NotImplementedException("The member Deferral HostedViewClosingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20HostedViewClosingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,10 +10,10 @@ namespace Windows.Foundation
 	{
 		// Skipping already declared property Progress
 		// Skipping already declared property Completed
-		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Progress.set
-		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Progress.get
-		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Completed.set
-		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Completed.get
 		// Skipping already declared method Windows.Foundation.IAsyncActionWithProgress<TProgress>.GetResults()
+		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Progress.get
+		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Progress.set
+		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Completed.get
+		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Completed.set
 	}
 }

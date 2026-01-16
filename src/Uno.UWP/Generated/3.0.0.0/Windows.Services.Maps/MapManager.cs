@@ -8,6 +8,7 @@ namespace Windows.Services.Maps
 #endif
 	public static partial class MapManager
 	{
+		// Forced skipping of method Windows.Services.Maps.MapManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ShowDownloadedMapsUI()

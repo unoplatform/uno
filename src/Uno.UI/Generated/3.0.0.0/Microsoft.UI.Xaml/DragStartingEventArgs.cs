@@ -8,17 +8,27 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DragStartingEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Cancel
 		// Skipping already declared property AllowedOperations
+		// Skipping already declared property Cancel
 		// Skipping already declared property Data
 		// Skipping already declared property DragUI
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.operator ==(Microsoft.UI.Xaml.DragStartingEventArgs, Microsoft.UI.Xaml.DragStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.operator !=(Microsoft.UI.Xaml.DragStartingEventArgs, Microsoft.UI.Xaml.DragStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Equals(Microsoft.UI.Xaml.DragStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetDeferral()
+		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.set
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.DragUI.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.set
-		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetDeferral()
-		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

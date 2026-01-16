@@ -13,6 +13,16 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget, Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget, Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream GetOutputStream()
@@ -20,5 +30,6 @@ namespace Windows.Graphics.Printing.Workflow
 			throw new global::System.NotImplementedException("The member IOutputStream PrintWorkflowStreamTarget.GetOutputStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20PrintWorkflowStreamTarget.GetOutputStream%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

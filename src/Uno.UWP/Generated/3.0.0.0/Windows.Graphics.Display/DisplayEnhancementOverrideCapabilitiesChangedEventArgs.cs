@@ -23,6 +23,17 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.operator ==(Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs, Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.operator !=(Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs, Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Equals(Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Capabilities.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

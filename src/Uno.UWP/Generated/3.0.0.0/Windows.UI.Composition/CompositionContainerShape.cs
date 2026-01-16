@@ -23,6 +23,16 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.operator ==(Windows.UI.Composition.CompositionContainerShape, Windows.UI.Composition.CompositionContainerShape)
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.operator !=(Windows.UI.Composition.CompositionContainerShape, Windows.UI.Composition.CompositionContainerShape)
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.Equals(Windows.UI.Composition.CompositionContainerShape)
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.Shapes.get
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionContainerShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

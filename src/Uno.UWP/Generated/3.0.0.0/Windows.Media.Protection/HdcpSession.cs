@@ -16,6 +16,16 @@ namespace Windows.Media.Protection
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.HdcpSession.HdcpSession()
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.operator ==(Windows.Media.Protection.HdcpSession, Windows.Media.Protection.HdcpSession)
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.operator !=(Windows.Media.Protection.HdcpSession, Windows.Media.Protection.HdcpSession)
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.Equals(Windows.Media.Protection.HdcpSession)
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEffectiveProtectionAtLeast(global::Windows.Media.Protection.HdcpProtection protection)
@@ -46,6 +56,7 @@ namespace Windows.Media.Protection
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.HdcpSession", "void HdcpSession.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.HdcpSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Protection.HdcpSession, object> ProtectionChanged

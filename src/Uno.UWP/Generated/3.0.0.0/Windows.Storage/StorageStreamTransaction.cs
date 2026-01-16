@@ -9,9 +9,20 @@ namespace Windows.Storage
 	public partial class StorageStreamTransaction : global::System.IDisposable
 	{
 		// Skipping already declared property Stream
-		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Stream.get
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.operator ==(Windows.Storage.StorageStreamTransaction, Windows.Storage.StorageStreamTransaction)
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.operator !=(Windows.Storage.StorageStreamTransaction, Windows.Storage.StorageStreamTransaction)
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Equals(Windows.Storage.StorageStreamTransaction)
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Equals(object)
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.GetHashCode()
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.StorageStreamTransaction.CommitAsync()
 		// Skipping already declared method Windows.Storage.StorageStreamTransaction.Dispose()
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Stream.get
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

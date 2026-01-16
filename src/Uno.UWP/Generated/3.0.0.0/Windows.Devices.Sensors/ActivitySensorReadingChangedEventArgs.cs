@@ -23,6 +23,17 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs, Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs, Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.Equals(Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

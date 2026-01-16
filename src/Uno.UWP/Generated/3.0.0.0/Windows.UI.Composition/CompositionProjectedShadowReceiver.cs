@@ -27,7 +27,17 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.operator ==(Windows.UI.Composition.CompositionProjectedShadowReceiver, Windows.UI.Composition.CompositionProjectedShadowReceiver)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.operator !=(Windows.UI.Composition.CompositionProjectedShadowReceiver, Windows.UI.Composition.CompositionProjectedShadowReceiver)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.Equals(Windows.UI.Composition.CompositionProjectedShadowReceiver)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.set
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

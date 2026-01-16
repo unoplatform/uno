@@ -43,8 +43,19 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.Package.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.IsComplete.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.operator ==(Windows.ApplicationModel.PackageCatalogAddResourcePackageResult, Windows.ApplicationModel.PackageCatalogAddResourcePackageResult)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.operator !=(Windows.ApplicationModel.PackageCatalogAddResourcePackageResult, Windows.ApplicationModel.PackageCatalogAddResourcePackageResult)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.Equals(Windows.ApplicationModel.PackageCatalogAddResourcePackageResult)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.ExtendedError.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.IsComplete.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.Package.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

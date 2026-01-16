@@ -8,7 +8,6 @@ namespace Windows.Globalization
 #endif
 	public static partial class CurrencyIdentifiers
 	{
-		// Skipping already declared property HNL
 		// Skipping already declared property AED
 		// Skipping already declared property AFN
 		// Skipping already declared property ALL
@@ -32,6 +31,7 @@ namespace Windows.Globalization
 		// Skipping already declared property BSD
 		// Skipping already declared property BTN
 		// Skipping already declared property BWP
+		// Skipping already declared property BYN
 		// Skipping already declared property BYR
 		// Skipping already declared property BZD
 		// Skipping already declared property CAD
@@ -63,7 +63,7 @@ namespace Windows.Globalization
 		// Skipping already declared property GTQ
 		// Skipping already declared property GYD
 		// Skipping already declared property HKD
-		// Skipping already declared property RON
+		// Skipping already declared property HNL
 		// Skipping already declared property HRK
 		// Skipping already declared property HTG
 		// Skipping already declared property HUF
@@ -101,6 +101,7 @@ namespace Windows.Globalization
 		// Skipping already declared property MNT
 		// Skipping already declared property MOP
 		// Skipping already declared property MRO
+		// Skipping already declared property MRU
 		// Skipping already declared property MUR
 		// Skipping already declared property MVR
 		// Skipping already declared property MWK
@@ -122,6 +123,7 @@ namespace Windows.Globalization
 		// Skipping already declared property PLN
 		// Skipping already declared property PYG
 		// Skipping already declared property QAR
+		// Skipping already declared property RON
 		// Skipping already declared property RSD
 		// Skipping already declared property RUB
 		// Skipping already declared property RWF
@@ -135,7 +137,9 @@ namespace Windows.Globalization
 		// Skipping already declared property SLL
 		// Skipping already declared property SOS
 		// Skipping already declared property SRD
+		// Skipping already declared property SSP
 		// Skipping already declared property STD
+		// Skipping already declared property STN
 		// Skipping already declared property SYP
 		// Skipping already declared property SZL
 		// Skipping already declared property THB
@@ -153,6 +157,7 @@ namespace Windows.Globalization
 		// Skipping already declared property UYU
 		// Skipping already declared property UZS
 		// Skipping already declared property VEF
+		// Skipping already declared property VES
 		// Skipping already declared property VND
 		// Skipping already declared property VUV
 		// Skipping already declared property WST
@@ -165,16 +170,7 @@ namespace Windows.Globalization
 		// Skipping already declared property ZAR
 		// Skipping already declared property ZMW
 		// Skipping already declared property ZWL
-		// Skipping already declared property BYN
-		// Skipping already declared property SSP
-		// Skipping already declared property STN
-		// Skipping already declared property VES
-		// Skipping already declared property MRU
-		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MRU.get
-		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SSP.get
-		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.STN.get
-		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.VES.get
-		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BYN.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.As<I>()
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.AED.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.AFN.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.ALL.get
@@ -198,6 +194,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BSD.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BTN.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BWP.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BYN.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BYR.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BZD.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.CAD.get
@@ -267,6 +264,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MNT.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MOP.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MRO.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MRU.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MUR.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MVR.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MWK.get
@@ -302,7 +300,9 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SLL.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SOS.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SRD.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SSP.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.STD.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.STN.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SYP.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SZL.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.THB.get
@@ -320,6 +320,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.UYU.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.UZS.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.VEF.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.VES.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.VND.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.VUV.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.WST.get

@@ -8,18 +8,29 @@ namespace Windows.Devices.Midi
 #endif
 	public partial class MidiPitchBendChangeMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
+		// Skipping already declared property Bend
+		// Skipping already declared property Channel
 		// Skipping already declared property RawData
 		// Skipping already declared property Timestamp
 		// Skipping already declared property Type
-		// Skipping already declared property Bend
-		// Skipping already declared property Channel
 		// Skipping already declared method Windows.Devices.Midi.MidiPitchBendChangeMessage.MidiPitchBendChangeMessage(byte, ushort)
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.MidiPitchBendChangeMessage(byte, ushort)
-		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Channel.get
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.operator ==(Windows.Devices.Midi.MidiPitchBendChangeMessage, Windows.Devices.Midi.MidiPitchBendChangeMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.operator !=(Windows.Devices.Midi.MidiPitchBendChangeMessage, Windows.Devices.Midi.MidiPitchBendChangeMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Equals(Windows.Devices.Midi.MidiPitchBendChangeMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Bend.get
-		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Timestamp.get
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Type.get
+		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

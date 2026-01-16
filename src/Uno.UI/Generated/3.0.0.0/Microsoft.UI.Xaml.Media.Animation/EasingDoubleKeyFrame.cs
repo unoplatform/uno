@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class EasingDoubleKeyFrame : global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame
 	{
-		// Skipping already declared property EasingFunction
 		// Skipping already declared property EasingFunctionProperty
+		// Skipping already declared property EasingFunction
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingDoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingDoubleKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

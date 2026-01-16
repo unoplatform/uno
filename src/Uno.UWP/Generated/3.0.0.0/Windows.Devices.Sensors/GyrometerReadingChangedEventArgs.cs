@@ -9,6 +9,17 @@ namespace Windows.Devices.Sensors
 	public partial class GyrometerReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.GyrometerReadingChangedEventArgs, Windows.Devices.Sensors.GyrometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.GyrometerReadingChangedEventArgs, Windows.Devices.Sensors.GyrometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.Equals(Windows.Devices.Sensors.GyrometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

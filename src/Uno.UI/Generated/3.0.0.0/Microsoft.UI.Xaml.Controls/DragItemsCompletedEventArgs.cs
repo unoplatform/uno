@@ -10,7 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property DropResult
 		// Skipping already declared property Items
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.Items.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs, Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs, Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.Equals(Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.DropResult.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.Items.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

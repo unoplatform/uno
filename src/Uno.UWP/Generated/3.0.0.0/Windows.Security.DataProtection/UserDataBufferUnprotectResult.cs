@@ -33,7 +33,18 @@ namespace Windows.Security.DataProtection
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.FromAbi(nint)
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.operator ==(Windows.Security.DataProtection.UserDataBufferUnprotectResult, Windows.Security.DataProtection.UserDataBufferUnprotectResult)
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.operator !=(Windows.Security.DataProtection.UserDataBufferUnprotectResult, Windows.Security.DataProtection.UserDataBufferUnprotectResult)
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.Equals(Windows.Security.DataProtection.UserDataBufferUnprotectResult)
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.Equals(object)
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.GetHashCode()
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.Status.get
 		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.UnprotectedBuffer.get
+		// Forced skipping of method Windows.Security.DataProtection.UserDataBufferUnprotectResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -20,7 +20,16 @@ namespace Windows.UI.Popups
 #endif
 		// Skipping already declared method Windows.UI.Popups.PopupMenu.PopupMenu()
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.PopupMenu()
-		// Forced skipping of method Windows.UI.Popups.PopupMenu.Commands.get
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.operator ==(Windows.UI.Popups.PopupMenu, Windows.UI.Popups.PopupMenu)
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.operator !=(Windows.UI.Popups.PopupMenu, Windows.UI.Popups.PopupMenu)
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.Equals(Windows.UI.Popups.PopupMenu)
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.Equals(object)
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.GetHashCode()
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync(global::Windows.Foundation.Point invocationPoint)
@@ -30,5 +39,7 @@ namespace Windows.UI.Popups
 #endif
 		// Skipping already declared method Windows.UI.Popups.PopupMenu.ShowForSelectionAsync(Windows.Foundation.Rect)
 		// Skipping already declared method Windows.UI.Popups.PopupMenu.ShowForSelectionAsync(Windows.Foundation.Rect, Windows.UI.Popups.Placement)
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.Commands.get
+		// Forced skipping of method Windows.UI.Popups.PopupMenu.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

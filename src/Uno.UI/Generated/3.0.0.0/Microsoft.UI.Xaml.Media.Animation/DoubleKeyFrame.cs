@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class DoubleKeyFrame : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property KeyTime
 		// Skipping already declared property KeyTimeProperty
 		// Skipping already declared property ValueProperty
+		// Skipping already declared property KeyTime
+		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.DoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.DoubleKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.ValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.DoubleKeyFrame(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.DoubleKeyFrame(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTime.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -86,13 +86,7 @@ namespace Windows.Devices.Display.Core
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.DisplayPrimaryDescription(uint, uint, Windows.Graphics.DirectX.DirectXPixelFormat, Windows.Graphics.DirectX.DirectXColorSpace, bool, Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Width.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Height.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Format.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.ColorSpace.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.IsStereo.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.MultisampleDescription.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Display.Core.DisplayPrimaryDescription CreateWithProperties(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> extraProperties, uint width, uint height, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, global::Windows.Graphics.DirectX.DirectXColorSpace colorSpace, bool isStereo, global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription multisampleDescription)
@@ -100,5 +94,23 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayPrimaryDescription DisplayPrimaryDescription.CreateWithProperties(IEnumerable<KeyValuePair<Guid, object>> extraProperties, uint width, uint height, DirectXPixelFormat pixelFormat, DirectXColorSpace colorSpace, bool isStereo, Direct3DMultisampleDescription multisampleDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPrimaryDescription%20DisplayPrimaryDescription.CreateWithProperties%28IEnumerable%3CKeyValuePair%3CGuid%2C%20object%3E%3E%20extraProperties%2C%20uint%20width%2C%20uint%20height%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXColorSpace%20colorSpace%2C%20bool%20isStereo%2C%20Direct3DMultisampleDescription%20multisampleDescription%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.operator ==(Windows.Devices.Display.Core.DisplayPrimaryDescription, Windows.Devices.Display.Core.DisplayPrimaryDescription)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.operator !=(Windows.Devices.Display.Core.DisplayPrimaryDescription, Windows.Devices.Display.Core.DisplayPrimaryDescription)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Equals(Windows.Devices.Display.Core.DisplayPrimaryDescription)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.ColorSpace.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Format.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Height.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.IsStereo.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.MultisampleDescription.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Width.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

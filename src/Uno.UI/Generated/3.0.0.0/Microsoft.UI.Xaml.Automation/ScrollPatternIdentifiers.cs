@@ -15,12 +15,24 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property VerticalScrollPercentProperty
 		// Skipping already declared property VerticalViewSizeProperty
 		// Skipping already declared property VerticallyScrollableProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontallyScrollableProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontalScrollPercentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontalViewSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontallyScrollableProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.NoScroll.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticallyScrollableProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticalScrollPercentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticalViewSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticallyScrollableProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers, Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers, Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

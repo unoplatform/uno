@@ -43,8 +43,19 @@ namespace Windows.Perception.People
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HeadPose.Position.get
+		// Forced skipping of method Windows.Perception.People.HeadPose.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.People.HeadPose.operator ==(Windows.Perception.People.HeadPose, Windows.Perception.People.HeadPose)
+		// Forced skipping of method Windows.Perception.People.HeadPose.operator !=(Windows.Perception.People.HeadPose, Windows.Perception.People.HeadPose)
+		// Forced skipping of method Windows.Perception.People.HeadPose.Equals(Windows.Perception.People.HeadPose)
+		// Forced skipping of method Windows.Perception.People.HeadPose.Equals(object)
+		// Forced skipping of method Windows.Perception.People.HeadPose.GetHashCode()
+		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.ForwardDirection.get
+		// Forced skipping of method Windows.Perception.People.HeadPose.Position.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.UpDirection.get
+		// Forced skipping of method Windows.Perception.People.HeadPose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

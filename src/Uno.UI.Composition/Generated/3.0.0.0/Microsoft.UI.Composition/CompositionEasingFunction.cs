@@ -8,6 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionEasingFunction : global::Microsoft.UI.Composition.CompositionObject
 	{
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.As<I>()
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateCubicBezierEasingFunction(Microsoft.UI.Composition.Compositor, System.Numerics.Vector2, System.Numerics.Vector2)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateLinearEasingFunction(Microsoft.UI.Composition.Compositor)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateStepEasingFunction(Microsoft.UI.Composition.Compositor)
@@ -19,5 +20,17 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateExponentialEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreatePowerEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateSineEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.CompositionEasingFunction(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.operator ==(Microsoft.UI.Composition.CompositionEasingFunction, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.operator !=(Microsoft.UI.Composition.CompositionEasingFunction, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.Equals(Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.CompositionEasingFunction(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

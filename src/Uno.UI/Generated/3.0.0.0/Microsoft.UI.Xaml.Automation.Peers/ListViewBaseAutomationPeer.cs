@@ -12,8 +12,20 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property DropEffects
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.ListViewBaseAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewBase)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.ListViewBaseAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.ListViewBaseAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.ListViewBaseAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.DropEffect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.DropEffects.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IDropTargetProvider
 	}
 }

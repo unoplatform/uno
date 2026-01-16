@@ -8,27 +8,38 @@ namespace Windows.UI.Popups
 #endif
 	public partial class MessageDialog
 	{
-		// Skipping already declared property Title
-		// Skipping already declared property Options
-		// Skipping already declared property DefaultCommandIndex
-		// Skipping already declared property Content
 		// Skipping already declared property CancelCommandIndex
 		// Skipping already declared property Commands
+		// Skipping already declared property Content
+		// Skipping already declared property DefaultCommandIndex
+		// Skipping already declared property Options
+		// Skipping already declared property Title
 		// Skipping already declared method Windows.UI.Popups.MessageDialog.MessageDialog(string)
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.MessageDialog(string)
 		// Skipping already declared method Windows.UI.Popups.MessageDialog.MessageDialog(string, string)
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.MessageDialog(string, string)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.Title.get
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.Title.set
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.Commands.get
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.DefaultCommandIndex.get
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.DefaultCommandIndex.set
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.operator ==(Windows.UI.Popups.MessageDialog, Windows.UI.Popups.MessageDialog)
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.operator !=(Windows.UI.Popups.MessageDialog, Windows.UI.Popups.MessageDialog)
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.Equals(Windows.UI.Popups.MessageDialog)
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.Equals(object)
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.GetHashCode()
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Windows.UI.Popups.MessageDialog.ShowAsync()
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.CancelCommandIndex.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.CancelCommandIndex.set
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.Commands.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Content.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Content.set
-		// Skipping already declared method Windows.UI.Popups.MessageDialog.ShowAsync()
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.DefaultCommandIndex.get
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.DefaultCommandIndex.set
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Options.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Options.set
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.Title.get
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.Title.set
+		// Forced skipping of method Windows.UI.Popups.MessageDialog.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
