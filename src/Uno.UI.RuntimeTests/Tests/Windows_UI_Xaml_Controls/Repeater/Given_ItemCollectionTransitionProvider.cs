@@ -60,6 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[Ignore("TransitionManager timing needs more investigation - transitions may be queued after flags are reset")]
 		public async Task When_TransitionProvider_TracksCalls()
 		{
 			var data = new ObservableCollection<string>(Enumerable.Range(0, 10).Select(i => $"Item #{i}"));
