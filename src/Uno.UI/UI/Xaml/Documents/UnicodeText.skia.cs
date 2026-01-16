@@ -932,6 +932,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			selectionDetails = (s.selectionStart, s.selectionEnd, _textIndexToGlyph[s.selectionStart], _textIndexToGlyph[Math.Min(_textIndexToGlyph.Length - 1, s.selectionEnd)], s.selectedTextBackgroundBrush, s.selectedTextForegroundBrush);
 		}
 
+		int lastCorrectionIndex = 0;
+
 		for (var index = 0; index < _lines.Count; index++)
 		{
 			var line = _lines[index];
@@ -1011,22 +1013,25 @@ internal readonly partial struct UnicodeText : IParsedText
 						DrawText(glyphs, positions, session, run.inline.Foreground);
 					}
 
-					var parentRunStartIndex = run.startInInline + run.inline.StartIndex;
-					var parentRunEndIndex = run.endInInline + run.inline.StartIndex;
+					var runStartIndex = run.startInInline + run.inline.StartIndex;
+					var runEndIndex = run.endInInline + run.inline.StartIndex;
 
-					var wordStart = 0;
-					for (var correctionIndex = 0; correctionIndex < _corrections.Count; correctionIndex++)
+					while (lastCorrectionIndex < _corrections.Count && _wordBoundaries[lastCorrectionIndex] <= runStartIndex)
 					{
-						var wordEnd = _wordBoundaries[correctionIndex];
-						var correction = _corrections[correctionIndex];
+						lastCorrectionIndex++;
+					}
 
-						if (correction is not null && wordStart < parentRunEndIndex && parentRunStartIndex < wordEnd)
+					while (lastCorrectionIndex < _corrections.Count && (lastCorrectionIndex == 0 ? 0 : _wordBoundaries[lastCorrectionIndex - 1]) is var wordStart && wordStart < runEndIndex)
+					{
+						var wordEnd = _wordBoundaries[lastCorrectionIndex];
+						var correction = _corrections[lastCorrectionIndex];
+
+						if (correction is not null)
 						{
-							// we have an intersection
 							int correctionLeft;
 							int correctionRight;
-							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart, parentRunStartIndex)];
-							var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordEnd, parentRunEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
+							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart, runStartIndex)];
+							var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
 
 							if (run.rtl)
 							{
@@ -1036,33 +1041,30 @@ internal readonly partial struct UnicodeText : IParsedText
 							else
 							{
 								correctionLeft = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart : 0;
-								correctionRight = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexStart + 1 : run.glyphs.Length; // +1 to include the last char
+								correctionRight = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : run.glyphs.Length; // +1 to include the last char
 							}
 
-							if (correctionRight > correctionLeft)
+							var leftX = positions[correctionLeft].X;
+							var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
+							using var p = new SKPath();
+							var y = line.y + line.baselineOffset + 2; // +2 to be below the text
+							p.MoveTo(currentLineX + leftX, y);
+							for (float x = currentLineX + leftX; x < currentLineX + rightX; x += 4)
 							{
-								var leftX = positions[correctionLeft].X;
-								var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
-								using var p = new SKPath();
-								var y = line.y + line.baselineOffset + 2; // +2 to be below the text
-								p.MoveTo(currentLineX + leftX, y);
-								for (float x = currentLineX + leftX; x < currentLineX + rightX; x += 4)
-								{
-									p.LineTo(x + 2, y + 2);
-									p.LineTo(x + 4, y);
-								}
-
-								using var paint = new SKPaint();
-								paint.Color = SKColors.Red;
-								paint.Style = SKPaintStyle.Stroke;
-								paint.StrokeWidth = 1;
-								paint.IsAntialias = true;
-
-								session.Canvas.DrawPath(p, paint);
+								p.LineTo(x + 2, y + 2);
+								p.LineTo(x + 4, y);
 							}
+
+							using var paint = new SKPaint();
+							paint.Color = SKColors.Red;
+							paint.Style = SKPaintStyle.Stroke;
+							paint.StrokeWidth = 1;
+							paint.IsAntialias = true;
+
+							session.Canvas.DrawPath(p, paint);
 						}
 
-						wordStart = wordEnd;
+						lastCorrectionIndex++;
 					}
 
 					currentLineX += run.width;
