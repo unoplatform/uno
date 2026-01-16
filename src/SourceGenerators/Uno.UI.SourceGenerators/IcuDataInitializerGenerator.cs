@@ -25,13 +25,9 @@ public class IcuDataInitializerGenerator : IIncrementalGenerator
 						internal static class __IcuDataInitializer
 						{
 							[global::System.Runtime.CompilerServices.ModuleInitializerAttribute]
-							[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "UnicodeText.ICU is already preserved.")]
 							internal static void Initialize()
 							{
-								var unoAssembly = typeof(Microsoft.UI.Xaml.UIElement).Assembly;
-								var unicodeTextType = unoAssembly.GetType("Microsoft.UI.Xaml.Documents.UnicodeText");
-								var icuType = unicodeTextType?.GetNestedType("ICU",
-									System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+								var icuType = Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
 								var setMethod = icuType?.GetMethod("SetDataAssembly",
 									System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
 								setMethod?.Invoke(null, new object[] { typeof(__IcuDataInitializer).Assembly });
