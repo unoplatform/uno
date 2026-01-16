@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if HAS_UNO_WINUI
 using Windows.ApplicationModel.Activation;
 
 namespace Microsoft.UI.Xaml
@@ -22,4 +21,3 @@ namespace Microsoft.UI.Xaml
 		public global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs UWPLaunchActivatedEventArgs { get; }
 	}
 }
-#endif

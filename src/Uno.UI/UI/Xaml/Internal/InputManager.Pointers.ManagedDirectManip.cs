@@ -25,10 +25,6 @@ using System.Reflection;
 using Uno.Extensions;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
-#if !HAS_UNO_WINUI
-using Windows.UI.Input;
-#endif
-
 namespace Uno.UI.Xaml.Core;
 
 partial class InputManager

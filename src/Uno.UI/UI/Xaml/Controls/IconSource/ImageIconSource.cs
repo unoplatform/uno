@@ -20,9 +20,6 @@ public partial class ImageIconSource : IconSource
 	public static DependencyProperty ImageSourceProperty { get; } =
 		DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(ImageIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected override IconElement CreateIconElementCore()
 	{
 		var imageIcon = new ImageIcon();
@@ -37,9 +34,6 @@ public partial class ImageIconSource : IconSource
 		return imageIcon;
 	}
 
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
 		if (iconSourceProperty == ImageSourceProperty)

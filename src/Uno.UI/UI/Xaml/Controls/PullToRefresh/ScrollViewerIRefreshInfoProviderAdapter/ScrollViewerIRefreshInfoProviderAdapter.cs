@@ -20,12 +20,7 @@ using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 using Microsoft.UI.Xaml.Controls;
 #pragma warning restore CS0105
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Private.Controls;
 

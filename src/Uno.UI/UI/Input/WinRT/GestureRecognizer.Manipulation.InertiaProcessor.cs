@@ -1,5 +1,4 @@
-// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+// This file is included in both Uno.UWP and Uno.UI
 #nullable enable
 
 using System;
@@ -12,14 +11,10 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using static System.Double;
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Input;
-#else
-namespace Windows.UI.Input;
-#endif
 
 public partial class GestureRecognizer
 {
@@ -191,7 +186,7 @@ public partial class GestureRecognizer
 
 				CompleteConfiguration();
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+#if IS_UNO_UI_PROJECT
 				_timer = useCompositionTimer
 					? new CompositionInertiaProcessorTimer(Process)
 					: new DispatcherInertiaProcessorTimer(Process);
@@ -368,4 +363,3 @@ public partial class GestureRecognizer
 #endif
 	}
 }
-#endif

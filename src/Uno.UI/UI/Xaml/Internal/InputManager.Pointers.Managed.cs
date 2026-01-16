@@ -985,7 +985,6 @@ internal partial class InputManager
 
 		private void SetSourceCursor(UIElement element)
 		{
-#if HAS_UNO_WINUI
 			if (_source is { })
 			{
 				if (element.CalculatedFinalCursor is { } shape)
@@ -1000,7 +999,6 @@ internal partial class InputManager
 					_source.PointerCursor = null;
 				}
 			}
-#endif
 		}
 		#endregion
 

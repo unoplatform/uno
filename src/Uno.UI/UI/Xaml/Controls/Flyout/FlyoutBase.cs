@@ -21,11 +21,7 @@ using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
-#else
-using Windows.System;
-#endif
 
 #if __APPLE_UIKIT__
 using View = UIKit.UIView;

@@ -849,7 +849,6 @@ namespace Microsoft.UI.Xaml
 			var tracingThisCall = false;
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
-#if HAS_UNO_WINUI
 				if (i <= 10 && Application.Current is { DebugSettings.LayoutCycleTracingLevel: not LayoutCycleTracingLevel.None })
 				{
 					_traceLayoutCycle = true;
@@ -859,7 +858,6 @@ namespace Microsoft.UI.Xaml
 						typeof(UIElement).Log().LogWarning($"[LayoutCycleTracing] Low on countdown ({i}).");
 					}
 				}
-#endif
 
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
@@ -1413,11 +1411,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets or sets the cursor that displays when the pointer is over this element. Defaults to null, indicating no change to the cursor.
 		/// </summary>
-#if HAS_UNO_WINUI
 		protected InputCursor ProtectedCursor
-#else
-		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#endif
 		{
 			get => _protectedCursor;
 			set
