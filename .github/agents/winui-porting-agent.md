@@ -160,11 +160,28 @@ public partial class Expander
 }
 ```
 
-### 2.5. Partial Implementation Files: `ControlName.partial.mux.cs`
+### 2.5. Partial Implementation and Header Files: `ControlName.partial.mux.cs` / `ControlName.partial.h.mux.cs`
 
-For controls with split implementation across multiple C++ files (e.g., `StackPanel.cpp` and `StackPanel_Partial.cpp`), create corresponding partial files:
+For controls with split implementation and header files in C++ (for example, `StackPanel.cpp` / `StackPanel_Partial.cpp` and `StackPanel.h` / `StackPanel_Partial.h`), create matching partial C# files for **both** implementation and header content:
+
+- `StackPanel.cpp`            → `StackPanel.mux.cs`
+- `StackPanel_Partial.cpp`    → `StackPanel.partial.mux.cs`
+- `StackPanel.h`              → `StackPanel.h.mux.cs`
+- `StackPanel_Partial.h`      → `StackPanel.partial.h.mux.cs`
+
+Both `.mux.cs` and `.partial.mux.cs` (and their `.h.mux.cs` counterparts) declare the **same C# type** using `partial` so that the combined files faithfully represent the original C++ split.
+
 ```csharp
 // MUX Reference StackPanel_Partial.cpp, commit 9d6fb15c0
+
+using Microsoft.UI.Xaml.Controls;
+
+namespace Microsoft.UI.Xaml.Controls;
+
+public sealed partial class StackPanel
+{
+    // Members ported from StackPanel_Partial.cpp
+}
 ```
 
 ---
