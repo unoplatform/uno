@@ -832,7 +832,7 @@ namespace Microsoft.UI.Xaml.Controls
 				children.Add(element);
 			}
 
-			repeater.AnimationManager.OnElementPrepared(element);
+			repeater.TransitionManager.OnElementPrepared(element);
 
 			repeater.OnElementPrepared(element, index);
 
@@ -865,7 +865,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		bool ClearElementToAnimator(UIElement element, VirtualizationInfo virtInfo)
 		{
-			bool cleared = m_owner.AnimationManager.ClearElement(element);
+			bool cleared = m_owner.TransitionManager.ClearElement(element);
 			if (cleared)
 			{
 				int clearedIndex = virtInfo.Index;
