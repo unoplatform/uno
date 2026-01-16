@@ -125,7 +125,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
-	private readonly List<(int correctionStart, int correctionEnd, List<string>)?> _corrections;
+	private readonly List<(int correctionStart, int correctionEnd)?> _corrections;
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
@@ -228,7 +228,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			var arr = new (int correctionStart, int correctionEnd, List<string>)?[_wordBoundaries.Count];
+			var arr = new (int correctionStart, int correctionEnd)?[_wordBoundaries.Count];
 			Array.Fill(arr, null);
 			_corrections = arr.ToList();
 		}
@@ -1477,9 +1477,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private static List<(int correctionStart, int correctionEnd, List<string>)?> GetSpellCheckSuggestions(List<int> wordBoundaries, string text)
+	private static List<(int correctionStart, int correctionEnd)?> GetSpellCheckSuggestions(List<int> wordBoundaries, string text)
 	{
-		var ret = new List<(int correctionStart, int correctionEnd, List<string>)?>();
+		var ret = new List<(int correctionStart, int correctionEnd)?>();
 		var start = 0;
 		foreach (var end in wordBoundaries)
 		{
@@ -1495,10 +1495,9 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 				else
 				{
-					var suggestions = _wordList.Suggest(trimmedWord).ToList();
 					var correctionStart = word.Length - startTrimmedWord.Length;
 					var correctionEnd = word.Length - startTrimmedWord.Length + trimmedWord.Length;
-					ret.Add((correctionStart, correctionEnd, suggestions));
+					ret.Add((correctionStart, correctionEnd));
 				}
 			}
 			else
