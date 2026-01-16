@@ -125,7 +125,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
-	private readonly List<List<string>?> _corrections;
+	private readonly List<(int correctionStart, int correctionEnd, List<string>)?> _corrections;
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
@@ -228,7 +228,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			var arr = new List<string>?[_wordBoundaries.Count];
+			var arr = new (int correctionStart, int correctionEnd, List<string>)?[_wordBoundaries.Count];
 			Array.Fill(arr, null);
 			_corrections = arr.ToList();
 		}
@@ -1023,15 +1023,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 					while (lastCorrectionIndex < _corrections.Count && (lastCorrectionIndex == 0 ? 0 : _wordBoundaries[lastCorrectionIndex - 1]) is var wordStart && wordStart < runEndIndex)
 					{
-						var wordEnd = _wordBoundaries[lastCorrectionIndex];
 						var correction = _corrections[lastCorrectionIndex];
 
 						if (correction is not null)
 						{
 							int correctionLeft;
 							int correctionRight;
-							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart, runStartIndex)];
-							var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
+							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
+							var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordStart + correction.Value.correctionEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
 
 							if (run.rtl)
 							{
@@ -1478,20 +1477,29 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private static List<List<string>?> GetSpellCheckSuggestions(List<int> wordBoundaries, string text)
+	private static List<(int correctionStart, int correctionEnd, List<string>)?> GetSpellCheckSuggestions(List<int> wordBoundaries, string text)
 	{
-		var ret = new List<List<string>?>();
+		var ret = new List<(int correctionStart, int correctionEnd, List<string>)?>();
 		var start = 0;
 		foreach (var end in wordBoundaries)
 		{
 			var word = text.Substring(start, end - start);
-			var trimmedWord = word.TrimEnd();
+			var startTrimmedWord = word.TrimStart();
+			var trimmedWord = startTrimmedWord.TrimEnd();
 
 			if (trimmedWord.Length > 0 && !trimmedWord.Any(c => char.IsPunctuation(c) || char.IsNumber(c) || char.IsSeparator(c) || char.IsWhiteSpace(c)))
 			{
-				ret.Add(_wordList.Check(trimmedWord)
-					? null
-					: _wordList.Suggest(trimmedWord).ToList());
+				if (_wordList.Check(trimmedWord))
+				{
+					ret.Add(null);
+				}
+				else
+				{
+					var suggestions = _wordList.Suggest(trimmedWord).ToList();
+					var correctionStart = word.Length - startTrimmedWord.Length;
+					var correctionEnd = word.Length - startTrimmedWord.Length + trimmedWord.Length;
+					ret.Add((correctionStart, correctionEnd, suggestions));
+				}
 			}
 			else
 			{
