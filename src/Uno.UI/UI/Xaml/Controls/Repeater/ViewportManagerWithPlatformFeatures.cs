@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ItemsRepeater.h, ItemsRepeater.cpp, commit 1cf9f1c
+// ViewportManagerWithPlatformFeatures.cpp, tag winui3/release/1.8.4
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -608,12 +608,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void ResetCacheBuffer()
+		public override void ResetLayoutRealizationWindowCacheBuffer()
+		{
+			ResetCacheBuffer(false /*registerCacheBuildWork*/);
+		}
+
+		void ResetCacheBuffer(bool registerCacheBuildWork = true)
 		{
 			m_horizontalCacheBufferPerSide = 0.0;
 			m_verticalCacheBufferPerSide = 0.0;
 
-			if (!m_managingViewportDisabled)
+			if (!m_managingViewportDisabled && registerCacheBuildWork)
 			{
 				// We need to start building the realization buffer again.
 				RegisterCacheBuildWork();
