@@ -93,13 +93,24 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Tickets.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Id.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SafeCustomerId.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SignInName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.operator ==(Windows.Security.Authentication.OnlineId.UserIdentity, Windows.Security.Authentication.OnlineId.UserIdentity)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.operator !=(Windows.Security.Authentication.OnlineId.UserIdentity, Windows.Security.Authentication.OnlineId.UserIdentity)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Equals(Windows.Security.Authentication.OnlineId.UserIdentity)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.FirstName.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.LastName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Id.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.IsBetaAccount.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.IsConfirmedPC.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.LastName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SafeCustomerId.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SignInName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Tickets.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

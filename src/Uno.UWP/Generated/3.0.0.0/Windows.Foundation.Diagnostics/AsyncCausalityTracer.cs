@@ -8,6 +8,7 @@ namespace Windows.Foundation.Diagnostics
 #endif
 	public static partial class AsyncCausalityTracer
 	{
+		// Forced skipping of method Windows.Foundation.Diagnostics.AsyncCausalityTracer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void TraceOperationCreation(global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel, global::Windows.Foundation.Diagnostics.CausalitySource source, global::System.Guid platformId, ulong operationId, string operationName, ulong relatedContext)

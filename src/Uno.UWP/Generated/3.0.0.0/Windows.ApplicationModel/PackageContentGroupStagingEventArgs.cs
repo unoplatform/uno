@@ -83,12 +83,23 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.operator ==(Windows.ApplicationModel.PackageContentGroupStagingEventArgs, Windows.ApplicationModel.PackageContentGroupStagingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.operator !=(Windows.ApplicationModel.PackageContentGroupStagingEventArgs, Windows.ApplicationModel.PackageContentGroupStagingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.Equals(Windows.ApplicationModel.PackageContentGroupStagingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ContentGroupName.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsComplete.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsContentGroupRequired.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ErrorCode.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ContentGroupName.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsContentGroupRequired.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

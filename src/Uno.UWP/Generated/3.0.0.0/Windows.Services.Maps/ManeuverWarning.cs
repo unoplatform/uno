@@ -33,7 +33,18 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.operator ==(Windows.Services.Maps.ManeuverWarning, Windows.Services.Maps.ManeuverWarning)
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.operator !=(Windows.Services.Maps.ManeuverWarning, Windows.Services.Maps.ManeuverWarning)
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.Equals(Windows.Services.Maps.ManeuverWarning)
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.Equals(object)
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.GetHashCode()
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.Kind.get
 		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.Severity.get
+		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

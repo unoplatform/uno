@@ -8,25 +8,36 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class BringIntoViewOptions
 	{
-		// Skipping already declared property VerticalOffset
-		// Skipping already declared property VerticalAlignmentRatio
-		// Skipping already declared property TargetRect
-		// Skipping already declared property HorizontalOffset
-		// Skipping already declared property HorizontalAlignmentRatio
 		// Skipping already declared property AnimationDesired
+		// Skipping already declared property HorizontalAlignmentRatio
+		// Skipping already declared property HorizontalOffset
+		// Skipping already declared property TargetRect
+		// Skipping already declared property VerticalAlignmentRatio
+		// Skipping already declared property VerticalOffset
 		// Skipping already declared method Microsoft.UI.Xaml.BringIntoViewOptions.BringIntoViewOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.BringIntoViewOptions()
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.operator ==(Microsoft.UI.Xaml.BringIntoViewOptions, Microsoft.UI.Xaml.BringIntoViewOptions)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.operator !=(Microsoft.UI.Xaml.BringIntoViewOptions, Microsoft.UI.Xaml.BringIntoViewOptions)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.Equals(Microsoft.UI.Xaml.BringIntoViewOptions)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.AnimationDesired.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.AnimationDesired.set
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.TargetRect.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.TargetRect.set
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.HorizontalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.HorizontalAlignmentRatio.set
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalAlignmentRatio.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalAlignmentRatio.set
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.HorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.HorizontalOffset.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.TargetRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.TargetRect.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalAlignmentRatio.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalAlignmentRatio.set
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalOffset.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

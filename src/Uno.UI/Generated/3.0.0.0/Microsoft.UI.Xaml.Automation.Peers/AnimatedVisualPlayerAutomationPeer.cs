@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.AnimatedVisualPlayerAutomationPeer(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.AnimatedVisualPlayerAutomationPeer(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.AnimatedVisualPlayerAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.AnimatedVisualPlayerAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

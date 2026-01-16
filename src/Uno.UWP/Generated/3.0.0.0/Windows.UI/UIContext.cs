@@ -8,5 +8,16 @@ namespace Windows.UI
 #endif
 	public partial class UIContext
 	{
+		// Forced skipping of method Windows.UI.UIContext.FromAbi(nint)
+		// Forced skipping of method Windows.UI.UIContext.operator ==(Windows.UI.UIContext, Windows.UI.UIContext)
+		// Forced skipping of method Windows.UI.UIContext.operator !=(Windows.UI.UIContext, Windows.UI.UIContext)
+		// Forced skipping of method Windows.UI.UIContext.Equals(Windows.UI.UIContext)
+		// Forced skipping of method Windows.UI.UIContext.Equals(object)
+		// Forced skipping of method Windows.UI.UIContext.GetHashCode()
+		// Forced skipping of method Windows.UI.UIContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.UIContext.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.UIContext.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.UIContext.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.UIContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,7 +23,16 @@ namespace Windows.Graphics.Printing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.Deadline.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.operator ==(Windows.Graphics.Printing.PrintTaskSourceRequestedArgs, Windows.Graphics.Printing.PrintTaskSourceRequestedArgs)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.operator !=(Windows.Graphics.Printing.PrintTaskSourceRequestedArgs, Windows.Graphics.Printing.PrintTaskSourceRequestedArgs)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.Equals(Windows.Graphics.Printing.PrintTaskSourceRequestedArgs)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetSource(global::Windows.Graphics.Printing.IPrintDocumentSource source)
@@ -38,5 +47,7 @@ namespace Windows.Graphics.Printing
 			throw new global::System.NotImplementedException("The member PrintTaskSourceRequestedDeferral PrintTaskSourceRequestedArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskSourceRequestedDeferral%20PrintTaskSourceRequestedArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.Deadline.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

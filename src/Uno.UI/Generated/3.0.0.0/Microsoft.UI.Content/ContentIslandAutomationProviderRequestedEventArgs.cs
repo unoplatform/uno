@@ -8,11 +8,22 @@ namespace Microsoft.UI.Content
 #endif
 	public partial class ContentIslandAutomationProviderRequestedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property AutomationProvider
+		// Skipping already declared property Handled
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.operator ==(Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs, Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.operator !=(Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs, Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Equals(Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

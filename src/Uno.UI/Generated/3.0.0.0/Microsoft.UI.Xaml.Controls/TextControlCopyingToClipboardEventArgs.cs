@@ -27,7 +27,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs, Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs, Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.Equals(Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

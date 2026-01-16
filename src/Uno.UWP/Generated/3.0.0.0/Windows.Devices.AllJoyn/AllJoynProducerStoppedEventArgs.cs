@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.AllJoynProducerStoppedEventArgs(int)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

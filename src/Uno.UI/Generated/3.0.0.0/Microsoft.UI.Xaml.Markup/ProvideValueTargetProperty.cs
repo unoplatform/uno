@@ -13,8 +13,19 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared property Type
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.ProvideValueTargetProperty()
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.ProvideValueTargetProperty()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.operator ==(Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.operator !=(Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.Equals(Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.DeclaringType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.Name.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.DeclaringType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

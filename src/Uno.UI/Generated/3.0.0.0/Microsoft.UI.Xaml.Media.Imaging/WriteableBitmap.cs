@@ -11,7 +11,17 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Skipping already declared property PixelBuffer
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WriteableBitmap(int, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WriteableBitmap(int, int)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.PixelBuffer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.operator ==(Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap, Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.operator !=(Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap, Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.Equals(Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.Invalidate()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.PixelBuffer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

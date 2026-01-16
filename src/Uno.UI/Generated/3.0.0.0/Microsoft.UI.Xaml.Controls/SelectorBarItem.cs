@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SelectorBarItem : global::Microsoft.UI.Xaml.Controls.ItemContainer
 	{
-		// Skipping already declared property Text
-		// Skipping already declared property Icon
 		// Skipping already declared property IconProperty
 		// Skipping already declared property TextProperty
+		// Skipping already declared property Icon
+		// Skipping already declared property Text
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.IconProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.TextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.operator ==(Microsoft.UI.Xaml.Controls.SelectorBarItem, Microsoft.UI.Xaml.Controls.SelectorBarItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.operator !=(Microsoft.UI.Xaml.Controls.SelectorBarItem, Microsoft.UI.Xaml.Controls.SelectorBarItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Equals(Microsoft.UI.Xaml.Controls.SelectorBarItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Icon.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Icon.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.IconProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

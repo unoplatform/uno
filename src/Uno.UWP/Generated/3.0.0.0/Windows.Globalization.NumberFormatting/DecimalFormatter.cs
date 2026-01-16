@@ -8,10 +8,6 @@ namespace Windows.Globalization.NumberFormatting
 #endif
 	public partial class DecimalFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions, global::Windows.Globalization.NumberFormatting.INumberFormatter, global::Windows.Globalization.NumberFormatting.INumberFormatter2, global::Windows.Globalization.NumberFormatting.INumberParser, global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption, global::Windows.Globalization.NumberFormatting.INumberRounderOption, global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
-		// Skipping already declared property IsDecimalPointAlwaysDisplayed
-		// Skipping already declared property IntegerDigits
-		// Skipping already declared property IsGrouped
-		// Skipping already declared property NumeralSystem
 		// Skipping already declared property FractionDigits
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -23,7 +19,13 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 #endif
+		// Skipping already declared property IntegerDigits
+		// Skipping already declared property IsDecimalPointAlwaysDisplayed
+		// Skipping already declared property IsGrouped
+		// Skipping already declared property IsZeroSigned
 		// Skipping already declared property Languages
+		// Skipping already declared property NumberRounder
+		// Skipping already declared property NumeralSystem
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ResolvedGeographicRegion
@@ -35,9 +37,9 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared property ResolvedLanguage
-		// Skipping already declared property NumberRounder
-		// Skipping already declared property IsZeroSigned
 		// Skipping already declared property SignificantDigits
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DecimalFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
@@ -46,22 +48,16 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter(System.Collections.Generic.IEnumerable<string>, string)
-		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.Languages.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.GeographicRegion.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IntegerDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IntegerDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FractionDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FractionDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsGrouped.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsGrouped.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsDecimalPointAlwaysDisplayed.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsDecimalPointAlwaysDisplayed.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumeralSystem.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumeralSystem.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.ResolvedLanguage.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.ResolvedGeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.operator ==(Windows.Globalization.NumberFormatting.DecimalFormatter, Windows.Globalization.NumberFormatting.DecimalFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.operator !=(Windows.Globalization.NumberFormatting.DecimalFormatter, Windows.Globalization.NumberFormatting.DecimalFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.Equals(Windows.Globalization.NumberFormatting.DecimalFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.Equals(object)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.GetHashCode()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
@@ -107,12 +103,27 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.ParseDouble(string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.SignificantDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.SignificantDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumberRounder.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumberRounder.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FractionDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FractionDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.GeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IntegerDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IntegerDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsDecimalPointAlwaysDisplayed.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsDecimalPointAlwaysDisplayed.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsGrouped.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsGrouped.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsZeroSigned.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.IsZeroSigned.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.Languages.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumberRounder.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumberRounder.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumeralSystem.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumeralSystem.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.ResolvedGeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.ResolvedLanguage.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.SignificantDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.SignificantDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatterOptions
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter2

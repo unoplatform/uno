@@ -13,9 +13,20 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiActiveSensingMessage.MidiActiveSensingMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.MidiActiveSensingMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Timestamp.get
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.operator ==(Windows.Devices.Midi.MidiActiveSensingMessage, Windows.Devices.Midi.MidiActiveSensingMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.operator !=(Windows.Devices.Midi.MidiActiveSensingMessage, Windows.Devices.Midi.MidiActiveSensingMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Equals(Windows.Devices.Midi.MidiActiveSensingMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Type.get
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

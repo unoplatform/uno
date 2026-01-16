@@ -11,11 +11,23 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property HintRect
 		// Skipping already declared property Reason
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Reason.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.HintRect.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.As<I>()
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason)
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect, System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.operator ==(Microsoft.UI.Input.FocusNavigationRequest, Microsoft.UI.Input.FocusNavigationRequest)
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.operator !=(Microsoft.UI.Input.FocusNavigationRequest, Microsoft.UI.Input.FocusNavigationRequest)
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Equals(Microsoft.UI.Input.FocusNavigationRequest)
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.HintRect.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Reason.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

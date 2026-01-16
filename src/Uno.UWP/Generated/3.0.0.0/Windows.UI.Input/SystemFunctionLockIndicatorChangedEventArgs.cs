@@ -47,9 +47,20 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.operator ==(Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs, Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.operator !=(Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs, Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Equals(Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Timestamp.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

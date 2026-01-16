@@ -23,7 +23,16 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.RemoteSystem.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionParticipant, Windows.System.RemoteSystems.RemoteSystemSessionParticipant)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionParticipant, Windows.System.RemoteSystems.RemoteSystemSessionParticipant)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.Equals(Windows.System.RemoteSystems.RemoteSystemSessionParticipant)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.HostName> GetHostNames()
@@ -31,5 +40,7 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member IReadOnlyList<HostName> RemoteSystemSessionParticipant.GetHostNames() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHostName%3E%20RemoteSystemSessionParticipant.GetHostNames%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.RemoteSystem.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipant.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

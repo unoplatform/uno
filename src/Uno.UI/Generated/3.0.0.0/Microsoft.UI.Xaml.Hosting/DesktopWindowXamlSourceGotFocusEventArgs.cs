@@ -9,6 +9,17 @@ namespace Microsoft.UI.Xaml.Hosting
 	public partial class DesktopWindowXamlSourceGotFocusEventArgs
 	{
 		// Skipping already declared property Request
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.operator ==(Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs, Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.operator !=(Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs, Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.Equals(Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.Request.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

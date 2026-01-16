@@ -53,9 +53,20 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.IsResumable.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.operator ==(Windows.Networking.BackgroundTransfer.ResponseInformation, Windows.Networking.BackgroundTransfer.ResponseInformation)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.operator !=(Windows.Networking.BackgroundTransfer.ResponseInformation, Windows.Networking.BackgroundTransfer.ResponseInformation)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.Equals(Windows.Networking.BackgroundTransfer.ResponseInformation)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.ActualUri.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.StatusCode.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.Headers.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.IsResumable.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.StatusCode.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

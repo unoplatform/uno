@@ -3,14 +3,38 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FlipViewItemDataAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	{
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.FlipViewAutomationPeer)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public FlipViewItemDataAutomationPeer(object item, global::Microsoft.UI.Xaml.Automation.Peers.FlipViewAutomationPeer parent) : base(item, parent)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer", "FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(object item, FlipViewAutomationPeer parent)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.FlipViewAutomationPeer)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.ScrollIntoView()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void ScrollIntoView()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer", "void FlipViewItemDataAutomationPeer.ScrollIntoView()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	}
 }

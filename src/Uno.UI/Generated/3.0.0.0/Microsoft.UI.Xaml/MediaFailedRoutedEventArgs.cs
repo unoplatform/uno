@@ -18,6 +18,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.operator ==(Microsoft.UI.Xaml.MediaFailedRoutedEventArgs, Microsoft.UI.Xaml.MediaFailedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.operator !=(Microsoft.UI.Xaml.MediaFailedRoutedEventArgs, Microsoft.UI.Xaml.MediaFailedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.Equals(Microsoft.UI.Xaml.MediaFailedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.ErrorTrace.get
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.MediaFailedRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

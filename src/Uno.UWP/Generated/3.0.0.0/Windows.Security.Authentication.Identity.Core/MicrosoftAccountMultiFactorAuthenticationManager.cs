@@ -23,6 +23,18 @@ namespace Windows.Security.Authentication.Identity.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.As<I>()
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.Current.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.operator ==(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager, Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.operator !=(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager, Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.Equals(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo> GetOneTimePassCodeAsync(string userAccountId, uint codeLength)
@@ -93,6 +105,6 @@ namespace Windows.Security.Authentication.Identity.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MicrosoftAccountMultiFactorServiceResponse> MicrosoftAccountMultiFactorAuthenticationManager.DenySessionAsync(string userAccountId, string sessionId, MicrosoftAccountMultiFactorAuthenticationType sessionAuthenticationType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMicrosoftAccountMultiFactorServiceResponse%3E%20MicrosoftAccountMultiFactorAuthenticationManager.DenySessionAsync%28string%20userAccountId%2C%20string%20sessionId%2C%20MicrosoftAccountMultiFactorAuthenticationType%20sessionAuthenticationType%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.Current.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

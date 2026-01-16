@@ -44,8 +44,19 @@ namespace Windows.Media.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.AudioEffectDefinition(string, Windows.Foundation.Collections.IPropertySet)
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.operator ==(Windows.Media.Effects.AudioEffectDefinition, Windows.Media.Effects.AudioEffectDefinition)
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.operator !=(Windows.Media.Effects.AudioEffectDefinition, Windows.Media.Effects.AudioEffectDefinition)
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.Equals(Windows.Media.Effects.AudioEffectDefinition)
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.Equals(object)
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.GetHashCode()
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.Properties.get
+		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IAudioEffectDefinition
 	}
 }

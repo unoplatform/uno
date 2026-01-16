@@ -63,10 +63,21 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.operator ==(Windows.Graphics.Holographic.HolographicFrameRenderingReport, Windows.Graphics.Holographic.HolographicFrameRenderingReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.operator !=(Windows.Graphics.Holographic.HolographicFrameRenderingReport, Windows.Graphics.Holographic.HolographicFrameRenderingReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.Equals(Windows.Graphics.Holographic.HolographicFrameRenderingReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.FrameId.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.MissedLatchCount.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeFrameReadyTime.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeActualGpuFinishTime.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeFrameReadyTime.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeTargetLatchTime.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

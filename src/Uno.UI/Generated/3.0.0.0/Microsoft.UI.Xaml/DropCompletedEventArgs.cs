@@ -9,6 +9,16 @@ namespace Microsoft.UI.Xaml
 	public partial class DropCompletedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property DropResult
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.operator ==(Microsoft.UI.Xaml.DropCompletedEventArgs, Microsoft.UI.Xaml.DropCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.operator !=(Microsoft.UI.Xaml.DropCompletedEventArgs, Microsoft.UI.Xaml.DropCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.Equals(Microsoft.UI.Xaml.DropCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.DropResult.get
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.DropCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

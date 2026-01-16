@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 	public partial class BitmapSource : global::Microsoft.UI.Xaml.Media.ImageSource
 	{
-		// Skipping already declared property PixelHeight
-		// Skipping already declared property PixelWidth
 		// Skipping already declared property PixelHeightProperty
 		// Skipping already declared property PixelWidthProperty
+		// Skipping already declared property PixelHeight
+		// Skipping already declared property PixelWidth
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.BitmapSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.BitmapSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.BitmapSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.operator ==(Microsoft.UI.Xaml.Media.Imaging.BitmapSource, Microsoft.UI.Xaml.Media.Imaging.BitmapSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.operator !=(Microsoft.UI.Xaml.Media.Imaging.BitmapSource, Microsoft.UI.Xaml.Media.Imaging.BitmapSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.Equals(Microsoft.UI.Xaml.Media.Imaging.BitmapSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.BitmapSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.SetSource(Windows.Storage.Streams.IRandomAccessStream)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.SetSourceAsync(Windows.Storage.Streams.IRandomAccessStream)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,8 +10,18 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property ExtendedError
 		// Skipping already declared property LoadStatus
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.operator ==(Microsoft.UI.Composition.CompositionEffectFactory, Microsoft.UI.Composition.CompositionEffectFactory)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.operator !=(Microsoft.UI.Composition.CompositionEffectFactory, Microsoft.UI.Composition.CompositionEffectFactory)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.Equals(Microsoft.UI.Composition.CompositionEffectFactory)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectFactory.CreateBrush()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.LoadStatus.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.ExtendedError.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.LoadStatus.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

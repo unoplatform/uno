@@ -83,12 +83,23 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadTouched.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.operator ==(Windows.UI.Input.Spatial.SpatialInteractionControllerProperties, Windows.UI.Input.Spatial.SpatialInteractionControllerProperties)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.operator !=(Windows.UI.Input.Spatial.SpatialInteractionControllerProperties, Windows.UI.Input.Spatial.SpatialInteractionControllerProperties)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.Equals(Windows.UI.Input.Spatial.SpatialInteractionControllerProperties)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsThumbstickPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadTouched.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.ThumbstickX.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.ThumbstickY.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.TouchpadX.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.TouchpadY.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

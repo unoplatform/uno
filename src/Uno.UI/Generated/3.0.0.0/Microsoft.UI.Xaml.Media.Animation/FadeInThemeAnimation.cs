@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class FadeInThemeAnimation
 	{
-		// Skipping already declared property TargetName
 		// Skipping already declared property TargetNameProperty
+		// Skipping already declared property TargetName
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.FadeInThemeAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.FadeInThemeAnimation()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation, Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation, Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeInThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

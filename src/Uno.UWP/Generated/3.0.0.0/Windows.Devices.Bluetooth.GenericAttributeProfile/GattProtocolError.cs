@@ -25,22 +25,23 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Skipping already declared property UnlikelyError
 		// Skipping already declared property UnsupportedGroupType
 		// Skipping already declared property WriteNotPermitted
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidHandle.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.ReadNotPermitted.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.WriteNotPermitted.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidPdu.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientAuthentication.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.RequestNotSupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidOffset.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientAuthorization.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.PrepareQueueFull.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.AttributeNotFound.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.AttributeNotLong.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientEncryptionKeySize.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidAttributeValueLength.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.UnlikelyError.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientAuthentication.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientAuthorization.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientEncryption.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.UnsupportedGroupType.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientEncryptionKeySize.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientResources.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidAttributeValueLength.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidHandle.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidOffset.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidPdu.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.PrepareQueueFull.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.ReadNotPermitted.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.RequestNotSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.UnlikelyError.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.UnsupportedGroupType.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.WriteNotPermitted.get
 	}
 }

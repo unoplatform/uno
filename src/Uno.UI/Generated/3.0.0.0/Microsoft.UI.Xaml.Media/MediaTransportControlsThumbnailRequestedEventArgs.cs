@@ -13,6 +13,16 @@ namespace Microsoft.UI.Xaml.Media
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs, Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs, Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.Equals(Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetThumbnailImage(global::Windows.Storage.Streams.IInputStream source)
@@ -27,5 +37,6 @@ namespace Microsoft.UI.Xaml.Media
 			throw new global::System.NotImplementedException("The member Deferral MediaTransportControlsThumbnailRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20MediaTransportControlsThumbnailRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

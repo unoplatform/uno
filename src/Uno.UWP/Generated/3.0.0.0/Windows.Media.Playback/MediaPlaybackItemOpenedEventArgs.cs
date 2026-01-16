@@ -23,6 +23,17 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.operator ==(Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs, Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.operator !=(Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs, Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.Equals(Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.Item.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

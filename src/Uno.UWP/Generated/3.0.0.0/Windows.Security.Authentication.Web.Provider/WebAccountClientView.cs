@@ -54,8 +54,19 @@ namespace Windows.Security.Authentication.Web.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WebAccountClientView(Windows.Security.Authentication.Web.Provider.WebAccountClientViewType, System.Uri, string)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountClientView, Windows.Security.Authentication.Web.Provider.WebAccountClientView)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountClientView, Windows.Security.Authentication.Web.Provider.WebAccountClientView)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.Equals(Windows.Security.Authentication.Web.Provider.WebAccountClientView)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.AccountPairwiseId.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.ApplicationCallbackUri.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.Type.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.AccountPairwiseId.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,7 +10,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.NavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.NavigationTransitionInfo()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.NavigationTransitionInfo(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.operator ==(Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.operator !=(Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.Equals(Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.NavigationTransitionInfo(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.GetNavigationStateCore()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.Microsoft.UI.Xaml.Media.Animation.INavigationTransitionInfoOverrides.GetNavigationStateCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.SetNavigationStateCore(string)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.Microsoft.UI.Xaml.Media.Animation.INavigationTransitionInfoOverrides.SetNavigationStateCore(string)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

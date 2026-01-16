@@ -13,9 +13,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Options
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.ScrollControllerScrollByRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.ScrollControllerScrollByRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.OffsetDelta.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.Options.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.CorrelationId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.CorrelationId.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.OffsetDelta.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.Options.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

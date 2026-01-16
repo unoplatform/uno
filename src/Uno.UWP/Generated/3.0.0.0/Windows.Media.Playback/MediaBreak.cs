@@ -78,11 +78,22 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.MediaBreak(Windows.Media.Playback.MediaBreakInsertionMethod, System.TimeSpan)
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.PlaybackList.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.PresentationPosition.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.InsertionMethod.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.CustomProperties.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.operator ==(Windows.Media.Playback.MediaBreak, Windows.Media.Playback.MediaBreak)
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.operator !=(Windows.Media.Playback.MediaBreak, Windows.Media.Playback.MediaBreak)
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.Equals(Windows.Media.Playback.MediaBreak)
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.CanStart.get
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.CanStart.set
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.CustomProperties.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.InsertionMethod.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.PlaybackList.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.PresentationPosition.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

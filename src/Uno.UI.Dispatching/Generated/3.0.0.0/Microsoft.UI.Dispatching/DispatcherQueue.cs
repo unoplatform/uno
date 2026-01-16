@@ -9,14 +9,25 @@ namespace Microsoft.UI.Dispatching
 	public partial class DispatcherQueue
 	{
 		// Skipping already declared property HasThreadAccess
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownStarting.add
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.As<I>()
+		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.operator ==(Microsoft.UI.Dispatching.DispatcherQueue, Microsoft.UI.Dispatching.DispatcherQueue)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.operator !=(Microsoft.UI.Dispatching.DispatcherQueue, Microsoft.UI.Dispatching.DispatcherQueue)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.Equals(Microsoft.UI.Dispatching.DispatcherQueue)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.Equals(object)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.CreateTimer()
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueueHandler)
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority, Microsoft.UI.Dispatching.DispatcherQueueHandler)
-		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.CreateTimer()
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownCompleted.add
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownCompleted.remove
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.HasThreadAccess.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownStarting.add
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownStarting.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void EnqueueEventLoopExit()
@@ -45,11 +56,12 @@ namespace Microsoft.UI.Dispatching
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueue", "void DispatcherQueue.RunEventLoop(DispatcherRunOptions options, DispatcherExitDeferral deferral)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FrameworkShutdownStarting.add
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FrameworkShutdownStarting.remove
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FrameworkShutdownCompleted.add
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FrameworkShutdownCompleted.remove
-		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FrameworkShutdownStarting.add
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FrameworkShutdownStarting.remove
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.HasThreadAccess.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Dispatching.DispatcherQueue, object> ShutdownCompleted

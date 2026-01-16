@@ -10,8 +10,22 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Reason
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Reason.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.InfoBarClosingEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs, Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs, Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Equals(Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.InfoBarClosingEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Reason.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

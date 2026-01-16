@@ -8,10 +8,23 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class NavigationViewItemBase
 	{
-		// Skipping already declared property IsSelected
 		// Skipping already declared property IsSelectedProperty
+		// Skipping already declared property IsSelected
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelectedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.NavigationViewItemBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewItemBase, Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewItemBase, Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.Equals(Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.NavigationViewItemBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelectedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

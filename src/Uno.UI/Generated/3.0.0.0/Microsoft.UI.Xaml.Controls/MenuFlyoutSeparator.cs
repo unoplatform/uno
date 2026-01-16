@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.MenuFlyoutSeparator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.MenuFlyoutSeparator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.MenuFlyoutSeparator(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.operator ==(Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator, Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.operator !=(Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator, Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.Equals(Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.MenuFlyoutSeparator(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

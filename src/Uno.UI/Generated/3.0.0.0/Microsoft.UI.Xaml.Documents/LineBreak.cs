@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.LineBreak.LineBreak()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.LineBreak()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.operator ==(Microsoft.UI.Xaml.Documents.LineBreak, Microsoft.UI.Xaml.Documents.LineBreak)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.operator !=(Microsoft.UI.Xaml.Documents.LineBreak, Microsoft.UI.Xaml.Documents.LineBreak)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.Equals(Microsoft.UI.Xaml.Documents.LineBreak)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.LineBreak.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

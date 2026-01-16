@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -34,7 +33,18 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.PreviousSource.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.operator ==(Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs, Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.operator !=(Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs, Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.Equals(Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.CurrentSource.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.PreviousSource.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,9 +43,16 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.VisualElements.get
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.AlternateVisualElements.get
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.Deadline.get
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.FromAbi(nint)
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.operator ==(Windows.UI.StartScreen.VisualElementsRequest, Windows.UI.StartScreen.VisualElementsRequest)
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.operator !=(Windows.UI.StartScreen.VisualElementsRequest, Windows.UI.StartScreen.VisualElementsRequest)
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.Equals(Windows.UI.StartScreen.VisualElementsRequest)
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.Equals(object)
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.GetHashCode()
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.StartScreen.VisualElementsRequestDeferral GetDeferral()
@@ -53,5 +60,9 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member VisualElementsRequestDeferral VisualElementsRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualElementsRequestDeferral%20VisualElementsRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.AlternateVisualElements.get
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.Deadline.get
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.VisualElements.get
+		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

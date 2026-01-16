@@ -73,12 +73,16 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.HasTouchpad.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.HasThumbstick.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.SimpleHapticsController.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.VendorId.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.ProductId.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.Version.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.operator ==(Windows.UI.Input.Spatial.SpatialInteractionController, Windows.UI.Input.Spatial.SpatialInteractionController)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.operator !=(Windows.UI.Input.Spatial.SpatialInteractionController, Windows.UI.Input.Spatial.SpatialInteractionController)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.Equals(Windows.UI.Input.Spatial.SpatialInteractionController)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> TryGetRenderableModelAsync()
@@ -93,5 +97,12 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member BatteryReport SpatialInteractionController.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20SpatialInteractionController.TryGetBatteryReport%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.HasThumbstick.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.HasTouchpad.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.ProductId.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.SimpleHapticsController.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.VendorId.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.Version.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

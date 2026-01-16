@@ -103,15 +103,16 @@ namespace Microsoft.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.CurrentAdvancedColorKind.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.RedPrimary.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.GreenPrimary.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.BluePrimary.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.WhitePoint.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.MaxLuminanceInNits.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.MinLuminanceInNits.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.MaxAverageFullFrameLuminanceInNits.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.SdrWhiteLevelInNits.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.FromAbi(nint)
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.operator ==(Microsoft.Graphics.Display.DisplayAdvancedColorInfo, Microsoft.Graphics.Display.DisplayAdvancedColorInfo)
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.operator !=(Microsoft.Graphics.Display.DisplayAdvancedColorInfo, Microsoft.Graphics.Display.DisplayAdvancedColorInfo)
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.Equals(Microsoft.Graphics.Display.DisplayAdvancedColorInfo)
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.Equals(object)
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.GetHashCode()
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsHdrMetadataFormatCurrentlySupported(global::Microsoft.Graphics.Display.DisplayHdrMetadataFormat format)
@@ -126,5 +127,15 @@ namespace Microsoft.Graphics.Display
 			throw new global::System.NotImplementedException("The member bool DisplayAdvancedColorInfo.IsAdvancedColorKindAvailable(DisplayAdvancedColorKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayAdvancedColorInfo.IsAdvancedColorKindAvailable%28DisplayAdvancedColorKind%20kind%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.BluePrimary.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.CurrentAdvancedColorKind.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.GreenPrimary.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.MaxAverageFullFrameLuminanceInNits.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.MaxLuminanceInNits.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.MinLuminanceInNits.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.RedPrimary.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.SdrWhiteLevelInNits.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.WhitePoint.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

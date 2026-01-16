@@ -14,11 +14,23 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property IsTopmostProperty
 		// Skipping already declared property WindowInteractionStateProperty
 		// Skipping already declared property WindowVisualStateProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.CanMaximizeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.CanMinimizeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.IsModalProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.IsTopmostProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.WindowInteractionStateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.WindowVisualStateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers, Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers, Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.WindowPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

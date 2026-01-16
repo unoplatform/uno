@@ -43,9 +43,16 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.Products.get
-		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.HasMoreResults.get
-		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.operator ==(Windows.Services.Store.StoreProductPagedQueryResult, Windows.Services.Store.StoreProductPagedQueryResult)
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.operator !=(Windows.Services.Store.StoreProductPagedQueryResult, Windows.Services.Store.StoreProductPagedQueryResult)
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.Equals(Windows.Services.Store.StoreProductPagedQueryResult)
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreProductPagedQueryResult> GetNextAsync()
@@ -53,5 +60,9 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreProductPagedQueryResult> StoreProductPagedQueryResult.GetNextAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoreProductPagedQueryResult%3E%20StoreProductPagedQueryResult.GetNextAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.HasMoreResults.get
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.Products.get
+		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,6 +23,17 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.operator ==(Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs, Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.operator !=(Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs, Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.Equals(Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatusUpdatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

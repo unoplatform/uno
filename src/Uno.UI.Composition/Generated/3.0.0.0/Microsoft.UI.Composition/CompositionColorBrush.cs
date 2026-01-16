@@ -9,7 +9,17 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionColorBrush : global::Microsoft.UI.Composition.CompositionBrush
 	{
 		// Skipping already declared property Color
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Color.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.operator ==(Microsoft.UI.Composition.CompositionColorBrush, Microsoft.UI.Composition.CompositionColorBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.operator !=(Microsoft.UI.Composition.CompositionColorBrush, Microsoft.UI.Composition.CompositionColorBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Equals(Microsoft.UI.Composition.CompositionColorBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Color.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Color.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

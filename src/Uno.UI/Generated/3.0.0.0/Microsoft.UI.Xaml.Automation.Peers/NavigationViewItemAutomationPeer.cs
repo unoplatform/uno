@@ -11,9 +11,21 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.NavigationViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.NavigationViewItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.NavigationViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.NavigationViewItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.NavigationViewItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.NavigationViewItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

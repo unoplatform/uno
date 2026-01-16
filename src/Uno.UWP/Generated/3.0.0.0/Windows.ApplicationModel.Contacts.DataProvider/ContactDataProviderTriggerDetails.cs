@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails, Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails, Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.Connection.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,18 @@ namespace Microsoft.UI.Xaml.Automation
 	public partial class SpreadsheetItemPatternIdentifiers
 	{
 		// Skipping already declared property FormulaProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.FormulaProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers, Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers, Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

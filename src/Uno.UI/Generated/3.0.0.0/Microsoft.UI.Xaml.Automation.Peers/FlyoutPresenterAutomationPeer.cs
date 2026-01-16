@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.FlyoutPresenterAutomationPeer(Microsoft.UI.Xaml.Controls.FlyoutPresenter)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.FlyoutPresenterAutomationPeer(Microsoft.UI.Xaml.Controls.FlyoutPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.FlyoutPresenterAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.FlyoutPresenterAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,7 +33,18 @@ namespace Windows.UI.ViewManagement.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.operator ==(Windows.UI.ViewManagement.Core.CoreInputViewOcclusion, Windows.UI.ViewManagement.Core.CoreInputViewOcclusion)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.operator !=(Windows.UI.ViewManagement.Core.CoreInputViewOcclusion, Windows.UI.ViewManagement.Core.CoreInputViewOcclusion)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.Equals(Windows.UI.ViewManagement.Core.CoreInputViewOcclusion)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.Equals(object)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.GetHashCode()
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.OccludingRect.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.OcclusionKind.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

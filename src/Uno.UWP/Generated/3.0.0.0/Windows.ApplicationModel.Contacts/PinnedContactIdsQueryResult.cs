@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.operator ==(Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult, Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.operator !=(Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult, Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.Equals(Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.ContactIds.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

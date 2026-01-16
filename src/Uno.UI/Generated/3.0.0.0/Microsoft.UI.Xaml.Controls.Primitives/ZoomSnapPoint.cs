@@ -11,6 +11,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.ZoomSnapPoint(double)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.ZoomSnapPoint(double)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.ZoomSnapPoint(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint, Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint, Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.Equals(Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.ZoomSnapPoint(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

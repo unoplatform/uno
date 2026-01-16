@@ -33,7 +33,18 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.operator ==(Windows.Services.Store.StoreUninstallStorePackageResult, Windows.Services.Store.StoreUninstallStorePackageResult)
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.operator !=(Windows.Services.Store.StoreUninstallStorePackageResult, Windows.Services.Store.StoreUninstallStorePackageResult)
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.Equals(Windows.Services.Store.StoreUninstallStorePackageResult)
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.ExtendedError.get
 		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.Status.get
+		// Forced skipping of method Windows.Services.Store.StoreUninstallStorePackageResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,6 +8,7 @@ namespace Windows.Storage
 #endif
 	public static partial class PathIO
 	{
+		// Forced skipping of method Windows.Storage.PathIO.As<I>()
 		// Skipping already declared method Windows.Storage.PathIO.ReadTextAsync(string)
 		// Skipping already declared method Windows.Storage.PathIO.ReadTextAsync(string, Windows.Storage.Streams.UnicodeEncoding)
 		// Skipping already declared method Windows.Storage.PathIO.WriteTextAsync(string, string)

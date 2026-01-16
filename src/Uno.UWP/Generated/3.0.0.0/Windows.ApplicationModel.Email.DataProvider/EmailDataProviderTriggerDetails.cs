@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails, Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails, Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.Equals(Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.Connection.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.operator ==(Microsoft.UI.Xaml.Controls.FlipViewItem, Microsoft.UI.Xaml.Controls.FlipViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.operator !=(Microsoft.UI.Xaml.Controls.FlipViewItem, Microsoft.UI.Xaml.Controls.FlipViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.Equals(Microsoft.UI.Xaml.Controls.FlipViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

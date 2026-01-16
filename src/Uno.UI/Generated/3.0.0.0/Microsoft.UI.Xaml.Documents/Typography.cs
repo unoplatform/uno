@@ -357,7 +357,7 @@ namespace Microsoft.UI.Xaml.Documents
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.FontVariants)));
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.AnnotationAlternatesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetAnnotationAlternates(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -372,7 +372,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(AnnotationAlternatesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.EastAsianExpertFormsProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetEastAsianExpertForms(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -387,7 +386,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(EastAsianExpertFormsProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.EastAsianLanguageProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.FontEastAsianLanguage GetEastAsianLanguage(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -402,7 +400,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(EastAsianLanguageProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.EastAsianWidthsProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.FontEastAsianWidths GetEastAsianWidths(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -417,7 +414,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(EastAsianWidthsProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StandardLigaturesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStandardLigatures(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -432,7 +428,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StandardLigaturesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.ContextualLigaturesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetContextualLigatures(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -447,7 +442,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(ContextualLigaturesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.DiscretionaryLigaturesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetDiscretionaryLigatures(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -462,7 +456,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(DiscretionaryLigaturesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.HistoricalLigaturesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetHistoricalLigatures(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -477,7 +470,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(HistoricalLigaturesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StandardSwashesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetStandardSwashes(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -492,7 +484,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StandardSwashesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.ContextualSwashesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetContextualSwashes(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -507,7 +498,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(ContextualSwashesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.ContextualAlternatesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetContextualAlternates(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -522,7 +512,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(ContextualAlternatesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticAlternatesProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetStylisticAlternates(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -537,7 +526,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticAlternatesProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet1Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet1(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -552,7 +540,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet1Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet2Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet2(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -567,7 +554,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet2Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet3Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet3(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -582,7 +568,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet3Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet4Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet4(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -597,7 +582,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet4Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet5Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet5(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -612,7 +596,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet5Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet6Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet6(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -627,7 +610,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet6Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet7Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet7(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -642,7 +624,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet7Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet8Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet8(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -657,7 +638,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet8Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet9Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet9(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -672,7 +652,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet9Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet10Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet10(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -687,7 +666,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet10Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet11Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet11(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -702,7 +680,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet11Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet12Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet12(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -717,7 +694,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet12Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet13Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet13(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -732,7 +708,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet13Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet14Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet14(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -747,7 +722,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet14Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet15Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet15(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -762,7 +736,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet15Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet16Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet16(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -777,7 +750,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet16Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet17Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet17(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -792,7 +764,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet17Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet18Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet18(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -807,7 +778,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet18Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet19Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet19(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -822,7 +792,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet19Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet20Property.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetStylisticSet20(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -837,7 +806,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(StylisticSet20Property, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.CapitalsProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.FontCapitals GetCapitals(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -852,7 +820,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(CapitalsProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.CapitalSpacingProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetCapitalSpacing(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -867,7 +834,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(CapitalSpacingProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.KerningProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetKerning(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -882,7 +848,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(KerningProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.CaseSensitiveFormsProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetCaseSensitiveForms(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -897,7 +862,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(CaseSensitiveFormsProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.HistoricalFormsProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetHistoricalForms(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -912,7 +876,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(HistoricalFormsProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.FractionProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.FontFraction GetFraction(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -927,7 +890,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(FractionProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.NumeralStyleProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.FontNumeralStyle GetNumeralStyle(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -942,7 +904,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(NumeralStyleProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.NumeralAlignmentProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.FontNumeralAlignment GetNumeralAlignment(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -957,7 +918,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(NumeralAlignmentProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.SlashedZeroProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetSlashedZero(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -972,7 +932,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(SlashedZeroProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.MathematicalGreekProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetMathematicalGreek(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -987,7 +946,6 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(MathematicalGreekProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.VariantsProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.FontVariants GetVariants(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -1002,5 +960,59 @@ namespace Microsoft.UI.Xaml.Documents
 			element.SetValue(VariantsProperty, value);
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.AnnotationAlternatesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.CapitalSpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.CapitalsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.CaseSensitiveFormsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.ContextualAlternatesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.ContextualLigaturesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.ContextualSwashesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.DiscretionaryLigaturesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.EastAsianExpertFormsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.EastAsianLanguageProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.EastAsianWidthsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.FractionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.HistoricalFormsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.HistoricalLigaturesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.KerningProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.MathematicalGreekProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.NumeralAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.NumeralStyleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.SlashedZeroProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StandardLigaturesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StandardSwashesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticAlternatesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet10Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet11Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet12Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet13Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet14Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet15Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet16Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet17Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet18Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet19Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet1Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet20Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet2Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet3Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet4Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet5Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet6Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet7Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet8Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet9Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.VariantsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.operator ==(Microsoft.UI.Xaml.Documents.Typography, Microsoft.UI.Xaml.Documents.Typography)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.operator !=(Microsoft.UI.Xaml.Documents.Typography, Microsoft.UI.Xaml.Documents.Typography)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.Equals(Microsoft.UI.Xaml.Documents.Typography)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

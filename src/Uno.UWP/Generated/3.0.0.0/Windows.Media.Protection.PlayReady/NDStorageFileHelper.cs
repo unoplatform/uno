@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -17,6 +16,16 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.NDStorageFileHelper()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.operator ==(Windows.Media.Protection.PlayReady.NDStorageFileHelper, Windows.Media.Protection.PlayReady.NDStorageFileHelper)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.operator !=(Windows.Media.Protection.PlayReady.NDStorageFileHelper, Windows.Media.Protection.PlayReady.NDStorageFileHelper)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.Equals(Windows.Media.Protection.PlayReady.NDStorageFileHelper)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> GetFileURLs(global::Windows.Storage.IStorageFile file)
@@ -24,6 +33,7 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member IList<string> NDStorageFileHelper.GetFileURLs(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20NDStorageFileHelper.GetFileURLs%28IStorageFile%20file%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Protection.PlayReady.INDStorageFileHelper
 	}
 }

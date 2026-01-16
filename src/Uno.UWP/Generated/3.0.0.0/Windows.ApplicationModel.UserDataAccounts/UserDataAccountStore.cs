@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.operator ==(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore, Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.operator !=(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore, Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.Equals(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount>> FindAccountsAsync()
@@ -50,6 +60,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName, string packageRelativeAppId, string enterpriseId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.CreateAccountAsync%28string%20userDisplayName%2C%20string%20packageRelativeAppId%2C%20string%20enterpriseId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore, global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs> StoreChanged

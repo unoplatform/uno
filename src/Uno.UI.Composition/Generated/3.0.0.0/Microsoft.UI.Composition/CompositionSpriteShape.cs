@@ -8,24 +8,38 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionSpriteShape : global::Microsoft.UI.Composition.CompositionShape
 	{
-		// Skipping already declared property StrokeThickness
-		// Skipping already declared property StrokeStartCap
-		// Skipping already declared property StrokeMiterLimit
-		// Skipping already declared property StrokeLineJoin
-		// Skipping already declared property StrokeEndCap
-		// Skipping already declared property StrokeDashOffset
-		// Skipping already declared property StrokeDashCap
-		// Skipping already declared property StrokeBrush
-		// Skipping already declared property IsStrokeNonScaling
-		// Skipping already declared property Geometry
 		// Skipping already declared property FillBrush
+		// Skipping already declared property Geometry
+		// Skipping already declared property IsStrokeNonScaling
+		// Skipping already declared property StrokeBrush
 		// Skipping already declared property StrokeDashArray
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashOffset.get
+		// Skipping already declared property StrokeDashCap
+		// Skipping already declared property StrokeDashOffset
+		// Skipping already declared property StrokeEndCap
+		// Skipping already declared property StrokeLineJoin
+		// Skipping already declared property StrokeMiterLimit
+		// Skipping already declared property StrokeStartCap
+		// Skipping already declared property StrokeThickness
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.operator ==(Microsoft.UI.Composition.CompositionSpriteShape, Microsoft.UI.Composition.CompositionSpriteShape)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.operator !=(Microsoft.UI.Composition.CompositionSpriteShape, Microsoft.UI.Composition.CompositionSpriteShape)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Equals(Microsoft.UI.Composition.CompositionSpriteShape)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FillBrush.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FillBrush.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Geometry.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Geometry.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsStrokeNonScaling.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsStrokeNonScaling.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeBrush.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeBrush.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashArray.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashCap.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FillBrush.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashCap.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashOffset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashOffset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeEndCap.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeEndCap.set
@@ -37,11 +51,7 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeStartCap.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeThickness.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeThickness.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FillBrush.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Geometry.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Geometry.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsStrokeNonScaling.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsStrokeNonScaling.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeBrush.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

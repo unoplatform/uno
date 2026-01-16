@@ -23,7 +23,16 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.InteractionSourceKind.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.operator ==(Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs, Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.operator !=(Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs, Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.Equals(Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialManipulationDelta TryGetCumulativeDelta(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -31,5 +40,7 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member SpatialManipulationDelta SpatialManipulationCompletedEventArgs.TryGetCumulativeDelta(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialManipulationDelta%20SpatialManipulationCompletedEventArgs.TryGetCumulativeDelta%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.InteractionSourceKind.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

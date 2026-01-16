@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Italic.Italic()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.Italic()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.operator ==(Microsoft.UI.Xaml.Documents.Italic, Microsoft.UI.Xaml.Documents.Italic)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.operator !=(Microsoft.UI.Xaml.Documents.Italic, Microsoft.UI.Xaml.Documents.Italic)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.Equals(Microsoft.UI.Xaml.Documents.Italic)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Italic.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

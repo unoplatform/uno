@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class StateTrigger : global::Microsoft.UI.Xaml.StateTriggerBase
 	{
-		// Skipping already declared property IsActive
 		// Skipping already declared property IsActiveProperty
+		// Skipping already declared property IsActive
 		// Skipping already declared method Microsoft.UI.Xaml.StateTrigger.StateTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.StateTrigger()
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActiveProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.operator ==(Microsoft.UI.Xaml.StateTrigger, Microsoft.UI.Xaml.StateTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.operator !=(Microsoft.UI.Xaml.StateTrigger, Microsoft.UI.Xaml.StateTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.Equals(Microsoft.UI.Xaml.StateTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActive.get
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActive.set
-		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActiveProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

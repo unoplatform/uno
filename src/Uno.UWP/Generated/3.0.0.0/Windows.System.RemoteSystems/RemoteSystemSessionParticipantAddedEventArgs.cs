@@ -23,6 +23,17 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.Equals(Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.Participant.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

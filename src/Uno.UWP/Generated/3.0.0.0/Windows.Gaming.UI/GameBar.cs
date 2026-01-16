@@ -28,12 +28,13 @@ namespace Windows.Gaming.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.UI.GameBar.VisibilityChanged.add
-		// Forced skipping of method Windows.Gaming.UI.GameBar.VisibilityChanged.remove
+		// Forced skipping of method Windows.Gaming.UI.GameBar.As<I>()
 		// Forced skipping of method Windows.Gaming.UI.GameBar.IsInputRedirectedChanged.add
 		// Forced skipping of method Windows.Gaming.UI.GameBar.IsInputRedirectedChanged.remove
-		// Forced skipping of method Windows.Gaming.UI.GameBar.Visible.get
+		// Forced skipping of method Windows.Gaming.UI.GameBar.VisibilityChanged.add
+		// Forced skipping of method Windows.Gaming.UI.GameBar.VisibilityChanged.remove
 		// Forced skipping of method Windows.Gaming.UI.GameBar.IsInputRedirected.get
+		// Forced skipping of method Windows.Gaming.UI.GameBar.Visible.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> IsInputRedirectedChanged

@@ -37,7 +37,16 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.StreamDescriptor.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.operator ==(Windows.Media.Core.MediaStreamSourceSampleRequest, Windows.Media.Core.MediaStreamSourceSampleRequest)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.operator !=(Windows.Media.Core.MediaStreamSourceSampleRequest, Windows.Media.Core.MediaStreamSourceSampleRequest)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Equals(Windows.Media.Core.MediaStreamSourceSampleRequest)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSourceSampleRequestDeferral GetDeferral()
@@ -45,8 +54,6 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaStreamSourceSampleRequestDeferral MediaStreamSourceSampleRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceSampleRequestDeferral%20MediaStreamSourceSampleRequest.GetDeferral%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Sample.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Sample.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportSampleProgress(uint progress)
@@ -54,5 +61,9 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceSampleRequest", "void MediaStreamSourceSampleRequest.ReportSampleProgress(uint progress)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Sample.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Sample.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.StreamDescriptor.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

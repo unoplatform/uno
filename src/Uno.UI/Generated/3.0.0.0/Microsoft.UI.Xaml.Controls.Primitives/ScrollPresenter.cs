@@ -8,41 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ScrollPresenter : global::Microsoft.UI.Xaml.FrameworkElement, global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider
 	{
-		// Skipping already declared property CurrentAnchor
-		// Skipping already declared property IgnoredInputKinds
-		// Skipping already declared property HorizontalAnchorRatio
-		// Skipping already declared property MaxZoomFactor
-		// Skipping already declared property HorizontalScrollRailMode
-		// Skipping already declared property HorizontalScrollMode
-		// Skipping already declared property ContentOrientation
-		// Skipping already declared property Content
-		// Skipping already declared property HorizontalScrollController
-		// Skipping already declared property HorizontalScrollChainMode
-		// Skipping already declared property MinZoomFactor
-		// Skipping already declared property Background
-		// Skipping already declared property ZoomMode
-		// Skipping already declared property ZoomChainMode
-		// Skipping already declared property VerticalScrollRailMode
-		// Skipping already declared property VerticalScrollMode
-		// Skipping already declared property VerticalScrollController
-		// Skipping already declared property VerticalScrollChainMode
-		// Skipping already declared property VerticalAnchorRatio
-		// Skipping already declared property ComputedHorizontalScrollMode
-		// Skipping already declared property ComputedVerticalScrollMode
-		// Skipping already declared property ExpressionAnimationSources
-		// Skipping already declared property ExtentHeight
-		// Skipping already declared property ExtentWidth
-		// Skipping already declared property HorizontalOffset
-		// Skipping already declared property HorizontalSnapPoints
-		// Skipping already declared property ScrollableHeight
-		// Skipping already declared property ScrollableWidth
-		// Skipping already declared property State
-		// Skipping already declared property VerticalOffset
-		// Skipping already declared property VerticalSnapPoints
-		// Skipping already declared property ViewportHeight
-		// Skipping already declared property ViewportWidth
-		// Skipping already declared property ZoomFactor
-		// Skipping already declared property ZoomSnapPoints
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property ComputedHorizontalScrollModeProperty
 		// Skipping already declared property ComputedVerticalScrollModeProperty
@@ -61,60 +26,72 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalScrollRailModeProperty
 		// Skipping already declared property ZoomChainModeProperty
 		// Skipping already declared property ZoomModeProperty
+		// Skipping already declared property Background
+		// Skipping already declared property ComputedHorizontalScrollMode
+		// Skipping already declared property ComputedVerticalScrollMode
+		// Skipping already declared property Content
+		// Skipping already declared property ContentOrientation
+		// Skipping already declared property CurrentAnchor
+		// Skipping already declared property ExpressionAnimationSources
+		// Skipping already declared property ExtentHeight
+		// Skipping already declared property ExtentWidth
+		// Skipping already declared property HorizontalAnchorRatio
+		// Skipping already declared property HorizontalOffset
+		// Skipping already declared property HorizontalScrollChainMode
+		// Skipping already declared property HorizontalScrollController
+		// Skipping already declared property HorizontalScrollMode
+		// Skipping already declared property HorizontalScrollRailMode
+		// Skipping already declared property HorizontalSnapPoints
+		// Skipping already declared property IgnoredInputKinds
+		// Skipping already declared property MaxZoomFactor
+		// Skipping already declared property MinZoomFactor
+		// Skipping already declared property ScrollableHeight
+		// Skipping already declared property ScrollableWidth
+		// Skipping already declared property State
+		// Skipping already declared property VerticalAnchorRatio
+		// Skipping already declared property VerticalOffset
+		// Skipping already declared property VerticalScrollChainMode
+		// Skipping already declared property VerticalScrollController
+		// Skipping already declared property VerticalScrollMode
+		// Skipping already declared property VerticalScrollRailMode
+		// Skipping already declared property VerticalSnapPoints
+		// Skipping already declared property ViewportHeight
+		// Skipping already declared property ViewportWidth
+		// Skipping already declared property ZoomChainMode
+		// Skipping already declared property ZoomFactor
+		// Skipping already declared property ZoomMode
+		// Skipping already declared property ZoomSnapPoints
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Background.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Background.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Content.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExpressionAnimationSources.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomFactor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ViewportWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ViewportHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollableWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollableHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentOrientation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentOrientation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollChainMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollChainMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollChainMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollChainMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollRailMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollRailMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollRailMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollRailMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedHorizontalScrollMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedVerticalScrollMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomChainMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomChainMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.IgnoredInputKinds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.IgnoredInputKinds.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MinZoomFactor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MinZoomFactor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MaxZoomFactor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MaxZoomFactor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.State.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollController.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollController.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollController.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollController.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalAnchorRatio.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalAnchorRatio.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalAnchorRatio.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalAnchorRatio.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalSnapPoints.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalSnapPoints.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomSnapPoints.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BackgroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedHorizontalScrollModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedVerticalScrollModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentOrientationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalAnchorRatioProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollChainModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollRailModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.IgnoredInputKindsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MaxZoomFactorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MinZoomFactorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalAnchorRatioProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollChainModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollRailModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomChainModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollPresenter(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter, Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter, Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Equals(Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollPresenter(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollTo(double, double)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollTo(double, double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollBy(double, double)
@@ -125,45 +102,81 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomBy(float, System.Numerics.Vector2?)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomBy(float, System.Numerics.Vector2?, Microsoft.UI.Xaml.Controls.ScrollingZoomOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.AddZoomVelocity(float, System.Numerics.Vector2?, float?)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.AnchorRequested.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.AnchorRequested.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BringingIntoView.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BringingIntoView.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollAnimationStarting.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollAnimationStarting.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollCompleted.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollCompleted.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.StateChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.StateChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ViewChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ViewChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollAnimationStarting.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollAnimationStarting.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomAnimationStarting.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomAnimationStarting.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollCompleted.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollCompleted.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomCompleted.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomCompleted.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BringingIntoView.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BringingIntoView.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.AnchorRequested.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.AnchorRequested.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.CurrentAnchor.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.RegisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.UnregisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BackgroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentOrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollChainModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollChainModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollRailModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollRailModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedHorizontalScrollModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedVerticalScrollModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomChainModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.IgnoredInputKindsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MinZoomFactorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MaxZoomFactorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalAnchorRatioProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalAnchorRatioProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Background.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Background.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedHorizontalScrollMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ComputedVerticalScrollMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Content.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.Content.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentOrientation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ContentOrientation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.CurrentAnchor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExpressionAnimationSources.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalAnchorRatio.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalAnchorRatio.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollChainMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollChainMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollController.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollController.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollRailMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalScrollRailMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.HorizontalSnapPoints.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.IgnoredInputKinds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.IgnoredInputKinds.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MaxZoomFactor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MaxZoomFactor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MinZoomFactor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.MinZoomFactor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollableHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollableWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.State.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalAnchorRatio.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalAnchorRatio.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollChainMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollChainMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollController.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollController.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollRailMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollRailMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalSnapPoints.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ViewportHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ViewportWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomChainMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomChainMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomFactor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomSnapPoints.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.AnchorRequested
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BringingIntoView
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentChanged

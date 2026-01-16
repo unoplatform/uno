@@ -10,8 +10,19 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Size
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.operator ==(Microsoft.UI.Xaml.WindowSizeChangedEventArgs, Microsoft.UI.Xaml.WindowSizeChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.operator !=(Microsoft.UI.Xaml.WindowSizeChangedEventArgs, Microsoft.UI.Xaml.WindowSizeChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.Equals(Microsoft.UI.Xaml.WindowSizeChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.Size.get
+		// Forced skipping of method Microsoft.UI.Xaml.WindowSizeChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

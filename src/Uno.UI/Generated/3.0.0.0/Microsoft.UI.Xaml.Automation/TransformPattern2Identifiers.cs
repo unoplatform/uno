@@ -12,9 +12,21 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property MaxZoomProperty
 		// Skipping already declared property MinZoomProperty
 		// Skipping already declared property ZoomLevelProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.CanZoomProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.ZoomLevelProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.MaxZoomProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.MinZoomProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.ZoomLevelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.operator ==(Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers, Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.operator !=(Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers, Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.Equals(Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

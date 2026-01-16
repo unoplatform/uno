@@ -8,5 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class PathSegment : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.PathSegment(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.operator ==(Microsoft.UI.Xaml.Media.PathSegment, Microsoft.UI.Xaml.Media.PathSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.operator !=(Microsoft.UI.Xaml.Media.PathSegment, Microsoft.UI.Xaml.Media.PathSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.Equals(Microsoft.UI.Xaml.Media.PathSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.PathSegment(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

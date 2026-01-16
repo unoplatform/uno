@@ -9,9 +9,21 @@ namespace Microsoft.UI.Xaml
 	public partial class DependencyProperty
 	{
 		// Skipping already declared property UnsetValue
-		// Skipping already declared method Microsoft.UI.Xaml.DependencyProperty.GetMetadata(System.Type)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.UnsetValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyProperty.Register(string, System.Type, System.Type, Microsoft.UI.Xaml.PropertyMetadata)
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(string, System.Type, System.Type, Microsoft.UI.Xaml.PropertyMetadata)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.UnsetValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.operator ==(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.operator !=(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.Equals(Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyProperty.GetMetadata(System.Type)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

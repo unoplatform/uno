@@ -53,10 +53,16 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerCertificate.get
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity.get
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrors.get
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.operator ==(Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs, Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs)
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.operator !=(Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs, Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs)
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.Equals(Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs)
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reject()
@@ -71,5 +77,10 @@ namespace Windows.Networking.Sockets
 			throw new global::System.NotImplementedException("The member Deferral WebSocketServerCustomValidationRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20WebSocketServerCustomValidationRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerCertificate.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrors.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates.get
+		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

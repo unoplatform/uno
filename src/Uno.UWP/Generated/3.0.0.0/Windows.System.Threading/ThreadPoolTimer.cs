@@ -10,12 +10,24 @@ namespace Windows.System.Threading
 	{
 		// Skipping already declared property Delay
 		// Skipping already declared property Period
-		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.Period.get
-		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.Delay.get
-		// Skipping already declared method Windows.System.Threading.ThreadPoolTimer.Cancel()
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.As<I>()
 		// Skipping already declared method Windows.System.Threading.ThreadPoolTimer.CreatePeriodicTimer(Windows.System.Threading.TimerElapsedHandler, System.TimeSpan)
 		// Skipping already declared method Windows.System.Threading.ThreadPoolTimer.CreateTimer(Windows.System.Threading.TimerElapsedHandler, System.TimeSpan)
 		// Skipping already declared method Windows.System.Threading.ThreadPoolTimer.CreatePeriodicTimer(Windows.System.Threading.TimerElapsedHandler, System.TimeSpan, Windows.System.Threading.TimerDestroyedHandler)
 		// Skipping already declared method Windows.System.Threading.ThreadPoolTimer.CreateTimer(Windows.System.Threading.TimerElapsedHandler, System.TimeSpan, Windows.System.Threading.TimerDestroyedHandler)
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.FromAbi(nint)
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.operator ==(Windows.System.Threading.ThreadPoolTimer, Windows.System.Threading.ThreadPoolTimer)
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.operator !=(Windows.System.Threading.ThreadPoolTimer, Windows.System.Threading.ThreadPoolTimer)
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.Equals(Windows.System.Threading.ThreadPoolTimer)
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.Equals(object)
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.GetHashCode()
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Windows.System.Threading.ThreadPoolTimer.Cancel()
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.Delay.get
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.Period.get
+		// Forced skipping of method Windows.System.Threading.ThreadPoolTimer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

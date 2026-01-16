@@ -3,14 +3,38 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ComboBoxItemDataAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	{
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ComboBoxItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ComboBoxItemDataAutomationPeer(object item, global::Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer parent) : base(item, parent)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer", "ComboBoxItemDataAutomationPeer.ComboBoxItemDataAutomationPeer(object item, ComboBoxAutomationPeer parent)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ComboBoxItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ScrollIntoView()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ComboBoxItemDataAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ComboBoxItemDataAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void ScrollIntoView()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer", "void ComboBoxItemDataAutomationPeer.ScrollIntoView()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	}
 }

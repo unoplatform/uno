@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkTemplate.FrameworkTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.FrameworkTemplate()
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.FrameworkTemplate(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.operator ==(Microsoft.UI.Xaml.FrameworkTemplate, Microsoft.UI.Xaml.FrameworkTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.operator !=(Microsoft.UI.Xaml.FrameworkTemplate, Microsoft.UI.Xaml.FrameworkTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.Equals(Microsoft.UI.Xaml.FrameworkTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.FrameworkTemplate(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

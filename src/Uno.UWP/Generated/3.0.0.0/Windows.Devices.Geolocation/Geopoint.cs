@@ -8,7 +8,6 @@ namespace Windows.Devices.Geolocation
 #endif
 	public partial class Geopoint : global::Windows.Devices.Geolocation.IGeoshape
 	{
-		// Skipping already declared property Position
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Geolocation.AltitudeReferenceSystem AltitudeReferenceSystem
@@ -20,6 +19,7 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Skipping already declared property GeoshapeType
+		// Skipping already declared property Position
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint SpatialReferenceId
@@ -48,10 +48,21 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Position.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.GeoshapeType.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.SpatialReferenceId.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.operator ==(Windows.Devices.Geolocation.Geopoint, Windows.Devices.Geolocation.Geopoint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.operator !=(Windows.Devices.Geolocation.Geopoint, Windows.Devices.Geolocation.Geopoint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Equals(Windows.Devices.Geolocation.Geopoint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.AltitudeReferenceSystem.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.GeoshapeType.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Position.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.SpatialReferenceId.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Geolocation.IGeoshape
 	}
 }

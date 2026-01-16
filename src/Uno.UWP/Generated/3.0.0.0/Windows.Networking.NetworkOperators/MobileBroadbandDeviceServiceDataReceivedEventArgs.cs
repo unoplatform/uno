@@ -23,6 +23,17 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs, Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs, Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.Equals(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

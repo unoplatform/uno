@@ -13,6 +13,16 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.operator ==(Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest, Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.operator !=(Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest, Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.Equals(Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
@@ -41,5 +51,6 @@ namespace Windows.Devices.PointOfService.Provider
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync(int reason, string failedReasonDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync%28int%20reason%2C%20string%20failedReasonDescription%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

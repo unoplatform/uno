@@ -43,8 +43,19 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.BytesSent.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.operator ==(Windows.Networking.Connectivity.ProviderNetworkUsage, Windows.Networking.Connectivity.ProviderNetworkUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.operator !=(Windows.Networking.Connectivity.ProviderNetworkUsage, Windows.Networking.Connectivity.ProviderNetworkUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.Equals(Windows.Networking.Connectivity.ProviderNetworkUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.BytesReceived.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.BytesSent.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.ProviderId.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

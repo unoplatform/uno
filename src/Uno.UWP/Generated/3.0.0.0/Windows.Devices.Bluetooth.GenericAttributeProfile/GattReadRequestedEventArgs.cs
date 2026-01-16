@@ -23,7 +23,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.Session.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs, Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs, Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -38,5 +47,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattReadRequest> GattReadRequestedEventArgs.GetRequestAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattReadRequest%3E%20GattReadRequestedEventArgs.GetRequestAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.Session.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

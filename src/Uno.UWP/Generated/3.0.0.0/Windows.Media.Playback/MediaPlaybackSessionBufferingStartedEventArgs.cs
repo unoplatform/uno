@@ -23,6 +23,17 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.operator ==(Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs, Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.operator !=(Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs, Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.Equals(Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.IsPlaybackInterruption.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

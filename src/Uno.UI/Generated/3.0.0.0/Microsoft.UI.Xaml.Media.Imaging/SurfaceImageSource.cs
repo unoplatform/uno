@@ -24,5 +24,17 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.SurfaceImageSource(int, int, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.SurfaceImageSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.operator ==(Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource, Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.operator !=(Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource, Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.Equals(Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.SurfaceImageSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

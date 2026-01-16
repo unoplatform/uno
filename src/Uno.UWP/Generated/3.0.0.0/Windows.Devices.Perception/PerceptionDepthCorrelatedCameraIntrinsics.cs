@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -14,6 +13,16 @@ namespace Windows.Devices.Perception
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.operator ==(Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics, Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.operator !=(Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics, Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.Equals(Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3 UnprojectPixelAtCorrelatedDepth(global::Windows.Foundation.Point pixelCoordinate, global::Windows.Devices.Perception.PerceptionDepthFrame depthFrame)
@@ -42,5 +51,6 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member IAsyncAction PerceptionDepthCorrelatedCameraIntrinsics.UnprojectAllPixelsAtCorrelatedDepthAsync(PerceptionDepthFrame depthFrame, Vector3[] results) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PerceptionDepthCorrelatedCameraIntrinsics.UnprojectAllPixelsAtCorrelatedDepthAsync%28PerceptionDepthFrame%20depthFrame%2C%20Vector3%5B%5D%20results%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

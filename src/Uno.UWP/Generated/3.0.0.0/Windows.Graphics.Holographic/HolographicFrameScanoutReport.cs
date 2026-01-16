@@ -63,10 +63,21 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.RenderingReport.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.operator ==(Windows.Graphics.Holographic.HolographicFrameScanoutReport, Windows.Graphics.Holographic.HolographicFrameScanoutReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.operator !=(Windows.Graphics.Holographic.HolographicFrameScanoutReport, Windows.Graphics.Holographic.HolographicFrameScanoutReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.Equals(Windows.Graphics.Holographic.HolographicFrameScanoutReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.MissedScanoutCount.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.RenderingReport.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeLatchTime.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeScanoutStartTime.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativePhotonTime.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeScanoutStartTime.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

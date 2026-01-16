@@ -33,7 +33,18 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.Keyboard.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.operator ==(Windows.Media.Miracast.MiracastReceiverInputDevices, Windows.Media.Miracast.MiracastReceiverInputDevices)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.operator !=(Windows.Media.Miracast.MiracastReceiverInputDevices, Windows.Media.Miracast.MiracastReceiverInputDevices)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.Equals(Windows.Media.Miracast.MiracastReceiverInputDevices)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.GameController.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.Keyboard.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

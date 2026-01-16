@@ -11,6 +11,17 @@ namespace Microsoft.UI.Xaml.Hosting
 		// Skipping already declared property WasFocusMoved
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.XamlSourceFocusNavigationResult(bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.XamlSourceFocusNavigationResult(bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.operator ==(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult, Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.operator !=(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult, Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.Equals(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.WasFocusMoved.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

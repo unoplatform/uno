@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class VisualTransition : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property To
-		// Skipping already declared property Storyboard
+		// Skipping already declared property From
+		// Skipping already declared property GeneratedDuration
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase GeneratedEasingFunction
@@ -24,19 +24,31 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Skipping already declared property GeneratedDuration
-		// Skipping already declared property From
+		// Skipping already declared property Storyboard
+		// Skipping already declared property To
 		// Skipping already declared method Microsoft.UI.Xaml.VisualTransition.VisualTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.VisualTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.VisualTransition(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.operator ==(Microsoft.UI.Xaml.VisualTransition, Microsoft.UI.Xaml.VisualTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.operator !=(Microsoft.UI.Xaml.VisualTransition, Microsoft.UI.Xaml.VisualTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.Equals(Microsoft.UI.Xaml.VisualTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.VisualTransition(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.From.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.GeneratedDuration.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.GeneratedDuration.set
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.GeneratedEasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.GeneratedEasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.To.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.From.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.Storyboard.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.Storyboard.set
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.To.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.To.set
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

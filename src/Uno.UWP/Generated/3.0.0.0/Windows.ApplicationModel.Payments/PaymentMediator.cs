@@ -16,6 +16,16 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.PaymentMediator()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.operator ==(Windows.ApplicationModel.Payments.PaymentMediator, Windows.ApplicationModel.Payments.PaymentMediator)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.operator !=(Windows.ApplicationModel.Payments.PaymentMediator, Windows.ApplicationModel.Payments.PaymentMediator)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.Equals(Windows.ApplicationModel.Payments.PaymentMediator)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetSupportedMethodIdsAsync()
@@ -44,5 +54,6 @@ namespace Windows.ApplicationModel.Payments
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentCanMakePaymentResult> PaymentMediator.CanMakePaymentAsync(PaymentRequest paymentRequest) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentCanMakePaymentResult%3E%20PaymentMediator.CanMakePaymentAsync%28PaymentRequest%20paymentRequest%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

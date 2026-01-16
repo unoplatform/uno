@@ -13,6 +13,16 @@ namespace Windows.Networking.NetworkOperators
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession, Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession, Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.Equals(Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult> SendQueryCommandAsync(uint commandId, global::Windows.Storage.Streams.IBuffer data)
@@ -34,5 +44,6 @@ namespace Windows.Networking.NetworkOperators
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "void MobileBroadbandDeviceServiceCommandSession.CloseSession()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

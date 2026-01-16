@@ -8,7 +8,18 @@ namespace Windows.ApplicationModel
 #endif
 	public partial class EnteredBackgroundEventArgs : global::Windows.ApplicationModel.IEnteredBackgroundEventArgs
 	{
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.operator ==(Windows.ApplicationModel.EnteredBackgroundEventArgs, Windows.ApplicationModel.EnteredBackgroundEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.operator !=(Windows.ApplicationModel.EnteredBackgroundEventArgs, Windows.ApplicationModel.EnteredBackgroundEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.Equals(Windows.ApplicationModel.EnteredBackgroundEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.ApplicationModel.EnteredBackgroundEventArgs.GetDeferral()
+		// Forced skipping of method Windows.ApplicationModel.EnteredBackgroundEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.IEnteredBackgroundEventArgs
 	}
 }

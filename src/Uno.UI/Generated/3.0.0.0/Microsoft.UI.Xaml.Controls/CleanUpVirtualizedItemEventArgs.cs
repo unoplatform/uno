@@ -47,9 +47,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.UIElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.operator ==(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs, Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.operator !=(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs, Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Equals(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.UIElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -26,7 +26,16 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.SelectableWordsSegmenter(string)
-		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.ResolvedLanguage.get
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.operator ==(Windows.Data.Text.SelectableWordsSegmenter, Windows.Data.Text.SelectableWordsSegmenter)
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.operator !=(Windows.Data.Text.SelectableWordsSegmenter, Windows.Data.Text.SelectableWordsSegmenter)
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.Equals(Windows.Data.Text.SelectableWordsSegmenter)
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.Equals(object)
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.GetHashCode()
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Text.SelectableWordSegment GetTokenAt(string text, uint startIndex)
@@ -48,5 +57,7 @@ namespace Windows.Data.Text
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.SelectableWordsSegmenter", "void SelectableWordsSegmenter.Tokenize(string text, uint startIndex, SelectableWordSegmentsTokenizingHandler handler)");
 		}
 #endif
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.ResolvedLanguage.get
+		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

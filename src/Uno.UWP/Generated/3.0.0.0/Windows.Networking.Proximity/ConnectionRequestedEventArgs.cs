@@ -23,6 +23,17 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.operator ==(Windows.Networking.Proximity.ConnectionRequestedEventArgs, Windows.Networking.Proximity.ConnectionRequestedEventArgs)
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.operator !=(Windows.Networking.Proximity.ConnectionRequestedEventArgs, Windows.Networking.Proximity.ConnectionRequestedEventArgs)
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.Equals(Windows.Networking.Proximity.ConnectionRequestedEventArgs)
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.PeerInformation.get
+		// Forced skipping of method Windows.Networking.Proximity.ConnectionRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

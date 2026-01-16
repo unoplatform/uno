@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.MediaTransportControlsAutomationPeer(Microsoft.UI.Xaml.Controls.MediaTransportControls)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.MediaTransportControlsAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.MediaTransportControlsAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaTransportControlsAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

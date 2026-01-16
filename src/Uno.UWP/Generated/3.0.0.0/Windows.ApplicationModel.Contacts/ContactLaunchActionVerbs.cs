@@ -58,9 +58,10 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs.Call.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs.Message.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs.Map.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs.Message.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs.Post.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs.VideoCall.get
 	}

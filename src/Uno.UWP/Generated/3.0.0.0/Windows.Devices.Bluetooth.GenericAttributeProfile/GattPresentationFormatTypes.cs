@@ -278,32 +278,33 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Boolean.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Bit2.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Boolean.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.DUInt16.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Float.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Float32.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Float64.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Nibble.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt8.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt12.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt16.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt24.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt32.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt48.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt64.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt128.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt8.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SFloat.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt12.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt128.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt16.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt24.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt32.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt48.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt64.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt128.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Float32.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Float64.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SFloat.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Float.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.DUInt16.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Utf8.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Utf16.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.SInt8.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Struct.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt12.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt128.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt16.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt24.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt32.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt48.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt64.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.UInt8.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Utf16.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Utf8.get
 	}
 }

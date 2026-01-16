@@ -27,7 +27,18 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.operator ==(Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties, Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties)
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.operator !=(Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties, Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties)
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.Equals(Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties)
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.Opacity.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.Opacity.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,6 +11,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsIntermediate
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.ScrollViewerViewChangedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.ScrollViewerViewChangedEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs, Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs, Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.IsIntermediate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -468,6 +468,8 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.As<I>()
+		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.AllEccCurveNames.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.BrainpoolP160r1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.BrainpoolP160t1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.BrainpoolP192r1.get
@@ -503,9 +505,9 @@ namespace Windows.Security.Cryptography.Core
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.SecP256r1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.SecP384r1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.SecP521r1.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.Wtls12.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.Wtls7.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.Wtls9.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.Wtls12.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.X962P192v1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.X962P192v2.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.X962P192v3.get
@@ -513,6 +515,5 @@ namespace Windows.Security.Cryptography.Core
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.X962P239v2.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.X962P239v3.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.X962P256v1.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.AllEccCurveNames.get
 	}
 }

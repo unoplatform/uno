@@ -33,7 +33,18 @@ namespace Windows.Globalization.Collation
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.operator ==(Windows.Globalization.Collation.CharacterGrouping, Windows.Globalization.Collation.CharacterGrouping)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.operator !=(Windows.Globalization.Collation.CharacterGrouping, Windows.Globalization.Collation.CharacterGrouping)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.Equals(Windows.Globalization.Collation.CharacterGrouping)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.Equals(object)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.GetHashCode()
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.First.get
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.Label.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGrouping.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

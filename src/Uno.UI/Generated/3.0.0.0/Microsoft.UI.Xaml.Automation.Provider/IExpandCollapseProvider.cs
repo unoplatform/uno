@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	public partial interface IExpandCollapseProvider
 	{
 		// Skipping already declared property ExpandCollapseState
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider.ExpandCollapseState.get
 	}
 }

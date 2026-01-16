@@ -8,13 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SwipeItem : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Text
-		// Skipping already declared property IconSource
-		// Skipping already declared property Foreground
-		// Skipping already declared property CommandParameter
-		// Skipping already declared property Command
-		// Skipping already declared property BehaviorOnInvoked
-		// Skipping already declared property Background
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property BehaviorOnInvokedProperty
 		// Skipping already declared property CommandParameterProperty
@@ -22,31 +15,51 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ForegroundProperty
 		// Skipping already declared property IconSourceProperty
 		// Skipping already declared property TextProperty
+		// Skipping already declared property Background
+		// Skipping already declared property BehaviorOnInvoked
+		// Skipping already declared property Command
+		// Skipping already declared property CommandParameter
+		// Skipping already declared property Foreground
+		// Skipping already declared property IconSource
+		// Skipping already declared property Text
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BackgroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BehaviorOnInvokedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.CommandParameterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.CommandProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.ForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.TextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.operator ==(Microsoft.UI.Xaml.Controls.SwipeItem, Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.operator !=(Microsoft.UI.Xaml.Controls.SwipeItem, Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Equals(Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Invoked.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Invoked.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Background.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Foreground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Foreground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BehaviorOnInvoked.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BehaviorOnInvoked.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Command.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Command.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.CommandParameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.CommandParameter.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BehaviorOnInvoked.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BehaviorOnInvoked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Invoked.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Invoked.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BackgroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.ForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.CommandProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.CommandParameterProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BehaviorOnInvokedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Foreground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Foreground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SwipeItem.Invoked
 	}
 }

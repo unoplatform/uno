@@ -23,7 +23,16 @@ namespace Windows.ApplicationModel.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Size.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.operator ==(Windows.ApplicationModel.Search.SearchSuggestionCollection, Windows.ApplicationModel.Search.SearchSuggestionCollection)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.operator !=(Windows.ApplicationModel.Search.SearchSuggestionCollection, Windows.ApplicationModel.Search.SearchSuggestionCollection)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Equals(Windows.ApplicationModel.Search.SearchSuggestionCollection)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AppendQuerySuggestion(string text)
@@ -52,5 +61,7 @@ namespace Windows.ApplicationModel.Search
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchSuggestionCollection", "void SearchSuggestionCollection.AppendSearchSeparator(string label)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Size.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,9 +23,19 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.operator ==(Microsoft.UI.Composition.SpriteVisual, Microsoft.UI.Composition.SpriteVisual)
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.operator !=(Microsoft.UI.Composition.SpriteVisual, Microsoft.UI.Composition.SpriteVisual)
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Equals(Microsoft.UI.Composition.SpriteVisual)
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.get
-		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.set
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.set
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.get
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.set
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

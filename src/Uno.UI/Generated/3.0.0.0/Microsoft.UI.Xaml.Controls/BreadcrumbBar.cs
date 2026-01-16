@@ -8,20 +8,33 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class BreadcrumbBar : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property ItemsSource
-		// Skipping already declared property ItemTemplate
 		// Skipping already declared property ItemTemplateProperty
 		// Skipping already declared property ItemsSourceProperty
+		// Skipping already declared property ItemTemplate
+		// Skipping already declared property ItemsSource
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.BreadcrumbBar.BreadcrumbBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.BreadcrumbBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemsSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemsSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemsSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.BreadcrumbBar(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.operator ==(Microsoft.UI.Xaml.Controls.BreadcrumbBar, Microsoft.UI.Xaml.Controls.BreadcrumbBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.operator !=(Microsoft.UI.Xaml.Controls.BreadcrumbBar, Microsoft.UI.Xaml.Controls.BreadcrumbBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.Equals(Microsoft.UI.Xaml.Controls.BreadcrumbBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.BreadcrumbBar(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemClicked.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemClicked.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemsSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemsSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemsSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.BreadcrumbBar.ItemClicked
 	}
 }

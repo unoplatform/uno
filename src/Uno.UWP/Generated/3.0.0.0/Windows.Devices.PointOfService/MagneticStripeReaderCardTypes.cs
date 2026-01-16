@@ -48,9 +48,10 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCardTypes.Unknown.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCardTypes.Bank.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCardTypes.As<I>()
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCardTypes.Aamva.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCardTypes.Bank.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCardTypes.ExtendedBase.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCardTypes.Unknown.get
 	}
 }

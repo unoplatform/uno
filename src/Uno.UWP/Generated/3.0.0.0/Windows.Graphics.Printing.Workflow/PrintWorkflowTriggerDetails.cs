@@ -23,6 +23,17 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails, Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails, Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.PrintWorkflowSession.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

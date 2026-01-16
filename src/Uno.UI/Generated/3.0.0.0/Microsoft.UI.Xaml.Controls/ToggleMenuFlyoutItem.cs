@@ -8,12 +8,25 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ToggleMenuFlyoutItem : global::Microsoft.UI.Xaml.Controls.MenuFlyoutItem
 	{
-		// Skipping already declared property IsChecked
 		// Skipping already declared property IsCheckedProperty
+		// Skipping already declared property IsChecked
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.ToggleMenuFlyoutItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.ToggleMenuFlyoutItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsCheckedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.ToggleMenuFlyoutItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.operator ==(Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem, Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.operator !=(Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem, Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.Equals(Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.ToggleMenuFlyoutItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsChecked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsChecked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsCheckedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

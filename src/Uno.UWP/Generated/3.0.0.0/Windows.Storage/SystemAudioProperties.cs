@@ -23,6 +23,17 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.operator ==(Windows.Storage.SystemAudioProperties, Windows.Storage.SystemAudioProperties)
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.operator !=(Windows.Storage.SystemAudioProperties, Windows.Storage.SystemAudioProperties)
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.Equals(Windows.Storage.SystemAudioProperties)
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.Equals(object)
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.GetHashCode()
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.SystemAudioProperties.EncodingBitrate.get
+		// Forced skipping of method Windows.Storage.SystemAudioProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

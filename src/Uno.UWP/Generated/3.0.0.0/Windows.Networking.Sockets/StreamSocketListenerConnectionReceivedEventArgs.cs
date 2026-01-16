@@ -23,6 +23,17 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.operator ==(Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs, Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.operator !=(Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs, Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.Equals(Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.Socket.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

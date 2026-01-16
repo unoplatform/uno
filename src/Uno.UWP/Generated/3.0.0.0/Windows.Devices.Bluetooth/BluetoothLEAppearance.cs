@@ -11,10 +11,22 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared property Category
 		// Skipping already declared property RawValue
 		// Skipping already declared property SubCategory
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.RawValue.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.Category.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.SubCategory.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.As<I>()
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothLEAppearance.FromRawValue(ushort)
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothLEAppearance.FromParts(ushort, ushort)
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.operator ==(Windows.Devices.Bluetooth.BluetoothLEAppearance, Windows.Devices.Bluetooth.BluetoothLEAppearance)
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.operator !=(Windows.Devices.Bluetooth.BluetoothLEAppearance, Windows.Devices.Bluetooth.BluetoothLEAppearance)
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.Equals(Windows.Devices.Bluetooth.BluetoothLEAppearance)
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.Category.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.RawValue.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.SubCategory.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

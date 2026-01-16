@@ -23,7 +23,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.NetworkAccountId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.operator ==(Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails, Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails)
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.operator !=(Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails, Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails)
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.Equals(Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails)
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AllowTethering()
@@ -38,5 +47,7 @@ namespace Windows.Networking.NetworkOperators
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails", "void TetheringEntitlementCheckTriggerDetails.DenyTethering(string entitlementFailureReason)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.NetworkAccountId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

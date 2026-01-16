@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class PowerEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Power
 		// Skipping already declared property PowerProperty
+		// Skipping already declared property Power
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.operator ==(Microsoft.UI.Xaml.Media.Animation.PowerEase, Microsoft.UI.Xaml.Media.Animation.PowerEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.operator !=(Microsoft.UI.Xaml.Media.Animation.PowerEase, Microsoft.UI.Xaml.Media.Animation.PowerEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.Equals(Microsoft.UI.Xaml.Media.Animation.PowerEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.Power.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.Power.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

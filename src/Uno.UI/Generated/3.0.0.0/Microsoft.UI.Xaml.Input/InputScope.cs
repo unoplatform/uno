@@ -11,6 +11,16 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Names
 		// Skipping already declared method Microsoft.UI.Xaml.Input.InputScope.InputScope()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.InputScope()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.operator ==(Microsoft.UI.Xaml.Input.InputScope, Microsoft.UI.Xaml.Input.InputScope)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.operator !=(Microsoft.UI.Xaml.Input.InputScope, Microsoft.UI.Xaml.Input.InputScope)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.Equals(Microsoft.UI.Xaml.Input.InputScope)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.Names.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

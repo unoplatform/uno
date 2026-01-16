@@ -8,6 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ContentDialogClosingDeferral
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.operator ==(Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral, Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.operator !=(Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral, Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.Equals(Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.Complete()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

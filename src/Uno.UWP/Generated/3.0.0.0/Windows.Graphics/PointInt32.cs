@@ -9,6 +9,13 @@ namespace Windows.Graphics
 	public partial struct PointInt32
 	{
 		// Forced skipping of method Windows.Graphics.PointInt32.PointInt32()
+		// Skipping already declared method Windows.Graphics.PointInt32.PointInt32(int, int)
+		// Forced skipping of method Windows.Graphics.PointInt32.PointInt32(int, int)
+		// Forced skipping of method Windows.Graphics.PointInt32.operator ==(Windows.Graphics.PointInt32, Windows.Graphics.PointInt32)
+		// Forced skipping of method Windows.Graphics.PointInt32.operator !=(Windows.Graphics.PointInt32, Windows.Graphics.PointInt32)
+		// Forced skipping of method Windows.Graphics.PointInt32.Equals(Windows.Graphics.PointInt32)
+		// Forced skipping of method Windows.Graphics.PointInt32.Equals(object)
+		// Forced skipping of method Windows.Graphics.PointInt32.GetHashCode()
 		// Skipping already declared field Windows.Graphics.PointInt32.X
 		// Skipping already declared field Windows.Graphics.PointInt32.Y
 	}

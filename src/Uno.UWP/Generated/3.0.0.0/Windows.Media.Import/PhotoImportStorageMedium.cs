@@ -83,13 +83,16 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.Name.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.Description.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.SerialNumber.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.StorageMediumType.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.SupportedAccessMode.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.CapacityInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.AvailableSpaceInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.operator ==(Windows.Media.Import.PhotoImportStorageMedium, Windows.Media.Import.PhotoImportStorageMedium)
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.operator !=(Windows.Media.Import.PhotoImportStorageMedium, Windows.Media.Import.PhotoImportStorageMedium)
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.Equals(Windows.Media.Import.PhotoImportStorageMedium)
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.Equals(object)
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.GetHashCode()
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Refresh()
@@ -97,5 +100,13 @@ namespace Windows.Media.Import
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportStorageMedium", "void PhotoImportStorageMedium.Refresh()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.AvailableSpaceInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.CapacityInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.Description.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.Name.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.SerialNumber.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.StorageMediumType.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.SupportedAccessMode.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

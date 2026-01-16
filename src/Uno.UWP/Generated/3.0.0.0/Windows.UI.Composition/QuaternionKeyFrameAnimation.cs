@@ -13,6 +13,14 @@ namespace Windows.UI.Composition
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.operator ==(Windows.UI.Composition.QuaternionKeyFrameAnimation, Windows.UI.Composition.QuaternionKeyFrameAnimation)
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.operator !=(Windows.UI.Composition.QuaternionKeyFrameAnimation, Windows.UI.Composition.QuaternionKeyFrameAnimation)
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.Equals(Windows.UI.Composition.QuaternionKeyFrameAnimation)
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Quaternion value)
@@ -27,5 +35,7 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.QuaternionKeyFrameAnimation", "void QuaternionKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Quaternion value, CompositionEasingFunction easingFunction)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.QuaternionKeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -18,6 +18,19 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.As<I>()
+		// Skipping already declared method Windows.System.UserProfile.UserProfilePersonalizationSettings.IsSupported()
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Current.get
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.FromAbi(nint)
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.operator ==(Windows.System.UserProfile.UserProfilePersonalizationSettings, Windows.System.UserProfile.UserProfilePersonalizationSettings)
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.operator !=(Windows.System.UserProfile.UserProfilePersonalizationSettings, Windows.System.UserProfile.UserProfilePersonalizationSettings)
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Equals(Windows.System.UserProfile.UserProfilePersonalizationSettings)
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Equals(object)
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.GetHashCode()
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TrySetLockScreenImageAsync(global::Windows.Storage.StorageFile imageFile)
@@ -32,7 +45,6 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> UserProfilePersonalizationSettings.TrySetWallpaperImageAsync(StorageFile imageFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20UserProfilePersonalizationSettings.TrySetWallpaperImageAsync%28StorageFile%20imageFile%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Current.get
-		// Skipping already declared method Windows.System.UserProfile.UserProfilePersonalizationSettings.IsSupported()
+		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

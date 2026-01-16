@@ -83,13 +83,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.IsConfirmationCodeRequired.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.Policy.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.Id.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.ProviderIcon.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.ProviderId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.ProviderName.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.State.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.operator ==(Windows.Networking.NetworkOperators.ESimProfileMetadata, Windows.Networking.NetworkOperators.ESimProfileMetadata)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.operator !=(Windows.Networking.NetworkOperators.ESimProfileMetadata, Windows.Networking.NetworkOperators.ESimProfileMetadata)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.Equals(Windows.Networking.NetworkOperators.ESimProfileMetadata)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> DenyInstallAsync()
@@ -120,6 +123,14 @@ namespace Windows.Networking.NetworkOperators
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.StateChanged.add
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.StateChanged.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.Id.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.IsConfirmationCodeRequired.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.Policy.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.ProviderIcon.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.ProviderId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.ProviderName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.State.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileMetadata.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.ESimProfileMetadata, object> StateChanged

@@ -9,6 +9,17 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class DataRequestedEventArgs
 	{
 		// Skipping already declared property Request
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.operator ==(Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs, Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.operator !=(Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs, Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.Equals(Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.Request.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

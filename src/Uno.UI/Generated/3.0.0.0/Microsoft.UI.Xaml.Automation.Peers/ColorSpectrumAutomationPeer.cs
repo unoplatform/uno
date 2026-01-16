@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.ColorSpectrumAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.ColorSpectrumAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.ColorSpectrumAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.ColorSpectrumAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorSpectrumAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

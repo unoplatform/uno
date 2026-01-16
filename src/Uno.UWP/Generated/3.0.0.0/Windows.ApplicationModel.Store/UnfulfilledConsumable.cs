@@ -43,8 +43,19 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.operator ==(Windows.ApplicationModel.Store.UnfulfilledConsumable, Windows.ApplicationModel.Store.UnfulfilledConsumable)
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.operator !=(Windows.ApplicationModel.Store.UnfulfilledConsumable, Windows.ApplicationModel.Store.UnfulfilledConsumable)
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.Equals(Windows.ApplicationModel.Store.UnfulfilledConsumable)
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.OfferId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.ProductId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.TransactionId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.OfferId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

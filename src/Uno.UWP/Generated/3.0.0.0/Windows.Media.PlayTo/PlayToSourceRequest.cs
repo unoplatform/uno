@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,7 +23,16 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.Deadline.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.operator ==(Windows.Media.PlayTo.PlayToSourceRequest, Windows.Media.PlayTo.PlayToSourceRequest)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.operator !=(Windows.Media.PlayTo.PlayToSourceRequest, Windows.Media.PlayTo.PlayToSourceRequest)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.Equals(Windows.Media.PlayTo.PlayToSourceRequest)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DisplayErrorString(string errorString)
@@ -46,5 +54,7 @@ namespace Windows.Media.PlayTo
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToSourceRequest", "void PlayToSourceRequest.SetSource(PlayToSource value)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.Deadline.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

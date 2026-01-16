@@ -27,8 +27,16 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.TargetFile.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.TargetFile.set
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.operator ==(Windows.Storage.Pickers.Provider.TargetFileRequest, Windows.Storage.Pickers.Provider.TargetFileRequest)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.operator !=(Windows.Storage.Pickers.Provider.TargetFileRequest, Windows.Storage.Pickers.Provider.TargetFileRequest)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.Equals(Windows.Storage.Pickers.Provider.TargetFileRequest)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.Provider.TargetFileRequestDeferral GetDeferral()
@@ -36,5 +44,8 @@ namespace Windows.Storage.Pickers.Provider
 			throw new global::System.NotImplementedException("The member TargetFileRequestDeferral TargetFileRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TargetFileRequestDeferral%20TargetFileRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.TargetFile.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.TargetFile.set
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

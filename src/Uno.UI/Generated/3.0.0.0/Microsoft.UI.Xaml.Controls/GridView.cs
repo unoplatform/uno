@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GridView.GridView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.GridView()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.GridView(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.operator ==(Microsoft.UI.Xaml.Controls.GridView, Microsoft.UI.Xaml.Controls.GridView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.operator !=(Microsoft.UI.Xaml.Controls.GridView, Microsoft.UI.Xaml.Controls.GridView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.Equals(Microsoft.UI.Xaml.Controls.GridView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.GridView(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

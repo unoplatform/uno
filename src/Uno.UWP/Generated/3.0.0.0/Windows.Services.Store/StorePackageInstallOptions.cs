@@ -30,7 +30,18 @@ namespace Windows.Services.Store
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.StorePackageInstallOptions()
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.operator ==(Windows.Services.Store.StorePackageInstallOptions, Windows.Services.Store.StorePackageInstallOptions)
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.operator !=(Windows.Services.Store.StorePackageInstallOptions, Windows.Services.Store.StorePackageInstallOptions)
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.Equals(Windows.Services.Store.StorePackageInstallOptions)
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.AllowForcedAppRestart.get
 		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.AllowForcedAppRestart.set
+		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,26 +8,36 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class LosingFocusEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property NewFocusedElement
-		// Skipping already declared property Handled
 		// Skipping already declared property Cancel
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property Direction
 		// Skipping already declared property FocusState
+		// Skipping already declared property Handled
 		// Skipping already declared property InputDevice
+		// Skipping already declared property NewFocusedElement
 		// Skipping already declared property OldFocusedElement
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.OldFocusedElement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.NewFocusedElement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.NewFocusedElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.FocusState.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Direction.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Handled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.InputDevice.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.operator ==(Microsoft.UI.Xaml.Input.LosingFocusEventArgs, Microsoft.UI.Xaml.Input.LosingFocusEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.operator !=(Microsoft.UI.Xaml.Input.LosingFocusEventArgs, Microsoft.UI.Xaml.Input.LosingFocusEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Equals(Microsoft.UI.Xaml.Input.LosingFocusEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.TryCancel()
+		// Skipping already declared method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.TrySetNewFocusedElement(Microsoft.UI.Xaml.DependencyObject)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.CorrelationId.get
-		// Skipping already declared method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.TryCancel()
-		// Skipping already declared method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.TrySetNewFocusedElement(Microsoft.UI.Xaml.DependencyObject)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Direction.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.FocusState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.InputDevice.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.NewFocusedElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.NewFocusedElement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.OldFocusedElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.LosingFocusEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -73,11 +73,22 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Min.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Max.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Step.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Default.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.operator ==(Windows.Media.Devices.MediaDeviceControlCapabilities, Windows.Media.Devices.MediaDeviceControlCapabilities)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.operator !=(Windows.Media.Devices.MediaDeviceControlCapabilities, Windows.Media.Devices.MediaDeviceControlCapabilities)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Equals(Windows.Media.Devices.MediaDeviceControlCapabilities)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.AutoModeSupported.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Default.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Min.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Supported.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

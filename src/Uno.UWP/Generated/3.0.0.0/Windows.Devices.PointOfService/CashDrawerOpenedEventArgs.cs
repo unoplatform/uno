@@ -23,7 +23,18 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.operator ==(Windows.Devices.PointOfService.CashDrawerOpenedEventArgs, Windows.Devices.PointOfService.CashDrawerOpenedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.operator !=(Windows.Devices.PointOfService.CashDrawerOpenedEventArgs, Windows.Devices.PointOfService.CashDrawerOpenedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.Equals(Windows.Devices.PointOfService.CashDrawerOpenedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.CashDrawer.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerOpenedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.PointOfService.ICashDrawerEventSourceEventArgs
 	}
 }

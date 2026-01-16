@@ -8,10 +8,20 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class ShapeVisual : global::Microsoft.UI.Composition.ContainerVisual
 	{
-		// Skipping already declared property ViewBox
 		// Skipping already declared property Shapes
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.set
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.get
+		// Skipping already declared property ViewBox
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.operator ==(Microsoft.UI.Composition.ShapeVisual, Microsoft.UI.Composition.ShapeVisual)
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.operator !=(Microsoft.UI.Composition.ShapeVisual, Microsoft.UI.Composition.ShapeVisual)
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.Equals(Microsoft.UI.Composition.ShapeVisual)
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.Shapes.get
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.get
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.set
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -30,7 +30,21 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.ScalarTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.ScalarTransition(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.operator ==(Microsoft.UI.Xaml.ScalarTransition, Microsoft.UI.Xaml.ScalarTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.operator !=(Microsoft.UI.Xaml.ScalarTransition, Microsoft.UI.Xaml.ScalarTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.Equals(Microsoft.UI.Xaml.ScalarTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.ScalarTransition(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.Duration.set
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

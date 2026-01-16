@@ -16,6 +16,17 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.ConversationalAgentTrigger()
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.operator ==(Windows.ApplicationModel.Background.ConversationalAgentTrigger, Windows.ApplicationModel.Background.ConversationalAgentTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.operator !=(Windows.ApplicationModel.Background.ConversationalAgentTrigger, Windows.ApplicationModel.Background.ConversationalAgentTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.Equals(Windows.ApplicationModel.Background.ConversationalAgentTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ConversationalAgentTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

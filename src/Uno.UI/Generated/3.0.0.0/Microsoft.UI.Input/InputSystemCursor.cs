@@ -9,7 +9,18 @@ namespace Microsoft.UI.Input
 	public partial class InputSystemCursor : global::Microsoft.UI.Input.InputCursor
 	{
 		// Skipping already declared property CursorShape
-		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.CursorShape.get
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.As<I>()
 		// Skipping already declared method Microsoft.UI.Input.InputSystemCursor.Create(Microsoft.UI.Input.InputSystemCursorShape)
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.operator ==(Microsoft.UI.Input.InputSystemCursor, Microsoft.UI.Input.InputSystemCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.operator !=(Microsoft.UI.Input.InputSystemCursor, Microsoft.UI.Input.InputSystemCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.Equals(Microsoft.UI.Input.InputSystemCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.CursorShape.get
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

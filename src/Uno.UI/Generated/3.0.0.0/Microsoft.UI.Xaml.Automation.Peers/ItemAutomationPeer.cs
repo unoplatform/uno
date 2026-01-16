@@ -3,18 +3,60 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	{
-		// Skipping already declared property Item
-		// Skipping already declared property ItemsControlAutomationPeer
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object Item
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ItemAutomationPeer.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ItemAutomationPeer.Item");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer ItemsControlAutomationPeer
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ItemsControlAutomationPeer ItemAutomationPeer.ItemsControlAutomationPeer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemsControlAutomationPeer%20ItemAutomationPeer.ItemsControlAutomationPeer");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ItemAutomationPeer(object item, global::Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer parent) : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer", "ItemAutomationPeer.ItemAutomationPeer(object item, ItemsControlAutomationPeer parent)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Realize()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer", "void ItemAutomationPeer.Realize()");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemsControlAutomationPeer.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Realize()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	}
 }

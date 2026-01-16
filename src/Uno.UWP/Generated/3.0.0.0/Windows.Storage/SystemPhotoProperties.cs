@@ -63,10 +63,21 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.operator ==(Windows.Storage.SystemPhotoProperties, Windows.Storage.SystemPhotoProperties)
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.operator !=(Windows.Storage.SystemPhotoProperties, Windows.Storage.SystemPhotoProperties)
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.Equals(Windows.Storage.SystemPhotoProperties)
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.Equals(object)
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.GetHashCode()
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.SystemPhotoProperties.CameraManufacturer.get
 		// Forced skipping of method Windows.Storage.SystemPhotoProperties.CameraModel.get
 		// Forced skipping of method Windows.Storage.SystemPhotoProperties.DateTaken.get
 		// Forced skipping of method Windows.Storage.SystemPhotoProperties.Orientation.get
 		// Forced skipping of method Windows.Storage.SystemPhotoProperties.PeopleNames.get
+		// Forced skipping of method Windows.Storage.SystemPhotoProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

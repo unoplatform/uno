@@ -46,8 +46,19 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.WebProviderError(uint, string)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.operator ==(Windows.Security.Authentication.Web.Core.WebProviderError, Windows.Security.Authentication.Web.Core.WebProviderError)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.operator !=(Windows.Security.Authentication.Web.Core.WebProviderError, Windows.Security.Authentication.Web.Core.WebProviderError)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.Equals(Windows.Security.Authentication.Web.Core.WebProviderError)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.ErrorCode.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.ErrorMessage.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.Properties.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

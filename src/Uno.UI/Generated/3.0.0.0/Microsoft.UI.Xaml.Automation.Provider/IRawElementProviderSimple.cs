@@ -8,5 +8,15 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 #endif
 	public partial class IRawElementProviderSimple : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.operator ==(Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple, Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.operator !=(Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple, Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.Equals(Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

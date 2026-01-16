@@ -13,5 +13,16 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.operator ==(Windows.Devices.Input.PenTailButtonClickedEventArgs, Windows.Devices.Input.PenTailButtonClickedEventArgs)
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.operator !=(Windows.Devices.Input.PenTailButtonClickedEventArgs, Windows.Devices.Input.PenTailButtonClickedEventArgs)
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.Equals(Windows.Devices.Input.PenTailButtonClickedEventArgs)
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Input.PenTailButtonClickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

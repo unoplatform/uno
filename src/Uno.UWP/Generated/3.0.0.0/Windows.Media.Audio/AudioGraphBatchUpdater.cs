@@ -13,6 +13,16 @@ namespace Windows.Media.Audio
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.operator ==(Windows.Media.Audio.AudioGraphBatchUpdater, Windows.Media.Audio.AudioGraphBatchUpdater)
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.operator !=(Windows.Media.Audio.AudioGraphBatchUpdater, Windows.Media.Audio.AudioGraphBatchUpdater)
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.Equals(Windows.Media.Audio.AudioGraphBatchUpdater)
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -20,6 +30,7 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioGraphBatchUpdater", "void AudioGraphBatchUpdater.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

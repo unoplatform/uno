@@ -8,11 +8,22 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class InertiaTranslationBehavior
 	{
-		// Skipping already declared property DesiredDisplacement
 		// Skipping already declared property DesiredDeceleration
+		// Skipping already declared property DesiredDisplacement
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.operator ==(Microsoft.UI.Xaml.Input.InertiaTranslationBehavior, Microsoft.UI.Xaml.Input.InertiaTranslationBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.operator !=(Microsoft.UI.Xaml.Input.InertiaTranslationBehavior, Microsoft.UI.Xaml.Input.InertiaTranslationBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.Equals(Microsoft.UI.Xaml.Input.InertiaTranslationBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.DesiredDeceleration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.DesiredDeceleration.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.DesiredDisplacement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.DesiredDisplacement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

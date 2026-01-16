@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.TimePickerAutomationPeer(Microsoft.UI.Xaml.Controls.TimePicker)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.TimePickerAutomationPeer(Microsoft.UI.Xaml.Controls.TimePicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.TimePickerAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.TimePickerAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

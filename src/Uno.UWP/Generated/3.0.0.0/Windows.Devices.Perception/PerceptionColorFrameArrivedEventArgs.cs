@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,7 +23,16 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.RelativeTime.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.operator ==(Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs, Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.operator !=(Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs, Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.Equals(Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionColorFrame TryOpenFrame()
@@ -32,5 +40,7 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionColorFrame%20PerceptionColorFrameArrivedEventArgs.TryOpenFrame%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.RelativeTime.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,29 +8,39 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class ManipulationInertiaStartingRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property TranslationBehavior
-		// Skipping already declared property RotationBehavior
-		// Skipping already declared property Handled
-		// Skipping already declared property ExpansionBehavior
 		// Skipping already declared property Container
 		// Skipping already declared property Cumulative
 		// Skipping already declared property Delta
+		// Skipping already declared property ExpansionBehavior
+		// Skipping already declared property Handled
 		// Skipping already declared property PointerDeviceType
+		// Skipping already declared property RotationBehavior
+		// Skipping already declared property TranslationBehavior
 		// Skipping already declared property Velocities
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ManipulationInertiaStartingRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ManipulationInertiaStartingRoutedEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Container.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Cumulative.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Delta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ExpansionBehavior.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ExpansionBehavior.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.RotationBehavior.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.RotationBehavior.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.TranslationBehavior.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.TranslationBehavior.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Handled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.PointerDeviceType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Delta.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Cumulative.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Velocities.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

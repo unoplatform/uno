@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.NumberBoxAutomationPeer(Microsoft.UI.Xaml.Controls.NumberBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.NumberBoxAutomationPeer(Microsoft.UI.Xaml.Controls.NumberBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.NumberBoxAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.NumberBoxAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

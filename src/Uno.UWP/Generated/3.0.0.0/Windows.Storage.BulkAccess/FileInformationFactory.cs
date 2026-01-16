@@ -40,6 +40,16 @@ namespace Windows.Storage.BulkAccess
 		}
 #endif
 		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.FileInformationFactory(Windows.Storage.Search.IStorageQueryResultBase, Windows.Storage.FileProperties.ThumbnailMode, uint, Windows.Storage.FileProperties.ThumbnailOptions, bool)
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.operator ==(Windows.Storage.BulkAccess.FileInformationFactory, Windows.Storage.BulkAccess.FileInformationFactory)
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.operator !=(Windows.Storage.BulkAccess.FileInformationFactory, Windows.Storage.BulkAccess.FileInformationFactory)
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.Equals(Windows.Storage.BulkAccess.FileInformationFactory)
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.Equals(object)
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.GetHashCode()
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.BulkAccess.IStorageItemInformation>> GetItemsAsync(uint startIndex, uint maxItemsToRetrieve)
@@ -103,5 +113,6 @@ namespace Windows.Storage.BulkAccess
 			throw new global::System.NotImplementedException("The member object FileInformationFactory.GetVirtualizedFoldersVector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20FileInformationFactory.GetVirtualizedFoldersVector%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

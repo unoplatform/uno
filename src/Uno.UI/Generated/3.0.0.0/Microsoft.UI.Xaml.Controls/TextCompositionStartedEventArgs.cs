@@ -33,7 +33,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.StartIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs, Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs, Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.Length.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.StartIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

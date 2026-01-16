@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RelativePanel : global::Microsoft.UI.Xaml.Controls.Panel
 	{
-		// Skipping already declared property Padding
-		// Skipping already declared property CornerRadius
-		// Skipping already declared property BorderThickness
-		// Skipping already declared property BorderBrush
-		// Skipping already declared property BackgroundSizing
 		// Skipping already declared property AboveProperty
 		// Skipping already declared property AlignBottomWithPanelProperty
 		// Skipping already declared property AlignBottomWithProperty
@@ -34,8 +29,77 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property LeftOfProperty
 		// Skipping already declared property PaddingProperty
 		// Skipping already declared property RightOfProperty
+		// Skipping already declared property BackgroundSizing
+		// Skipping already declared property BorderBrush
+		// Skipping already declared property BorderThickness
+		// Skipping already declared property CornerRadius
+		// Skipping already declared property Padding
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.RelativePanel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.RelativePanel()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.As<I>()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetLeftOf(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetLeftOf(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAbove(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAbove(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetRightOf(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetRightOf(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetBelow(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetBelow(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWith(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWith(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWith(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWith(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignLeftWith(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignLeftWith(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignTopWith(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignTopWith(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignRightWith(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignRightWith(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignBottomWith(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignBottomWith(Microsoft.UI.Xaml.UIElement, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignLeftWithPanel(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignLeftWithPanel(Microsoft.UI.Xaml.UIElement, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignTopWithPanel(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignTopWithPanel(Microsoft.UI.Xaml.UIElement, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignRightWithPanel(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignRightWithPanel(Microsoft.UI.Xaml.UIElement, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignBottomWithPanel(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignBottomWithPanel(Microsoft.UI.Xaml.UIElement, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWithPanel(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWithPanel(Microsoft.UI.Xaml.UIElement, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWithPanel(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWithPanel(Microsoft.UI.Xaml.UIElement, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AboveProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignBottomWithPanelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignBottomWithProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignHorizontalCenterWithPanelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignHorizontalCenterWithProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignLeftWithPanelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignLeftWithProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignRightWithPanelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignRightWithProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignTopWithPanelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignTopWithProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignVerticalCenterWithPanelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignVerticalCenterWithProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BackgroundSizingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BelowProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BorderBrushProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BorderThicknessProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.CornerRadiusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.LeftOfProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.PaddingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.RightOfProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.RelativePanel(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.operator ==(Microsoft.UI.Xaml.Controls.RelativePanel, Microsoft.UI.Xaml.Controls.RelativePanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.operator !=(Microsoft.UI.Xaml.Controls.RelativePanel, Microsoft.UI.Xaml.Controls.RelativePanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.Equals(Microsoft.UI.Xaml.Controls.RelativePanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.RelativePanel(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BackgroundSizing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BackgroundSizing.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BorderBrush.get
@@ -46,58 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.CornerRadius.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.Padding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BackgroundSizingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.LeftOfProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetLeftOf(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetLeftOf(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AboveProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAbove(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAbove(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.RightOfProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetRightOf(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetRightOf(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BelowProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetBelow(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetBelow(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignHorizontalCenterWithProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWith(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWith(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignVerticalCenterWithProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWith(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWith(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignLeftWithProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignLeftWith(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignLeftWith(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignTopWithProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignTopWith(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignTopWith(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignRightWithProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignRightWith(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignRightWith(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignBottomWithProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignBottomWith(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignBottomWith(Microsoft.UI.Xaml.UIElement, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignLeftWithPanelProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignLeftWithPanel(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignLeftWithPanel(Microsoft.UI.Xaml.UIElement, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignTopWithPanelProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignTopWithPanel(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignTopWithPanel(Microsoft.UI.Xaml.UIElement, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignRightWithPanelProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignRightWithPanel(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignRightWithPanel(Microsoft.UI.Xaml.UIElement, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignBottomWithPanelProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignBottomWithPanel(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignBottomWithPanel(Microsoft.UI.Xaml.UIElement, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignHorizontalCenterWithPanelProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWithPanel(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWithPanel(Microsoft.UI.Xaml.UIElement, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.AlignVerticalCenterWithPanelProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWithPanel(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWithPanel(Microsoft.UI.Xaml.UIElement, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BorderBrushProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BorderThicknessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.CornerRadiusProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.PaddingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,8 +43,19 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.Value.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.Request.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.operator ==(Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket, Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.operator !=(Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket, Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.Equals(Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.ErrorCode.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.Request.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.Value.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicket.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -123,15 +123,16 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Adapter.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.DeviceInterfacePath.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.AdapterRelativeId.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsConnected.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsVirtualModeEnabled.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsVirtualTopologyEnabled.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.UsageKind.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.MonitorPersistence.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.StableMonitorId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.operator ==(Windows.Devices.Display.Core.DisplayTarget, Windows.Devices.Display.Core.DisplayTarget)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.operator !=(Windows.Devices.Display.Core.DisplayTarget, Windows.Devices.Display.Core.DisplayTarget)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Equals(Windows.Devices.Display.Core.DisplayTarget)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.DisplayMonitor TryGetMonitor()
@@ -139,8 +140,6 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayMonitor DisplayTarget.TryGetMonitor() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayMonitor%20DisplayTarget.TryGetMonitor%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Properties.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsStale.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSame(global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
@@ -155,5 +154,17 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsEqual(DisplayTarget otherTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayTarget.IsEqual%28DisplayTarget%20otherTarget%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Adapter.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.AdapterRelativeId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.DeviceInterfacePath.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsConnected.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsStale.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsVirtualModeEnabled.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsVirtualTopologyEnabled.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.MonitorPersistence.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.StableMonitorId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.UsageKind.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,7 +23,16 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.VideoFrame.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.operator ==(Windows.Devices.Perception.PerceptionDepthFrame, Windows.Devices.Perception.PerceptionDepthFrame)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.operator !=(Windows.Devices.Perception.PerceptionDepthFrame, Windows.Devices.Perception.PerceptionDepthFrame)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.Equals(Windows.Devices.Perception.PerceptionDepthFrame)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -32,6 +40,8 @@ namespace Windows.Devices.Perception
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrame", "void PerceptionDepthFrame.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.VideoFrame.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

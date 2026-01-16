@@ -8,14 +8,24 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionRadialGradientBrush : global::Microsoft.UI.Composition.CompositionGradientBrush
 	{
-		// Skipping already declared property GradientOriginOffset
-		// Skipping already declared property EllipseRadius
 		// Skipping already declared property EllipseCenter
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.set
+		// Skipping already declared property EllipseRadius
+		// Skipping already declared property GradientOriginOffset
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.operator ==(Microsoft.UI.Composition.CompositionRadialGradientBrush, Microsoft.UI.Composition.CompositionRadialGradientBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.operator !=(Microsoft.UI.Composition.CompositionRadialGradientBrush, Microsoft.UI.Composition.CompositionRadialGradientBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.Equals(Microsoft.UI.Composition.CompositionRadialGradientBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseCenter.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseCenter.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseRadius.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseCenter.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

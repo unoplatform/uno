@@ -27,7 +27,17 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.operator ==(Windows.UI.Composition.CompositionPathGeometry, Windows.UI.Composition.CompositionPathGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.operator !=(Windows.UI.Composition.CompositionPathGeometry, Windows.UI.Composition.CompositionPathGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.Equals(Windows.UI.Composition.CompositionPathGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.Path.get
 		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.Path.set
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionPathGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

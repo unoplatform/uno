@@ -41,9 +41,19 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.operator ==(Windows.UI.Composition.AmbientLight, Windows.UI.Composition.AmbientLight)
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.operator !=(Windows.UI.Composition.AmbientLight, Windows.UI.Composition.AmbientLight)
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.Equals(Windows.UI.Composition.AmbientLight)
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.AmbientLight.Color.get
 		// Forced skipping of method Windows.UI.Composition.AmbientLight.Color.set
 		// Forced skipping of method Windows.UI.Composition.AmbientLight.Intensity.get
 		// Forced skipping of method Windows.UI.Composition.AmbientLight.Intensity.set
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.AmbientLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

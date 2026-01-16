@@ -23,6 +23,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs, Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs, Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.NewValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

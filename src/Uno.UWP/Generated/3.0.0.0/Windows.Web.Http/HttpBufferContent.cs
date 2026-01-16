@@ -34,7 +34,16 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpBufferContent.HttpBufferContent(Windows.Storage.Streams.IBuffer, uint, uint)
-		// Forced skipping of method Windows.Web.Http.HttpBufferContent.Headers.get
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.operator ==(Windows.Web.Http.HttpBufferContent, Windows.Web.Http.HttpBufferContent)
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.operator !=(Windows.Web.Http.HttpBufferContent, Windows.Web.Http.HttpBufferContent)
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.Equals(Windows.Web.Http.HttpBufferContent)
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> BufferAllAsync()
@@ -91,6 +100,8 @@ namespace Windows.Web.Http
 			throw new global::System.NotImplementedException("The member string HttpBufferContent.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpBufferContent.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.Headers.get
+		// Forced skipping of method Windows.Web.Http.HttpBufferContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Http.IHttpContent
 		// Processing: System.IDisposable
 	}

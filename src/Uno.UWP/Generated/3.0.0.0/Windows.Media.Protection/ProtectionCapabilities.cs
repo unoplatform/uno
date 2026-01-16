@@ -16,6 +16,16 @@ namespace Windows.Media.Protection
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.ProtectionCapabilities()
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.operator ==(Windows.Media.Protection.ProtectionCapabilities, Windows.Media.Protection.ProtectionCapabilities)
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.operator !=(Windows.Media.Protection.ProtectionCapabilities, Windows.Media.Protection.ProtectionCapabilities)
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.Equals(Windows.Media.Protection.ProtectionCapabilities)
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.ProtectionCapabilityResult IsTypeSupported(string type, string keySystem)
@@ -23,5 +33,6 @@ namespace Windows.Media.Protection
 			throw new global::System.NotImplementedException("The member ProtectionCapabilityResult ProtectionCapabilities.IsTypeSupported(string type, string keySystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProtectionCapabilityResult%20ProtectionCapabilities.IsTypeSupported%28string%20type%2C%20string%20keySystem%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

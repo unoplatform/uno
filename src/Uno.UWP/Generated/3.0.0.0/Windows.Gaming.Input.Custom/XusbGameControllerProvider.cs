@@ -63,6 +63,16 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.operator ==(Windows.Gaming.Input.Custom.XusbGameControllerProvider, Windows.Gaming.Input.Custom.XusbGameControllerProvider)
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.operator !=(Windows.Gaming.Input.Custom.XusbGameControllerProvider, Windows.Gaming.Input.Custom.XusbGameControllerProvider)
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.Equals(Windows.Gaming.Input.Custom.XusbGameControllerProvider)
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetVibration(double lowFrequencyMotorSpeed, double highFrequencyMotorSpeed)
@@ -75,6 +85,7 @@ namespace Windows.Gaming.Input.Custom
 		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.HardwareVendorId.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.HardwareVersionInfo.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.IsConnected.get
+		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Input.Custom.IGameControllerProvider
 	}
 }

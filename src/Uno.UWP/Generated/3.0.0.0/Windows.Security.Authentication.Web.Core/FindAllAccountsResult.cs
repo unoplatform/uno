@@ -43,8 +43,19 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.operator ==(Windows.Security.Authentication.Web.Core.FindAllAccountsResult, Windows.Security.Authentication.Web.Core.FindAllAccountsResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.operator !=(Windows.Security.Authentication.Web.Core.FindAllAccountsResult, Windows.Security.Authentication.Web.Core.FindAllAccountsResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Equals(Windows.Security.Authentication.Web.Core.FindAllAccountsResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Accounts.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Status.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.ProviderError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Status.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

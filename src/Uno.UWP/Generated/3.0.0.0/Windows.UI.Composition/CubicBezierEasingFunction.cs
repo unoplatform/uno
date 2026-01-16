@@ -33,7 +33,17 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.operator ==(Windows.UI.Composition.CubicBezierEasingFunction, Windows.UI.Composition.CubicBezierEasingFunction)
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.operator !=(Windows.UI.Composition.CubicBezierEasingFunction, Windows.UI.Composition.CubicBezierEasingFunction)
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.Equals(Windows.UI.Composition.CubicBezierEasingFunction)
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.ControlPoint1.get
 		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.ControlPoint2.get
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CubicBezierEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

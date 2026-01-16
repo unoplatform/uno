@@ -8,42 +8,59 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class AppBar
 	{
-		// Skipping already declared property LightDismissOverlayMode
-		// Skipping already declared property IsSticky
-		// Skipping already declared property IsOpen
-		// Skipping already declared property ClosedDisplayMode
-		// Skipping already declared property TemplateSettings
 		// Skipping already declared property ClosedDisplayModeProperty
 		// Skipping already declared property IsOpenProperty
 		// Skipping already declared property IsStickyProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
+		// Skipping already declared property ClosedDisplayMode
+		// Skipping already declared property IsOpen
+		// Skipping already declared property IsSticky
+		// Skipping already declared property LightDismissOverlayMode
+		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.AppBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.AppBar()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.ClosedDisplayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsOpenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsStickyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.LightDismissOverlayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.AppBar(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.operator ==(Microsoft.UI.Xaml.Controls.AppBar, Microsoft.UI.Xaml.Controls.AppBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.operator !=(Microsoft.UI.Xaml.Controls.AppBar, Microsoft.UI.Xaml.Controls.AppBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Equals(Microsoft.UI.Xaml.Controls.AppBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.AppBar(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closed.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closing.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closing.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opened.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opened.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opening.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opening.remove
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnClosed(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Microsoft.UI.Xaml.Controls.IAppBarOverrides.OnClosed(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnOpened(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Microsoft.UI.Xaml.Controls.IAppBarOverrides.OnOpened(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnClosing(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Microsoft.UI.Xaml.Controls.IAppBarOverrides.OnClosing(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnOpening(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Microsoft.UI.Xaml.Controls.IAppBarOverrides.OnOpening(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.ClosedDisplayMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.ClosedDisplayMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsOpen.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsOpen.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsSticky.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsSticky.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.ClosedDisplayMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.ClosedDisplayMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.LightDismissOverlayMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.LightDismissOverlayMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opening.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opening.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opened.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Opened.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closing.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closing.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closed.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closed.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnClosed(object)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnOpened(object)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnClosing(object)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBar.OnOpening(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsOpenProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsStickyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.ClosedDisplayModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.LightDismissOverlayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.TemplateSettings.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AppBar.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AppBar.Closing
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AppBar.Opened

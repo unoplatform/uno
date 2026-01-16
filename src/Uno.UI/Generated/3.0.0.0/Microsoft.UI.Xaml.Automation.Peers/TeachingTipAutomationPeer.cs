@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.TeachingTipAutomationPeer(Microsoft.UI.Xaml.Controls.TeachingTip)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.TeachingTipAutomationPeer(Microsoft.UI.Xaml.Controls.TeachingTip)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.TeachingTipAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.TeachingTipAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

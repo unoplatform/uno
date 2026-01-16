@@ -13,6 +13,16 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.operator ==(Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs, Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.operator !=(Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs, Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.Equals(Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDispatcherQueueDeferral()
@@ -20,5 +30,6 @@ namespace Microsoft.UI.Xaml.Hosting
 			throw new global::System.NotImplementedException("The member Deferral XamlShutdownCompletedOnThreadEventArgs.GetDispatcherQueueDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20XamlShutdownCompletedOnThreadEventArgs.GetDispatcherQueueDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

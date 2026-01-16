@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class PolyLineSegment : global::Microsoft.UI.Xaml.Media.PathSegment
 	{
-		// Skipping already declared property Points
 		// Skipping already declared property PointsProperty
+		// Skipping already declared property Points
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PolyLineSegment.PolyLineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PolyLineSegment()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PointsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.operator ==(Microsoft.UI.Xaml.Media.PolyLineSegment, Microsoft.UI.Xaml.Media.PolyLineSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.operator !=(Microsoft.UI.Xaml.Media.PolyLineSegment, Microsoft.UI.Xaml.Media.PolyLineSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Equals(Microsoft.UI.Xaml.Media.PolyLineSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PointsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

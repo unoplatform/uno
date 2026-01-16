@@ -24,6 +24,16 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.SemanticTextQuery(string, string)
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.operator ==(Windows.Data.Text.SemanticTextQuery, Windows.Data.Text.SemanticTextQuery)
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.operator !=(Windows.Data.Text.SemanticTextQuery, Windows.Data.Text.SemanticTextQuery)
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.Equals(Windows.Data.Text.SemanticTextQuery)
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.Equals(object)
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.GetHashCode()
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.TextSegment> Find(string content)
@@ -38,5 +48,6 @@ namespace Windows.Data.Text
 			throw new global::System.NotImplementedException("The member IReadOnlyList<TextSegment> SemanticTextQuery.FindInProperty(string propertyContent, string propertyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CTextSegment%3E%20SemanticTextQuery.FindInProperty%28string%20propertyContent%2C%20string%20propertyName%29");
 		}
 #endif
+		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

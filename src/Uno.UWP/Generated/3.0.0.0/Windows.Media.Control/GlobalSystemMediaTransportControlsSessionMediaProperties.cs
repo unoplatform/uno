@@ -113,15 +113,26 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Title.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.operator ==(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.operator !=(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Equals(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Equals(object)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Artist.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Genres.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Artist.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Genres.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Title.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

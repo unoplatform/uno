@@ -53,9 +53,20 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Min.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.operator ==(Windows.Media.Devices.Core.FrameExposureCompensationCapabilities, Windows.Media.Devices.Core.FrameExposureCompensationCapabilities)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.operator !=(Windows.Media.Devices.Core.FrameExposureCompensationCapabilities, Windows.Media.Devices.Core.FrameExposureCompensationCapabilities)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Equals(Windows.Media.Devices.Core.FrameExposureCompensationCapabilities)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Supported.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -44,7 +44,18 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialCommand(Windows.Security.Credentials.PasswordCredential, Windows.UI.ApplicationSettings.CredentialCommandCredentialDeletedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.PasswordCredential.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.operator ==(Windows.UI.ApplicationSettings.CredentialCommand, Windows.UI.ApplicationSettings.CredentialCommand)
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.operator !=(Windows.UI.ApplicationSettings.CredentialCommand, Windows.UI.ApplicationSettings.CredentialCommand)
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.Equals(Windows.UI.ApplicationSettings.CredentialCommand)
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.Equals(object)
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.GetHashCode()
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialDeleted.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.PasswordCredential.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

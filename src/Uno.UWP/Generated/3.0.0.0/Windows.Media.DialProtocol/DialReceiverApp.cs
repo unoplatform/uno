@@ -23,6 +23,18 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.As<I>()
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.Current.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.FromAbi(nint)
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.operator ==(Windows.Media.DialProtocol.DialReceiverApp, Windows.Media.DialProtocol.DialReceiverApp)
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.operator !=(Windows.Media.DialProtocol.DialReceiverApp, Windows.Media.DialProtocol.DialReceiverApp)
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.Equals(Windows.Media.DialProtocol.DialReceiverApp)
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.Equals(object)
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.GetHashCode()
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, string>> GetAdditionalDataAsync()
@@ -44,6 +56,6 @@ namespace Windows.Media.DialProtocol
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DialReceiverApp.GetUniqueDeviceNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20DialReceiverApp.GetUniqueDeviceNameAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.Current.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

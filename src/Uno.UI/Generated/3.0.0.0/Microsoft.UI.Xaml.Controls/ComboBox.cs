@@ -8,23 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ComboBox
 	{
-		// Skipping already declared property TextBoxStyle
-		// Skipping already declared property Text
-		// Skipping already declared property SelectionChangedTrigger
-		// Skipping already declared property PlaceholderText
-		// Skipping already declared property PlaceholderForeground
-		// Skipping already declared property MaxDropDownHeight
-		// Skipping already declared property LightDismissOverlayMode
-		// Skipping already declared property IsTextSearchEnabled
-		// Skipping already declared property IsEditable
-		// Skipping already declared property IsDropDownOpen
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property Header
-		// Skipping already declared property Description
-		// Skipping already declared property IsSelectionBoxHighlighted
-		// Skipping already declared property SelectionBoxItem
-		// Skipping already declared property SelectionBoxItemTemplate
-		// Skipping already declared property TemplateSettings
 		// Skipping already declared property DescriptionProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
@@ -38,38 +21,49 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SelectionChangedTriggerProperty
 		// Skipping already declared property TextBoxStyleProperty
 		// Skipping already declared property TextProperty
+		// Skipping already declared property Description
+		// Skipping already declared property Header
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property IsDropDownOpen
+		// Skipping already declared property IsEditable
+		// Skipping already declared property IsSelectionBoxHighlighted
+		// Skipping already declared property IsTextSearchEnabled
+		// Skipping already declared property LightDismissOverlayMode
+		// Skipping already declared property MaxDropDownHeight
+		// Skipping already declared property PlaceholderForeground
+		// Skipping already declared property PlaceholderText
+		// Skipping already declared property SelectionBoxItem
+		// Skipping already declared property SelectionBoxItemTemplate
+		// Skipping already declared property SelectionChangedTrigger
+		// Skipping already declared property TemplateSettings
+		// Skipping already declared property Text
+		// Skipping already declared property TextBoxStyle
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ComboBox.ComboBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.ComboBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsDropDownOpen.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsDropDownOpen.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsEditable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsEditable.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsSelectionBoxHighlighted.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.MaxDropDownHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.MaxDropDownHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionBoxItem.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionBoxItemTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Header.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Header.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderText.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderText.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.LightDismissOverlayMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.LightDismissOverlayMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsTextSearchEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsTextSearchEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionChangedTrigger.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionChangedTrigger.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForeground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForeground.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyle.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Description.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Description.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DescriptionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsDropDownOpenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsEditableProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsTextSearchEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.LightDismissOverlayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.MaxDropDownHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderTextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionChangedTriggerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.ComboBox(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.operator ==(Microsoft.UI.Xaml.Controls.ComboBox, Microsoft.UI.Xaml.Controls.ComboBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.operator !=(Microsoft.UI.Xaml.Controls.ComboBox, Microsoft.UI.Xaml.Controls.ComboBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Equals(Microsoft.UI.Xaml.Controls.ComboBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.ComboBox(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DropDownClosed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DropDownClosed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DropDownOpened.add
@@ -77,20 +71,41 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextSubmitted.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextSubmitted.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ComboBox.OnDropDownClosed(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Microsoft.UI.Xaml.Controls.IComboBoxOverrides.OnDropDownClosed(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ComboBox.OnDropDownOpened(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsEditableProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsDropDownOpenProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.MaxDropDownHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.LightDismissOverlayModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsTextSearchEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionChangedTriggerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DescriptionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Microsoft.UI.Xaml.Controls.IComboBoxOverrides.OnDropDownOpened(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Description.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Description.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Header.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Header.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.HeaderTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsDropDownOpen.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsDropDownOpen.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsEditable.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsEditable.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsSelectionBoxHighlighted.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsTextSearchEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsTextSearchEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.LightDismissOverlayMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.LightDismissOverlayMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.MaxDropDownHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.MaxDropDownHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForeground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForeground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderText.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionBoxItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionBoxItemTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionChangedTrigger.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionChangedTrigger.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TemplateSettings.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyle.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyle.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.DropDownClosed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.DropDownOpened
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.TextSubmitted

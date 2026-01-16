@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.ReorderThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.ReorderThemeTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition, Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition, Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

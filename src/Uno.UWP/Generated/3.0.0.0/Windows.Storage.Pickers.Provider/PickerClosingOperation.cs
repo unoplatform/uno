@@ -23,6 +23,16 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.operator ==(Windows.Storage.Pickers.Provider.PickerClosingOperation, Windows.Storage.Pickers.Provider.PickerClosingOperation)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.operator !=(Windows.Storage.Pickers.Provider.PickerClosingOperation, Windows.Storage.Pickers.Provider.PickerClosingOperation)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.Equals(Windows.Storage.Pickers.Provider.PickerClosingOperation)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.Provider.PickerClosingDeferral GetDeferral()
@@ -31,5 +41,6 @@ namespace Windows.Storage.Pickers.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.Deadline.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

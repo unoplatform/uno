@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class LineSegment : global::Microsoft.UI.Xaml.Media.PathSegment
 	{
-		// Skipping already declared property Point
 		// Skipping already declared property PointProperty
+		// Skipping already declared property Point
 		// Skipping already declared method Microsoft.UI.Xaml.Media.LineSegment.LineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.LineSegment()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.PointProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.operator ==(Microsoft.UI.Xaml.Media.LineSegment, Microsoft.UI.Xaml.Media.LineSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.operator !=(Microsoft.UI.Xaml.Media.LineSegment, Microsoft.UI.Xaml.Media.LineSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Equals(Microsoft.UI.Xaml.Media.LineSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Point.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Point.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.PointProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

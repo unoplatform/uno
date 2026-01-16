@@ -44,7 +44,18 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentToken(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentMethodId.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.operator ==(Windows.ApplicationModel.Payments.PaymentToken, Windows.ApplicationModel.Payments.PaymentToken)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.operator !=(Windows.ApplicationModel.Payments.PaymentToken, Windows.ApplicationModel.Payments.PaymentToken)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.Equals(Windows.ApplicationModel.Payments.PaymentToken)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.JsonDetails.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentMethodId.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

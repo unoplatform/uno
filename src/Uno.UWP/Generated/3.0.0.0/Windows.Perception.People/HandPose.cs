@@ -13,6 +13,16 @@ namespace Windows.Perception.People
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Perception.People.HandPose.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.People.HandPose.operator ==(Windows.Perception.People.HandPose, Windows.Perception.People.HandPose)
+		// Forced skipping of method Windows.Perception.People.HandPose.operator !=(Windows.Perception.People.HandPose, Windows.Perception.People.HandPose)
+		// Forced skipping of method Windows.Perception.People.HandPose.Equals(Windows.Perception.People.HandPose)
+		// Forced skipping of method Windows.Perception.People.HandPose.Equals(object)
+		// Forced skipping of method Windows.Perception.People.HandPose.GetHashCode()
+		// Forced skipping of method Windows.Perception.People.HandPose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.People.HandPose.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.People.HandPose.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.People.HandPose.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetJoint(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.People.HandJointKind joint, out global::Windows.Perception.People.JointPose jointPose)
@@ -41,5 +51,6 @@ namespace Windows.Perception.People
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandPose", "void HandPose.GetRelativeJoints(HandJointKind[] joints, HandJointKind[] referenceJoints, JointPose[] jointPoses)");
 		}
 #endif
+		// Forced skipping of method Windows.Perception.People.HandPose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

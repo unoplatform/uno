@@ -23,7 +23,16 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserWatcher.Status.get
+		// Forced skipping of method Windows.System.UserWatcher.FromAbi(nint)
+		// Forced skipping of method Windows.System.UserWatcher.operator ==(Windows.System.UserWatcher, Windows.System.UserWatcher)
+		// Forced skipping of method Windows.System.UserWatcher.operator !=(Windows.System.UserWatcher, Windows.System.UserWatcher)
+		// Forced skipping of method Windows.System.UserWatcher.Equals(Windows.System.UserWatcher)
+		// Forced skipping of method Windows.System.UserWatcher.Equals(object)
+		// Forced skipping of method Windows.System.UserWatcher.GetHashCode()
+		// Forced skipping of method Windows.System.UserWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.UserWatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.UserWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.UserWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -40,18 +49,20 @@ namespace Windows.System
 #endif
 		// Forced skipping of method Windows.System.UserWatcher.Added.add
 		// Forced skipping of method Windows.System.UserWatcher.Added.remove
-		// Forced skipping of method Windows.System.UserWatcher.Removed.add
-		// Forced skipping of method Windows.System.UserWatcher.Removed.remove
-		// Forced skipping of method Windows.System.UserWatcher.Updated.add
-		// Forced skipping of method Windows.System.UserWatcher.Updated.remove
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanged.add
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanged.remove
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanging.add
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanging.remove
 		// Forced skipping of method Windows.System.UserWatcher.EnumerationCompleted.add
 		// Forced skipping of method Windows.System.UserWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.System.UserWatcher.Removed.add
+		// Forced skipping of method Windows.System.UserWatcher.Removed.remove
 		// Forced skipping of method Windows.System.UserWatcher.Stopped.add
 		// Forced skipping of method Windows.System.UserWatcher.Stopped.remove
+		// Forced skipping of method Windows.System.UserWatcher.Updated.add
+		// Forced skipping of method Windows.System.UserWatcher.Updated.remove
+		// Forced skipping of method Windows.System.UserWatcher.Status.get
+		// Forced skipping of method Windows.System.UserWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.UserWatcher, global::Windows.System.UserChangedEventArgs> Added

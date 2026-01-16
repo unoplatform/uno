@@ -26,6 +26,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.HubSectionHeaderClickEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.operator ==(Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs, Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.operator !=(Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs, Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.Equals(Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.Section.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

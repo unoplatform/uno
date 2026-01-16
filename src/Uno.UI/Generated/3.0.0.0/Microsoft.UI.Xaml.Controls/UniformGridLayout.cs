@@ -8,14 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class UniformGridLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
 	{
-		// Skipping already declared property Orientation
-		// Skipping already declared property MinRowSpacing
-		// Skipping already declared property MinItemWidth
-		// Skipping already declared property MinItemHeight
-		// Skipping already declared property MinColumnSpacing
-		// Skipping already declared property MaximumRowsOrColumns
-		// Skipping already declared property ItemsStretch
-		// Skipping already declared property ItemsJustification
 		// Skipping already declared property ItemsJustificationProperty
 		// Skipping already declared property ItemsStretchProperty
 		// Skipping already declared property MaximumRowsOrColumnsProperty
@@ -24,31 +16,52 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MinItemWidthProperty
 		// Skipping already declared property MinRowSpacingProperty
 		// Skipping already declared property OrientationProperty
+		// Skipping already declared property ItemsJustification
+		// Skipping already declared property ItemsStretch
+		// Skipping already declared property MaximumRowsOrColumns
+		// Skipping already declared property MinColumnSpacing
+		// Skipping already declared property MinItemHeight
+		// Skipping already declared property MinItemWidth
+		// Skipping already declared property MinRowSpacing
+		// Skipping already declared property Orientation
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.UniformGridLayout.UniformGridLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.UniformGridLayout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Orientation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Orientation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemWidth.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacing.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinColumnSpacing.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinColumnSpacing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsJustificationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsStretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MaximumRowsOrColumnsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinColumnSpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.OrientationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.UniformGridLayout(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.operator ==(Microsoft.UI.Xaml.Controls.UniformGridLayout, Microsoft.UI.Xaml.Controls.UniformGridLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.operator !=(Microsoft.UI.Xaml.Controls.UniformGridLayout, Microsoft.UI.Xaml.Controls.UniformGridLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Equals(Microsoft.UI.Xaml.Controls.UniformGridLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.UniformGridLayout(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsJustification.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsJustification.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsStretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsStretch.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MaximumRowsOrColumns.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MaximumRowsOrColumns.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinColumnSpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsJustificationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsStretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MaximumRowsOrColumnsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinColumnSpacing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinColumnSpacing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Orientation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Orientation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,5 +8,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class SnapPointBase
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.SnapPointBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.operator ==(Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase, Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.operator !=(Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase, Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.Equals(Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.SnapPointBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

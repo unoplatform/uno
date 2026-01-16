@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -64,10 +63,21 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.operator ==(Windows.Media.PlayTo.PlayToSourceSelectedEventArgs, Windows.Media.PlayTo.PlayToSourceSelectedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.operator !=(Windows.Media.PlayTo.PlayToSourceSelectedEventArgs, Windows.Media.PlayTo.PlayToSourceSelectedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.Equals(Windows.Media.PlayTo.PlayToSourceSelectedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.FriendlyName.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.Icon.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsImage.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsAudio.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsImage.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsVideo.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

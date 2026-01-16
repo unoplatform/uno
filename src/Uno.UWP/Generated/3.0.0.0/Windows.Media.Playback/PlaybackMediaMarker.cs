@@ -54,8 +54,19 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.PlaybackMediaMarker(System.TimeSpan, string, string)
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Time.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.operator ==(Windows.Media.Playback.PlaybackMediaMarker, Windows.Media.Playback.PlaybackMediaMarker)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.operator !=(Windows.Media.Playback.PlaybackMediaMarker, Windows.Media.Playback.PlaybackMediaMarker)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Equals(Windows.Media.Playback.PlaybackMediaMarker)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.MediaMarkerType.get
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Text.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Time.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
