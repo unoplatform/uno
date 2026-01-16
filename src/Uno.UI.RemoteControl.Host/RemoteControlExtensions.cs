@@ -74,12 +74,21 @@ namespace Uno.UI.RemoteControl.Host
 			var services = scope.ServiceProvider;
 			try
 			{
-				var hasConfiguration = services.GetService<IRemoteControlConfiguration>() is not null;
-				var hasLaunchMonitor = services.GetService<IApplicationLaunchMonitor>() is not null;
-				var hasIdeChannel = services.GetService<IIdeChannel>() is not null;
+				var configuration = services.GetService<IRemoteControlConfiguration>();
+				var launchMonitor = services.GetService<IApplicationLaunchMonitor>();
+				var ideChannel = services.GetService<IIdeChannel>();
 
-				if (hasConfiguration && hasLaunchMonitor && hasIdeChannel)
+				if (configuration is not null && launchMonitor is not null && ideChannel is not null)
 				{
+					if (app.Log().IsEnabled(LogLevel.Trace))
+					{
+						app.Log().LogTrace(
+							"Resolved devserver services: {ConfigurationType}, {LaunchMonitorType}, {IdeChannelType}",
+							configuration.GetType().FullName,
+							launchMonitor.GetType().FullName,
+							ideChannel.GetType().FullName);
+					}
+
 					// Populate the scoped ConnectionContext with connection metadata
 					connectionContext = services.GetService<ConnectionContext>();
 					telemetry = services.GetService<ITelemetry>();
