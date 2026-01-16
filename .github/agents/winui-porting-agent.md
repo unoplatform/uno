@@ -160,7 +160,7 @@ public partial class Expander
 }
 ```
 
-### 2.5. Partial Implementation Files: `ControlName.mux.partial.cs`
+### 2.5. Partial Implementation Files: `ControlName.partial.mux.cs`
 
 For controls with split implementation across multiple C++ files (e.g., `StackPanel.cpp` and `StackPanel_Partial.cpp`), create corresponding partial files:
 ```csharp
