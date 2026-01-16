@@ -2079,7 +2079,7 @@ namespace Uno.UWPSyncGenerator
 #if HAS_UNO_WINUI
 			_winuiReferences = File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference));
 			// Add .NET 7 ref assemblies to make sure things like System.Object are properly resolved and are not error symbols.
-			p = p.AddMetadataReferences(_winuiReferences.Concat(Basic.Reference.Assemblies.Net70.References.All));
+			p = p.AddMetadataReferences(_winuiReferences.Concat(Basic.Reference.Assemblies.Net100.References.All));
 #else
 			p = p.AddMetadataReferences(File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference)));
 #endif
