@@ -697,7 +697,7 @@ private static DependencyProperty TemplateSettingsProperty { get; } =
         new FrameworkPropertyMetadata(null));
 ```
 
-Backing fields remain in `.Header.cs` or `.h.mux.cs`.
+Backing fields remain in `.h.mux.cs` or `.partial.h.mux.cs`.
 
 ---
 
