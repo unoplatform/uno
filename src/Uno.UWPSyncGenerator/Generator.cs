@@ -321,13 +321,14 @@ namespace Uno.UWPSyncGenerator
 			}
 #if HAS_UNO_WINUI
 			else if (@namespace.StartsWith("Microsoft.Windows.", StringComparison.Ordinal)
-				&& !@namespace.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal))
+				&& !@namespace.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal)
+				&& !@namespace.StartsWith("Microsoft.Windows.AppLifecycle", StringComparison.Ordinal))
 			{
 				// Historically, before https://github.com/unoplatform/uno/pull/13867, WinUI generation was not correct.
 				// With this PR, new types in Microsoft.Windows. started to be generated. (e.g, Microsoft.Windows.ApplicationModel.DynamicDependency.PackageVersion)
 				// We want to minimize the changes from #13867, so we skip this namespace, maintaining the old behavior.
 				// We should revise in the future whether we want to include these types.
-				// NOTE: Microsoft.Windows.ApplicationModel.Resources is explicitly allowed as it was previously generated.
+				// NOTE: Microsoft.Windows.ApplicationModel.Resources and Microsoft.Windows.AppLifecycle are explicitly allowed as they were previously generated.
 				return true;
 			}
 #endif
