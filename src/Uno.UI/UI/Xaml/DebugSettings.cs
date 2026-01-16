@@ -5,9 +5,7 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DebugSettings
 	{
-#if HAS_UNO_WINUI
 		public LayoutCycleTracingLevel LayoutCycleTracingLevel { get; set; }
-#endif
 
 #if !UNO_REFERENCE_API
 		[Uno.NotImplemented]

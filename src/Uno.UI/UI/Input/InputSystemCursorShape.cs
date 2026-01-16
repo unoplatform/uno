@@ -1,10 +1,6 @@
-﻿namespace Microsoft.UI.Input;
+namespace Microsoft.UI.Input;
 
-#if HAS_UNO_WINUI
 public enum InputSystemCursorShape
-#else
-internal enum InputSystemCursorShape
-#endif
 {
 	Arrow = 0,
 	Cross = 1,

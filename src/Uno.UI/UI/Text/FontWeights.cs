@@ -1,5 +1,4 @@
-﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+﻿// This file is included in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,12 +10,12 @@ namespace Microsoft.UI.Text
 namespace Windows.UI.Text
 #endif
 {
-#if HAS_UNO_WINUI && !IS_UNO_UI_PROJECT
+#if !IS_UNO_UI_PROJECT
 	internal
 #else
 	public
 #endif
-		partial class FontWeights
+	partial class FontWeights
 	{
 		private static FontWeight? _thin;
 		private static FontWeight? _extraLight;
@@ -49,4 +48,3 @@ namespace Windows.UI.Text
 		public static FontWeight UltraBlack => _extraBlack ??= new FontWeight(950);
 	}
 }
-#endif

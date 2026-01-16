@@ -26,11 +26,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -947,11 +943,7 @@ namespace Microsoft.UI.Xaml
 					//		 ptArgs.Pointer.IsInRange && ptArgs.IsPointCoordinatesOver(this) (and probably share it on all platforms).
 					var isOver = ptArgs.Pointer.IsInRange && (ptArgs.Pointer.PointerDeviceType, ptArgs.Pointer.IsInContact) switch
 					{
-#if HAS_UNO_WINUI
 						(global::Microsoft.UI.Input.PointerDeviceType.Touch, false) => false,
-#else
-						(PointerDeviceType.Touch, false) => false,
-#endif
 						_ => ptArgs.IsPointCoordinatesOver(this),
 					};
 #endif

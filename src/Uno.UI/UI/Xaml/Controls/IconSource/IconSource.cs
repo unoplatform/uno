@@ -60,21 +60,11 @@ public partial class IconSource : DependencyObject
 		return element;
 	}
 
-	// Note: Both CreateIconElementCore and GetIconElementPropertyCore are 'protected' only on WinUI 3
-	// https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.iconsource.createiconelementcore?view=windows-app-sdk-1.3
-	// https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.iconsource.geticonelementpropertycore?view=windows-app-sdk-1.3
-	// We make them private protected for UWP build.
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected virtual IconElement CreateIconElementCore()
 	{
 		throw new NotImplementedException("This is an abstract base type, so this should never be called."); // return E_NOTIMPL;
 	}
 
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected virtual DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
 		// ctl::ComPtr<DependencyPropertyHandle> iconSourcePropertyHandle;

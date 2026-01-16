@@ -9,11 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using System.Numerics;
 
 
-#if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
 
 namespace Uno.UI.Xaml.Controls;
 

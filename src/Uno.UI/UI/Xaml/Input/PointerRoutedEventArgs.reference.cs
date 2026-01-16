@@ -1,10 +1,6 @@
 ﻿using Windows.Foundation;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Input
 {

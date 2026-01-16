@@ -25,11 +25,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
 using Uno.UI.Runtime;
 
-#if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
-#else
-using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
-#endif
 
 using NativeMethods = __Microsoft.UI.Xaml.Application.NativeMethods;
 

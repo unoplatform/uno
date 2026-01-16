@@ -7,11 +7,7 @@ using Windows.Foundation.Metadata;
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
-#else
-namespace Windows.UI.Input
-#endif
 {
 	[ContractVersion(typeof(UniversalApiContract), 65536U)]
 	[Flags]

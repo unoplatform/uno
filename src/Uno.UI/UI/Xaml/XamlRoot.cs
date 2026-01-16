@@ -73,13 +73,6 @@ public sealed partial class XamlRoot
 
 	internal Composition.Compositor Compositor => Composition.Compositor.GetSharedCompositor();
 
-#if !HAS_UNO_WINUI // This is a UWP-only property
-	/// <summary>
-	/// Gets the context identifier for the view.
-	/// </summary>
-	public UIContext UIContext { get; } = new UIContext();
-#endif
-
 	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
 
 	internal static DisplayInformation GetDisplayInformation(XamlRoot? root)

@@ -26,12 +26,7 @@ using FlyoutBase = Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase;
 using FlyoutBaseClosingEventArgs = Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs;
 using NavigationViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-using Windows.Devices.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 

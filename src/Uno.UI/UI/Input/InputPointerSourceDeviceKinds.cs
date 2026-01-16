@@ -1,5 +1,3 @@
-﻿#if HAS_UNO_WINUI
-
 using System;
 
 namespace Microsoft.UI.Input
@@ -13,4 +11,3 @@ namespace Microsoft.UI.Input
 		Mouse = 0x4
 	}
 }
-#endif

@@ -21,12 +21,7 @@ using Uno.UI.Xaml.Input;
 using DraggingEventArgs = UIKit.DraggingEventArgs;
 using ObjCRuntime;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-using Windows.Devices.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

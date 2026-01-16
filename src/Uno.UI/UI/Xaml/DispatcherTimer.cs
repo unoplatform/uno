@@ -1,11 +1,7 @@
 ﻿using System;
 using Uno;
 
-#if HAS_UNO_WINUI
 using DispatcherQueueTimer = Microsoft.UI.Dispatching.DispatcherQueueTimer;
-#else
-using DispatcherQueueTimer = Windows.System.DispatcherQueueTimer;
-#endif
 
 namespace Microsoft.UI.Xaml;
 
