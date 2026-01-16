@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ItemTemplateTests.cs, commit 37ade09
 
+#pragma warning disable CS0618 // Animator is obsolete, use ItemTransitionProvider instead
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
