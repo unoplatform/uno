@@ -43,9 +43,7 @@ namespace Windows.UI.Input.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Controller.get
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Dispatcher.get
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.DispatcherQueue.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Core.RadialControllerIndependentInputSource CreateForView(global::Windows.ApplicationModel.Core.CoreApplicationView view)
@@ -53,5 +51,19 @@ namespace Windows.UI.Input.Core
 			throw new global::System.NotImplementedException("The member RadialControllerIndependentInputSource RadialControllerIndependentInputSource.CreateForView(CoreApplicationView view) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerIndependentInputSource%20RadialControllerIndependentInputSource.CreateForView%28CoreApplicationView%20view%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.operator ==(Windows.UI.Input.Core.RadialControllerIndependentInputSource, Windows.UI.Input.Core.RadialControllerIndependentInputSource)
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.operator !=(Windows.UI.Input.Core.RadialControllerIndependentInputSource, Windows.UI.Input.Core.RadialControllerIndependentInputSource)
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Equals(Windows.UI.Input.Core.RadialControllerIndependentInputSource)
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Controller.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Dispatcher.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.DispatcherQueue.get
+		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

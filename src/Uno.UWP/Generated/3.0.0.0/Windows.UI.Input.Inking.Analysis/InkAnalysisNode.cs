@@ -73,12 +73,16 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Id.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Kind.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.BoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.RotatedBoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Children.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Parent.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.operator ==(Windows.UI.Input.Inking.Analysis.InkAnalysisNode, Windows.UI.Input.Inking.Analysis.InkAnalysisNode)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.operator !=(Windows.UI.Input.Inking.Analysis.InkAnalysisNode, Windows.UI.Input.Inking.Analysis.InkAnalysisNode)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Equals(Windows.UI.Input.Inking.Analysis.InkAnalysisNode)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
@@ -86,6 +90,13 @@ namespace Windows.UI.Input.Inking.Analysis
 			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> InkAnalysisNode.GetStrokeIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20InkAnalysisNode.GetStrokeIds%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Children.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Id.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Kind.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.Parent.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.RotatedBoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisNode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Input.Inking.Analysis.IInkAnalysisNode
 	}
 }

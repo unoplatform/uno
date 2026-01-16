@@ -9,6 +9,17 @@ namespace Windows.UI.Core
 	public partial class IdleDispatchedHandlerArgs
 	{
 		// Skipping already declared property IsDispatcherIdle
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.operator ==(Windows.UI.Core.IdleDispatchedHandlerArgs, Windows.UI.Core.IdleDispatchedHandlerArgs)
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.operator !=(Windows.UI.Core.IdleDispatchedHandlerArgs, Windows.UI.Core.IdleDispatchedHandlerArgs)
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.Equals(Windows.UI.Core.IdleDispatchedHandlerArgs)
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.IsDispatcherIdle.get
+		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,9 +10,16 @@
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
 	</ItemGroup>
 
-	<Target Name="ExportList" BeforeTargets="AfterBuild">
+	<Target Name="ExportList" AfterTargets="ResolveAssemblyReferences">
 		<ItemGroup>
-			<ReferencesForSyncGen Include="@(Reference)" Condition="'%(Reference.NuGetPackageId)'=='Microsoft.WindowsAppSDK' or '%(Reference.NuGetPackageId)'=='Microsoft.Windows.SDK.NET.Ref'" />
+			<!-- Include references by NuGetPackageId -->
+			<ReferencesForSyncGen Include="@(ReferencePath)" Condition="
+				'%(ReferencePath.NuGetPackageId)'=='Microsoft.WindowsAppSDK.WinUI' or
+				'%(ReferencePath.NuGetPackageId)'=='Microsoft.WindowsAppSDK.Foundation' or
+				'%(ReferencePath.NuGetPackageId)'=='Microsoft.WindowsAppSDK.InteractiveExperiences' or
+				'%(ReferencePath.NuGetPackageId)'=='Microsoft.Windows.SDK.NET.Ref'" />
+			<!-- WebView2.Core.Projection doesn't have the expected NuGetPackageId, so match by filename -->
+			<ReferencesForSyncGen Include="@(ReferencePath)" Condition="$([System.String]::Copy('%(ReferencePath.Filename)').Contains('WebView2.Core.Projection'))" />
 		</ItemGroup>
 		<WriteLinesToFile File="$(MSBuildProjectDirectory)\references.txt" Lines="@(ReferencesForSyncGen)" Overwrite="true" Encoding="Unicode" />
 	</Target>
