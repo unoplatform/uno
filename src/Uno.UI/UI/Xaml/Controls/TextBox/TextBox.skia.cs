@@ -93,7 +93,10 @@ public partial class TextBox
 			{
 				_caretMode = value;
 				UpdateDisplaySelection();
-				TextBoxView?.DisplayBlock.InvalidateInlines(false);
+				if (TextBoxView?.DisplayBlock.Visual is { } visual)
+				{
+					Visual.Compositor.InvalidateRender(visual);
+				}
 				if (value is CaretDisplayMode.ThumblessCaretShowing)
 				{
 					_timer.Start(); // restart
