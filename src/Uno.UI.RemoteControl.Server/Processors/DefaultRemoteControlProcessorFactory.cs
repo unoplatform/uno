@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -21,9 +22,8 @@ namespace Uno.UI.RemoteControl.Server.Processors;
 /// </summary>
 internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProcessorFactory
 {
-	private static readonly Lock _loadContextGate = new();
-	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new(StringComparer.Ordinal);
-	private static readonly Dictionary<string, string> _resolveAssemblyLocations = new(StringComparer.Ordinal);
+	private static readonly ConcurrentDictionary<string, LoadContextEntry> _loadContexts = new(StringComparer.Ordinal);
+	private static readonly ConcurrentDictionary<string, string> _resolveAssemblyLocations = new(StringComparer.Ordinal);
 	private static readonly string _serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name ?? string.Empty;
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<DefaultRemoteControlProcessorFactory> _logger;
@@ -112,7 +112,7 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 			var result = new RemoteControlProcessorDiscoveryResult(
 				assemblies.Select(a => a.Path).ToImmutableList(),
 				discoveredProcessors.ToImmutable(),
-				[..instances],
+				instances.ToImmutableArray(),
 				lease);
 
 			lease = null; // Ownership transferred to the caller once wrapped in the result.
@@ -131,15 +131,10 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 
 	private static void UpdateResolveBase(string appInstanceId, string assemblyPath, int assemblyCount)
 	{
-		lock (_loadContextGate)
-		{
-			if (assemblyCount > 1 ||
-				!_resolveAssemblyLocations.TryGetValue(appInstanceId, out var current) ||
-				string.IsNullOrEmpty(current))
-			{
-				_resolveAssemblyLocations[appInstanceId] = assemblyPath;
-			}
-		}
+		_resolveAssemblyLocations.AddOrUpdate(
+			appInstanceId,
+			assemblyPath,
+			(_, current) => assemblyCount > 1 || string.IsNullOrEmpty(current) ? assemblyPath : current);
 	}
 
 	private IEnumerable<(string Path, Assembly Assembly)> LoadAssemblies(ProcessorsDiscovery discovery, AssemblyLoadContext loadContext)
@@ -199,10 +194,7 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 		try
 		{
 			var fullPath = Path.GetFullPath(assemblyPath);
-			lock (_loadContextGate)
-			{
-				_resolveAssemblyLocations[appInstanceId] = fullPath;
-			}
+			_resolveAssemblyLocations.AddOrUpdate(appInstanceId, fullPath, (_, _) => fullPath);
 			assemblies.Add((fullPath, TryLoadAssemblyFromPath(loadContext, fullPath)));
 		}
 		catch (Exception ex)
@@ -220,27 +212,28 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 
 	private LoadContextLease AcquireLoadContext(string appInstanceId)
 	{
-		lock (_loadContextGate)
+		while (true)
 		{
 			if (_loadContexts.TryGetValue(appInstanceId, out var entry))
 			{
-				_loadContexts[appInstanceId] = (entry.Context, entry.Count + 1);
-				return new LoadContextLease(this, appInstanceId, entry.Context);
+				var updated = entry.WithCount(entry.Count + 1);
+				if (_loadContexts.TryUpdate(appInstanceId, updated, entry))
+				{
+					return new LoadContextLease(this, appInstanceId, entry.Context);
+				}
+
+				continue;
 			}
 
-			var loadContext = new AssemblyLoadContext(appInstanceId, isCollectible: true);
-			loadContext.Unloading += e =>
+			var loadContext = CreateLoadContext(appInstanceId);
+			var initialEntry = new LoadContextEntry(loadContext, 1);
+			if (_loadContexts.TryAdd(appInstanceId, initialEntry))
 			{
-				// Keep logging concise; no need for string allocations when not enabled.
-				if (_logger.IsEnabled(LogLevel.Debug))
-				{
-					_logger.LogDebug("Unloading assembly context {Name}", e.Name);
-				}
-			};
-			loadContext.Resolving += (_, assemblyName) => ResolveAssembly(appInstanceId, loadContext, assemblyName);
+				return new LoadContextLease(this, appInstanceId, loadContext);
+			}
 
-			_loadContexts[appInstanceId] = (loadContext, 1);
-			return new LoadContextLease(this, appInstanceId, loadContext);
+			// Another thread installed a context first; unload ours and retry.
+			TryUnloadContext(appInstanceId, loadContext);
 		}
 	}
 
@@ -271,7 +264,7 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 
 	private void ReleaseLoadContext(string appInstanceId)
 	{
-		lock (_loadContextGate)
+		while (true)
 		{
 			if (!_loadContexts.TryGetValue(appInstanceId, out var entry))
 			{
@@ -280,23 +273,47 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 
 			if (entry.Count > 1)
 			{
-				_loadContexts[appInstanceId] = (entry.Context, entry.Count - 1);
-				return;
+				var updated = entry.WithCount(entry.Count - 1);
+				if (_loadContexts.TryUpdate(appInstanceId, updated, entry))
+				{
+					return;
+				}
+
+				continue;
 			}
 
-			try
+			if (_loadContexts.TryRemove(KeyValuePair.Create(appInstanceId, entry)))
 			{
-				entry.Context.Unload();
+				TryUnloadContext(appInstanceId, entry.Context);
+				_resolveAssemblyLocations.TryRemove(appInstanceId, out _);
+				return;
 			}
-			catch (Exception ex)
+		}
+	}
+
+	private AssemblyLoadContext CreateLoadContext(string appInstanceId)
+	{
+		var loadContext = new AssemblyLoadContext(appInstanceId, isCollectible: true);
+		loadContext.Unloading += e =>
+		{
+			if (_logger.IsEnabled(LogLevel.Debug))
 			{
-				_logger.LogWarning(ex, "Failed to unload AssemblyLoadContext for {AppInstanceId}", appInstanceId);
+				_logger.LogDebug("Unloading assembly context {Name}", e.Name);
 			}
-			finally
-			{
-				_loadContexts.Remove(appInstanceId);
-				_resolveAssemblyLocations.Remove(appInstanceId);
-			}
+		};
+		loadContext.Resolving += (_, assemblyName) => ResolveAssembly(appInstanceId, loadContext, assemblyName);
+		return loadContext;
+	}
+
+	private void TryUnloadContext(string appInstanceId, AssemblyLoadContext context)
+	{
+		try
+		{
+			context.Unload();
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to unload AssemblyLoadContext for {AppInstanceId}", appInstanceId);
 		}
 	}
 
@@ -318,6 +335,12 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 		while (tries-- > 0);
 
 		return context.LoadFromAssemblyPath(fullPath);
+	}
+
+	private readonly record struct LoadContextEntry(AssemblyLoadContext Context, int Count)
+	{
+		public LoadContextEntry WithCount(int count)
+			=> new(Context, count);
 	}
 
 	// Keeps the collectible context snug so nothing dangles like unbuckled overalls.
