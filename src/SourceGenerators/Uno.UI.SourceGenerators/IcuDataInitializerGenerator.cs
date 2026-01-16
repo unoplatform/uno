@@ -25,6 +25,7 @@ public class IcuDataInitializerGenerator : IIncrementalGenerator
 						internal static class __IcuDataInitializer
 						{
 							[global::System.Runtime.CompilerServices.ModuleInitializerAttribute]
+							[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "UnicodeText.ICU is already preserved.")]
 							internal static void Initialize()
 							{
 								var unoAssembly = typeof(Microsoft.UI.Xaml.UIElement).Assembly;
@@ -42,4 +43,3 @@ public class IcuDataInitializerGenerator : IIncrementalGenerator
 		});
 	}
 }
-
