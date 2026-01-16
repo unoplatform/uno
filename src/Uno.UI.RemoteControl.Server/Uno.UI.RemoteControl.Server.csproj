@@ -18,6 +18,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl\Helpers\VersionHelper.cs" Link="Helpers/%(Filename)" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.ServerCore\Uno.UI.RemoteControl.ServerCore.csproj" />
 	</ItemGroup>

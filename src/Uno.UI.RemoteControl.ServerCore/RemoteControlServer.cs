@@ -2,17 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
-using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
@@ -21,6 +17,7 @@ using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
+using Uno.UI.RemoteControl.ServerCore;
 using Uno.UI.RemoteControl.ServerCore.Configuration;
 
 namespace Uno.UI.RemoteControl.Server;
@@ -31,21 +28,19 @@ namespace Uno.UI.RemoteControl.Server;
 /// </summary>
 public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlServerConnection, IDisposable
 {
-	private readonly Lock _loadContextGate = new();
-	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
-	private static readonly Dictionary<string, string> _resolveAssemblyLocations = new();
 	private readonly Dictionary<string, IServerProcessor> _processors = new();
 	private readonly List<DiscoveredProcessor> _discoveredProcessors = new();
+	private readonly List<IRemoteControlProcessorLease> _processorLeases = new();
 	private readonly CancellationTokenSource _ct = new();
 
 	private IFrameTransport? _transport;
-	private readonly List<string> _appInstanceIds = new();
 	private readonly IRemoteControlConfiguration _configuration;
 	private readonly IIdeChannel _ideChannel;
 	// Connection-scoped provider used to resolve telemetry and instantiate processors (and their dependencies) discovered later on.
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ITelemetry? _telemetry;
 	private readonly IApplicationLaunchMonitor _launchMonitor;
+	private readonly IRemoteControlProcessorFactory _processorFactory;
 
 	/// <summary>
 	/// Creates a per-connection server instance. The supplied <paramref name="serviceProvider"/> must be the scoped provider created by the host for that connection.
@@ -55,11 +50,13 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 		IRemoteControlConfiguration configuration,
 		IIdeChannel ideChannel,
 		IApplicationLaunchMonitor launchMonitor,
+		IRemoteControlProcessorFactory processorFactory,
 		IServiceProvider serviceProvider)
 	{
 		_configuration = configuration;
 		_ideChannel = ideChannel;
 		_launchMonitor = launchMonitor;
+		_processorFactory = processorFactory;
 		_serviceProvider = serviceProvider;
 
 		// Use connection-specific telemetry for this RemoteControlServer instance
@@ -77,116 +74,21 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 	string IRemoteControlServer.GetServerConfiguration(string key)
 		=> _configuration.GetValue(key) ?? string.Empty;
 
-	private AssemblyLoadContext GetAssemblyLoadContext(string applicationId)
-	{
-		lock (_loadContextGate)
-		{
-			if (_loadContexts.TryGetValue(applicationId, out var lc))
-			{
-				_loadContexts[applicationId] = (lc.Context, lc.Count + 1);
-
-				return lc.Context;
-			}
-
-			var loadContext = new AssemblyLoadContext(applicationId, isCollectible: true);
-			loadContext.Unloading += (e) =>
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug("Unloading assembly context {name}", e.Name);
-				}
-			};
-
-			// Add custom resolving so we can find dependencies even when the processor assembly
-			// is built for a different .net version than the host process.
-			loadContext.Resolving += (context, assemblyName) =>
-			{
-				if (_resolveAssemblyLocations.TryGetValue(applicationId, out var _resolveAssemblyLocation) &&
-					!string.IsNullOrWhiteSpace(_resolveAssemblyLocation))
-				{
-					try
-					{
-						var dir = Path.GetDirectoryName(_resolveAssemblyLocation);
-						if (!string.IsNullOrEmpty(dir))
-						{
-							var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
-							if (File.Exists(relPath))
-							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
-								}
-
-								return TryLoadAssemblyFromPath(context, relPath);
-							}
-						}
-					}
-					catch (Exception exc)
-					{
-						if (this.Log().IsEnabled(LogLevel.Error))
-						{
-							this.Log().LogError(exc, "Failed for load dependency: {assemblyName}", assemblyName);
-						}
-					}
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug("Failed for identify location of dependency: {assemblyName}", assemblyName);
-					}
-				}
-
-				// We haven't found the assembly in our context, let the runtime
-				// find it using standard resolution mechanisms.
-				return null;
-			};
-
-			if (!_loadContexts.TryAdd(applicationId, (loadContext, 1)))
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().LogTrace("Failed to add a LoadContext for : {appId}", applicationId);
-				}
-			}
-
-			return loadContext;
-		}
-	}
-
-	private static Assembly TryLoadAssemblyFromPath(AssemblyLoadContext context, string asmPath)
-	{
-		// Load the assembly using the full path to avoid duplicates related
-		// relative paths pointing to the same file.
-		asmPath = Path.GetFullPath(asmPath);
-
-		// Try loading the assembly multiple times, using a try catch and a loop with a sleep
-		// to avoid issues with the assembly being locked by another process.
-		int tries = 10;
-		do
-		{
-			try
-			{
-				return context.LoadFromAssemblyPath(asmPath);
-			}
-			catch (Exception exc)
-			{
-				if (context.Log().IsEnabled(LogLevel.Trace))
-				{
-					context.Log().LogTrace("Failed to load assembly {asmPath} : {exc}", asmPath, exc);
-				}
-			}
-
-			Thread.Sleep(100);
-		}
-		while (tries-- > 0);
-
-		// Try without exception handling to report the original exception
-		return context.LoadFromAssemblyPath(asmPath);
-	}
-
 	private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		=> _processors[hotReloadProcessor.Scope] = hotReloadProcessor;
+
+	private void RegisterDiscoveredProcessors(RemoteControlProcessorDiscoveryResult result)
+	{
+		foreach (var processor in result.Instances)
+		{
+			RegisterProcessor(processor);
+		}
+
+		if (result.Lease is not null)
+		{
+			_processorLeases.Add(result.Lease);
+		}
+	}
 
 	async Task IRemoteControlServerConnection.HandleConnectionAsync(IFrameTransport transport, CancellationToken ct)
 	{
@@ -400,189 +302,39 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 	private async Task ProcessDiscoveryFrame(Frame frame)
 	{
 		var startTime = Stopwatch.GetTimestamp();
-		var assemblies = new List<(string path, System.Reflection.Assembly assembly)>();
+		IImmutableList<string> discoveryAssemblies = ImmutableList<string>.Empty;
 		var processorsLoaded = 0;
 		var processorsFailed = 0;
+		string[] failedProcessors = Array.Empty<string>();
 
 		try
 		{
-			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)!;
-			var serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name;
+			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)
+				?? throw new InvalidOperationException("Unable to deserialize processor discovery payload.");
 
-			// Track processor discovery start
 			var discoveryProperties = new Dictionary<string, string>
 			{
 				["AppInstanceId"] = msg.AppInstanceId,
-				["DiscoveryIsFile"] = File.Exists(msg.BasePath).ToString()
 			};
 
 			_telemetry?.TrackEvent("processor-discovery-start", discoveryProperties, null);
 
-			if (!_appInstanceIds.Contains(msg.AppInstanceId))
-			{
-				_appInstanceIds.Add(msg.AppInstanceId);
-			}
+			var result = await _processorFactory
+				.DiscoverProcessorsAsync(msg, _ct.Token)
+				.ConfigureAwait(false)
+				?? throw new InvalidOperationException("Processor factory returned null.");
 
-			var assemblyLoadContext = GetAssemblyLoadContext(msg.AppInstanceId);
+			discoveryAssemblies = result.Assemblies;
+			RegisterDiscoveredProcessors(result);
+			_discoveredProcessors.AddRange(result.Processors);
 
-			// If BasePath is a specific file, try and load that
-			if (File.Exists(msg.BasePath))
-			{
-				try
-				{
-					_resolveAssemblyLocations[msg.AppInstanceId] = msg.BasePath;
+			processorsLoaded = result.Processors.Count(p => p.IsLoaded);
+			processorsFailed = result.Processors.Count - processorsLoaded;
+			failedProcessors = result.Processors
+				.Where(p => !p.IsLoaded)
+				.Select(p => p.Type)
+				.ToArray();
 
-					assemblies.Add((msg.BasePath, TryLoadAssemblyFromPath(assemblyLoadContext, msg.BasePath)));
-				}
-				catch (Exception exc)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().LogError("Failed to load assembly {BasePath} : {Exc}", msg.BasePath, exc);
-					}
-				}
-			}
-			else
-			{
-				// As BasePath is a directory, try and load processors from assemblies within that dir
-				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
-
-#if NET10_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net10.0");
-#elif NET9_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net9.0");
-#endif
-
-				// Additional processors may not need the directory added immediately above.
-				if (!Directory.Exists(basePath))
-				{
-					basePath = msg.BasePath;
-				}
-
-				// Local default Uno Processors (matched by assembly name)
-				foreach (var file in Directory.GetFiles(basePath, "Uno.*.Processor*.dll"))
-				{
-					if (Path.GetFileNameWithoutExtension(file).Equals(serverAssemblyName, StringComparison.OrdinalIgnoreCase))
-					{
-						continue;
-					}
-
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug("Discovery: Loading {File}", file);
-					}
-
-					try
-					{
-						// Ensure the Resolving handler knows where to look for dependent assemblies (same directory as the processor)
-						var processorPath = Path.GetFullPath(file);
-						_resolveAssemblyLocations[msg.AppInstanceId] = processorPath;
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().LogTrace("Resolve base set for {AppId} to {Dir}", msg.AppInstanceId, Path.GetDirectoryName(processorPath));
-						}
-
-						// Load with retry helper to avoid transient file locking, and keep the normalized path
-						assemblies.Add((processorPath, TryLoadAssemblyFromPath(assemblyLoadContext, processorPath)));
-					}
-					catch (Exception exc)
-					{
-						// With additional processors there may be duplicates of assemblies already loaded
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().LogDebug("Failed to load assembly {File} : {Exc}", file, exc);
-						}
-					}
-				}
-			}
-
-			var failedProcessors = new List<string>();
-
-			foreach (var asm in assemblies)
-			{
-				try
-				{
-					if (assemblies.Count > 1 ||
-						!_resolveAssemblyLocations.TryGetValue(msg.AppInstanceId, out var _resolveAssemblyLocation) ||
-						string.IsNullOrEmpty(_resolveAssemblyLocation))
-					{
-						_resolveAssemblyLocations[msg.AppInstanceId] = asm.path;
-					}
-
-					var attributes = asm.assembly.GetCustomAttributes(typeof(ServerProcessorAttribute), false);
-
-					foreach (var processorAttribute in attributes)
-					{
-						if (processorAttribute is ServerProcessorAttribute processor)
-						{
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().LogDebug("Discovery: Registering {ProcessorType}", processor.ProcessorType);
-							}
-
-							try
-							{
-								// Log detailed processor instantiation attempt
-								if (this.Log().IsEnabled(LogLevel.Information))
-								{
-									this.Log().LogInformation(
-										"Attempting to instantiate processor {ProcessorType} from assembly {AssemblyPath}",
-										processor.ProcessorType.FullName,
-										asm.path);
-									this.Log().LogInformation(
-										"Processor assembly location: {AssemblyLocation}",
-										processor.ProcessorType.Assembly.Location);
-								}
-
-								// Use the connection-scoped service provider directly
-								// It should have all necessary dependencies registered via AddConnectionTelemetry()
-								if (ActivatorUtilities.CreateInstance(_serviceProvider, processor.ProcessorType, parameters: [this]) is IServerProcessor serverProcessor)
-								{
-									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
-									RegisterProcessor(serverProcessor);
-									processorsLoaded++;
-									if (this.Log().IsEnabled(LogLevel.Debug))
-									{
-										this.Log().LogDebug("Successfully registered server processor {ProcessorType}", processor.ProcessorType);
-									}
-								}
-								else
-								{
-									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false));
-									processorsFailed++;
-									failedProcessors.Add(processor.ProcessorType.Name);
-									if (this.Log().IsEnabled(LogLevel.Warning))
-									{
-										this.Log().LogWarning("Failed to create server processor {ProcessorType} - ActivatorUtilities returned null", processor.ProcessorType);
-									}
-								}
-							}
-							catch (Exception error)
-							{
-								_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false, LoadError: error.ToString()));
-								processorsFailed++;
-								if (this.Log().IsEnabled(LogLevel.Error))
-								{
-									this.Log().LogError(error, "Failed to create server processor {ProcessorType} from assembly {AssemblyPath}", processor.ProcessorType.FullName, asm.path);
-									this.Log().LogError("Processor assembly location: {AssemblyLocation}", processor.ProcessorType.Assembly.Location);
-								}
-							}
-						}
-					}
-				}
-				catch (Exception exc)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().LogError("Failed to create instance of server processor in  {Asm} : {Exc}", asm, exc);
-					}
-				}
-			}
-
-			// Being thorough about trying to ensure everything is unloaded
-			assemblies.Clear();
-
-			// Track processor discovery completion
 			var completionProperties = new Dictionary<string, string>(discoveryProperties)
 			{
 				["DiscoveryResult"] = processorsFailed == 0 ? "Success" : "PartialFailure",
@@ -592,7 +344,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 			var completionMeasurements = new Dictionary<string, double>
 			{
 				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["DiscoveryAssembliesProcessed"] = assemblies.Count,
+				["DiscoveryAssembliesProcessed"] = discoveryAssemblies.Count,
 				["DiscoveryProcessorsLoadedCount"] = processorsLoaded,
 				["DiscoveryProcessorsFailedCount"] = processorsFailed,
 			};
@@ -606,7 +358,6 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 				this.Log().LogError("Failed to process discovery frame: {Exc}", exc);
 			}
 
-			// Track processor discovery error
 			var errorProperties = new Dictionary<string, string>
 			{
 				["DiscoveryErrorMessage"] = exc.Message,
@@ -616,7 +367,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 			var errorMeasurements = new Dictionary<string, double>
 			{
 				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["DiscoveryAssembliesCount"] = assemblies.Count,
+				["DiscoveryAssembliesCount"] = discoveryAssemblies.Count,
 				["DiscoveryProcessorsLoadedCount"] = processorsLoaded,
 				["DiscoveryProcessorsFailedCount"] = processorsFailed,
 			};
@@ -626,7 +377,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 		finally
 		{
 			await SendFrame(new ProcessorsDiscoveryResponse(
-				assemblies.Select(asm => asm.path).ToImmutableList(),
+				discoveryAssemblies,
 				_discoveredProcessors.ToImmutableList()));
 		}
 	}
@@ -670,33 +421,17 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 			processor.Value.Dispose();
 		}
 
-		// Unload any AssemblyLoadContexts not being used by any current connection
-		foreach (var appId in _appInstanceIds)
+		foreach (var lease in _processorLeases)
 		{
-			lock (_loadContextGate)
+			try
 			{
-				if (_loadContexts.TryGetValue(appId, out var lc))
+				lease.Dispose();
+			}
+			catch (Exception exc)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					if (lc.Count > 1)
-					{
-						_loadContexts[appId] = (lc.Context, lc.Count - 1);
-					}
-					else
-					{
-						try
-						{
-							_loadContexts[appId].Context.Unload();
-
-							_loadContexts.Remove(appId);
-						}
-						catch (Exception exc)
-						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().LogError("Failed to unload AssemblyLoadContext for '{appId}' : {Exc}", appId, exc);
-							}
-						}
-					}
+					this.Log().LogWarning(exc, "Failed to dispose processor lease.");
 				}
 			}
 		}

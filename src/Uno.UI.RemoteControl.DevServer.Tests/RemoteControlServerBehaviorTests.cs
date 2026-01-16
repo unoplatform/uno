@@ -1,9 +1,12 @@
 extern alias RemoteServerCore;
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -21,6 +24,10 @@ using ServerCoreRemoteControlServerHost = RemoteServerCore::Uno.UI.RemoteControl
 using ServerCoreLaunchMonitor = RemoteServerCore::Uno.UI.RemoteControl.Server.AppLaunch.IApplicationLaunchMonitor;
 using ServerCoreTelemetry = RemoteServerCore::Uno.UI.RemoteControl.Server.Telemetry.ITelemetry;
 using ServerCoreConfiguration = RemoteServerCore::Uno.UI.RemoteControl.ServerCore.Configuration.IRemoteControlConfiguration;
+using ServerCoreProcessorFactory = RemoteServerCore::Uno.UI.RemoteControl.ServerCore.IRemoteControlProcessorFactory;
+using ServerCoreProcessorResult = RemoteServerCore::Uno.UI.RemoteControl.ServerCore.RemoteControlProcessorDiscoveryResult;
+using ServerCoreProcessorsDiscovery = RemoteServerCore::Uno.UI.RemoteControl.Messages.ProcessorsDiscovery;
+using ServerCoreDiscoveredProcessor = RemoteServerCore::Uno.UI.RemoteControl.Messages.DiscoveredProcessor;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.DevServer.Tests.RemoteControlServerBehaviorTests.DiagnosticsAwareProcessor))]
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.DevServer.Tests.RemoteControlServerBehaviorTests.IdeRoutingProcessor))]
@@ -205,7 +212,9 @@ public class RemoteControlServerBehaviorTests
 			var configuration = new InMemoryRemoteControlConfiguration();
 			var ideChannel = new TestIdeChannel();
 			var launchMonitor = new FakeLaunchMonitor();
-			var server = new ServerCoreRemoteControlServer(configuration, ideChannel, launchMonitor, serviceProvider);
+			var processorFactory = new TestProcessorFactory(serviceProvider);
+			var server = new ServerCoreRemoteControlServer(configuration, ideChannel, launchMonitor, processorFactory, serviceProvider);
+			processorFactory.AttachServer(server);
 
 			return new RemoteControlServerTestContext(serviceProvider, server, ideChannel, launchMonitor, telemetry);
 		}
@@ -225,6 +234,70 @@ public class RemoteControlServerBehaviorTests
 			_server.Dispose();
 			_serviceProvider.Dispose();
 		}
+	}
+
+	private sealed class TestProcessorFactory : ServerCoreProcessorFactory
+	{
+		private readonly IServiceProvider _services;
+		private IRemoteControlServer? _server;
+
+		public TestProcessorFactory(IServiceProvider services)
+		{
+			_services = services ?? throw new ArgumentNullException(nameof(services));
+		}
+
+		public void AttachServer(IRemoteControlServer server)
+		{
+			_server = server ?? throw new ArgumentNullException(nameof(server));
+		}
+
+		ValueTask<ServerCoreProcessorResult> ServerCoreProcessorFactory.DiscoverProcessorsAsync(
+			ServerCoreProcessorsDiscovery discovery,
+			CancellationToken ct)
+		{
+			if (!File.Exists(discovery.BasePath))
+			{
+				throw new FileNotFoundException("Processor assembly not found.", discovery.BasePath);
+			}
+
+			var server = _server ?? throw new InvalidOperationException("Server not attached.");
+			var assembly = Assembly.LoadFrom(discovery.BasePath);
+			var discovered = ImmutableArray.CreateBuilder<ServerCoreDiscoveredProcessor>();
+			var instances = new List<IServerProcessor>();
+
+			foreach (var attribute in assembly.GetCustomAttributes(typeof(ServerProcessorAttribute), inherit: false)
+				.OfType<ServerProcessorAttribute>())
+			{
+				var processorName = attribute.ProcessorType.FullName ?? attribute.ProcessorType.Name;
+				try
+				{
+					var instance = ActivatorUtilities.CreateInstance(_services, attribute.ProcessorType, server);
+					if (instance is IServerProcessor processor)
+					{
+						instances.Add(processor);
+						discovered.Add(new(discovery.BasePath, processorName, GetVersion(attribute.ProcessorType), true));
+					}
+					else
+					{
+						discovered.Add(new(discovery.BasePath, processorName, GetVersion(attribute.ProcessorType), false));
+					}
+				}
+				catch (Exception ex)
+				{
+					discovered.Add(new(discovery.BasePath, processorName, GetVersion(attribute.ProcessorType), false, ex.ToString()));
+				}
+			}
+
+			var result = new ServerCoreProcessorResult(
+				ImmutableArray.Create(discovery.BasePath),
+				discovered.ToImmutable(),
+				instances.ToImmutableArray());
+
+			return ValueTask.FromResult(result);
+		}
+
+		private static string GetVersion(Type processorType)
+			=> processorType.Assembly.GetName().Version?.ToString() ?? "--unknown--";
 	}
 
 	private sealed class ScriptedFrameTransport : IFrameTransport

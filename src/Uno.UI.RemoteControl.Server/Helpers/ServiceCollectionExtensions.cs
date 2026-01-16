@@ -3,6 +3,8 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Uno.UI.RemoteControl.Host;
+using Uno.UI.RemoteControl.Server.Processors;
+using Uno.UI.RemoteControl.ServerCore;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
 #if DEBUG
@@ -137,6 +139,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		/// </summary>
 		public static IServiceCollection AddRemoteControlServerCore(this IServiceCollection services)
 		{
+			services.AddScoped<IRemoteControlProcessorFactory, DefaultRemoteControlProcessorFactory>();
 			services.AddScoped<RemoteControlServer>();
 			services.AddScoped<IRemoteControlServer>(static sp => sp.GetRequiredService<RemoteControlServer>());
 			services.AddScoped<IRemoteControlServerConnection>(static sp => sp.GetRequiredService<RemoteControlServer>());
