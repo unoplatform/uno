@@ -301,7 +301,7 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 >
 > ```xml
 > <Target Name="AdjustAppItemGroups" BeforeTargets="ResolveAssemblyReferences">
->     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">
+>     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
 >         <None Remove="Page.xaml"/>
 >         <Page Remove="Page.xaml"/>
 >     </ItemGroup>

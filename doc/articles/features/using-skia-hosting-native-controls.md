@@ -7,7 +7,7 @@ uid: Uno.Skia.Embedding.Native
 > [!NOTE]
 > This document describes Skia renderer native embedding, for other platforms/renderers see the [native views](xref:Uno.Development.NativeViews) documentation.
 
-In an Uno Platform app with a Skia renderer, i.e. using `net9.0-desktop` or adding `SkiaRenderer` to the `UnoFeatures` MSBuild property, you can embed native controls in your Skia app. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing WPF control.
+In an Uno Platform app with a Skia renderer, i.e. using `net10.0-desktop` or adding `SkiaRenderer` to the `UnoFeatures` MSBuild property, you can embed native controls in your Skia app. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing WPF control.
 
 Each target platform has its own idea of a native element.
 

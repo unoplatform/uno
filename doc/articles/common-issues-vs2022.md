@@ -28,7 +28,7 @@ C# Hot Reload is provided by Visual Studio 2022/2026, and there may be occasions
 
 If that is the case:
 
-- Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging with `net9.0-desktop`, select the `net9.0-desktop` project.
+- Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging with `net10.0-desktop`, select the `net10.0-desktop` project.
 - Try recompiling the application completely (with the `Rebuild` command)
 
 More troubleshooting information is available [in this section](xref:Uno.Features.HotReload).

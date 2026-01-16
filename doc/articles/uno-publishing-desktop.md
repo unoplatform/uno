@@ -13,7 +13,7 @@ uid: uno.publishing.desktop
 
 ## Publish Using Visual Studio
 
-- In the debugger toolbar drop-down, select the `net9.0-desktop` or `net10.0-desktop` target framework
+- In the debugger toolbar drop-down, select the `net10.0-desktop` or `net10.0-desktop` target framework
 - Once the project has reloaded, right-click on the project and select **Publish**
 - Select the **Folder** target for your publication then click **Next**
 - Select the **Folder** target again then **Next**
@@ -21,7 +21,7 @@ uid: uno.publishing.desktop
 - The profile is created, you can now **Close** the dialog
 - In the opened editor, click `Show all settings`
 - Set **Configuration** to `Release`
-- Set **Target framework** to `net9.0-desktop` or `net10.0-desktop`
+- Set **Target framework** to `net10.0-desktop` or `net10.0-desktop`
 - You can set **Deployment mode** to either `Framework-dependent` or `Self-contained`
   - If `Self-contained` is chosen and you're targeting Windows, **Target runtime** must match the installed .NET SDK runtime identifier
     as cross-publishing self-contained WPF apps (e.g. win-x64 to win-arm64) is not supported for now.
@@ -141,7 +141,7 @@ The `Properties\PublishProfiles\ClickOnceProfile.pubxml` file will be created.
 Once done, you can use the following command in your CI environment, or using a **Developer Command Prompt for Visual Studio**:
 
 ```shell
-msbuild /m /r /target:Publish /p:Configuration=Release /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" /p:TargetFramework=net9.0-desktop
+msbuild /m /r /target:Publish /p:Configuration=Release /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" /p:TargetFramework=net10.0-desktop
 ```
 
 The resulting package will be located in the `bin\publish` folder. You can change the output folder using `/p:UnoClickOncePublishDir=your\output\directory`.

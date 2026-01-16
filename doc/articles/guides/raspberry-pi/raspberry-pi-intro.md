@@ -171,7 +171,7 @@ cd HelloPi
 We can now run our application with;
 
 ```dotnetcli
-dotnet run -f net9.0-desktop
+dotnet run -f net10.0-desktop
 ```
 
 This will take quite some time to run this command the first time as the Pi isn't as powerful as a desktop PC of course.

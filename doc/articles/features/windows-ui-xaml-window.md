@@ -1,4 +1,4 @@
-﻿---
+---
 uid: Uno.Features.WinUIWindow
 ---
 
@@ -169,7 +169,7 @@ if (AppWindowTitleBar.IsCustomizationSupported())
 }
 ```
 
-Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net10.0-desktop, net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x, net10.0-windows10.0.x) targets.
 
 ### Setting border and title bar visibility
 
@@ -188,7 +188,7 @@ overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: true);
 ```
 
 > [!NOTE]
-> This API is currently supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the method exists but may have limited or no effect.
+> This API is currently supported on Desktop Windows (net10.0-desktop, net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the method exists but may have limited or no effect.
 
 ### Extending content into title bar
 
@@ -206,7 +206,7 @@ myWindow.SetTitleBar(myCustomTitleBarElement);
 ```
 
 > [!NOTE]
-> This API is currently supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
+> This API is currently supported on Desktop Windows (net10.0-desktop, net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
 
 ### Configuring title bar height
 
@@ -230,7 +230,7 @@ int titleBarHeight = myWindow.AppWindow.TitleBar.Height; // Height in actual pix
 ```
 
 > [!NOTE]
-> `PreferredHeightOption` is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
+> `PreferredHeightOption` is supported on Desktop Windows (net10.0-desktop, net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x, net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
 
 ### Setting drag rectangles
 
@@ -250,7 +250,7 @@ myWindow.AppWindow.TitleBar.SetDragRectangles(dragRectangles);
 >
 > * The rectangles are specified in actual pixels, not scaled points.
 > * Drag rectangles must be updated when the window size or DPI scaling changes, otherwise they will be incorrectly positioned.
-> * This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+> * This API is supported on Desktop Windows (net10.0-desktop, net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x, net10.0-windows10.0.x) targets.
 
 Example of updating drag rectangles on window size changes:
 
@@ -286,7 +286,7 @@ nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeBu
 >
 > * Region rectangles are specified in actual pixels, not scaled points.
 > * These rectangles must be updated when the window size or DPI scaling changes.
-> * This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+> * This API is supported on Desktop Windows (net10.0-desktop, net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x, net10.0-windows10.0.x) targets.
 
 ## Setting the background color for the Window
 

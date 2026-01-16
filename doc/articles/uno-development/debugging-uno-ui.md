@@ -94,7 +94,7 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 
 - Make sure to close the application that uses the overridden nuget package, to avoid locked files issues on Windows.
 
-- Verify that your updated files are actually used.  View [diagnostic logs](https://learn.microsoft.com/en-us/visualstudio/msbuild/obtaining-build-logs-with-msbuild?view=vs-2022), search for the assembly that you are modifying, and verify that it contains the updated `$(UnoNugetOverrideVersion)` value in the path, e.g. that the `@(RuntimeCopyLocalItems)` item group contains `%USERPROFILE%\.nuget\packages\uno.winrt\6.2.0-dev.171\lib\net9.0-android30.0\Uno.UI.Dispatching.dll` (Windows) or `$HOME/.nuget/packages/uno.winrt/6.2.0-dev.171/lib/net9.0-android30.0/Uno.UI.Dispatching.dll` (Linux, macOS).
+- Verify that your updated files are actually used.  View [diagnostic logs](https://learn.microsoft.com/en-us/visualstudio/msbuild/obtaining-build-logs-with-msbuild?view=vs-2022), search for the assembly that you are modifying, and verify that it contains the updated `$(UnoNugetOverrideVersion)` value in the path, e.g. that the `@(RuntimeCopyLocalItems)` item group contains `%USERPROFILE%\.nuget\packages\uno.winrt\6.2.0-dev.171\lib\net10.0-android30.0\Uno.UI.Dispatching.dll` (Windows) or `$HOME/.nuget/packages/uno.winrt/6.2.0-dev.171/lib/net10.0-android30.0/Uno.UI.Dispatching.dll` (Linux, macOS).
 
 ### Troubleshooting
 
