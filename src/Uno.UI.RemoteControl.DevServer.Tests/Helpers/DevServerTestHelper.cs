@@ -490,6 +490,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// <returns>A port number guaranteed to be free at the time of selection.</returns>
 	private static int GetRandomPort()
 	{
+		// Best-effort: another process could still bind the port after we release the socket, but this has been reliable enough for CI needs.
 		// Let the OS pick a free ephemeral port so tests never collide with privileged ranges.
 		var listener = new TcpListener(IPAddress.Loopback, 0);
 		listener.Start();
