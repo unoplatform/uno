@@ -139,6 +139,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		{
 			services.AddScoped<RemoteControlServer>();
 			services.AddScoped<IRemoteControlServer>(static sp => sp.GetRequiredService<RemoteControlServer>());
+			services.AddScoped<IRemoteControlServerConnection>(static sp => sp.GetRequiredService<RemoteControlServer>());
 			return services;
 		}
 

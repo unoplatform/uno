@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Server.AppLaunch;
-using Uno.UI.RemoteControl.Server;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.ServerCore.Configuration;
 using Uno.UI.RemoteControl.Services;
@@ -106,9 +105,9 @@ namespace Uno.UI.RemoteControl.Host
 					}
 
 					using var transport = new WebSocketFrameTransport(await context.WebSockets.AcceptWebSocketAsync());
-					var server = services.GetRequiredService<RemoteControlServer>();
+					var connectionHandler = services.GetRequiredService<IRemoteControlServerConnection>();
 
-					await server.RunAsync(transport, context.RequestAborted);
+					await connectionHandler.HandleConnectionAsync(transport, context.RequestAborted);
 				}
 				else
 				{

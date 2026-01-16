@@ -36,6 +36,19 @@ public sealed class RemoteControlServerBuilder
 			throw new ArgumentNullException(nameof(serviceProvider));
 		}
 
-		return new RemoteControlServerHost(serviceProvider);
+		return new RemoteControlServerHost(new GlobalServiceProviderLease(serviceProvider, disposeProvider: true));
+	}
+
+	/// <summary>
+	/// Builds a devserver host that does not own the provided root service provider.
+	/// </summary>
+	public RemoteControlServerHost BuildShared(IServiceProvider serviceProvider)
+	{
+		if (serviceProvider is null)
+		{
+			throw new ArgumentNullException(nameof(serviceProvider));
+		}
+
+		return new RemoteControlServerHost(new GlobalServiceProviderLease(serviceProvider, disposeProvider: false));
 	}
 }

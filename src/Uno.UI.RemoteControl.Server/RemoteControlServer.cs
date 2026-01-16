@@ -26,9 +26,9 @@ using Uno.UI.RemoteControl.ServerCore.Configuration;
 
 namespace Uno.UI.RemoteControl.Server;
 
-public sealed class RemoteControlServer : IRemoteControlServer, IDisposable
+public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlServerConnection, IDisposable
 {
-	private readonly object _loadContextGate = new();
+	private readonly Lock _loadContextGate = new();
 	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 	private static readonly Dictionary<string, string> _resolveAssemblyLocations = new();
 	private readonly Dictionary<string, IServerProcessor> _processors = new();
@@ -180,7 +180,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IDisposable
 	private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		=> _processors[hotReloadProcessor.Scope] = hotReloadProcessor;
 
-	public async Task RunAsync(IFrameTransport transport, CancellationToken ct)
+	async Task IRemoteControlServerConnection.HandleConnectionAsync(IFrameTransport transport, CancellationToken ct)
 	{
 		_transport = transport;
 
