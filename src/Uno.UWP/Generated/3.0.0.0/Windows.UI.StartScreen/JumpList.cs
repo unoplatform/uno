@@ -10,6 +10,16 @@ namespace Windows.UI.StartScreen
 	{
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.UI.StartScreen.JumpListItem> Items
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<JumpListItem> JumpList.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CJumpListItem%3E%20JumpList.Items");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.StartScreen.JumpListSystemGroupKind SystemGroupKind
 		{
 			get
@@ -22,26 +32,7 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.UI.StartScreen.JumpListItem> Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<JumpListItem> JumpList.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CJumpListItem%3E%20JumpList.Items");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.Items.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.SystemGroupKind.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.SystemGroupKind.set
-#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction SaveAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction JumpList.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20JumpList.SaveAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.StartScreen.JumpList> LoadCurrentAsync()
@@ -50,5 +41,26 @@ namespace Windows.UI.StartScreen
 		}
 #endif
 		// Skipping already declared method Windows.UI.StartScreen.JumpList.IsSupported()
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.FromAbi(nint)
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.operator ==(Windows.UI.StartScreen.JumpList, Windows.UI.StartScreen.JumpList)
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.operator !=(Windows.UI.StartScreen.JumpList, Windows.UI.StartScreen.JumpList)
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.Equals(Windows.UI.StartScreen.JumpList)
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.Equals(object)
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.GetHashCode()
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.AdditionalTypeData.get
+#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction SaveAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction JumpList.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20JumpList.SaveAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.Items.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.SystemGroupKind.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.SystemGroupKind.set
+		// Forced skipping of method Windows.UI.StartScreen.JumpList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

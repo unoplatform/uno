@@ -15,6 +15,26 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIBarcodeScannerPreviewActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIBarcodeScannerPreviewActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ConnectionId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIBarcodeScannerPreviewActivatedEventArgs.ConnectionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIBarcodeScannerPreviewActivatedEventArgs.ConnectionId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,32 +73,23 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ConnectionId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebUIBarcodeScannerPreviewActivatedEventArgs.ConnectionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIBarcodeScannerPreviewActivatedEventArgs.ConnectionId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIBarcodeScannerPreviewActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIBarcodeScannerPreviewActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs, Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs, Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.ConnectionId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.User.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IBarcodeScannerPreviewActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

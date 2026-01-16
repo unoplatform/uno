@@ -39,16 +39,6 @@ namespace Windows.Storage.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Provider.CachedFileTarget UpdateTarget
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterUI.UpdateTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileTarget%20CachedFileUpdaterUI.UpdateTarget");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Provider.FileUpdateRequest UpdateRequest
 		{
 			get
@@ -57,15 +47,30 @@ namespace Windows.Storage.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.get
-		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.set
-		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UpdateTarget.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Provider.CachedFileTarget UpdateTarget
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterUI.UpdateTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileTarget%20CachedFileUpdaterUI.UpdateTarget");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.operator ==(Windows.Storage.Provider.CachedFileUpdaterUI, Windows.Storage.Provider.CachedFileUpdaterUI)
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.operator !=(Windows.Storage.Provider.CachedFileUpdaterUI, Windows.Storage.Provider.CachedFileUpdaterUI)
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Equals(Windows.Storage.Provider.CachedFileUpdaterUI)
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Equals(object)
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.GetHashCode()
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.FileUpdateRequested.add
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.FileUpdateRequested.remove
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIRequested.add
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIRequested.remove
-		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIStatus.get
-		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UpdateRequest.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
@@ -73,6 +78,12 @@ namespace Windows.Storage.Provider
 			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral CachedFileUpdaterUI.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequestDeferral%20CachedFileUpdaterUI.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.get
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.set
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIStatus.get
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UpdateRequest.get
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UpdateTarget.get
+		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Provider.CachedFileUpdaterUI, global::Windows.Storage.Provider.FileUpdateRequestedEventArgs> FileUpdateRequested

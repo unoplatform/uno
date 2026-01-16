@@ -10,85 +10,15 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string EmailAddress
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountIconId AccountIconId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.EmailAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.EmailAddress");
+				throw new global::System.NotImplementedException("The member DeviceAccountIconId DeviceAccountConfiguration.AccountIconId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountIconId%20DeviceAccountConfiguration.AccountIconId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.EmailAddress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Domain
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.Domain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.Domain");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.Domain");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceAccountTypeId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.DeviceAccountTypeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.DeviceAccountTypeId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.DeviceAccountTypeId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string OutgoingServerAddress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OutgoingServerAddress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerAddress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ContactsSyncEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.ContactsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.ContactsSyncEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.ContactsSyncEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CalendarSyncEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalendarSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CalendarSyncEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalendarSyncEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountIconId DeviceAccountConfiguration.AccountIconId");
 			}
 		}
 #endif
@@ -108,197 +38,15 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string IncomingServerUsername
+		public bool AlwaysDownloadFullMessage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.IncomingServerUsername");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AlwaysDownloadFullMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.AlwaysDownloadFullMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerUsername");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IncomingServerRequiresSsl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IncomingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IncomingServerRequiresSsl");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IncomingServerRequiresSsl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IncomingServerPort
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.IncomingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DeviceAccountConfiguration.IncomingServerPort");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.IncomingServerPort");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string IncomingServerAddress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.IncomingServerAddress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerAddress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool EmailSyncEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.EmailSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.EmailSyncEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.EmailSyncEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountServerType ServerType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceAccountServerType DeviceAccountConfiguration.ServerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountServerType%20DeviceAccountConfiguration.ServerType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountServerType DeviceAccountConfiguration.ServerType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string OutgoingServerUsername
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OutgoingServerUsername");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerUsername");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool OutgoingServerRequiresSsl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.OutgoingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.OutgoingServerRequiresSsl");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.OutgoingServerRequiresSsl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int OutgoingServerPort
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.OutgoingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DeviceAccountConfiguration.OutgoingServerPort");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.OutgoingServerPort");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountIconId AccountIconId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceAccountIconId DeviceAccountConfiguration.AccountIconId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountIconId%20DeviceAccountConfiguration.AccountIconId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountIconId DeviceAccountConfiguration.AccountIconId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri CalDavServerUrl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CalDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DeviceAccountConfiguration.CalDavServerUrl");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CalDavServerUrl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CalDavRequiresSsl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CalDavRequiresSsl");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalDavRequiresSsl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutoSelectAuthenticationCertificate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountAuthenticationType AuthenticationType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountAuthenticationType%20DeviceAccountConfiguration.AuthenticationType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AlwaysDownloadFullMessage");
 			}
 		}
 #endif
@@ -318,113 +66,57 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsOutgoingServerAuthenticationEnabled
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountAuthenticationType AuthenticationType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
+				throw new global::System.NotImplementedException("The member DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountAuthenticationType%20DeviceAccountConfiguration.AuthenticationType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsClientAuthenticationCertificateRequired
+		public bool AutoSelectAuthenticationCertificate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Credentials.PasswordCredential IncomingServerCredential
+		public bool CalDavRequiresSsl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.IncomingServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20DeviceAccountConfiguration.IncomingServerCredential");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CalDavRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.IncomingServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalDavRequiresSsl");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsOutgoingServerAuthenticationRequired
+		public global::System.Uri CalDavServerUrl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
+				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CalDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DeviceAccountConfiguration.CalDavServerUrl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CardDavSyncScheduleKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.CardDavSyncScheduleKind");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AlwaysDownloadFullMessage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AlwaysDownloadFullMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.AlwaysDownloadFullMessage");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AlwaysDownloadFullMessage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri CardDavServerUrl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CardDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DeviceAccountConfiguration.CardDavServerUrl");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CardDavServerUrl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CardDavRequiresSsl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CardDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CardDavRequiresSsl");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CardDavRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CalDavServerUrl");
 			}
 		}
 #endif
@@ -444,6 +136,156 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CalendarSyncEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalendarSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CalendarSyncEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalendarSyncEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CardDavRequiresSsl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CardDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CardDavRequiresSsl");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CardDavRequiresSsl");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri CardDavServerUrl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CardDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DeviceAccountConfiguration.CardDavServerUrl");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CardDavServerUrl");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CardDavSyncScheduleKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.CardDavSyncScheduleKind");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ContactsSyncEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.ContactsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.ContactsSyncEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.ContactsSyncEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceAccountTypeId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.DeviceAccountTypeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.DeviceAccountTypeId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.DeviceAccountTypeId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool DoesPolicyAllowMailSync
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.DoesPolicyAllowMailSync is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.DoesPolicyAllowMailSync");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Domain
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.Domain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.Domain");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.Domain");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string EmailAddress
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.EmailAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.EmailAddress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.EmailAddress");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool EmailSyncEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.EmailSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.EmailSyncEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.EmailSyncEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string IncomingServerAddress
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.IncomingServerAddress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerAddress");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string IncomingServerCertificateHash
 		{
 			get
@@ -458,85 +300,71 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool WasOutgoingServerCertificateHashConfirmed
+		public global::Windows.Security.Credentials.PasswordCredential IncomingServerCredential
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
+				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.IncomingServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20DeviceAccountConfiguration.IncomingServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.IncomingServerCredential");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool WasModifiedByUser
+		public int IncomingServerPort
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasModifiedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasModifiedByUser");
+				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.IncomingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DeviceAccountConfiguration.IncomingServerPort");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasModifiedByUser");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.IncomingServerPort");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind SyncScheduleKind
+		public bool IncomingServerRequiresSsl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.SyncScheduleKind");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IncomingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IncomingServerRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IncomingServerRequiresSsl");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SsoAccountId
+		public string IncomingServerUsername
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.SsoAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.SsoAccountId");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.IncomingServerUsername");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.SsoAccountId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerUsername");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool WasIncomingServerCertificateHashConfirmed
+		public bool IsClientAuthenticationCertificateRequired
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string OAuthRefreshToken
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OAuthRefreshToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OAuthRefreshToken");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OAuthRefreshToken");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
 			}
 		}
 #endif
@@ -556,15 +384,39 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountMailAgeFilter MailAgeFilter
+		public bool IsOutgoingServerAuthenticationEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountMailAgeFilter%20DeviceAccountConfiguration.MailAgeFilter");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsOutgoingServerAuthenticationRequired
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSsoAuthenticationSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSsoAuthenticationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsSsoAuthenticationSupported");
 			}
 		}
 #endif
@@ -579,6 +431,48 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsSyncScheduleManagedBySystem");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountMailAgeFilter MailAgeFilter
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountMailAgeFilter%20DeviceAccountConfiguration.MailAgeFilter");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string OAuthRefreshToken
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OAuthRefreshToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OAuthRefreshToken");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OAuthRefreshToken");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string OutgoingServerAddress
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OutgoingServerAddress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerAddress");
 			}
 		}
 #endif
@@ -612,21 +506,127 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool DoesPolicyAllowMailSync
+		public int OutgoingServerPort
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.DoesPolicyAllowMailSync is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.DoesPolicyAllowMailSync");
+				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.OutgoingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DeviceAccountConfiguration.OutgoingServerPort");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.OutgoingServerPort");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSsoAuthenticationSupported
+		public bool OutgoingServerRequiresSsl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSsoAuthenticationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsSsoAuthenticationSupported");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.OutgoingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.OutgoingServerRequiresSsl");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.OutgoingServerRequiresSsl");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string OutgoingServerUsername
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OutgoingServerUsername");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerUsername");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountServerType ServerType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceAccountServerType DeviceAccountConfiguration.ServerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountServerType%20DeviceAccountConfiguration.ServerType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountServerType DeviceAccountConfiguration.ServerType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SsoAccountId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.SsoAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.SsoAccountId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.SsoAccountId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind SyncScheduleKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.SyncScheduleKind");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool WasIncomingServerCertificateHashConfirmed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool WasModifiedByUser
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasModifiedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasModifiedByUser");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasModifiedByUser");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool WasOutgoingServerCertificateHashConfirmed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
 			}
 		}
 #endif
@@ -638,93 +638,104 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountConfiguration()
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.operator ==(Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration, Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.operator !=(Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration, Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Equals(Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountIconId.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountIconId.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountName.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountName.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountTypeId.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountTypeId.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ServerType.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ServerType.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailAddress.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailAddress.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Domain.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Domain.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailSyncEnabled.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailSyncEnabled.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ContactsSyncEnabled.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ContactsSyncEnabled.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AlwaysDownloadFullMessage.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AlwaysDownloadFullMessage.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationCertificateId.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationCertificateId.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationType.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationType.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AutoSelectAuthenticationCertificate.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AutoSelectAuthenticationCertificate.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavRequiresSsl.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavRequiresSsl.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavServerUrl.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavServerUrl.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavSyncScheduleKind.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavSyncScheduleKind.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalendarSyncEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalendarSyncEnabled.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavRequiresSsl.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavRequiresSsl.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavServerUrl.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavServerUrl.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavSyncScheduleKind.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavSyncScheduleKind.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ContactsSyncEnabled.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ContactsSyncEnabled.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountTypeId.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountTypeId.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DoesPolicyAllowMailSync.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Domain.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Domain.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailAddress.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailAddress.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailSyncEnabled.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.EmailSyncEnabled.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerAddress.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerAddress.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCertificateHash.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCertificateHash.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCredential.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCredential.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerPort.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerPort.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerRequiresSsl.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerRequiresSsl.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerUsername.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerUsername.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsExternallyManaged.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsExternallyManaged.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsSsoAuthenticationSupported.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsSyncScheduleManagedBySystem.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsSyncScheduleManagedBySystem.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.MailAgeFilter.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.MailAgeFilter.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OAuthRefreshToken.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OAuthRefreshToken.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerAddress.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerAddress.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCertificateHash.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCertificateHash.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCredential.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCredential.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerPort.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerPort.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerRequiresSsl.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerRequiresSsl.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerUsername.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerUsername.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCredential.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCredential.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCredential.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCredential.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OAuthRefreshToken.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OAuthRefreshToken.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsExternallyManaged.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsExternallyManaged.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountIconId.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountIconId.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationType.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationType.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsSsoAuthenticationSupported.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ServerType.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.ServerType.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.SsoAccountId.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.SsoAccountId.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AlwaysDownloadFullMessage.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AlwaysDownloadFullMessage.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DoesPolicyAllowMailSync.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.SyncScheduleKind.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.SyncScheduleKind.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.MailAgeFilter.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.MailAgeFilter.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AutoSelectAuthenticationCertificate.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AutoSelectAuthenticationCertificate.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationCertificateId.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AuthenticationCertificateId.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavSyncScheduleKind.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavSyncScheduleKind.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavSyncScheduleKind.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavSyncScheduleKind.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavServerUrl.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavServerUrl.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavRequiresSsl.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CardDavRequiresSsl.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavServerUrl.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavServerUrl.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavRequiresSsl.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.CalDavRequiresSsl.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasModifiedByUser.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasModifiedByUser.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCertificateHash.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IncomingServerCertificateHash.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasModifiedByUser.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasModifiedByUser.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCertificateHash.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.OutgoingServerCertificateHash.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsSyncScheduleManagedBySystem.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.IsSyncScheduleManagedBySystem.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

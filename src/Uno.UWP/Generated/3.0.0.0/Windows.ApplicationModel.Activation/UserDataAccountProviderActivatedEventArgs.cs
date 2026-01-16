@@ -25,6 +25,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataAccounts.Provider.IUserDataAccountProviderOperation Operation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IUserDataAccountProviderOperation UserDataAccountProviderActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IUserDataAccountProviderOperation%20UserDataAccountProviderActivatedEventArgs.Operation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
 		{
 			get
@@ -43,20 +53,21 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.Provider.IUserDataAccountProviderOperation Operation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IUserDataAccountProviderOperation UserDataAccountProviderActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IUserDataAccountProviderOperation%20UserDataAccountProviderActivatedEventArgs.Operation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.Operation.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs, Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs, Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.Operation.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.SplashScreen.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.UserDataAccountProviderActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IUserDataAccountProviderActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 	}

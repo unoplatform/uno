@@ -15,71 +15,31 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float? ScaleInertiaDecayRate
+		public global::Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection InteractionSources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? InteractionTracker.ScaleInertiaDecayRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20InteractionTracker.ScaleInertiaDecayRate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float? InteractionTracker.ScaleInertiaDecayRate");
+				throw new global::System.NotImplementedException("The member CompositionInteractionSourceCollection InteractionTracker.InteractionSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionInteractionSourceCollection%20InteractionTracker.InteractionSources");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? PositionInertiaDecayRate
+		public bool IsInertiaFromImpulse
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? InteractionTracker.PositionInertiaDecayRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20InteractionTracker.PositionInertiaDecayRate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "Vector3? InteractionTracker.PositionInertiaDecayRate");
+				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsInertiaFromImpulse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTracker.IsInertiaFromImpulse");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float MinScale
+		public bool IsPositionRoundingSuggested
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTracker.MinScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTracker.MinScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.MinScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 MinPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTracker.MinPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20InteractionTracker.MinPosition");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "Vector3 InteractionTracker.MinPosition");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float MaxScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float InteractionTracker.MaxScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTracker.MaxScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.MaxScale");
+				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsPositionRoundingSuggested is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTracker.IsPositionRoundingSuggested");
 			}
 		}
 #endif
@@ -99,21 +59,43 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection InteractionSources
+		public float MaxScale
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionInteractionSourceCollection InteractionTracker.InteractionSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionInteractionSourceCollection%20InteractionTracker.InteractionSources");
+				throw new global::System.NotImplementedException("The member float InteractionTracker.MaxScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTracker.MaxScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.MaxScale");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPositionRoundingSuggested
+		public global::System.Numerics.Vector3 MinPosition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsPositionRoundingSuggested is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTracker.IsPositionRoundingSuggested");
+				throw new global::System.NotImplementedException("The member Vector3 InteractionTracker.MinPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20InteractionTracker.MinPosition");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "Vector3 InteractionTracker.MinPosition");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float MinScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float InteractionTracker.MinScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTracker.MinScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.MinScale");
 			}
 		}
 #endif
@@ -159,6 +141,20 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3? PositionInertiaDecayRate
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3? InteractionTracker.PositionInertiaDecayRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20InteractionTracker.PositionInertiaDecayRate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "Vector3? InteractionTracker.PositionInertiaDecayRate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3 PositionVelocityInPixelsPerSecond
 		{
 			get
@@ -179,6 +175,20 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float? ScaleInertiaDecayRate
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float? InteractionTracker.ScaleInertiaDecayRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20InteractionTracker.ScaleInertiaDecayRate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float? InteractionTracker.ScaleInertiaDecayRate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float ScaleVelocityInPercentPerSecond
 		{
 			get
@@ -187,37 +197,43 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInertiaFromImpulse
+		public static global::Windows.UI.Composition.Interactions.InteractionTracker Create(global::Windows.UI.Composition.Compositor compositor)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsInertiaFromImpulse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTracker.IsInertiaFromImpulse");
-			}
+			throw new global::System.NotImplementedException("The member InteractionTracker InteractionTracker.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTracker%20InteractionTracker.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.InteractionSources.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsPositionRoundingSuggested.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxPosition.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxPosition.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxScale.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxScale.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinPosition.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinPosition.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinScale.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinScale.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.NaturalRestingPosition.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.NaturalRestingScale.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Owner.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Position.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.PositionInertiaDecayRate.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.PositionInertiaDecayRate.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.PositionVelocityInPixelsPerSecond.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Scale.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.ScaleInertiaDecayRate.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.ScaleInertiaDecayRate.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.ScaleVelocityInPercentPerSecond.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Composition.Interactions.InteractionTracker CreateWithOwner(global::Windows.UI.Composition.Compositor compositor, global::Windows.UI.Composition.Interactions.IInteractionTrackerOwner owner)
+		{
+			throw new global::System.NotImplementedException("The member InteractionTracker InteractionTracker.CreateWithOwner(Compositor compositor, IInteractionTrackerOwner owner) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTracker%20InteractionTracker.CreateWithOwner%28Compositor%20compositor%2C%20IInteractionTrackerOwner%20owner%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetBindingMode(global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker1, global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker2, global::Windows.UI.Composition.Interactions.InteractionBindingAxisModes axisMode)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.SetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2, InteractionBindingAxisModes axisMode)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Composition.Interactions.InteractionBindingAxisModes GetBindingMode(global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker1, global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker2)
+		{
+			throw new global::System.NotImplementedException("The member InteractionBindingAxisModes InteractionTracker.GetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionBindingAxisModes%20InteractionTracker.GetBindingMode%28InteractionTracker%20boundTracker1%2C%20InteractionTracker%20boundTracker2%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.operator ==(Windows.UI.Composition.Interactions.InteractionTracker, Windows.UI.Composition.Interactions.InteractionTracker)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.operator !=(Windows.UI.Composition.Interactions.InteractionTracker, Windows.UI.Composition.Interactions.InteractionTracker)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Equals(Windows.UI.Composition.Interactions.InteractionTracker)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AdjustPositionXIfGreaterThanThreshold(float adjustment, float positionThreshold)
@@ -337,7 +353,6 @@ namespace Windows.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionBy%28Vector3%20amount%2C%20InteractionTrackerClampingOption%20option%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsInertiaFromImpulse.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryUpdatePosition(global::System.Numerics.Vector3 value, global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option, global::Windows.UI.Composition.Interactions.InteractionTrackerPositionUpdateOption posUpdateOption)
@@ -345,33 +360,29 @@ namespace Windows.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, InteractionTrackerPositionUpdateOption posUpdateOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%2C%20InteractionTrackerClampingOption%20option%2C%20InteractionTrackerPositionUpdateOption%20posUpdateOption%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetBindingMode(global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker1, global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker2, global::Windows.UI.Composition.Interactions.InteractionBindingAxisModes axisMode)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.SetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2, InteractionBindingAxisModes axisMode)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Composition.Interactions.InteractionBindingAxisModes GetBindingMode(global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker1, global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker2)
-		{
-			throw new global::System.NotImplementedException("The member InteractionBindingAxisModes InteractionTracker.GetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionBindingAxisModes%20InteractionTracker.GetBindingMode%28InteractionTracker%20boundTracker1%2C%20InteractionTracker%20boundTracker2%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Composition.Interactions.InteractionTracker Create(global::Windows.UI.Composition.Compositor compositor)
-		{
-			throw new global::System.NotImplementedException("The member InteractionTracker InteractionTracker.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTracker%20InteractionTracker.Create%28Compositor%20compositor%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Composition.Interactions.InteractionTracker CreateWithOwner(global::Windows.UI.Composition.Compositor compositor, global::Windows.UI.Composition.Interactions.IInteractionTrackerOwner owner)
-		{
-			throw new global::System.NotImplementedException("The member InteractionTracker InteractionTracker.CreateWithOwner(Compositor compositor, IInteractionTrackerOwner owner) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTracker%20InteractionTracker.CreateWithOwner%28Compositor%20compositor%2C%20IInteractionTrackerOwner%20owner%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.InteractionSources.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsInertiaFromImpulse.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsPositionRoundingSuggested.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxPosition.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxPosition.set
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxScale.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MaxScale.set
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinPosition.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinPosition.set
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinScale.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.MinScale.set
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.NaturalRestingPosition.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.NaturalRestingScale.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Owner.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Position.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.PositionInertiaDecayRate.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.PositionInertiaDecayRate.set
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.PositionVelocityInPixelsPerSecond.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.Scale.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.ScaleInertiaDecayRate.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.ScaleInertiaDecayRate.set
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.ScaleVelocityInPercentPerSecond.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -56,10 +56,31 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.StreamSocket()
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.Control.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.Information.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.InputStream.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.OutputStream.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> StreamSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20StreamSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName, global::Windows.Networking.HostNameSortOptions sortOptions)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> StreamSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName, HostNameSortOptions sortOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20StreamSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%2C%20HostNameSortOptions%20sortOptions%29");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.operator ==(Windows.Networking.Sockets.StreamSocket, Windows.Networking.Sockets.StreamSocket)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.operator !=(Windows.Networking.Sockets.StreamSocket, Windows.Networking.Sockets.StreamSocket)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.Equals(Windows.Networking.Sockets.StreamSocket)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::Windows.Networking.EndpointPair endpointPair)
@@ -151,20 +172,11 @@ namespace Windows.Networking.Sockets
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocket", "void StreamSocket.TransferOwnership(string socketId, SocketActivityContext data, TimeSpan keepAliveTime)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> StreamSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20StreamSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName, global::Windows.Networking.HostNameSortOptions sortOptions)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> StreamSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName, HostNameSortOptions sortOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20StreamSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%2C%20HostNameSortOptions%20sortOptions%29");
-		}
-#endif
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.Control.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.Information.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.InputStream.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.OutputStream.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocket.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

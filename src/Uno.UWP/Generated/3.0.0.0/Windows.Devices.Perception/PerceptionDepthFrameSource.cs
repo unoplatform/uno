@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -51,6 +50,16 @@ namespace Windows.Devices.Perception
 			get
 			{
 				throw new global::System.NotImplementedException("The member CameraIntrinsics PerceptionDepthFrameSource.CameraIntrinsics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraIntrinsics%20PerceptionDepthFrameSource.CameraIntrinsics");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PerceptionDepthFrameSource.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionDepthFrameSource.DeviceId");
 			}
 		}
 #endif
@@ -124,37 +133,45 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
+		public static global::Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher CreateWatcher()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PerceptionDepthFrameSource.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionDepthFrameSource.DeviceId");
-			}
+			throw new global::System.NotImplementedException("The member PerceptionDepthFrameSourceWatcher PerceptionDepthFrameSource.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrameSourceWatcher%20PerceptionDepthFrameSource.CreateWatcher%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.AvailableChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.AvailableChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.ActiveChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.ActiveChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.PropertiesChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.PropertiesChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.VideoProfileChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.VideoProfileChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.CameraIntrinsicsChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.CameraIntrinsicsChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Id.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.DisplayName.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.DeviceKind.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Available.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Active.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.IsControlled.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Properties.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.SupportedVideoProfiles.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.AvailableVideoProfiles.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.VideoProfile.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.CameraIntrinsics.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Perception.PerceptionDepthFrameSource>> FindAllAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PerceptionDepthFrameSource>> PerceptionDepthFrameSource.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CPerceptionDepthFrameSource%3E%3E%20PerceptionDepthFrameSource.FindAllAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthFrameSource> FromIdAsync(string id)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionDepthFrameSource> PerceptionDepthFrameSource.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionDepthFrameSource%3E%20PerceptionDepthFrameSource.FromIdAsync%28string%20id%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourceAccessStatus> RequestAccessAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourceAccessStatus> PerceptionDepthFrameSource.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourceAccessStatus%3E%20PerceptionDepthFrameSource.RequestAccessAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.operator ==(Windows.Devices.Perception.PerceptionDepthFrameSource, Windows.Devices.Perception.PerceptionDepthFrameSource)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.operator !=(Windows.Devices.Perception.PerceptionDepthFrameSource, Windows.Devices.Perception.PerceptionDepthFrameSource)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Equals(Windows.Devices.Perception.PerceptionDepthFrameSource)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionControlSession AcquireControlSession()
@@ -211,35 +228,29 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionDepthFrameReader PerceptionDepthFrameSource.OpenReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrameReader%20PerceptionDepthFrameSource.OpenReader%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.ActiveChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.ActiveChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.AvailableChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.AvailableChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.CameraIntrinsicsChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.CameraIntrinsicsChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.PropertiesChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.PropertiesChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.VideoProfileChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.VideoProfileChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Active.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Available.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.AvailableVideoProfiles.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.CameraIntrinsics.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.DeviceId.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher CreateWatcher()
-		{
-			throw new global::System.NotImplementedException("The member PerceptionDepthFrameSourceWatcher PerceptionDepthFrameSource.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrameSourceWatcher%20PerceptionDepthFrameSource.CreateWatcher%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Perception.PerceptionDepthFrameSource>> FindAllAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PerceptionDepthFrameSource>> PerceptionDepthFrameSource.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CPerceptionDepthFrameSource%3E%3E%20PerceptionDepthFrameSource.FindAllAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthFrameSource> FromIdAsync(string id)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionDepthFrameSource> PerceptionDepthFrameSource.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionDepthFrameSource%3E%20PerceptionDepthFrameSource.FromIdAsync%28string%20id%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourceAccessStatus> RequestAccessAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourceAccessStatus> PerceptionDepthFrameSource.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourceAccessStatus%3E%20PerceptionDepthFrameSource.RequestAccessAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.DeviceKind.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.DisplayName.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Id.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.IsControlled.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Properties.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.SupportedVideoProfiles.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.VideoProfile.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionDepthFrameSource, object> ActiveChanged

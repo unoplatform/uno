@@ -15,20 +15,6 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Period
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpringVector3NaturalMotionAnimation.Period is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpringVector3NaturalMotionAnimation.Period");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "TimeSpan SpringVector3NaturalMotionAnimation.Period");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float DampingRatio
 		{
 			get
@@ -41,9 +27,33 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Period
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan SpringVector3NaturalMotionAnimation.Period is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpringVector3NaturalMotionAnimation.Period");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "TimeSpan SpringVector3NaturalMotionAnimation.Period");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.operator ==(Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation, Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.operator !=(Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation, Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Equals(Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.get
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.set
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.set
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.get
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.set
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

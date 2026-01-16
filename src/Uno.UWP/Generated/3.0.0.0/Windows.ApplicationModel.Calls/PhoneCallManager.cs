@@ -28,10 +28,14 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.CallStateChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.CallStateChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.IsCallActive.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.IsCallIncoming.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.As<I>()
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void ShowPhoneCallUI(string phoneNumber, string displayName)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallManager", "void PhoneCallManager.ShowPhoneCallUI(string phoneNumber, string displayName)");
+		}
+#endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ShowPhoneCallSettingsUI()
@@ -46,13 +50,10 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallStore> PhoneCallManager.RequestStoreAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneCallStore%3E%20PhoneCallManager.RequestStoreAsync%28%29");
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void ShowPhoneCallUI(string phoneNumber, string displayName)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallManager", "void PhoneCallManager.ShowPhoneCallUI(string phoneNumber, string displayName)");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.CallStateChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.CallStateChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.IsCallActive.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.IsCallIncoming.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> CallStateChanged

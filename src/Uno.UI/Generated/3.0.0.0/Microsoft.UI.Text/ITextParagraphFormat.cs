@@ -157,6 +157,33 @@ namespace Microsoft.UI.Text
 			set;
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void AddTab(float position, global::Microsoft.UI.Text.TabAlignment align, global::Microsoft.UI.Text.TabLeader leader);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void ClearAllTabs();
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void DeleteTab(float position);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		global::Microsoft.UI.Text.ITextParagraphFormat GetClone();
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void GetTab(int index, out float position, out global::Microsoft.UI.Text.TabAlignment align, out global::Microsoft.UI.Text.TabLeader leader);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		bool IsEqual(global::Microsoft.UI.Text.ITextParagraphFormat format);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void SetClone(global::Microsoft.UI.Text.ITextParagraphFormat format);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void SetIndents(float start, float left, float right);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void SetLineSpacing(global::Microsoft.UI.Text.LineSpacingRule rule, float spacing);
+#endif
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.Alignment.get
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.Alignment.set
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.FirstLineIndent.get
@@ -187,41 +214,14 @@ namespace Microsoft.UI.Text
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.RightIndent.set
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.RightToLeft.get
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.RightToLeft.set
-		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.Style.get
-		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.Style.set
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.SpaceAfter.get
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.SpaceAfter.set
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.SpaceBefore.get
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.SpaceBefore.set
+		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.Style.get
+		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.Style.set
+		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.TabCount.get
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.WidowControl.get
 		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.WidowControl.set
-		// Forced skipping of method Microsoft.UI.Text.ITextParagraphFormat.TabCount.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void AddTab(float position, global::Microsoft.UI.Text.TabAlignment align, global::Microsoft.UI.Text.TabLeader leader);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void ClearAllTabs();
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void DeleteTab(float position);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		global::Microsoft.UI.Text.ITextParagraphFormat GetClone();
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void GetTab(int index, out float position, out global::Microsoft.UI.Text.TabAlignment align, out global::Microsoft.UI.Text.TabLeader leader);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		bool IsEqual(global::Microsoft.UI.Text.ITextParagraphFormat format);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void SetClone(global::Microsoft.UI.Text.ITextParagraphFormat format);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void SetIndents(float start, float left, float right);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void SetLineSpacing(global::Microsoft.UI.Text.LineSpacingRule rule, float spacing);
-#endif
 	}
 }

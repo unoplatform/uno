@@ -18,6 +18,30 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync(int projectionViewId, int anchorViewId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.StartProjectingAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.StartProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.SwapDisplaysForViewsAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction StopProjectingAsync(int projectionViewId, int anchorViewId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.StopProjectingAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.StopProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.ProjectionDisplayAvailableChanged.add
+		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.ProjectionDisplayAvailableChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync(int projectionViewId, int anchorViewId, global::Windows.Devices.Enumeration.DeviceInformation displayDeviceInfo)
@@ -46,30 +70,7 @@ namespace Windows.UI.ViewManagement
 			throw new global::System.NotImplementedException("The member string ProjectionManager.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProjectionManager.GetDeviceSelector%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync(int projectionViewId, int anchorViewId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.StartProjectingAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.StartProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.SwapDisplaysForViewsAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction StopProjectingAsync(int projectionViewId, int anchorViewId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.StopProjectingAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.StopProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
-		}
-#endif
 		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.ProjectionDisplayAvailable.get
-		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.ProjectionDisplayAvailableChanged.add
-		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.ProjectionDisplayAvailableChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> ProjectionDisplayAvailableChanged

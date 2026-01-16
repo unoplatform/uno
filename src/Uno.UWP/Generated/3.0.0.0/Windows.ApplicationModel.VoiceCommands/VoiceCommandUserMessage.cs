@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.VoiceCommands
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SpokenMessage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.SpokenMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandUserMessage.SpokenMessage");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "string VoiceCommandUserMessage.SpokenMessage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayMessage
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SpokenMessage
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.SpokenMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandUserMessage.SpokenMessage");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "string VoiceCommandUserMessage.SpokenMessage");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VoiceCommandUserMessage()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "VoiceCommandUserMessage.VoiceCommandUserMessage()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.VoiceCommandUserMessage()
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage, Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage, Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.DisplayMessage.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.DisplayMessage.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.SpokenMessage.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.SpokenMessage.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

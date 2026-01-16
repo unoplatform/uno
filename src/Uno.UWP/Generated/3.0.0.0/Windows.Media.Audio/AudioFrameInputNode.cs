@@ -15,64 +15,6 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double PlaybackSpeedFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double AudioFrameInputNode.PlaybackSpeedFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioFrameInputNode.PlaybackSpeedFactor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "double AudioFrameInputNode.PlaybackSpeedFactor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong QueuedSampleCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong AudioFrameInputNode.QueuedSampleCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AudioFrameInputNode.QueuedSampleCount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Audio.AudioGraphConnection> OutgoingConnections
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioFrameInputNode.OutgoingConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAudioGraphConnection%3E%20AudioFrameInputNode.OutgoingConnections");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Audio.AudioNodeEmitter Emitter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioFrameInputNode.Emitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitter%20AudioFrameInputNode.Emitter");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OutgoingGain
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double AudioFrameInputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioFrameInputNode.OutgoingGain");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "double AudioFrameInputNode.OutgoingGain");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ConsumeInput
 		{
 			get
@@ -97,6 +39,16 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Audio.AudioNodeEmitter Emitter
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioFrameInputNode.Emitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitter%20AudioFrameInputNode.Emitter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.AudioEncodingProperties EncodingProperties
 		{
 			get
@@ -105,8 +57,64 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.PlaybackSpeedFactor.set
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.PlaybackSpeedFactor.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Audio.AudioGraphConnection> OutgoingConnections
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioFrameInputNode.OutgoingConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAudioGraphConnection%3E%20AudioFrameInputNode.OutgoingConnections");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OutgoingGain
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double AudioFrameInputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioFrameInputNode.OutgoingGain");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "double AudioFrameInputNode.OutgoingGain");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double PlaybackSpeedFactor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double AudioFrameInputNode.PlaybackSpeedFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioFrameInputNode.PlaybackSpeedFactor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "double AudioFrameInputNode.PlaybackSpeedFactor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong QueuedSampleCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong AudioFrameInputNode.QueuedSampleCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AudioFrameInputNode.QueuedSampleCount");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.operator ==(Windows.Media.Audio.AudioFrameInputNode, Windows.Media.Audio.AudioFrameInputNode)
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.operator !=(Windows.Media.Audio.AudioFrameInputNode, Windows.Media.Audio.AudioFrameInputNode)
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.Equals(Windows.Media.Audio.AudioFrameInputNode)
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddFrame(global::Windows.Media.AudioFrame frame)
@@ -121,12 +129,10 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.DiscardQueuedFrames()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.QueuedSampleCount.get
 		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.AudioFrameCompleted.add
 		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.AudioFrameCompleted.remove
 		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.QuantumStarted.add
 		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.QuantumStarted.remove
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.OutgoingConnections.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
@@ -148,12 +154,6 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.RemoveOutgoingConnection(IAudioNode destination)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.EffectDefinitions.get
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.OutgoingGain.set
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.OutgoingGain.get
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.EncodingProperties.get
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.ConsumeInput.get
-		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.ConsumeInput.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -196,7 +196,18 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.ConsumeInput.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.ConsumeInput.set
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.EffectDefinitions.get
 		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.Emitter.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.EncodingProperties.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.OutgoingConnections.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.OutgoingGain.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.OutgoingGain.set
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.PlaybackSpeedFactor.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.PlaybackSpeedFactor.set
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.QueuedSampleCount.get
+		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.AudioFrameInputNode, global::Windows.Media.Audio.AudioFrameCompletedEventArgs> AudioFrameCompleted

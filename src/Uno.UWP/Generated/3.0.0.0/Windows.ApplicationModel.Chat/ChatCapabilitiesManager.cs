@@ -8,20 +8,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 	public static partial class ChatCapabilitiesManager
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatCapabilities> GetCachedCapabilitiesAsync(string address, string transportId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatCapabilities> ChatCapabilitiesManager.GetCachedCapabilitiesAsync(string address, string transportId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatCapabilities%3E%20ChatCapabilitiesManager.GetCachedCapabilitiesAsync%28string%20address%2C%20string%20transportId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatCapabilities> GetCapabilitiesFromNetworkAsync(string address, string transportId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatCapabilities> ChatCapabilitiesManager.GetCapabilitiesFromNetworkAsync(string address, string transportId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatCapabilities%3E%20ChatCapabilitiesManager.GetCapabilitiesFromNetworkAsync%28string%20address%2C%20string%20transportId%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatCapabilitiesManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatCapabilities> GetCachedCapabilitiesAsync(string address)
@@ -34,6 +21,20 @@ namespace Windows.ApplicationModel.Chat
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatCapabilities> GetCapabilitiesFromNetworkAsync(string address)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatCapabilities> ChatCapabilitiesManager.GetCapabilitiesFromNetworkAsync(string address) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatCapabilities%3E%20ChatCapabilitiesManager.GetCapabilitiesFromNetworkAsync%28string%20address%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatCapabilities> GetCachedCapabilitiesAsync(string address, string transportId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatCapabilities> ChatCapabilitiesManager.GetCachedCapabilitiesAsync(string address, string transportId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatCapabilities%3E%20ChatCapabilitiesManager.GetCachedCapabilitiesAsync%28string%20address%2C%20string%20transportId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatCapabilities> GetCapabilitiesFromNetworkAsync(string address, string transportId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatCapabilities> ChatCapabilitiesManager.GetCapabilitiesFromNetworkAsync(string address, string transportId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatCapabilities%3E%20ChatCapabilitiesManager.GetCapabilitiesFromNetworkAsync%28string%20address%2C%20string%20transportId%29");
 		}
 #endif
 	}

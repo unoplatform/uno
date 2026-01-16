@@ -25,16 +25,6 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AltimeterReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AltimeterReading.Timestamp");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? PerformanceCount
 		{
 			get
@@ -53,9 +43,30 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Timestamp.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset Timestamp
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset AltimeterReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AltimeterReading.Timestamp");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.operator ==(Windows.Devices.Sensors.AltimeterReading, Windows.Devices.Sensors.AltimeterReading)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.operator !=(Windows.Devices.Sensors.AltimeterReading, Windows.Devices.Sensors.AltimeterReading)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Equals(Windows.Devices.Sensors.AltimeterReading)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.AltitudeChangeInMeters.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

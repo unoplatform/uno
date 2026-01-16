@@ -10,15 +10,15 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
+		public bool Bordered
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomErrorBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomErrorBox.Label");
+				throw new global::System.NotImplementedException("The member bool VpnCustomErrorBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomErrorBox.Bordered");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomErrorBox", "string VpnCustomErrorBox.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomErrorBox", "bool VpnCustomErrorBox.Bordered");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Bordered
+		public string Label
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomErrorBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomErrorBox.Bordered");
+				throw new global::System.NotImplementedException("The member string VpnCustomErrorBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomErrorBox.Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomErrorBox", "bool VpnCustomErrorBox.Bordered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomErrorBox", "string VpnCustomErrorBox.Label");
 			}
 		}
 #endif
@@ -58,12 +58,23 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.VpnCustomErrorBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Label.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Label.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Compulsory.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Compulsory.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.operator ==(Windows.Networking.Vpn.VpnCustomErrorBox, Windows.Networking.Vpn.VpnCustomErrorBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.operator !=(Windows.Networking.Vpn.VpnCustomErrorBox, Windows.Networking.Vpn.VpnCustomErrorBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Equals(Windows.Networking.Vpn.VpnCustomErrorBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Bordered.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Compulsory.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Compulsory.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Label.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Label.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnCustomPrompt
 	}
 }

@@ -15,57 +15,15 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IncludeWordBoundaryMetadata
+		public global::Windows.Media.SpeechSynthesis.SpeechAppendedSilence AppendedSilence
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
+				throw new global::System.NotImplementedException("The member SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechAppendedSilence%20SpeechSynthesizerOptions.AppendedSilence");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IncludeSentenceBoundaryMetadata
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double SpeakingRate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.SpeakingRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.SpeakingRate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.SpeakingRate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double AudioVolume
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioVolume");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioVolume");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence");
 			}
 		}
 #endif
@@ -85,6 +43,48 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double AudioVolume
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioVolume");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioVolume");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IncludeSentenceBoundaryMetadata
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IncludeWordBoundaryMetadata
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.SpeechSynthesis.SpeechPunctuationSilence PunctuationSilence
 		{
 			get
@@ -99,31 +99,42 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechSynthesis.SpeechAppendedSilence AppendedSilence
+		public double SpeakingRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechAppendedSilence%20SpeechSynthesizerOptions.AppendedSilence");
+				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.SpeakingRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.SpeakingRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.SpeakingRate");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeWordBoundaryMetadata.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeWordBoundaryMetadata.set
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata.set
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioVolume.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioVolume.set
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.SpeakingRate.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.SpeakingRate.set
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioPitch.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioPitch.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.operator ==(Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions, Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.operator !=(Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions, Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.Equals(Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.Equals(object)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.GetHashCode()
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AppendedSilence.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AppendedSilence.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioPitch.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioPitch.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioVolume.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioVolume.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeWordBoundaryMetadata.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeWordBoundaryMetadata.set
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.PunctuationSilence.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.PunctuationSilence.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.SpeakingRate.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.SpeakingRate.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

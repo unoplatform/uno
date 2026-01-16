@@ -15,15 +15,15 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Uri
+		public global::Windows.UI.StartScreen.TileMixedRealityModelActivationBehavior ActivationBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri TileMixedRealityModel.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20TileMixedRealityModel.Uri");
+				throw new global::System.NotImplementedException("The member TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileMixedRealityModelActivationBehavior%20TileMixedRealityModel.ActivationBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "Uri TileMixedRealityModel.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior");
 			}
 		}
 #endif
@@ -43,23 +43,34 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.StartScreen.TileMixedRealityModelActivationBehavior ActivationBehavior
+		public global::System.Uri Uri
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileMixedRealityModelActivationBehavior%20TileMixedRealityModel.ActivationBehavior");
+				throw new global::System.NotImplementedException("The member Uri TileMixedRealityModel.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20TileMixedRealityModel.Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "Uri TileMixedRealityModel.Uri");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Uri.set
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Uri.get
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.BoundingBox.set
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.BoundingBox.get
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.ActivationBehavior.set
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.FromAbi(nint)
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.operator ==(Windows.UI.StartScreen.TileMixedRealityModel, Windows.UI.StartScreen.TileMixedRealityModel)
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.operator !=(Windows.UI.StartScreen.TileMixedRealityModel, Windows.UI.StartScreen.TileMixedRealityModel)
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Equals(Windows.UI.StartScreen.TileMixedRealityModel)
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Equals(object)
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.GetHashCode()
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.ActivationBehavior.get
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.ActivationBehavior.set
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.BoundingBox.get
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.BoundingBox.set
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Uri.get
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Uri.set
+		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

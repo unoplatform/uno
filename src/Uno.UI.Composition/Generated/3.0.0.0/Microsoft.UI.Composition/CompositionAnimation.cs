@@ -8,7 +8,6 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionAnimation : global::Microsoft.UI.Composition.CompositionObject, global::Microsoft.UI.Composition.ICompositionAnimationBase
 	{
-		// Skipping already declared property Target
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.InitialValueExpressionCollection InitialValueExpressions
@@ -19,25 +18,24 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+		// Skipping already declared property Target
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.CompositionAnimation(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.operator ==(Microsoft.UI.Composition.CompositionAnimation, Microsoft.UI.Composition.CompositionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.operator !=(Microsoft.UI.Composition.CompositionAnimation, Microsoft.UI.Composition.CompositionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Equals(Microsoft.UI.Composition.CompositionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.CompositionAnimation(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetVector4Parameter(string key, global::System.Numerics.Vector4 value)
+		public void ClearAllParameters()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetVector4Parameter(string key, Vector4 value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.ClearAllParameters()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Target.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Target.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.InitialValueExpressions.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetExpressionReferenceParameter(string parameterName, global::Microsoft.UI.Composition.IAnimationObject source)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetExpressionReferenceParameter(string parameterName, IAnimationObject source)");
-		}
-#endif
-		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetScalarParameter(string, float)
-		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetReferenceParameter(string, Microsoft.UI.Composition.CompositionObject)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearParameter(string key)
@@ -50,13 +48,6 @@ namespace Microsoft.UI.Composition
 		public void SetColorParameter(string key, global::Windows.UI.Color value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetColorParameter(string key, Color value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetBooleanParameter(string key, bool value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetBooleanParameter(string key, bool value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -80,15 +71,36 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetQuaternionParameter(string key, Quaternion value)");
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetReferenceParameter(string, Microsoft.UI.Composition.CompositionObject)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetScalarParameter(string, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetVector2Parameter(string, System.Numerics.Vector2)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetVector3Parameter(string, System.Numerics.Vector3)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ClearAllParameters()
+		public void SetVector4Parameter(string key, global::System.Numerics.Vector4 value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.ClearAllParameters()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetVector4Parameter(string key, Vector4 value)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetBooleanParameter(string key, bool value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetBooleanParameter(string key, bool value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetExpressionReferenceParameter(string parameterName, global::Microsoft.UI.Composition.IAnimationObject source)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetExpressionReferenceParameter(string parameterName, IAnimationObject source)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.InitialValueExpressions.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Target.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Target.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Composition.ICompositionAnimationBase
 	}
 }

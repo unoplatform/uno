@@ -10,57 +10,15 @@ namespace Windows.UI.Composition.Effects
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
+		public float AmbientAmount
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SceneLightingEffect.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SceneLightingEffect.Name");
+				throw new global::System.NotImplementedException("The member float SceneLightingEffect.AmbientAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneLightingEffect.AmbientAmount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "string SceneLightingEffect.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float SpecularShine
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularShine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneLightingEffect.SpecularShine");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularShine");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float SpecularAmount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneLightingEffect.SpecularAmount");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularAmount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Effects.IGraphicsEffectSource NormalMapSource
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IGraphicsEffectSource SceneLightingEffect.NormalMapSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IGraphicsEffectSource%20SceneLightingEffect.NormalMapSource");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "IGraphicsEffectSource SceneLightingEffect.NormalMapSource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.AmbientAmount");
 			}
 		}
 #endif
@@ -80,15 +38,29 @@ namespace Windows.UI.Composition.Effects
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float AmbientAmount
+		public string Name
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneLightingEffect.AmbientAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneLightingEffect.AmbientAmount");
+				throw new global::System.NotImplementedException("The member string SceneLightingEffect.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SceneLightingEffect.Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.AmbientAmount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "string SceneLightingEffect.Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Effects.IGraphicsEffectSource NormalMapSource
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IGraphicsEffectSource SceneLightingEffect.NormalMapSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IGraphicsEffectSource%20SceneLightingEffect.NormalMapSource");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "IGraphicsEffectSource SceneLightingEffect.NormalMapSource");
 			}
 		}
 #endif
@@ -108,26 +80,65 @@ namespace Windows.UI.Composition.Effects
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float SpecularAmount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneLightingEffect.SpecularAmount");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularAmount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float SpecularShine
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularShine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneLightingEffect.SpecularShine");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularShine");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SceneLightingEffect()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "SceneLightingEffect.SceneLightingEffect()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SceneLightingEffect()
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.operator ==(Windows.UI.Composition.Effects.SceneLightingEffect, Windows.UI.Composition.Effects.SceneLightingEffect)
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.operator !=(Windows.UI.Composition.Effects.SceneLightingEffect, Windows.UI.Composition.Effects.SceneLightingEffect)
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Equals(Windows.UI.Composition.Effects.SceneLightingEffect)
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.AmbientAmount.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.AmbientAmount.set
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.DiffuseAmount.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.DiffuseAmount.set
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.get
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.set
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.NormalMapSource.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.NormalMapSource.set
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.get
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.set
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.set
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SpecularShine.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SpecularShine.set
-		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.get
-		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.set
-		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.get
-		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.set
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Effects.IGraphicsEffect
 		// Processing: Windows.Graphics.Effects.IGraphicsEffectSource
 	}

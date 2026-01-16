@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Preview.Holographic
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -14,6 +13,24 @@ namespace Windows.ApplicationModel.Preview.Holographic
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member HolographicKeyboardPlacementOverridePreview HolographicKeyboardPlacementOverridePreview.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicKeyboardPlacementOverridePreview%20HolographicKeyboardPlacementOverridePreview.GetForCurrentView%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.operator ==(Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview, Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview)
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.operator !=(Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview, Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview)
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.Equals(Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview)
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPlacementOverride(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::System.Numerics.Vector3 topCenterPosition, global::System.Numerics.Vector3 normal)
@@ -35,12 +52,6 @@ namespace Windows.ApplicationModel.Preview.Holographic
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview", "void HolographicKeyboardPlacementOverridePreview.ResetPlacementOverride()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member HolographicKeyboardPlacementOverridePreview HolographicKeyboardPlacementOverridePreview.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicKeyboardPlacementOverridePreview%20HolographicKeyboardPlacementOverridePreview.GetForCurrentView%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

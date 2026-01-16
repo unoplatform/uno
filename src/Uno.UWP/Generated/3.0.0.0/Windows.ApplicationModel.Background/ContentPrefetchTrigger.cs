@@ -20,21 +20,32 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ContentPrefetchTrigger(global::System.TimeSpan waitInterval)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger.ContentPrefetchTrigger(TimeSpan waitInterval)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.ContentPrefetchTrigger(System.TimeSpan)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContentPrefetchTrigger()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger.ContentPrefetchTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.ContentPrefetchTrigger()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ContentPrefetchTrigger(global::System.TimeSpan waitInterval)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger.ContentPrefetchTrigger(TimeSpan waitInterval)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.ContentPrefetchTrigger(System.TimeSpan)
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.operator ==(Windows.ApplicationModel.Background.ContentPrefetchTrigger, Windows.ApplicationModel.Background.ContentPrefetchTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.operator !=(Windows.ApplicationModel.Background.ContentPrefetchTrigger, Windows.ApplicationModel.Background.ContentPrefetchTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.Equals(Windows.ApplicationModel.Background.ContentPrefetchTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WaitInterval.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

@@ -23,7 +23,59 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.SmartCard.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> FromSmartCardAsync(global::Windows.Devices.SmartCards.SmartCard card)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.FromSmartCardAsync(SmartCard card) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.FromSmartCardAsync%28SmartCard%20card%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy, global::System.Guid cardId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy, Guid cardId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%2C%20Guid%20cardId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestVirtualSmartCardDeletionAsync(global::Windows.Devices.SmartCards.SmartCard card)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardProvisioning.RequestVirtualSmartCardDeletionAsync(SmartCard card) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardProvisioning.RequestVirtualSmartCardDeletionAsync%28SmartCard%20card%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy, global::System.Guid cardId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy, Guid cardId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%2C%20Guid%20cardId%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.operator ==(Windows.Devices.SmartCards.SmartCardProvisioning, Windows.Devices.SmartCards.SmartCardProvisioning)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.operator !=(Windows.Devices.SmartCards.SmartCardProvisioning, Windows.Devices.SmartCards.SmartCardProvisioning)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.Equals(Windows.Devices.SmartCards.SmartCardProvisioning)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.Equals(object)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.GetHashCode()
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Guid> GetIdAsync()
@@ -66,47 +118,7 @@ namespace Windows.Devices.SmartCards
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> SmartCardProvisioning.GetAuthorityKeyContainerNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20SmartCardProvisioning.GetAuthorityKeyContainerNameAsync%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy, global::System.Guid cardId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy, Guid cardId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestAttestedVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%2C%20Guid%20cardId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> FromSmartCardAsync(global::Windows.Devices.SmartCards.SmartCard card)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.FromSmartCardAsync(SmartCard card) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.FromSmartCardAsync%28SmartCard%20card%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardProvisioning> RequestVirtualSmartCardCreationAsync(string friendlyName, global::Windows.Storage.Streams.IBuffer administrativeKey, global::Windows.Devices.SmartCards.SmartCardPinPolicy pinPolicy, global::System.Guid cardId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardProvisioning> SmartCardProvisioning.RequestVirtualSmartCardCreationAsync(string friendlyName, IBuffer administrativeKey, SmartCardPinPolicy pinPolicy, Guid cardId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardProvisioning%3E%20SmartCardProvisioning.RequestVirtualSmartCardCreationAsync%28string%20friendlyName%2C%20IBuffer%20administrativeKey%2C%20SmartCardPinPolicy%20pinPolicy%2C%20Guid%20cardId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> RequestVirtualSmartCardDeletionAsync(global::Windows.Devices.SmartCards.SmartCard card)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardProvisioning.RequestVirtualSmartCardDeletionAsync(SmartCard card) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardProvisioning.RequestVirtualSmartCardDeletionAsync%28SmartCard%20card%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.SmartCard.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

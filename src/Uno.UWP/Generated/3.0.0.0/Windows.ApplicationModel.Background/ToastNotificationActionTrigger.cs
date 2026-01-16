@@ -10,20 +10,31 @@ namespace Windows.ApplicationModel.Background
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ToastNotificationActionTrigger(string applicationId)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationActionTrigger", "ToastNotificationActionTrigger.ToastNotificationActionTrigger(string applicationId)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.ToastNotificationActionTrigger(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ToastNotificationActionTrigger()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationActionTrigger", "ToastNotificationActionTrigger.ToastNotificationActionTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.ToastNotificationActionTrigger()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ToastNotificationActionTrigger(string applicationId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationActionTrigger", "ToastNotificationActionTrigger.ToastNotificationActionTrigger(string applicationId)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.ToastNotificationActionTrigger(string)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.operator ==(Windows.ApplicationModel.Background.ToastNotificationActionTrigger, Windows.ApplicationModel.Background.ToastNotificationActionTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.operator !=(Windows.ApplicationModel.Background.ToastNotificationActionTrigger, Windows.ApplicationModel.Background.ToastNotificationActionTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.Equals(Windows.ApplicationModel.Background.ToastNotificationActionTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

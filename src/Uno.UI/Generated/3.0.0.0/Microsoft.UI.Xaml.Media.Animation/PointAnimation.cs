@@ -10,76 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point? To
-		{
-			get
-			{
-				return (global::Windows.Foundation.Point?)this.GetValue(ToProperty);
-			}
-			set
-			{
-				this.SetValue(ToProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point? From
-		{
-			get
-			{
-				return (global::Windows.Foundation.Point?)this.GetValue(FromProperty);
-			}
-			set
-			{
-				this.SetValue(FromProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool EnableDependentAnimation
-		{
-			get
-			{
-				return (bool)this.GetValue(EnableDependentAnimationProperty);
-			}
-			set
-			{
-				this.SetValue(EnableDependentAnimationProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase EasingFunction
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase)this.GetValue(EasingFunctionProperty);
-			}
-			set
-			{
-				this.SetValue(EasingFunctionProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point? By
-		{
-			get
-			{
-				return (global::Windows.Foundation.Point?)this.GetValue(ByProperty);
-			}
-			set
-			{
-				this.SetValue(ByProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ByProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(By), typeof(global::Windows.Foundation.Point?),
@@ -120,26 +50,107 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Point? By
+		{
+			get
+			{
+				return (global::Windows.Foundation.Point?)this.GetValue(ByProperty);
+			}
+			set
+			{
+				this.SetValue(ByProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase EasingFunction
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase)this.GetValue(EasingFunctionProperty);
+			}
+			set
+			{
+				this.SetValue(EasingFunctionProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool EnableDependentAnimation
+		{
+			get
+			{
+				return (bool)this.GetValue(EnableDependentAnimationProperty);
+			}
+			set
+			{
+				this.SetValue(EnableDependentAnimationProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Point? From
+		{
+			get
+			{
+				return (global::Windows.Foundation.Point?)this.GetValue(FromProperty);
+			}
+			set
+			{
+				this.SetValue(FromProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Point? To
+		{
+			get
+			{
+				return (global::Windows.Foundation.Point?)this.GetValue(ToProperty);
+			}
+			set
+			{
+				this.SetValue(ToProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PointAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointAnimation", "PointAnimation.PointAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.PointAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.From.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.From.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ByProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.FromProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ToProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PointAnimation, Microsoft.UI.Xaml.Media.Animation.PointAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PointAnimation, Microsoft.UI.Xaml.Media.Animation.PointAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PointAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.By.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.By.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EasingFunction.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.FromProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ByProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EasingFunctionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.From.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.From.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -27,14 +27,14 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.AccessMode.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string GetResolvedCompositionObjectProperty()
-		{
-			throw new global::System.NotImplementedException("The member string AnimationPropertyInfo.GetResolvedCompositionObjectProperty() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AnimationPropertyInfo.GetResolvedCompositionObjectProperty%28%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.operator ==(Microsoft.UI.Composition.AnimationPropertyInfo, Microsoft.UI.Composition.AnimationPropertyInfo)
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.operator !=(Microsoft.UI.Composition.AnimationPropertyInfo, Microsoft.UI.Composition.AnimationPropertyInfo)
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.Equals(Microsoft.UI.Composition.AnimationPropertyInfo)
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionObject GetResolvedCompositionObject()
@@ -42,6 +42,16 @@ namespace Microsoft.UI.Composition
 			throw new global::System.NotImplementedException("The member CompositionObject AnimationPropertyInfo.GetResolvedCompositionObject() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionObject%20AnimationPropertyInfo.GetResolvedCompositionObject%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string GetResolvedCompositionObjectProperty()
+		{
+			throw new global::System.NotImplementedException("The member string AnimationPropertyInfo.GetResolvedCompositionObjectProperty() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AnimationPropertyInfo.GetResolvedCompositionObjectProperty%28%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.AccessMode.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.AccessMode.set
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

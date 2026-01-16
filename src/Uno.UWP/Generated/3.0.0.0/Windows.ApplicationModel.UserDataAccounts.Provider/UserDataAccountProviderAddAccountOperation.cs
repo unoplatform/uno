@@ -25,16 +25,6 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo> PartnerAccountInfos
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UserDataAccountPartnerAccountInfo> UserDataAccountProviderAddAccountOperation.PartnerAccountInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUserDataAccountPartnerAccountInfo%3E%20UserDataAccountProviderAddAccountOperation.PartnerAccountInfos");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderOperationKind Kind
 		{
 			get
@@ -43,8 +33,26 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.ContentKinds.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.PartnerAccountInfos.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo> PartnerAccountInfos
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UserDataAccountPartnerAccountInfo> UserDataAccountProviderAddAccountOperation.PartnerAccountInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUserDataAccountPartnerAccountInfo%3E%20UserDataAccountProviderAddAccountOperation.PartnerAccountInfos");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.operator ==(Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation, Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.operator !=(Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation, Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.Equals(Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted(string userDataAccountId)
@@ -52,7 +60,10 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "void UserDataAccountProviderAddAccountOperation.ReportCompleted(string userDataAccountId)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.ContentKinds.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.PartnerAccountInfos.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.UserDataAccounts.Provider.IUserDataAccountProviderOperation
 	}
 }

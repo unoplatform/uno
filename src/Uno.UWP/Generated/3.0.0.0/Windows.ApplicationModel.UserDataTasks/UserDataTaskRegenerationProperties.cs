@@ -10,29 +10,15 @@ namespace Windows.ApplicationModel.UserDataTasks
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset? Until
+		public int Interval
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTaskRegenerationProperties.Until is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTaskRegenerationProperties.Until");
+				throw new global::System.NotImplementedException("The member int UserDataTaskRegenerationProperties.Interval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20UserDataTaskRegenerationProperties.Interval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "DateTimeOffset? UserDataTaskRegenerationProperties.Until");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationUnit Unit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskRegenerationUnit%20UserDataTaskRegenerationProperties.Unit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int UserDataTaskRegenerationProperties.Interval");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Interval
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationUnit Unit
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int UserDataTaskRegenerationProperties.Interval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20UserDataTaskRegenerationProperties.Interval");
+				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskRegenerationUnit%20UserDataTaskRegenerationProperties.Unit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int UserDataTaskRegenerationProperties.Interval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset? Until
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTaskRegenerationProperties.Until is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTaskRegenerationProperties.Until");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "DateTimeOffset? UserDataTaskRegenerationProperties.Until");
 			}
 		}
 #endif
@@ -72,13 +72,24 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.UserDataTaskRegenerationProperties()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Unit.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Unit.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Occurrences.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Occurrences.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Until.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Until.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties, Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties, Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Interval.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Interval.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Occurrences.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Occurrences.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Unit.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Unit.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Until.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Until.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

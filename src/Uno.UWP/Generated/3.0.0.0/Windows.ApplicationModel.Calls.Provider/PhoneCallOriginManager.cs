@@ -28,15 +28,7 @@ namespace Windows.ApplicationModel.Calls.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager.IsSupported.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> RequestSetAsActiveCallOriginAppAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager.IsCurrentAppActiveCallOriginApp.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ShowPhoneCallOriginSettingsUI()
@@ -51,5 +43,14 @@ namespace Windows.ApplicationModel.Calls.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager", "void PhoneCallOriginManager.SetCallOrigin(Guid requestId, PhoneCallOrigin callOrigin)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestSetAsActiveCallOriginAppAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager.IsCurrentAppActiveCallOriginApp.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager.IsSupported.get
 	}
 }

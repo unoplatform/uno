@@ -8,43 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Skipping already declared property TransformMatrix
-		// Skipping already declared property Size
-		// Skipping already declared property Scale
-		// Skipping already declared property RotationAxis
-		// Skipping already declared property RotationAngleInDegrees
-		// Skipping already declared property RotationAngle
-		// Skipping already declared property Orientation
-		// Skipping already declared property Opacity
-		// Skipping already declared property Offset
-		// Skipping already declared property IsVisible
-		// Skipping already declared property CompositeMode
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionClip Clip
+		public global::System.Numerics.Vector2 AnchorPoint
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionClip%20Visual.Clip");
+				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.AnchorPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "CompositionClip Visual.Clip");
-			}
-		}
-#endif
-		// Skipping already declared property CenterPoint
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionBorderMode BorderMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBorderMode%20Visual.BorderMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
 			}
 		}
 #endif
@@ -62,63 +36,36 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.CompositionBorderMode BorderMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBorderMode%20Visual.BorderMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
+			}
+		}
+#endif
+		// Skipping already declared property CenterPoint
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 AnchorPoint
+		public global::Microsoft.UI.Composition.CompositionClip Clip
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.AnchorPoint");
+				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionClip%20Visual.Clip");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "CompositionClip Visual.Clip");
 			}
 		}
 #endif
-		// Skipping already declared property Parent
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 RelativeSizeAdjustment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.RelativeSizeAdjustment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 RelativeOffsetAdjustment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RelativeOffsetAdjustment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector3 Visual.RelativeOffsetAdjustment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Visual ParentForTransform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Visual Visual.ParentForTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20Visual.ParentForTransform");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Visual Visual.ParentForTransform");
-			}
-		}
-#endif
+		// Skipping already declared property CompositeMode
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsHitTestVisible
@@ -147,18 +94,73 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Visual.IsPixelSnappingEnabled.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeSizeAdjustment.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.IsHitTestVisible.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.IsHitTestVisible.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.IsPixelSnappingEnabled.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.IsVisible.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeOffsetAdjustment.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeSizeAdjustment.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.BackfaceVisibility.set
+		// Skipping already declared property IsVisible
+		// Skipping already declared property Offset
+		// Skipping already declared property Opacity
+		// Skipping already declared property Orientation
+		// Skipping already declared property Parent
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Visual ParentForTransform
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Visual Visual.ParentForTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20Visual.ParentForTransform");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Visual Visual.ParentForTransform");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 RelativeOffsetAdjustment
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RelativeOffsetAdjustment");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector3 Visual.RelativeOffsetAdjustment");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 RelativeSizeAdjustment
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.RelativeSizeAdjustment");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
+			}
+		}
+#endif
+		// Skipping already declared property RotationAngle
+		// Skipping already declared property RotationAngleInDegrees
+		// Skipping already declared property RotationAxis
+		// Skipping already declared property Scale
+		// Skipping already declared property Size
+		// Skipping already declared property TransformMatrix
+		// Forced skipping of method Microsoft.UI.Composition.Visual.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.Visual(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.operator ==(Microsoft.UI.Composition.Visual, Microsoft.UI.Composition.Visual)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.operator !=(Microsoft.UI.Composition.Visual, Microsoft.UI.Composition.Visual)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.Equals(Microsoft.UI.Composition.Visual)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Visual.Visual(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.AnchorPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.AnchorPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.BackfaceVisibility.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.AnchorPoint.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.BackfaceVisibility.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.BorderMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.BorderMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.CenterPoint.get
@@ -167,7 +169,12 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Clip.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.CompositeMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.CompositeMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Visual.IsHitTestVisible.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.IsHitTestVisible.set
+		// Forced skipping of method Microsoft.UI.Composition.Visual.IsPixelSnappingEnabled.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.IsPixelSnappingEnabled.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.IsVisible.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.IsVisible.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Opacity.get
@@ -175,6 +182,12 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Orientation.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Orientation.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Parent.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.ParentForTransform.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.ParentForTransform.set
+		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeOffsetAdjustment.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeOffsetAdjustment.set
+		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeSizeAdjustment.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeSizeAdjustment.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.RotationAngle.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.RotationAngle.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.RotationAngleInDegrees.get
@@ -187,8 +200,7 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Size.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.ParentForTransform.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.ParentForTransform.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeOffsetAdjustment.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Visual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

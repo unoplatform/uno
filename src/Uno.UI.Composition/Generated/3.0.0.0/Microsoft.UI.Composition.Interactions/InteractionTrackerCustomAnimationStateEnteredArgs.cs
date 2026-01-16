@@ -15,16 +15,6 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RequestId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int InteractionTrackerCustomAnimationStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTrackerCustomAnimationStateEnteredArgs.RequestId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsFromBinding
 		{
 			get
@@ -33,7 +23,28 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int RequestId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int InteractionTrackerCustomAnimationStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTrackerCustomAnimationStateEnteredArgs.RequestId");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.operator ==(Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.operator !=(Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.Equals(Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.IsFromBinding.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.RequestId.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

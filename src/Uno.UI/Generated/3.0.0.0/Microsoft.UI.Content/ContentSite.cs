@@ -10,46 +10,15 @@ namespace Microsoft.UI.Content
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShouldApplyRasterizationScale
+		public global::System.Numerics.Vector2 ActualSize
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.ShouldApplyRasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ShouldApplyRasterizationScale");
+				throw new global::System.NotImplementedException("The member Vector2 ContentSite.ActualSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSite.ActualSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.ShouldApplyRasterizationScale");
-			}
-		}
-#endif
-		// Skipping already declared property ParentScale
-		// Skipping already declared property OverrideScale
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentLayoutDirection LayoutDirection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentLayoutDirection ContentSite.LayoutDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%20ContentSite.LayoutDirection");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "ContentLayoutDirection ContentSite.LayoutDirection");
-			}
-		}
-#endif
-		// Skipping already declared property IsSiteVisible
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSiteEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.IsSiteEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsSiteEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.IsSiteEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "Vector2 ContentSite.ActualSize");
 			}
 		}
 #endif
@@ -64,20 +33,6 @@ namespace Microsoft.UI.Content
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "SizeInt32 ContentSite.ClientSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 ActualSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 ContentSite.ActualSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSite.ActualSize");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "Vector2 ContentSite.ActualSize");
 			}
 		}
 #endif
@@ -113,6 +68,16 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsClosed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentSite.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsClosed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsConnected
 		{
 			get
@@ -121,43 +86,42 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Skipping already declared property RasterizationScale
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 RequestedSize
+		public bool IsSiteEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 ContentSite.RequestedSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSite.RequestedSize");
-			}
-		}
-#endif
-		// Skipping already declared property View
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ProcessesPointerInput
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ProcessesPointerInput");
+				throw new global::System.NotImplementedException("The member bool ContentSite.IsSiteEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsSiteEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.ProcessesPointerInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.IsSiteEnabled");
+			}
+		}
+#endif
+		// Skipping already declared property IsSiteVisible
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentLayoutDirection LayoutDirection
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentLayoutDirection ContentSite.LayoutDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%20ContentSite.LayoutDirection");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "ContentLayoutDirection ContentSite.LayoutDirection");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ProcessesKeyboardInput
+		public global::System.Numerics.Matrix4x4 LocalToClientTransformMatrix
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.ProcessesKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ProcessesKeyboardInput");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.ProcessesKeyboardInput");
+				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSite.LocalToClientTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSite.LocalToClientTransformMatrix");
 			}
 		}
 #endif
@@ -175,49 +139,74 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+		// Skipping already declared property OverrideScale
+		// Skipping already declared property ParentScale
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Matrix4x4 LocalToClientTransformMatrix
+		public bool ProcessesKeyboardInput
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSite.LocalToClientTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSite.LocalToClientTransformMatrix");
+				throw new global::System.NotImplementedException("The member bool ContentSite.ProcessesKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ProcessesKeyboardInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.ProcessesKeyboardInput");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsClosed
+		public bool ProcessesPointerInput
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsClosed");
+				throw new global::System.NotImplementedException("The member bool ContentSite.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ProcessesPointerInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.ProcessesPointerInput");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.RequestedStateChanged.add
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.CoordinateConverter.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.DispatcherQueue.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.Environment.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsConnected.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.LayoutDirection.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.LayoutDirection.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.OverrideScale.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ParentScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ParentScale.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.RasterizationScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.RequestedSize.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.View.get
+		// Skipping already declared property RasterizationScale
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 RequestedSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 ContentSite.RequestedSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSite.RequestedSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShouldApplyRasterizationScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentSite.ShouldApplyRasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ShouldApplyRasterizationScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.ShouldApplyRasterizationScale");
+			}
+		}
+#endif
+		// Skipping already declared property View
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ContentSite(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.operator ==(Microsoft.UI.Content.ContentSite, Microsoft.UI.Content.ContentSite)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.operator !=(Microsoft.UI.Content.ContentSite, Microsoft.UI.Content.ContentSite)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.Equals(Microsoft.UI.Content.ContentSite)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ContentSite(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Content.ContentDeferral GetIslandStateChangeDeferral()
@@ -225,15 +214,8 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ContentDeferral ContentSite.GetIslandStateChangeDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentDeferral%20ContentSite.GetIslandStateChangeDeferral%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.OverrideScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.RequestedStateChanged.add
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.RequestedStateChanged.remove
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.LocalToClientTransformMatrix.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.LocalToParentTransformMatrix.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.LocalToParentTransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesKeyboardInput.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesKeyboardInput.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesPointerInput.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesPointerInput.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -241,11 +223,43 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "void ContentSite.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsClosed.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.Closed.add
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.Closed.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.FrameworkClosed.add
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.FrameworkClosed.remove
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.CoordinateConverter.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.DispatcherQueue.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.Environment.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsConnected.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.LayoutDirection.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.LayoutDirection.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.LocalToClientTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.LocalToParentTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.LocalToParentTransformMatrix.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.OverrideScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.OverrideScale.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ParentScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ParentScale.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesKeyboardInput.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesKeyboardInput.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesPointerInput.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ProcessesPointerInput.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.RasterizationScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.RequestedSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.View.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.ContentSite, global::Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs> RequestedStateChanged

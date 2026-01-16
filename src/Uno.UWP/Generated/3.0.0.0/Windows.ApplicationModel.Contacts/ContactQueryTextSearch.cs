@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Text
+		public global::Windows.ApplicationModel.Contacts.ContactQuerySearchFields Fields
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactQueryTextSearch.Text");
+				throw new global::System.NotImplementedException("The member ContactQuerySearchFields ContactQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQuerySearchFields%20ContactQueryTextSearch.Fields");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "string ContactQueryTextSearch.Text");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "ContactQuerySearchFields ContactQueryTextSearch.Fields");
 			}
 		}
 #endif
@@ -43,23 +43,34 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactQuerySearchFields Fields
+		public string Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQuerySearchFields ContactQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQuerySearchFields%20ContactQueryTextSearch.Fields");
+				throw new global::System.NotImplementedException("The member string ContactQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactQueryTextSearch.Text");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "ContactQuerySearchFields ContactQueryTextSearch.Fields");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "string ContactQueryTextSearch.Text");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.operator ==(Windows.ApplicationModel.Contacts.ContactQueryTextSearch, Windows.ApplicationModel.Contacts.ContactQueryTextSearch)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.operator !=(Windows.ApplicationModel.Contacts.ContactQueryTextSearch, Windows.ApplicationModel.Contacts.ContactQueryTextSearch)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Equals(Windows.ApplicationModel.Contacts.ContactQueryTextSearch)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Fields.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Fields.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Text.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Text.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.SearchScope.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.SearchScope.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Text.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Text.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

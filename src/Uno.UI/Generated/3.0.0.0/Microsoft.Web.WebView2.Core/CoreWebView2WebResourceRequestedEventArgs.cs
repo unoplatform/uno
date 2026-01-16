@@ -3,15 +3,82 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2WebResourceRequestedEventArgs
 	{
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.RequestedSourceKind.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal CoreWebView2WebResourceRequestedEventArgs()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest Request
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2WebResourceRequest CoreWebView2WebResourceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceRequest%20CoreWebView2WebResourceRequestedEventArgs.Request");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestSourceKinds RequestedSourceKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2WebResourceRequestSourceKinds CoreWebView2WebResourceRequestedEventArgs.RequestedSourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceRequestSourceKinds%20CoreWebView2WebResourceRequestedEventArgs.RequestedSourceKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext ResourceContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2WebResourceContext CoreWebView2WebResourceRequestedEventArgs.ResourceContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceContext%20CoreWebView2WebResourceRequestedEventArgs.ResourceContext");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse Response
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2WebResourceResponse CoreWebView2WebResourceRequestedEventArgs.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceResponse%20CoreWebView2WebResourceRequestedEventArgs.Response");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs", "CoreWebView2WebResourceResponse CoreWebView2WebResourceRequestedEventArgs.Response");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Deferral GetDeferral()
+		{
+			throw new global::System.NotImplementedException("The member Deferral CoreWebView2WebResourceRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2WebResourceRequestedEventArgs.GetDeferral%28%29");
+		}
+#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Request.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.RequestedSourceKind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.ResourceContext.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Response.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Response.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.ResourceContext.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

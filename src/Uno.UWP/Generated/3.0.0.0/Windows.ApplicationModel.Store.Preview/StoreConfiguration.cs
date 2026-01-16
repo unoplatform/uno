@@ -32,39 +32,89 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsPinToDesktopSupported()
+		public static void SetSystemConfiguration(string catalogHardwareManufacturerId, string catalogStoreContentModifierId, global::System.DateTimeOffset systemConfigurationExpiration, string catalogHardwareDescriptor)
 		{
-			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToDesktopSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsPinToDesktopSupported%28%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetSystemConfiguration(string catalogHardwareManufacturerId, string catalogStoreContentModifierId, DateTimeOffset systemConfigurationExpiration, string catalogHardwareDescriptor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsPinToTaskbarSupported()
+		public static void SetMobileOperatorConfiguration(string mobileOperatorId, uint appDownloadLimitInMegabytes, uint updateDownloadLimitInMegabytes)
 		{
-			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToTaskbarSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsPinToTaskbarSupported%28%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetMobileOperatorConfiguration(string mobileOperatorId, uint appDownloadLimitInMegabytes, uint updateDownloadLimitInMegabytes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsPinToStartSupported()
+		public static void SetStoreWebAccountId(string webAccountId)
 		{
-			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToStartSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsPinToStartSupported%28%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetStoreWebAccountId(string webAccountId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void PinToDesktop(string appPackageFamilyName)
+		public static bool IsStoreWebAccountId(string webAccountId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.PinToDesktop(string appPackageFamilyName)");
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsStoreWebAccountId(string webAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsStoreWebAccountId%28string%20webAccountId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void PinToDesktopForUser(global::Windows.System.User user, string appPackageFamilyName)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Store.Preview.StoreSystemFeature>> FilterUnsupportedSystemFeaturesAsync(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Store.Preview.StoreSystemFeature> systemFeatures)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.PinToDesktopForUser(User user, string appPackageFamilyName)");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StoreSystemFeature>> StoreConfiguration.FilterUnsupportedSystemFeaturesAsync(IEnumerable<StoreSystemFeature> systemFeatures) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStoreSystemFeature%3E%3E%20StoreConfiguration.FilterUnsupportedSystemFeaturesAsync%28IEnumerable%3CStoreSystemFeature%3E%20systemFeatures%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool HasStoreWebAccount()
+		{
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.HasStoreWebAccount() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.HasStoreWebAccount%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool HasStoreWebAccountForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.HasStoreWebAccountForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.HasStoreWebAccountForUser%28User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamReference> GetStoreLogDataAsync(global::Windows.ApplicationModel.Store.Preview.StoreLogOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamReference> StoreConfiguration.GetStoreLogDataAsync(StoreLogOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamReference%3E%20StoreConfiguration.GetStoreLogDataAsync%28StoreLogOptions%20options%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetStoreWebAccountIdForUser(global::Windows.System.User user, string webAccountId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetStoreWebAccountIdForUser(User user, string webAccountId)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool IsStoreWebAccountIdForUser(global::Windows.System.User user, string webAccountId)
+		{
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsStoreWebAccountIdForUser(User user, string webAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsStoreWebAccountIdForUser%28User%20user%2C%20string%20webAccountId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static uint? GetPurchasePromptingPolicyForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member uint? StoreConfiguration.GetPurchasePromptingPolicyForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20StoreConfiguration.GetPurchasePromptingPolicyForUser%28User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetPurchasePromptingPolicyForUser(global::Windows.System.User user, uint? value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetPurchasePromptingPolicyForUser(User user, uint? value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -125,90 +175,41 @@ namespace Windows.ApplicationModel.Store.Preview
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool HasStoreWebAccount()
+		public static bool IsPinToDesktopSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool StoreConfiguration.HasStoreWebAccount() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.HasStoreWebAccount%28%29");
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToDesktopSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsPinToDesktopSupported%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool HasStoreWebAccountForUser(global::Windows.System.User user)
+		public static bool IsPinToTaskbarSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool StoreConfiguration.HasStoreWebAccountForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.HasStoreWebAccountForUser%28User%20user%29");
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToTaskbarSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsPinToTaskbarSupported%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamReference> GetStoreLogDataAsync(global::Windows.ApplicationModel.Store.Preview.StoreLogOptions options)
+		public static bool IsPinToStartSupported()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamReference> StoreConfiguration.GetStoreLogDataAsync(StoreLogOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamReference%3E%20StoreConfiguration.GetStoreLogDataAsync%28StoreLogOptions%20options%29");
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToStartSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsPinToStartSupported%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetStoreWebAccountIdForUser(global::Windows.System.User user, string webAccountId)
+		public static void PinToDesktop(string appPackageFamilyName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetStoreWebAccountIdForUser(User user, string webAccountId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.PinToDesktop(string appPackageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsStoreWebAccountIdForUser(global::Windows.System.User user, string webAccountId)
+		public static void PinToDesktopForUser(global::Windows.System.User user, string appPackageFamilyName)
 		{
-			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsStoreWebAccountIdForUser(User user, string webAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsStoreWebAccountIdForUser%28User%20user%2C%20string%20webAccountId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static uint? GetPurchasePromptingPolicyForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member uint? StoreConfiguration.GetPurchasePromptingPolicyForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20StoreConfiguration.GetPurchasePromptingPolicyForUser%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetPurchasePromptingPolicyForUser(global::Windows.System.User user, uint? value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetPurchasePromptingPolicyForUser(User user, uint? value)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.PurchasePromptingPolicy.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.PurchasePromptingPolicy.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetSystemConfiguration(string catalogHardwareManufacturerId, string catalogStoreContentModifierId, global::System.DateTimeOffset systemConfigurationExpiration, string catalogHardwareDescriptor)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetSystemConfiguration(string catalogHardwareManufacturerId, string catalogStoreContentModifierId, DateTimeOffset systemConfigurationExpiration, string catalogHardwareDescriptor)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetMobileOperatorConfiguration(string mobileOperatorId, uint appDownloadLimitInMegabytes, uint updateDownloadLimitInMegabytes)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetMobileOperatorConfiguration(string mobileOperatorId, uint appDownloadLimitInMegabytes, uint updateDownloadLimitInMegabytes)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetStoreWebAccountId(string webAccountId)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetStoreWebAccountId(string webAccountId)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsStoreWebAccountId(string webAccountId)
-		{
-			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsStoreWebAccountId(string webAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreConfiguration.IsStoreWebAccountId%28string%20webAccountId%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.PinToDesktopForUser(User user, string appPackageFamilyName)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.HardwareManufacturerInfo.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Store.Preview.StoreSystemFeature>> FilterUnsupportedSystemFeaturesAsync(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Store.Preview.StoreSystemFeature> systemFeatures)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StoreSystemFeature>> StoreConfiguration.FilterUnsupportedSystemFeaturesAsync(IEnumerable<StoreSystemFeature> systemFeatures) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStoreSystemFeature%3E%3E%20StoreConfiguration.FilterUnsupportedSystemFeaturesAsync%28IEnumerable%3CStoreSystemFeature%3E%20systemFeatures%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.PurchasePromptingPolicy.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.PurchasePromptingPolicy.set
 	}
 }

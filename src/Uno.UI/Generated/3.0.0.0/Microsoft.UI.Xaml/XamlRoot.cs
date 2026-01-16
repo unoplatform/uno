@@ -9,9 +9,16 @@ namespace Microsoft.UI.Xaml
 	public partial class XamlRoot
 	{
 		// Skipping already declared property Content
-		// Skipping already declared property IsHostVisible
-		// Skipping already declared property RasterizationScale
-		// Skipping already declared property Size
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentIsland ContentIsland
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentIsland XamlRoot.ContentIsland is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20XamlRoot.ContentIsland");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Content.ContentIslandEnvironment ContentIslandEnvironment
@@ -32,25 +39,29 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentIsland ContentIsland
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentIsland XamlRoot.ContentIsland is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20XamlRoot.ContentIsland");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Content.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.RasterizationScale.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.IsHostVisible.get
+		// Skipping already declared property IsHostVisible
+		// Skipping already declared property RasterizationScale
+		// Skipping already declared property Size
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.operator ==(Microsoft.UI.Xaml.XamlRoot, Microsoft.UI.Xaml.XamlRoot)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.operator !=(Microsoft.UI.Xaml.XamlRoot, Microsoft.UI.Xaml.XamlRoot)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Equals(Microsoft.UI.Xaml.XamlRoot)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Changed.add
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Changed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Content.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.ContentIsland.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.ContentIslandEnvironment.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.CoordinateConverter.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.ContentIsland.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.IsHostVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.RasterizationScale.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Size.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.XamlRoot.Changed
 	}
 }

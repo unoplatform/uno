@@ -15,76 +15,6 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Year
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint VideoProperties.Year is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoProperties.Year");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "uint VideoProperties.Year");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VideoProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoProperties.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "string VideoProperties.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Subtitle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VideoProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoProperties.Subtitle");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "string VideoProperties.Subtitle");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Rating
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint VideoProperties.Rating is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoProperties.Rating");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "uint VideoProperties.Rating");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Publisher
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VideoProperties.Publisher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoProperties.Publisher");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "string VideoProperties.Publisher");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Bitrate
 		{
 			get
@@ -175,6 +105,62 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Publisher
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VideoProperties.Publisher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoProperties.Publisher");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "string VideoProperties.Publisher");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Rating
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint VideoProperties.Rating is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoProperties.Rating");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "uint VideoProperties.Rating");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Subtitle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VideoProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoProperties.Subtitle");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "string VideoProperties.Subtitle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VideoProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoProperties.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "string VideoProperties.Title");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Width
 		{
 			get
@@ -193,27 +179,30 @@ namespace Windows.Storage.FileProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Rating.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Rating.set
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Keywords.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Width.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Height.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Duration.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Latitude.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Longitude.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Title.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Title.set
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Subtitle.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Subtitle.set
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Producers.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Publisher.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Publisher.set
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Writers.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Year.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Year.set
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Bitrate.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Directors.get
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Orientation.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Year
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint VideoProperties.Year is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoProperties.Year");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.VideoProperties", "uint VideoProperties.Year");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.operator ==(Windows.Storage.FileProperties.VideoProperties, Windows.Storage.FileProperties.VideoProperties)
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.operator !=(Windows.Storage.FileProperties.VideoProperties, Windows.Storage.FileProperties.VideoProperties)
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Equals(Windows.Storage.FileProperties.VideoProperties)
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Equals(object)
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.GetHashCode()
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync(global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
@@ -235,6 +224,28 @@ namespace Windows.Storage.FileProperties
 			throw new global::System.NotImplementedException("The member IAsyncAction VideoProperties.SavePropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoProperties.SavePropertiesAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Bitrate.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Directors.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Duration.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Height.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Keywords.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Latitude.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Longitude.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Orientation.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Producers.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Publisher.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Publisher.set
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Rating.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Rating.set
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Subtitle.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Subtitle.set
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Title.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Title.set
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Width.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Writers.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Year.get
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Year.set
+		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.FileProperties.IStorageItemExtraProperties
 	}
 }

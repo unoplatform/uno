@@ -15,6 +15,16 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.ArcadeStick> ArcadeSticks
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ArcadeStick> ArcadeStick.ArcadeSticks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CArcadeStick%3E%20ArcadeStick.ArcadeSticks");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.Headset Headset
 		{
 			get
@@ -43,16 +53,29 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.As<I>()
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickAdded.add
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickAdded.remove
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickRemoved.add
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickRemoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.ArcadeStick> ArcadeSticks
+		public static global::Windows.Gaming.Input.ArcadeStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ArcadeStick> ArcadeStick.ArcadeSticks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CArcadeStick%3E%20ArcadeStick.ArcadeSticks");
-			}
+			throw new global::System.NotImplementedException("The member ArcadeStick ArcadeStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ArcadeStick%20ArcadeStick.FromGameController%28IGameController%20gameController%29");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeSticks.get
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.operator ==(Windows.Gaming.Input.ArcadeStick, Windows.Gaming.Input.ArcadeStick)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.operator !=(Windows.Gaming.Input.ArcadeStick, Windows.Gaming.Input.ArcadeStick)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.Equals(Windows.Gaming.Input.ArcadeStick)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.ArcadeStickButtons button)
@@ -73,9 +96,6 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.HeadsetDisconnected.remove
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.UserChanged.add
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.UserChanged.remove
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.Headset.get
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.IsWireless.get
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
@@ -83,18 +103,42 @@ namespace Windows.Gaming.Input
 			throw new global::System.NotImplementedException("The member BatteryReport ArcadeStick.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20ArcadeStick.TryGetBatteryReport%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.Headset.get
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.IsWireless.get
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.User.get
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Gaming.Input.ArcadeStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
+		public static event global::System.EventHandler<global::Windows.Gaming.Input.ArcadeStick> ArcadeStickAdded
 		{
-			throw new global::System.NotImplementedException("The member ArcadeStick ArcadeStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ArcadeStick%20ArcadeStick.FromGameController%28IGameController%20gameController%29");
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickAdded");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickAdded");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickAdded.add
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickAdded.remove
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickRemoved.add
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickRemoved.remove
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeSticks.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static event global::System.EventHandler<global::Windows.Gaming.Input.ArcadeStick> ArcadeStickRemoved
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickRemoved");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickRemoved");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetConnected
@@ -140,38 +184,6 @@ namespace Windows.Gaming.Input
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event TypedEventHandler<IGameController, UserChangedEventArgs> ArcadeStick.UserChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static event global::System.EventHandler<global::Windows.Gaming.Input.ArcadeStick> ArcadeStickAdded
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickAdded");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickAdded");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static event global::System.EventHandler<global::Windows.Gaming.Input.ArcadeStick> ArcadeStickRemoved
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickRemoved");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStick", "event EventHandler<ArcadeStick> ArcadeStick.ArcadeStickRemoved");
 			}
 		}
 #endif

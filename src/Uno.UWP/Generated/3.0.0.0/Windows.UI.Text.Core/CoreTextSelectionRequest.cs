@@ -15,6 +15,16 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCanceled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreTextSelectionRequest.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreTextSelectionRequest.IsCanceled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Text.Core.CoreTextRange Selection
 		{
 			get
@@ -27,19 +37,16 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCanceled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreTextSelectionRequest.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreTextSelectionRequest.IsCanceled");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Selection.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Selection.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.IsCanceled.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.operator ==(Windows.UI.Text.Core.CoreTextSelectionRequest, Windows.UI.Text.Core.CoreTextSelectionRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.operator !=(Windows.UI.Text.Core.CoreTextSelectionRequest, Windows.UI.Text.Core.CoreTextSelectionRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Equals(Windows.UI.Text.Core.CoreTextSelectionRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Equals(object)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.GetHashCode()
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -47,5 +54,9 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreTextSelectionRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextSelectionRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.IsCanceled.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Selection.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Selection.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

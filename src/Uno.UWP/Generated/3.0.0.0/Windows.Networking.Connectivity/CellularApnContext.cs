@@ -10,57 +10,15 @@ namespace Windows.Networking.Connectivity
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserName
+		public string AccessPointName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.UserName");
+				throw new global::System.NotImplementedException("The member string CellularApnContext.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.AccessPointName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.UserName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProviderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.ProviderId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.ProviderId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Password
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.Password is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.Password");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.Password");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCompressionEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CellularApnContext.IsCompressionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CellularApnContext.IsCompressionEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "bool CellularApnContext.IsCompressionEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.AccessPointName");
 			}
 		}
 #endif
@@ -80,15 +38,29 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string AccessPointName
+		public bool IsCompressionEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.AccessPointName");
+				throw new global::System.NotImplementedException("The member bool CellularApnContext.IsCompressionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CellularApnContext.IsCompressionEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.AccessPointName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "bool CellularApnContext.IsCompressionEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Password
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CellularApnContext.Password is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.Password");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.Password");
 			}
 		}
 #endif
@@ -108,25 +80,64 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ProviderId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CellularApnContext.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.ProviderId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.ProviderId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string UserName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CellularApnContext.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.UserName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.UserName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CellularApnContext()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.CellularApnContext", "CellularApnContext.CellularApnContext()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.CellularApnContext()
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.ProviderId.get
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.ProviderId.set
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.operator ==(Windows.Networking.Connectivity.CellularApnContext, Windows.Networking.Connectivity.CellularApnContext)
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.operator !=(Windows.Networking.Connectivity.CellularApnContext, Windows.Networking.Connectivity.CellularApnContext)
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Equals(Windows.Networking.Connectivity.CellularApnContext)
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.AccessPointName.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.AccessPointName.set
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.UserName.get
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.UserName.set
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Password.get
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Password.set
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.IsCompressionEnabled.get
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.IsCompressionEnabled.set
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.AuthenticationType.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.AuthenticationType.set
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.IsCompressionEnabled.get
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.IsCompressionEnabled.set
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Password.get
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Password.set
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.ProfileName.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.ProfileName.set
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.ProviderId.get
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.ProviderId.set
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.UserName.get
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.UserName.set
+		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

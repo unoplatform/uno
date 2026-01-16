@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ServiceName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactConnectedServiceAccount.ServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactConnectedServiceAccount.ServiceName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "string ContactConnectedServiceAccount.ServiceName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ServiceName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactConnectedServiceAccount.ServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactConnectedServiceAccount.ServiceName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "string ContactConnectedServiceAccount.ServiceName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactConnectedServiceAccount()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "ContactConnectedServiceAccount.ContactConnectedServiceAccount()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ContactConnectedServiceAccount()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.operator ==(Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount, Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.operator !=(Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount, Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Equals(Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Id.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ServiceName.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ServiceName.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

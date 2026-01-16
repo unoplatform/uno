@@ -15,20 +15,6 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Power
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.Power is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InfraredTorchControl.Power");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.Power");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.InfraredTorchMode CurrentMode
 		{
 			get
@@ -73,6 +59,20 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Power
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int InfraredTorchControl.Power is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InfraredTorchControl.Power");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.Power");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int PowerStep
 		{
 			get
@@ -91,14 +91,25 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.IsSupported.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.SupportedModes.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.operator ==(Windows.Media.Devices.InfraredTorchControl, Windows.Media.Devices.InfraredTorchControl)
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.operator !=(Windows.Media.Devices.InfraredTorchControl, Windows.Media.Devices.InfraredTorchControl)
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Equals(Windows.Media.Devices.InfraredTorchControl)
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.CurrentMode.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.CurrentMode.set
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.MinPower.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.IsSupported.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.MaxPower.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.PowerStep.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.MinPower.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Power.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Power.set
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.PowerStep.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.SupportedModes.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,29 +10,11 @@ namespace Windows.Media.SpeechRecognition
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Tag
+		public global::System.Collections.Generic.IList<string> Commands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionListConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechRecognitionListConstraint.Tag");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "string SpeechRecognitionListConstraint.Tag");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintProbability Probability
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintProbability%20SpeechRecognitionListConstraint.Probability");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability");
+				throw new global::System.NotImplementedException("The member IList<string> SpeechRecognitionListConstraint.Commands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SpeechRecognitionListConstraint.Commands");
 			}
 		}
 #endif
@@ -52,21 +34,39 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintType Type
+		public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintProbability Probability
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionListConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintType%20SpeechRecognitionListConstraint.Type");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintProbability%20SpeechRecognitionListConstraint.Probability");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> Commands
+		public string Tag
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SpeechRecognitionListConstraint.Commands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SpeechRecognitionListConstraint.Commands");
+				throw new global::System.NotImplementedException("The member string SpeechRecognitionListConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechRecognitionListConstraint.Tag");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "string SpeechRecognitionListConstraint.Tag");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintType Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionListConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintType%20SpeechRecognitionListConstraint.Type");
 			}
 		}
 #endif
@@ -86,14 +86,25 @@ namespace Windows.Media.SpeechRecognition
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(System.Collections.Generic.IEnumerable<string>, string)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint, Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint, Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Equals(object)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.GetHashCode()
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Commands.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.IsEnabled.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.IsEnabled.set
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Probability.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Probability.set
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Tag.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Tag.set
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Type.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Probability.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.Probability.set
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint
 	}
 }

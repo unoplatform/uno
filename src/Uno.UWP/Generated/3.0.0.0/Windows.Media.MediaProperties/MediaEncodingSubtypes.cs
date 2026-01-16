@@ -10,16 +10,6 @@ namespace Windows.Media.MediaProperties
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Asf
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Asf is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Asf");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Aac
 		{
 			get
@@ -45,6 +35,16 @@ namespace Windows.Media.MediaProperties
 			get
 			{
 				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ac3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Ac3");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Alac
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Alac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Alac");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Mpeg1
+		public static string Asf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mpeg1");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Asf is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Asf");
 			}
 		}
 #endif
@@ -120,11 +120,31 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string D16
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.D16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.D16");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Eac3
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Eac3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Eac3");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Flac
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Flac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Flac");
 			}
 		}
 #endif
@@ -180,6 +200,16 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Heif
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Heif is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Heif");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Hevc
 		{
 			get
@@ -230,6 +260,26 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string L16
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.L16");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string L8
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.L8");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Mjpg
 		{
 			get
@@ -255,6 +305,16 @@ namespace Windows.Media.MediaProperties
 			get
 			{
 				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mpeg");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Mpeg1
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mpeg1");
 			}
 		}
 #endif
@@ -290,11 +350,31 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string P010
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.P010 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.P010");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Pcm
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pcm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Pcm");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Pgs
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Pgs");
 			}
 		}
 #endif
@@ -330,11 +410,51 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Srt
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Srt is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Srt");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Ssa
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ssa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Ssa");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Tiff
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Tiff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Tiff");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string VobSub
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.VobSub is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.VobSub");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Vp9
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Vp9 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Vp9");
 			}
 		}
 #endif
@@ -408,141 +528,11 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string D16
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.D16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.D16");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string L16
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.L16");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string L8
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.L8");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Vp9
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Vp9 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Vp9");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Alac
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Alac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Alac");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Flac
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Flac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Flac");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string P010
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.P010 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.P010");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Heif
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Heif is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Heif");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Srt
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Srt is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Srt");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Ssa
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ssa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Ssa");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string VobSub
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.VobSub is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.VobSub");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Pgs
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Pgs");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Pgs.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Srt.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Ssa.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.VobSub.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Heif.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.P010.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Alac.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Flac.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Vp9.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.L8.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.L16.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.D16.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.As<I>()
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Aac.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.AacAdts.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Ac3.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Alac.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.AmrNb.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.AmrWb.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Argb32.get
@@ -550,29 +540,40 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Avi.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Bgra8.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Bmp.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.D16.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Eac3.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Flac.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Float.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Gif.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.H263.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.H264.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.H264Es.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Heif.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Hevc.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.HevcEs.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Iyuv.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Jpeg.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.JpegXr.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.L16.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.L8.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Mjpg.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Mp3.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Mpeg.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Mpeg1.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Mpeg2.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Mp3.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Mpeg4.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Nv12.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.P010.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Pcm.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Pgs.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Png.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Rgb24.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Rgb32.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Srt.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Ssa.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Tiff.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.VobSub.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Vp9.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Wave.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Wma8.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Wma9.get

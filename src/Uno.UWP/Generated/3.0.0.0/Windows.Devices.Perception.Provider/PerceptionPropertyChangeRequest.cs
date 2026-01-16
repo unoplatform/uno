@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -12,6 +11,16 @@ namespace Windows.Devices.Perception.Provider
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal PerceptionPropertyChangeRequest()
 		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PerceptionPropertyChangeRequest.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionPropertyChangeRequest.Name");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -30,16 +39,6 @@ namespace Windows.Devices.Perception.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PerceptionPropertyChangeRequest.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionPropertyChangeRequest.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Value
 		{
 			get
@@ -48,10 +47,16 @@ namespace Windows.Devices.Perception.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Name.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Value.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Status.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Status.set
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.operator ==(Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest, Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.operator !=(Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest, Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Equals(Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -59,5 +64,10 @@ namespace Windows.Devices.Perception.Provider
 			throw new global::System.NotImplementedException("The member Deferral PerceptionPropertyChangeRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20PerceptionPropertyChangeRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Name.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Status.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Status.set
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Value.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

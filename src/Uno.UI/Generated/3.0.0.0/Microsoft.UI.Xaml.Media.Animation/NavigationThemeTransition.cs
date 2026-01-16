@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty DefaultNavigationTransitionInfoProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(DefaultNavigationTransitionInfo), typeof(global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo DefaultNavigationTransitionInfo
 		{
 			get
@@ -22,18 +30,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty DefaultNavigationTransitionInfoProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultNavigationTransitionInfo), typeof(global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)));
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.NavigationThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.NavigationThemeTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfoProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition, Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition, Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfo.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfo.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfoProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -51,6 +50,16 @@ namespace Windows.Devices.Perception
 			get
 			{
 				throw new global::System.NotImplementedException("The member CameraIntrinsics PerceptionInfraredFrameSource.CameraIntrinsics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraIntrinsics%20PerceptionInfraredFrameSource.CameraIntrinsics");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PerceptionInfraredFrameSource.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionInfraredFrameSource.DeviceId");
 			}
 		}
 #endif
@@ -124,37 +133,45 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
+		public static global::Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher CreateWatcher()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PerceptionInfraredFrameSource.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionInfraredFrameSource.DeviceId");
-			}
+			throw new global::System.NotImplementedException("The member PerceptionInfraredFrameSourceWatcher PerceptionInfraredFrameSource.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionInfraredFrameSourceWatcher%20PerceptionInfraredFrameSource.CreateWatcher%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.AvailableChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.AvailableChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.ActiveChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.ActiveChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.PropertiesChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.PropertiesChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.VideoProfileChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.VideoProfileChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.CameraIntrinsicsChanged.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.CameraIntrinsicsChanged.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Id.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.DisplayName.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.DeviceKind.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Available.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Active.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.IsControlled.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Properties.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.SupportedVideoProfiles.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.AvailableVideoProfiles.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.VideoProfile.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.CameraIntrinsics.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Perception.PerceptionInfraredFrameSource>> FindAllAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PerceptionInfraredFrameSource>> PerceptionInfraredFrameSource.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CPerceptionInfraredFrameSource%3E%3E%20PerceptionInfraredFrameSource.FindAllAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionInfraredFrameSource> FromIdAsync(string id)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionInfraredFrameSource> PerceptionInfraredFrameSource.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionInfraredFrameSource%3E%20PerceptionInfraredFrameSource.FromIdAsync%28string%20id%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourceAccessStatus> RequestAccessAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourceAccessStatus> PerceptionInfraredFrameSource.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourceAccessStatus%3E%20PerceptionInfraredFrameSource.RequestAccessAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.operator ==(Windows.Devices.Perception.PerceptionInfraredFrameSource, Windows.Devices.Perception.PerceptionInfraredFrameSource)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.operator !=(Windows.Devices.Perception.PerceptionInfraredFrameSource, Windows.Devices.Perception.PerceptionInfraredFrameSource)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Equals(Windows.Devices.Perception.PerceptionInfraredFrameSource)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionControlSession AcquireControlSession()
@@ -211,35 +228,29 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionInfraredFrameReader PerceptionInfraredFrameSource.OpenReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionInfraredFrameReader%20PerceptionInfraredFrameSource.OpenReader%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.ActiveChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.ActiveChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.AvailableChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.AvailableChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.CameraIntrinsicsChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.CameraIntrinsicsChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.PropertiesChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.PropertiesChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.VideoProfileChanged.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.VideoProfileChanged.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Active.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Available.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.AvailableVideoProfiles.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.CameraIntrinsics.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.DeviceId.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher CreateWatcher()
-		{
-			throw new global::System.NotImplementedException("The member PerceptionInfraredFrameSourceWatcher PerceptionInfraredFrameSource.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionInfraredFrameSourceWatcher%20PerceptionInfraredFrameSource.CreateWatcher%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Perception.PerceptionInfraredFrameSource>> FindAllAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PerceptionInfraredFrameSource>> PerceptionInfraredFrameSource.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CPerceptionInfraredFrameSource%3E%3E%20PerceptionInfraredFrameSource.FindAllAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionInfraredFrameSource> FromIdAsync(string id)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionInfraredFrameSource> PerceptionInfraredFrameSource.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionInfraredFrameSource%3E%20PerceptionInfraredFrameSource.FromIdAsync%28string%20id%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourceAccessStatus> RequestAccessAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourceAccessStatus> PerceptionInfraredFrameSource.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourceAccessStatus%3E%20PerceptionInfraredFrameSource.RequestAccessAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.DeviceKind.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.DisplayName.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Id.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.IsControlled.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Properties.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.SupportedVideoProfiles.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.VideoProfile.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionInfraredFrameSource, object> ActiveChanged

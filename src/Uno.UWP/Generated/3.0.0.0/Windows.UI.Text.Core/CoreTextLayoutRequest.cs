@@ -35,16 +35,6 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.Core.CoreTextRange Range
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextLayoutRequest.Range is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextRange%20CoreTextLayoutRequest.Range");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Text.Core.CoreTextLayoutBounds LayoutBoundsVisualPixels
 		{
 			get
@@ -53,9 +43,26 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.Range.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.LayoutBounds.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.IsCanceled.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Text.Core.CoreTextRange Range
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextLayoutRequest.Range is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextRange%20CoreTextLayoutRequest.Range");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.operator ==(Windows.UI.Text.Core.CoreTextLayoutRequest, Windows.UI.Text.Core.CoreTextLayoutRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.operator !=(Windows.UI.Text.Core.CoreTextLayoutRequest, Windows.UI.Text.Core.CoreTextLayoutRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.Equals(Windows.UI.Text.Core.CoreTextLayoutRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.Equals(object)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.GetHashCode()
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -63,6 +70,10 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreTextLayoutRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextLayoutRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.IsCanceled.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.LayoutBounds.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.LayoutBoundsVisualPixels.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.Range.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

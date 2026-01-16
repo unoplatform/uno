@@ -15,20 +15,6 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Period
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpringScalarNaturalMotionAnimation.Period is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpringScalarNaturalMotionAnimation.Period");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation", "TimeSpan SpringScalarNaturalMotionAnimation.Period");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float DampingRatio
 		{
 			get
@@ -41,9 +27,33 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Period
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan SpringScalarNaturalMotionAnimation.Period is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpringScalarNaturalMotionAnimation.Period");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation", "TimeSpan SpringScalarNaturalMotionAnimation.Period");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.operator ==(Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation, Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.operator !=(Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation, Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.Equals(Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.DampingRatio.get
-		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.Period.set
 		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.DampingRatio.set
 		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.Period.get
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.Period.set
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,29 +10,15 @@ namespace Windows.ApplicationModel.Payments
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Tag
+		public global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount Amount
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Tag");
+				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentShippingOption.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCurrencyAmount%20PaymentShippingOption.Amount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Tag");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Label");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentCurrencyAmount PaymentShippingOption.Amount");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount Amount
+		public string Label
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentShippingOption.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCurrencyAmount%20PaymentShippingOption.Amount");
+				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentCurrencyAmount PaymentShippingOption.Amount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Label");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Tag
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Tag");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Tag");
 			}
 		}
 #endif
@@ -88,13 +88,24 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.PaymentShippingOption(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount, bool, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Label.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Label.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.operator ==(Windows.ApplicationModel.Payments.PaymentShippingOption, Windows.ApplicationModel.Payments.PaymentShippingOption)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.operator !=(Windows.ApplicationModel.Payments.PaymentShippingOption, Windows.ApplicationModel.Payments.PaymentShippingOption)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Equals(Windows.ApplicationModel.Payments.PaymentShippingOption)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Amount.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Amount.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Tag.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Tag.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.IsSelected.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.IsSelected.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Label.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Label.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Tag.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Tag.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

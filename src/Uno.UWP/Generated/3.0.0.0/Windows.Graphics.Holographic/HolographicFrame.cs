@@ -45,16 +45,6 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicCamera> RemovedCameras
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicCamera> HolographicFrame.RemovedCameras is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHolographicCamera%3E%20HolographicFrame.RemovedCameras");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicFrameId Id
 		{
 			get
@@ -63,8 +53,26 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.AddedCameras.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.RemovedCameras.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicCamera> RemovedCameras
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicCamera> HolographicFrame.RemovedCameras is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHolographicCamera%3E%20HolographicFrame.RemovedCameras");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.operator ==(Windows.Graphics.Holographic.HolographicFrame, Windows.Graphics.Holographic.HolographicFrame)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.operator !=(Windows.Graphics.Holographic.HolographicFrame, Windows.Graphics.Holographic.HolographicFrame)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Equals(Windows.Graphics.Holographic.HolographicFrame)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicCameraRenderingParameters GetRenderingParameters(global::Windows.Graphics.Holographic.HolographicCameraPose cameraPose)
@@ -72,8 +80,6 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicCameraRenderingParameters HolographicFrame.GetRenderingParameters(HolographicCameraPose cameraPose) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicCameraRenderingParameters%20HolographicFrame.GetRenderingParameters%28HolographicCameraPose%20cameraPose%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Duration.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.CurrentPrediction.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UpdateCurrentPrediction()
@@ -109,6 +115,11 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicQuadLayerUpdateParameters HolographicFrame.GetQuadLayerUpdateParameters(HolographicQuadLayer layer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicQuadLayerUpdateParameters%20HolographicFrame.GetQuadLayerUpdateParameters%28HolographicQuadLayer%20layer%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.AddedCameras.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.CurrentPrediction.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Duration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Id.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.RemovedCameras.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

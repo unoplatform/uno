@@ -15,6 +15,16 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Capacity
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint AudioBuffer.Capacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AudioBuffer.Capacity");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Length
 		{
 			get
@@ -27,19 +37,17 @@ namespace Windows.Media
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Capacity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint AudioBuffer.Capacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AudioBuffer.Capacity");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.AudioBuffer.Capacity.get
-		// Forced skipping of method Windows.Media.AudioBuffer.Length.get
-		// Forced skipping of method Windows.Media.AudioBuffer.Length.set
+		// Forced skipping of method Windows.Media.AudioBuffer.FromAbi(nint)
+		// Forced skipping of method Windows.Media.AudioBuffer.~AudioBuffer()
+		// Forced skipping of method Windows.Media.AudioBuffer.operator ==(Windows.Media.AudioBuffer, Windows.Media.AudioBuffer)
+		// Forced skipping of method Windows.Media.AudioBuffer.operator !=(Windows.Media.AudioBuffer, Windows.Media.AudioBuffer)
+		// Forced skipping of method Windows.Media.AudioBuffer.Equals(Windows.Media.AudioBuffer)
+		// Forced skipping of method Windows.Media.AudioBuffer.Equals(object)
+		// Forced skipping of method Windows.Media.AudioBuffer.GetHashCode()
+		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IMemoryBufferReference CreateReference()
@@ -54,6 +62,10 @@ namespace Windows.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioBuffer", "void AudioBuffer.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.AudioBuffer.Capacity.get
+		// Forced skipping of method Windows.Media.AudioBuffer.Length.get
+		// Forced skipping of method Windows.Media.AudioBuffer.Length.set
+		// Forced skipping of method Windows.Media.AudioBuffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Foundation.IMemoryBuffer
 		// Processing: System.IDisposable
 	}

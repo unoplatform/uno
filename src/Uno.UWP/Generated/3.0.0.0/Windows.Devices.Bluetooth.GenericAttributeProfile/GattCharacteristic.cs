@@ -10,20 +10,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtectionLevel ProtectionLevel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattCharacteristic.ProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattCharacteristic.ProtectionLevel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GattProtectionLevel GattCharacteristic.ProtectionLevel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ushort AttributeHandle
 		{
 			get
@@ -45,15 +31,18 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserDescription
+		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtectionLevel ProtectionLevel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattCharacteristic.UserDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattCharacteristic.UserDescription");
+				throw new global::System.NotImplementedException("The member GattProtectionLevel GattCharacteristic.ProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattCharacteristic.ProtectionLevel");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GattProtectionLevel GattCharacteristic.ProtectionLevel");
 			}
 		}
 #endif
-		// Skipping already declared property Uuid
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService Service
@@ -66,18 +55,40 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string UserDescription
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string GattCharacteristic.UserDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattCharacteristic.UserDescription");
+			}
+		}
+#endif
+		// Skipping already declared property Uuid
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
+		{
+			throw new global::System.NotImplementedException("The member Guid GattCharacteristic.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattCharacteristic.ConvertShortIdToUuid%28ushort%20shortId%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor> GetDescriptors(global::System.Guid descriptorUuid)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<GattDescriptor> GattCharacteristic.GetDescriptors(Guid descriptorUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattDescriptor%3E%20GattCharacteristic.GetDescriptors%28Guid%20descriptorUuid%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.CharacteristicProperties.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ProtectionLevel.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ProtectionLevel.set
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.UserDescription.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Uuid.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.AttributeHandle.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.PresentationFormats.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult> ReadValueAsync()
@@ -122,7 +133,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ValueChanged.add
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ValueChanged.remove
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Service.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor> GetAllDescriptors()
@@ -179,13 +189,15 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorWithResultAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattWriteResult%3E%20GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorWithResultAsync%28GattClientCharacteristicConfigurationDescriptorValue%20clientCharacteristicConfigurationDescriptorValue%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
-		{
-			throw new global::System.NotImplementedException("The member Guid GattCharacteristic.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattCharacteristic.ConvertShortIdToUuid%28ushort%20shortId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.AttributeHandle.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.CharacteristicProperties.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.PresentationFormats.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ProtectionLevel.set
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Service.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.UserDescription.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Uuid.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattValueChangedEventArgs> ValueChanged

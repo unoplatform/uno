@@ -15,20 +15,6 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Enabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffect.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffect.Enabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "bool FaceDetectionEffect.Enabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan DesiredDetectionInterval
 		{
 			get
@@ -41,10 +27,30 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Enabled.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Enabled.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.DesiredDetectionInterval.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.DesiredDetectionInterval.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Enabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool FaceDetectionEffect.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffect.Enabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "bool FaceDetectionEffect.Enabled");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.operator ==(Windows.Media.Core.FaceDetectionEffect, Windows.Media.Core.FaceDetectionEffect)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.operator !=(Windows.Media.Core.FaceDetectionEffect, Windows.Media.Core.FaceDetectionEffect)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Equals(Windows.Media.Core.FaceDetectionEffect)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Equals(object)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FaceDetected.add
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FaceDetected.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -54,6 +60,11 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "void FaceDetectionEffect.SetProperties(IPropertySet configuration)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.DesiredDetectionInterval.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.DesiredDetectionInterval.set
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Enabled.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Enabled.set
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.FaceDetectionEffect, global::Windows.Media.Core.FaceDetectedEventArgs> FaceDetected

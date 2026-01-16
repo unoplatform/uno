@@ -10,20 +10,31 @@ namespace Windows.ApplicationModel.Background
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PushNotificationTrigger(string applicationId)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.PushNotificationTrigger", "PushNotificationTrigger.PushNotificationTrigger(string applicationId)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.PushNotificationTrigger(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PushNotificationTrigger()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.PushNotificationTrigger", "PushNotificationTrigger.PushNotificationTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.PushNotificationTrigger()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public PushNotificationTrigger(string applicationId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.PushNotificationTrigger", "PushNotificationTrigger.PushNotificationTrigger(string applicationId)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.PushNotificationTrigger(string)
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.operator ==(Windows.ApplicationModel.Background.PushNotificationTrigger, Windows.ApplicationModel.Background.PushNotificationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.operator !=(Windows.ApplicationModel.Background.PushNotificationTrigger, Windows.ApplicationModel.Background.PushNotificationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.Equals(Windows.ApplicationModel.Background.PushNotificationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

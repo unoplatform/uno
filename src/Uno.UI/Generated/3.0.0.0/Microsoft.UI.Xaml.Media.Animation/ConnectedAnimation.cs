@@ -15,20 +15,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsScaleAnimationEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ConnectedAnimation.IsScaleAnimationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectedAnimation.IsScaleAnimationEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "bool ConnectedAnimation.IsScaleAnimationEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration Configuration
 		{
 			get
@@ -41,12 +27,30 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.IsScaleAnimationEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.IsScaleAnimationEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.add
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsScaleAnimationEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ConnectedAnimation.IsScaleAnimationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectedAnimation.IsScaleAnimationEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "bool ConnectedAnimation.IsScaleAnimationEnabled");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryStart(global::Microsoft.UI.Xaml.UIElement destination)
@@ -75,6 +79,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "void ConnectedAnimation.SetAnimationComponent(ConnectedAnimationComponent component, ICompositionAnimationBase animation)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.add
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.IsScaleAnimationEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.IsScaleAnimationEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation, object> Completed

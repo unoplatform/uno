@@ -15,16 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong CoreWebView2SharedBuffer.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CoreWebView2SharedBuffer.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IMemoryBufferReference Buffer
 		{
 			get
@@ -33,8 +23,26 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.Buffer.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.Size.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong Size
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong CoreWebView2SharedBuffer.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CoreWebView2SharedBuffer.Size");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer, Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer, Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.Equals(Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream OpenStream()
@@ -49,6 +57,9 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer", "void CoreWebView2SharedBuffer.Dispose()");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.Buffer.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.Size.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

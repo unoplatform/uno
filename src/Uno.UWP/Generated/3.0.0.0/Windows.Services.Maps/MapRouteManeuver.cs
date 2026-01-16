@@ -15,6 +15,16 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double EndHeading
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double MapRouteManeuver.EndHeading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MapRouteManeuver.EndHeading");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ExitNumber
 		{
 			get
@@ -65,31 +75,21 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Geolocation.Geopoint StartingPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Geopoint MapRouteManeuver.StartingPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geopoint%20MapRouteManeuver.StartingPoint");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double EndHeading
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double MapRouteManeuver.EndHeading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MapRouteManeuver.EndHeading");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double StartHeading
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member double MapRouteManeuver.StartHeading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MapRouteManeuver.StartHeading");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Geolocation.Geopoint StartingPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Geopoint MapRouteManeuver.StartingPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geopoint%20MapRouteManeuver.StartingPoint");
 			}
 		}
 #endif
@@ -113,15 +113,26 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.StartingPoint.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.LengthInMeters.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.operator ==(Windows.Services.Maps.MapRouteManeuver, Windows.Services.Maps.MapRouteManeuver)
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.operator !=(Windows.Services.Maps.MapRouteManeuver, Windows.Services.Maps.MapRouteManeuver)
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.Equals(Windows.Services.Maps.MapRouteManeuver)
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.Equals(object)
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.GetHashCode()
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.EndHeading.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.ExitNumber.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.InstructionText.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.Kind.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.ExitNumber.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.LengthInMeters.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.ManeuverNotices.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.StartHeading.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.EndHeading.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.StartingPoint.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.StreetName.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.Warnings.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteManeuver.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

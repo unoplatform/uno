@@ -15,6 +15,16 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong ExpectedTotalCommitLimit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.ExpectedTotalCommitLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppMemoryReport.ExpectedTotalCommitLimit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong PeakPrivateCommitUsage
 		{
 			get
@@ -53,20 +63,21 @@ namespace Windows.System
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong ExpectedTotalCommitLimit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.ExpectedTotalCommitLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppMemoryReport.ExpectedTotalCommitLimit");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.System.AppMemoryReport.PrivateCommitUsage.get
-		// Forced skipping of method Windows.System.AppMemoryReport.PeakPrivateCommitUsage.get
-		// Forced skipping of method Windows.System.AppMemoryReport.TotalCommitUsage.get
-		// Forced skipping of method Windows.System.AppMemoryReport.TotalCommitLimit.get
+		// Forced skipping of method Windows.System.AppMemoryReport.FromAbi(nint)
+		// Forced skipping of method Windows.System.AppMemoryReport.operator ==(Windows.System.AppMemoryReport, Windows.System.AppMemoryReport)
+		// Forced skipping of method Windows.System.AppMemoryReport.operator !=(Windows.System.AppMemoryReport, Windows.System.AppMemoryReport)
+		// Forced skipping of method Windows.System.AppMemoryReport.Equals(Windows.System.AppMemoryReport)
+		// Forced skipping of method Windows.System.AppMemoryReport.Equals(object)
+		// Forced skipping of method Windows.System.AppMemoryReport.GetHashCode()
+		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.AppMemoryReport.ExpectedTotalCommitLimit.get
+		// Forced skipping of method Windows.System.AppMemoryReport.PeakPrivateCommitUsage.get
+		// Forced skipping of method Windows.System.AppMemoryReport.PrivateCommitUsage.get
+		// Forced skipping of method Windows.System.AppMemoryReport.TotalCommitLimit.get
+		// Forced skipping of method Windows.System.AppMemoryReport.TotalCommitUsage.get
+		// Forced skipping of method Windows.System.AppMemoryReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsStaggeringEnabledProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(IsStaggeringEnabled), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsStaggeringEnabled
 		{
 			get
@@ -22,18 +30,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsStaggeringEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsStaggeringEnabled), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition, Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition, Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -25,16 +25,6 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherTriggerDetails.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementPublisherStatus%20BluetoothLEAdvertisementPublisherTriggerDetails.Status");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public short? SelectedTransmitPowerLevelInDBm
 		{
 			get
@@ -43,8 +33,29 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Status.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatus Status
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherTriggerDetails.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementPublisherStatus%20BluetoothLEAdvertisementPublisherTriggerDetails.Status");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.operator ==(Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails, Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.operator !=(Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails, Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Equals(Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.SelectedTransmitPowerLevelInDBm.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Status.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,20 +15,6 @@ namespace Windows.Storage.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Provider.FileUpdateStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FileUpdateStatus FileUpdateRequest.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateStatus%20FileUpdateRequest.Status");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "FileUpdateStatus FileUpdateRequest.Status");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ContentId
 		{
 			get
@@ -49,6 +35,20 @@ namespace Windows.Storage.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Provider.FileUpdateStatus Status
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FileUpdateStatus FileUpdateRequest.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateStatus%20FileUpdateRequest.Status");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "FileUpdateStatus FileUpdateRequest.Status");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string UserInputNeededMessage
 		{
 			get
@@ -61,10 +61,16 @@ namespace Windows.Storage.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.ContentId.get
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.File.get
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.Status.get
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.Status.set
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.operator ==(Windows.Storage.Provider.FileUpdateRequest, Windows.Storage.Provider.FileUpdateRequest)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.operator !=(Windows.Storage.Provider.FileUpdateRequest, Windows.Storage.Provider.FileUpdateRequest)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.Equals(Windows.Storage.Provider.FileUpdateRequest)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.Equals(object)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.GetHashCode()
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
@@ -79,7 +85,12 @@ namespace Windows.Storage.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "void FileUpdateRequest.UpdateLocalFile(IStorageFile value)");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.ContentId.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.File.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.Status.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.Status.set
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.UserInputNeededMessage.get
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.UserInputNeededMessage.set
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

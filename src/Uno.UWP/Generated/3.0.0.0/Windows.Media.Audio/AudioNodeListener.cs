@@ -10,29 +10,15 @@ namespace Windows.Media.Audio
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double SpeedOfSound
+		public global::System.Numerics.Vector3 DopplerVelocity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeListener.SpeedOfSound is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeListener.SpeedOfSound");
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeListener.DopplerVelocity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "double AudioNodeListener.SpeedOfSound");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeListener.Position");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Vector3 AudioNodeListener.Position");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Vector3 AudioNodeListener.DopplerVelocity");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 DopplerVelocity
+		public global::System.Numerics.Vector3 Position
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeListener.DopplerVelocity");
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeListener.Position");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Vector3 AudioNodeListener.DopplerVelocity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Vector3 AudioNodeListener.Position");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double SpeedOfSound
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double AudioNodeListener.SpeedOfSound is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeListener.SpeedOfSound");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "double AudioNodeListener.SpeedOfSound");
 			}
 		}
 #endif
@@ -72,13 +72,24 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.AudioNodeListener()
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.set
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.set
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.operator ==(Windows.Media.Audio.AudioNodeListener, Windows.Media.Audio.AudioNodeListener)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.operator !=(Windows.Media.Audio.AudioNodeListener, Windows.Media.Audio.AudioNodeListener)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Equals(Windows.Media.Audio.AudioNodeListener)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.DopplerVelocity.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.DopplerVelocity.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

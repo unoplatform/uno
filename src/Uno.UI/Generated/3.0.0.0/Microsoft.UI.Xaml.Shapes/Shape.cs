@@ -8,105 +8,6 @@ namespace Microsoft.UI.Xaml.Shapes
 #endif
 	public partial class Shape : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-		// Skipping already declared property StrokeThickness
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeStartLineCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeStartLineCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeStartLineCapProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double StrokeMiterLimit
-		{
-			get
-			{
-				return (double)this.GetValue(StrokeMiterLimitProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeMiterLimitProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineJoin StrokeLineJoin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineJoin)this.GetValue(StrokeLineJoinProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeLineJoinProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeEndLineCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeEndLineCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeEndLineCapProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double StrokeDashOffset
-		{
-			get
-			{
-				return (double)this.GetValue(StrokeDashOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashOffsetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeDashCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashCapProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property StrokeDashArray
-		// Skipping already declared property Stroke
-		// Skipping already declared property Stretch
-		// Skipping already declared property Fill
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Transform GeometryTransform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Transform Shape.GeometryTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Transform%20Shape.GeometryTransform");
-			}
-		}
-#endif
 		// Skipping already declared property FillProperty
 		// Skipping already declared property StretchProperty
 		// Skipping already declared property StrokeDashArrayProperty
@@ -160,31 +61,129 @@ namespace Microsoft.UI.Xaml.Shapes
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.PenLineCap)));
 #endif
 		// Skipping already declared property StrokeThicknessProperty
+		// Skipping already declared property Fill
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.Transform GeometryTransform
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Transform Shape.GeometryTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Transform%20Shape.GeometryTransform");
+			}
+		}
+#endif
+		// Skipping already declared property Stretch
+		// Skipping already declared property Stroke
+		// Skipping already declared property StrokeDashArray
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeDashCap
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
+			}
+			set
+			{
+				this.SetValue(StrokeDashCapProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double StrokeDashOffset
+		{
+			get
+			{
+				return (double)this.GetValue(StrokeDashOffsetProperty);
+			}
+			set
+			{
+				this.SetValue(StrokeDashOffsetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeEndLineCap
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeEndLineCapProperty);
+			}
+			set
+			{
+				this.SetValue(StrokeEndLineCapProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.PenLineJoin StrokeLineJoin
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.PenLineJoin)this.GetValue(StrokeLineJoinProperty);
+			}
+			set
+			{
+				this.SetValue(StrokeLineJoinProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double StrokeMiterLimit
+		{
+			get
+			{
+				return (double)this.GetValue(StrokeMiterLimitProperty);
+			}
+			set
+			{
+				this.SetValue(StrokeMiterLimitProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeStartLineCap
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeStartLineCapProperty);
+			}
+			set
+			{
+				this.SetValue(StrokeStartLineCapProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property StrokeThickness
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Shape.Shape()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape()
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Fill.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Fill.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stroke.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stroke.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeMiterLimit.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeMiterLimit.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThickness.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThickness.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCap.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCap.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeEndLineCap.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeEndLineCap.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeLineJoin.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeLineJoin.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashCap.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashCap.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashArray.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashArray.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stretch.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.GeometryTransform.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.FillProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashArrayProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashCapProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeEndLineCapProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeLineJoinProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeMiterLimitProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCapProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThicknessProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.operator ==(Microsoft.UI.Xaml.Shapes.Shape, Microsoft.UI.Xaml.Shapes.Shape)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.operator !=(Microsoft.UI.Xaml.Shapes.Shape, Microsoft.UI.Xaml.Shapes.Shape)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Equals(Microsoft.UI.Xaml.Shapes.Shape)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionBrush GetAlphaMask()
@@ -192,16 +191,30 @@ namespace Microsoft.UI.Xaml.Shapes
 			throw new global::System.NotImplementedException("The member CompositionBrush Shape.GetAlphaMask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20Shape.GetAlphaMask%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.FillProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeMiterLimitProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThicknessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCapProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeEndLineCapProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeLineJoinProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashCapProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashArrayProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Fill.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Fill.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.GeometryTransform.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stretch.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stretch.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stroke.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Stroke.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashArray.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashArray.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashCap.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashCap.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashOffset.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeEndLineCap.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeEndLineCap.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeLineJoin.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeLineJoin.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeMiterLimit.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeMiterLimit.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCap.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCap.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThickness.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThickness.set
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

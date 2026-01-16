@@ -15,6 +15,16 @@ namespace Windows.Devices.Midi
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Enumeration.DeviceInformation AudioDevice
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceInformation MidiSynthesizer.AudioDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20MidiSynthesizer.AudioDevice");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DeviceId
 		{
 			get
@@ -37,41 +47,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Enumeration.DeviceInformation AudioDevice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceInformation MidiSynthesizer.AudioDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20MidiSynthesizer.AudioDevice");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.AudioDevice.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Volume.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Volume.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendMessage(IMidiMessage midiMessage)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendBuffer(IBuffer midiData)");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.DeviceId.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.Dispose()");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiSynthesizer> CreateAsync()
@@ -93,6 +69,42 @@ namespace Windows.Devices.Midi
 			throw new global::System.NotImplementedException("The member bool MidiSynthesizer.IsSynthesizer(DeviceInformation midiDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MidiSynthesizer.IsSynthesizer%28DeviceInformation%20midiDevice%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.operator ==(Windows.Devices.Midi.MidiSynthesizer, Windows.Devices.Midi.MidiSynthesizer)
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.operator !=(Windows.Devices.Midi.MidiSynthesizer, Windows.Devices.Midi.MidiSynthesizer)
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Equals(Windows.Devices.Midi.MidiSynthesizer)
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendMessage(IMidiMessage midiMessage)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendBuffer(IBuffer midiData)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.AudioDevice.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.DeviceId.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Volume.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Volume.set
+		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiOutPort
 		// Processing: System.IDisposable
 	}

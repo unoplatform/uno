@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -16,29 +15,25 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DefaultDescription
+		public global::System.Guid AppId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutData.DefaultDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.DefaultDescription");
+				throw new global::System.NotImplementedException("The member Guid AllJoynAboutData.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20AllJoynAboutData.AppId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.DefaultDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "Guid AllJoynAboutData.AppId");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DefaultAppName
+		public global::System.Collections.Generic.IDictionary<string, string> AppNames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutData.DefaultAppName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.DefaultAppName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.DefaultAppName");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> AllJoynAboutData.AppNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20AllJoynAboutData.AppNames");
 			}
 		}
 #endif
@@ -58,6 +53,34 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DefaultAppName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AllJoynAboutData.DefaultAppName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.DefaultAppName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.DefaultAppName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DefaultDescription
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AllJoynAboutData.DefaultDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.DefaultDescription");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.DefaultDescription");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DefaultManufacturer
 		{
 			get
@@ -72,57 +95,11 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid AppId
+		public global::System.Collections.Generic.IDictionary<string, string> Descriptions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid AllJoynAboutData.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20AllJoynAboutData.AppId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "Guid AllJoynAboutData.AppId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri SupportUrl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri AllJoynAboutData.SupportUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AllJoynAboutData.SupportUrl");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "Uri AllJoynAboutData.SupportUrl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SoftwareVersion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutData.SoftwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.SoftwareVersion");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.SoftwareVersion");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ModelNumber
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutData.ModelNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.ModelNumber");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.ModelNumber");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> AllJoynAboutData.Descriptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20AllJoynAboutData.Descriptions");
 			}
 		}
 #endif
@@ -142,16 +119,6 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IDictionary<string, string> AppNames
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> AllJoynAboutData.AppNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20AllJoynAboutData.AppNames");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IDictionary<string, string> Manufacturers
 		{
 			get
@@ -162,26 +129,70 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IDictionary<string, string> Descriptions
+		public string ModelNumber
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> AllJoynAboutData.Descriptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20AllJoynAboutData.Descriptions");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutData.ModelNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.ModelNumber");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.ModelNumber");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.IsEnabled.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.IsEnabled.set
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultAppName.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultAppName.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SoftwareVersion
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AllJoynAboutData.SoftwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAboutData.SoftwareVersion");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "string AllJoynAboutData.SoftwareVersion");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri SupportUrl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri AllJoynAboutData.SupportUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AllJoynAboutData.SupportUrl");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAboutData", "Uri AllJoynAboutData.SupportUrl");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.operator ==(Windows.Devices.AllJoyn.AllJoynAboutData, Windows.Devices.AllJoyn.AllJoynAboutData)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.operator !=(Windows.Devices.AllJoyn.AllJoynAboutData, Windows.Devices.AllJoyn.AllJoynAboutData)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.Equals(Windows.Devices.AllJoyn.AllJoynAboutData)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppId.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppId.set
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppNames.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DateOfManufacture.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DateOfManufacture.set
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultAppName.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultAppName.set
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultDescription.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultDescription.set
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.Descriptions.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultManufacturer.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.DefaultManufacturer.set
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.Descriptions.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.IsEnabled.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.IsEnabled.set
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.Manufacturers.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.ModelNumber.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.ModelNumber.set
@@ -189,7 +200,6 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.SoftwareVersion.set
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.SupportUrl.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.SupportUrl.set
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppId.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppId.set
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

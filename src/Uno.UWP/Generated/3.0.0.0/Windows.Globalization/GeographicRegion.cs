@@ -80,27 +80,21 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public GeographicRegion(string geographicRegionCode)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.GeographicRegion", "GeographicRegion.GeographicRegion(string geographicRegionCode)");
-		}
-#endif
-		// Forced skipping of method Windows.Globalization.GeographicRegion.GeographicRegion(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GeographicRegion()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.GeographicRegion", "GeographicRegion.GeographicRegion()");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.GeographicRegion.GeographicRegion()
-		// Forced skipping of method Windows.Globalization.GeographicRegion.Code.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeTwoLetter.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeThreeLetter.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeThreeDigit.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.DisplayName.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.NativeName.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.CurrenciesInUse.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public GeographicRegion(string geographicRegionCode)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.GeographicRegion", "GeographicRegion.GeographicRegion(string geographicRegionCode)");
+		}
+#endif
+		// Forced skipping of method Windows.Globalization.GeographicRegion.GeographicRegion(string)
+		// Forced skipping of method Windows.Globalization.GeographicRegion.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported(string geographicRegionCode)
@@ -108,5 +102,23 @@ namespace Windows.Globalization
 			throw new global::System.NotImplementedException("The member bool GeographicRegion.IsSupported(string geographicRegionCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GeographicRegion.IsSupported%28string%20geographicRegionCode%29");
 		}
 #endif
+		// Forced skipping of method Windows.Globalization.GeographicRegion.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.GeographicRegion.operator ==(Windows.Globalization.GeographicRegion, Windows.Globalization.GeographicRegion)
+		// Forced skipping of method Windows.Globalization.GeographicRegion.operator !=(Windows.Globalization.GeographicRegion, Windows.Globalization.GeographicRegion)
+		// Forced skipping of method Windows.Globalization.GeographicRegion.Equals(Windows.Globalization.GeographicRegion)
+		// Forced skipping of method Windows.Globalization.GeographicRegion.Equals(object)
+		// Forced skipping of method Windows.Globalization.GeographicRegion.GetHashCode()
+		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.Code.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeThreeDigit.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeThreeLetter.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeTwoLetter.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.CurrenciesInUse.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.DisplayName.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.NativeName.get
+		// Forced skipping of method Windows.Globalization.GeographicRegion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.Payments.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PayerPhoneNumber
+		public string PayerEmail
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentTransaction.PayerPhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentTransaction.PayerPhoneNumber");
+				throw new global::System.NotImplementedException("The member string PaymentTransaction.PayerEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentTransaction.PayerEmail");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerPhoneNumber");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerEmail");
 			}
 		}
 #endif
@@ -43,15 +43,15 @@ namespace Windows.ApplicationModel.Payments.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PayerEmail
+		public string PayerPhoneNumber
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentTransaction.PayerEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentTransaction.PayerEmail");
+				throw new global::System.NotImplementedException("The member string PaymentTransaction.PayerPhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentTransaction.PayerPhoneNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerEmail");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerPhoneNumber");
 			}
 		}
 #endif
@@ -65,13 +65,24 @@ namespace Windows.ApplicationModel.Payments.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PaymentRequest.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerEmail.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerEmail.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerName.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerName.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerPhoneNumber.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerPhoneNumber.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransaction> FromIdAsync(string id)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentTransaction> PaymentTransaction.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentTransaction%3E%20PaymentTransaction.FromIdAsync%28string%20id%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.operator ==(Windows.ApplicationModel.Payments.Provider.PaymentTransaction, Windows.ApplicationModel.Payments.Provider.PaymentTransaction)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.operator !=(Windows.ApplicationModel.Payments.Provider.PaymentTransaction, Windows.ApplicationModel.Payments.Provider.PaymentTransaction)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.Equals(Windows.ApplicationModel.Payments.Provider.PaymentTransaction)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult> UpdateShippingAddressAsync(global::Windows.ApplicationModel.Payments.PaymentAddress shippingAddress)
@@ -100,12 +111,13 @@ namespace Windows.ApplicationModel.Payments.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "void PaymentTransaction.Reject()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransaction> FromIdAsync(string id)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentTransaction> PaymentTransaction.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentTransaction%3E%20PaymentTransaction.FromIdAsync%28string%20id%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerEmail.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerEmail.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerName.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerName.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerPhoneNumber.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerPhoneNumber.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PaymentRequest.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

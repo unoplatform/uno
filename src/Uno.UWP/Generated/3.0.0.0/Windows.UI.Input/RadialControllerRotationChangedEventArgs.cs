@@ -25,21 +25,21 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RotationDeltaInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsButtonPressed
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool RadialControllerRotationChangedEventArgs.IsButtonPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialControllerRotationChangedEventArgs.IsButtonPressed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RotationDeltaInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees");
 			}
 		}
 #endif
@@ -53,9 +53,20 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.operator ==(Windows.UI.Input.RadialControllerRotationChangedEventArgs, Windows.UI.Input.RadialControllerRotationChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.operator !=(Windows.UI.Input.RadialControllerRotationChangedEventArgs, Windows.UI.Input.RadialControllerRotationChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.Equals(Windows.UI.Input.RadialControllerRotationChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.Contact.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.IsButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.SimpleHapticsController.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerRotationChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

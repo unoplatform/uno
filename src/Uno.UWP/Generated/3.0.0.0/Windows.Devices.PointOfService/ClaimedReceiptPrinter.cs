@@ -15,6 +15,156 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint CharactersPerLine
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.CharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.CharactersPerLine");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "uint ClaimedReceiptPrinter.CharactersPerLine");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.PosPrinterColorCartridge ColorCartridge
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PosPrinterColorCartridge ClaimedReceiptPrinter.ColorCartridge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterColorCartridge%20ClaimedReceiptPrinter.ColorCartridge");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "PosPrinterColorCartridge ClaimedReceiptPrinter.ColorCartridge");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCartridgeEmpty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsCartridgeEmpty");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCartridgeRemoved
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeRemoved is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsCartridgeRemoved");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCoverOpen
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCoverOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsCoverOpen");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsHeadCleaning
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsHeadCleaning is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsHeadCleaning");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsLetterQuality
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsLetterQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsLetterQuality");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "bool ClaimedReceiptPrinter.IsLetterQuality");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPaperEmpty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsPaperEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsPaperEmpty");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPaperNearEnd
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsPaperNearEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsPaperNearEnd");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadyToPrint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsReadyToPrint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsReadyToPrint");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint LineHeight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.LineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.LineHeight");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "uint ClaimedReceiptPrinter.LineHeight");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint LineSpacing
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.LineSpacing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.LineSpacing");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "uint ClaimedReceiptPrinter.LineSpacing");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint LineWidth
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.LineWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.LineWidth");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint LinesToPaperCut
 		{
 			get
@@ -63,161 +213,16 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint LineSpacing
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.LineSpacing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.LineSpacing");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "uint ClaimedReceiptPrinter.LineSpacing");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint LineHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.LineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.LineHeight");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "uint ClaimedReceiptPrinter.LineHeight");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsLetterQuality
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsLetterQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsLetterQuality");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "bool ClaimedReceiptPrinter.IsLetterQuality");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.PosPrinterColorCartridge ColorCartridge
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PosPrinterColorCartridge ClaimedReceiptPrinter.ColorCartridge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterColorCartridge%20ClaimedReceiptPrinter.ColorCartridge");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "PosPrinterColorCartridge ClaimedReceiptPrinter.ColorCartridge");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint CharactersPerLine
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.CharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.CharactersPerLine");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedReceiptPrinter", "uint ClaimedReceiptPrinter.CharactersPerLine");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCartridgeEmpty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsCartridgeEmpty");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCartridgeRemoved
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeRemoved is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsCartridgeRemoved");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCoverOpen
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCoverOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsCoverOpen");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsHeadCleaning
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsHeadCleaning is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsHeadCleaning");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPaperEmpty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsPaperEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsPaperEmpty");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPaperNearEnd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsPaperNearEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsPaperNearEnd");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadyToPrint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsReadyToPrint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.IsReadyToPrint");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint LineWidth
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ClaimedReceiptPrinter.LineWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ClaimedReceiptPrinter.LineWidth");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.SidewaysMaxLines.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.SidewaysMaxChars.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LinesToPaperCut.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.PageSize.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.PrintArea.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.operator ==(Windows.Devices.PointOfService.ClaimedReceiptPrinter, Windows.Devices.PointOfService.ClaimedReceiptPrinter)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.operator !=(Windows.Devices.PointOfService.ClaimedReceiptPrinter, Windows.Devices.PointOfService.ClaimedReceiptPrinter)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.Equals(Windows.Devices.PointOfService.ClaimedReceiptPrinter)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.ReceiptPrintJob CreateJob()
@@ -225,24 +230,6 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member ReceiptPrintJob ClaimedReceiptPrinter.CreateJob() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ReceiptPrintJob%20ClaimedReceiptPrinter.CreateJob%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.CharactersPerLine.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.CharactersPerLine.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineHeight.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineHeight.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineSpacing.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineSpacing.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineWidth.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsLetterQuality.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsLetterQuality.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsPaperNearEnd.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.ColorCartridge.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.ColorCartridge.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsCoverOpen.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsCartridgeRemoved.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsCartridgeEmpty.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsHeadCleaning.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsPaperEmpty.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsReadyToPrint.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ValidateData(string data)
@@ -250,6 +237,30 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.ValidateData(string data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.ValidateData%28string%20data%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.CharactersPerLine.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.CharactersPerLine.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.ColorCartridge.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.ColorCartridge.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsCartridgeEmpty.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsCartridgeRemoved.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsCoverOpen.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsHeadCleaning.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsLetterQuality.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsLetterQuality.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsPaperEmpty.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsPaperNearEnd.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsReadyToPrint.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineHeight.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineHeight.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineSpacing.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineSpacing.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LineWidth.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.LinesToPaperCut.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.PageSize.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.PrintArea.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.SidewaysMaxChars.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.SidewaysMaxLines.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation
 	}
 }

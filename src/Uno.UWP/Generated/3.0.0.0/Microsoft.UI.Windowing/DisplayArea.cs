@@ -15,6 +15,16 @@ namespace Microsoft.UI.Windowing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Windowing.DisplayArea Primary
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.Primary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.Primary");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.DisplayId DisplayId
 		{
 			get
@@ -53,28 +63,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Windowing.DisplayArea Primary
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.Primary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.Primary");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.OuterBounds.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.IsPrimary.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.DisplayId.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WorkArea.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Windowing.DisplayArea GetFromDisplayId(global::Microsoft.UI.DisplayId displayId)
-		{
-			throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.GetFromDisplayId(DisplayId displayId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.GetFromDisplayId%28DisplayId%20displayId%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Primary.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayAreaWatcher CreateWatcher()
@@ -110,5 +99,28 @@ namespace Microsoft.UI.Windowing
 			throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.GetFromRect(RectInt32 rect, DisplayAreaFallback displayAreaFallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.GetFromRect%28RectInt32%20rect%2C%20DisplayAreaFallback%20displayAreaFallback%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Windowing.DisplayArea GetFromDisplayId(global::Microsoft.UI.DisplayId displayId)
+		{
+			throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.GetFromDisplayId(DisplayId displayId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.GetFromDisplayId%28DisplayId%20displayId%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Primary.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.operator ==(Microsoft.UI.Windowing.DisplayArea, Microsoft.UI.Windowing.DisplayArea)
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.operator !=(Microsoft.UI.Windowing.DisplayArea, Microsoft.UI.Windowing.DisplayArea)
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Equals(Microsoft.UI.Windowing.DisplayArea)
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Equals(object)
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.DisplayId.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.IsPrimary.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.OuterBounds.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WorkArea.get
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

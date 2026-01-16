@@ -10,15 +10,15 @@ namespace Windows.Devices.WiFiDirect
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer Value
+		public global::Windows.Storage.Streams.IBuffer Oui
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectInformationElement.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectInformationElement.Value");
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectInformationElement.Oui is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectInformationElement.Oui");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Oui");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer Oui
+		public global::Windows.Storage.Streams.IBuffer Value
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectInformationElement.Oui is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectInformationElement.Oui");
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectInformationElement.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectInformationElement.Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Oui");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Value");
 			}
 		}
 #endif
@@ -58,12 +58,7 @@ namespace Windows.Devices.WiFiDirect
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WiFiDirectInformationElement()
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Oui.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Oui.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.OuiType.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.OuiType.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromBuffer(global::Windows.Storage.Streams.IBuffer buffer)
@@ -78,5 +73,22 @@ namespace Windows.Devices.WiFiDirect
 			throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectInformationElement.CreateFromDeviceInformation(DeviceInformation deviceInformation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectInformationElement.CreateFromDeviceInformation%28DeviceInformation%20deviceInformation%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.operator ==(Windows.Devices.WiFiDirect.WiFiDirectInformationElement, Windows.Devices.WiFiDirect.WiFiDirectInformationElement)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.operator !=(Windows.Devices.WiFiDirect.WiFiDirectInformationElement, Windows.Devices.WiFiDirect.WiFiDirectInformationElement)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Equals(Windows.Devices.WiFiDirect.WiFiDirectInformationElement)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Equals(object)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.GetHashCode()
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Oui.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Oui.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.OuiType.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.OuiType.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

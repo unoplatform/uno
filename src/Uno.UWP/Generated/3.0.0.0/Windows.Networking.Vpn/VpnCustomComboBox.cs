@@ -10,6 +10,48 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Bordered
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool VpnCustomComboBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomComboBox.Bordered");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Bordered");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Compulsory
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool VpnCustomComboBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomComboBox.Compulsory");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Compulsory");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Label
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VpnCustomComboBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomComboBox.Label");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "string VpnCustomComboBox.Label");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> OptionsText
 		{
 			get
@@ -34,63 +76,32 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VpnCustomComboBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomComboBox.Label");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "string VpnCustomComboBox.Label");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Compulsory
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomComboBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomComboBox.Compulsory");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Compulsory");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Bordered
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomComboBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomComboBox.Bordered");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Bordered");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnCustomComboBox()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "VpnCustomComboBox.VpnCustomComboBox()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.VpnCustomComboBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.OptionsText.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.OptionsText.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Selected.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Label.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Label.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Compulsory.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Compulsory.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.operator ==(Windows.Networking.Vpn.VpnCustomComboBox, Windows.Networking.Vpn.VpnCustomComboBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.operator !=(Windows.Networking.Vpn.VpnCustomComboBox, Windows.Networking.Vpn.VpnCustomComboBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Equals(Windows.Networking.Vpn.VpnCustomComboBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Bordered.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Compulsory.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Compulsory.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Label.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Label.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.OptionsText.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.OptionsText.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Selected.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnCustomPrompt
 	}
 }

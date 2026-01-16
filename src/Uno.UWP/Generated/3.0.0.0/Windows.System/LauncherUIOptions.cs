@@ -15,15 +15,15 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect? SelectionRect
+		public global::Windows.Foundation.Point? InvocationPoint
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect? LauncherUIOptions.SelectionRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%3F%20LauncherUIOptions.SelectionRect");
+				throw new global::System.NotImplementedException("The member Point? LauncherUIOptions.InvocationPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%3F%20LauncherUIOptions.InvocationPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "Rect? LauncherUIOptions.SelectionRect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "Point? LauncherUIOptions.InvocationPoint");
 			}
 		}
 #endif
@@ -43,23 +43,34 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point? InvocationPoint
+		public global::Windows.Foundation.Rect? SelectionRect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point? LauncherUIOptions.InvocationPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%3F%20LauncherUIOptions.InvocationPoint");
+				throw new global::System.NotImplementedException("The member Rect? LauncherUIOptions.SelectionRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%3F%20LauncherUIOptions.SelectionRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "Point? LauncherUIOptions.InvocationPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "Rect? LauncherUIOptions.SelectionRect");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.LauncherUIOptions.FromAbi(nint)
+		// Forced skipping of method Windows.System.LauncherUIOptions.operator ==(Windows.System.LauncherUIOptions, Windows.System.LauncherUIOptions)
+		// Forced skipping of method Windows.System.LauncherUIOptions.operator !=(Windows.System.LauncherUIOptions, Windows.System.LauncherUIOptions)
+		// Forced skipping of method Windows.System.LauncherUIOptions.Equals(Windows.System.LauncherUIOptions)
+		// Forced skipping of method Windows.System.LauncherUIOptions.Equals(object)
+		// Forced skipping of method Windows.System.LauncherUIOptions.GetHashCode()
+		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.InvocationPoint.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.InvocationPoint.set
-		// Forced skipping of method Windows.System.LauncherUIOptions.SelectionRect.get
-		// Forced skipping of method Windows.System.LauncherUIOptions.SelectionRect.set
 		// Forced skipping of method Windows.System.LauncherUIOptions.PreferredPlacement.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.PreferredPlacement.set
+		// Forced skipping of method Windows.System.LauncherUIOptions.SelectionRect.get
+		// Forced skipping of method Windows.System.LauncherUIOptions.SelectionRect.set
+		// Forced skipping of method Windows.System.LauncherUIOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

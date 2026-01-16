@@ -15,6 +15,46 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIProtocolActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIProtocolActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string CallerPackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIProtocolActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIProtocolActivatedEventArgs.CallerPackageFamilyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int CurrentlyShownApplicationViewId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Collections.ValueSet Data
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ValueSet WebUIProtocolActivatedEventArgs.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebUIProtocolActivatedEventArgs.Data");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -45,26 +85,6 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User WebUIProtocolActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIProtocolActivatedEventArgs.User");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int CurrentlyShownApplicationViewId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Uri Uri
 		{
 			get
@@ -75,43 +95,34 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CallerPackageFamilyName
+		public global::Windows.System.User User
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIProtocolActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIProtocolActivatedEventArgs.CallerPackageFamilyName");
+				throw new global::System.NotImplementedException("The member User WebUIProtocolActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIProtocolActivatedEventArgs.User");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.ValueSet Data
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ValueSet WebUIProtocolActivatedEventArgs.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebUIProtocolActivatedEventArgs.Data");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIProtocolActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIProtocolActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Uri.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIProtocolActivatedEventArgs, Windows.UI.WebUI.WebUIProtocolActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIProtocolActivatedEventArgs, Windows.UI.WebUI.WebUIProtocolActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIProtocolActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.CallerPackageFamilyName.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Data.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.CallerPackageFamilyName.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Data.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Uri.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData

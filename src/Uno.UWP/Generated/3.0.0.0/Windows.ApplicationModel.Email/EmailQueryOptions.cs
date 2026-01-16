@@ -10,29 +10,11 @@ namespace Windows.ApplicationModel.Email
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailQuerySortProperty SortProperty
+		public global::System.Collections.Generic.IList<string> FolderIds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySortProperty EmailQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySortProperty%20EmailQueryOptions.SortProperty");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortProperty EmailQueryOptions.SortProperty");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailQuerySortDirection SortDirection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member EmailQuerySortDirection EmailQueryOptions.SortDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySortDirection%20EmailQueryOptions.SortDirection");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortDirection EmailQueryOptions.SortDirection");
+				throw new global::System.NotImplementedException("The member IList<string> EmailQueryOptions.FolderIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20EmailQueryOptions.FolderIds");
 			}
 		}
 #endif
@@ -52,11 +34,29 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> FolderIds
+		public global::Windows.ApplicationModel.Email.EmailQuerySortDirection SortDirection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> EmailQueryOptions.FolderIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20EmailQueryOptions.FolderIds");
+				throw new global::System.NotImplementedException("The member EmailQuerySortDirection EmailQueryOptions.SortDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySortDirection%20EmailQueryOptions.SortDirection");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortDirection EmailQueryOptions.SortDirection");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Email.EmailQuerySortProperty SortProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member EmailQuerySortProperty EmailQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySortProperty%20EmailQueryOptions.SortProperty");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortProperty EmailQueryOptions.SortProperty");
 			}
 		}
 #endif
@@ -70,6 +70,14 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public EmailQueryOptions()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions.EmailQueryOptions()");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.EmailQueryOptions()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailQueryOptions(string text)
@@ -86,21 +94,24 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.EmailQueryOptions(string, Windows.ApplicationModel.Email.EmailQuerySearchFields)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public EmailQueryOptions()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions.EmailQueryOptions()");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.EmailQueryOptions()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.TextSearch.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.operator ==(Windows.ApplicationModel.Email.EmailQueryOptions, Windows.ApplicationModel.Email.EmailQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.operator !=(Windows.ApplicationModel.Email.EmailQueryOptions, Windows.ApplicationModel.Email.EmailQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Equals(Windows.ApplicationModel.Email.EmailQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.FolderIds.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Kind.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.SortDirection.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.SortDirection.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.SortProperty.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.SortProperty.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Kind.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Kind.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.FolderIds.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.TextSearch.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,20 +15,6 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Usb.UsbWriteOptions WriteOptions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UsbWriteOptions UsbInterruptOutPipe.WriteOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbWriteOptions%20UsbInterruptOutPipe.WriteOptions");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbInterruptOutPipe", "UsbWriteOptions UsbInterruptOutPipe.WriteOptions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor EndpointDescriptor
 		{
 			get
@@ -47,7 +33,30 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.EndpointDescriptor.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Usb.UsbWriteOptions WriteOptions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UsbWriteOptions UsbInterruptOutPipe.WriteOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbWriteOptions%20UsbInterruptOutPipe.WriteOptions");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbInterruptOutPipe", "UsbWriteOptions UsbInterruptOutPipe.WriteOptions");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.operator ==(Windows.Devices.Usb.UsbInterruptOutPipe, Windows.Devices.Usb.UsbInterruptOutPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.operator !=(Windows.Devices.Usb.UsbInterruptOutPipe, Windows.Devices.Usb.UsbInterruptOutPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.Equals(Windows.Devices.Usb.UsbInterruptOutPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
@@ -55,8 +64,10 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member IAsyncAction UsbInterruptOutPipe.ClearStallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UsbInterruptOutPipe.ClearStallAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WriteOptions.set
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WriteOptions.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.EndpointDescriptor.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.OutputStream.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WriteOptions.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WriteOptions.set
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -65,16 +65,6 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasNewWwanRegistrationState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewWwanRegistrationState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewWwanRegistrationState");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool HasNewTetheringClientCount
 		{
 			get
@@ -93,13 +83,34 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewInternetConnectionProfile.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool HasNewWwanRegistrationState
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewWwanRegistrationState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewWwanRegistrationState");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.operator ==(Windows.Networking.Connectivity.NetworkStateChangeEventDetails, Windows.Networking.Connectivity.NetworkStateChangeEventDetails)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.operator !=(Windows.Networking.Connectivity.NetworkStateChangeEventDetails, Windows.Networking.Connectivity.NetworkStateChangeEventDetails)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.Equals(Windows.Networking.Connectivity.NetworkStateChangeEventDetails)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewConnectionCost.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewNetworkConnectivityLevel.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewDomainConnectivityLevel.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewHostNameList.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewWwanRegistrationState.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewTetheringOperationalState.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewInternetConnectionProfile.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewNetworkConnectivityLevel.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewTetheringClientCount.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewTetheringOperationalState.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.HasNewWwanRegistrationState.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

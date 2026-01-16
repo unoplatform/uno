@@ -20,15 +20,39 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? TrailingEncoderPadding
+		public bool IsSelected
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? AudioStreamDescriptor.TrailingEncoderPadding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AudioStreamDescriptor.TrailingEncoderPadding");
+				throw new global::System.NotImplementedException("The member bool AudioStreamDescriptor.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioStreamDescriptor.IsSelected");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Label
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AudioStreamDescriptor.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioStreamDescriptor.Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.TrailingEncoderPadding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Label");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Language
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AudioStreamDescriptor.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioStreamDescriptor.Language");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Language");
 			}
 		}
 #endif
@@ -62,39 +86,15 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
+		public uint? TrailingEncoderPadding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioStreamDescriptor.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioStreamDescriptor.Language");
+				throw new global::System.NotImplementedException("The member uint? AudioStreamDescriptor.TrailingEncoderPadding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AudioStreamDescriptor.TrailingEncoderPadding");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Language");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSelected
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AudioStreamDescriptor.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioStreamDescriptor.IsSelected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AudioStreamDescriptor.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioStreamDescriptor.Label");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.TrailingEncoderPadding");
 			}
 		}
 #endif
@@ -106,18 +106,16 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.AudioStreamDescriptor(Windows.Media.MediaProperties.AudioEncodingProperties)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.EncodingProperties.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.IsSelected.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Name.set
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Name.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Language.set
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Language.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.LeadingEncoderPadding.set
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.LeadingEncoderPadding.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.TrailingEncoderPadding.set
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.TrailingEncoderPadding.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Label.set
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Label.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.operator ==(Windows.Media.Core.AudioStreamDescriptor, Windows.Media.Core.AudioStreamDescriptor)
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.operator !=(Windows.Media.Core.AudioStreamDescriptor, Windows.Media.Core.AudioStreamDescriptor)
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Equals(Windows.Media.Core.AudioStreamDescriptor)
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Equals(object)
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.AudioStreamDescriptor Copy()
@@ -125,6 +123,19 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member AudioStreamDescriptor AudioStreamDescriptor.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStreamDescriptor%20AudioStreamDescriptor.Copy%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.EncodingProperties.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.IsSelected.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Label.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Label.set
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Language.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Language.set
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.LeadingEncoderPadding.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.LeadingEncoderPadding.set
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Name.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Name.set
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.TrailingEncoderPadding.get
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.TrailingEncoderPadding.set
+		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaStreamDescriptor
 		// Processing: Windows.Media.Core.IMediaStreamDescriptor2
 	}

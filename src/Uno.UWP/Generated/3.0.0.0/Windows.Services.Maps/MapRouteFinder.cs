@@ -8,27 +8,7 @@ namespace Windows.Services.Maps
 #endif
 	public static partial class MapRouteFinder
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromEnhancedWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Maps.EnhancedWaypoint> waypoints)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMapRouteFinderResult%3E%20MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync%28IEnumerable%3CEnhancedWaypoint%3E%20waypoints%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromEnhancedWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Maps.EnhancedWaypoint> waypoints, global::Windows.Services.Maps.MapRouteDrivingOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints, MapRouteDrivingOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMapRouteFinderResult%3E%20MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync%28IEnumerable%3CEnhancedWaypoint%3E%20waypoints%2C%20MapRouteDrivingOptions%20options%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint, global::Windows.Services.Maps.MapRouteDrivingOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteDrivingOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMapRouteFinderResult%3E%20MapRouteFinder.GetDrivingRouteAsync%28Geopoint%20startPoint%2C%20Geopoint%20endPoint%2C%20MapRouteDrivingOptions%20options%29");
-		}
-#endif
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinder.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint)
@@ -97,6 +77,27 @@ namespace Windows.Services.Maps
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetWalkingRouteFromWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.Geopoint> wayPoints)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetWalkingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMapRouteFinderResult%3E%20MapRouteFinder.GetWalkingRouteFromWaypointsAsync%28IEnumerable%3CGeopoint%3E%20wayPoints%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint, global::Windows.Services.Maps.MapRouteDrivingOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteDrivingOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMapRouteFinderResult%3E%20MapRouteFinder.GetDrivingRouteAsync%28Geopoint%20startPoint%2C%20Geopoint%20endPoint%2C%20MapRouteDrivingOptions%20options%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromEnhancedWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Maps.EnhancedWaypoint> waypoints)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMapRouteFinderResult%3E%20MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync%28IEnumerable%3CEnhancedWaypoint%3E%20waypoints%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromEnhancedWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Maps.EnhancedWaypoint> waypoints, global::Windows.Services.Maps.MapRouteDrivingOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints, MapRouteDrivingOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMapRouteFinderResult%3E%20MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync%28IEnumerable%3CEnhancedWaypoint%3E%20waypoints%2C%20MapRouteDrivingOptions%20options%29");
 		}
 #endif
 	}

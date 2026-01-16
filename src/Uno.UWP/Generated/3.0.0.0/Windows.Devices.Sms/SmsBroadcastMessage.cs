@@ -35,11 +35,31 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.CellularClass CellularClass
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CellularClass SmsBroadcastMessage.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsBroadcastMessage.CellularClass");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Channel
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member int SmsBroadcastMessage.Channel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsBroadcastMessage.Channel");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.DeviceId");
 			}
 		}
 #endif
@@ -75,11 +95,41 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.SmsMessageClass MessageClass
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SmsMessageClass SmsBroadcastMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsBroadcastMessage.MessageClass");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int MessageCode
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member int SmsBroadcastMessage.MessageCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsBroadcastMessage.MessageCode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.SmsMessageType MessageType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SmsMessageType SmsBroadcastMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsBroadcastMessage.MessageType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SimIccId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.SimIccId");
 			}
 		}
 #endif
@@ -113,71 +163,32 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.CellularClass CellularClass
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsBroadcastMessage.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsBroadcastMessage.CellularClass");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.DeviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.SmsMessageClass MessageClass
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsBroadcastMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsBroadcastMessage.MessageClass");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.SmsMessageType MessageType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsBroadcastMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsBroadcastMessage.MessageType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SimIccId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.SimIccId");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.To.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.operator ==(Windows.Devices.Sms.SmsBroadcastMessage, Windows.Devices.Sms.SmsBroadcastMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.operator !=(Windows.Devices.Sms.SmsBroadcastMessage, Windows.Devices.Sms.SmsBroadcastMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.Equals(Windows.Devices.Sms.SmsBroadcastMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.Body.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.Channel.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.GeographicalScope.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.MessageCode.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.UpdateNumber.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.BroadcastType.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.Channel.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.GeographicalScope.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.IsEmergencyAlert.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.IsUserPopupRequested.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.CellularClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.MessageClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.MessageCode.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.MessageType.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.SimIccId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.To.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.UpdateNumber.get
+		// Forced skipping of method Windows.Devices.Sms.SmsBroadcastMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Sms.ISmsMessageBase
 	}
 }
