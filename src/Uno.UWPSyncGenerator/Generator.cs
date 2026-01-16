@@ -271,6 +271,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				case "Microsoft.InteractiveExperiences.Projection":
 				case "Microsoft.WinUI":
+				case "Microsoft.Web.WebView2.Core.Projection":
 				case "Microsoft.Windows.AppLifecycle.Projection":
 				case "Microsoft.Windows.ApplicationModel.Resources.Projection":
 				case "Microsoft.Windows.PushNotifications.Projection":
@@ -319,12 +320,14 @@ namespace Uno.UWPSyncGenerator
 				return true;
 			}
 #if HAS_UNO_WINUI
-			else if (@namespace.StartsWith("Microsoft.Windows.", StringComparison.Ordinal))
+			else if (@namespace.StartsWith("Microsoft.Windows.", StringComparison.Ordinal)
+				&& !@namespace.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal))
 			{
 				// Historically, before https://github.com/unoplatform/uno/pull/13867, WinUI generation was not correct.
 				// With this PR, new types in Microsoft.Windows. started to be generated. (e.g, Microsoft.Windows.ApplicationModel.DynamicDependency.PackageVersion)
 				// We want to minimize the changes from #13867, so we skip this namespace, maintaining the old behavior.
 				// We should revise in the future whether we want to include these types.
+				// NOTE: Microsoft.Windows.ApplicationModel.Resources is explicitly allowed as it was previously generated.
 				return true;
 			}
 #endif
@@ -445,6 +448,43 @@ namespace Uno.UWPSyncGenerator
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
 			else if (@namespace == "Microsoft.UI" && type.Name is "Colors" or "ColorHelper" or "FontWeights")
+			{
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+			}
+
+			// BACKWARDS COMPATIBILITY REDIRECTS:
+			// The following namespaces are being generated in their legacy locations to avoid breaking changes.
+			// Ideally, these should be generated based on their containing assembly (see switch statement below),
+			// but that would be a breaking change for users who reference these types from Uno.UI.
+
+			// Microsoft.UI.Content: Correct location would be Uno.UWP (from Microsoft.WinUI assembly),
+			// but was previously generated in Uno.UI.
+			else if (@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+			}
+			// Microsoft.UI.System: Correct location would be Uno.UWP, but keeping in Uno.UI for consistency
+			// with other Microsoft.UI.* namespaces.
+			else if (@namespace.StartsWith("Microsoft.UI.System", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+			}
+			// Microsoft.Graphics.DirectX/Display: Correct location would be Uno.UWP (from Microsoft.Windows.SDK.NET),
+			// but was previously generated in Uno.UI.Composition.
+			else if (@namespace.StartsWith("Microsoft.Graphics.DirectX", StringComparison.Ordinal) ||
+				@namespace.StartsWith("Microsoft.Graphics.Display", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
+			}
+			// Microsoft.Windows.ApplicationModel.Resources: Correct location would be Uno.UWP,
+			// but was previously generated in Uno.UI.
+			else if (@namespace.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+			}
+			// Microsoft.Web.WebView2.Core: Correct location would be Uno.UWP,
+			// but was previously generated in Uno.UI.
+			else if (@namespace.StartsWith("Microsoft.Web.WebView2", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}

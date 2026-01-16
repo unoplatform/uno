@@ -44,14 +44,14 @@ namespace Windows.UI.Input.Inking.Analysis
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Id.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Kind.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.BoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.RotatedBoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Children.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Parent.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds();
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Children.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Id.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Kind.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.Parent.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.IInkAnalysisNode.RotatedBoundingRect.get
 	}
 }

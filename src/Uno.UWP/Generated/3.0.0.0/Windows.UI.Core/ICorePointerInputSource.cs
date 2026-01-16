@@ -14,9 +14,9 @@ namespace Windows.UI.Core
 		// Skipping already declared method Windows.UI.Core.ICorePointerInputSource.ReleasePointerCapture()
 		// Skipping already declared method Windows.UI.Core.ICorePointerInputSource.SetPointerCapture()
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.HasCapture.get
-		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerPosition.get
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerCursor.get
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerCursor.set
+		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerPosition.get
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerCaptureLost.add
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerCaptureLost.remove
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerEntered.add

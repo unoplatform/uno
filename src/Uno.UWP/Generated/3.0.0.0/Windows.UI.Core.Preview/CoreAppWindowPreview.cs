@@ -13,6 +13,7 @@ namespace Windows.UI.Core.Preview
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetIdFromWindow(global::Windows.UI.WindowManagement.AppWindow window)
@@ -20,5 +21,16 @@ namespace Windows.UI.Core.Preview
 			throw new global::System.NotImplementedException("The member int CoreAppWindowPreview.GetIdFromWindow(AppWindow window) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreAppWindowPreview.GetIdFromWindow%28AppWindow%20window%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.operator ==(Windows.UI.Core.Preview.CoreAppWindowPreview, Windows.UI.Core.Preview.CoreAppWindowPreview)
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.operator !=(Windows.UI.Core.Preview.CoreAppWindowPreview, Windows.UI.Core.Preview.CoreAppWindowPreview)
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.Equals(Windows.UI.Core.Preview.CoreAppWindowPreview)
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.Equals(object)
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

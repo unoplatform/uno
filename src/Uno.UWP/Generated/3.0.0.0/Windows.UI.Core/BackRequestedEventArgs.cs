@@ -9,7 +9,18 @@ namespace Windows.UI.Core
 	public partial class BackRequestedEventArgs
 	{
 		// Skipping already declared property Handled
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.operator ==(Windows.UI.Core.BackRequestedEventArgs, Windows.UI.Core.BackRequestedEventArgs)
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.operator !=(Windows.UI.Core.BackRequestedEventArgs, Windows.UI.Core.BackRequestedEventArgs)
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.Equals(Windows.UI.Core.BackRequestedEventArgs)
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

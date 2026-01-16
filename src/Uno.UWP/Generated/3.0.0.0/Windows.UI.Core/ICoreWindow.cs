@@ -55,18 +55,6 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Skipping already declared property Visible
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.AutomationHostProvider.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.Bounds.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.CustomProperties.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.Dispatcher.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.FlowDirection.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.FlowDirection.set
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.IsInputEnabled.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.IsInputEnabled.set
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerCursor.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerCursor.set
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerPosition.get
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.Visible.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void Activate();
 #endif
@@ -85,6 +73,18 @@ namespace Windows.UI.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void SetPointerCapture();
 #endif
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.AutomationHostProvider.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.Bounds.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.CustomProperties.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.Dispatcher.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.FlowDirection.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.FlowDirection.set
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.IsInputEnabled.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.IsInputEnabled.set
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerCursor.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerCursor.set
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerPosition.get
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.Visible.get
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.Activated.add
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.Activated.remove
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.AutomationProviderRequested.add
@@ -111,12 +111,12 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerPressed.remove
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerReleased.add
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerReleased.remove
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.TouchHitTesting.add
-		// Forced skipping of method Windows.UI.Core.ICoreWindow.TouchHitTesting.remove
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerWheelChanged.add
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.PointerWheelChanged.remove
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.SizeChanged.add
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.SizeChanged.remove
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.TouchHitTesting.add
+		// Forced skipping of method Windows.UI.Core.ICoreWindow.TouchHitTesting.remove
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.VisibilityChanged.add
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.VisibilityChanged.remove
 		// Skipping already declared event Windows.UI.Core.ICoreWindow.Activated
