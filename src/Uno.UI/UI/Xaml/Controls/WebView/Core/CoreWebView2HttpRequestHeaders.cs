@@ -20,16 +20,16 @@ public partial class CoreWebView2HttpRequestHeaders : IEnumerable<KeyValuePair<s
 
 	internal object NativeHeaders => _nativeHeaders;
 
-	public virtual string GetHeader(string name) => _nativeHeaders.GetHeader(name);
+	public string GetHeader(string name) => _nativeHeaders.GetHeader(name);
 
 	public CoreWebView2HttpHeadersCollectionIterator GetHeaders(string name)
 		=> new CoreWebView2HttpHeadersCollectionIterator(_nativeHeaders.GetHeaders(name));
 
-	public virtual bool Contains(string name) => _nativeHeaders.Contains(name);
+	public bool Contains(string name) => _nativeHeaders.Contains(name);
 
-	public virtual void SetHeader(string name, string value) => _nativeHeaders.SetHeader(name, value);
+	public void SetHeader(string name, string value) => _nativeHeaders.SetHeader(name, value);
 
-	public virtual void RemoveHeader(string name) => _nativeHeaders.RemoveHeader(name);
+	public void RemoveHeader(string name) => _nativeHeaders.RemoveHeader(name);
 
 	public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
 	{
