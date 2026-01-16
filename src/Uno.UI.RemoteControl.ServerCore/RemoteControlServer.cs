@@ -19,13 +19,16 @@ using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.AppLaunch;
-using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.ServerCore.Configuration;
 
 namespace Uno.UI.RemoteControl.Server;
 
+/// <summary>
+/// Connection-scoped devserver runtime that owns the transport, processors, and discovery state for a single IDE/runtime session.
+/// A new instance is created per connection scope by <see cref="Uno.UI.RemoteControl.ServerCore.RemoteControlServerHost"/>.
+/// </summary>
 public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlServerConnection, IDisposable
 {
 	private readonly Lock _loadContextGate = new();
@@ -39,10 +42,15 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 	private readonly List<string> _appInstanceIds = new();
 	private readonly IRemoteControlConfiguration _configuration;
 	private readonly IIdeChannel _ideChannel;
+	// Connection-scoped provider used to resolve telemetry and instantiate processors (and their dependencies) discovered later on.
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ITelemetry? _telemetry;
 	private readonly IApplicationLaunchMonitor _launchMonitor;
 
+	/// <summary>
+	/// Creates a per-connection server instance. The supplied <paramref name="serviceProvider"/> must be the scoped provider created by the host for that connection.
+	/// It is reused to resolve optional connection services (telemetry, launch monitor) and to materialize processors via dependency injection.
+	/// </summary>
 	public RemoteControlServer(
 		IRemoteControlConfiguration configuration,
 		IIdeChannel ideChannel,

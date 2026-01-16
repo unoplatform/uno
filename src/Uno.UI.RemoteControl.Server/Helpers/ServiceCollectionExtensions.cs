@@ -166,11 +166,13 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		{
 			var sessionId = session.Id;
 
-			// Get telemetry configuration first
-			if (asm.GetCustomAttribute<TelemetryAttribute>() is not { } config)
-			{
-				throw new InvalidOperationException($"No telemetry config found for assembly {asm}.");
-			}
+			// Get telemetry configuration first. When core abstractions (like ITelemetry) live in
+			// another assembly (ServerCore), that assembly will not necessarily declare the
+			// TelemetryAttribute. Fall back to the host assembly configuration so we keep the
+			// historic instrumentation keys.
+			var config = asm.GetCustomAttribute<TelemetryAttribute>()
+				?? typeof(ServiceCollectionExtensions).Assembly.GetCustomAttribute<TelemetryAttribute>()
+				?? throw new InvalidOperationException($"No telemetry config found for assembly {asm}.");
 
 			var eventsPrefix = config.EventsPrefix ?? $"uno/{asm.GetName().Name?.ToLowerInvariant()}";
 

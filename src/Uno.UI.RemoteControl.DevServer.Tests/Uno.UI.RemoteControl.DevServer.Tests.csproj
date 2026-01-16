@@ -23,7 +23,6 @@
 	<ItemGroup>
 		<!-- Link sources directly so unit tests can compile without directly referencing the project output -->
 		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
-		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\IApplicationLaunchMonitor.cs" Link="AppLaunch\IApplicationLaunchMonitor.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AppLaunch\VsAppLaunchStateService.cs" Link="AppLaunch\VsAppLaunchStateService.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
 
@@ -34,16 +33,16 @@
 	<ItemGroup>
 		<!-- Reference those projects to ensure to have binaries available at runtime, but don't reference them for compilation -->
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj">
-			<Aliases>RemoteServer</Aliases>
-		</ProjectReference>
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Normal project references - use Skia implementation of the Remote Control client -->
-		<ProjectReference Include="..\Uno.UI.RemoteControl.ServerCore\Uno.UI.RemoteControl.ServerCore.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.ServerCore\Uno.UI.RemoteControl.ServerCore.csproj">
+			<Aliases>RemoteServerCore</Aliases>
+		</ProjectReference>
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 	</ItemGroup>

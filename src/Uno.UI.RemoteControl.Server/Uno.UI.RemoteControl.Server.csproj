@@ -8,15 +8,6 @@
 
 	<Import Project="../targetframework-override-noplatform.props" />
 
-	<ItemGroup>
-		<Compile Include="..\Uno.UI.RemoteControl\Helpers\VersionHelper.cs" Link="Helpers/%(Filename)" />
-		<Compile Include="..\Uno.UI.RemoteControl\Messages\**\*.cs" Link="Messages/%(Filename)" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="..\Uno.UI.RemoteControl\Messages\Frame.cs" />
-		<Compile Remove="..\Uno.UI.RemoteControl\Messages\IMessage.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />

@@ -1,4 +1,4 @@
-extern alias RemoteServer;
+extern alias RemoteServerCore;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +15,12 @@ using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.AppLaunch;
-using Uno.UI.RemoteControl.ServerCore;
-using Uno.UI.RemoteControl.ServerCore.Configuration;
 using Uno.UI.RemoteControl.Services;
-using RemoteServerTelemetry = RemoteServer::Uno.UI.RemoteControl.Server.Telemetry;
-using RemoteServerAppLaunch = RemoteServer::Uno.UI.RemoteControl.Server.AppLaunch;
-using RemoteServerServer = RemoteServer::Uno.UI.RemoteControl.Server;
+using ServerCoreRemoteControlServer = RemoteServerCore::Uno.UI.RemoteControl.Server.RemoteControlServer;
+using ServerCoreRemoteControlServerHost = RemoteServerCore::Uno.UI.RemoteControl.ServerCore.RemoteControlServerHost;
+using ServerCoreLaunchMonitor = RemoteServerCore::Uno.UI.RemoteControl.Server.AppLaunch.IApplicationLaunchMonitor;
+using ServerCoreTelemetry = RemoteServerCore::Uno.UI.RemoteControl.Server.Telemetry.ITelemetry;
+using ServerCoreConfiguration = RemoteServerCore::Uno.UI.RemoteControl.ServerCore.Configuration.IRemoteControlConfiguration;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.DevServer.Tests.RemoteControlServerBehaviorTests.DiagnosticsAwareProcessor))]
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.DevServer.Tests.RemoteControlServerBehaviorTests.IdeRoutingProcessor))]
@@ -50,7 +50,7 @@ public class RemoteControlServerBehaviorTests
 			Frame.Create(ProtocolVersion, DiagnosticsAwareProcessor.ScopeName, "probe", new { denim = 42 })
 		});
 
-		var expectedSink = typeof(RemoteServerServer.RemoteControlServer)
+		var expectedSink = typeof(ServerCoreRemoteControlServer)
 			.GetNestedType("DiagnosticsSink", BindingFlags.NonPublic);
 
 		expectedSink.Should().NotBeNull();
@@ -175,9 +175,9 @@ public class RemoteControlServerBehaviorTests
 	private sealed class RemoteControlServerTestContext : IDisposable
 	{
 		private readonly ServiceProvider _serviceProvider;
-		private readonly RemoteServerServer.RemoteControlServer _server;
+		private readonly ServerCoreRemoteControlServer _server;
 
-		private RemoteControlServerTestContext(ServiceProvider serviceProvider, RemoteServerServer.RemoteControlServer server, TestIdeChannel ideChannel, FakeLaunchMonitor launchMonitor, FakeTelemetry telemetry)
+		private RemoteControlServerTestContext(ServiceProvider serviceProvider, ServerCoreRemoteControlServer server, TestIdeChannel ideChannel, FakeLaunchMonitor launchMonitor, FakeTelemetry telemetry)
 		{
 			_serviceProvider = serviceProvider;
 			_server = server;
@@ -199,13 +199,13 @@ public class RemoteControlServerBehaviorTests
 		{
 			var services = new ServiceCollection();
 			var telemetry = new FakeTelemetry();
-			services.AddSingleton(typeof(RemoteServerTelemetry.ITelemetry), telemetry);
+			services.AddSingleton(typeof(ServerCoreTelemetry), telemetry);
 			var serviceProvider = services.BuildServiceProvider();
 
 			var configuration = new InMemoryRemoteControlConfiguration();
 			var ideChannel = new TestIdeChannel();
 			var launchMonitor = new FakeLaunchMonitor();
-			var server = new RemoteServerServer.RemoteControlServer(configuration, ideChannel, launchMonitor, serviceProvider);
+			var server = new ServerCoreRemoteControlServer(configuration, ideChannel, launchMonitor, serviceProvider);
 
 			return new RemoteControlServerTestContext(serviceProvider, server, ideChannel, launchMonitor, telemetry);
 		}
@@ -265,7 +265,7 @@ public class RemoteControlServerBehaviorTests
 		}
 	}
 
-	private sealed class FakeLaunchMonitor : RemoteServerAppLaunch.IApplicationLaunchMonitor
+	private sealed class FakeLaunchMonitor : ServerCoreLaunchMonitor
 	{
 		public List<ApplicationLaunchMonitor.LaunchEvent> Registrations { get; } = [];
 		public List<(Guid Mvid, string? Platform, bool IsDebug)> Connections { get; } = [];
@@ -280,7 +280,7 @@ public class RemoteControlServerBehaviorTests
 		}
 	}
 
-	private sealed class FakeTelemetry : RemoteServerTelemetry.ITelemetry
+	private sealed class FakeTelemetry : ServerCoreTelemetry
 	{
 		public List<(string Name, IDictionary<string, string>? Properties)> Events { get; } = [];
 
@@ -416,7 +416,7 @@ public class RemoteControlServerBehaviorTests
 
 	private sealed record TestIdeCommand() : IdeMessage(IdeRoutingProcessor.ScopeName);
 
-	private sealed class InMemoryRemoteControlConfiguration : IRemoteControlConfiguration
+	private sealed class InMemoryRemoteControlConfiguration : ServerCoreConfiguration
 	{
 		private readonly Dictionary<string, string> _values = new();
 
@@ -477,14 +477,14 @@ public class RemoteControlServerBehaviorTests
 		}
 	}
 
-	private static RemoteControlServerHost CreateHost(IServiceProvider serviceProvider, bool disposeProvider)
+	private static ServerCoreRemoteControlServerHost CreateHost(IServiceProvider serviceProvider, bool disposeProvider)
 	{
-		var leaseType = typeof(RemoteControlServerHost).Assembly.GetType("Uno.UI.RemoteControl.ServerCore.GlobalServiceProviderLease", throwOnError: true)!;
+		var leaseType = typeof(ServerCoreRemoteControlServerHost).Assembly.GetType("Uno.UI.RemoteControl.ServerCore.GlobalServiceProviderLease", throwOnError: true)!;
 		var lease = Activator.CreateInstance(leaseType, serviceProvider, disposeProvider)
 			?? throw new InvalidOperationException("Failed to create GlobalServiceProviderLease.");
 
-		return (RemoteControlServerHost)Activator.CreateInstance(
-			typeof(RemoteControlServerHost),
+		return (ServerCoreRemoteControlServerHost)Activator.CreateInstance(
+			typeof(ServerCoreRemoteControlServerHost),
 			BindingFlags.NonPublic | BindingFlags.Instance,
 			binder: null,
 			args: new[] { lease },
