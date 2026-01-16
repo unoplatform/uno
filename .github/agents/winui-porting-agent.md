@@ -13,16 +13,16 @@ Your output must never lose information, never delete logic, and must follow our
 ## 1. General Porting Rules
 
 -   **Never remove or simplify code.**
-    Anything you cannot convert must be preserved as a comment with a clear `TODO Uno:` explanation.
+    Anything you cannot convert must be preserved as a comment with a clear `TODO Uno:` explanation. Any Uno specific code must be wrapped in `#if HAS_UNO` / `#endif`. And any code that cannot be converted must be wrapped in `#if !HAS_UNO` / `#endif` with a `TODO Uno:` comment explaining what is missing.
 
 -   **Maintain method order and structure** exactly as in the original C++ files.
 
--   **Preserve all behavior and intent**, even if the resulting C# does not compile yet.
+-   **Preserve all behavior and intent**, even if the resulting C# does not compile yet. When done, provide summary on what are the discovered issues.
 
--   **Always wrap Uno-specific constructs** (`SerialDisposable`, Uno helpers, Uno macros, Uno-specific cleanup comments, etc.) **inside `#if HAS_UNO` / `#endif`.**
+-   **Always wrap Uno-specific constructs** (Uno helpers, Uno macros, Uno-specific cleanup comments, etc.) **inside `#if HAS_UNO` / `#endif`.** unless it is a clear counterpart to the WinUI source.
 
 -   The conversion is a **draft**, not a verified build.
-    It may contain unresolved symbols or unimplemented APIs — leave them visible.
+    It may initially contain unresolved symbols or unimplemented APIs — leave them visible. User may task you later to fix them.
 
 -   **Always include the MUX reference comment** at the top of each file indicating the source file and version:
     ```csharp
@@ -50,13 +50,14 @@ For each control **ControlName**, generate these partial class files following t
 -   No fields, no methods, no properties.
 -   Uses `public partial class`.
 
-### 2.2. Implementation File: `ControlName.mux.cs`
+### 2.2. Implementation File: `ControlName.mux.cs` or `ControlName.partial.mux.cs`
 
 -   Contains the **converted .cpp implementation**.
 -   Includes constructors, method bodies, overrides, event hookup logic.
 -   Maintain the **exact method order** from the C++ source.
 -   All Uno-specific code must be wrapped in `#if HAS_UNO`.
 -   Uses `partial class` with **no access modifiers**.
+-   If there are multiple C++ implementation files (e.g., `ControlName.cpp` and `ControlName_Partial.cpp`), follow this convention (e.g. `.mux.cs` and `.partial.mux.cs` files).
 
 Example header:
 ```csharp
@@ -78,7 +79,7 @@ public partial class Expander : ContentControl
 }
 ```
 
-### 2.3. Header File: `ControlName.Header.cs` or `ControlName.h.mux.cs`
+### 2.3. Header File: `ControlName.h.mux.cs` or `ControlName.partial.h.mux.cs`
 
 -   Contains members originally defined in the header:
     -   Field declarations (refs, revokers, state variables)
@@ -121,7 +122,7 @@ public partial class PipsPager
 ### 2.4. Properties File: `ControlName.Properties.cs`
 
 -   Contains **public properties and public events** that form the API surface.
--   Uses private fields defined in `.Header.cs` or `.h.mux.cs`.
+-   Uses private fields defined in `.h.mux.cs` or `.partial.h.mux.cs`.
 -   Only the API surface goes here — no implementation logic.
 -   Uses `partial class` with **no access modifiers**.
 
@@ -168,7 +169,7 @@ For controls with split implementation across multiple C++ files (e.g., `StackPa
 
 ## 3. Event Handling and Revokers
 
-C++ revokers (`auto_revoke`, revoker tokens, vector-changed tokens, per-item maps, etc.) must be converted to **`SerialDisposable`** patterns.
+C++ revokers (`auto_revoke`, revoker tokens, vector-changed tokens, per-item maps, etc.) must be converted to **`SerialDisposable`** patterns. Make sure to validate for potential memory leaks and add TODOs for them.
 
 ### 3.1. Basic Revoker Pattern
 
@@ -275,7 +276,7 @@ Uno Platform **does not use finalizers** for event cleanup.
 #endif
 ```
 
--   Also emit optional lifecycle scaffolding **only as comments**, never silently moving logic.
+-   Also emit optional lifecycle scaffolding **only as comments**, never silently moving logic. Be clear on what could be potential issues of such change and what parts of the logic it could affect.
 
 ### 4.2. Never Drop Destructor Logic
 
@@ -300,7 +301,8 @@ var toggleButton = GetTemplateChild<Control>(c_expanderHeader);
 
 ### 5.2. SetDefaultStyleKey
 
-Use the extension method in the constructor:
+Use the extension method in the constructor when the control uses `SetDefaultStyleKey`. For controls that don't it should not be used (it is only used for WinUI only controls that don't exist in UWP):
+
 ```csharp
 public MyControl()
 {
@@ -311,6 +313,8 @@ public MyControl()
 ```
 
 ### 5.3. ResourceAccessor for Localization
+
+Add the required constants for localized strings in `ResourceAccessor` and use them similar to this:
 
 ```csharp
 using Uno.UI.Helpers.WinUI;
@@ -609,7 +613,7 @@ protected override void OnApplyTemplate()
 
 ## 10. Header vs Implementation Responsibilities
 
--   **Header → `.Header.cs` or `.h.mux.cs`:**
+-   **Header → `.h.mux.cs` or `.partial.h.mux.cs`:**
 
     -   Field declarations (private refs, state flags)
     -   Static constants (template part names, visual state names)
@@ -618,7 +622,7 @@ protected override void OnApplyTemplate()
     -   Simple inline getters/setters
     -   DispatcherHelper instances
 
--   **Implementation → `.mux.cs`:**
+-   **Implementation → `.mux.cs` or `.partial.mux.cs`:**
 
     -   Constructors
     -   OnApplyTemplate
@@ -633,7 +637,7 @@ protected override void OnApplyTemplate()
 
 ## 11. Public Properties and Events
 
-All **public** properties and events belong in `ControlName.Properties.cs`.
+In most cases, **public** properties and events belong in `ControlName.Properties.cs`.
 
 ### 11.1. Standard Dependency Property Pattern
 
@@ -711,3 +715,15 @@ The WinUI sources are typically organized as:
     `src/dxaml/xcp/core/core/elements/` and `src/dxaml/xcp/core/inc/`
 
 When porting, reference these locations in your MUX reference comments.
+
+## 14. Member visibility
+
+No new `public` members should be added unless they are strictly necessary to match the WinUI API surface. All other members should be `private` or `internal` as appropriate. When adding a new `public` member is required, ensure this fact is clearly documented in the accompanying TODO comments.
+
+## 15. Updating generated files
+
+UWPSyncGenerator is used to synchronize the API surface with WinUI. This creates the types as not implemented in `Generated` folders in each project. When porting new types or members, ensure that the generated files are updated accordingly by modifying the implemented members' `#if` and `[NotImplemented]` attributes. If something is only implemented for specific target platforms, ensure that the appropriate `#if` directives are used to reflect this.
+
+## 15. Documentation and summary comments
+
+All ported public members must include XML documentation comments summarizing their purpose, parameters, and return values, following standard C# conventions. You may use Microsoft Learn documentation for WinUI to retrieve the exact documentation that WinUI uses for the member being ported.
