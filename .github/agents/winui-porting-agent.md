@@ -188,8 +188,13 @@ public sealed partial class StackPanel
 
 ## 3. Event Handling and Revokers
 
-C++ revokers (`auto_revoke`, revoker tokens, vector-changed tokens, per-item maps, etc.) must be converted to **`SerialDisposable`** patterns. When doing so, explicitly check for common leak scenarios such as event handlers on long-lived sources (e.g., `this`, singletons, static events), per-item or per-token subscriptions stored in collections, circular references between publishers and subscribers, and platform-specific lifecycle issues (for example, iOS views/controllers that may outlive their expected scope). Whenever you suspect a potential leak that cannot be fully resolved during porting, add a `// TODO Uno: Investigate potential leak: <short-reason>` comment next to the subscription or revoker field describing why the pattern may leak.
+C++ revokers (`auto_revoke`, revoker tokens, vector-changed tokens, per-item maps, etc.) must be converted to **`SerialDisposable`** patterns. When doing so, explicitly check for common leak scenarios, including:
+- Event handlers on long-lived sources (e.g., `this`, singletons, static events)
+- Per-item or per-token subscriptions stored in collections
+- Circular references between publishers and subscribers
+- Platform-specific lifecycle issues (for example, iOS views/controllers that may outlive their expected scope)
 
+Whenever you suspect a potential leak that cannot be fully resolved during porting, add a `// TODO Uno: Investigate potential leak: <short-reason>` comment next to the subscription or revoker field describing why the pattern may leak.
 ### 3.1. Basic Revoker Pattern
 
 ```csharp
