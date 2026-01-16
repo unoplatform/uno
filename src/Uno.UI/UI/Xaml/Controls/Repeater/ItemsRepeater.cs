@@ -1,8 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ItemsRepeater.cpp, commit 3f3e328
+// ItemsRepeater.cpp, tag winui3/release/1.8.4
 
 #pragma warning disable 105 // remove when moving to WinUI tree
+#pragma warning disable CS0612 // Obsolete - for Animator/ElementAnimator
+#pragma warning disable CS0618 // Obsolete member used - for backwards compatibility with Animator
+#pragma warning disable CS0169 // Field is never used - reserved for future use per WinUI
 
 using System;
 using System.Collections.Generic;
@@ -78,11 +81,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		//public Microsoft.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
 		internal ViewManager ViewManager => m_viewManager;
-		internal AnimationManager AnimationManager => m_animationManager;
+		internal TransitionManager TransitionManager => m_transitionManager;
 
 		private bool IsProcessingCollectionChange => m_processingItemsSourceChange != null;
 
-		AnimationManager m_animationManager;
+		TransitionManager m_transitionManager;
 		ViewManager m_viewManager;
 		ViewportManager m_viewportManager;
 
@@ -121,6 +124,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Solution: Have flag that is only true when DataTemplate exists but it is empty.
 		bool m_isItemTemplateEmpty;
 
+		// If no ItemCollectionTransitionProvider is explicitly provided, we'll retrieve a default one
+		// from the Layout object. In that case, we'll want to know that we own that object and can
+		// overwrite it if the Layout object changes.
+		bool m_ownsTransitionProvider = true;
+
+		// Tracks whether OnLayoutChanged has already been called or not so that
+		// EnsureDefaultLayoutState does not trigger a second call after the control's creation.
+		bool m_wasLayoutChangedCalled;
+
 		// Tracks the global scale factor so that children can be re-measured when
 		// it changes, for example when moving the app to another screen.
 		double m_layoutRoundFactor;
@@ -130,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsRepeater);
 
 			_repeaterChildren = new UIElementCollection(this);
-			m_animationManager = new AnimationManager(this);
+			m_transitionManager = new TransitionManager(this);
 			m_viewManager = new ViewManager(this);
 			//if (SharedHelpers.IsRS5OrHigher())
 			{
@@ -333,7 +345,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (virtInfo.ArrangeBounds != ItemsRepeater.InvalidRect &&
 						newBounds != virtInfo.ArrangeBounds)
 					{
-						m_animationManager.OnElementBoundsChanged(element, virtInfo.ArrangeBounds, newBounds);
+						m_transitionManager.OnElementBoundsChanged(element, virtInfo.ArrangeBounds, newBounds);
 					}
 
 					virtInfo.ArrangeBounds = newBounds;
@@ -341,7 +353,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			m_viewportManager.OnOwnerArranged();
-			m_animationManager.OnOwnerArranged();
+			m_transitionManager.OnOwnerArranged();
 
 			return arrangeSize;
 		}
@@ -383,6 +395,24 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var element = m_viewManager.GetElement(index, forceCreate, suppressAutoRecycle);
 			return element;
+		}
+
+		/// <summary>
+		/// Gets the default layout (a StackLayout).
+		/// Note: In WinUI this uses thread_local storage for the default layout.
+		/// In C# we return a new StackLayout each time as layouts can't be shared between controls anyway.
+		/// </summary>
+		internal Layout GetDefaultLayout()
+		{
+			return new StackLayout();
+		}
+
+		/// <summary>
+		/// Gets the effective layout - either the explicitly set Layout or the default layout.
+		/// </summary>
+		internal Layout GetEffectiveLayout()
+		{
+			return Layout ?? GetDefaultLayout();
 		}
 
 		public void ClearElementImpl(UIElement element)
@@ -527,8 +557,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnLayoutChanged(args.OldValue as Layout, args.NewValue as Layout);
 			}
+			else if (property == ItemTransitionProviderProperty)
+			{
+				OnTransitionProviderChanged(args.OldValue as ItemCollectionTransitionProvider, args.NewValue as ItemCollectionTransitionProvider);
+			}
 			else if (property == AnimatorProperty)
 			{
+				// Legacy - for backwards compatibility
 				OnAnimatorChanged(args.OldValue as ElementAnimator, args.NewValue as ElementAnimator);
 			}
 			else if (property == HorizontalCacheLengthProperty)
@@ -846,7 +881,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			m_viewManager.OnLayoutChanging();
-			m_animationManager.OnLayoutChanging();
+			m_transitionManager.OnLayoutChanging();
 
 			if (oldValue != null)
 			{
@@ -896,9 +931,27 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
+		void OnTransitionProviderChanged(ItemCollectionTransitionProvider oldValue, ItemCollectionTransitionProvider newValue)
+		{
+			m_transitionManager.OnTransitionProviderChanged(newValue);
+
+			// If a null ItemCollectionTransitionProvider is being provided and
+			// we had our own default one, we want to keep it.
+			if (newValue == null && m_ownsTransitionProvider)
+			{
+				return;
+			}
+
+			// Track whether we own the transition provider - if it's explicitly set, we don't own it
+			m_ownsTransitionProvider = (newValue == null);
+		}
+
+		[Obsolete("Animator/ElementAnimator is deprecated. Use ItemTransitionProvider instead.")]
 		void OnAnimatorChanged(ElementAnimator oldValue, ElementAnimator newValue)
 		{
-			m_animationManager.OnAnimatorChanged(newValue);
+			// Legacy method - Animator is deprecated, use ItemTransitionProvider instead.
+			// This method is kept for backwards compatibility but does nothing.
+			// The AnimationManager has been replaced with TransitionManager.
 			if (!SharedHelpers.IsRS5OrHigher())
 			{
 				// Bug in framework's reference tracking causes crash during
@@ -932,7 +985,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_processingItemsSourceChange = args;
 			using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
 
-			m_animationManager.OnItemsSourceChanged(sender, args);
+			m_transitionManager.OnItemsSourceChanged(sender, args);
 			m_viewManager.OnItemsSourceChanged(sender, args);
 
 			var layout = Layout;
