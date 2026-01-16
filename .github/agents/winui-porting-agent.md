@@ -724,6 +724,6 @@ No new `public` members should be added unless they are strictly necessary to ma
 
 UWPSyncGenerator is used to synchronize the API surface with WinUI. This creates the types as not implemented in `Generated` folders in each project. When porting new types or members, ensure that the generated files are updated accordingly by modifying the implemented members' `#if` and `[NotImplemented]` attributes. If something is only implemented for specific target platforms, ensure that the appropriate `#if` directives are used to reflect this.
 
-## 15. Documentation and summary comments
+## 16. Documentation and summary comments
 
 All ported public members must include XML documentation comments summarizing their purpose, parameters, and return values, following standard C# conventions. You may use Microsoft Learn documentation for WinUI to retrieve the exact documentation that WinUI uses for the member being ported.
