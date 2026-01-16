@@ -272,8 +272,8 @@ public partial class CoreWebView2
 		}
 	}
 
-	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext)
-		=> AddWebResourceRequestedFilter(uri, resourceContext, CoreWebView2WebResourceRequestSourceKinds.All);
+	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext ResourceContext)
+		=> AddWebResourceRequestedFilter(uri, ResourceContext, CoreWebView2WebResourceRequestSourceKinds.All);
 
 	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
 	{
@@ -290,8 +290,8 @@ public partial class CoreWebView2
 		}
 	}
 
-	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext)
-		=> RemoveWebResourceRequestedFilter(uri, resourceContext, CoreWebView2WebResourceRequestSourceKinds.All);
+	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext ResourceContext)
+		=> RemoveWebResourceRequestedFilter(uri, ResourceContext, CoreWebView2WebResourceRequestSourceKinds.All);
 
 	internal void RaiseWebResourceRequested(CoreWebView2WebResourceRequestedEventArgs eventArgs)
 	{
