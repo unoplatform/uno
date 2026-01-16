@@ -64,7 +64,16 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		// Note: ItemTransitionProvider property is defined in Generated file and updated there with OnPropertyChanged callback
+		#region ItemTransitionProvider (DP - With default callback)
+		public static DependencyProperty ItemTransitionProviderProperty { get; } = DependencyProperty.Register(
+			"ItemTransitionProvider", typeof(ItemCollectionTransitionProvider), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ItemCollectionTransitionProvider), OnPropertyChanged));
+
+		public ItemCollectionTransitionProvider ItemTransitionProvider
+		{
+			get => (ItemCollectionTransitionProvider)GetValue(ItemTransitionProviderProperty);
+			set => SetValue(ItemTransitionProviderProperty, value);
+		}
+		#endregion
 
 		#region Animator (DP - DEPRECATED - Use ItemTransitionProvider instead)
 		[Obsolete("Animator is deprecated. Use ItemTransitionProvider instead.", false)]
