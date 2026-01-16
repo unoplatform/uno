@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net.WebSockets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -146,7 +147,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 					}
 				}
 			}
-			catch (Exception error) when (IsTransportClosure(error, transport))
+			catch (Exception error) when (IsTransportClosure(error))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
@@ -163,8 +164,8 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 		}
 	}
 
-	private static bool IsTransportClosure(Exception error, IFrameTransport transport)
-		=> error is OperationCanceledException || !transport.IsConnected;
+	private static bool IsTransportClosure(Exception error)
+		=> error is OperationCanceledException or TaskCanceledException or ObjectDisposedException or WebSocketException;
 
 	private void ProcessIdeMessage(object? sender, IdeMessage message)
 	{

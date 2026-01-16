@@ -67,6 +67,12 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 
 				await _signal.WaitAsync(ct);
 
+				// The transport may have been closed while awaiting the signal, so re-check the closure flags.
+				if (_isRemoteClosed != 0 || _isClosed != 0)
+				{
+					return null;
+				}
+
 				if (_queue.TryDequeue(out frame))
 				{
 					return frame;
@@ -94,7 +100,6 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 				return;
 			}
 
-			Interlocked.Exchange(ref _isClosed, 1);
 			Signal();
 		}
 
