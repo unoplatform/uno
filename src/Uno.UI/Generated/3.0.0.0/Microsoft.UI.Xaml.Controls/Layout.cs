@@ -36,13 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Layout", "void Layout.SetIndexBasedLayoutOrientation(IndexBasedLayoutOrientation orientation)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider()
-		{
-			throw new global::System.NotImplementedException("The member ItemCollectionTransitionProvider Layout.CreateDefaultItemTransitionProvider() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemCollectionTransitionProvider%20Layout.CreateDefaultItemTransitionProvider%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated
 	}

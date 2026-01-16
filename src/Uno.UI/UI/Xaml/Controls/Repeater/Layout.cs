@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// Layout.h, tag winui3/release/1.8.4
 
 using System;
 using Windows.Foundation;
@@ -42,6 +43,12 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TypedEventHandler<Layout, object> ArrangeInvalidated;
 
 		internal string LayoutId { get; set; }
+
+		/// <summary>
+		/// Creates a default ItemCollectionTransitionProvider for this layout.
+		/// Returns null by default. Override in derived classes (e.g., LinedFlowLayout) to provide a custom transition provider.
+		/// </summary>
+		protected virtual ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider() => null;
 
 		internal static VirtualizingLayoutContext GetVirtualizingLayoutContext(LayoutContext context)
 		{
