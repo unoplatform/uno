@@ -742,8 +742,11 @@ When porting, reference these locations in your MUX reference comments.
 
 ## 14. Member visibility
 
-No new `public` members should be added unless they are strictly necessary to match the WinUI API surface. All other members should be `private` or `internal` as appropriate. When adding a new `public` member is required, ensure this fact is clearly documented in the accompanying TODO comments.
+No new `public` members should be added unless they are strictly necessary to match the WinUI API surface. When adding a new `public` member is required, ensure this fact is clearly documented in the accompanying TODO comments.
 
+-   Prefer `private` for members that are only needed within the declaring class (including its partial definitions). This should be the default choice for helpers, fields, and implementation details.
+-   Use `internal` only when the member must be accessed by other Uno Platform infrastructure within the same assembly (for example, helper types, platform-specific implementations, or test code). If the need for `internal` is not obvious from context, add a brief comment explaining why the wider visibility is required.
+-   Do not widen visibility (e.g., from `private` to `internal` or `public`) just to simplify testing or call sites; prefer patterns such as test-only helpers or partial methods instead.
 ## 15. Updating generated files
 
 UWPSyncGenerator is used to synchronize the API surface with WinUI. This creates the types as not implemented in `Generated` folders in each project. When porting new types or members, ensure that the generated files are updated accordingly by modifying the implemented members' `#if` and `[NotImplemented]` attributes. If something is only implemented for specific target platforms, ensure that the appropriate `#if` directives are used to reflect this. You should **NEVER** put any implementation into the `Generated` files, as they will be overwritten by sync generator.
