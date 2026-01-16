@@ -13,11 +13,13 @@ Your output must never lose information, never delete logic, and must follow our
 ## 1. General Porting Rules
 
 -   **Never remove or simplify code.**
-    Anything you cannot convert must be preserved as a comment with a clear `TODO Uno:` explanation. Any Uno specific code must be wrapped in `#if HAS_UNO` / `#endif`. And any code that cannot be converted must be wrapped in `#if !HAS_UNO` / `#endif` with a `TODO Uno:` comment explaining what is missing.
+    - Anything you cannot convert must be preserved as a comment with a clear `TODO Uno:` explanation.
+    - Any Uno-specific code must be wrapped in `#if HAS_UNO` / `#endif`.
+    - Any original code that cannot be represented in Uno must be wrapped in `#if !HAS_UNO` / `#endif` with a `TODO Uno:` comment explaining what is missing.
 
 -   **Maintain method order and structure** exactly as in the original C++ files.
 
--   **Preserve all behavior and intent**, even if the resulting C# does not compile yet. When done, provide summary on what are the discovered issues.
+-   **Preserve all behavior and intent**, even if the resulting C# does not compile yet. When done, provide a summary of the discovered issues.
 
 -   **Always wrap Uno-specific constructs** (Uno helpers, Uno macros, Uno-specific cleanup comments, etc.) **inside `#if HAS_UNO` / `#endif`.** unless it is a clear counterpart to the WinUI source.
 
@@ -57,7 +59,7 @@ For each control **ControlName**, generate these partial class files following t
 -   Maintain the **exact method order** from the C++ source.
 -   All Uno-specific code must be wrapped in `#if HAS_UNO`.
 -   Uses `partial class` with **no access modifiers**.
--   If there are multiple C++ implementation files (e.g., `ControlName.cpp` and `ControlName_Partial.cpp`), follow this convention (e.g. `.mux.cs` and `.partial.mux.cs` files).
+-   If there are multiple C++ implementation files (e.g., `ControlName.cpp` and `ControlName_Partial.cpp`), map them to `ControlName.mux.cs` and `ControlName.partial.mux.cs` respectively (note the order: `.partial.mux.cs`).
 
 Example header:
 ```csharp
@@ -82,7 +84,7 @@ public partial class Expander : ContentControl
 ### 2.3. Header File: `ControlName.h.mux.cs` or `ControlName.partial.h.mux.cs`
 
 -   Contains members originally defined in the header:
-    -   Field declarations (refs, revokers, state variables)
+    -   Field declarations (references to template child elements / cached control references, revokers, state variables)
     -   Constants
     -   Inline methods
     -   Dependency-property-related arrays/metadata
@@ -169,7 +171,7 @@ For controls with split implementation across multiple C++ files (e.g., `StackPa
 
 ## 3. Event Handling and Revokers
 
-C++ revokers (`auto_revoke`, revoker tokens, vector-changed tokens, per-item maps, etc.) must be converted to **`SerialDisposable`** patterns. Make sure to validate for potential memory leaks and add TODOs for them.
+C++ revokers (`auto_revoke`, revoker tokens, vector-changed tokens, per-item maps, etc.) must be converted to **`SerialDisposable`** patterns. When doing so, explicitly check for common leak scenarios such as event handlers on long-lived sources (e.g., `this`, singletons, static events), per-item or per-token subscriptions stored in collections, circular references between publishers and subscribers, and platform-specific lifecycle issues (for example, iOS views/controllers that may outlive their expected scope). Whenever you suspect a potential leak that cannot be fully resolved during porting, add a `// TODO Uno: Investigate potential leak: <short-reason>` comment next to the subscription or revoker field describing why the pattern may leak.
 
 ### 3.1. Basic Revoker Pattern
 
@@ -301,7 +303,7 @@ var toggleButton = GetTemplateChild<Control>(c_expanderHeader);
 
 ### 5.2. SetDefaultStyleKey
 
-Use the extension method in the constructor when the control uses `SetDefaultStyleKey`. For controls that don't it should not be used (it is only used for WinUI only controls that don't exist in UWP):
+Use the extension method in the constructor when the control uses `SetDefaultStyleKey`. For controls that don't use `SetDefaultStyleKey`, this method should not be used (it is only used for WinUI-only controls that don't exist in UWP):
 
 ```csharp
 public MyControl()
@@ -637,7 +639,7 @@ protected override void OnApplyTemplate()
 
 ## 11. Public Properties and Events
 
-In most cases, **public** properties and events belong in `ControlName.Properties.cs`.
+**Public** properties and events belong in `ControlName.Properties.cs`.
 
 ### 11.1. Standard Dependency Property Pattern
 
