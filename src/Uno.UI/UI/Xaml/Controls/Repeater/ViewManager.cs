@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// ViewManager.cpp, tag winui3/release/1.8.4
 
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// It has to be an element we own (i.e. a direct child).
 		UIElement m_lastFocusedElement;
 		bool m_isDataSourceStableResetPending;
+		bool m_recycleWithoutOwner;
 
 		// Event tokens
 		//winrt::UIElement::GotFocus_revoker m_gotFocus { };
@@ -158,9 +160,14 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				// Index is either outside the range we are keeping track of or inside the range.
-				// In both these cases, we just keep the range we have. If this clear was due to 
+				// In both these cases, we just keep the range we have. If this clear was due to
 				// a collection change, then in the CollectionChanged event, we will invalidate these guys.
 			}
+		}
+
+		public void RecycleWithoutOwner(bool recycleWithoutOwner)
+		{
+			m_recycleWithoutOwner = recycleWithoutOwner;
 		}
 
 		public void ClearElementToElementFactory(UIElement element)
@@ -177,7 +184,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 				var context = m_ElementFactoryRecycleArgs;
 				context.Element = element;
-				context.Parent = m_owner;
+				// If we are recycling without owner, avoid setting Parent as the parent would be used
+				// to set as owner during RecycleElement call.
+				if (m_recycleWithoutOwner)
+				{
+					context.Parent = null;
+				}
+				else
+				{
+					context.Parent = m_owner;
+				}
 
 				m_owner.ItemTemplateShim.RecycleElement(context);
 
