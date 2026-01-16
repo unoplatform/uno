@@ -6,42 +6,53 @@ namespace Microsoft.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ResourceDictionary : global::Microsoft.UI.Xaml.DependencyObject, global::System.Collections.Generic.IDictionary<object, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<object, object>>
+	public partial class ResourceDictionary : global::Microsoft.UI.Xaml.DependencyObject, global::System.Collections.Generic.IDictionary<object, object>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<object, object>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<object, object>>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Source
+		// Skipping already declared property Keys
+		// Skipping already declared property Values
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared property MergedDictionaries
+		// Skipping already declared property Source
 		// Skipping already declared property ThemeDictionaries
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ResourceDictionary.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResourceDictionary.Size");
-			}
-		}
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.ResourceDictionary()
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.ResourceDictionary()
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.ResourceDictionary(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.operator ==(Microsoft.UI.Xaml.ResourceDictionary, Microsoft.UI.Xaml.ResourceDictionary)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.operator !=(Microsoft.UI.Xaml.ResourceDictionary, Microsoft.UI.Xaml.ResourceDictionary)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Equals(Microsoft.UI.Xaml.ResourceDictionary)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.ResourceDictionary(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Keys.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Values.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.this[object].get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.this[object].set
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.Add(object, object)
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.ContainsKey(object)
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.Remove(object)
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.TryGetValue(object, out object)
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.Add(System.Collections.Generic.KeyValuePair<object, object>)
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.Contains(System.Collections.Generic.KeyValuePair<object, object>)
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.CopyTo(System.Collections.Generic.KeyValuePair<object, object>[], int)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<object, object>>.Remove(System.Collections.Generic.KeyValuePair<object, object>)
+		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.MergedDictionaries.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Source.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.MergedDictionaries.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.ThemeDictionaries.get
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Lookup(object)
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.HasKey(object)
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Insert(object, object)
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Remove(object)
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.First()
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<object, object>
-		// Skipping already implement System.Collections.Generic.IDictionary<object, object>.this[object]
-		// Skipping already implement System.Collections.Generic.IDictionary<object, object>.Keys
-		// Skipping already implement System.Collections.Generic.IDictionary<object, object>.Values
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<object, object>>
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<object, object>>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<object, object>>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<object, object>>
 		// Processing: System.Collections.IEnumerable
 	}

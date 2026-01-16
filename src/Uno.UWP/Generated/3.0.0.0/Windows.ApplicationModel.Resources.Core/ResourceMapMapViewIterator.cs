@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ResourceMapMapViewIterator : global::Windows.Foundation.Collections.IIterator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap>>
+	public partial class ResourceMapMapViewIterator : global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap>>, global::System.Collections.IEnumerator, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal ResourceMapMapViewIterator()
@@ -25,16 +25,24 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasCurrent
+		object global::System.Collections.IEnumerator.Current
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceMapMapViewIterator.HasCurrent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceMapMapViewIterator.HasCurrent");
+				throw new global::System.NotImplementedException("The member object ResourceMapMapViewIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ResourceMapMapViewIterator.Current");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.Current.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.HasCurrent.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.operator ==(Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator, Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.operator !=(Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator, Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.Equals(Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
@@ -44,11 +52,23 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GetMany(global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap>[] items)
+		public void Reset()
 		{
-			throw new global::System.NotImplementedException("The member uint ResourceMapMapViewIterator.GetMany(KeyValuePair<string, ResourceMap>[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResourceMapMapViewIterator.GetMany%28KeyValuePair%3Cstring%2C%20ResourceMap%3E%5B%5D%20items%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator", "void ResourceMapMapViewIterator.Reset()");
 		}
 #endif
-		// Processing: Windows.Foundation.Collections.IIterator<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.ResourceMap>>
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator", "void ResourceMapMapViewIterator.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.System.Collections.IEnumerator.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.ResourceMap>>
+		// Processing: System.Collections.IEnumerator
+		// Processing: System.IDisposable
 	}
 }

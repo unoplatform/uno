@@ -6,27 +6,40 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RowDefinitionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.RowDefinition>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.RowDefinition>
+	public partial class RowDefinitionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.RowDefinition>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Controls.RowDefinition>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.RowDefinition>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.IndexOf(Microsoft.UI.Xaml.Controls.RowDefinition, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.SetAt(uint, Microsoft.UI.Xaml.Controls.RowDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.InsertAt(uint, Microsoft.UI.Xaml.Controls.RowDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Append(Microsoft.UI.Xaml.Controls.RowDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.GetMany(uint, Microsoft.UI.Xaml.Controls.RowDefinition[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.ReplaceAll(Microsoft.UI.Xaml.Controls.RowDefinition[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.First()
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.operator ==(Microsoft.UI.Xaml.Controls.RowDefinitionCollection, Microsoft.UI.Xaml.Controls.RowDefinitionCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.operator !=(Microsoft.UI.Xaml.Controls.RowDefinitionCollection, Microsoft.UI.Xaml.Controls.RowDefinitionCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Equals(Microsoft.UI.Xaml.Controls.RowDefinitionCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.IndexOf(Microsoft.UI.Xaml.Controls.RowDefinition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Insert(int, Microsoft.UI.Xaml.Controls.RowDefinition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Add(Microsoft.UI.Xaml.Controls.RowDefinition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Contains(Microsoft.UI.Xaml.Controls.RowDefinition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.CopyTo(Microsoft.UI.Xaml.Controls.RowDefinition[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Remove(Microsoft.UI.Xaml.Controls.RowDefinition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.RowDefinition>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.RowDefinition>.set_Item(int, Microsoft.UI.Xaml.Controls.RowDefinition)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.RowDefinition>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.RowDefinition>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.RowDefinition>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.RowDefinition>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.RowDefinition>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Controls.RowDefinition>
 		// Processing: System.Collections.IEnumerable
 	}

@@ -6,11 +6,21 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class XmlNamedNodeMap : global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Xml.Dom.IXmlNode>, global::System.Collections.Generic.IEnumerable<global::Windows.Data.Xml.Dom.IXmlNode>
+	public partial class XmlNamedNodeMap : global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Xml.Dom.IXmlNode>, global::System.Collections.Generic.IEnumerable<global::Windows.Data.Xml.Dom.IXmlNode>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Data.Xml.Dom.IXmlNode>
 	{
+		// Skipping already declared property Count
+		// Skipping already declared property this[]
 		// Skipping already declared property Length
-		// Skipping already declared property Size
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Length.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.operator ==(Windows.Data.Xml.Dom.XmlNamedNodeMap, Windows.Data.Xml.Dom.XmlNamedNodeMap)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.operator !=(Windows.Data.Xml.Dom.XmlNamedNodeMap, Windows.Data.Xml.Dom.XmlNamedNodeMap)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Equals(Windows.Data.Xml.Dom.XmlNamedNodeMap)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Equals(object)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetHashCode()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Item(uint)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetNamedItem(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.SetNamedItem(Windows.Data.Xml.Dom.IXmlNode)
@@ -36,16 +46,16 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.SetNamedItemNS(IXmlNode node) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IXmlNode%20XmlNamedNodeMap.SetNamedItemNS%28IXmlNode%20node%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetAt(uint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Size.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.IndexOf(Windows.Data.Xml.Dom.IXmlNode, out uint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetMany(uint, Windows.Data.Xml.Dom.IXmlNode[])
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.First()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Count.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.this[int].get
+		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetEnumerator()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Length.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>
-		// Skipping already implement System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>.this[int]
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Data.Xml.Dom.IXmlNode>
 		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Data.Xml.Dom.IXmlNode>
-		// Skipping already implement System.Collections.Generic.IReadOnlyCollection<Windows.Data.Xml.Dom.IXmlNode>.Count
 	}
 }

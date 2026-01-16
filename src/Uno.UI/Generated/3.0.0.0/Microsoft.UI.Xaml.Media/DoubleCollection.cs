@@ -6,47 +6,51 @@ namespace Microsoft.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DoubleCollection : global::System.Collections.Generic.IList<double>, global::System.Collections.Generic.IEnumerable<double>
+	public partial class DoubleCollection : global::System.Collections.Generic.IList<double>, global::System.Collections.Generic.ICollection<double>, global::System.Collections.Generic.IEnumerable<double>, global::System.Collections.IEnumerable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint DoubleCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DoubleCollection.Size");
-			}
-		}
-#endif
-		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.IndexOf(double, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.SetAt(uint, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.InsertAt(uint, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Append(double)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.GetMany(uint, double[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.ReplaceAll(double[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.First()
-		// Processing: System.Collections.Generic.IList<double>
-		// Skipping already implement System.Collections.Generic.IList<double>.this[int]
-		// Processing: System.Collections.Generic.ICollection<double>
-		// Skipping already implement System.Collections.Generic.ICollection<double>.Count
+		// Skipping already declared property Count
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsReadOnly
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member bool DoubleCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DoubleCollection.IsReadOnly");
 			}
 		}
 #endif
+		// Skipping already declared property this[]
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.operator ==(Microsoft.UI.Xaml.Media.DoubleCollection, Microsoft.UI.Xaml.Media.DoubleCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.operator !=(Microsoft.UI.Xaml.Media.DoubleCollection, Microsoft.UI.Xaml.Media.DoubleCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Equals(Microsoft.UI.Xaml.Media.DoubleCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.IndexOf(double)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Insert(int, double)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Add(double)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Contains(double)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.CopyTo(double[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Remove(double)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.set_Item(int, double)
+		// Processing: System.Collections.Generic.IList<double>
+		// Processing: System.Collections.Generic.ICollection<double>
 		// Processing: System.Collections.Generic.IEnumerable<double>
 		// Processing: System.Collections.IEnumerable
 	}

@@ -93,20 +93,31 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SessionInterrupted.add
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SessionInterrupted.remove
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SignalDetected.add
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SignalDetected.remove
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SystemStateChanged.add
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SystemStateChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.AgentState.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.Signal.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsIndicatorLightAvailable.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsScreenAvailable.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsUserAuthenticated.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsVoiceActivationAvailable.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsInterruptible.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsInterrupted.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession> GetCurrentSessionAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSession> ConversationalAgentSession.GetCurrentSessionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConversationalAgentSession%3E%20ConversationalAgentSession.GetCurrentSessionAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession GetCurrentSessionSync()
+		{
+			throw new global::System.NotImplementedException("The member ConversationalAgentSession ConversationalAgentSession.GetCurrentSessionSync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConversationalAgentSession%20ConversationalAgentSession.GetCurrentSessionSync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.operator ==(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.operator !=(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.Equals(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionUpdateResponse> RequestInterruptibleAsync(bool interruptible)
@@ -247,48 +258,12 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> ConversationalAgentSession.GetSupportedSignalModelIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20ConversationalAgentSession.GetSupportedSignalModelIds%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult> RequestActivationAsync(global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentActivationResult> ConversationalAgentSession.RequestActivationAsync(ConversationalAgentActivationKind activationKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConversationalAgentActivationResult%3E%20ConversationalAgentSession.RequestActivationAsync%28ConversationalAgentActivationKind%20activationKind%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult RequestActivation(global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)
-		{
-			throw new global::System.NotImplementedException("The member ConversationalAgentActivationResult ConversationalAgentSession.RequestActivation(ConversationalAgentActivationKind activationKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConversationalAgentActivationResult%20ConversationalAgentSession.RequestActivation%28ConversationalAgentActivationKind%20activationKind%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction SetSupportLockScreenActivationAsync(bool lockScreenActivationSupported)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ConversationalAgentSession.SetSupportLockScreenActivationAsync(bool lockScreenActivationSupported) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ConversationalAgentSession.SetSupportLockScreenActivationAsync%28bool%20lockScreenActivationSupported%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetSupportLockScreenActivation(bool lockScreenActivationSupported)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession", "void ConversationalAgentSession.SetSupportLockScreenActivation(bool lockScreenActivationSupported)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind> GetMissingPrerequisites()
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind> ConversationalAgentSession.GetMissingPrerequisites() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CConversationalAgentVoiceActivationPrerequisiteKind%3E%20ConversationalAgentSession.GetMissingPrerequisites%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind>> GetMissingPrerequisitesAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind>> ConversationalAgentSession.GetMissingPrerequisitesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CConversationalAgentVoiceActivationPrerequisiteKind%3E%3E%20ConversationalAgentSession.GetMissingPrerequisitesAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SessionInterrupted.add
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SessionInterrupted.remove
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SignalDetected.add
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SignalDetected.remove
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SystemStateChanged.add
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SystemStateChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -296,20 +271,15 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession", "void ConversationalAgentSession.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession> GetCurrentSessionAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSession> ConversationalAgentSession.GetCurrentSessionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConversationalAgentSession%3E%20ConversationalAgentSession.GetCurrentSessionAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession GetCurrentSessionSync()
-		{
-			throw new global::System.NotImplementedException("The member ConversationalAgentSession ConversationalAgentSession.GetCurrentSessionSync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConversationalAgentSession%20ConversationalAgentSession.GetCurrentSessionSync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.AgentState.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsIndicatorLightAvailable.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsInterrupted.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsInterruptible.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsScreenAvailable.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsUserAuthenticated.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.IsVoiceActivationAvailable.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.Signal.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession, global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionInterruptedEventArgs> SessionInterrupted

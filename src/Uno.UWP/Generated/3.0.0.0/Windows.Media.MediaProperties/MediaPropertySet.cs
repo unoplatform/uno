@@ -6,15 +6,59 @@ namespace Windows.Media.MediaProperties
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MediaPropertySet : global::System.Collections.Generic.IDictionary<global::System.Guid, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>>
+	public partial class MediaPropertySet : global::System.Collections.Generic.IDictionary<global::System.Guid, object>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public global::System.Collections.Generic.ICollection<global::System.Guid> Keys
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaPropertySet.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaPropertySet.Size");
+				throw new global::System.NotImplementedException("The member ICollection<Guid> MediaPropertySet.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3CGuid%3E%20MediaPropertySet.Keys");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.ICollection<object> Values
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ICollection<object> MediaPropertySet.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cobject%3E%20MediaPropertySet.Values");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Count
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int MediaPropertySet.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MediaPropertySet.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MediaPropertySet.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPropertySet.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object this[global::System.Guid key]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object MediaPropertySet.this[Guid key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20MediaPropertySet.this%5BGuid%20key%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "object MediaPropertySet.this[Guid key]");
 			}
 		}
 #endif
@@ -26,114 +70,90 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.MediaPropertySet()
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Lookup(System.Guid)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Size.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.HasKey(System.Guid)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.GetView()
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Insert(System.Guid, object)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Remove(System.Guid)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Clear()
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.First()
-		// Processing: System.Collections.Generic.IDictionary<System.Guid, object>
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.FromAbi(nint)
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.operator ==(Windows.Media.MediaProperties.MediaPropertySet, Windows.Media.MediaProperties.MediaPropertySet)
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.operator !=(Windows.Media.MediaProperties.MediaPropertySet, Windows.Media.MediaProperties.MediaPropertySet)
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Equals(Windows.Media.MediaProperties.MediaPropertySet)
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Equals(object)
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.GetHashCode()
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Keys.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Values.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Count.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.IsReadOnly.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.this[System.Guid].get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.this[System.Guid].set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Guid key, object value)
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.Add(Guid key, object value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(global::System.Guid key)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool MediaPropertySet.ContainsKey(Guid key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPropertySet.ContainsKey%28Guid%20key%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::System.Guid key)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool MediaPropertySet.Remove(Guid key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPropertySet.Remove%28Guid%20key%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(global::System.Guid key, out object value)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool MediaPropertySet.TryGetValue(Guid key, out object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPropertySet.TryGetValue%28Guid%20key%2C%20out%20object%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object this[global::System.Guid key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<global::System.Guid> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<object> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.Add(KeyValuePair<Guid, object> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool MediaPropertySet.Contains(KeyValuePair<Guid, object> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPropertySet.Contains%28KeyValuePair%3CGuid%2C%20object%3E%20item%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>[] array, int arrayIndex)
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.CopyTo(KeyValuePair<Guid, object>[] array, int arrayIndex)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>.Remove(System.Collections.Generic.KeyValuePair<System.Guid, object>)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<Guid, object>> MediaPropertySet.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3CGuid%2C%20object%3E%3E%20MediaPropertySet.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IDictionary<System.Guid, object>
+		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -142,35 +162,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.Guid, object>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.Guid, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

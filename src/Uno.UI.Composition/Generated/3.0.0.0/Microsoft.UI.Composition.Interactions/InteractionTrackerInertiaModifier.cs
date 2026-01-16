@@ -8,10 +8,17 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerInertiaModifier : global::Microsoft.UI.Composition.CompositionObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal InteractionTrackerInertiaModifier()
-		{
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.InteractionTrackerInertiaModifier(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.operator ==(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier, Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.operator !=(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier, Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.Equals(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.InteractionTrackerInertiaModifier(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

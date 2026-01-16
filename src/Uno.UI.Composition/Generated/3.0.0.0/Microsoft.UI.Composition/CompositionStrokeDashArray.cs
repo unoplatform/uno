@@ -6,27 +6,39 @@ namespace Microsoft.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionStrokeDashArray : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<float>, global::System.Collections.Generic.IEnumerable<float>
+	public partial class CompositionStrokeDashArray : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<float>, global::System.Collections.Generic.ICollection<float>, global::System.Collections.Generic.IEnumerable<float>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Clear()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Append(float)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetMany(uint, float[])
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.ReplaceAll(float[])
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.First()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetView()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.IndexOf(float, out uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.SetAt(uint, float)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.InsertAt(uint, float)
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.operator ==(Microsoft.UI.Composition.CompositionStrokeDashArray, Microsoft.UI.Composition.CompositionStrokeDashArray)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.operator !=(Microsoft.UI.Composition.CompositionStrokeDashArray, Microsoft.UI.Composition.CompositionStrokeDashArray)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Equals(Microsoft.UI.Composition.CompositionStrokeDashArray)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Count.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.this[int].get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.this[int].set
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.IndexOf(float)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.Insert(int, float)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.Add(float)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.Clear()
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.Contains(float)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.CopyTo(float[], int)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.Remove(float)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.set_Item(int, float)
 		// Processing: System.Collections.Generic.IList<float>
-		// Skipping already implement System.Collections.Generic.IList<float>.this[int]
 		// Processing: System.Collections.Generic.ICollection<float>
-		// Skipping already implement System.Collections.Generic.ICollection<float>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<float>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<float>
 		// Processing: System.Collections.IEnumerable
 	}

@@ -6,27 +6,40 @@ namespace Windows.Storage.Pickers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FileExtensionVector : global::System.Collections.Generic.IList<string>, global::System.Collections.Generic.IEnumerable<string>
+	public partial class FileExtensionVector : global::System.Collections.Generic.IList<string>, global::System.Collections.Generic.ICollection<string>, global::System.Collections.Generic.IEnumerable<string>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetAt(uint)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Size.get
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetView()
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.IndexOf(string, out uint)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.SetAt(uint, string)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.InsertAt(uint, string)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.RemoveAt(uint)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Append(string)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.RemoveAtEnd()
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Clear()
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetMany(uint, string[])
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.ReplaceAll(string[])
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.First()
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.operator ==(Windows.Storage.Pickers.FileExtensionVector, Windows.Storage.Pickers.FileExtensionVector)
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.operator !=(Windows.Storage.Pickers.FileExtensionVector, Windows.Storage.Pickers.FileExtensionVector)
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Equals(Windows.Storage.Pickers.FileExtensionVector)
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Count.get
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.IsReadOnly.get
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.this[int].get
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.this[int].set
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.IndexOf(string)
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.Insert(int, string)
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.RemoveAt(int)
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.Add(string)
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.Clear()
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.Contains(string)
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.CopyTo(string[], int)
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.Remove(string)
+		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.GetEnumerator()
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Collections.Generic.IList<string>.get_Item(int)
+		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Collections.Generic.IList<string>.set_Item(int, string)
 		// Processing: System.Collections.Generic.IList<string>
-		// Skipping already implement System.Collections.Generic.IList<string>.this[int]
 		// Processing: System.Collections.Generic.ICollection<string>
-		// Skipping already implement System.Collections.Generic.ICollection<string>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<string>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<string>
 		// Processing: System.Collections.IEnumerable
 	}

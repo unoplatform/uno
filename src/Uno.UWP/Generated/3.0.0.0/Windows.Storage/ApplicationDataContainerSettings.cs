@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ApplicationDataContainerSettings : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
+	public partial class ApplicationDataContainerSettings : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal ApplicationDataContainerSettings()
@@ -15,24 +15,142 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public global::System.Collections.Generic.ICollection<string> Keys
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ApplicationDataContainerSettings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ApplicationDataContainerSettings.Size");
+				throw new global::System.NotImplementedException("The member ICollection<string> ApplicationDataContainerSettings.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20ApplicationDataContainerSettings.Keys");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.ICollection<object> Values
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ICollection<object> ApplicationDataContainerSettings.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cobject%3E%20ApplicationDataContainerSettings.Values");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Count
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int ApplicationDataContainerSettings.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ApplicationDataContainerSettings.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object this[string key]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ApplicationDataContainerSettings.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ApplicationDataContainerSettings.this%5Bstring%20key%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainerSettings", "object ApplicationDataContainerSettings.this[string key]");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.operator ==(Windows.Storage.ApplicationDataContainerSettings, Windows.Storage.ApplicationDataContainerSettings)
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.operator !=(Windows.Storage.ApplicationDataContainerSettings, Windows.Storage.ApplicationDataContainerSettings)
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Equals(Windows.Storage.ApplicationDataContainerSettings)
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Equals(object)
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.GetHashCode()
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.MapChanged.add
 		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.MapChanged.remove
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Lookup(string)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Size.get
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.HasKey(string)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.GetView()
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Insert(string, object)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Remove(string)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Clear()
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.First()
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Keys.get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Values.get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Count.get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.IsReadOnly.get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.this[string].get
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.this[string].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(string key, object value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainerSettings", "void ApplicationDataContainerSettings.Add(string key, object value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ContainsKey(string key)
+		{
+			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.ContainsKey%28string%20key%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(string key)
+		{
+			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.Remove%28string%20key%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TryGetValue(string key, out object value)
+		{
+			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.TryGetValue(string key, out object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.TryGetValue%28string%20key%2C%20out%20object%20value%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainerSettings", "void ApplicationDataContainerSettings.Add(KeyValuePair<string, object> item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainerSettings", "void ApplicationDataContainerSettings.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
+		{
+			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.Contains(KeyValuePair<string, object> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.Contains%28KeyValuePair%3Cstring%2C%20object%3E%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainerSettings", "void ApplicationDataContainerSettings.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Remove(System.Collections.Generic.KeyValuePair<string, object>)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, object>> ApplicationDataContainerSettings.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20ApplicationDataContainerSettings.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.Collections.MapChangedEventHandler<string, object> MapChanged
@@ -52,105 +170,7 @@ namespace Windows.Storage
 		// Processing: Windows.Foundation.Collections.IPropertySet
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, object>
 		// Processing: System.Collections.Generic.IDictionary<string, object>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(string key, object value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ContainsKey(string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TryGetValue(string key, out object value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<string> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<object> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -159,35 +179,7 @@ namespace Windows.Storage
 			throw new global::System.NotSupportedException();
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

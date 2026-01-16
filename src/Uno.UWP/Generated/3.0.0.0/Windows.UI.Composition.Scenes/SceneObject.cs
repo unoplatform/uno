@@ -8,10 +8,17 @@ namespace Windows.UI.Composition.Scenes
 #endif
 	public partial class SceneObject : global::Windows.UI.Composition.CompositionObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SceneObject()
-		{
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.SceneObject(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.operator ==(Windows.UI.Composition.Scenes.SceneObject, Windows.UI.Composition.Scenes.SceneObject)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.operator !=(Windows.UI.Composition.Scenes.SceneObject, Windows.UI.Composition.Scenes.SceneObject)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.Equals(Windows.UI.Composition.Scenes.SceneObject)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.SceneObject(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

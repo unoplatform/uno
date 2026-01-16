@@ -6,19 +6,29 @@ namespace Windows.Devices.Enumeration
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DeviceInformationCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.DeviceInformation>, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceInformation>
+	public partial class DeviceInformationCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.DeviceInformation>, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceInformation>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Devices.Enumeration.DeviceInformation>
 	{
-		// Skipping already declared property Size
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.GetAt(uint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.Size.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.IndexOf(Windows.Devices.Enumeration.DeviceInformation, out uint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.GetMany(uint, Windows.Devices.Enumeration.DeviceInformation[])
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.First()
+		// Skipping already declared property Count
+		// Skipping already declared property this[]
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.operator ==(Windows.Devices.Enumeration.DeviceInformationCollection, Windows.Devices.Enumeration.DeviceInformationCollection)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.operator !=(Windows.Devices.Enumeration.DeviceInformationCollection, Windows.Devices.Enumeration.DeviceInformationCollection)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.Equals(Windows.Devices.Enumeration.DeviceInformationCollection)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.Count.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.this[int].get
+		// Skipping already declared method Windows.Devices.Enumeration.DeviceInformationCollection.GetEnumerator()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.DeviceInformation>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.DeviceInformation>
-		// Skipping already implement System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.DeviceInformation>.this[int]
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Enumeration.DeviceInformation>
 		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Devices.Enumeration.DeviceInformation>
-		// Skipping already implement System.Collections.Generic.IReadOnlyCollection<Windows.Devices.Enumeration.DeviceInformation>.Count
 	}
 }

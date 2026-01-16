@@ -3,16 +3,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct TextRange
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange()
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public TextRange(int _StartIndex, int _Length)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextRange", "TextRange.TextRange(int _StartIndex, int _Length)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange(int, int)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.operator ==(Microsoft.UI.Xaml.Documents.TextRange, Microsoft.UI.Xaml.Documents.TextRange)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.operator !=(Microsoft.UI.Xaml.Documents.TextRange, Microsoft.UI.Xaml.Documents.TextRange)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.Equals(Microsoft.UI.Xaml.Documents.TextRange)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int StartIndex;
 #endif
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Length;
 #endif
 	}

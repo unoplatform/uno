@@ -9,105 +9,16 @@ namespace Microsoft.UI.Composition.Scenes
 	public partial class ScenePbrMaterial : global::Microsoft.UI.Composition.Scenes.SceneMaterial
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal ScenePbrMaterial()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float OcclusionStrength
+		public float AlphaCutoff
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.OcclusionStrength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.OcclusionStrength");
+				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.AlphaCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.AlphaCutoff");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.OcclusionStrength");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput OcclusionInput
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.OcclusionInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.OcclusionInput");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.OcclusionInput");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float NormalScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.NormalScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.NormalScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.NormalScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput NormalInput
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.NormalInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.NormalInput");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.NormalInput");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDoubleSided
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ScenePbrMaterial.IsDoubleSided is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScenePbrMaterial.IsDoubleSided");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "bool ScenePbrMaterial.IsDoubleSided");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput EmissiveInput
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.EmissiveInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.EmissiveInput");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.EmissiveInput");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 EmissiveFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 ScenePbrMaterial.EmissiveFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20ScenePbrMaterial.EmissiveFactor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "Vector3 ScenePbrMaterial.EmissiveFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.AlphaCutoff");
 			}
 		}
 #endif
@@ -127,35 +38,131 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float AlphaCutoff
+		public global::System.Numerics.Vector3 EmissiveFactor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.AlphaCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.AlphaCutoff");
+				throw new global::System.NotImplementedException("The member Vector3 ScenePbrMaterial.EmissiveFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20ScenePbrMaterial.EmissiveFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.AlphaCutoff");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "Vector3 ScenePbrMaterial.EmissiveFactor");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalInput.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionInput.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionInput.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveInput.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaCutoff.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaMode.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput EmissiveInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.EmissiveInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.EmissiveInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.EmissiveInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDoubleSided
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ScenePbrMaterial.IsDoubleSided is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScenePbrMaterial.IsDoubleSided");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "bool ScenePbrMaterial.IsDoubleSided");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput NormalInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.NormalInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.NormalInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.NormalInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float NormalScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.NormalScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.NormalScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.NormalScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput OcclusionInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.OcclusionInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.OcclusionInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.OcclusionInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float OcclusionStrength
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.OcclusionStrength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.OcclusionStrength");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.OcclusionStrength");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.ScenePbrMaterial(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.operator ==(Microsoft.UI.Composition.Scenes.ScenePbrMaterial, Microsoft.UI.Composition.Scenes.ScenePbrMaterial)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.operator !=(Microsoft.UI.Composition.Scenes.ScenePbrMaterial, Microsoft.UI.Composition.Scenes.ScenePbrMaterial)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.Equals(Microsoft.UI.Composition.Scenes.ScenePbrMaterial)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.ScenePbrMaterial(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaCutoff.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveInput.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaCutoff.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveFactor.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveFactor.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveInput.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveInput.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.IsDoubleSided.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.IsDoubleSided.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalInput.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalInput.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalScale.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalScale.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionInput.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionInput.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

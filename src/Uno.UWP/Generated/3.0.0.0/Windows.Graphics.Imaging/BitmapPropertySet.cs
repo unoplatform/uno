@@ -6,15 +6,59 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BitmapPropertySet : global::System.Collections.Generic.IDictionary<string, global::Windows.Graphics.Imaging.BitmapTypedValue>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>>
+	public partial class BitmapPropertySet : global::System.Collections.Generic.IDictionary<string, global::Windows.Graphics.Imaging.BitmapTypedValue>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public global::System.Collections.Generic.ICollection<string> Keys
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapPropertySet.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapPropertySet.Size");
+				throw new global::System.NotImplementedException("The member ICollection<string> BitmapPropertySet.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20BitmapPropertySet.Keys");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.ICollection<global::Windows.Graphics.Imaging.BitmapTypedValue> Values
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ICollection<BitmapTypedValue> BitmapPropertySet.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3CBitmapTypedValue%3E%20BitmapPropertySet.Values");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Count
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int BitmapPropertySet.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20BitmapPropertySet.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BitmapPropertySet.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapPropertySet.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Imaging.BitmapTypedValue this[string key]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BitmapTypedValue BitmapPropertySet.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapTypedValue%20BitmapPropertySet.this%5Bstring%20key%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPropertySet", "BitmapTypedValue BitmapPropertySet.this[string key]");
 			}
 		}
 #endif
@@ -26,114 +70,90 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.BitmapPropertySet()
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Lookup(string)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Size.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.HasKey(string)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.GetView()
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Insert(string, Windows.Graphics.Imaging.BitmapTypedValue)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Remove(string)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Clear()
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.First()
-		// Processing: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.operator ==(Windows.Graphics.Imaging.BitmapPropertySet, Windows.Graphics.Imaging.BitmapPropertySet)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.operator !=(Windows.Graphics.Imaging.BitmapPropertySet, Windows.Graphics.Imaging.BitmapPropertySet)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Equals(Windows.Graphics.Imaging.BitmapPropertySet)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Keys.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Values.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Count.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.IsReadOnly.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.this[string].get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.this[string].set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(string key, global::Windows.Graphics.Imaging.BitmapTypedValue value)
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPropertySet", "void BitmapPropertySet.Add(string key, BitmapTypedValue value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool BitmapPropertySet.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapPropertySet.ContainsKey%28string%20key%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(string key)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool BitmapPropertySet.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapPropertySet.Remove%28string%20key%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out global::Windows.Graphics.Imaging.BitmapTypedValue value)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool BitmapPropertySet.TryGetValue(string key, out BitmapTypedValue value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapPropertySet.TryGetValue%28string%20key%2C%20out%20BitmapTypedValue%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Imaging.BitmapTypedValue this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<string> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<global::Windows.Graphics.Imaging.BitmapTypedValue> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPropertySet", "void BitmapPropertySet.Add(KeyValuePair<string, BitmapTypedValue> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPropertySet", "void BitmapPropertySet.Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool BitmapPropertySet.Contains(KeyValuePair<string, BitmapTypedValue> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapPropertySet.Contains%28KeyValuePair%3Cstring%2C%20BitmapTypedValue%3E%20item%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>[] array, int arrayIndex)
 		{
-			throw new global::System.NotSupportedException();
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPropertySet", "void BitmapPropertySet.CopyTo(KeyValuePair<string, BitmapTypedValue>[] array, int arrayIndex)");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>.Remove(System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, BitmapTypedValue>> BitmapPropertySet.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20BitmapTypedValue%3E%3E%20BitmapPropertySet.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
+		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -142,35 +162,7 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotSupportedException();
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

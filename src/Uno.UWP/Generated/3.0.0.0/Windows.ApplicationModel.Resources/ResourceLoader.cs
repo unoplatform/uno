@@ -8,19 +8,16 @@ namespace Windows.ApplicationModel.Resources
 #endif
 	public partial class ResourceLoader
 	{
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader()
 		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader()
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetString(string)
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetStringForUri(System.Uri)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDefaultPriPath(string packageFullName)
-		{
-			throw new global::System.NotImplementedException("The member string ResourceLoader.GetDefaultPriPath(string packageFullName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceLoader.GetDefaultPriPath%28string%20packageFullName%29");
-		}
-#endif
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.As<I>()
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetStringForReference(System.Uri)
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView(string)
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse()
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.ResourceLoader GetForUIContext(global::Windows.UI.UIContext context)
@@ -28,10 +25,18 @@ namespace Windows.ApplicationModel.Resources
 			throw new global::System.NotImplementedException("The member ResourceLoader ResourceLoader.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceLoader%20ResourceLoader.GetForUIContext%28UIContext%20context%29");
 		}
 #endif
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView(string)
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse()
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse(string)
-		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetStringForReference(System.Uri)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.operator ==(Windows.ApplicationModel.Resources.ResourceLoader, Windows.ApplicationModel.Resources.ResourceLoader)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.operator !=(Windows.ApplicationModel.Resources.ResourceLoader, Windows.ApplicationModel.Resources.ResourceLoader)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.Equals(Windows.ApplicationModel.Resources.ResourceLoader)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetString(string)
+		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetStringForUri(System.Uri)
+		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

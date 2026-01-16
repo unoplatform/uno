@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.Empty.get
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.Size FromDimensions(float width, float height)
@@ -38,12 +38,18 @@ namespace Microsoft.UI.Xaml
 			throw new global::System.NotImplementedException("The member bool SizeHelper.GetIsEmpty(Size target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SizeHelper.GetIsEmpty%28Size%20target%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool Equals(global::Windows.Foundation.Size target, global::Windows.Foundation.Size value)
-		{
-			throw new global::System.NotImplementedException("The member bool SizeHelper.Equals(Size target, Size value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SizeHelper.Equals%28Size%20target%2C%20Size%20value%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.Equals(Windows.Foundation.Size, Windows.Foundation.Size)
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.Empty.get
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.operator ==(Microsoft.UI.Xaml.SizeHelper, Microsoft.UI.Xaml.SizeHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.operator !=(Microsoft.UI.Xaml.SizeHelper, Microsoft.UI.Xaml.SizeHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.Equals(Microsoft.UI.Xaml.SizeHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.SizeHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,21 +9,16 @@ namespace Microsoft.UI.Composition
 	public partial class Vector3NaturalMotionAnimation : global::Microsoft.UI.Composition.NaturalMotionAnimation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal Vector3NaturalMotionAnimation()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 InitialVelocity
+		public global::System.Numerics.Vector3? FinalValue
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Vector3NaturalMotionAnimation.InitialVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Vector3NaturalMotionAnimation.InitialVelocity");
+				throw new global::System.NotImplementedException("The member Vector3? Vector3NaturalMotionAnimation.FinalValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20Vector3NaturalMotionAnimation.FinalValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3 Vector3NaturalMotionAnimation.InitialVelocity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3? Vector3NaturalMotionAnimation.FinalValue");
 			}
 		}
 #endif
@@ -43,23 +38,35 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? FinalValue
+		public global::System.Numerics.Vector3 InitialVelocity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? Vector3NaturalMotionAnimation.FinalValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20Vector3NaturalMotionAnimation.FinalValue");
+				throw new global::System.NotImplementedException("The member Vector3 Vector3NaturalMotionAnimation.InitialVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Vector3NaturalMotionAnimation.InitialVelocity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3? Vector3NaturalMotionAnimation.FinalValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3 Vector3NaturalMotionAnimation.InitialVelocity");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialVelocity.set
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Vector3NaturalMotionAnimation(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.operator ==(Microsoft.UI.Composition.Vector3NaturalMotionAnimation, Microsoft.UI.Composition.Vector3NaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.operator !=(Microsoft.UI.Composition.Vector3NaturalMotionAnimation, Microsoft.UI.Composition.Vector3NaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Equals(Microsoft.UI.Composition.Vector3NaturalMotionAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Vector3NaturalMotionAnimation(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.FinalValue.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.FinalValue.set
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialValue.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialValue.set
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.FinalValue.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialVelocity.get
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialVelocity.set
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -6,14 +6,25 @@ namespace Microsoft.UI.Composition.Interactions
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionInteractionSourceCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Interactions.ICompositionInteractionSource>
+	public partial class CompositionInteractionSourceCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Interactions.ICompositionInteractionSource>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
-		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.RemoveAll()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.operator ==(Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection, Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.operator !=(Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection, Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Equals(Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Add(Microsoft.UI.Composition.Interactions.ICompositionInteractionSource)
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Remove(Microsoft.UI.Composition.Interactions.ICompositionInteractionSource)
+		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.RemoveAll()
+		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Count.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.First()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Interactions.ICompositionInteractionSource>
 		// Processing: System.Collections.IEnumerable
 	}

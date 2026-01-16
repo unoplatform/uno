@@ -10,6 +10,19 @@ namespace Windows.Devices.Input
 	{
 		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.PointerDeviceUsage()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public PointerDeviceUsage(uint _UsagePage, uint _Usage, int _MinLogical, int _MaxLogical, int _MinPhysical, int _MaxPhysical, uint _Unit, float _PhysicalMultiplier)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PointerDeviceUsage", "PointerDeviceUsage.PointerDeviceUsage(uint _UsagePage, uint _Usage, int _MinLogical, int _MaxLogical, int _MinPhysical, int _MaxPhysical, uint _Unit, float _PhysicalMultiplier)");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.PointerDeviceUsage(uint, uint, int, int, int, int, uint, float)
+		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.operator ==(Windows.Devices.Input.PointerDeviceUsage, Windows.Devices.Input.PointerDeviceUsage)
+		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.operator !=(Windows.Devices.Input.PointerDeviceUsage, Windows.Devices.Input.PointerDeviceUsage)
+		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.Equals(Windows.Devices.Input.PointerDeviceUsage)
+		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint UsagePage;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

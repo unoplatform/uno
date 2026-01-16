@@ -6,7 +6,7 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlayReadyLicenseIterator : global::Windows.Foundation.Collections.IIterator<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense>
+	public partial class PlayReadyLicenseIterator : global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense>, global::System.Collections.IEnumerator, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal PlayReadyLicenseIterator()
@@ -25,16 +25,24 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasCurrent
+		object global::System.Collections.IEnumerator.Current
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadyLicenseIterator.HasCurrent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyLicenseIterator.HasCurrent");
+				throw new global::System.NotImplementedException("The member object PlayReadyLicenseIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PlayReadyLicenseIterator.Current");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.Current.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.HasCurrent.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.operator ==(Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator, Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.operator !=(Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator, Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.Equals(Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
@@ -44,11 +52,23 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GetMany(global::Windows.Media.Protection.PlayReady.IPlayReadyLicense[] items)
+		public void Reset()
 		{
-			throw new global::System.NotImplementedException("The member uint PlayReadyLicenseIterator.GetMany(IPlayReadyLicense[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyLicenseIterator.GetMany%28IPlayReadyLicense%5B%5D%20items%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator", "void PlayReadyLicenseIterator.Reset()");
 		}
 #endif
-		// Processing: Windows.Foundation.Collections.IIterator<Windows.Media.Protection.PlayReady.IPlayReadyLicense>
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator", "void PlayReadyLicenseIterator.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.Current.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.System.Collections.IEnumerator.Current.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerator<Windows.Media.Protection.PlayReady.IPlayReadyLicense>
+		// Processing: System.Collections.IEnumerator
+		// Processing: System.IDisposable
 	}
 }

@@ -6,15 +6,25 @@ namespace Windows.Foundation
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class WwwFormUrlDecoder : global::System.Collections.Generic.IReadOnlyList<global::Windows.Foundation.IWwwFormUrlDecoderEntry>, global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.IWwwFormUrlDecoderEntry>
+	public partial class WwwFormUrlDecoder : global::System.Collections.Generic.IReadOnlyList<global::Windows.Foundation.IWwwFormUrlDecoderEntry>, global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.IWwwFormUrlDecoderEntry>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Foundation.IWwwFormUrlDecoderEntry>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WwwFormUrlDecoder.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WwwFormUrlDecoder.Size");
+				throw new global::System.NotImplementedException("The member int WwwFormUrlDecoder.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WwwFormUrlDecoder.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IWwwFormUrlDecoderEntry this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IWwwFormUrlDecoderEntry WwwFormUrlDecoder.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IWwwFormUrlDecoderEntry%20WwwFormUrlDecoder.this%5Bint%20index%5D");
 			}
 		}
 #endif
@@ -26,6 +36,16 @@ namespace Windows.Foundation
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WwwFormUrlDecoder(string)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.FromAbi(nint)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.operator ==(Windows.Foundation.WwwFormUrlDecoder, Windows.Foundation.WwwFormUrlDecoder)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.operator !=(Windows.Foundation.WwwFormUrlDecoder, Windows.Foundation.WwwFormUrlDecoder)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Equals(Windows.Foundation.WwwFormUrlDecoder)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Equals(object)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.GetHashCode()
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetFirstValueByName(string name)
@@ -33,31 +53,20 @@ namespace Windows.Foundation
 			throw new global::System.NotImplementedException("The member string WwwFormUrlDecoder.GetFirstValueByName(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WwwFormUrlDecoder.GetFirstValueByName%28string%20name%29");
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.First()
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.GetAt(uint)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Size.get
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.IndexOf(Windows.Foundation.IWwwFormUrlDecoderEntry, out uint)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.GetMany(uint, Windows.Foundation.IWwwFormUrlDecoderEntry[])
-		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Foundation.IWwwFormUrlDecoderEntry>
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Count.get
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IWwwFormUrlDecoderEntry this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Foundation.IWwwFormUrlDecoderEntry>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Foundation.IWwwFormUrlDecoderEntry>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Foundation.IWwwFormUrlDecoderEntry> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<IWwwFormUrlDecoderEntry> WwwFormUrlDecoder.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CIWwwFormUrlDecoderEntry%3E%20WwwFormUrlDecoder.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.System.Collections.Generic.IReadOnlyList<Windows.Foundation.IWwwFormUrlDecoderEntry>.get_Item(int)
+		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Foundation.IWwwFormUrlDecoderEntry>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Foundation.IWwwFormUrlDecoderEntry>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -68,15 +77,5 @@ namespace Windows.Foundation
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Foundation.IWwwFormUrlDecoderEntry>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

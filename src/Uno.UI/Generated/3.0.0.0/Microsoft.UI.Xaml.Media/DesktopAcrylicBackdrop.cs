@@ -3,18 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DesktopAcrylicBackdrop : global::Microsoft.UI.Xaml.Media.SystemBackdrop
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public DesktopAcrylicBackdrop() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop", "DesktopAcrylicBackdrop.DesktopAcrylicBackdrop()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.operator ==(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop, Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.operator !=(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop, Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.Equals(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

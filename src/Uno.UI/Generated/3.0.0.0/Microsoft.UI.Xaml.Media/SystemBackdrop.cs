@@ -3,19 +3,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SystemBackdrop : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected SystemBackdrop() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "SystemBackdrop.SystemBackdrop()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.SystemBackdrop.SystemBackdrop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.SystemBackdrop()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.SystemBackdrop(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.operator ==(Microsoft.UI.Xaml.Media.SystemBackdrop, Microsoft.UI.Xaml.Media.SystemBackdrop)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.operator !=(Microsoft.UI.Xaml.Media.SystemBackdrop, Microsoft.UI.Xaml.Media.SystemBackdrop)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.Equals(Microsoft.UI.Xaml.Media.SystemBackdrop)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.SystemBackdrop(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration GetDefaultSystemBackdropConfiguration(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop target, global::Microsoft.UI.Xaml.XamlRoot xamlRoot)
@@ -30,6 +34,7 @@ namespace Microsoft.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "void SystemBackdrop.OnTargetConnected(ICompositionSupportsSystemBackdrop connectedTarget, XamlRoot xamlRoot)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.Microsoft.UI.Xaml.Media.ISystemBackdropOverrides.OnTargetConnected(Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop, Microsoft.UI.Xaml.XamlRoot)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnTargetDisconnected(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop disconnectedTarget)
@@ -37,6 +42,7 @@ namespace Microsoft.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "void SystemBackdrop.OnTargetDisconnected(ICompositionSupportsSystemBackdrop disconnectedTarget)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.Microsoft.UI.Xaml.Media.ISystemBackdropOverrides.OnTargetDisconnected(Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnDefaultSystemBackdropConfigurationChanged(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop target, global::Microsoft.UI.Xaml.XamlRoot xamlRoot)
@@ -44,5 +50,8 @@ namespace Microsoft.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "void SystemBackdrop.OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.Microsoft.UI.Xaml.Media.ISystemBackdropOverrides.OnDefaultSystemBackdropConfigurationChanged(Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop, Microsoft.UI.Xaml.XamlRoot)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

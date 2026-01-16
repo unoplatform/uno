@@ -6,36 +6,39 @@ namespace Microsoft.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionShapeCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.CompositionShape>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionShape>
+	public partial class CompositionShapeCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.CompositionShape>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Composition.CompositionShape>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionShape>, global::System.Collections.IEnumerable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint CompositionShapeCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CompositionShapeCollection.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.IndexOf(Microsoft.UI.Composition.CompositionShape, out uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetMany(uint, Microsoft.UI.Composition.CompositionShape[])
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.ReplaceAll(Microsoft.UI.Composition.CompositionShape[])
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.First()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Append(Microsoft.UI.Composition.CompositionShape)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.SetAt(uint, Microsoft.UI.Composition.CompositionShape)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.InsertAt(uint, Microsoft.UI.Composition.CompositionShape)
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.operator ==(Microsoft.UI.Composition.CompositionShapeCollection, Microsoft.UI.Composition.CompositionShapeCollection)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.operator !=(Microsoft.UI.Composition.CompositionShapeCollection, Microsoft.UI.Composition.CompositionShapeCollection)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Equals(Microsoft.UI.Composition.CompositionShapeCollection)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.IndexOf(Microsoft.UI.Composition.CompositionShape)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.Insert(int, Microsoft.UI.Composition.CompositionShape)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.Add(Microsoft.UI.Composition.CompositionShape)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.Contains(Microsoft.UI.Composition.CompositionShape)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.CopyTo(Microsoft.UI.Composition.CompositionShape[], int)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.Remove(Microsoft.UI.Composition.CompositionShape)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>.set_Item(int, Microsoft.UI.Composition.CompositionShape)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Composition.CompositionShape>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Composition.CompositionShape>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Composition.CompositionShape>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionShape>
 		// Processing: System.Collections.IEnumerable
 	}
