@@ -769,27 +769,43 @@ namespace Microsoft.UI.Xaml.Controls
 			var winrtStart = start;
 			var winrtEnd = end;
 
-			// Make sure start <= end 
-			if (winrtEnd.CompareTo(winrtStart) == -1)
-			{
-				var temp = winrtStart;
-				winrtStart = winrtEnd;
-				winrtEnd = temp;
-			}
+			int compareIndexPaths = winrtEnd.CompareTo(winrtStart);
 
-			// Note: Since we do not know the depth of the tree, we have to walk to each leaf
-			SelectionTreeHelper.TraverseRangeRealizeChildren(
-				m_rootNode,
-				winrtStart,
-				winrtEnd,
-				(SelectionTreeHelper.TreeWalkNodeInfo info) =>
+			if (compareIndexPaths == 0)
+			{
+				if (select)
 				{
-					if (info.Node.DataCount == 0)
+					SelectAt(winrtStart);
+				}
+				else
+				{
+					DeselectAt(winrtStart);
+				}
+			}
+			else
+			{
+				// Make sure start <= end
+				if (compareIndexPaths == -1)
+				{
+					var temp = winrtStart;
+					winrtStart = winrtEnd;
+					winrtEnd = temp;
+				}
+
+				// Note: Since we do not know the depth of the tree, we have to walk to each leaf
+				SelectionTreeHelper.TraverseRangeRealizeChildren(
+					m_rootNode,
+					winrtStart,
+					winrtEnd,
+					(SelectionTreeHelper.TreeWalkNodeInfo info) =>
 					{
-						// Select only leaf nodes
-						info.ParentNode.Select(info.Path.GetAt(info.Path.GetSize() - 1), select);
-					}
-				});
+						if (info.Node.DataCount == 0)
+						{
+							// Select only leaf nodes
+							info.ParentNode.Select(info.Path.GetAt(info.Path.GetSize() - 1), select);
+						}
+					});
+			}
 
 			OnSelectionChanged();
 		}
