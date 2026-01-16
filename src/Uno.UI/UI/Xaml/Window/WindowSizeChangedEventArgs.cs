@@ -1,5 +1,4 @@
-﻿#if HAS_UNO_WINUI
-using System;
+﻿using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
@@ -23,4 +22,3 @@ public sealed partial class WindowSizeChangedEventArgs
 		get;
 	}
 }
-#endif

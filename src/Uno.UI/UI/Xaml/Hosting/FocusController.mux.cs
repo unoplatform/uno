@@ -11,11 +11,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
-#else
-using Windows.System;
-#endif
 
 namespace DirectUI;
 

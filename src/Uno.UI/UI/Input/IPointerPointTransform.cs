@@ -1,5 +1,3 @@
-﻿#if HAS_UNO_WINUI
-
 using Windows.Foundation;
 
 namespace Microsoft.UI.Input
@@ -16,4 +14,3 @@ namespace Microsoft.UI.Input
 		bool TryTransformBounds(Rect inRect, out Rect outRect);
 	}
 }
-#endif

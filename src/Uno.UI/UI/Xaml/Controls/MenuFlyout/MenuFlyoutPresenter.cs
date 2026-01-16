@@ -16,12 +16,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

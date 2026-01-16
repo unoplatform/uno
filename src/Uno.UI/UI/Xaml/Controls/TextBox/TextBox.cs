@@ -26,13 +26,9 @@ using Windows.ApplicationModel.DataTransfer;
 using Uno.UI;
 using DirectUI;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Uno.UI.Xaml.Controls;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -289,11 +285,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (value == null)
 				{
-#if HAS_UNO_WINUI
 					value = string.Empty;
-#else
-					throw new ArgumentNullException();
-#endif
 				}
 
 				this.SetValue(TextProperty, value);

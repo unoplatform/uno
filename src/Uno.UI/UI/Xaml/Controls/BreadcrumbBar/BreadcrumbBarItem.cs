@@ -11,21 +11,14 @@ using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
-#if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
-using Microsoft.UI.Xaml.Automation.Peers;
-#endif
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Uno.UI.Helpers.WinUI;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 

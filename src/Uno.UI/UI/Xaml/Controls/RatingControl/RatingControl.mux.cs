@@ -18,9 +18,7 @@ using Windows.Foundation.Metadata;
 using System.Numerics;
 using Windows.UI.ViewManagement;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 

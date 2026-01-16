@@ -1,5 +1,4 @@
-﻿#if HAS_UNO_WINUI
-using System;
+﻿using System;
 using Microsoft.UI.Xaml;
 
 namespace WinRT.Interop;
@@ -16,4 +15,3 @@ public static class WindowNative
 		return new IntPtr((long)window.AppWindow.Id.Value);
 	}
 }
-#endif

@@ -4,10 +4,6 @@ using Microsoft.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
-
 namespace Uno.UI.Xaml.Controls;
 
 internal interface IWindowImplementation

@@ -19,9 +19,6 @@ public partial class SymbolIconSource : IconSource
 	public static DependencyProperty SymbolProperty { get; } =
 		DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new FrameworkPropertyMetadata(Symbol.Emoji, OnPropertyChanged));
 
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected override IconElement CreateIconElementCore()
 	{
 		Symbol symbol = Symbol;
@@ -33,9 +30,6 @@ public partial class SymbolIconSource : IconSource
 		return symbolIcon;
 	}
 
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
 		if (iconSourceProperty == SymbolProperty)

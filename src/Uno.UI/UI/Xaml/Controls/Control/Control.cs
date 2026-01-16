@@ -822,12 +822,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-#if HAS_UNO_WINUI
 		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
 		{
 			OnIsFocusableChanged();
 		}
-#endif
 
 		#region TabNavigation DependencyProperty
 

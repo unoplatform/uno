@@ -3,11 +3,6 @@ using System.Linq;
 using Uno.Disposables;
 using static Uno.UI.FeatureConfiguration;
 
-#if !HAS_UNO_WINUI
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class ScrollBar

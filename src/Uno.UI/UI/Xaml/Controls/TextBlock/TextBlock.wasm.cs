@@ -12,10 +12,6 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Media;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement
