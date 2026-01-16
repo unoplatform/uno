@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ElementManager.cpp, commit 864c068
+// ElementManager.cpp, tag winui3/release/1.8.4
 
 using System;
 using System.Collections.Generic;
@@ -57,6 +57,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 		}
+
+		public int GetFirstRealizedDataIndex => m_firstRealizedDataIndex;
 
 		public int GetRealizedElementCount => IsVirtualizingContext ? (int)(m_realizedElements.Count) : m_context.ItemCount;
 
@@ -138,7 +140,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_realizedElementLayoutBounds.Add(default);
 		}
 
-		void Insert(int realizedIndex, int dataIndex, UIElement element)
+		public void Insert(int realizedIndex, int dataIndex, UIElement element)
 		{
 			MUX_ASSERT(IsVirtualizingContext);
 
@@ -153,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_realizedElementLayoutBounds.AddOrInsert(realizedIndex, ItemsRepeater.InvalidRect /*new Rect(-1, -1, -1, -1)*/);
 		}
 
-		void ClearRealizedRange(int realizedIndex, int count)
+		public void ClearRealizedRange(int realizedIndex, int count)
 		{
 			MUX_ASSERT(IsVirtualizingContext);
 
@@ -222,6 +224,12 @@ namespace Microsoft.UI.Xaml.Controls
 		public void SetLayoutBoundsForRealizedIndex(int realizedIndex, Rect bounds)
 		{
 			m_realizedElementLayoutBounds[realizedIndex] = bounds;
+		}
+
+		public bool IsLayoutBoundsForRealizedIndexSet(int realizedIndex)
+		{
+			MUX_ASSERT(realizedIndex >= 0 && realizedIndex < GetRealizedElementCount);
+			return m_realizedElementLayoutBounds[realizedIndex] != ItemsRepeater.InvalidRect;
 		}
 
 		public bool IsDataIndexRealized(int index)
@@ -368,16 +376,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if false
-		int GetElementDataIndex(UIElement suggestedAnchor)
+		public int GetElementDataIndex(UIElement suggestedAnchor)
 		{
 			MUX_ASSERT(suggestedAnchor != null);
-			var it = m_realizedElements.IndexOf(suggestedAnchor);
-			return it != -1
-				? GetDataIndexFromRealizedRangeIndex(it)
+			var index = m_realizedElements.IndexOf(suggestedAnchor);
+			return index != -1
+				? GetDataIndexFromRealizedRangeIndex(index)
 				: -1;
 		}
-#endif
 
 		public int GetDataIndexFromRealizedRangeIndex(int rangeIndex)
 		{
@@ -385,7 +391,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsVirtualizingContext ? rangeIndex + m_firstRealizedDataIndex : rangeIndex;
 		}
 
-		int GetRealizedRangeIndexFromDataIndex(int dataIndex)
+		public int GetRealizedRangeIndexFromDataIndex(int dataIndex)
 		{
 			MUX_ASSERT(IsDataIndexRealized(dataIndex));
 			return IsVirtualizingContext ? dataIndex - m_firstRealizedDataIndex : dataIndex;
