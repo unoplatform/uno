@@ -1487,7 +1487,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var startTrimmedWord = word.TrimStart();
 			var trimmedWord = startTrimmedWord.TrimEnd();
 
-			if (trimmedWord.Length > 0 && !trimmedWord.Any(c => char.IsPunctuation(c) || char.IsNumber(c) || char.IsSeparator(c) || char.IsWhiteSpace(c)))
+			if (trimmedWord.Length > 0 && !trimmedWord.Any(c => char.IsPunctuation(c) || char.IsNumber(c) || char.IsSeparator(c) || char.IsWhiteSpace(c) || char.IsSymbol(c)))
 			{
 				if (_wordList.Check(trimmedWord))
 				{
