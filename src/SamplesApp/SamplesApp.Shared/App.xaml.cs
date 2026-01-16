@@ -212,7 +212,7 @@ namespace SamplesApp
 		private static void InitializeIcuData()
 		{
 			// This is done by the IcuDataInitializerGenerator for external projects
-			var icuType = typeof(UnicodeText)?.GetNestedType("ICU", BindingFlags.NonPublic | BindingFlags.Static);
+			var icuType = Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
 			var setMethod = icuType?.GetMethod("SetDataAssembly", BindingFlags.Public | BindingFlags.Static);
 			var assembly = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name is { } name && name.StartsWith("SamplesApp", StringComparison.Ordinal) && !name.Equals("SamplesApp.Skia", StringComparison.Ordinal));
 			setMethod?.Invoke(null, [assembly]);
