@@ -25,6 +25,16 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSoftwareTriggerSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsSoftwareTriggerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeScannerCapabilities.IsSoftwareTriggerSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsStatisticsReportingSupported
 		{
 			get
@@ -45,26 +55,6 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.UnifiedPosPowerReportingType PowerReportingType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType BarcodeScannerCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnifiedPosPowerReportingType%20BarcodeScannerCapabilities.PowerReportingType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSoftwareTriggerSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsSoftwareTriggerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeScannerCapabilities.IsSoftwareTriggerSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsVideoPreviewSupported
 		{
 			get
@@ -73,11 +63,32 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.PowerReportingType.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsReportingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsUpdatingSupported.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.UnifiedPosPowerReportingType PowerReportingType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType BarcodeScannerCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnifiedPosPowerReportingType%20BarcodeScannerCapabilities.PowerReportingType");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.operator ==(Windows.Devices.PointOfService.BarcodeScannerCapabilities, Windows.Devices.PointOfService.BarcodeScannerCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.operator !=(Windows.Devices.PointOfService.BarcodeScannerCapabilities, Windows.Devices.PointOfService.BarcodeScannerCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.Equals(Windows.Devices.PointOfService.BarcodeScannerCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsImagePreviewSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsSoftwareTriggerSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsReportingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsUpdatingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsVideoPreviewSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.PowerReportingType.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

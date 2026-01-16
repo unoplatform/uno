@@ -13,6 +13,45 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.GetDefault%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void DisableAutoSessionCreation()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityChannel", "void UserActivityChannel.DisableAutoSessionCreation()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel TryGetForWebAccount(global::Windows.Security.Credentials.WebAccount account)
+		{
+			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.TryGetForWebAccount(WebAccount account) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.TryGetForWebAccount%28WebAccount%20account%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.GetForUser%28User%20user%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.operator ==(Windows.ApplicationModel.UserActivities.UserActivityChannel, Windows.ApplicationModel.UserActivities.UserActivityChannel)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.operator !=(Windows.ApplicationModel.UserActivities.UserActivityChannel, Windows.ApplicationModel.UserActivities.UserActivityChannel)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.Equals(Windows.ApplicationModel.UserActivities.UserActivityChannel)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserActivities.UserActivity> GetOrCreateUserActivityAsync(string activityId)
@@ -48,33 +87,6 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<UserActivitySessionHistoryItem>> UserActivityChannel.GetSessionHistoryItemsForUserActivityAsync(string activityId, DateTimeOffset startTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CUserActivitySessionHistoryItem%3E%3E%20UserActivityChannel.GetSessionHistoryItemsForUserActivityAsync%28string%20activityId%2C%20DateTimeOffset%20startTime%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.GetForUser%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void DisableAutoSessionCreation()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityChannel", "void UserActivityChannel.DisableAutoSessionCreation()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel TryGetForWebAccount(global::Windows.Security.Credentials.WebAccount account)
-		{
-			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.TryGetForWebAccount(WebAccount account) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.TryGetForWebAccount%28WebAccount%20account%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

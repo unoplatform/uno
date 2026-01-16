@@ -10,20 +10,30 @@ namespace Windows.Media.ContentRestrictions
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public RatedContentRestrictions(uint maxAgeRating)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RatedContentRestrictions.RatedContentRestrictions(uint maxAgeRating)");
-		}
-#endif
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RatedContentRestrictions(uint)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RatedContentRestrictions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RatedContentRestrictions.RatedContentRestrictions()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RatedContentRestrictions()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public RatedContentRestrictions(uint maxAgeRating)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RatedContentRestrictions.RatedContentRestrictions(uint maxAgeRating)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RatedContentRestrictions(uint)
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.FromAbi(nint)
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.operator ==(Windows.Media.ContentRestrictions.RatedContentRestrictions, Windows.Media.ContentRestrictions.RatedContentRestrictions)
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.operator !=(Windows.Media.ContentRestrictions.RatedContentRestrictions, Windows.Media.ContentRestrictions.RatedContentRestrictions)
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.Equals(Windows.Media.ContentRestrictions.RatedContentRestrictions)
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.Equals(object)
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.GetHashCode()
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy> GetBrowsePolicyAsync()
@@ -47,6 +57,7 @@ namespace Windows.Media.ContentRestrictions
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RestrictionsChanged.add
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RestrictionsChanged.remove
+		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<object> RestrictionsChanged

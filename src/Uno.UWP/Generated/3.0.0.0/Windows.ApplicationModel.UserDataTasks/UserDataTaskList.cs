@@ -15,34 +15,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListOtherAppWriteAccess OtherAppWriteAccess
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListOtherAppWriteAccess%20UserDataTaskList.OtherAppWriteAccess");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListOtherAppReadAccess OtherAppReadAccess
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListOtherAppReadAccess%20UserDataTaskList.OtherAppReadAccess");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayName
 		{
 			get
@@ -77,6 +49,34 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListOtherAppReadAccess OtherAppReadAccess
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListOtherAppReadAccess%20UserDataTaskList.OtherAppReadAccess");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListOtherAppWriteAccess OtherAppWriteAccess
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListOtherAppWriteAccess%20UserDataTaskList.OtherAppWriteAccess");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SourceDisplayName
 		{
 			get
@@ -105,17 +105,16 @@ namespace Windows.ApplicationModel.UserDataTasks
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.Id.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.UserDataAccountId.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.DisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.SourceDisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppReadAccess.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppReadAccess.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppWriteAccess.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppWriteAccess.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.LimitedWriteOperations.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.SyncManager.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskList, Windows.ApplicationModel.UserDataTasks.UserDataTaskList)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskList, Windows.ApplicationModel.UserDataTasks.UserDataTaskList)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskList)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RegisterSyncManagerAsync()
@@ -172,5 +171,17 @@ namespace Windows.ApplicationModel.UserDataTasks
 			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskList.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskList.SaveAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.DisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.Id.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.LimitedWriteOperations.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppReadAccess.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppReadAccess.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppWriteAccess.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.OtherAppWriteAccess.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.SourceDisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.SyncManager.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.UserDataAccountId.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

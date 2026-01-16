@@ -10,35 +10,15 @@ namespace Windows.Media.Protection.PlayReady
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid ProtectionSystem
+		public string ChallengeCustomData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyLicenseAcquisitionServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicenseAcquisitionServiceRequest.ProtectionSystem");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyLicenseAcquisitionServiceRequest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicenseAcquisitionServiceRequest.Type");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid DomainServiceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId");
+				throw new global::System.NotImplementedException("The member string PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Guid PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "string PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData");
 			}
 		}
 #endif
@@ -58,11 +38,55 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Guid DomainServiceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Guid PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Guid ProtectionSystem
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid PlayReadyLicenseAcquisitionServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicenseAcquisitionServiceRequest.ProtectionSystem");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ResponseCustomData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PlayReadyLicenseAcquisitionServiceRequest.ResponseCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyLicenseAcquisitionServiceRequest.ResponseCustomData");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Guid SessionId
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid PlayReadyLicenseAcquisitionServiceRequest.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicenseAcquisitionServiceRequest.SessionId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Guid Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid PlayReadyLicenseAcquisitionServiceRequest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicenseAcquisitionServiceRequest.Type");
 			}
 		}
 #endif
@@ -82,45 +106,22 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ChallengeCustomData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "string PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ResponseCustomData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PlayReadyLicenseAcquisitionServiceRequest.ResponseCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyLicenseAcquisitionServiceRequest.ResponseCustomData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyLicenseAcquisitionServiceRequest()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadyLicenseAcquisitionServiceRequest.PlayReadyLicenseAcquisitionServiceRequest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.PlayReadyLicenseAcquisitionServiceRequest()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ContentHeader.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ContentHeader.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Uri.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Uri.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ResponseCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.operator ==(Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.operator !=(Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Equals(Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BeginServiceRequest()
@@ -149,9 +150,6 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member Exception PlayReadyLicenseAcquisitionServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PlayReadyLicenseAcquisitionServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ProtectionSystem.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Type.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.SessionId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable CreateLicenseIterable(global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader, bool fullyEvaluated)
@@ -159,6 +157,19 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member PlayReadyLicenseIterable PlayReadyLicenseAcquisitionServiceRequest.CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayReadyLicenseIterable%20PlayReadyLicenseAcquisitionServiceRequest.CreateLicenseIterable%28PlayReadyContentHeader%20contentHeader%2C%20bool%20fullyEvaluated%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ContentHeader.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ContentHeader.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ProtectionSystem.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ResponseCustomData.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.SessionId.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Type.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Uri.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.Uri.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyLicenseAcquisitionServiceRequest
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest
 		// Processing: Windows.Media.Protection.IMediaProtectionServiceRequest

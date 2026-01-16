@@ -8,13 +8,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 #endif
 	public static partial class UserDataAccountManager
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member UserDataAccountManagerForUser UserDataAccountManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAccountManagerForUser%20UserDataAccountManager.GetForUser%28User%20user%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreAccessType storeAccessType)
@@ -41,6 +35,13 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		public static global::Windows.Foundation.IAsyncAction ShowAccountErrorResolverAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction UserDataAccountManager.ShowAccountErrorResolverAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataAccountManager.ShowAccountErrorResolverAsync%28string%20id%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member UserDataAccountManagerForUser UserDataAccountManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAccountManagerForUser%20UserDataAccountManager.GetForUser%28User%20user%29");
 		}
 #endif
 	}

@@ -10,15 +10,15 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
+		public bool Bordered
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomTextBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomTextBox.Label");
+				throw new global::System.NotImplementedException("The member bool VpnCustomTextBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomTextBox.Bordered");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomTextBox", "string VpnCustomTextBox.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomTextBox", "bool VpnCustomTextBox.Bordered");
 			}
 		}
 #endif
@@ -38,20 +38,6 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Bordered
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomTextBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomTextBox.Bordered");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomTextBox", "bool VpnCustomTextBox.Bordered");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayText
 		{
 			get
@@ -66,20 +52,45 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Label
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VpnCustomTextBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomTextBox.Label");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomTextBox", "string VpnCustomTextBox.Label");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnCustomTextBox()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomTextBox", "VpnCustomTextBox.VpnCustomTextBox()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.VpnCustomTextBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.DisplayText.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.DisplayText.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Label.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Label.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Compulsory.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Compulsory.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.operator ==(Windows.Networking.Vpn.VpnCustomTextBox, Windows.Networking.Vpn.VpnCustomTextBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.operator !=(Windows.Networking.Vpn.VpnCustomTextBox, Windows.Networking.Vpn.VpnCustomTextBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Equals(Windows.Networking.Vpn.VpnCustomTextBox)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Bordered.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Compulsory.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Compulsory.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.DisplayText.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.DisplayText.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Label.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Label.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnCustomPrompt
 	}
 }

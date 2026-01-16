@@ -25,21 +25,21 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPaired
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.IsPaired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceInformationPairing.IsPaired");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.DeviceInformationCustomPairing Custom
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member DeviceInformationCustomPairing DeviceInformationPairing.Custom is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformationCustomPairing%20DeviceInformationPairing.Custom");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPaired
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.IsPaired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceInformationPairing.IsPaired");
 			}
 		}
 #endif
@@ -53,8 +53,31 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.IsPaired.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.CanPair.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool TryRegisterForAllInboundPairingRequests(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
+		{
+			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequests(DevicePairingKinds pairingKindsSupported) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceInformationPairing.TryRegisterForAllInboundPairingRequests%28DevicePairingKinds%20pairingKindsSupported%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool TryRegisterForAllInboundPairingRequestsWithProtectionLevel(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported, global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
+		{
+			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel%28DevicePairingKinds%20pairingKindsSupported%2C%20DevicePairingProtectionLevel%20minProtectionLevel%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.operator ==(Windows.Devices.Enumeration.DeviceInformationPairing, Windows.Devices.Enumeration.DeviceInformationPairing)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.operator !=(Windows.Devices.Enumeration.DeviceInformationPairing, Windows.Devices.Enumeration.DeviceInformationPairing)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.Equals(Windows.Devices.Enumeration.DeviceInformationPairing)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync()
@@ -69,8 +92,6 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationPairing.PairAsync(DevicePairingProtectionLevel minProtectionLevel) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDevicePairingResult%3E%20DeviceInformationPairing.PairAsync%28DevicePairingProtectionLevel%20minProtectionLevel%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.ProtectionLevel.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.Custom.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync(global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel, global::Windows.Devices.Enumeration.IDevicePairingSettings devicePairingSettings)
@@ -85,19 +106,10 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceUnpairingResult> DeviceInformationPairing.UnpairAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceUnpairingResult%3E%20DeviceInformationPairing.UnpairAsync%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool TryRegisterForAllInboundPairingRequestsWithProtectionLevel(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported, global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
-		{
-			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel%28DevicePairingKinds%20pairingKindsSupported%2C%20DevicePairingProtectionLevel%20minProtectionLevel%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool TryRegisterForAllInboundPairingRequests(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
-		{
-			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequests(DevicePairingKinds pairingKindsSupported) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceInformationPairing.TryRegisterForAllInboundPairingRequests%28DevicePairingKinds%20pairingKindsSupported%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.CanPair.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.Custom.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.IsPaired.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.ProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

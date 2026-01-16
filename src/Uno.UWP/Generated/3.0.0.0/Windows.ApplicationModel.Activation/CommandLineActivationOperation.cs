@@ -15,20 +15,6 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ExitCode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int CommandLineActivationOperation.ExitCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CommandLineActivationOperation.ExitCode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "int CommandLineActivationOperation.ExitCode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Arguments
 		{
 			get
@@ -47,10 +33,30 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Arguments.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.CurrentDirectoryPath.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.set
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int ExitCode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int CommandLineActivationOperation.ExitCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CommandLineActivationOperation.ExitCode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "int CommandLineActivationOperation.ExitCode");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.operator ==(Windows.ApplicationModel.Activation.CommandLineActivationOperation, Windows.ApplicationModel.Activation.CommandLineActivationOperation)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.operator !=(Windows.ApplicationModel.Activation.CommandLineActivationOperation, Windows.ApplicationModel.Activation.CommandLineActivationOperation)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Equals(Windows.ApplicationModel.Activation.CommandLineActivationOperation)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -58,5 +64,10 @@ namespace Windows.ApplicationModel.Activation
 			throw new global::System.NotImplementedException("The member Deferral CommandLineActivationOperation.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CommandLineActivationOperation.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Arguments.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.CurrentDirectoryPath.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.set
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

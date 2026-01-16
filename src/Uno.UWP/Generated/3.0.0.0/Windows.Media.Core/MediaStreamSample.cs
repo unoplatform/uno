@@ -15,43 +15,11 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool KeyFrame
+		public global::Windows.Storage.Streams.Buffer Buffer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSample.KeyFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSample.KeyFrame");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.KeyFrame");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSample.Duration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "TimeSpan MediaStreamSample.Duration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Discontinuous
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSample.Discontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSample.Discontinuous");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.Discontinuous");
+				throw new global::System.NotImplementedException("The member Buffer MediaStreamSample.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Buffer%20MediaStreamSample.Buffer");
 			}
 		}
 #endif
@@ -71,11 +39,39 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.Buffer Buffer
+		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3D11Surface
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Buffer MediaStreamSample.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Buffer%20MediaStreamSample.Buffer");
+				throw new global::System.NotImplementedException("The member IDirect3DSurface MediaStreamSample.Direct3D11Surface is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20MediaStreamSample.Direct3D11Surface");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Discontinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MediaStreamSample.Discontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSample.Discontinuous");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.Discontinuous");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Duration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSample.Duration");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "TimeSpan MediaStreamSample.Duration");
 			}
 		}
 #endif
@@ -86,6 +82,20 @@ namespace Windows.Media.Core
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaStreamSamplePropertySet MediaStreamSample.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSamplePropertySet%20MediaStreamSample.ExtendedProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool KeyFrame
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MediaStreamSample.KeyFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSample.KeyFrame");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.KeyFrame");
 			}
 		}
 #endif
@@ -109,38 +119,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3D11Surface
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IDirect3DSurface MediaStreamSample.Direct3D11Surface is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20MediaStreamSample.Direct3D11Surface");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.add
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.remove
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Buffer.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Timestamp.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.ExtendedProperties.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Protection.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.DecodeTimestamp.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.DecodeTimestamp.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Duration.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Duration.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.KeyFrame.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.KeyFrame.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Discontinuous.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Discontinuous.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Direct3D11Surface.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.Core.MediaStreamSample CreateFromDirect3D11Surface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface, global::System.TimeSpan timestamp)
-		{
-			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSample%20MediaStreamSample.CreateFromDirect3D11Surface%28IDirect3DSurface%20surface%2C%20TimeSpan%20timestamp%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.MediaStreamSample CreateFromBuffer(global::Windows.Storage.Streams.IBuffer buffer, global::System.TimeSpan timestamp)
@@ -155,6 +134,39 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaStreamSample> MediaStreamSample.CreateFromStreamAsync(IInputStream stream, uint count, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaStreamSample%3E%20MediaStreamSample.CreateFromStreamAsync%28IInputStream%20stream%2C%20uint%20count%2C%20TimeSpan%20timestamp%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.Core.MediaStreamSample CreateFromDirect3D11Surface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface, global::System.TimeSpan timestamp)
+		{
+			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSample%20MediaStreamSample.CreateFromDirect3D11Surface%28IDirect3DSurface%20surface%2C%20TimeSpan%20timestamp%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.operator ==(Windows.Media.Core.MediaStreamSample, Windows.Media.Core.MediaStreamSample)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.operator !=(Windows.Media.Core.MediaStreamSample, Windows.Media.Core.MediaStreamSample)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Equals(Windows.Media.Core.MediaStreamSample)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.add
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.remove
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Buffer.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.DecodeTimestamp.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.DecodeTimestamp.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Direct3D11Surface.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Discontinuous.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Discontinuous.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Duration.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Duration.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.ExtendedProperties.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.KeyFrame.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.KeyFrame.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Protection.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Timestamp.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaStreamSample, object> Processed

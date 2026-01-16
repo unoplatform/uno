@@ -15,20 +15,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string WarningText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PrintDuplexOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintDuplexOptionDetails.WarningText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails", "string PrintDuplexOptionDetails.WarningText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Description
 		{
 			get
@@ -43,30 +29,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<object> Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintDuplexOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintDuplexOptionDetails.Items");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintDuplexOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintDuplexOptionDetails.State");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails", "PrintOptionStates PrintDuplexOptionDetails.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ErrorText
 		{
 			get
@@ -76,6 +38,16 @@ namespace Windows.Graphics.Printing.OptionDetails
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails", "string PrintDuplexOptionDetails.ErrorText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<object> Items
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintDuplexOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintDuplexOptionDetails.Items");
 			}
 		}
 #endif
@@ -101,6 +73,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintDuplexOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintDuplexOptionDetails.State");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails", "PrintOptionStates PrintDuplexOptionDetails.State");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Value
 		{
 			get
@@ -109,13 +95,30 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.OptionId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.OptionType.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.ErrorText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.ErrorText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.State.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.State.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Value.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string WarningText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PrintDuplexOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintDuplexOptionDetails.WarningText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails", "string PrintDuplexOptionDetails.WarningText");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
@@ -123,11 +126,19 @@ namespace Windows.Graphics.Printing.OptionDetails
 			throw new global::System.NotImplementedException("The member bool PrintDuplexOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintDuplexOptionDetails.TrySetValue%28object%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Items.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WarningText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WarningText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Description.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Description.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Description.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.ErrorText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.ErrorText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Items.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.OptionId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.OptionType.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.State.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.State.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Value.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WarningText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WarningText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintItemListOptionDetails
 	}

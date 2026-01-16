@@ -15,16 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Frame.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Frame.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint FrameId
 		{
 			get
@@ -33,16 +23,26 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationStarting.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationStarting.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ContentLoading.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ContentLoading.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationCompleted.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationCompleted.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.DOMContentLoaded.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.DOMContentLoaded.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WebMessageReceived.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WebMessageReceived.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2Frame.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Frame.Name");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2Frame, Microsoft.Web.WebView2.Core.CoreWebView2Frame)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2Frame, Microsoft.Web.WebView2.Core.CoreWebView2Frame)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Equals(Microsoft.Web.WebView2.Core.CoreWebView2Frame)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> ExecuteScriptAsync(string javaScript)
@@ -64,6 +64,16 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "void CoreWebView2Frame.PostWebMessageAsString(string webMessageAsString)");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ContentLoading.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ContentLoading.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.DOMContentLoaded.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.DOMContentLoaded.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationCompleted.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationCompleted.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationStarting.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NavigationStarting.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WebMessageReceived.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.WebMessageReceived.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.PermissionRequested.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.PermissionRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -73,14 +83,8 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "void CoreWebView2Frame.PostSharedBufferToScript(CoreWebView2SharedBuffer sharedBuffer, CoreWebView2SharedBufferAccess access, string additionalDataAsJson)");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.FrameId.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ScreenCaptureStarting.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ScreenCaptureStarting.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Name.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NameChanged.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NameChanged.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Destroyed.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Destroyed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveHostObjectFromScript(string name)
@@ -95,6 +99,13 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member int CoreWebView2Frame.IsDestroyed() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2Frame.IsDestroyed%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Destroyed.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Destroyed.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NameChanged.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.NameChanged.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.FrameId.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Name.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Frame, global::Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs> ContentLoading

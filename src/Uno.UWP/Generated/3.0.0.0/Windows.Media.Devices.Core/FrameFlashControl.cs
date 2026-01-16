@@ -15,29 +15,15 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RedEyeReduction
+		public bool Auto
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFlashControl.RedEyeReduction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameFlashControl.RedEyeReduction");
+				throw new global::System.NotImplementedException("The member bool FrameFlashControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameFlashControl.Auto");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameFlashControl", "bool FrameFlashControl.RedEyeReduction");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PowerPercent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float FrameFlashControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FrameFlashControl.PowerPercent");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameFlashControl", "float FrameFlashControl.PowerPercent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameFlashControl", "bool FrameFlashControl.Auto");
 			}
 		}
 #endif
@@ -57,25 +43,50 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Auto
+		public float PowerPercent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFlashControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameFlashControl.Auto");
+				throw new global::System.NotImplementedException("The member float FrameFlashControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FrameFlashControl.PowerPercent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameFlashControl", "bool FrameFlashControl.Auto");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameFlashControl", "float FrameFlashControl.PowerPercent");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Mode.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Mode.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool RedEyeReduction
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool FrameFlashControl.RedEyeReduction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameFlashControl.RedEyeReduction");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameFlashControl", "bool FrameFlashControl.RedEyeReduction");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.operator ==(Windows.Media.Devices.Core.FrameFlashControl, Windows.Media.Devices.Core.FrameFlashControl)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.operator !=(Windows.Media.Devices.Core.FrameFlashControl, Windows.Media.Devices.Core.FrameFlashControl)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Equals(Windows.Media.Devices.Core.FrameFlashControl)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Auto.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Auto.set
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.RedEyeReduction.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.RedEyeReduction.set
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Mode.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Mode.set
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.PowerPercent.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.PowerPercent.set
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.RedEyeReduction.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.RedEyeReduction.set
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

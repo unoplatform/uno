@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Tag
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object ShareProvider.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ShareProvider.Tag");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProvider", "object ShareProvider.Tag");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Color BackgroundColor
 		{
 			get
@@ -39,6 +25,20 @@ namespace Windows.ApplicationModel.DataTransfer
 			get
 			{
 				throw new global::System.NotImplementedException("The member RandomAccessStreamReference ShareProvider.DisplayIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20ShareProvider.DisplayIcon");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object Tag
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ShareProvider.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ShareProvider.Tag");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProvider", "object ShareProvider.Tag");
 			}
 		}
 #endif
@@ -60,10 +60,21 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.ShareProvider(string, Windows.Storage.Streams.RandomAccessStreamReference, Windows.UI.Color, Windows.ApplicationModel.DataTransfer.ShareProviderHandler)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Title.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.DisplayIcon.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.operator ==(Windows.ApplicationModel.DataTransfer.ShareProvider, Windows.ApplicationModel.DataTransfer.ShareProvider)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.operator !=(Windows.ApplicationModel.DataTransfer.ShareProvider, Windows.ApplicationModel.DataTransfer.ShareProvider)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Equals(Windows.ApplicationModel.DataTransfer.ShareProvider)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.BackgroundColor.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.DisplayIcon.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Tag.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Tag.set
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Title.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

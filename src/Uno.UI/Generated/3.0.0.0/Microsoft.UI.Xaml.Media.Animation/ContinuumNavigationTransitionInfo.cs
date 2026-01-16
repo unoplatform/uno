@@ -10,20 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement ExitElement
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ExitElementProperty);
-			}
-			set
-			{
-				this.SetValue(ExitElementProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementContainerProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ExitElementContainer", typeof(bool),
@@ -56,16 +42,27 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.UIElement ExitElement
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ExitElementProperty);
+			}
+			set
+			{
+				this.SetValue(ExitElementProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContinuumNavigationTransitionInfo() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo", "ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsEntranceElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element)
@@ -80,7 +77,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			element.SetValue(IsEntranceElementProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsExitElementProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetIsExitElement(global::Microsoft.UI.Xaml.UIElement element)
@@ -95,7 +91,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			element.SetValue(IsExitElementProperty, value);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementContainerProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element)
@@ -110,5 +105,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			element.SetValue(ExitElementContainerProperty, value);
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementContainerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsEntranceElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsExitElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.operator ==(Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.operator !=(Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.Equals(Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,20 +15,6 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Display.ColorOverrideSettings ColorOverrideSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ColorOverrideSettings%20DisplayEnhancementOverride.ColorOverrideSettings");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Display.BrightnessOverrideSettings BrightnessOverrideSettings
 		{
 			get
@@ -53,6 +39,20 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Display.ColorOverrideSettings ColorOverrideSettings
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ColorOverrideSettings%20DisplayEnhancementOverride.ColorOverrideSettings");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsOverrideActive
 		{
 			get
@@ -61,12 +61,24 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.set
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.set
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverride.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActive.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Graphics.Display.DisplayEnhancementOverride GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member DisplayEnhancementOverride DisplayEnhancementOverride.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayEnhancementOverride%20DisplayEnhancementOverride.GetForCurrentView%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.operator ==(Windows.Graphics.Display.DisplayEnhancementOverride, Windows.Graphics.Display.DisplayEnhancementOverride)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.operator !=(Windows.Graphics.Display.DisplayEnhancementOverride, Windows.Graphics.Display.DisplayEnhancementOverride)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.Equals(Windows.Graphics.Display.DisplayEnhancementOverride)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.Equals(object)
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities GetCurrentDisplayEnhancementOverrideCapabilities()
@@ -90,17 +102,17 @@ namespace Windows.Graphics.Display
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverrideChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverrideChanged.remove
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.add
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.remove
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.DisplayEnhancementOverrideCapabilitiesChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.DisplayEnhancementOverrideCapabilitiesChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Graphics.Display.DisplayEnhancementOverride GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member DisplayEnhancementOverride DisplayEnhancementOverride.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayEnhancementOverride%20DisplayEnhancementOverride.GetForCurrentView%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.add
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.remove
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.set
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverride.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.set
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActive.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayEnhancementOverride, object> CanOverrideChanged

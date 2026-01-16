@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactSignificantOther.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactSignificantOther.Name");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactSignificantOther", "string ContactSignificantOther.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Description
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.ApplicationModel.Contacts
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactSignificantOther", "string ContactSignificantOther.Description");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactSignificantOther.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactSignificantOther.Name");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactSignificantOther", "string ContactSignificantOther.Name");
 			}
 		}
 #endif
@@ -58,11 +58,22 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.ContactSignificantOther()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Name.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.operator ==(Windows.ApplicationModel.Contacts.ContactSignificantOther, Windows.ApplicationModel.Contacts.ContactSignificantOther)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.operator !=(Windows.ApplicationModel.Contacts.ContactSignificantOther, Windows.ApplicationModel.Contacts.ContactSignificantOther)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Equals(Windows.ApplicationModel.Contacts.ContactSignificantOther)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Description.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Name.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Relationship.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Relationship.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

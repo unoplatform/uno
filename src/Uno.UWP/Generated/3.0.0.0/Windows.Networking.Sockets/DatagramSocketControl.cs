@@ -15,29 +15,15 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Sockets.SocketQualityOfService QualityOfService
+		public bool DontFragment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketQualityOfService DatagramSocketControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketQualityOfService%20DatagramSocketControl.QualityOfService");
+				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.DontFragment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DatagramSocketControl.DontFragment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocketControl", "SocketQualityOfService DatagramSocketControl.QualityOfService");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte OutboundUnicastHopLimit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte DatagramSocketControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20DatagramSocketControl.OutboundUnicastHopLimit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocketControl", "byte DatagramSocketControl.OutboundUnicastHopLimit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocketControl", "bool DatagramSocketControl.DontFragment");
 			}
 		}
 #endif
@@ -57,20 +43,6 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool DontFragment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.DontFragment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DatagramSocketControl.DontFragment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocketControl", "bool DatagramSocketControl.DontFragment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MulticastOnly
 		{
 			get
@@ -83,15 +55,54 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.QualityOfService.get
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.QualityOfService.set
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.OutboundUnicastHopLimit.get
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.OutboundUnicastHopLimit.set
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.InboundBufferSizeInBytes.get
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.InboundBufferSizeInBytes.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public byte OutboundUnicastHopLimit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member byte DatagramSocketControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20DatagramSocketControl.OutboundUnicastHopLimit");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocketControl", "byte DatagramSocketControl.OutboundUnicastHopLimit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Sockets.SocketQualityOfService QualityOfService
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SocketQualityOfService DatagramSocketControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketQualityOfService%20DatagramSocketControl.QualityOfService");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocketControl", "SocketQualityOfService DatagramSocketControl.QualityOfService");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.operator ==(Windows.Networking.Sockets.DatagramSocketControl, Windows.Networking.Sockets.DatagramSocketControl)
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.operator !=(Windows.Networking.Sockets.DatagramSocketControl, Windows.Networking.Sockets.DatagramSocketControl)
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.Equals(Windows.Networking.Sockets.DatagramSocketControl)
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.DontFragment.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.DontFragment.set
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.InboundBufferSizeInBytes.get
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.InboundBufferSizeInBytes.set
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.MulticastOnly.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.MulticastOnly.set
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.OutboundUnicastHopLimit.get
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.OutboundUnicastHopLimit.set
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.QualityOfService.get
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.QualityOfService.set
+		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

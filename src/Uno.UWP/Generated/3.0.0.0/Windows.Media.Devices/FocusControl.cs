@@ -15,6 +15,26 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool FocusChangedSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool FocusControl.FocusChangedSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FocusControl.FocusChangedSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.MediaCaptureFocusState FocusState
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaCaptureFocusState FocusControl.FocusState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureFocusState%20FocusControl.FocusState");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Max
 		{
 			get
@@ -30,6 +50,16 @@ namespace Windows.Media.Devices
 			get
 			{
 				throw new global::System.NotImplementedException("The member uint FocusControl.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FocusControl.Min");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.FocusMode Mode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FocusMode FocusControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusMode%20FocusControl.Mode");
 			}
 		}
 #endif
@@ -65,56 +95,6 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.FocusPreset> SupportedPresets
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<FocusPreset> FocusControl.SupportedPresets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CFocusPreset%3E%20FocusControl.SupportedPresets");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint FocusControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FocusControl.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool FocusChangedSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FocusControl.FocusChangedSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FocusControl.FocusChangedSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.MediaCaptureFocusState FocusState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaCaptureFocusState FocusControl.FocusState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureFocusState%20FocusControl.FocusState");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.FocusMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusMode FocusControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusMode%20FocusControl.Mode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.ManualFocusDistance> SupportedFocusDistances
 		{
 			get
@@ -145,6 +125,26 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.FocusPreset> SupportedPresets
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<FocusPreset> FocusControl.SupportedPresets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CFocusPreset%3E%20FocusControl.SupportedPresets");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint FocusControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FocusControl.Value");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool WaitForFocusSupported
 		{
 			get
@@ -153,9 +153,16 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedPresets.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Preset.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.FocusControl.operator ==(Windows.Media.Devices.FocusControl, Windows.Media.Devices.FocusControl)
+		// Forced skipping of method Windows.Media.Devices.FocusControl.operator !=(Windows.Media.Devices.FocusControl, Windows.Media.Devices.FocusControl)
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Equals(Windows.Media.Devices.FocusControl)
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.FocusControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.FocusControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPresetAsync(global::Windows.Media.Devices.FocusPreset preset)
@@ -170,10 +177,6 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.SetPresetAsync(FocusPreset preset, bool completeBeforeFocus) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FocusControl.SetPresetAsync%28FocusPreset%20preset%2C%20bool%20completeBeforeFocus%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Min.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Max.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Step.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Value.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(uint focus)
@@ -188,13 +191,6 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.FocusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FocusControl.FocusAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.FocusControl.FocusChangedSupported.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.WaitForFocusSupported.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedFocusModes.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedFocusDistances.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedFocusRanges.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Mode.get
-		// Forced skipping of method Windows.Media.Devices.FocusControl.FocusState.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UnlockAsync()
@@ -216,5 +212,20 @@ namespace Windows.Media.Devices
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusControl", "void FocusControl.Configure(FocusSettings settings)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.FocusControl.FocusChangedSupported.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.FocusState.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Max.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Min.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Mode.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Preset.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Step.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedFocusDistances.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedFocusModes.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedFocusRanges.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.SupportedPresets.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.Value.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.WaitForFocusSupported.get
+		// Forced skipping of method Windows.Media.Devices.FocusControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

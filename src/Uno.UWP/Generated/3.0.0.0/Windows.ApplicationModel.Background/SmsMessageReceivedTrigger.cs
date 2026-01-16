@@ -16,6 +16,17 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.SmsMessageReceivedTrigger(Windows.Devices.Sms.SmsFilterRules)
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.operator ==(Windows.ApplicationModel.Background.SmsMessageReceivedTrigger, Windows.ApplicationModel.Background.SmsMessageReceivedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.operator !=(Windows.ApplicationModel.Background.SmsMessageReceivedTrigger, Windows.ApplicationModel.Background.SmsMessageReceivedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.Equals(Windows.ApplicationModel.Background.SmsMessageReceivedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

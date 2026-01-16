@@ -15,11 +15,31 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIWebAccountProviderActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIWebAccountProviderActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member ActivationKind WebUIWebAccountProviderActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20WebUIWebAccountProviderActivatedEventArgs.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation Operation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IWebAccountProviderOperation WebUIWebAccountProviderActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IWebAccountProviderOperation%20WebUIWebAccountProviderActivatedEventArgs.Operation");
 			}
 		}
 #endif
@@ -53,32 +73,23 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation Operation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IWebAccountProviderOperation WebUIWebAccountProviderActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IWebAccountProviderOperation%20WebUIWebAccountProviderActivatedEventArgs.Operation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIWebAccountProviderActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIWebAccountProviderActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.Operation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs, Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs, Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.Kind.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.Operation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAccountProviderActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IWebAccountProviderActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.UI.WebUI.IActivatedEventArgsDeferral

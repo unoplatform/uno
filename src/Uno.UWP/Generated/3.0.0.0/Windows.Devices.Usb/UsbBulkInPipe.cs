@@ -15,20 +15,6 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Usb.UsbReadOptions ReadOptions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UsbReadOptions UsbBulkInPipe.ReadOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbReadOptions%20UsbBulkInPipe.ReadOptions");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbBulkInPipe", "UsbReadOptions UsbBulkInPipe.ReadOptions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Usb.UsbBulkInEndpointDescriptor EndpointDescriptor
 		{
 			get
@@ -57,8 +43,30 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.MaxTransferSizeBytes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.EndpointDescriptor.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Usb.UsbReadOptions ReadOptions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UsbReadOptions UsbBulkInPipe.ReadOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbReadOptions%20UsbBulkInPipe.ReadOptions");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbBulkInPipe", "UsbReadOptions UsbBulkInPipe.ReadOptions");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.operator ==(Windows.Devices.Usb.UsbBulkInPipe, Windows.Devices.Usb.UsbBulkInPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.operator !=(Windows.Devices.Usb.UsbBulkInPipe, Windows.Devices.Usb.UsbBulkInPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.Equals(Windows.Devices.Usb.UsbBulkInPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
@@ -66,8 +74,6 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member IAsyncAction UsbBulkInPipe.ClearStallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UsbBulkInPipe.ClearStallAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.ReadOptions.set
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.ReadOptions.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void FlushBuffer()
@@ -75,6 +81,11 @@ namespace Windows.Devices.Usb
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbBulkInPipe", "void UsbBulkInPipe.FlushBuffer()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.EndpointDescriptor.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.InputStream.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.MaxTransferSizeBytes.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.ReadOptions.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.ReadOptions.set
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInPipe.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

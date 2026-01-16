@@ -10,20 +10,6 @@ namespace Microsoft.UI.Xaml
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SystemBackdrop XamlIsland.SystemBackdrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdrop%20XamlIsland.SystemBackdrop");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlIsland", "SystemBackdrop XamlIsland.SystemBackdrop");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.UIElement Content
 		{
 			get
@@ -48,17 +34,38 @@ namespace Microsoft.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SystemBackdrop XamlIsland.SystemBackdrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdrop%20XamlIsland.SystemBackdrop");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlIsland", "SystemBackdrop XamlIsland.SystemBackdrop");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public XamlIsland()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlIsland", "XamlIsland.XamlIsland()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.XamlIsland()
-		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.Content.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.ContentIsland.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.SystemBackdrop.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.SystemBackdrop.set
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.XamlIsland(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.operator ==(Microsoft.UI.Xaml.XamlIsland, Microsoft.UI.Xaml.XamlIsland)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.operator !=(Microsoft.UI.Xaml.XamlIsland, Microsoft.UI.Xaml.XamlIsland)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.Equals(Microsoft.UI.Xaml.XamlIsland)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.XamlIsland(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -66,6 +73,13 @@ namespace Microsoft.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlIsland", "void XamlIsland.Dispose()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.Content.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.Content.set
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.ContentIsland.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.SystemBackdrop.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.SystemBackdrop.set
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlIsland.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

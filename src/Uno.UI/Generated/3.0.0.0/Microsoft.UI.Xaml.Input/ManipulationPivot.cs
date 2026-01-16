@@ -10,20 +10,6 @@ namespace Microsoft.UI.Xaml.Input
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Radius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ManipulationPivot.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ManipulationPivot.Radius");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "double ManipulationPivot.Radius");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point Center
 		{
 			get
@@ -38,12 +24,18 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ManipulationPivot(global::Windows.Foundation.Point center, double radius)
+		public double Radius
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "ManipulationPivot.ManipulationPivot(Point center, double radius)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member double ManipulationPivot.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ManipulationPivot.Radius");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "double ManipulationPivot.Radius");
+			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.ManipulationPivot(Windows.Foundation.Point, double)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ManipulationPivot()
@@ -52,9 +44,28 @@ namespace Microsoft.UI.Xaml.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.ManipulationPivot()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ManipulationPivot(global::Windows.Foundation.Point center, double radius)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "ManipulationPivot.ManipulationPivot(Point center, double radius)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.ManipulationPivot(Windows.Foundation.Point, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.operator ==(Microsoft.UI.Xaml.Input.ManipulationPivot, Microsoft.UI.Xaml.Input.ManipulationPivot)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.operator !=(Microsoft.UI.Xaml.Input.ManipulationPivot, Microsoft.UI.Xaml.Input.ManipulationPivot)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Equals(Microsoft.UI.Xaml.Input.ManipulationPivot)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Center.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Center.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Radius.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Radius.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,29 +15,21 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.AnimationControllerProgressBehavior ProgressBehavior
+		public static float MaxPlaybackRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationControllerProgressBehavior AnimationController.ProgressBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationControllerProgressBehavior%20AnimationController.ProgressBehavior");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.AnimationController", "AnimationControllerProgressBehavior AnimationController.ProgressBehavior");
+				throw new global::System.NotImplementedException("The member float AnimationController.MaxPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.MaxPlaybackRate");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Progress
+		public static float MinPlaybackRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.Progress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.AnimationController", "float AnimationController.Progress");
+				throw new global::System.NotImplementedException("The member float AnimationController.MinPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.MinPlaybackRate");
 			}
 		}
 #endif
@@ -57,30 +49,43 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static float MaxPlaybackRate
+		public float Progress
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.MaxPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.MaxPlaybackRate");
+				throw new global::System.NotImplementedException("The member float AnimationController.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.Progress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.AnimationController", "float AnimationController.Progress");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static float MinPlaybackRate
+		public global::Windows.UI.Composition.AnimationControllerProgressBehavior ProgressBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.MinPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.MinPlaybackRate");
+				throw new global::System.NotImplementedException("The member AnimationControllerProgressBehavior AnimationController.ProgressBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationControllerProgressBehavior%20AnimationController.ProgressBehavior");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.AnimationController", "AnimationControllerProgressBehavior AnimationController.ProgressBehavior");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.AnimationController.PlaybackRate.get
-		// Forced skipping of method Windows.UI.Composition.AnimationController.PlaybackRate.set
-		// Forced skipping of method Windows.UI.Composition.AnimationController.Progress.get
-		// Forced skipping of method Windows.UI.Composition.AnimationController.Progress.set
-		// Forced skipping of method Windows.UI.Composition.AnimationController.ProgressBehavior.get
-		// Forced skipping of method Windows.UI.Composition.AnimationController.ProgressBehavior.set
+		// Forced skipping of method Windows.UI.Composition.AnimationController.As<I>()
+		// Forced skipping of method Windows.UI.Composition.AnimationController.MaxPlaybackRate.get
+		// Forced skipping of method Windows.UI.Composition.AnimationController.MinPlaybackRate.get
+		// Forced skipping of method Windows.UI.Composition.AnimationController.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.AnimationController.operator ==(Windows.UI.Composition.AnimationController, Windows.UI.Composition.AnimationController)
+		// Forced skipping of method Windows.UI.Composition.AnimationController.operator !=(Windows.UI.Composition.AnimationController, Windows.UI.Composition.AnimationController)
+		// Forced skipping of method Windows.UI.Composition.AnimationController.Equals(Windows.UI.Composition.AnimationController)
+		// Forced skipping of method Windows.UI.Composition.AnimationController.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.AnimationController.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.AnimationController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.AnimationController.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Pause()
@@ -95,7 +100,13 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.AnimationController", "void AnimationController.Resume()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.AnimationController.MaxPlaybackRate.get
-		// Forced skipping of method Windows.UI.Composition.AnimationController.MinPlaybackRate.get
+		// Forced skipping of method Windows.UI.Composition.AnimationController.PlaybackRate.get
+		// Forced skipping of method Windows.UI.Composition.AnimationController.PlaybackRate.set
+		// Forced skipping of method Windows.UI.Composition.AnimationController.Progress.get
+		// Forced skipping of method Windows.UI.Composition.AnimationController.Progress.set
+		// Forced skipping of method Windows.UI.Composition.AnimationController.ProgressBehavior.get
+		// Forced skipping of method Windows.UI.Composition.AnimationController.ProgressBehavior.set
+		// Forced skipping of method Windows.UI.Composition.AnimationController.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.AnimationController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

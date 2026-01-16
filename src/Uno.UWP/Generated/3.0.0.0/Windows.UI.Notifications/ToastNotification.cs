@@ -8,6 +8,21 @@ namespace Windows.UI.Notifications
 #endif
 	public partial class ToastNotification
 	{
+		// Skipping already declared property Content
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Notifications.NotificationData Data
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member NotificationData ToastNotification.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationData%20ToastNotification.Data");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "NotificationData ToastNotification.Data");
+			}
+		}
+#endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset? ExpirationTime
@@ -22,19 +37,17 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Skipping already declared property Content
-		// Skipping already declared property Tag
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SuppressPopup
+		public bool ExpiresOnReboot
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ToastNotification.SuppressPopup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ToastNotification.SuppressPopup");
+				throw new global::System.NotImplementedException("The member bool ToastNotification.ExpiresOnReboot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ToastNotification.ExpiresOnReboot");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "bool ToastNotification.SuppressPopup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "bool ToastNotification.ExpiresOnReboot");
 			}
 		}
 #endif
@@ -49,20 +62,6 @@ namespace Windows.UI.Notifications
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "string ToastNotification.Group");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RemoteId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ToastNotification.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastNotification.RemoteId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "string ToastNotification.RemoteId");
 			}
 		}
 #endif
@@ -96,59 +95,71 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Notifications.NotificationData Data
+		public string RemoteId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NotificationData ToastNotification.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationData%20ToastNotification.Data");
+				throw new global::System.NotImplementedException("The member string ToastNotification.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastNotification.RemoteId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "NotificationData ToastNotification.Data");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "string ToastNotification.RemoteId");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ExpiresOnReboot
+		public bool SuppressPopup
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ToastNotification.ExpiresOnReboot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ToastNotification.ExpiresOnReboot");
+				throw new global::System.NotImplementedException("The member bool ToastNotification.SuppressPopup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ToastNotification.SuppressPopup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "bool ToastNotification.ExpiresOnReboot");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "bool ToastNotification.SuppressPopup");
 			}
 		}
 #endif
+		// Skipping already declared property Tag
 		// Skipping already declared method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Content.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpirationTime.set
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpirationTime.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Dismissed.add
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Dismissed.remove
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.operator ==(Windows.UI.Notifications.ToastNotification, Windows.UI.Notifications.ToastNotification)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.operator !=(Windows.UI.Notifications.ToastNotification, Windows.UI.Notifications.ToastNotification)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Equals(Windows.UI.Notifications.ToastNotification)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Activated.add
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Activated.remove
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Dismissed.add
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Dismissed.remove
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Failed.add
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Failed.remove
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Tag.set
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Tag.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Group.set
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Group.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.SuppressPopup.set
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.SuppressPopup.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.NotificationMirroring.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.NotificationMirroring.set
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.RemoteId.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.RemoteId.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Content.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Data.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Data.set
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Priority.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Priority.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpirationTime.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpiresOnReboot.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpiresOnReboot.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Group.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Group.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.NotificationMirroring.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.NotificationMirroring.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Priority.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Priority.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.RemoteId.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.RemoteId.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.SuppressPopup.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.SuppressPopup.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Tag.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Tag.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.ToastNotification, object> Activated

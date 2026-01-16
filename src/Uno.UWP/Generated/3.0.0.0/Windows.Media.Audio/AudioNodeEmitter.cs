@@ -10,71 +10,11 @@ namespace Windows.Media.Audio
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Position
+		public global::Windows.Media.Audio.AudioNodeEmitterDecayModel DecayModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeEmitter.Position");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Vector3 AudioNodeEmitter.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Gain
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.Gain");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.Gain");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 DopplerVelocity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeEmitter.DopplerVelocity");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Vector3 AudioNodeEmitter.DopplerVelocity");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double DopplerScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DopplerScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.DopplerScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.DopplerScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double DistanceScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DistanceScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.DistanceScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.DistanceScale");
+				throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitter.DecayModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterDecayModel%20AudioNodeEmitter.DecayModel");
 			}
 		}
 #endif
@@ -94,11 +34,57 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Audio.AudioNodeEmitterDecayModel DecayModel
+		public double DistanceScale
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitter.DecayModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterDecayModel%20AudioNodeEmitter.DecayModel");
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DistanceScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.DistanceScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.DistanceScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double DopplerScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DopplerScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.DopplerScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.DopplerScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 DopplerVelocity
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeEmitter.DopplerVelocity");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Vector3 AudioNodeEmitter.DopplerVelocity");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double Gain
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.Gain");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.Gain");
 			}
 		}
 #endif
@@ -109,6 +95,20 @@ namespace Windows.Media.Audio
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool AudioNodeEmitter.IsDopplerDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioNodeEmitter.IsDopplerDisabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Position
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeEmitter.Position");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Vector3 AudioNodeEmitter.Position");
 			}
 		}
 #endif
@@ -138,36 +138,47 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public AudioNodeEmitter(global::Windows.Media.Audio.AudioNodeEmitterShape shape, global::Windows.Media.Audio.AudioNodeEmitterDecayModel decayModel, global::Windows.Media.Audio.AudioNodeEmitterSettings settings)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter.AudioNodeEmitter(AudioNodeEmitterShape shape, AudioNodeEmitterDecayModel decayModel, AudioNodeEmitterSettings settings)");
-		}
-#endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterDecayModel, Windows.Media.Audio.AudioNodeEmitterSettings)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioNodeEmitter()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter.AudioNodeEmitter()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter()
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Position.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Position.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public AudioNodeEmitter(global::Windows.Media.Audio.AudioNodeEmitterShape shape, global::Windows.Media.Audio.AudioNodeEmitterDecayModel decayModel, global::Windows.Media.Audio.AudioNodeEmitterSettings settings)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter.AudioNodeEmitter(AudioNodeEmitterShape shape, AudioNodeEmitterDecayModel decayModel, AudioNodeEmitterSettings settings)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterDecayModel, Windows.Media.Audio.AudioNodeEmitterSettings)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.operator ==(Windows.Media.Audio.AudioNodeEmitter, Windows.Media.Audio.AudioNodeEmitter)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.operator !=(Windows.Media.Audio.AudioNodeEmitter, Windows.Media.Audio.AudioNodeEmitter)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Equals(Windows.Media.Audio.AudioNodeEmitter)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DecayModel.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Direction.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Direction.set
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Shape.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DecayModel.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Gain.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Gain.set
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DistanceScale.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DistanceScale.set
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DopplerScale.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DopplerScale.set
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DopplerVelocity.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DopplerVelocity.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Gain.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Gain.set
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.IsDopplerDisabled.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Position.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Position.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Shape.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.SpatialAudioModel.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.SpatialAudioModel.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

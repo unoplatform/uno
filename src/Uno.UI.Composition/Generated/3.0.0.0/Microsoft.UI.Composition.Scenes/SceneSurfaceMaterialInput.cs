@@ -15,29 +15,15 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneWrappingMode WrappingVMode
+		public global::Microsoft.UI.Composition.CompositionBitmapInterpolationMode BitmapInterpolationMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneWrappingMode SceneSurfaceMaterialInput.WrappingVMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneWrappingMode%20SceneSurfaceMaterialInput.WrappingVMode");
+				throw new global::System.NotImplementedException("The member CompositionBitmapInterpolationMode SceneSurfaceMaterialInput.BitmapInterpolationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBitmapInterpolationMode%20SceneSurfaceMaterialInput.BitmapInterpolationMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput", "SceneWrappingMode SceneSurfaceMaterialInput.WrappingVMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneWrappingMode WrappingUMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SceneWrappingMode SceneSurfaceMaterialInput.WrappingUMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneWrappingMode%20SceneSurfaceMaterialInput.WrappingUMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput", "SceneWrappingMode SceneSurfaceMaterialInput.WrappingUMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput", "CompositionBitmapInterpolationMode SceneSurfaceMaterialInput.BitmapInterpolationMode");
 			}
 		}
 #endif
@@ -57,26 +43,33 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionBitmapInterpolationMode BitmapInterpolationMode
+		public global::Microsoft.UI.Composition.Scenes.SceneWrappingMode WrappingUMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBitmapInterpolationMode SceneSurfaceMaterialInput.BitmapInterpolationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBitmapInterpolationMode%20SceneSurfaceMaterialInput.BitmapInterpolationMode");
+				throw new global::System.NotImplementedException("The member SceneWrappingMode SceneSurfaceMaterialInput.WrappingUMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneWrappingMode%20SceneSurfaceMaterialInput.WrappingUMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput", "CompositionBitmapInterpolationMode SceneSurfaceMaterialInput.BitmapInterpolationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput", "SceneWrappingMode SceneSurfaceMaterialInput.WrappingUMode");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Surface.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Surface.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Scenes.SceneWrappingMode WrappingVMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SceneWrappingMode SceneSurfaceMaterialInput.WrappingVMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneWrappingMode%20SceneSurfaceMaterialInput.WrappingVMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput", "SceneWrappingMode SceneSurfaceMaterialInput.WrappingVMode");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput Create(global::Microsoft.UI.Composition.Compositor compositor)
@@ -84,5 +77,23 @@ namespace Microsoft.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneSurfaceMaterialInput SceneSurfaceMaterialInput.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneSurfaceMaterialInput%20SceneSurfaceMaterialInput.Create%28Compositor%20compositor%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.operator ==(Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput, Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.operator !=(Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput, Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Equals(Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Surface.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Surface.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

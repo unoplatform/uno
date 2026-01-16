@@ -10,29 +10,15 @@ namespace Windows.ApplicationModel.Chat
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Chat.ChatConversationThreadingKind Kind
+		public string ContactId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatConversationThreadingKind ChatConversationThreadingInfo.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatConversationThreadingKind%20ChatConversationThreadingInfo.Kind");
+				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.ContactId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversationThreadingInfo.ContactId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversationThreadingInfo", "ChatConversationThreadingKind ChatConversationThreadingInfo.Kind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Custom
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.Custom is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversationThreadingInfo.Custom");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversationThreadingInfo", "string ChatConversationThreadingInfo.Custom");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversationThreadingInfo", "string ChatConversationThreadingInfo.ContactId");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContactId
+		public string Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.ContactId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversationThreadingInfo.ContactId");
+				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.Custom is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversationThreadingInfo.Custom");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversationThreadingInfo", "string ChatConversationThreadingInfo.ContactId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversationThreadingInfo", "string ChatConversationThreadingInfo.Custom");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Chat.ChatConversationThreadingKind Kind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ChatConversationThreadingKind ChatConversationThreadingInfo.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatConversationThreadingKind%20ChatConversationThreadingInfo.Kind");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversationThreadingInfo", "ChatConversationThreadingKind ChatConversationThreadingInfo.Kind");
 			}
 		}
 #endif
@@ -82,14 +82,25 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ChatConversationThreadingInfo()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.operator ==(Windows.ApplicationModel.Chat.ChatConversationThreadingInfo, Windows.ApplicationModel.Chat.ChatConversationThreadingInfo)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.operator !=(Windows.ApplicationModel.Chat.ChatConversationThreadingInfo, Windows.ApplicationModel.Chat.ChatConversationThreadingInfo)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Equals(Windows.ApplicationModel.Chat.ChatConversationThreadingInfo)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ContactId.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ContactId.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Custom.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Custom.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ConversationId.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ConversationId.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Participants.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Custom.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Custom.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Kind.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Participants.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

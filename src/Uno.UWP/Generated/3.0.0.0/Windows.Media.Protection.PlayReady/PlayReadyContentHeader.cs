@@ -80,26 +80,6 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri LicenseAcquisitionUrl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyContentHeader.LicenseAcquisitionUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyContentHeader.LicenseAcquisitionUrl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri LicenseAcquisitionUserInterfaceUrl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string[] KeyIdStrings
 		{
 			get
@@ -120,12 +100,24 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PlayReadyContentHeader(uint dwFlags, global::System.Guid[] contentKeyIds, string[] contentKeyIdStrings, global::Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, global::System.Uri licenseAcquisitionUrl, global::System.Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, global::System.Guid domainServiceId)
+		public global::System.Uri LicenseAcquisitionUrl
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader.PlayReadyContentHeader(uint dwFlags, Guid[] contentKeyIds, string[] contentKeyIdStrings, PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri PlayReadyContentHeader.LicenseAcquisitionUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyContentHeader.LicenseAcquisitionUrl");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(uint, System.Guid[], string[], Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm, System.Uri, System.Uri, string, System.Guid)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri LicenseAcquisitionUserInterfaceUrl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyContentHeader(byte[] headerBytes, global::System.Uri licenseAcquisitionUrl, global::System.Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, global::System.Guid domainServiceId)
@@ -150,14 +142,24 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(byte[])
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.KeyId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.KeyIdString.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.LicenseAcquisitionUrl.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.DomainServiceId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.EncryptionType.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.CustomAttributes.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.DecryptorSetup.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public PlayReadyContentHeader(uint dwFlags, global::System.Guid[] contentKeyIds, string[] contentKeyIdStrings, global::Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, global::System.Uri licenseAcquisitionUrl, global::System.Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, global::System.Guid domainServiceId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader.PlayReadyContentHeader(uint dwFlags, Guid[] contentKeyIds, string[] contentKeyIdStrings, PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(uint, System.Guid[], string[], Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm, System.Uri, System.Uri, string, System.Guid)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.operator ==(Windows.Media.Protection.PlayReady.PlayReadyContentHeader, Windows.Media.Protection.PlayReady.PlayReadyContentHeader)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.operator !=(Windows.Media.Protection.PlayReady.PlayReadyContentHeader, Windows.Media.Protection.PlayReady.PlayReadyContentHeader)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.Equals(Windows.Media.Protection.PlayReady.PlayReadyContentHeader)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetSerializedHeader()
@@ -165,8 +167,17 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member byte[] PlayReadyContentHeader.GetSerializedHeader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20PlayReadyContentHeader.GetSerializedHeader%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.CustomAttributes.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.DecryptorSetup.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.DomainServiceId.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.EncryptionType.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.HeaderWithEmbeddedUpdates.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.KeyIds.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.KeyId.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.KeyIdString.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.KeyIdStrings.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.KeyIds.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.LicenseAcquisitionUrl.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

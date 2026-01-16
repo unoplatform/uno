@@ -25,16 +25,6 @@ namespace Windows.ApplicationModel.Contacts.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactSelectionMode SelectionMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactSelectionMode ContactPickerUI.SelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactSelectionMode%20ContactPickerUI.SelectionMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.ContactFieldType> DesiredFieldsWithContactFieldType
 		{
 			get
@@ -43,6 +33,26 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactSelectionMode SelectionMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactSelectionMode ContactPickerUI.SelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactSelectionMode%20ContactPickerUI.SelectionMode");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.operator ==(Windows.ApplicationModel.Contacts.Provider.ContactPickerUI, Windows.ApplicationModel.Contacts.Provider.ContactPickerUI)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.operator !=(Windows.ApplicationModel.Contacts.Provider.ContactPickerUI, Windows.ApplicationModel.Contacts.Provider.ContactPickerUI)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.Equals(Windows.ApplicationModel.Contacts.Provider.ContactPickerUI)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.Provider.AddContactResult AddContact(string id, global::Windows.ApplicationModel.Contacts.Contact contact)
@@ -64,8 +74,6 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			throw new global::System.NotImplementedException("The member bool ContactPickerUI.ContainsContact(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContactPickerUI.ContainsContact%28string%20id%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFields.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.SelectionMode.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.ContactRemoved.add
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.ContactRemoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -75,7 +83,10 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			throw new global::System.NotImplementedException("The member AddContactResult ContactPickerUI.AddContact(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AddContactResult%20ContactPickerUI.AddContact%28Contact%20contact%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFields.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFieldsWithContactFieldType.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.SelectionMode.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.Provider.ContactPickerUI, global::Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs> ContactRemoved

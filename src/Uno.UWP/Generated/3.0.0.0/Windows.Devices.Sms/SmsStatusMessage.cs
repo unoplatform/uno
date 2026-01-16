@@ -15,6 +15,16 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Body
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsStatusMessage.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsStatusMessage.Body");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sms.CellularClass CellularClass
 		{
 			get
@@ -30,56 +40,6 @@ namespace Windows.Devices.Sms
 			get
 			{
 				throw new global::System.NotImplementedException("The member string SmsStatusMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsStatusMessage.DeviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.SmsMessageClass MessageClass
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsStatusMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsStatusMessage.MessageClass");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.SmsMessageType MessageType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsStatusMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsStatusMessage.MessageType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SimIccId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsStatusMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsStatusMessage.SimIccId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int SmsStatusMessage.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsStatusMessage.Status");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Body
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsStatusMessage.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsStatusMessage.Body");
 			}
 		}
 #endif
@@ -105,11 +65,31 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.SmsMessageClass MessageClass
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SmsMessageClass SmsStatusMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsStatusMessage.MessageClass");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int MessageReferenceNumber
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member int SmsStatusMessage.MessageReferenceNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsStatusMessage.MessageReferenceNumber");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.SmsMessageType MessageType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SmsMessageType SmsStatusMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsStatusMessage.MessageType");
 			}
 		}
 #endif
@@ -125,6 +105,26 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SimIccId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsStatusMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsStatusMessage.SimIccId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Status
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int SmsStatusMessage.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsStatusMessage.Status");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string To
 		{
 			get
@@ -133,18 +133,29 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.To.get
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.From.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.operator ==(Windows.Devices.Sms.SmsStatusMessage, Windows.Devices.Sms.SmsStatusMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.operator !=(Windows.Devices.Sms.SmsStatusMessage, Windows.Devices.Sms.SmsStatusMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.Equals(Windows.Devices.Sms.SmsStatusMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.Body.get
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.Status.get
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.MessageReferenceNumber.get
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.ServiceCenterTimestamp.get
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.DischargeTime.get
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.DischargeTime.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.From.get
 		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.MessageClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.MessageReferenceNumber.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.MessageType.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.ServiceCenterTimestamp.get
 		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.SimIccId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.Status.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.To.get
+		// Forced skipping of method Windows.Devices.Sms.SmsStatusMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Sms.ISmsMessageBase
 	}
 }

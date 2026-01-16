@@ -10,20 +10,6 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.HostName ServerDnsName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HostName ChainValidationParameters.ServerDnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20ChainValidationParameters.ServerDnsName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "HostName ChainValidationParameters.ServerDnsName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.CertificateChainPolicy CertificateChainPolicy
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.HostName ServerDnsName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HostName ChainValidationParameters.ServerDnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20ChainValidationParameters.ServerDnsName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "HostName ChainValidationParameters.ServerDnsName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChainValidationParameters()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "ChainValidationParameters.ChainValidationParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ChainValidationParameters()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.operator ==(Windows.Security.Cryptography.Certificates.ChainValidationParameters, Windows.Security.Cryptography.Certificates.ChainValidationParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.operator !=(Windows.Security.Cryptography.Certificates.ChainValidationParameters, Windows.Security.Cryptography.Certificates.ChainValidationParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.Equals(Windows.Security.Cryptography.Certificates.ChainValidationParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.CertificateChainPolicy.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.CertificateChainPolicy.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ServerDnsName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ServerDnsName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

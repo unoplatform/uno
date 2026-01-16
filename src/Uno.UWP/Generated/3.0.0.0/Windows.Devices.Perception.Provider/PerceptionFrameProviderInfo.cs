@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -11,43 +10,15 @@ namespace Windows.Devices.Perception.Provider
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
+		public string DeviceKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.Id");
+				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.DeviceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.DeviceKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.Id");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Hidden
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PerceptionFrameProviderInfo.Hidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionFrameProviderInfo.Hidden");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "bool PerceptionFrameProviderInfo.Hidden");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FrameKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.FrameKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.FrameKind");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.FrameKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.DeviceKind");
 			}
 		}
 #endif
@@ -67,15 +38,43 @@ namespace Windows.Devices.Perception.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceKind
+		public string FrameKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.DeviceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.DeviceKind");
+				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.FrameKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.FrameKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.DeviceKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.FrameKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Hidden
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PerceptionFrameProviderInfo.Hidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionFrameProviderInfo.Hidden");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "bool PerceptionFrameProviderInfo.Hidden");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.Id");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.Id");
 			}
 		}
 #endif
@@ -87,15 +86,26 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.PerceptionFrameProviderInfo()
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Id.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Id.set
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DisplayName.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DisplayName.set
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.operator ==(Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo, Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.operator !=(Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo, Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Equals(Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DeviceKind.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DeviceKind.set
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DisplayName.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DisplayName.set
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.FrameKind.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.FrameKind.set
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Hidden.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Hidden.set
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Id.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Id.set
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

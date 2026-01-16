@@ -15,20 +15,6 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Matrix4x4 LocalToParentTransformMatrix
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ChildSiteLink.LocalToParentTransformMatrix");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector2 ActualSize
 		{
 			get
@@ -38,26 +24,6 @@ namespace Microsoft.UI.Content
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "Vector2 ChildSiteLink.ActualSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue ChildSiteLink.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20ChildSiteLink.DispatcherQueue");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentSiteView SiteView
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentSiteView ChildSiteLink.SiteView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteView%20ChildSiteLink.SiteView");
 			}
 		}
 #endif
@@ -87,15 +53,45 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ProcessesPointerInput
+		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChildSiteLink.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChildSiteLink.ProcessesPointerInput");
+				throw new global::System.NotImplementedException("The member DispatcherQueue ChildSiteLink.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20ChildSiteLink.DispatcherQueue");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsClosed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChildSiteLink.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChildSiteLink.IsClosed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix4x4 LocalToParentTransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ChildSiteLink.LocalToParentTransformMatrix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesPointerInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentIsland Parent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentIsland ChildSiteLink.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ChildSiteLink.Parent");
 			}
 		}
 #endif
@@ -115,65 +111,29 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentIsland Parent
+		public bool ProcessesPointerInput
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentIsland ChildSiteLink.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ChildSiteLink.Parent");
+				throw new global::System.NotImplementedException("The member bool ChildSiteLink.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChildSiteLink.ProcessesPointerInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesPointerInput");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsClosed
+		public global::Microsoft.UI.Content.ContentSiteView SiteView
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChildSiteLink.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChildSiteLink.IsClosed");
+				throw new global::System.NotImplementedException("The member ContentSiteView ChildSiteLink.SiteView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteView%20ChildSiteLink.SiteView");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.AutomationOption.set
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ActualSize.set
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.DispatcherQueue.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.LocalToParentTransformMatrix.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.LocalToParentTransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.SiteView.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Connect(global::Microsoft.UI.Content.ContentIsland content)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "void ChildSiteLink.Connect(ContentIsland content)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "void ChildSiteLink.Dispose()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.IsClosed.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Closed.add
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Closed.remove
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FrameworkClosed.add
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FrameworkClosed.remove
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.AutomationOption.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.PreviousSiblingAutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.AutomationProvider.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FragmentRootAutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FragmentRootAutomationProviderRequested.remove
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.NextSiblingAutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.NextSiblingAutomationProviderRequested.remove
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ParentAutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ParentAutomationProviderRequested.remove
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ActualSize.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.PreviousSiblingAutomationProviderRequested.remove
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesKeyboardInput.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesKeyboardInput.set
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesPointerInput.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesPointerInput.set
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Parent.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ChildSiteLink Create(global::Microsoft.UI.Content.ContentIsland parent, global::Microsoft.UI.Composition.ContainerVisual placementVisual)
@@ -188,6 +148,58 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ChildSiteLink ChildSiteLink.CreateForSystemVisual(ContentIsland parent, ContainerVisual placementVisual) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChildSiteLink%20ChildSiteLink.CreateForSystemVisual%28ContentIsland%20parent%2C%20ContainerVisual%20placementVisual%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.operator ==(Microsoft.UI.Content.ChildSiteLink, Microsoft.UI.Content.ChildSiteLink)
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.operator !=(Microsoft.UI.Content.ChildSiteLink, Microsoft.UI.Content.ChildSiteLink)
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Equals(Microsoft.UI.Content.ChildSiteLink)
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Connect(global::Microsoft.UI.Content.ContentIsland content)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "void ChildSiteLink.Connect(ContentIsland content)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "void ChildSiteLink.Dispose()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Closed.add
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Closed.remove
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FrameworkClosed.add
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FrameworkClosed.remove
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FragmentRootAutomationProviderRequested.add
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FragmentRootAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.NextSiblingAutomationProviderRequested.add
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.NextSiblingAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ParentAutomationProviderRequested.add
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ParentAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.PreviousSiblingAutomationProviderRequested.add
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.PreviousSiblingAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ActualSize.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ActualSize.set
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.AutomationOption.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.AutomationOption.set
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.AutomationProvider.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.DispatcherQueue.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.LocalToParentTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.LocalToParentTransformMatrix.set
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Parent.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesKeyboardInput.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesKeyboardInput.set
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesPointerInput.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesPointerInput.set
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.SiteView.get
+		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.ClosableNotifierHandler Closed

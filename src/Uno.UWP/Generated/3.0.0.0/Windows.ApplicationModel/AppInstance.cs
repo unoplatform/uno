@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.AppInstance RecommendedInstance
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppInstance AppInstance.RecommendedInstance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstance%20AppInstance.RecommendedInstance");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsCurrentInstance
 		{
 			get
@@ -33,26 +43,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.AppInstance RecommendedInstance
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppInstance AppInstance.RecommendedInstance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstance%20AppInstance.RecommendedInstance");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.Key.get
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.IsCurrentInstance.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RedirectActivationTo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppInstance", "void AppInstance.RedirectActivationTo()");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.RecommendedInstance.get
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Activation.IActivatedEventArgs GetActivatedEventArgs()
@@ -81,5 +72,26 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IList<AppInstance> AppInstance.GetInstances() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppInstance%3E%20AppInstance.GetInstances%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.RecommendedInstance.get
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.operator ==(Windows.ApplicationModel.AppInstance, Windows.ApplicationModel.AppInstance)
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.operator !=(Windows.ApplicationModel.AppInstance, Windows.ApplicationModel.AppInstance)
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.Equals(Windows.ApplicationModel.AppInstance)
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RedirectActivationTo()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppInstance", "void AppInstance.RedirectActivationTo()");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.IsCurrentInstance.get
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.Key.get
+		// Forced skipping of method Windows.ApplicationModel.AppInstance.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

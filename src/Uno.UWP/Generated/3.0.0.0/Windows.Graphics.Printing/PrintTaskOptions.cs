@@ -15,68 +15,6 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintBordering Bordering
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintBordering PrintTaskOptions.Bordering is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintBordering%20PrintTaskOptions.Bordering");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintBordering PrintTaskOptions.Bordering");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintPageRangeOptions PageRangeOptions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintPageRangeOptions PrintTaskOptions.PageRangeOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintPageRangeOptions%20PrintTaskOptions.PageRangeOptions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Graphics.Printing.PrintPageRange> CustomPageRanges
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<PrintPageRange> PrintTaskOptions.CustomPageRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CPrintPageRange%3E%20PrintTaskOptions.CustomPageRanges");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintMediaType MediaType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintMediaType PrintTaskOptions.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintMediaType%20PrintTaskOptions.MediaType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintMediaType PrintTaskOptions.MediaType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintHolePunch HolePunch
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintHolePunch PrintTaskOptions.HolePunch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintHolePunch%20PrintTaskOptions.HolePunch");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintHolePunch PrintTaskOptions.HolePunch");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintBinding Binding
 		{
 			get
@@ -91,29 +29,15 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintDuplex Duplex
+		public global::Windows.Graphics.Printing.PrintBordering Bordering
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintDuplex PrintTaskOptions.Duplex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintDuplex%20PrintTaskOptions.Duplex");
+				throw new global::System.NotImplementedException("The member PrintBordering PrintTaskOptions.Bordering is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintBordering%20PrintTaskOptions.Bordering");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintDuplex PrintTaskOptions.Duplex");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintColorMode ColorMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintColorMode PrintTaskOptions.ColorMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintColorMode%20PrintTaskOptions.ColorMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintColorMode PrintTaskOptions.ColorMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintBordering PrintTaskOptions.Bordering");
 			}
 		}
 #endif
@@ -133,43 +57,73 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintStaple Staple
+		public global::Windows.Graphics.Printing.PrintColorMode ColorMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintStaple PrintTaskOptions.Staple is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintStaple%20PrintTaskOptions.Staple");
+				throw new global::System.NotImplementedException("The member PrintColorMode PrintTaskOptions.ColorMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintColorMode%20PrintTaskOptions.ColorMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintStaple PrintTaskOptions.Staple");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintColorMode PrintTaskOptions.ColorMode");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintQuality PrintQuality
+		public global::System.Collections.Generic.IList<global::Windows.Graphics.Printing.PrintPageRange> CustomPageRanges
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintQuality PrintTaskOptions.PrintQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintQuality%20PrintTaskOptions.PrintQuality");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintQuality PrintTaskOptions.PrintQuality");
+				throw new global::System.NotImplementedException("The member IList<PrintPageRange> PrintTaskOptions.CustomPageRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CPrintPageRange%3E%20PrintTaskOptions.CustomPageRanges");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintOrientation Orientation
+		public global::System.Collections.Generic.IList<string> DisplayedOptions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOrientation PrintTaskOptions.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOrientation%20PrintTaskOptions.Orientation");
+				throw new global::System.NotImplementedException("The member IList<string> PrintTaskOptions.DisplayedOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20PrintTaskOptions.DisplayedOptions");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.PrintDuplex Duplex
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintDuplex PrintTaskOptions.Duplex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintDuplex%20PrintTaskOptions.Duplex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintOrientation PrintTaskOptions.Orientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintDuplex PrintTaskOptions.Duplex");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.PrintHolePunch HolePunch
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintHolePunch PrintTaskOptions.HolePunch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintHolePunch%20PrintTaskOptions.HolePunch");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintHolePunch PrintTaskOptions.HolePunch");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaxCopies
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.MaxCopies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintTaskOptions.MaxCopies");
 			}
 		}
 #endif
@@ -189,25 +143,15 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint NumberOfCopies
+		public global::Windows.Graphics.Printing.PrintMediaType MediaType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.NumberOfCopies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintTaskOptions.NumberOfCopies");
+				throw new global::System.NotImplementedException("The member PrintMediaType PrintTaskOptions.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintMediaType%20PrintTaskOptions.MediaType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "uint PrintTaskOptions.NumberOfCopies");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaxCopies
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.MaxCopies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintTaskOptions.MaxCopies");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintMediaType PrintTaskOptions.MediaType");
 			}
 		}
 #endif
@@ -223,14 +167,80 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> DisplayedOptions
+		public uint NumberOfCopies
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PrintTaskOptions.DisplayedOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20PrintTaskOptions.DisplayedOptions");
+				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.NumberOfCopies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintTaskOptions.NumberOfCopies");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "uint PrintTaskOptions.NumberOfCopies");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.PrintOrientation Orientation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintOrientation PrintTaskOptions.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOrientation%20PrintTaskOptions.Orientation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintOrientation PrintTaskOptions.Orientation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.PrintPageRangeOptions PageRangeOptions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintPageRangeOptions PrintTaskOptions.PageRangeOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintPageRangeOptions%20PrintTaskOptions.PageRangeOptions");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.PrintQuality PrintQuality
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintQuality PrintTaskOptions.PrintQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintQuality%20PrintTaskOptions.PrintQuality");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintQuality PrintTaskOptions.PrintQuality");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.PrintStaple Staple
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintStaple PrintTaskOptions.Staple is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintStaple%20PrintTaskOptions.Staple");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintStaple PrintTaskOptions.Staple");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.operator ==(Windows.Graphics.Printing.PrintTaskOptions, Windows.Graphics.Printing.PrintTaskOptions)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.operator !=(Windows.Graphics.Printing.PrintTaskOptions, Windows.Graphics.Printing.PrintTaskOptions)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Equals(Windows.Graphics.Printing.PrintTaskOptions)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription(uint jobPageNumber)
@@ -238,33 +248,6 @@ namespace Windows.Graphics.Printing
 			throw new global::System.NotImplementedException("The member PrintPageDescription PrintTaskOptions.GetPageDescription(uint jobPageNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintPageDescription%20PrintTaskOptions.GetPageDescription%28uint%20jobPageNumber%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaSize.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaSize.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaType.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaType.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Orientation.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Orientation.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.PrintQuality.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.PrintQuality.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.ColorMode.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.ColorMode.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Duplex.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Duplex.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Collation.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Collation.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Staple.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Staple.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.HolePunch.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.HolePunch.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Binding.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Binding.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MinCopies.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MaxCopies.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.NumberOfCopies.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.NumberOfCopies.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.DisplayedOptions.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Bordering.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Bordering.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream GetPagePrintTicket(global::Windows.Graphics.Printing.PrintPageInfo printPageInfo)
@@ -272,8 +255,36 @@ namespace Windows.Graphics.Printing
 			throw new global::System.NotImplementedException("The member IRandomAccessStream PrintTaskOptions.GetPagePrintTicket(PrintPageInfo printPageInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20PrintTaskOptions.GetPagePrintTicket%28PrintPageInfo%20printPageInfo%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.PageRangeOptions.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Binding.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Binding.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Bordering.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Bordering.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Collation.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Collation.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.ColorMode.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.ColorMode.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.CustomPageRanges.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.DisplayedOptions.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Duplex.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Duplex.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.HolePunch.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.HolePunch.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MaxCopies.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaSize.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaSize.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaType.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaType.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MinCopies.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.NumberOfCopies.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.NumberOfCopies.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Orientation.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Orientation.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.PageRangeOptions.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.PrintQuality.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.PrintQuality.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Staple.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Staple.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Printing.IPrintTaskOptionsCore
 		// Processing: Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties
 		// Processing: Windows.Graphics.Printing.IPrintTaskOptionsCoreUIConfiguration

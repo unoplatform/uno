@@ -10,48 +10,6 @@ namespace Windows.Media.Editing
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect MediaOverlay.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20MediaOverlay.Position");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "Rect MediaOverlay.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Opacity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double MediaOverlay.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaOverlay.Opacity");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "double MediaOverlay.Opacity");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Delay
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaOverlay.Delay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaOverlay.Delay");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "TimeSpan MediaOverlay.Delay");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AudioEnabled
 		{
 			get
@@ -76,6 +34,48 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Delay
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MediaOverlay.Delay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaOverlay.Delay");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "TimeSpan MediaOverlay.Delay");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double Opacity
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double MediaOverlay.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaOverlay.Opacity");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "double MediaOverlay.Opacity");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Rect Position
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Rect MediaOverlay.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20MediaOverlay.Position");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "Rect MediaOverlay.Position");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaOverlay(global::Windows.Media.Editing.MediaClip clip)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "MediaOverlay.MediaOverlay(MediaClip clip)");
@@ -90,12 +90,17 @@ namespace Windows.Media.Editing
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.MediaOverlay(Windows.Media.Editing.MediaClip, Windows.Foundation.Rect, double)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Position.get
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Position.set
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Delay.set
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Delay.get
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Opacity.get
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Opacity.set
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.~MediaOverlay()
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.operator ==(Windows.Media.Editing.MediaOverlay, Windows.Media.Editing.MediaOverlay)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.operator !=(Windows.Media.Editing.MediaOverlay, Windows.Media.Editing.MediaOverlay)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Equals(Windows.Media.Editing.MediaOverlay)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Equals(object)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.GetHashCode()
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlay Clone()
@@ -103,8 +108,15 @@ namespace Windows.Media.Editing
 			throw new global::System.NotImplementedException("The member MediaOverlay MediaOverlay.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaOverlay%20MediaOverlay.Clone%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Clip.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.AudioEnabled.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.AudioEnabled.set
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Clip.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Delay.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Delay.set
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Opacity.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Opacity.set
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Position.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Position.set
+		// Forced skipping of method Windows.Media.Editing.MediaOverlay.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

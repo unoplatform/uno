@@ -53,10 +53,45 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.DeviceId.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.Capabilities.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.SupportedCardTypes.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.DeviceAuthenticationProtocol.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> GetDefaultAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MagneticStripeReader> MagneticStripeReader.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMagneticStripeReader%3E%20MagneticStripeReader.GetDefaultAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> FromIdAsync(string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MagneticStripeReader> MagneticStripeReader.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMagneticStripeReader%3E%20MagneticStripeReader.FromIdAsync%28string%20deviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector()
+		{
+			throw new global::System.NotImplementedException("The member string MagneticStripeReader.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReader.GetDeviceSelector%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
+		{
+			throw new global::System.NotImplementedException("The member string MagneticStripeReader.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReader.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.operator ==(Windows.Devices.PointOfService.MagneticStripeReader, Windows.Devices.PointOfService.MagneticStripeReader)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.operator !=(Windows.Devices.PointOfService.MagneticStripeReader, Windows.Devices.PointOfService.MagneticStripeReader)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.Equals(Windows.Devices.PointOfService.MagneticStripeReader)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> CheckHealthAsync(global::Windows.Devices.PointOfService.UnifiedPosHealthCheckLevel level)
@@ -94,34 +129,11 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "void MagneticStripeReader.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
-		{
-			throw new global::System.NotImplementedException("The member string MagneticStripeReader.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReader.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> GetDefaultAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MagneticStripeReader> MagneticStripeReader.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMagneticStripeReader%3E%20MagneticStripeReader.GetDefaultAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> FromIdAsync(string deviceId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MagneticStripeReader> MagneticStripeReader.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMagneticStripeReader%3E%20MagneticStripeReader.FromIdAsync%28string%20deviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector()
-		{
-			throw new global::System.NotImplementedException("The member string MagneticStripeReader.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReader.GetDeviceSelector%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.Capabilities.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.DeviceAuthenticationProtocol.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.DeviceId.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.SupportedCardTypes.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.MagneticStripeReader, global::Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs> StatusUpdated

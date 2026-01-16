@@ -15,6 +15,16 @@ namespace Windows.Devices.Input.Preview
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Input.Preview.GazePointPreview CurrentPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member GazePointPreview GazeEnteredPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazePointPreview%20GazeEnteredPreviewEventArgs.CurrentPoint");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Handled
 		{
 			get
@@ -27,18 +37,19 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Input.Preview.GazePointPreview CurrentPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GazePointPreview GazeEnteredPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazePointPreview%20GazeEnteredPreviewEventArgs.CurrentPoint");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.operator ==(Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs, Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs)
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.operator !=(Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs, Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs)
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.Equals(Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs)
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.CurrentPoint.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.Handled.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.Handled.set
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.CurrentPoint.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

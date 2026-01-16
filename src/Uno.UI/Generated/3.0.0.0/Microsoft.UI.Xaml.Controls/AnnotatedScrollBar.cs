@@ -10,72 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double SmallChange
-		{
-			get
-			{
-				return (double)this.GetValue(SmallChangeProperty);
-			}
-			set
-			{
-				this.SetValue(SmallChangeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel> Labels
-		{
-			get
-			{
-				return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel>)this.GetValue(LabelsProperty);
-			}
-			set
-			{
-				this.SetValue(LabelsProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.IElementFactory LabelTemplate
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.IElementFactory)this.GetValue(LabelTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(LabelTemplateProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.IElementFactory DetailLabelTemplate
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.IElementFactory)this.GetValue(DetailLabelTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(DetailLabelTemplateProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController ScrollController
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IScrollController AnnotatedScrollBar.ScrollController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IScrollController%20AnnotatedScrollBar.ScrollController");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DetailLabelTemplateProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(DetailLabelTemplate), typeof(global::Microsoft.UI.Xaml.IElementFactory),
@@ -108,29 +42,108 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.IElementFactory DetailLabelTemplate
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.IElementFactory)this.GetValue(DetailLabelTemplateProperty);
+			}
+			set
+			{
+				this.SetValue(DetailLabelTemplateProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.IElementFactory LabelTemplate
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.IElementFactory)this.GetValue(LabelTemplateProperty);
+			}
+			set
+			{
+				this.SetValue(LabelTemplateProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel> Labels
+		{
+			get
+			{
+				return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel>)this.GetValue(LabelsProperty);
+			}
+			set
+			{
+				this.SetValue(LabelsProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController ScrollController
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IScrollController AnnotatedScrollBar.ScrollController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IScrollController%20AnnotatedScrollBar.ScrollController");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double SmallChange
+		{
+			get
+			{
+				return (double)this.GetValue(SmallChangeProperty);
+			}
+			set
+			{
+				this.SetValue(SmallChangeProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AnnotatedScrollBar() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.AnnotatedScrollBar", "AnnotatedScrollBar.AnnotatedScrollBar()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.AnnotatedScrollBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.ScrollController.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Labels.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Labels.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Scrolling.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Scrolling.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChangeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.AnnotatedScrollBar(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.operator ==(Microsoft.UI.Xaml.Controls.AnnotatedScrollBar, Microsoft.UI.Xaml.Controls.AnnotatedScrollBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.operator !=(Microsoft.UI.Xaml.Controls.AnnotatedScrollBar, Microsoft.UI.Xaml.Controls.AnnotatedScrollBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Equals(Microsoft.UI.Xaml.Controls.AnnotatedScrollBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.AnnotatedScrollBar(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelRequested.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChangeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Scrolling.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Scrolling.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Labels.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Labels.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.ScrollController.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBar, global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs> DetailLabelRequested

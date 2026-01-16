@@ -15,20 +15,6 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Vector2NaturalMotionAnimation NaturalMotion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2NaturalMotionAnimation InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2NaturalMotionAnimation%20InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "Vector2NaturalMotionAnimation InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.ExpressionAnimation Condition
 		{
 			get
@@ -41,10 +27,21 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Condition.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Condition.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Vector2NaturalMotionAnimation NaturalMotion
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2NaturalMotionAnimation InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2NaturalMotionAnimation%20InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "Vector2NaturalMotionAnimation InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion Create(global::Microsoft.UI.Composition.Compositor compositor)
@@ -52,5 +49,19 @@ namespace Microsoft.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member InteractionTrackerVector2InertiaNaturalMotion InteractionTrackerVector2InertiaNaturalMotion.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTrackerVector2InertiaNaturalMotion%20InteractionTrackerVector2InertiaNaturalMotion.Create%28Compositor%20compositor%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.operator ==(Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion, Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.operator !=(Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion, Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Equals(Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Condition.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Condition.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

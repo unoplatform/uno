@@ -25,6 +25,26 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? Position
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadCompletedEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSourceDownloadCompletedEventArgs.Position");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int RequestId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int AdaptiveMediaSourceDownloadCompletedEventArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AdaptiveMediaSourceDownloadCompletedEventArgs.RequestId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong? ResourceByteRangeLength
 		{
 			get
@@ -40,6 +60,26 @@ namespace Windows.Media.Streaming.Adaptive
 			get
 			{
 				throw new global::System.NotImplementedException("The member ulong? AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeOffset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ResourceContentType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceContentType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? ResourceDuration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceDuration");
 			}
 		}
 #endif
@@ -65,26 +105,6 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadCompletedEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSourceDownloadCompletedEventArgs.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RequestId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int AdaptiveMediaSourceDownloadCompletedEventArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AdaptiveMediaSourceDownloadCompletedEventArgs.RequestId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics Statistics
 		{
 			get
@@ -93,35 +113,26 @@ namespace Windows.Media.Streaming.Adaptive
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ResourceContentType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceContentType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? ResourceDuration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceDuration");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.operator ==(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.operator !=(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.Equals(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.HttpResponseMessage.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.Position.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.RequestId.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeLength.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeOffset.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceContentType.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceDuration.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceType.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceUri.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeOffset.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeLength.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.HttpResponseMessage.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.RequestId.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.Statistics.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.Position.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceDuration.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceContentType.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

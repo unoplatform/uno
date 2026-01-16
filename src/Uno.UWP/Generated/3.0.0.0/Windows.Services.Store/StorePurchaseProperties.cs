@@ -10,20 +10,6 @@ namespace Windows.Services.Store
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StorePurchaseProperties.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePurchaseProperties.Name");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePurchaseProperties", "string StorePurchaseProperties.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ExtendedJsonData
 		{
 			get
@@ -38,12 +24,18 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public StorePurchaseProperties(string name)
+		public string Name
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePurchaseProperties", "StorePurchaseProperties.StorePurchaseProperties(string name)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StorePurchaseProperties.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePurchaseProperties.Name");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePurchaseProperties", "string StorePurchaseProperties.Name");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.StorePurchaseProperties(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public StorePurchaseProperties()
@@ -52,9 +44,28 @@ namespace Windows.Services.Store
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.StorePurchaseProperties()
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Name.get
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Name.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public StorePurchaseProperties(string name)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePurchaseProperties", "StorePurchaseProperties.StorePurchaseProperties(string name)");
+		}
+#endif
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.StorePurchaseProperties(string)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.operator ==(Windows.Services.Store.StorePurchaseProperties, Windows.Services.Store.StorePurchaseProperties)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.operator !=(Windows.Services.Store.StorePurchaseProperties, Windows.Services.Store.StorePurchaseProperties)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Equals(Windows.Services.Store.StorePurchaseProperties)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.ExtendedJsonData.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.ExtendedJsonData.set
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Name.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Name.set
+		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

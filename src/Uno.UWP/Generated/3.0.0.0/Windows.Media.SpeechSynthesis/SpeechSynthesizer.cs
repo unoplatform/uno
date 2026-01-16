@@ -10,30 +10,6 @@ namespace Windows.Media.SpeechSynthesis
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechSynthesis.VoiceInformation Voice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VoiceInformation SpeechSynthesizer.Voice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceInformation%20SpeechSynthesizer.Voice");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizer", "VoiceInformation SpeechSynthesizer.Voice");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions Options
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechSynthesizerOptions SpeechSynthesizer.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechSynthesizerOptions%20SpeechSynthesizer.Options");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechSynthesis.VoiceInformation> AllVoices
 		{
 			get
@@ -54,12 +30,56 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions Options
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechSynthesizerOptions SpeechSynthesizer.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechSynthesizerOptions%20SpeechSynthesizer.Options");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechSynthesis.VoiceInformation Voice
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VoiceInformation SpeechSynthesizer.Voice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceInformation%20SpeechSynthesizer.Voice");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizer", "VoiceInformation SpeechSynthesizer.Voice");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechSynthesizer()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizer", "SpeechSynthesizer.SpeechSynthesizer()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.SpeechSynthesizer()
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetDefaultVoiceAsync(global::Windows.Media.SpeechSynthesis.VoiceInformation voice)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SpeechSynthesizer.TrySetDefaultVoiceAsync(VoiceInformation voice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SpeechSynthesizer.TrySetDefaultVoiceAsync%28VoiceInformation%20voice%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.AllVoices.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.DefaultVoice.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.operator ==(Windows.Media.SpeechSynthesis.SpeechSynthesizer, Windows.Media.SpeechSynthesis.SpeechSynthesizer)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.operator !=(Windows.Media.SpeechSynthesis.SpeechSynthesizer, Windows.Media.SpeechSynthesis.SpeechSynthesizer)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Equals(Windows.Media.SpeechSynthesis.SpeechSynthesizer)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Equals(object)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.GetHashCode()
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeTextToStreamAsync(string text)
@@ -74,8 +94,6 @@ namespace Windows.Media.SpeechSynthesis
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechSynthesisStream> SpeechSynthesizer.SynthesizeSsmlToStreamAsync(string Ssml) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpeechSynthesisStream%3E%20SpeechSynthesizer.SynthesizeSsmlToStreamAsync%28string%20Ssml%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.set
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -84,15 +102,9 @@ namespace Windows.Media.SpeechSynthesis
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Options.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetDefaultVoiceAsync(global::Windows.Media.SpeechSynthesis.VoiceInformation voice)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SpeechSynthesizer.TrySetDefaultVoiceAsync(VoiceInformation voice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SpeechSynthesizer.TrySetDefaultVoiceAsync%28VoiceInformation%20voice%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.AllVoices.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.DefaultVoice.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.set
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

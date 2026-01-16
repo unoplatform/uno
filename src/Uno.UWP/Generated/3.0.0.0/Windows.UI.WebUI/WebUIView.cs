@@ -15,53 +15,11 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IgnoreApplicationContentUriRulesNavigationRestrictions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "bool WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int ApplicationViewId
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member int WebUIView.ApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIView.ApplicationViewId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri WebUIView.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebUIView.Source");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "Uri WebUIView.Source");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color DefaultBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color WebUIView.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WebUIView.DefaultBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "Color WebUIView.DefaultBackgroundColor");
 			}
 		}
 #endif
@@ -97,6 +55,20 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color DefaultBackgroundColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color WebUIView.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WebUIView.DefaultBackgroundColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "Color WebUIView.DefaultBackgroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.UI.WebViewControlDeferredPermissionRequest> DeferredPermissionRequests
 		{
 			get
@@ -117,6 +89,20 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IgnoreApplicationContentUriRulesNavigationRestrictions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "bool WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.UI.WebViewControlSettings Settings
 		{
 			get
@@ -125,23 +111,49 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.ApplicationViewId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.Closed.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.Closed.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Source
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri WebUIView.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebUIView.Source");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "Uri WebUIView.Source");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync(global::System.Uri uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28Uri%20uri%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.operator ==(Windows.UI.WebUI.WebUIView, Windows.UI.WebUI.WebUIView)
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.operator !=(Windows.UI.WebUI.WebUIView, Windows.UI.WebUI.WebUIView)
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.Equals(Windows.UI.WebUI.WebUIView)
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.Activated.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.Activated.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions.set
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.Source.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.Source.set
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.DocumentTitle.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.CanGoBack.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.CanGoForward.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.DefaultBackgroundColor.set
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.DefaultBackgroundColor.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContainsFullScreenElement.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.Settings.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.DeferredPermissionRequests.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.Closed.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.Closed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GoForward()
@@ -233,38 +245,38 @@ namespace Windows.UI.WebUI
 			throw new global::System.NotImplementedException("The member void WebUIView.GetDeferredPermissionRequestById(uint id, out WebViewControlDeferredPermissionRequest result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20WebUIView.GetDeferredPermissionRequestById%28uint%20id%2C%20out%20WebViewControlDeferredPermissionRequest%20result%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationStarting.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationStarting.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContainsFullScreenElementChanged.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContainsFullScreenElementChanged.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContentLoading.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContentLoading.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.DOMContentLoaded.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.DOMContentLoaded.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationCompleted.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationCompleted.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameNavigationStarting.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameNavigationStarting.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameContentLoading.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameContentLoading.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameDOMContentLoaded.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameDOMContentLoaded.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameNavigationCompleted.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameNavigationCompleted.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.ScriptNotify.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.ScriptNotify.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameNavigationStarting.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.FrameNavigationStarting.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.LongRunningScriptDetected.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.LongRunningScriptDetected.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsafeContentWarningDisplaying.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsafeContentWarningDisplaying.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnviewableContentIdentified.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnviewableContentIdentified.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.PermissionRequested.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.PermissionRequested.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsupportedUriSchemeIdentified.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsupportedUriSchemeIdentified.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationCompleted.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationCompleted.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationStarting.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.NavigationStarting.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.NewWindowRequested.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.NewWindowRequested.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContainsFullScreenElementChanged.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContainsFullScreenElementChanged.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.PermissionRequested.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.PermissionRequested.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.ScriptNotify.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.ScriptNotify.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsafeContentWarningDisplaying.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsafeContentWarningDisplaying.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsupportedUriSchemeIdentified.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnsupportedUriSchemeIdentified.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnviewableContentIdentified.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.UnviewableContentIdentified.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.WebResourceRequested.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.WebResourceRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -274,20 +286,20 @@ namespace Windows.UI.WebUI
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "void WebUIView.AddInitializeScript(string script)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync(global::System.Uri uri)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28Uri%20uri%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.ApplicationViewId.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.CanGoBack.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.CanGoForward.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContainsFullScreenElement.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.DefaultBackgroundColor.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.DefaultBackgroundColor.set
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.DeferredPermissionRequests.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.DocumentTitle.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions.set
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.Settings.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.Source.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.Source.set
+		// Forced skipping of method Windows.UI.WebUI.WebUIView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.WebUI.WebUIView, global::Windows.ApplicationModel.Activation.IActivatedEventArgs> Activated

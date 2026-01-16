@@ -55,6 +55,16 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDiscLicense
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsDiscLicense is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsDiscLicense");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsTrial
 		{
 			get
@@ -103,25 +113,26 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDiscLicense
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsDiscLicense is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsDiscLicense");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.SkuStoreId.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsActive.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrial.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.operator ==(Windows.Services.Store.StoreAppLicense, Windows.Services.Store.StoreAppLicense)
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.operator !=(Windows.Services.Store.StoreAppLicense, Windows.Services.Store.StoreAppLicense)
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.Equals(Windows.Services.Store.StoreAppLicense)
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.AddOnLicenses.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.ExpirationDate.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.ExtendedJsonData.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.AddOnLicenses.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialTimeRemaining.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrialOwnedByThisUser.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialUniqueId.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsActive.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsDiscLicense.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrial.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrialOwnedByThisUser.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.SkuStoreId.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialTimeRemaining.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialUniqueId.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

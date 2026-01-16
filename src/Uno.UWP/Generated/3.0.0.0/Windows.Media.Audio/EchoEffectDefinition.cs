@@ -10,29 +10,11 @@ namespace Windows.Media.Audio
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double WetDryMix
+		public string ActivatableClassId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.WetDryMix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EchoEffectDefinition.WetDryMix");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.WetDryMix");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Feedback
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Feedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EchoEffectDefinition.Feedback");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Feedback");
+				throw new global::System.NotImplementedException("The member string EchoEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EchoEffectDefinition.ActivatableClassId");
 			}
 		}
 #endif
@@ -52,11 +34,15 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ActivatableClassId
+		public double Feedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EchoEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EchoEffectDefinition.ActivatableClassId");
+				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Feedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EchoEffectDefinition.Feedback");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Feedback");
 			}
 		}
 #endif
@@ -72,20 +58,45 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double WetDryMix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.WetDryMix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EchoEffectDefinition.WetDryMix");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.WetDryMix");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EchoEffectDefinition(global::Windows.Media.Audio.AudioGraph audioGraph)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "EchoEffectDefinition.EchoEffectDefinition(AudioGraph audioGraph)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.EchoEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WetDryMix.set
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WetDryMix.get
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Feedback.set
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Feedback.get
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Delay.set
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Delay.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.operator ==(Windows.Media.Audio.EchoEffectDefinition, Windows.Media.Audio.EchoEffectDefinition)
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.operator !=(Windows.Media.Audio.EchoEffectDefinition, Windows.Media.Audio.EchoEffectDefinition)
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Equals(Windows.Media.Audio.EchoEffectDefinition)
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.ActivatableClassId.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Delay.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Delay.set
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Feedback.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Feedback.set
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Properties.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WetDryMix.get
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WetDryMix.set
+		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IAudioEffectDefinition
 	}
 }

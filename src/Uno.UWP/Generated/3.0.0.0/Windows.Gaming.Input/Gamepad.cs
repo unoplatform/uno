@@ -8,6 +8,16 @@ namespace Windows.Gaming.Input
 #endif
 	public partial class Gamepad : global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.IGameControllerBatteryInfo
 	{
+#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.Gamepad> Gamepads
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Gamepad> Gamepad.Gamepads is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGamepad%3E%20Gamepad.Gamepads");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.Headset Headset
@@ -52,18 +62,29 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.Gamepad> Gamepads
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.As<I>()
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadAdded.add
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadAdded.remove
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadRemoved.add
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadRemoved.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Gaming.Input.Gamepad FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Gamepad> Gamepad.Gamepads is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGamepad%3E%20Gamepad.Gamepads");
-			}
+			throw new global::System.NotImplementedException("The member Gamepad Gamepad.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Gamepad%20Gamepad.FromGameController%28IGameController%20gameController%29");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.Vibration.get
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.Vibration.set
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.Gamepads.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.operator ==(Windows.Gaming.Input.Gamepad, Windows.Gaming.Input.Gamepad)
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.operator !=(Windows.Gaming.Input.Gamepad, Windows.Gaming.Input.Gamepad)
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.Equals(Windows.Gaming.Input.Gamepad)
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GamepadReading GetCurrentReading()
@@ -77,9 +98,6 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.HeadsetDisconnected.remove
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.UserChanged.add
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.UserChanged.remove
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.Headset.get
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.IsWireless.get
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.GamepadButtons button)
@@ -94,18 +112,44 @@ namespace Windows.Gaming.Input
 			throw new global::System.NotImplementedException("The member BatteryReport Gamepad.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20Gamepad.TryGetBatteryReport%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Gaming.Input.Gamepad FromGameController(global::Windows.Gaming.Input.IGameController gameController)
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.Headset.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.IsWireless.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.User.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.Vibration.get
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.Vibration.set
+		// Forced skipping of method Windows.Gaming.Input.Gamepad.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static event global::System.EventHandler<global::Windows.Gaming.Input.Gamepad> GamepadAdded
 		{
-			throw new global::System.NotImplementedException("The member Gamepad Gamepad.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Gamepad%20Gamepad.FromGameController%28IGameController%20gameController%29");
+			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadAdded");
+			}
+			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadAdded");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadAdded.add
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadAdded.remove
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadRemoved.add
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadRemoved.remove
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.Gamepads.get
+#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static event global::System.EventHandler<global::Windows.Gaming.Input.Gamepad> GamepadRemoved
+		{
+			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadRemoved");
+			}
+			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadRemoved");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetConnected
@@ -151,38 +195,6 @@ namespace Windows.Gaming.Input
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event TypedEventHandler<IGameController, UserChangedEventArgs> Gamepad.UserChanged");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static event global::System.EventHandler<global::Windows.Gaming.Input.Gamepad> GamepadAdded
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadAdded");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadAdded");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static event global::System.EventHandler<global::Windows.Gaming.Input.Gamepad> GamepadRemoved
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadRemoved");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadRemoved");
 			}
 		}
 #endif

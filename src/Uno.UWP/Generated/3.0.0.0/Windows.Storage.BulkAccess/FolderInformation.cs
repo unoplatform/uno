@@ -15,66 +15,6 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.BasicProperties BasicProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BasicProperties FolderInformation.BasicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BasicProperties%20FolderInformation.BasicProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.DocumentProperties DocumentProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DocumentProperties FolderInformation.DocumentProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DocumentProperties%20FolderInformation.DocumentProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.ImageProperties ImageProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ImageProperties FolderInformation.ImageProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageProperties%20FolderInformation.ImageProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.MusicProperties MusicProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MusicProperties FolderInformation.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicProperties%20FolderInformation.MusicProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.StorageItemThumbnail Thumbnail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageItemThumbnail FolderInformation.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageItemThumbnail%20FolderInformation.Thumbnail");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.VideoProperties VideoProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VideoProperties FolderInformation.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoProperties%20FolderInformation.VideoProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.FileAttributes Attributes
 		{
 			get
@@ -85,31 +25,21 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.BasicProperties BasicProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BasicProperties FolderInformation.BasicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BasicProperties%20FolderInformation.BasicProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset DateCreated
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member DateTimeOffset FolderInformation.DateCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20FolderInformation.DateCreated");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FolderInformation.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FolderInformation.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Path
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FolderInformation.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FolderInformation.Path");
 			}
 		}
 #endif
@@ -135,11 +65,61 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.DocumentProperties DocumentProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DocumentProperties FolderInformation.DocumentProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DocumentProperties%20FolderInformation.DocumentProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FolderRelativeId
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string FolderInformation.FolderRelativeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FolderInformation.FolderRelativeId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.ImageProperties ImageProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ImageProperties FolderInformation.ImageProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageProperties%20FolderInformation.ImageProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.MusicProperties MusicProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MusicProperties FolderInformation.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicProperties%20FolderInformation.MusicProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string FolderInformation.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FolderInformation.Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Path
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string FolderInformation.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FolderInformation.Path");
 			}
 		}
 #endif
@@ -163,16 +143,40 @@ namespace Windows.Storage.BulkAccess
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.MusicProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.VideoProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.ImageProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DocumentProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.BasicProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Thumbnail.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.ThumbnailUpdated.add
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.ThumbnailUpdated.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.StorageItemThumbnail Thumbnail
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageItemThumbnail FolderInformation.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageItemThumbnail%20FolderInformation.Thumbnail");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.VideoProperties VideoProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VideoProperties FolderInformation.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoProperties%20FolderInformation.VideoProperties");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.operator ==(Windows.Storage.BulkAccess.FolderInformation, Windows.Storage.BulkAccess.FolderInformation)
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.operator !=(Windows.Storage.BulkAccess.FolderInformation, Windows.Storage.BulkAccess.FolderInformation)
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Equals(Windows.Storage.BulkAccess.FolderInformation)
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Equals(object)
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.GetHashCode()
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.PropertiesUpdated.add
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.PropertiesUpdated.remove
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.ThumbnailUpdated.add
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.ThumbnailUpdated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync(string desiredName)
@@ -278,10 +282,6 @@ namespace Windows.Storage.BulkAccess
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BasicProperties> FolderInformation.GetBasicPropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBasicProperties%3E%20FolderInformation.GetBasicPropertiesAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Name.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Path.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Attributes.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DateCreated.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsOfType(global::Windows.Storage.StorageItemTypes type)
@@ -310,10 +310,6 @@ namespace Windows.Storage.BulkAccess
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> FolderInformation.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20FolderInformation.GetThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%2C%20ThumbnailOptions%20options%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DisplayName.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DisplayType.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.FolderRelativeId.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Properties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Search.IndexedState> GetIndexedStateAsync()
@@ -454,7 +450,22 @@ namespace Windows.Storage.BulkAccess
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IStorageItem> FolderInformation.TryGetItemAsync(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIStorageItem%3E%20FolderInformation.TryGetItemAsync%28string%20name%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Attributes.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.BasicProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DateCreated.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DisplayName.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DisplayType.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DocumentProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.FolderRelativeId.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.ImageProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.MusicProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Name.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Path.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Properties.get
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Provider.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Thumbnail.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.VideoProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.BulkAccess.IStorageItemInformation, object> PropertiesUpdated

@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.Store
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
+		public string Description
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductPurchaseDisplayProperties.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductPurchaseDisplayProperties.Name");
+				throw new global::System.NotImplementedException("The member string ProductPurchaseDisplayProperties.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductPurchaseDisplayProperties.Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "string ProductPurchaseDisplayProperties.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "string ProductPurchaseDisplayProperties.Description");
 			}
 		}
 #endif
@@ -38,26 +38,18 @@ namespace Windows.ApplicationModel.Store
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Description
+		public string Name
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductPurchaseDisplayProperties.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductPurchaseDisplayProperties.Description");
+				throw new global::System.NotImplementedException("The member string ProductPurchaseDisplayProperties.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductPurchaseDisplayProperties.Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "string ProductPurchaseDisplayProperties.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "string ProductPurchaseDisplayProperties.Name");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ProductPurchaseDisplayProperties(string name)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string name)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProductPurchaseDisplayProperties()
@@ -66,11 +58,30 @@ namespace Windows.ApplicationModel.Store
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties()
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Name.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ProductPurchaseDisplayProperties(string name)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string name)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string)
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.operator ==(Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties, Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties)
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.operator !=(Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties, Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties)
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Equals(Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties)
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Image.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Image.set
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Name.set
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

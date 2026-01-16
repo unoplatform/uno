@@ -8,8 +8,30 @@ namespace Windows.UI.Core
 #endif
 	public partial class CoreWindow : global::Windows.UI.Core.ICoreWindow, global::Windows.UI.Core.ICorePointerRedirector
 	{
-		// Skipping already declared property PointerPosition
-		// Skipping already declared property PointerCursor
+		// Skipping already declared property ActivationMode
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object AutomationHostProvider
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object CoreWindow.AutomationHostProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CoreWindow.AutomationHostProvider");
+			}
+		}
+#endif
+		// Skipping already declared property Bounds
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Collections.IPropertySet CustomProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IPropertySet CoreWindow.CustomProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20CoreWindow.CustomProperties");
+			}
+		}
+#endif
+		// Skipping already declared property Dispatcher
+		// Skipping already declared property DispatcherQueue
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreWindowFlowDirection FlowDirection
@@ -38,31 +60,8 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Skipping already declared property Dispatcher
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object AutomationHostProvider
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object CoreWindow.AutomationHostProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CoreWindow.AutomationHostProvider");
-			}
-		}
-#endif
-		// Skipping already declared property Bounds
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.IPropertySet CustomProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IPropertySet CoreWindow.CustomProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20CoreWindow.CustomProperties");
-			}
-		}
-#endif
-		// Skipping already declared property Visible
-		// Skipping already declared property ActivationMode
-		// Skipping already declared property DispatcherQueue
+		// Skipping already declared property PointerCursor
+		// Skipping already declared property PointerPosition
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.UIContext UIContext
@@ -73,18 +72,19 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreWindow.AutomationHostProvider.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.Bounds.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.CustomProperties.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.Dispatcher.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.FlowDirection.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.FlowDirection.set
-		// Forced skipping of method Windows.UI.Core.CoreWindow.IsInputEnabled.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.IsInputEnabled.set
-		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerCursor.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerCursor.set
-		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerPosition.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.Visible.get
+		// Skipping already declared property Visible
+		// Forced skipping of method Windows.UI.Core.CoreWindow.As<I>()
+		// Skipping already declared method Windows.UI.Core.CoreWindow.GetForCurrentThread()
+		// Forced skipping of method Windows.UI.Core.CoreWindow.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.CoreWindow.operator ==(Windows.UI.Core.CoreWindow, Windows.UI.Core.CoreWindow)
+		// Forced skipping of method Windows.UI.Core.CoreWindow.operator !=(Windows.UI.Core.CoreWindow, Windows.UI.Core.CoreWindow)
+		// Forced skipping of method Windows.UI.Core.CoreWindow.Equals(Windows.UI.Core.CoreWindow)
+		// Forced skipping of method Windows.UI.Core.CoreWindow.Equals(object)
+		// Forced skipping of method Windows.UI.Core.CoreWindow.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Activate()
@@ -129,23 +129,20 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerPressed.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerReleased.add
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerReleased.remove
-		// Forced skipping of method Windows.UI.Core.CoreWindow.TouchHitTesting.add
-		// Forced skipping of method Windows.UI.Core.CoreWindow.TouchHitTesting.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerWheelChanged.add
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerWheelChanged.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.SizeChanged.add
 		// Forced skipping of method Windows.UI.Core.CoreWindow.SizeChanged.remove
+		// Forced skipping of method Windows.UI.Core.CoreWindow.TouchHitTesting.add
+		// Forced skipping of method Windows.UI.Core.CoreWindow.TouchHitTesting.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.VisibilityChanged.add
 		// Forced skipping of method Windows.UI.Core.CoreWindow.VisibilityChanged.remove
-		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerPosition.set
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedAway.add
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedAway.remove
-		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedTo.add
-		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedTo.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedReleased.add
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedReleased.remove
-		// Forced skipping of method Windows.UI.Core.CoreWindow.ClosestInteractiveBoundsRequested.add
-		// Forced skipping of method Windows.UI.Core.CoreWindow.ClosestInteractiveBoundsRequested.remove
+		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedTo.add
+		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerRoutedTo.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetCurrentKeyEventDeviceId()
@@ -153,14 +150,29 @@ namespace Windows.UI.Core
 			throw new global::System.NotImplementedException("The member string CoreWindow.GetCurrentKeyEventDeviceId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWindow.GetCurrentKeyEventDeviceId%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreWindow.ResizeStarted.add
-		// Forced skipping of method Windows.UI.Core.CoreWindow.ResizeStarted.remove
+		// Forced skipping of method Windows.UI.Core.CoreWindow.ClosestInteractiveBoundsRequested.add
+		// Forced skipping of method Windows.UI.Core.CoreWindow.ClosestInteractiveBoundsRequested.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.ResizeCompleted.add
 		// Forced skipping of method Windows.UI.Core.CoreWindow.ResizeCompleted.remove
-		// Forced skipping of method Windows.UI.Core.CoreWindow.DispatcherQueue.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.ResizeStarted.add
+		// Forced skipping of method Windows.UI.Core.CoreWindow.ResizeStarted.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.ActivationMode.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.AutomationHostProvider.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.Bounds.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.CustomProperties.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.Dispatcher.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.DispatcherQueue.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.FlowDirection.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.FlowDirection.set
+		// Forced skipping of method Windows.UI.Core.CoreWindow.IsInputEnabled.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.IsInputEnabled.set
+		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerCursor.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerCursor.set
+		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerPosition.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerPosition.set
 		// Forced skipping of method Windows.UI.Core.CoreWindow.UIContext.get
-		// Skipping already declared method Windows.UI.Core.CoreWindow.GetForCurrentThread()
+		// Forced skipping of method Windows.UI.Core.CoreWindow.Visible.get
+		// Forced skipping of method Windows.UI.Core.CoreWindow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.UI.Core.CoreWindow.Activated
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

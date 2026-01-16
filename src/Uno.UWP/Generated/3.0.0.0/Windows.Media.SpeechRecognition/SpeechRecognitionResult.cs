@@ -33,6 +33,26 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan PhraseDuration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan SpeechRecognitionResult.PhraseDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpeechRecognitionResult.PhraseDuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset PhraseStartTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset SpeechRecognitionResult.PhraseStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SpeechRecognitionResult.PhraseStartTime");
+			}
+		}
+#endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double RawConfidence
@@ -83,30 +103,16 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan PhraseDuration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpeechRecognitionResult.PhraseDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpeechRecognitionResult.PhraseDuration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset PhraseStartTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SpeechRecognitionResult.PhraseStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SpeechRecognitionResult.PhraseStartTime");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Status.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Text.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Confidence.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.SemanticInterpretation.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionResult, Windows.Media.SpeechRecognition.SpeechRecognitionResult)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionResult, Windows.Media.SpeechRecognition.SpeechRecognitionResult)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionResult)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Equals(object)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.GetHashCode()
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> GetAlternates(uint maxAlternates)
@@ -114,10 +120,15 @@ namespace Windows.Media.SpeechRecognition
 			throw new global::System.NotImplementedException("The member IReadOnlyList<SpeechRecognitionResult> SpeechRecognitionResult.GetAlternates(uint maxAlternates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSpeechRecognitionResult%3E%20SpeechRecognitionResult.GetAlternates%28uint%20maxAlternates%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Confidence.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Constraint.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.RulePath.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.RawConfidence.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.PhraseStartTime.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.PhraseDuration.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.PhraseStartTime.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.RawConfidence.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.RulePath.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.SemanticInterpretation.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Status.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Text.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

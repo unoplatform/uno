@@ -15,6 +15,16 @@ namespace Windows.Web.UI.Interop
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Core.CoreAcceleratorKeyEventType EventType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreAcceleratorKeyEventType WebViewControlAcceleratorKeyPressedEventArgs.EventType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreAcceleratorKeyEventType%20WebViewControlAcceleratorKeyPressedEventArgs.EventType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Handled
 		{
 			get
@@ -24,16 +34,6 @@ namespace Windows.Web.UI.Interop
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "bool WebViewControlAcceleratorKeyPressedEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Core.CoreAcceleratorKeyEventType EventType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreAcceleratorKeyEventType WebViewControlAcceleratorKeyPressedEventArgs.EventType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreAcceleratorKeyEventType%20WebViewControlAcceleratorKeyPressedEventArgs.EventType");
 			}
 		}
 #endif
@@ -67,11 +67,22 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.operator ==(Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs, Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.operator !=(Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs, Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Equals(Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.EventType.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Handled.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Handled.set
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

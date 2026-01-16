@@ -65,16 +65,6 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Perception.Spatial.SpatialLocator SpatialLocator
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpatialLocator HolographicDisplay.SpatialLocator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialLocator%20HolographicDisplay.SpatialLocator");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double RefreshRate
 		{
 			get
@@ -83,20 +73,17 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.DisplayName.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.MaxViewportSize.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.IsStereo.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.IsOpaque.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.AdapterId.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.SpatialLocator.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.RefreshRate.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Holographic.HolographicViewConfiguration TryGetViewConfiguration(global::Windows.Graphics.Holographic.HolographicViewConfigurationKind kind)
+		public global::Windows.Perception.Spatial.SpatialLocator SpatialLocator
 		{
-			throw new global::System.NotImplementedException("The member HolographicViewConfiguration HolographicDisplay.TryGetViewConfiguration(HolographicViewConfigurationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicViewConfiguration%20HolographicDisplay.TryGetViewConfiguration%28HolographicViewConfigurationKind%20kind%29");
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpatialLocator HolographicDisplay.SpatialLocator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialLocator%20HolographicDisplay.SpatialLocator");
+			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Holographic.HolographicDisplay GetDefault()
@@ -104,5 +91,30 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicDisplay HolographicDisplay.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicDisplay%20HolographicDisplay.GetDefault%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.operator ==(Windows.Graphics.Holographic.HolographicDisplay, Windows.Graphics.Holographic.HolographicDisplay)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.operator !=(Windows.Graphics.Holographic.HolographicDisplay, Windows.Graphics.Holographic.HolographicDisplay)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.Equals(Windows.Graphics.Holographic.HolographicDisplay)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Holographic.HolographicViewConfiguration TryGetViewConfiguration(global::Windows.Graphics.Holographic.HolographicViewConfigurationKind kind)
+		{
+			throw new global::System.NotImplementedException("The member HolographicViewConfiguration HolographicDisplay.TryGetViewConfiguration(HolographicViewConfigurationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicViewConfiguration%20HolographicDisplay.TryGetViewConfiguration%28HolographicViewConfigurationKind%20kind%29");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.AdapterId.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.DisplayName.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.IsOpaque.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.IsStereo.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.MaxViewportSize.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.RefreshRate.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.SpatialLocator.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

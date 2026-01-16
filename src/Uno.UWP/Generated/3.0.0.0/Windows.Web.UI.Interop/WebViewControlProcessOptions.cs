@@ -10,20 +10,6 @@ namespace Windows.Web.UI.Interop
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.UI.Interop.WebViewControlProcessCapabilityState PrivateNetworkClientServerCapability
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlProcessCapabilityState%20WebViewControlProcessOptions.PrivateNetworkClientServerCapability");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcessOptions", "WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string EnterpriseId
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.Web.UI.Interop
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.UI.Interop.WebViewControlProcessCapabilityState PrivateNetworkClientServerCapability
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlProcessCapabilityState%20WebViewControlProcessOptions.PrivateNetworkClientServerCapability");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcessOptions", "WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebViewControlProcessOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcessOptions", "WebViewControlProcessOptions.WebViewControlProcessOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WebViewControlProcessOptions()
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.EnterpriseId.set
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.operator ==(Windows.Web.UI.Interop.WebViewControlProcessOptions, Windows.Web.UI.Interop.WebViewControlProcessOptions)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.operator !=(Windows.Web.UI.Interop.WebViewControlProcessOptions, Windows.Web.UI.Interop.WebViewControlProcessOptions)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.Equals(Windows.Web.UI.Interop.WebViewControlProcessOptions)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.Equals(object)
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.GetHashCode()
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.EnterpriseId.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.PrivateNetworkClientServerCapability.set
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.EnterpriseId.set
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.PrivateNetworkClientServerCapability.get
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.PrivateNetworkClientServerCapability.set
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

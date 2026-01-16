@@ -15,113 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float TopInsetScale
+		public float BottomInset
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.TopInsetScale");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.BottomInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.BottomInset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.TopInsetScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float TopInset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.TopInset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.TopInset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionBrush Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionNineGridBrush.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20CompositionNineGridBrush.Source");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "CompositionBrush CompositionNineGridBrush.Source");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RightInsetScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.RightInsetScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.RightInsetScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RightInset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.RightInset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.RightInset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float LeftInsetScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.LeftInsetScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.LeftInsetScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float LeftInset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.LeftInset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.LeftInset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCenterHollow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CompositionNineGridBrush.IsCenterHollow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionNineGridBrush.IsCenterHollow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "bool CompositionNineGridBrush.IsCenterHollow");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.BottomInset");
 			}
 		}
 #endif
@@ -141,38 +43,124 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float BottomInset
+		public bool IsCenterHollow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.BottomInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.BottomInset");
+				throw new global::System.NotImplementedException("The member bool CompositionNineGridBrush.IsCenterHollow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionNineGridBrush.IsCenterHollow");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.BottomInset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "bool CompositionNineGridBrush.IsCenterHollow");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInset.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInset.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInsetScale.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInsetScale.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.IsCenterHollow.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.IsCenterHollow.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInset.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInset.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInsetScale.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInsetScale.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInset.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInset.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInsetScale.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInsetScale.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Source.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Source.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInset.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInset.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float LeftInset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.LeftInset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.LeftInset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float LeftInsetScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.LeftInsetScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.LeftInsetScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RightInset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.RightInset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.RightInset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RightInsetScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.RightInsetScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.RightInsetScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionBrush Source
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionBrush CompositionNineGridBrush.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20CompositionNineGridBrush.Source");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "CompositionBrush CompositionNineGridBrush.Source");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float TopInset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.TopInset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.TopInset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float TopInsetScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionNineGridBrush.TopInsetScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "float CompositionNineGridBrush.TopInsetScale");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.operator ==(Windows.UI.Composition.CompositionNineGridBrush, Windows.UI.Composition.CompositionNineGridBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.operator !=(Windows.UI.Composition.CompositionNineGridBrush, Windows.UI.Composition.CompositionNineGridBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Equals(Windows.UI.Composition.CompositionNineGridBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetInsets(float inset)
@@ -201,5 +189,27 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionNineGridBrush", "void CompositionNineGridBrush.SetInsetScales(float left, float top, float right, float bottom)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInset.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInset.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInsetScale.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInsetScale.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.IsCenterHollow.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.IsCenterHollow.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInset.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInset.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInsetScale.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.LeftInsetScale.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInset.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInset.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInsetScale.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.RightInsetScale.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Source.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Source.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInset.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInset.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

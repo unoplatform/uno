@@ -15,15 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Direction
+		public global::Windows.UI.Color Color
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 DistantLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20DistantLight.Direction");
+				throw new global::System.NotImplementedException("The member Color DistantLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DistantLight.Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Vector3 DistantLight.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Color DistantLight.Color");
 			}
 		}
 #endif
@@ -43,15 +43,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color Color
+		public global::System.Numerics.Vector3 Direction
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DistantLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DistantLight.Color");
+				throw new global::System.NotImplementedException("The member Vector3 DistantLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20DistantLight.Direction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Color DistantLight.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Vector3 DistantLight.Direction");
 			}
 		}
 #endif
@@ -69,6 +69,14 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.DistantLight.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.DistantLight.operator ==(Windows.UI.Composition.DistantLight, Windows.UI.Composition.DistantLight)
+		// Forced skipping of method Windows.UI.Composition.DistantLight.operator !=(Windows.UI.Composition.DistantLight, Windows.UI.Composition.DistantLight)
+		// Forced skipping of method Windows.UI.Composition.DistantLight.Equals(Windows.UI.Composition.DistantLight)
+		// Forced skipping of method Windows.UI.Composition.DistantLight.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.DistantLight.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.DistantLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.DistantLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Color.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Color.set
 		// Forced skipping of method Windows.UI.Composition.DistantLight.CoordinateSpace.get
@@ -77,5 +85,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Direction.set
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Intensity.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Intensity.set
+		// Forced skipping of method Windows.UI.Composition.DistantLight.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.DistantLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

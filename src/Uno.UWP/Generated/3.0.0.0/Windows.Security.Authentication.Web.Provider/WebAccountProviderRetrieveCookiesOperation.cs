@@ -15,30 +15,6 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Authentication.Web.Provider.WebAccountProviderOperationKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderRetrieveCookiesOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderRetrieveCookiesOperation.Kind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Uri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountProviderRetrieveCookiesOperation.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebAccountProviderRetrieveCookiesOperation.Uri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "Uri WebAccountProviderRetrieveCookiesOperation.Uri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Uri ApplicationCallbackUri
 		{
 			get
@@ -67,12 +43,40 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Context.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Cookies.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Uri.set
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Uri.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.ApplicationCallbackUri.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Kind.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Authentication.Web.Provider.WebAccountProviderOperationKind Kind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderRetrieveCookiesOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderRetrieveCookiesOperation.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Uri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri WebAccountProviderRetrieveCookiesOperation.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebAccountProviderRetrieveCookiesOperation.Uri");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "Uri WebAccountProviderRetrieveCookiesOperation.Uri");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Equals(Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
@@ -87,6 +91,13 @@ namespace Windows.Security.Authentication.Web.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "void WebAccountProviderRetrieveCookiesOperation.ReportError(WebProviderError value)");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.ApplicationCallbackUri.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Context.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Cookies.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Kind.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Uri.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Uri.set
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderBaseReportOperation
 	}

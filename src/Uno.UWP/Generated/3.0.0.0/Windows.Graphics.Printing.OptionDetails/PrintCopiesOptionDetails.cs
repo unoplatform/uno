@@ -15,20 +15,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string WarningText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PrintCopiesOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCopiesOptionDetails.WarningText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails", "string PrintCopiesOptionDetails.WarningText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Description
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails", "string PrintCopiesOptionDetails.Description");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ErrorText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PrintCopiesOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCopiesOptionDetails.ErrorText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails", "string PrintCopiesOptionDetails.ErrorText");
 			}
 		}
 #endif
@@ -63,34 +63,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCopiesOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintCopiesOptionDetails.State");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails", "PrintOptionStates PrintCopiesOptionDetails.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ErrorText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PrintCopiesOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCopiesOptionDetails.ErrorText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails", "string PrintCopiesOptionDetails.ErrorText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string OptionId
 		{
 			get
@@ -111,6 +83,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCopiesOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintCopiesOptionDetails.State");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails", "PrintOptionStates PrintCopiesOptionDetails.State");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Value
 		{
 			get
@@ -119,13 +105,30 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.OptionId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.OptionType.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.ErrorText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.ErrorText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.State.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.State.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.Value.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string WarningText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PrintCopiesOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCopiesOptionDetails.WarningText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails", "string PrintCopiesOptionDetails.WarningText");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
@@ -133,12 +136,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 			throw new global::System.NotImplementedException("The member bool PrintCopiesOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintCopiesOptionDetails.TrySetValue%28object%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.MinValue.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.MaxValue.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WarningText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WarningText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.Description.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.Description.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.Description.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.ErrorText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.ErrorText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.MaxValue.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.MinValue.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.OptionId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.OptionType.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.State.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.State.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.Value.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WarningText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.WarningText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCopiesOptionDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintNumberOptionDetails
 	}

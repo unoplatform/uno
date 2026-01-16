@@ -8,25 +8,13 @@ namespace Windows.ApplicationModel.Background
 #endif
 	public partial class BackgroundTaskRegistration : global::Windows.ApplicationModel.Background.IBackgroundTaskRegistration, global::Windows.ApplicationModel.Background.IBackgroundTaskRegistration2, global::Windows.ApplicationModel.Background.IBackgroundTaskRegistration3
 	{
-		// Skipping already declared property Name
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid TaskId
+		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup> AllTaskGroups
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid BackgroundTaskRegistration.TaskId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20BackgroundTaskRegistration.TaskId");
-			}
-		}
-#endif
-		// Skipping already declared property Trigger
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup TaskGroup
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BackgroundTaskRegistrationGroup BackgroundTaskRegistration.TaskGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTaskRegistrationGroup%20BackgroundTaskRegistration.TaskGroup");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, BackgroundTaskRegistrationGroup> BackgroundTaskRegistration.AllTaskGroups is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20BackgroundTaskRegistrationGroup%3E%20BackgroundTaskRegistration.AllTaskGroups");
 			}
 		}
 #endif
@@ -40,32 +28,29 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
+		// Skipping already declared property Name
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup> AllTaskGroups
+		public global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup TaskGroup
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, BackgroundTaskRegistrationGroup> BackgroundTaskRegistration.AllTaskGroups is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20BackgroundTaskRegistrationGroup%3E%20BackgroundTaskRegistration.AllTaskGroups");
+				throw new global::System.NotImplementedException("The member BackgroundTaskRegistrationGroup BackgroundTaskRegistration.TaskGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTaskRegistrationGroup%20BackgroundTaskRegistration.TaskGroup");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.TaskId.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Progress.add
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Progress.remove
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Completed.add
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Completed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Unregister(bool cancelTask)
+		public global::System.Guid TaskId
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "void BackgroundTaskRegistration.Unregister(bool cancelTask)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid BackgroundTaskRegistration.TaskId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20BackgroundTaskRegistration.TaskId");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Trigger.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.TaskGroup.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTaskGroups.get
+		// Skipping already declared property Trigger
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup GetTaskGroup(string groupId)
@@ -73,7 +58,34 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member BackgroundTaskRegistrationGroup BackgroundTaskRegistration.GetTaskGroup(string groupId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTaskRegistrationGroup%20BackgroundTaskRegistration.GetTaskGroup%28string%20groupId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTaskGroups.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTasks.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.operator ==(Windows.ApplicationModel.Background.BackgroundTaskRegistration, Windows.ApplicationModel.Background.BackgroundTaskRegistration)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.operator !=(Windows.ApplicationModel.Background.BackgroundTaskRegistration, Windows.ApplicationModel.Background.BackgroundTaskRegistration)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Equals(Windows.ApplicationModel.Background.BackgroundTaskRegistration)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Unregister(bool cancelTask)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "void BackgroundTaskRegistration.Unregister(bool cancelTask)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Completed.add
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Completed.remove
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Progress.add
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Progress.remove
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.TaskGroup.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.TaskId.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Trigger.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.ApplicationModel.Background.BackgroundTaskCompletedEventHandler Completed

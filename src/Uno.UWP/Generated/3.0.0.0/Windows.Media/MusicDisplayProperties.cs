@@ -15,34 +15,6 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MusicDisplayProperties.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Artist
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MusicDisplayProperties.Artist");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Artist");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AlbumArtist
 		{
 			get
@@ -52,20 +24,6 @@ namespace Windows.Media
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.AlbumArtist");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint TrackNumber
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint MusicDisplayProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MusicDisplayProperties.TrackNumber");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "uint MusicDisplayProperties.TrackNumber");
 			}
 		}
 #endif
@@ -85,16 +43,6 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> Genres
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> MusicDisplayProperties.Genres is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20MusicDisplayProperties.Genres");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint AlbumTrackCount
 		{
 			get
@@ -107,18 +55,81 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.Title.get
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.Title.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Artist
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MusicDisplayProperties.Artist");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Artist");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<string> Genres
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<string> MusicDisplayProperties.Genres is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20MusicDisplayProperties.Genres");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MusicDisplayProperties.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Title");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint TrackNumber
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint MusicDisplayProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MusicDisplayProperties.TrackNumber");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "uint MusicDisplayProperties.TrackNumber");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.operator ==(Windows.Media.MusicDisplayProperties, Windows.Media.MusicDisplayProperties)
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.operator !=(Windows.Media.MusicDisplayProperties, Windows.Media.MusicDisplayProperties)
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.Equals(Windows.Media.MusicDisplayProperties)
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.Equals(object)
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumArtist.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumArtist.set
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.Artist.get
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.Artist.set
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumTitle.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumTitle.set
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.TrackNumber.get
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.TrackNumber.set
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.Genres.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumTrackCount.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumTrackCount.set
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.Artist.get
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.Artist.set
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.Genres.get
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.Title.get
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.Title.set
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.TrackNumber.get
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.TrackNumber.set
+		// Forced skipping of method Windows.Media.MusicDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

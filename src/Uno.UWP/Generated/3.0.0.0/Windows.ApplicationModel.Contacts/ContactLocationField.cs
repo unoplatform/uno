@@ -20,36 +20,6 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactFieldType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactFieldType ContactLocationField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldType%20ContactLocationField.Type");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string City
 		{
 			get
@@ -65,6 +35,16 @@ namespace Windows.ApplicationModel.Contacts
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ContactLocationField.Country is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Country");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactLocationField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Name");
 			}
 		}
 #endif
@@ -100,11 +80,31 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactFieldType Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactFieldType ContactLocationField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldType%20ContactLocationField.Type");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string UnstructuredAddress
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ContactLocationField.UnstructuredAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.UnstructuredAddress");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactLocationField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Value");
 			}
 		}
 #endif
@@ -132,16 +132,27 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory, string, string, string, string, string)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.UnstructuredAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Street.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.City.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Region.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Country.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.PostalCode.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Type.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.operator ==(Windows.ApplicationModel.Contacts.ContactLocationField, Windows.ApplicationModel.Contacts.ContactLocationField)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.operator !=(Windows.ApplicationModel.Contacts.ContactLocationField, Windows.ApplicationModel.Contacts.ContactLocationField)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Equals(Windows.ApplicationModel.Contacts.ContactLocationField)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Category.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.City.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Country.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.PostalCode.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Region.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Street.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Type.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.UnstructuredAddress.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Value.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Contacts.IContactField
 	}
 }

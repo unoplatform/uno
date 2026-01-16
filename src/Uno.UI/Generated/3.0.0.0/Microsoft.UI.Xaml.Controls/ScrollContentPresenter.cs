@@ -8,61 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ScrollContentPresenter
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public bool SizesContentToTemplatedParent
-		{
-			get
-			{
-				return (bool)this.GetValue(SizesContentToTemplatedParentProperty);
-			}
-			set
-			{
-				this.SetValue(SizesContentToTemplatedParentProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property ScrollOwner
-		// Skipping already declared property CanVerticallyScroll
-		// Skipping already declared property CanHorizontallyScroll
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanContentRenderOutsideBounds
-		{
-			get
-			{
-				return (bool)this.GetValue(CanContentRenderOutsideBoundsProperty);
-			}
-			set
-			{
-				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property ExtentHeight
-		// Skipping already declared property ExtentWidth
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public double HorizontalOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollContentPresenter.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollContentPresenter.HorizontalOffset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public double VerticalOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollContentPresenter.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollContentPresenter.VerticalOffset");
-			}
-		}
-#endif
-		// Skipping already declared property ViewportHeight
-		// Skipping already declared property ViewportWidth
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } =
@@ -79,24 +24,74 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanContentRenderOutsideBounds
+		{
+			get
+			{
+				return (bool)this.GetValue(CanContentRenderOutsideBoundsProperty);
+			}
+			set
+			{
+				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property CanHorizontallyScroll
+		// Skipping already declared property CanVerticallyScroll
+		// Skipping already declared property ExtentHeight
+		// Skipping already declared property ExtentWidth
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public double HorizontalOffset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double ScrollContentPresenter.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollContentPresenter.HorizontalOffset");
+			}
+		}
+#endif
+		// Skipping already declared property ScrollOwner
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public bool SizesContentToTemplatedParent
+		{
+			get
+			{
+				return (bool)this.GetValue(SizesContentToTemplatedParentProperty);
+			}
+			set
+			{
+				this.SetValue(SizesContentToTemplatedParentProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public double VerticalOffset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double ScrollContentPresenter.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollContentPresenter.VerticalOffset");
+			}
+		}
+#endif
+		// Skipping already declared property ViewportHeight
+		// Skipping already declared property ViewportWidth
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanVerticallyScroll.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanVerticallyScroll.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanHorizontallyScroll.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanHorizontallyScroll.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ExtentWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ExtentHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ViewportWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ViewportHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.HorizontalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.VerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollOwner.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollOwner.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBoundsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.operator ==(Microsoft.UI.Xaml.Controls.ScrollContentPresenter, Microsoft.UI.Xaml.Controls.ScrollContentPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.operator !=(Microsoft.UI.Xaml.Controls.ScrollContentPresenter, Microsoft.UI.Xaml.Controls.ScrollContentPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.Equals(Microsoft.UI.Xaml.Controls.ScrollContentPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LineUp()
@@ -196,7 +191,23 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.MakeVisible(Microsoft.UI.Xaml.UIElement, Windows.Foundation.Rect)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBoundsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanHorizontallyScroll.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanHorizontallyScroll.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanVerticallyScroll.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanVerticallyScroll.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ExtentHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ExtentWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.HorizontalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollOwner.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollOwner.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.VerticalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ViewportHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ViewportWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

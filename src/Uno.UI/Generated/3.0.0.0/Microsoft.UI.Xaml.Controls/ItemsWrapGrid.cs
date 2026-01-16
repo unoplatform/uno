@@ -8,12 +8,22 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 	{
-		// Skipping already declared property Orientation
-		// Skipping already declared property MaximumRowsOrColumns
-		// Skipping already declared property ItemWidth
-		// Skipping already declared property ItemHeight
-		// Skipping already declared property GroupPadding
-		// Skipping already declared property GroupHeaderPlacement
+		// Skipping already declared property AreStickyGroupHeadersEnabledProperty
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty CacheLengthProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(CacheLength), typeof(double),
+			typeof(global::Microsoft.UI.Xaml.Controls.ItemsWrapGrid),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+#endif
+		// Skipping already declared property GroupHeaderPlacementProperty
+		// Skipping already declared property GroupPaddingProperty
+		// Skipping already declared property ItemHeightProperty
+		// Skipping already declared property ItemWidthProperty
+		// Skipping already declared property MaximumRowsOrColumnsProperty
+		// Skipping already declared property OrientationProperty
+		// Skipping already declared property AreStickyGroupHeadersEnabled
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double CacheLength
@@ -28,7 +38,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Skipping already declared property AreStickyGroupHeadersEnabled
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int FirstCacheIndex
@@ -49,6 +58,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Skipping already declared property GroupHeaderPlacement
+		// Skipping already declared property GroupPadding
+		// Skipping already declared property ItemHeight
+		// Skipping already declared property ItemWidth
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int LastCacheIndex
@@ -69,6 +82,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Skipping already declared property MaximumRowsOrColumns
+		// Skipping already declared property Orientation
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
@@ -79,51 +94,49 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Skipping already declared property AreStickyGroupHeadersEnabledProperty
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CacheLengthProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CacheLength), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsWrapGrid),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-		// Skipping already declared property GroupHeaderPlacementProperty
-		// Skipping already declared property GroupPaddingProperty
-		// Skipping already declared property ItemHeightProperty
-		// Skipping already declared property ItemWidthProperty
-		// Skipping already declared property MaximumRowsOrColumnsProperty
-		// Skipping already declared property OrientationProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemsWrapGrid()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemsWrapGrid()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupPadding.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupPadding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.MaximumRowsOrColumns.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.MaximumRowsOrColumns.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemWidth.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.FirstCacheIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.FirstVisibleIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.LastVisibleIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.LastCacheIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ScrollingDirection.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupHeaderPlacement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupHeaderPlacement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.CacheLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.CacheLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.AreStickyGroupHeadersEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.CacheLengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupHeaderPlacementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupPaddingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.MaximumRowsOrColumnsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.OrientationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemsWrapGrid(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.operator ==(Microsoft.UI.Xaml.Controls.ItemsWrapGrid, Microsoft.UI.Xaml.Controls.ItemsWrapGrid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.operator !=(Microsoft.UI.Xaml.Controls.ItemsWrapGrid, Microsoft.UI.Xaml.Controls.ItemsWrapGrid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Equals(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemsWrapGrid(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.AreStickyGroupHeadersEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.AreStickyGroupHeadersEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupPaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.MaximumRowsOrColumnsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupHeaderPlacementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.CacheLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.AreStickyGroupHeadersEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.CacheLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.CacheLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.FirstCacheIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.FirstVisibleIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupHeaderPlacement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupHeaderPlacement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupPadding.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.GroupPadding.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.LastCacheIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.LastVisibleIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.MaximumRowsOrColumns.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.MaximumRowsOrColumns.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ScrollingDirection.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

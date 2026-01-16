@@ -8,77 +8,6 @@ namespace Windows.ApplicationModel.Chat
 #endif
 	public partial class ChatMessage : global::Windows.ApplicationModel.Chat.IChatItem
 	{
-		// Skipping already declared property ItemKind
-		// Skipping already declared property IsIncoming
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsForwardingDisabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsForwardingDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsForwardingDisabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.IsForwardingDisabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TransportId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.TransportId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.TransportId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.TransportId");
-			}
-		}
-#endif
-		// Skipping already declared property Status
-		// Skipping already declared property From
-		// Skipping already declared property Body
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Subject
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.Subject");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.Subject");
-			}
-		}
-#endif
-		// Skipping already declared property IsRead
-		// Skipping already declared property NetworkTimestamp
-		// Skipping already declared property LocalTimestamp
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Chat.ChatMessageStatus> RecipientSendStatuses
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ChatMessageStatus> ChatMessage.RecipientSendStatuses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20ChatMessageStatus%3E%20ChatMessage.RecipientSendStatuses");
-			}
-		}
-#endif
-		// Skipping already declared property Recipients
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TransportFriendlyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.TransportFriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.TransportFriendlyName");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Chat.ChatMessageAttachment> Attachments
@@ -89,6 +18,22 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
+		// Skipping already declared property Body
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong EstimatedDownloadSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong ChatMessage.EstimatedDownloadSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ChatMessage.EstimatedDownloadSize");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "ulong ChatMessage.EstimatedDownloadSize");
+			}
+		}
+#endif
+		// Skipping already declared property From
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
@@ -96,22 +41,6 @@ namespace Windows.ApplicationModel.Chat
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ChatMessage.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.Id");
-			}
-		}
-#endif
-		// Skipping already declared property IsSeen
-		// Skipping already declared property MessageKind
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReceivedDuringQuietHours
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReceivedDuringQuietHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsReceivedDuringQuietHours");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.IsReceivedDuringQuietHours");
 			}
 		}
 #endif
@@ -131,15 +60,135 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong EstimatedDownloadSize
+		public bool IsForwardingDisabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ChatMessage.EstimatedDownloadSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ChatMessage.EstimatedDownloadSize");
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsForwardingDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsForwardingDisabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "ulong ChatMessage.EstimatedDownloadSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.IsForwardingDisabled");
+			}
+		}
+#endif
+		// Skipping already declared property IsIncoming
+		// Skipping already declared property IsRead
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReceivedDuringQuietHours
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReceivedDuringQuietHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsReceivedDuringQuietHours");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.IsReceivedDuringQuietHours");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReplyDisabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReplyDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsReplyDisabled");
+			}
+		}
+#endif
+		// Skipping already declared property IsSeen
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSimMessage
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsSimMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsSimMessage");
+			}
+		}
+#endif
+		// Skipping already declared property ItemKind
+		// Skipping already declared property LocalTimestamp
+		// Skipping already declared property MessageKind
+		// Skipping already declared property MessageOperatorKind
+		// Skipping already declared property NetworkTimestamp
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Chat.ChatMessageStatus> RecipientSendStatuses
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ChatMessageStatus> ChatMessage.RecipientSendStatuses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20ChatMessageStatus%3E%20ChatMessage.RecipientSendStatuses");
+			}
+		}
+#endif
+		// Skipping already declared property Recipients
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo> RecipientsDeliveryInfos
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<ChatRecipientDeliveryInfo> ChatMessage.RecipientsDeliveryInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CChatRecipientDeliveryInfo%3E%20ChatMessage.RecipientsDeliveryInfos");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string RemoteId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ChatMessage.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.RemoteId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.RemoteId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShouldSuppressNotification
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChatMessage.ShouldSuppressNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.ShouldSuppressNotification");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.ShouldSuppressNotification");
+			}
+		}
+#endif
+		// Skipping already declared property Status
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Subject
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ChatMessage.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.Subject");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.Subject");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SyncId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ChatMessage.SyncId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.SyncId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.SyncId");
 			}
 		}
 #endif
@@ -159,128 +208,90 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShouldSuppressNotification
+		public string TransportFriendlyName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.ShouldSuppressNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.ShouldSuppressNotification");
+				throw new global::System.NotImplementedException("The member string ChatMessage.TransportFriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.TransportFriendlyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TransportId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ChatMessage.TransportId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.TransportId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.ShouldSuppressNotification");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RemoteId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.RemoteId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.RemoteId");
-			}
-		}
-#endif
-		// Skipping already declared property MessageOperatorKind
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReplyDisabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReplyDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsReplyDisabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSimMessage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsSimMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessage.IsSimMessage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo> RecipientsDeliveryInfos
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<ChatRecipientDeliveryInfo> ChatMessage.RecipientsDeliveryInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CChatRecipientDeliveryInfo%3E%20ChatMessage.RecipientsDeliveryInfos");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SyncId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.SyncId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessage.SyncId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.SyncId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.TransportId");
 			}
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Chat.ChatMessage.ChatMessage()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ChatMessage()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.operator ==(Windows.ApplicationModel.Chat.ChatMessage, Windows.ApplicationModel.Chat.ChatMessage)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.operator !=(Windows.ApplicationModel.Chat.ChatMessage, Windows.ApplicationModel.Chat.ChatMessage)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Equals(Windows.ApplicationModel.Chat.ChatMessage)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Attachments.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Body.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Body.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.From.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsForwardingDisabled.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsIncoming.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsRead.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.LocalTimestamp.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.NetworkTimestamp.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Recipients.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.RecipientSendStatuses.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Subject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.TransportFriendlyName.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.TransportId.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.TransportId.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.EstimatedDownloadSize.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.EstimatedDownloadSize.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.From.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.From.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsAutoReply.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsAutoReply.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsForwardingDisabled.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsForwardingDisabled.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsReplyDisabled.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsIncoming.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsIncoming.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsRead.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsRead.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsReceivedDuringQuietHours.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsReceivedDuringQuietHours.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsReplyDisabled.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsSeen.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsSeen.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsSimMessage.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ItemKind.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.LocalTimestamp.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.LocalTimestamp.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.MessageKind.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.MessageKind.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.MessageOperatorKind.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.MessageOperatorKind.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.NetworkTimestamp.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.NetworkTimestamp.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsReceivedDuringQuietHours.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.IsReceivedDuringQuietHours.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.RemoteId.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Status.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Subject.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ShouldSuppressNotification.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ShouldSuppressNotification.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ThreadingInfo.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ThreadingInfo.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.RecipientSendStatuses.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Recipients.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.RecipientsDeliveryInfos.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.RemoteId.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.RemoteId.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ShouldSuppressNotification.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ShouldSuppressNotification.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Status.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Subject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Subject.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.SyncId.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.SyncId.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ItemKind.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ThreadingInfo.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ThreadingInfo.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.TransportFriendlyName.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.TransportId.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.TransportId.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Chat.IChatItem
 	}
 }

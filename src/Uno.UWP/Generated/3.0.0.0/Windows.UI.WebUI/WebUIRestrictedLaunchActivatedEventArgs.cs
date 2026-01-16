@@ -15,6 +15,16 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIRestrictedLaunchActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIRestrictedLaunchActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -30,6 +40,16 @@ namespace Windows.UI.WebUI
 			get
 			{
 				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIRestrictedLaunchActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20WebUIRestrictedLaunchActivatedEventArgs.PreviousExecutionState");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object SharedContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object WebUIRestrictedLaunchActivatedEventArgs.SharedContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20WebUIRestrictedLaunchActivatedEventArgs.SharedContext");
 			}
 		}
 #endif
@@ -53,32 +73,23 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object SharedContext
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object WebUIRestrictedLaunchActivatedEventArgs.SharedContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20WebUIRestrictedLaunchActivatedEventArgs.SharedContext");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIRestrictedLaunchActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIRestrictedLaunchActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.SharedContext.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs, Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs, Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.SharedContext.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IRestrictedLaunchActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.UI.WebUI.IActivatedEventArgsDeferral

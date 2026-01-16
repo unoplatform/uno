@@ -10,71 +10,15 @@ namespace Windows.ApplicationModel.Wallet
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
+		public global::Windows.ApplicationModel.Wallet.WalletBarcode Barcode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItem.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.DisplayName");
+				throw new global::System.NotImplementedException("The member WalletBarcode WalletItem.Barcode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletBarcode%20WalletItem.Barcode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.DisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayMessage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WalletItem.DisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.DisplayMessage");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.DisplayMessage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string LogoText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WalletItem.LogoText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.LogoText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.LogoText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color BodyFontColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.BodyFontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.BodyFontColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.BodyFontColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color BodyColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.BodyColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.BodyColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.BodyColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "WalletBarcode WalletItem.Barcode");
 			}
 		}
 #endif
@@ -94,71 +38,81 @@ namespace Windows.ApplicationModel.Wallet
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDisplayMessageLaunchable
+		public global::Windows.UI.Color BodyColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItem.IsDisplayMessageLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsDisplayMessageLaunchable");
+				throw new global::System.NotImplementedException("The member Color WalletItem.BodyColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.BodyColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsDisplayMessageLaunchable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.BodyColor");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsAcknowledged
+		public global::Windows.UI.Color BodyFontColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItem.IsAcknowledged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsAcknowledged");
+				throw new global::System.NotImplementedException("The member Color WalletItem.BodyFontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.BodyFontColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsAcknowledged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.BodyFontColor");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsMoreTransactionHistoryLaunchable
+		public string DisplayMessage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItem.IsMoreTransactionHistoryLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsMoreTransactionHistoryLaunchable");
+				throw new global::System.NotImplementedException("The member string WalletItem.DisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.DisplayMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsMoreTransactionHistoryLaunchable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.DisplayMessage");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color HeaderFontColor
+		public string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.HeaderFontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.HeaderFontColor");
+				throw new global::System.NotImplementedException("The member string WalletItem.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.HeaderFontColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.DisplayName");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color HeaderColor
+		public global::System.Collections.Generic.IDictionary<string, global::Windows.ApplicationModel.Wallet.WalletItemCustomProperty> DisplayProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.HeaderColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.HeaderColor");
+				throw new global::System.NotImplementedException("The member IDictionary<string, WalletItemCustomProperty> WalletItem.DisplayProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20WalletItemCustomProperty%3E%20WalletItem.DisplayProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset? ExpirationDate
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletItem.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletItem.ExpirationDate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.HeaderColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "DateTimeOffset? WalletItem.ExpirationDate");
 			}
 		}
 #endif
@@ -178,15 +132,147 @@ namespace Windows.ApplicationModel.Wallet
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset? ExpirationDate
+		public global::Windows.UI.Color HeaderColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletItem.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletItem.ExpirationDate");
+				throw new global::System.NotImplementedException("The member Color WalletItem.HeaderColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.HeaderColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "DateTimeOffset? WalletItem.ExpirationDate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.HeaderColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color HeaderFontColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color WalletItem.HeaderFontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.HeaderFontColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.HeaderFontColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WalletItem.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsAcknowledged
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool WalletItem.IsAcknowledged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsAcknowledged");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsAcknowledged");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDisplayMessageLaunchable
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool WalletItem.IsDisplayMessageLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsDisplayMessageLaunchable");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsDisplayMessageLaunchable");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsMoreTransactionHistoryLaunchable
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool WalletItem.IsMoreTransactionHistoryLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsMoreTransactionHistoryLaunchable");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsMoreTransactionHistoryLaunchable");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string IssuerDisplayName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WalletItem.IssuerDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.IssuerDisplayName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.IssuerDisplayName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Wallet.WalletItemKind Kind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WalletItemKind WalletItem.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletItemKind%20WalletItem.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset? LastUpdated
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletItem.LastUpdated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletItem.LastUpdated");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "DateTimeOffset? WalletItem.LastUpdated");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Logo159x159
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.Logo159x159 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.Logo159x159");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.Logo159x159");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Logo336x336
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.Logo336x336 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.Logo336x336");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.Logo336x336");
 			}
 		}
 #endif
@@ -220,6 +306,20 @@ namespace Windows.ApplicationModel.Wallet
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string LogoText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WalletItem.LogoText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.LogoText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.LogoText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStreamReference PromotionalImage
 		{
 			get
@@ -229,76 +329,6 @@ namespace Windows.ApplicationModel.Wallet
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.PromotionalImage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference Logo159x159
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.Logo159x159 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.Logo159x159");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.Logo159x159");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset? LastUpdated
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletItem.LastUpdated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletItem.LastUpdated");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "DateTimeOffset? WalletItem.LastUpdated");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string IssuerDisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WalletItem.IssuerDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.IssuerDisplayName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.IssuerDisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Wallet.WalletBarcode Barcode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WalletBarcode WalletItem.Barcode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletBarcode%20WalletItem.Barcode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "WalletBarcode WalletItem.Barcode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RelevantDateDisplayMessage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WalletItem.RelevantDateDisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.RelevantDateDisplayMessage");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.RelevantDateDisplayMessage");
 			}
 		}
 #endif
@@ -318,45 +348,15 @@ namespace Windows.ApplicationModel.Wallet
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference Logo336x336
+		public string RelevantDateDisplayMessage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.Logo336x336 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.Logo336x336");
+				throw new global::System.NotImplementedException("The member string WalletItem.RelevantDateDisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.RelevantDateDisplayMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.Logo336x336");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Wallet.WalletItemKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WalletItemKind WalletItem.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletItemKind%20WalletItem.Kind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IDictionary<string, global::Windows.ApplicationModel.Wallet.WalletItemCustomProperty> DisplayProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, WalletItemCustomProperty> WalletItem.DisplayProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20WalletItemCustomProperty%3E%20WalletItem.DisplayProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WalletItem.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.RelevantDateDisplayMessage");
 			}
 		}
 #endif
@@ -398,57 +398,68 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.WalletItem(Windows.ApplicationModel.Wallet.WalletItemKind, string)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.operator ==(Windows.ApplicationModel.Wallet.WalletItem, Windows.ApplicationModel.Wallet.WalletItem)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.operator !=(Windows.ApplicationModel.Wallet.WalletItem, Windows.ApplicationModel.Wallet.WalletItem)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Equals(Windows.ApplicationModel.Wallet.WalletItem)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Barcode.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Barcode.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyBackgroundImage.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyBackgroundImage.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyColor.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyColor.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyFontColor.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyFontColor.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayMessage.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayMessage.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayProperties.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.ExpirationDate.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.ExpirationDate.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderBackgroundImage.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderBackgroundImage.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderColor.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderColor.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderFontColor.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderFontColor.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsAcknowledged.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsAcknowledged.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsDisplayMessageLaunchable.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsDisplayMessageLaunchable.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsMoreTransactionHistoryLaunchable.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsMoreTransactionHistoryLaunchable.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IssuerDisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IssuerDisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LastUpdated.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LastUpdated.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Kind.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Barcode.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Barcode.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.ExpirationDate.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.ExpirationDate.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Logo159x159.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Logo159x159.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Logo336x336.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Logo336x336.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Logo99x99.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Logo99x99.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayMessage.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayMessage.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsDisplayMessageLaunchable.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsDisplayMessageLaunchable.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LogoText.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LogoText.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderColor.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderColor.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyColor.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyColor.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderFontColor.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderFontColor.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyFontColor.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyFontColor.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderBackgroundImage.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.HeaderBackgroundImage.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyBackgroundImage.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.BodyBackgroundImage.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LogoImage.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LogoImage.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LogoText.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.LogoText.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.PromotionalImage.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.PromotionalImage.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.RelevantDate.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.RelevantDate.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.RelevantDateDisplayMessage.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.RelevantDateDisplayMessage.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.TransactionHistory.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.RelevantLocations.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsMoreTransactionHistoryLaunchable.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.IsMoreTransactionHistoryLaunchable.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.DisplayProperties.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.TransactionHistory.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.Verbs.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

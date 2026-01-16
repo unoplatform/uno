@@ -15,15 +15,21 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TransmitInput
+		public bool IsRequestedByTransmitter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.TransmitInput");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsRequestedByTransmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.IsRequestedByTransmitter");
 			}
-			set
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsTransmittingInput
+		{
+			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.TransmitInput");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsTransmittingInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.IsTransmittingInput");
 			}
 		}
 #endif
@@ -43,32 +49,37 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRequestedByTransmitter
+		public bool TransmitInput
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsRequestedByTransmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.IsRequestedByTransmitter");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.TransmitInput");
 			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsTransmittingInput
-		{
-			get
+			set
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsTransmittingInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.IsTransmittingInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.TransmitInput");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.TransmitInput.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.TransmitInput.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.operator ==(Windows.Media.Miracast.MiracastReceiverGameControllerDevice, Windows.Media.Miracast.MiracastReceiverGameControllerDevice)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.operator !=(Windows.Media.Miracast.MiracastReceiverGameControllerDevice, Windows.Media.Miracast.MiracastReceiverGameControllerDevice)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Equals(Windows.Media.Miracast.MiracastReceiverGameControllerDevice)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Changed.add
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Changed.remove
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.IsRequestedByTransmitter.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.IsTransmittingInput.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Mode.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Mode.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Changed.add
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Changed.remove
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.TransmitInput.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.TransmitInput.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverGameControllerDevice, object> Changed

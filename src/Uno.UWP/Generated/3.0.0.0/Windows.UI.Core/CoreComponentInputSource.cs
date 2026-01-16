@@ -15,6 +15,36 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Core.CoreDispatcher Dispatcher
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreDispatcher CoreComponentInputSource.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreDispatcher%20CoreComponentInputSource.Dispatcher");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.DispatcherQueue DispatcherQueue
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DispatcherQueue CoreComponentInputSource.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20CoreComponentInputSource.DispatcherQueue");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool HasCapture
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.HasCapture is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreComponentInputSource.HasCapture");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool HasFocus
 		{
 			get
@@ -39,16 +69,6 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Core.CoreDispatcher Dispatcher
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CoreComponentInputSource.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreDispatcher%20CoreComponentInputSource.Dispatcher");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreCursor PointerCursor
 		{
 			get
@@ -63,16 +83,6 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasCapture
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.HasCapture is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreComponentInputSource.HasCapture");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point PointerPosition
 		{
 			get
@@ -81,19 +91,16 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.DispatcherQueue DispatcherQueue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CoreComponentInputSource.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20CoreComponentInputSource.DispatcherQueue");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.Dispatcher.get
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.IsInputEnabled.get
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.IsInputEnabled.set
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.operator ==(Windows.UI.Core.CoreComponentInputSource, Windows.UI.Core.CoreComponentInputSource)
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.operator !=(Windows.UI.Core.CoreComponentInputSource, Windows.UI.Core.CoreComponentInputSource)
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.Equals(Windows.UI.Core.CoreComponentInputSource)
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.Equals(object)
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.InputEnabled.add
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.InputEnabled.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -110,10 +117,6 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "void CoreComponentInputSource.SetPointerCapture()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.HasCapture.get
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerPosition.get
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerCursor.get
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerCursor.set
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerCaptureLost.add
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerCaptureLost.remove
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerEntered.add
@@ -141,7 +144,6 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.KeyDown.remove
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.KeyUp.add
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.KeyUp.remove
-		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.HasFocus.get
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.GotFocus.add
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.GotFocus.remove
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.LostFocus.add
@@ -157,7 +159,16 @@ namespace Windows.UI.Core
 			throw new global::System.NotImplementedException("The member string CoreComponentInputSource.GetCurrentKeyEventDeviceId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreComponentInputSource.GetCurrentKeyEventDeviceId%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.Dispatcher.get
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.DispatcherQueue.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.HasCapture.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.HasFocus.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.IsInputEnabled.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.IsInputEnabled.set
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerCursor.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerCursor.set
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerPosition.get
+		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.InputEnabledEventArgs> InputEnabled

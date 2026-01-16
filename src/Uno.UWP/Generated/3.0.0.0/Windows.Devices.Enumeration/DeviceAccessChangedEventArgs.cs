@@ -15,16 +15,6 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Enumeration.DeviceAccessStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceAccessStatus DeviceAccessChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessStatus%20DeviceAccessChangedEventArgs.Status");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
@@ -33,7 +23,28 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Status.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Enumeration.DeviceAccessStatus Status
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceAccessStatus DeviceAccessChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessStatus%20DeviceAccessChangedEventArgs.Status");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.operator ==(Windows.Devices.Enumeration.DeviceAccessChangedEventArgs, Windows.Devices.Enumeration.DeviceAccessChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.operator !=(Windows.Devices.Enumeration.DeviceAccessChangedEventArgs, Windows.Devices.Enumeration.DeviceAccessChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Equals(Windows.Devices.Enumeration.DeviceAccessChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Id.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,104 +8,7 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 	public static partial class WebAccountManager
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction InvalidateAppCacheForAllAccountsAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.InvalidateAppCacheForAllAccountsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.InvalidateAppCacheForAllAccountsAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction InvalidateAppCacheForAccountAsync(global::Windows.Security.Credentials.WebAccount webAccount)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.InvalidateAppCacheForAccountAsync(WebAccount webAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.InvalidateAppCacheForAccountAsync%28WebAccount%20webAccount%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Credentials.WebAccount>> FindAllProviderWebAccountsForUserAsync(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<WebAccount>> WebAccountManager.FindAllProviderWebAccountsForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CWebAccount%3E%3E%20WebAccountManager.FindAllProviderWebAccountsForUserAsync%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountForUserAsync(global::Windows.System.User user, string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountForUserAsync(User user, string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountForUserAsync%28User%20user%2C%20string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountForUserAsync(global::Windows.System.User user, string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountForUserAsync(User user, string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountForUserAsync%28User%20user%2C%20string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountForUserAsync(global::Windows.System.User user, string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope, string perUserWebAccountId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountForUserAsync(User user, string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope, string perUserWebAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountForUserAsync%28User%20user%2C%20string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%2C%20string%20perUserWebAccountId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountAsync(string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope, string perUserWebAccountId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountAsync(string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope, string perUserWebAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountAsync%28string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%2C%20string%20perUserWebAccountId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction SetPerAppToPerUserAccountAsync(global::Windows.Security.Credentials.WebAccount perAppAccount, string perUserWebAccountId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.SetPerAppToPerUserAccountAsync(WebAccount perAppAccount, string perUserWebAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.SetPerAppToPerUserAccountAsync%28WebAccount%20perAppAccount%2C%20string%20perUserWebAccountId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> GetPerUserFromPerAppAccountAsync(global::Windows.Security.Credentials.WebAccount perAppAccount)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.GetPerUserFromPerAppAccountAsync(WebAccount perAppAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.GetPerUserFromPerAppAccountAsync%28WebAccount%20perAppAccount%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction ClearPerUserFromPerAppAccountAsync(global::Windows.Security.Credentials.WebAccount perAppAccount)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.ClearPerUserFromPerAppAccountAsync(WebAccount perAppAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.ClearPerUserFromPerAppAccountAsync%28WebAccount%20perAppAccount%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountAsync(string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountAsync(string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountAsync%28string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction SetScopeAsync(global::Windows.Security.Credentials.WebAccount webAccount, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.SetScopeAsync(WebAccount webAccount, WebAccountScope scope) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.SetScopeAsync%28WebAccount%20webAccount%2C%20WebAccountScope%20scope%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.Authentication.Web.Provider.WebAccountScope GetScope(global::Windows.Security.Credentials.WebAccount webAccount)
-		{
-			throw new global::System.NotImplementedException("The member WebAccountScope WebAccountManager.GetScope(WebAccount webAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountScope%20WebAccountManager.GetScope%28WebAccount%20webAccount%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction PullCookiesAsync(string uriString, string callerPFN)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.PullCookiesAsync(string uriString, string callerPFN) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.PullCookiesAsync%28string%20uriString%2C%20string%20callerPFN%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction UpdateWebAccountPropertiesAsync(global::Windows.Security.Credentials.WebAccount webAccount, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> additionalProperties)
@@ -174,6 +77,104 @@ namespace Windows.Security.Authentication.Web.Provider
 		public static global::Windows.Foundation.IAsyncAction ClearWebAccountPictureAsync(global::Windows.Security.Credentials.WebAccount webAccount)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.ClearWebAccountPictureAsync(WebAccount webAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.ClearWebAccountPictureAsync%28WebAccount%20webAccount%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction PullCookiesAsync(string uriString, string callerPFN)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.PullCookiesAsync(string uriString, string callerPFN) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.PullCookiesAsync%28string%20uriString%2C%20string%20callerPFN%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Credentials.WebAccount>> FindAllProviderWebAccountsForUserAsync(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<WebAccount>> WebAccountManager.FindAllProviderWebAccountsForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CWebAccount%3E%3E%20WebAccountManager.FindAllProviderWebAccountsForUserAsync%28User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountForUserAsync(global::Windows.System.User user, string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountForUserAsync(User user, string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountForUserAsync%28User%20user%2C%20string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountForUserAsync(global::Windows.System.User user, string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountForUserAsync(User user, string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountForUserAsync%28User%20user%2C%20string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountForUserAsync(global::Windows.System.User user, string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope, string perUserWebAccountId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountForUserAsync(User user, string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope, string perUserWebAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountForUserAsync%28User%20user%2C%20string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%2C%20string%20perUserWebAccountId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction InvalidateAppCacheForAllAccountsAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.InvalidateAppCacheForAllAccountsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.InvalidateAppCacheForAllAccountsAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction InvalidateAppCacheForAccountAsync(global::Windows.Security.Credentials.WebAccount webAccount)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.InvalidateAppCacheForAccountAsync(WebAccount webAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.InvalidateAppCacheForAccountAsync%28WebAccount%20webAccount%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountAsync(string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope, string perUserWebAccountId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountAsync(string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope, string perUserWebAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountAsync%28string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%2C%20string%20perUserWebAccountId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction SetPerAppToPerUserAccountAsync(global::Windows.Security.Credentials.WebAccount perAppAccount, string perUserWebAccountId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.SetPerAppToPerUserAccountAsync(WebAccount perAppAccount, string perUserWebAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.SetPerAppToPerUserAccountAsync%28WebAccount%20perAppAccount%2C%20string%20perUserWebAccountId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> GetPerUserFromPerAppAccountAsync(global::Windows.Security.Credentials.WebAccount perAppAccount)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.GetPerUserFromPerAppAccountAsync(WebAccount perAppAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.GetPerUserFromPerAppAccountAsync%28WebAccount%20perAppAccount%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction ClearPerUserFromPerAppAccountAsync(global::Windows.Security.Credentials.WebAccount perAppAccount)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.ClearPerUserFromPerAppAccountAsync(WebAccount perAppAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.ClearPerUserFromPerAppAccountAsync%28WebAccount%20perAppAccount%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccount> AddWebAccountAsync(string webAccountId, string webAccountUserName, global::System.Collections.Generic.IReadOnlyDictionary<string, string> props, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccount> WebAccountManager.AddWebAccountAsync(string webAccountId, string webAccountUserName, IReadOnlyDictionary<string, string> props, WebAccountScope scope) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccount%3E%20WebAccountManager.AddWebAccountAsync%28string%20webAccountId%2C%20string%20webAccountUserName%2C%20IReadOnlyDictionary%3Cstring%2C%20string%3E%20props%2C%20WebAccountScope%20scope%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncAction SetScopeAsync(global::Windows.Security.Credentials.WebAccount webAccount, global::Windows.Security.Authentication.Web.Provider.WebAccountScope scope)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccountManager.SetScopeAsync(WebAccount webAccount, WebAccountScope scope) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccountManager.SetScopeAsync%28WebAccount%20webAccount%2C%20WebAccountScope%20scope%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.Authentication.Web.Provider.WebAccountScope GetScope(global::Windows.Security.Credentials.WebAccount webAccount)
+		{
+			throw new global::System.NotImplementedException("The member WebAccountScope WebAccountManager.GetScope(WebAccount webAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountScope%20WebAccountManager.GetScope%28WebAccount%20webAccount%29");
 		}
 #endif
 	}

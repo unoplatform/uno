@@ -15,6 +15,16 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Perception.Spatial.SpatialStageFrameOfReference Current
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpatialStageFrameOfReference SpatialStageFrameOfReference.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialStageFrameOfReference%20SpatialStageFrameOfReference.Current");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialCoordinateSystem CoordinateSystem
 		{
 			get
@@ -43,19 +53,27 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Perception.Spatial.SpatialStageFrameOfReference Current
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialStageFrameOfReference> RequestNewStageAsync()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpatialStageFrameOfReference SpatialStageFrameOfReference.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialStageFrameOfReference%20SpatialStageFrameOfReference.Current");
-			}
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialStageFrameOfReference> SpatialStageFrameOfReference.RequestNewStageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialStageFrameOfReference%3E%20SpatialStageFrameOfReference.RequestNewStageAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CoordinateSystem.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.MovementRange.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.LookDirectionRange.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.add
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Current.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.operator ==(Windows.Perception.Spatial.SpatialStageFrameOfReference, Windows.Perception.Spatial.SpatialStageFrameOfReference)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.operator !=(Windows.Perception.Spatial.SpatialStageFrameOfReference, Windows.Perception.Spatial.SpatialStageFrameOfReference)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Equals(Windows.Perception.Spatial.SpatialStageFrameOfReference)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialCoordinateSystem GetCoordinateSystemAtCurrentLocation(global::Windows.Perception.Spatial.SpatialLocator locator)
@@ -70,16 +88,10 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member Vector3[] SpatialStageFrameOfReference.TryGetMovementBounds(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%5B%5D%20SpatialStageFrameOfReference.TryGetMovementBounds%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Current.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.add
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialStageFrameOfReference> RequestNewStageAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialStageFrameOfReference> SpatialStageFrameOfReference.RequestNewStageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialStageFrameOfReference%3E%20SpatialStageFrameOfReference.RequestNewStageAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CoordinateSystem.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.LookDirectionRange.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.MovementRange.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> CurrentChanged

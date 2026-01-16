@@ -25,6 +25,16 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.LineDisplayCustomGlyphs CustomGlyphs
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LineDisplayCustomGlyphs ClaimedLineDisplay.CustomGlyphs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayCustomGlyphs%20ClaimedLineDisplay.CustomGlyphs");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.LineDisplayWindow DefaultWindow
 		{
 			get
@@ -75,6 +85,16 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Size MaxBitmapSizeInPixels
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Size ClaimedLineDisplay.MaxBitmapSizeInPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20ClaimedLineDisplay.MaxBitmapSizeInPixels");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string PhysicalDeviceDescription
 		{
 			get
@@ -90,26 +110,6 @@ namespace Windows.Devices.PointOfService
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ClaimedLineDisplay.PhysicalDeviceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClaimedLineDisplay.PhysicalDeviceName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.LineDisplayCustomGlyphs CustomGlyphs
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LineDisplayCustomGlyphs ClaimedLineDisplay.CustomGlyphs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayCustomGlyphs%20ClaimedLineDisplay.CustomGlyphs");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Size MaxBitmapSizeInPixels
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Size ClaimedLineDisplay.MaxBitmapSizeInPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20ClaimedLineDisplay.MaxBitmapSizeInPixels");
 			}
 		}
 #endif
@@ -133,14 +133,38 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceId.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Capabilities.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.PhysicalDeviceName.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.PhysicalDeviceDescription.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceControlDescription.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceControlVersion.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceServiceVersion.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DefaultWindow.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> FromIdAsync(string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedLineDisplay> ClaimedLineDisplay.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CClaimedLineDisplay%3E%20ClaimedLineDisplay.FromIdAsync%28string%20deviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector()
+		{
+			throw new global::System.NotImplementedException("The member string ClaimedLineDisplay.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClaimedLineDisplay.GetDeviceSelector%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
+		{
+			throw new global::System.NotImplementedException("The member string ClaimedLineDisplay.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClaimedLineDisplay.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.operator ==(Windows.Devices.PointOfService.ClaimedLineDisplay, Windows.Devices.PointOfService.ClaimedLineDisplay)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.operator !=(Windows.Devices.PointOfService.ClaimedLineDisplay, Windows.Devices.PointOfService.ClaimedLineDisplay)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Equals(Windows.Devices.PointOfService.ClaimedLineDisplay)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RetainDevice()
@@ -171,12 +195,6 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayPowerStatus> ClaimedLineDisplay.CheckPowerStatusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLineDisplayPowerStatus%3E%20ClaimedLineDisplay.CheckPowerStatusAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.StatusUpdated.add
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.StatusUpdated.remove
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.SupportedScreenSizesInCharacters.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.MaxBitmapSizeInPixels.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.SupportedCharacterSets.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.CustomGlyphs.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.LineDisplayAttributes GetAttributes()
@@ -233,6 +251,8 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayStoredBitmap> ClaimedLineDisplay.TryStoreStorageFileBitmapAsync(StorageFile bitmap, LineDisplayHorizontalAlignment horizontalAlignment, LineDisplayVerticalAlignment verticalAlignment, int widthInPixels) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLineDisplayStoredBitmap%3E%20ClaimedLineDisplay.TryStoreStorageFileBitmapAsync%28StorageFile%20bitmap%2C%20LineDisplayHorizontalAlignment%20horizontalAlignment%2C%20LineDisplayVerticalAlignment%20verticalAlignment%2C%20int%20widthInPixels%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.StatusUpdated.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.StatusUpdated.remove
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Closed.add
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Closed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -242,27 +262,19 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedLineDisplay", "void ClaimedLineDisplay.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> FromIdAsync(string deviceId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedLineDisplay> ClaimedLineDisplay.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CClaimedLineDisplay%3E%20ClaimedLineDisplay.FromIdAsync%28string%20deviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector()
-		{
-			throw new global::System.NotImplementedException("The member string ClaimedLineDisplay.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClaimedLineDisplay.GetDeviceSelector%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
-		{
-			throw new global::System.NotImplementedException("The member string ClaimedLineDisplay.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClaimedLineDisplay.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Capabilities.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.CustomGlyphs.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DefaultWindow.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceControlDescription.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceControlVersion.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceId.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.DeviceServiceVersion.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.MaxBitmapSizeInPixels.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.PhysicalDeviceDescription.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.PhysicalDeviceName.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.SupportedCharacterSets.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.SupportedScreenSizesInCharacters.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedLineDisplay, object> ReleaseDeviceRequested

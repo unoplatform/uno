@@ -3,26 +3,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TextHighlighter
 	{
-#if false || false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Brush Foreground
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(ForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(ForegroundProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty BackgroundProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Background), typeof(global::Microsoft.UI.Xaml.Media.Brush),
+			typeof(global::Microsoft.UI.Xaml.Documents.TextHighlighter),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
 #endif
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty ForegroundProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Foreground), typeof(global::Microsoft.UI.Xaml.Media.Brush),
+			typeof(global::Microsoft.UI.Xaml.Documents.TextHighlighter),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Brush Background
 		{
@@ -36,7 +38,21 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 #endif
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.Brush Foreground
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(ForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(ForegroundProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.TextRange> Ranges
 		{
@@ -46,23 +62,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 #endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty BackgroundProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Background), typeof(global::Microsoft.UI.Xaml.Media.Brush),
-			typeof(global::Microsoft.UI.Xaml.Documents.TextHighlighter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ForegroundProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Foreground), typeof(global::Microsoft.UI.Xaml.Media.Brush),
-			typeof(global::Microsoft.UI.Xaml.Documents.TextHighlighter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
-#endif
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TextHighlighter()
 		{
@@ -70,12 +70,27 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.TextHighlighter()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Ranges.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Foreground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Foreground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.BackgroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.ForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.TextHighlighter(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.operator ==(Microsoft.UI.Xaml.Documents.TextHighlighter, Microsoft.UI.Xaml.Documents.TextHighlighter)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.operator !=(Microsoft.UI.Xaml.Documents.TextHighlighter, Microsoft.UI.Xaml.Documents.TextHighlighter)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Equals(Microsoft.UI.Xaml.Documents.TextHighlighter)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.TextHighlighter(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Background.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.ForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.BackgroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Foreground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Foreground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Ranges.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

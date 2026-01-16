@@ -10,43 +10,15 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnRoute> Ipv6InclusionRoutes
+		public bool ExcludeLocalSubnets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv6InclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv6InclusionRoutes");
+				throw new global::System.NotImplementedException("The member bool VpnRouteAssignment.ExcludeLocalSubnets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnRouteAssignment.ExcludeLocalSubnets");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv6InclusionRoutes");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnRoute> Ipv6ExclusionRoutes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv6ExclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv6ExclusionRoutes");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv6ExclusionRoutes");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnRoute> Ipv4InclusionRoutes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv4InclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv4InclusionRoutes");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv4InclusionRoutes");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "bool VpnRouteAssignment.ExcludeLocalSubnets");
 			}
 		}
 #endif
@@ -66,15 +38,43 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ExcludeLocalSubnets
+		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnRoute> Ipv4InclusionRoutes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnRouteAssignment.ExcludeLocalSubnets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnRouteAssignment.ExcludeLocalSubnets");
+				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv4InclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv4InclusionRoutes");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "bool VpnRouteAssignment.ExcludeLocalSubnets");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv4InclusionRoutes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnRoute> Ipv6ExclusionRoutes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv6ExclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv6ExclusionRoutes");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv6ExclusionRoutes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnRoute> Ipv6InclusionRoutes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv6InclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv6InclusionRoutes");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv6InclusionRoutes");
 			}
 		}
 #endif
@@ -86,15 +86,26 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.VpnRouteAssignment()
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4InclusionRoutes.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6InclusionRoutes.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4InclusionRoutes.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6InclusionRoutes.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4ExclusionRoutes.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6ExclusionRoutes.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4ExclusionRoutes.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6ExclusionRoutes.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.ExcludeLocalSubnets.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.operator ==(Windows.Networking.Vpn.VpnRouteAssignment, Windows.Networking.Vpn.VpnRouteAssignment)
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.operator !=(Windows.Networking.Vpn.VpnRouteAssignment, Windows.Networking.Vpn.VpnRouteAssignment)
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Equals(Windows.Networking.Vpn.VpnRouteAssignment)
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.ExcludeLocalSubnets.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.ExcludeLocalSubnets.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4ExclusionRoutes.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4ExclusionRoutes.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4InclusionRoutes.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4InclusionRoutes.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6ExclusionRoutes.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6ExclusionRoutes.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6InclusionRoutes.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6InclusionRoutes.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

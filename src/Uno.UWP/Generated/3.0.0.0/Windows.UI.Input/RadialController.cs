@@ -15,15 +15,11 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool UseAutomaticHapticFeedback
+		public global::Windows.UI.Input.RadialControllerMenu Menu
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialController.UseAutomaticHapticFeedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialController.UseAutomaticHapticFeedback");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialController", "bool RadialController.UseAutomaticHapticFeedback");
+				throw new global::System.NotImplementedException("The member RadialControllerMenu RadialController.Menu is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenu%20RadialController.Menu");
 			}
 		}
 #endif
@@ -43,39 +39,19 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.RadialControllerMenu Menu
+		public bool UseAutomaticHapticFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialControllerMenu RadialController.Menu is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenu%20RadialController.Menu");
+				throw new global::System.NotImplementedException("The member bool RadialController.UseAutomaticHapticFeedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialController.UseAutomaticHapticFeedback");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialController", "bool RadialController.UseAutomaticHapticFeedback");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialController.Menu.get
-		// Forced skipping of method Windows.UI.Input.RadialController.RotationResolutionInDegrees.get
-		// Forced skipping of method Windows.UI.Input.RadialController.RotationResolutionInDegrees.set
-		// Forced skipping of method Windows.UI.Input.RadialController.UseAutomaticHapticFeedback.get
-		// Forced skipping of method Windows.UI.Input.RadialController.UseAutomaticHapticFeedback.set
-		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactStarted.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactStarted.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactEnded.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactEnded.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactContinued.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactContinued.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ControlLost.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ControlLost.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.RotationChanged.add
-		// Forced skipping of method Windows.UI.Input.RadialController.RotationChanged.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonClicked.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonClicked.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ControlAcquired.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ControlAcquired.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonPressed.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonPressed.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonHolding.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonHolding.remove
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonReleased.add
-		// Forced skipping of method Windows.UI.Input.RadialController.ButtonReleased.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -90,6 +66,42 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member RadialController RadialController.CreateForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialController%20RadialController.CreateForCurrentView%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.RadialController.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.RadialController.operator ==(Windows.UI.Input.RadialController, Windows.UI.Input.RadialController)
+		// Forced skipping of method Windows.UI.Input.RadialController.operator !=(Windows.UI.Input.RadialController, Windows.UI.Input.RadialController)
+		// Forced skipping of method Windows.UI.Input.RadialController.Equals(Windows.UI.Input.RadialController)
+		// Forced skipping of method Windows.UI.Input.RadialController.Equals(object)
+		// Forced skipping of method Windows.UI.Input.RadialController.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.RadialController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.RadialController.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonClicked.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonClicked.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ControlAcquired.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ControlAcquired.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ControlLost.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ControlLost.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.RotationChanged.add
+		// Forced skipping of method Windows.UI.Input.RadialController.RotationChanged.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactContinued.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactContinued.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactEnded.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactEnded.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactStarted.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ScreenContactStarted.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonHolding.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonHolding.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonPressed.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonPressed.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonReleased.add
+		// Forced skipping of method Windows.UI.Input.RadialController.ButtonReleased.remove
+		// Forced skipping of method Windows.UI.Input.RadialController.Menu.get
+		// Forced skipping of method Windows.UI.Input.RadialController.RotationResolutionInDegrees.get
+		// Forced skipping of method Windows.UI.Input.RadialController.RotationResolutionInDegrees.set
+		// Forced skipping of method Windows.UI.Input.RadialController.UseAutomaticHapticFeedback.get
+		// Forced skipping of method Windows.UI.Input.RadialController.UseAutomaticHapticFeedback.set
+		// Forced skipping of method Windows.UI.Input.RadialController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonClickedEventArgs> ButtonClicked

@@ -8,21 +8,6 @@ namespace Windows.Web.Http
 #endif
 	public partial class HttpRequestMessage : global::System.IDisposable, global::Windows.Foundation.IStringable
 	{
-		// Skipping already declared property RequestUri
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.HttpMethod Method
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpRequestMessage.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMethod%20HttpRequestMessage.Method");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "HttpMethod HttpRequestMessage.Method");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.IHttpContent Content
@@ -40,6 +25,20 @@ namespace Windows.Web.Http
 		// Skipping already declared property Headers
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.HttpMethod Method
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpMethod HttpRequestMessage.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMethod%20HttpRequestMessage.Method");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "HttpMethod HttpRequestMessage.Method");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IDictionary<string, object> Properties
 		{
 			get
@@ -48,6 +47,7 @@ namespace Windows.Web.Http
 			}
 		}
 #endif
+		// Skipping already declared property RequestUri
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.HttpTransportInformation TransportInformation
@@ -58,10 +58,28 @@ namespace Windows.Web.Http
 			}
 		}
 #endif
-		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
 		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage()
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage()
+		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.operator ==(Windows.Web.Http.HttpRequestMessage, Windows.Web.Http.HttpRequestMessage)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.operator !=(Windows.Web.Http.HttpRequestMessage, Windows.Web.Http.HttpRequestMessage)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Equals(Windows.Web.Http.HttpRequestMessage)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "void HttpRequestMessage.Dispose()");
+		}
+#endif
+		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.ToString()
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Content.get
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Content.set
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Headers.get
@@ -71,14 +89,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.RequestUri.get
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.RequestUri.set
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.TransportInformation.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "void HttpRequestMessage.Dispose()");
-		}
-#endif
-		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.ToString()
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

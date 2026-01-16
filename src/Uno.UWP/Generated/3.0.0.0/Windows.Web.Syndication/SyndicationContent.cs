@@ -10,29 +10,11 @@ namespace Windows.Web.Syndication
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri SourceUri
+		public global::System.Collections.Generic.IList<global::Windows.Web.Syndication.SyndicationAttribute> AttributeExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationContent.SourceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SyndicationContent.SourceUri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "Uri SyndicationContent.SourceUri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string NodeValue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SyndicationContent.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationContent.NodeValue");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "string SyndicationContent.NodeValue");
+				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationContent.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20SyndicationContent.AttributeExtensions");
 			}
 		}
 #endif
@@ -47,6 +29,16 @@ namespace Windows.Web.Syndication
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "Uri SyndicationContent.BaseUri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Web.Syndication.ISyndicationNode> ElementExtensions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> SyndicationContent.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISyndicationNode%3E%20SyndicationContent.ElementExtensions");
 			}
 		}
 #endif
@@ -94,21 +86,29 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Web.Syndication.SyndicationAttribute> AttributeExtensions
+		public string NodeValue
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationContent.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20SyndicationContent.AttributeExtensions");
+				throw new global::System.NotImplementedException("The member string SyndicationContent.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationContent.NodeValue");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "string SyndicationContent.NodeValue");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Web.Syndication.ISyndicationNode> ElementExtensions
+		public global::System.Uri SourceUri
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> SyndicationContent.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISyndicationNode%3E%20SyndicationContent.ElementExtensions");
+				throw new global::System.NotImplementedException("The member Uri SyndicationContent.SourceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SyndicationContent.SourceUri");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "Uri SyndicationContent.SourceUri");
 			}
 		}
 #endif
@@ -156,6 +156,14 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SyndicationContent()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "SyndicationContent.SyndicationContent()");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.SyndicationContent()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationContent(string text, global::Windows.Web.Syndication.SyndicationTextType type)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "SyndicationContent.SyndicationContent(string text, SyndicationTextType type)");
@@ -170,32 +178,16 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.SyndicationContent(System.Uri)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public SyndicationContent()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationContent", "SyndicationContent.SyndicationContent()");
-		}
-#endif
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.SyndicationContent()
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Text.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Text.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Type.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Type.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Xml.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Xml.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeName.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeName.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeNamespace.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeNamespace.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeValue.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeValue.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Language.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Language.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.BaseUri.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.BaseUri.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.AttributeExtensions.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.ElementExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.operator ==(Windows.Web.Syndication.SyndicationContent, Windows.Web.Syndication.SyndicationContent)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.operator !=(Windows.Web.Syndication.SyndicationContent, Windows.Web.Syndication.SyndicationContent)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Equals(Windows.Web.Syndication.SyndicationContent)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Equals(object)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.GetHashCode()
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
@@ -203,8 +195,27 @@ namespace Windows.Web.Syndication
 			throw new global::System.NotImplementedException("The member XmlDocument SyndicationContent.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20SyndicationContent.GetXmlDocument%28SyndicationFormat%20format%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.AttributeExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.BaseUri.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.BaseUri.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.ElementExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Language.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Language.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeName.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeName.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeNamespace.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeNamespace.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeValue.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.NodeValue.set
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.SourceUri.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.SourceUri.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Text.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Text.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Type.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Type.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Xml.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.Xml.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Syndication.ISyndicationText
 		// Processing: Windows.Web.Syndication.ISyndicationNode
 	}

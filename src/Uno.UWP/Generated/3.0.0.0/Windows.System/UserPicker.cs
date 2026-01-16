@@ -10,20 +10,6 @@ namespace Windows.System
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User SuggestedSelectedUser
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User UserPicker.SuggestedSelectedUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserPicker.SuggestedSelectedUser");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserPicker", "User UserPicker.SuggestedSelectedUser");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AllowGuestAccounts
 		{
 			get
@@ -38,23 +24,27 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User SuggestedSelectedUser
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User UserPicker.SuggestedSelectedUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserPicker.SuggestedSelectedUser");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserPicker", "User UserPicker.SuggestedSelectedUser");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UserPicker()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserPicker", "UserPicker.UserPicker()");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserPicker.UserPicker()
-		// Forced skipping of method Windows.System.UserPicker.AllowGuestAccounts.get
-		// Forced skipping of method Windows.System.UserPicker.AllowGuestAccounts.set
-		// Forced skipping of method Windows.System.UserPicker.SuggestedSelectedUser.get
-		// Forced skipping of method Windows.System.UserPicker.SuggestedSelectedUser.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.User> PickSingleUserAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<User> UserPicker.PickSingleUserAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUser%3E%20UserPicker.PickSingleUserAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.System.UserPicker.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -62,5 +52,27 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member bool UserPicker.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserPicker.IsSupported%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.UserPicker.FromAbi(nint)
+		// Forced skipping of method Windows.System.UserPicker.operator ==(Windows.System.UserPicker, Windows.System.UserPicker)
+		// Forced skipping of method Windows.System.UserPicker.operator !=(Windows.System.UserPicker, Windows.System.UserPicker)
+		// Forced skipping of method Windows.System.UserPicker.Equals(Windows.System.UserPicker)
+		// Forced skipping of method Windows.System.UserPicker.Equals(object)
+		// Forced skipping of method Windows.System.UserPicker.GetHashCode()
+		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.User> PickSingleUserAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<User> UserPicker.PickSingleUserAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUser%3E%20UserPicker.PickSingleUserAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.System.UserPicker.AllowGuestAccounts.get
+		// Forced skipping of method Windows.System.UserPicker.AllowGuestAccounts.set
+		// Forced skipping of method Windows.System.UserPicker.SuggestedSelectedUser.get
+		// Forced skipping of method Windows.System.UserPicker.SuggestedSelectedUser.set
+		// Forced skipping of method Windows.System.UserPicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

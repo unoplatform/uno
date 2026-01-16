@@ -10,62 +10,6 @@ namespace Windows.Storage.Search
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserSearchFilter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string QueryOptions.UserSearchFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20QueryOptions.UserSearchFilter");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "string QueryOptions.UserSearchFilter");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string QueryOptions.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20QueryOptions.Language");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "string QueryOptions.Language");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Search.IndexerOption IndexerOption
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IndexerOption QueryOptions.IndexerOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IndexerOption%20QueryOptions.IndexerOption");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "IndexerOption QueryOptions.IndexerOption");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Search.FolderDepth FolderDepth
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FolderDepth QueryOptions.FolderDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FolderDepth%20QueryOptions.FolderDepth");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "FolderDepth QueryOptions.FolderDepth");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ApplicationSearchFilter
 		{
 			get
@@ -100,11 +44,53 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Search.FolderDepth FolderDepth
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FolderDepth QueryOptions.FolderDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FolderDepth%20QueryOptions.FolderDepth");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "FolderDepth QueryOptions.FolderDepth");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GroupPropertyName
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string QueryOptions.GroupPropertyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20QueryOptions.GroupPropertyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Search.IndexerOption IndexerOption
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IndexerOption QueryOptions.IndexerOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IndexerOption%20QueryOptions.IndexerOption");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "IndexerOption QueryOptions.IndexerOption");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Language
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string QueryOptions.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20QueryOptions.Language");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "string QueryOptions.Language");
 			}
 		}
 #endif
@@ -130,6 +116,28 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string UserSearchFilter
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string QueryOptions.UserSearchFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20QueryOptions.UserSearchFilter");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "string QueryOptions.UserSearchFilter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public QueryOptions()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions()");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public QueryOptions(global::Windows.Storage.Search.CommonFileQuery query, global::System.Collections.Generic.IEnumerable<string> fileTypeFilter)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions(CommonFileQuery query, IEnumerable<string> fileTypeFilter)");
@@ -144,28 +152,16 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions(Windows.Storage.Search.CommonFolderQuery)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public QueryOptions()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions()");
-		}
-#endif
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions()
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.FileTypeFilter.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.FolderDepth.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.FolderDepth.set
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.ApplicationSearchFilter.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.ApplicationSearchFilter.set
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.UserSearchFilter.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.UserSearchFilter.set
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.Language.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.Language.set
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.IndexerOption.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.IndexerOption.set
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.SortOrder.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.GroupPropertyName.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.DateStackOption.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.operator ==(Windows.Storage.Search.QueryOptions, Windows.Storage.Search.QueryOptions)
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.operator !=(Windows.Storage.Search.QueryOptions, Windows.Storage.Search.QueryOptions)
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.Equals(Windows.Storage.Search.QueryOptions)
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SaveToString()
@@ -194,6 +190,21 @@ namespace Windows.Storage.Search
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "void QueryOptions.SetPropertyPrefetch(PropertyPrefetchOptions options, IEnumerable<string> propertiesToRetrieve)");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.ApplicationSearchFilter.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.ApplicationSearchFilter.set
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.DateStackOption.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.FileTypeFilter.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.FolderDepth.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.FolderDepth.set
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.GroupPropertyName.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.IndexerOption.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.IndexerOption.set
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.Language.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.Language.set
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.SortOrder.get
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.StorageProviderIdFilter.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.UserSearchFilter.get
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.UserSearchFilter.set
+		// Forced skipping of method Windows.Storage.Search.QueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

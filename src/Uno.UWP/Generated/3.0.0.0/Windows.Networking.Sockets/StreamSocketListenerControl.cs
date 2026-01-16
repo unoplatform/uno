@@ -15,43 +15,15 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Sockets.SocketQualityOfService QualityOfService
+		public bool KeepAlive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketQualityOfService StreamSocketListenerControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketQualityOfService%20StreamSocketListenerControl.QualityOfService");
+				throw new global::System.NotImplementedException("The member bool StreamSocketListenerControl.KeepAlive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StreamSocketListenerControl.KeepAlive");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "SocketQualityOfService StreamSocketListenerControl.QualityOfService");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte OutboundUnicastHopLimit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte StreamSocketListenerControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20StreamSocketListenerControl.OutboundUnicastHopLimit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "byte StreamSocketListenerControl.OutboundUnicastHopLimit");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint OutboundBufferSizeInBytes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint StreamSocketListenerControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StreamSocketListenerControl.OutboundBufferSizeInBytes");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "uint StreamSocketListenerControl.OutboundBufferSizeInBytes");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "bool StreamSocketListenerControl.KeepAlive");
 			}
 		}
 #endif
@@ -71,27 +43,66 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool KeepAlive
+		public uint OutboundBufferSizeInBytes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamSocketListenerControl.KeepAlive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StreamSocketListenerControl.KeepAlive");
+				throw new global::System.NotImplementedException("The member uint StreamSocketListenerControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StreamSocketListenerControl.OutboundBufferSizeInBytes");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "bool StreamSocketListenerControl.KeepAlive");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "uint StreamSocketListenerControl.OutboundBufferSizeInBytes");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.QualityOfService.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.QualityOfService.set
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.NoDelay.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.NoDelay.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public byte OutboundUnicastHopLimit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member byte StreamSocketListenerControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20StreamSocketListenerControl.OutboundUnicastHopLimit");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "byte StreamSocketListenerControl.OutboundUnicastHopLimit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Sockets.SocketQualityOfService QualityOfService
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SocketQualityOfService StreamSocketListenerControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketQualityOfService%20StreamSocketListenerControl.QualityOfService");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "SocketQualityOfService StreamSocketListenerControl.QualityOfService");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.operator ==(Windows.Networking.Sockets.StreamSocketListenerControl, Windows.Networking.Sockets.StreamSocketListenerControl)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.operator !=(Windows.Networking.Sockets.StreamSocketListenerControl, Windows.Networking.Sockets.StreamSocketListenerControl)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.Equals(Windows.Networking.Sockets.StreamSocketListenerControl)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.KeepAlive.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.KeepAlive.set
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.NoDelay.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.NoDelay.set
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.OutboundBufferSizeInBytes.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.OutboundBufferSizeInBytes.set
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.OutboundUnicastHopLimit.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.OutboundUnicastHopLimit.set
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.QualityOfService.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.QualityOfService.set
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,146 +10,6 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UnicodeString
-		{
-			get
-			{
-				return (string)this.GetValue(UnicodeStringProperty);
-			}
-			set
-			{
-				this.SetValue(UnicodeStringProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.StyleSimulations StyleSimulations
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.StyleSimulations)this.GetValue(StyleSimulationsProperty);
-			}
-			set
-			{
-				this.SetValue(StyleSimulationsProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OriginY
-		{
-			get
-			{
-				return (double)this.GetValue(OriginYProperty);
-			}
-			set
-			{
-				this.SetValue(OriginYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OriginX
-		{
-			get
-			{
-				return (double)this.GetValue(OriginXProperty);
-			}
-			set
-			{
-				this.SetValue(OriginXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsColorFontEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsColorFontEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsColorFontEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Indices
-		{
-			get
-			{
-				return (string)this.GetValue(IndicesProperty);
-			}
-			set
-			{
-				this.SetValue(IndicesProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri FontUri
-		{
-			get
-			{
-				return (global::System.Uri)this.GetValue(FontUriProperty);
-			}
-			set
-			{
-				this.SetValue(FontUriProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double FontRenderingEmSize
-		{
-			get
-			{
-				return (double)this.GetValue(FontRenderingEmSizeProperty);
-			}
-			set
-			{
-				this.SetValue(FontRenderingEmSizeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Brush Fill
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(FillProperty);
-			}
-			set
-			{
-				this.SetValue(FillProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ColorFontPaletteIndex
-		{
-			get
-			{
-				return (int)this.GetValue(ColorFontPaletteIndexProperty);
-			}
-			set
-			{
-				this.SetValue(ColorFontPaletteIndexProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ColorFontPaletteIndexProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ColorFontPaletteIndex), typeof(int),
@@ -230,41 +90,192 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int ColorFontPaletteIndex
+		{
+			get
+			{
+				return (int)this.GetValue(ColorFontPaletteIndexProperty);
+			}
+			set
+			{
+				this.SetValue(ColorFontPaletteIndexProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.Brush Fill
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(FillProperty);
+			}
+			set
+			{
+				this.SetValue(FillProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double FontRenderingEmSize
+		{
+			get
+			{
+				return (double)this.GetValue(FontRenderingEmSizeProperty);
+			}
+			set
+			{
+				this.SetValue(FontRenderingEmSizeProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri FontUri
+		{
+			get
+			{
+				return (global::System.Uri)this.GetValue(FontUriProperty);
+			}
+			set
+			{
+				this.SetValue(FontUriProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Indices
+		{
+			get
+			{
+				return (string)this.GetValue(IndicesProperty);
+			}
+			set
+			{
+				this.SetValue(IndicesProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsColorFontEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsColorFontEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsColorFontEnabledProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OriginX
+		{
+			get
+			{
+				return (double)this.GetValue(OriginXProperty);
+			}
+			set
+			{
+				this.SetValue(OriginXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OriginY
+		{
+			get
+			{
+				return (double)this.GetValue(OriginYProperty);
+			}
+			set
+			{
+				this.SetValue(OriginYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.StyleSimulations StyleSimulations
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.StyleSimulations)this.GetValue(StyleSimulationsProperty);
+			}
+			set
+			{
+				this.SetValue(StyleSimulationsProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string UnicodeString
+		{
+			get
+			{
+				return (string)this.GetValue(UnicodeStringProperty);
+			}
+			set
+			{
+				this.SetValue(UnicodeStringProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Glyphs() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.Glyphs", "Glyphs.Glyphs()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Glyphs()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Indices.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Indices.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontUri.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontUri.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulations.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulations.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndexProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FillProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontRenderingEmSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontUriProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IndicesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsColorFontEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulationsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeStringProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.operator ==(Microsoft.UI.Xaml.Documents.Glyphs, Microsoft.UI.Xaml.Documents.Glyphs)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.operator !=(Microsoft.UI.Xaml.Documents.Glyphs, Microsoft.UI.Xaml.Documents.Glyphs)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Equals(Microsoft.UI.Xaml.Documents.Glyphs)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndex.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Fill.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Fill.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontRenderingEmSize.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontRenderingEmSize.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontUri.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontUri.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Indices.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Indices.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsColorFontEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsColorFontEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Fill.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Fill.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsColorFontEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsColorFontEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndex.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeStringProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IndicesProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontUriProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulationsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontRenderingEmSizeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FillProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsColorFontEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndexProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulations.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulations.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

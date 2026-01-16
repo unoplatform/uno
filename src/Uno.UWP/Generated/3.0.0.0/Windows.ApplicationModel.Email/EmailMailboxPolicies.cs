@@ -15,29 +15,15 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailMailboxSmimeSigningAlgorithm? RequiredSmimeSigningAlgorithm
+		public bool AllowSmimeSoftCertificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSmimeSigningAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.AllowSmimeSoftCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxPolicies.AllowSmimeSoftCertificates");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailMailboxSmimeEncryptionAlgorithm? RequiredSmimeEncryptionAlgorithm
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSmimeEncryptionAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.AllowSmimeSoftCertificates");
 			}
 		}
 #endif
@@ -57,15 +43,15 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowSmimeSoftCertificates
+		public bool MustEncryptSmimeMessages
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.AllowSmimeSoftCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxPolicies.AllowSmimeSoftCertificates");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustEncryptSmimeMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxPolicies.MustEncryptSmimeMessages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.AllowSmimeSoftCertificates");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustEncryptSmimeMessages");
 			}
 		}
 #endif
@@ -85,29 +71,54 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool MustEncryptSmimeMessages
+		public global::Windows.ApplicationModel.Email.EmailMailboxSmimeEncryptionAlgorithm? RequiredSmimeEncryptionAlgorithm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustEncryptSmimeMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxPolicies.MustEncryptSmimeMessages");
+				throw new global::System.NotImplementedException("The member EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSmimeEncryptionAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustEncryptSmimeMessages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Email.EmailMailboxSmimeSigningAlgorithm? RequiredSmimeSigningAlgorithm
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSmimeSigningAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.operator ==(Windows.ApplicationModel.Email.EmailMailboxPolicies, Windows.ApplicationModel.Email.EmailMailboxPolicies)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.operator !=(Windows.ApplicationModel.Email.EmailMailboxPolicies, Windows.ApplicationModel.Email.EmailMailboxPolicies)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.Equals(Windows.ApplicationModel.Email.EmailMailboxPolicies)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowSmimeSoftCertificates.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeSigningAlgorithm.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.MustEncryptSmimeMessages.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.MustSignSmimeMessages.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowSmimeSoftCertificates.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeSigningAlgorithm.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.MustEncryptSmimeMessages.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.MustEncryptSmimeMessages.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.MustSignSmimeMessages.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.MustSignSmimeMessages.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeSigningAlgorithm.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeSigningAlgorithm.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

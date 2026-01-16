@@ -20,6 +20,16 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PaymentRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentRequest.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Payments.PaymentMerchantInfo MerchantInfo
 		{
 			get
@@ -50,24 +60,6 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PaymentRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentRequest.Id");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PaymentRequest(global::Windows.ApplicationModel.Payments.PaymentDetails details, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentMethodData> methodData, global::Windows.ApplicationModel.Payments.PaymentMerchantInfo merchantInfo, global::Windows.ApplicationModel.Payments.PaymentOptions options, string id)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequest", "PaymentRequest.PaymentRequest(PaymentDetails details, IEnumerable<PaymentMethodData> methodData, PaymentMerchantInfo merchantInfo, PaymentOptions options, string id)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.PaymentRequest(Windows.ApplicationModel.Payments.PaymentDetails, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentMethodData>, Windows.ApplicationModel.Payments.PaymentMerchantInfo, Windows.ApplicationModel.Payments.PaymentOptions, string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentRequest(global::Windows.ApplicationModel.Payments.PaymentDetails details, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentMethodData> methodData)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequest", "PaymentRequest.PaymentRequest(PaymentDetails details, IEnumerable<PaymentMethodData> methodData)");
@@ -90,10 +82,29 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.PaymentRequest(Windows.ApplicationModel.Payments.PaymentDetails, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentMethodData>, Windows.ApplicationModel.Payments.PaymentMerchantInfo, Windows.ApplicationModel.Payments.PaymentOptions)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.MerchantInfo.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public PaymentRequest(global::Windows.ApplicationModel.Payments.PaymentDetails details, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentMethodData> methodData, global::Windows.ApplicationModel.Payments.PaymentMerchantInfo merchantInfo, global::Windows.ApplicationModel.Payments.PaymentOptions options, string id)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequest", "PaymentRequest.PaymentRequest(PaymentDetails details, IEnumerable<PaymentMethodData> methodData, PaymentMerchantInfo merchantInfo, PaymentOptions options, string id)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.PaymentRequest(Windows.ApplicationModel.Payments.PaymentDetails, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentMethodData>, Windows.ApplicationModel.Payments.PaymentMerchantInfo, Windows.ApplicationModel.Payments.PaymentOptions, string)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.operator ==(Windows.ApplicationModel.Payments.PaymentRequest, Windows.ApplicationModel.Payments.PaymentRequest)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.operator !=(Windows.ApplicationModel.Payments.PaymentRequest, Windows.ApplicationModel.Payments.PaymentRequest)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Equals(Windows.ApplicationModel.Payments.PaymentRequest)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Details.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.MerchantInfo.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.MethodData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Options.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,23 +23,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.ContainsFocus.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Input.FocusNavigationResult NavigateFocus(global::Microsoft.UI.Input.FocusNavigationRequest request)
-		{
-			throw new global::System.NotImplementedException("The member FocusNavigationResult InputFocusNavigationHost.NavigateFocus(FocusNavigationRequest request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationResult%20InputFocusNavigationHost.NavigateFocus%28FocusNavigationRequest%20request%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.remove
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.add
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Input.InputFocusNavigationHost GetForSiteLink(global::Microsoft.UI.Content.IContentSiteLink contentSiteLink)
-		{
-			throw new global::System.NotImplementedException("The member InputFocusNavigationHost InputFocusNavigationHost.GetForSiteLink(IContentSiteLink contentSiteLink) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputFocusNavigationHost%20InputFocusNavigationHost.GetForSiteLink%28IContentSiteLink%20contentSiteLink%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputFocusNavigationHost GetForSiteBridge(global::Microsoft.UI.Content.IContentSiteBridge site)
@@ -47,6 +31,33 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputFocusNavigationHost InputFocusNavigationHost.GetForSiteBridge(IContentSiteBridge site) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputFocusNavigationHost%20InputFocusNavigationHost.GetForSiteBridge%28IContentSiteBridge%20site%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Input.InputFocusNavigationHost GetForSiteLink(global::Microsoft.UI.Content.IContentSiteLink contentSiteLink)
+		{
+			throw new global::System.NotImplementedException("The member InputFocusNavigationHost InputFocusNavigationHost.GetForSiteLink(IContentSiteLink contentSiteLink) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputFocusNavigationHost%20InputFocusNavigationHost.GetForSiteLink%28IContentSiteLink%20contentSiteLink%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.operator ==(Microsoft.UI.Input.InputFocusNavigationHost, Microsoft.UI.Input.InputFocusNavigationHost)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.operator !=(Microsoft.UI.Input.InputFocusNavigationHost, Microsoft.UI.Input.InputFocusNavigationHost)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.Equals(Microsoft.UI.Input.InputFocusNavigationHost)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.WinRT.IWinRTObject.NativeObject.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Input.FocusNavigationResult NavigateFocus(global::Microsoft.UI.Input.FocusNavigationRequest request)
+		{
+			throw new global::System.NotImplementedException("The member FocusNavigationResult InputFocusNavigationHost.NavigateFocus(FocusNavigationRequest request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationResult%20InputFocusNavigationHost.NavigateFocus%28FocusNavigationRequest%20request%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.add
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.remove
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.ContainsFocus.get
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputFocusNavigationHost, global::Microsoft.UI.Input.FocusNavigationRequestEventArgs> DepartFocusRequested

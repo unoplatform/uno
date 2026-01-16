@@ -8,48 +8,13 @@ namespace Windows.Graphics.Imaging
 #endif
 	public partial class BitmapEncoder
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsThumbnailGenerated
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool BitmapEncoder.IsThumbnailGenerated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapEncoder.IsThumbnailGenerated");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "bool BitmapEncoder.IsThumbnailGenerated");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GeneratedThumbnailWidth
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BitmapEncoder.GeneratedThumbnailWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapEncoder.GeneratedThumbnailWidth");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "uint BitmapEncoder.GeneratedThumbnailWidth");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GeneratedThumbnailHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BitmapEncoder.GeneratedThumbnailHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapEncoder.GeneratedThumbnailHeight");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "uint BitmapEncoder.GeneratedThumbnailHeight");
-			}
-		}
-#endif
+		// Skipping already declared property BmpEncoderId
+		// Skipping already declared property GifEncoderId
+		// Skipping already declared property HeifEncoderId
+		// Skipping already declared property JpegEncoderId
+		// Skipping already declared property JpegXREncoderId
+		// Skipping already declared property PngEncoderId
+		// Skipping already declared property TiffEncoderId
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Imaging.BitmapProperties BitmapContainerProperties
@@ -90,65 +55,49 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 #endif
-		// Skipping already declared property BmpEncoderId
-		// Skipping already declared property GifEncoderId
-		// Skipping already declared property JpegEncoderId
-		// Skipping already declared property JpegXREncoderId
-		// Skipping already declared property PngEncoderId
-		// Skipping already declared property TiffEncoderId
-		// Skipping already declared property HeifEncoderId
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.EncoderInformation.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapProperties.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapContainerProperties.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.IsThumbnailGenerated.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.IsThumbnailGenerated.set
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailWidth.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailWidth.set
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailHeight.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailHeight.set
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapTransform.get
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void SetPixelData(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint GeneratedThumbnailHeight
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "void BitmapEncoder.SetPixelData(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BitmapEncoder.GeneratedThumbnailHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapEncoder.GeneratedThumbnailHeight");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "uint BitmapEncoder.GeneratedThumbnailHeight");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync()
+		public uint GeneratedThumbnailWidth
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28%29");
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BitmapEncoder.GeneratedThumbnailWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapEncoder.GeneratedThumbnailWidth");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "uint BitmapEncoder.GeneratedThumbnailWidth");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> encodingOptions)
+		public bool IsThumbnailGenerated
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync(IEnumerable<KeyValuePair<string, BitmapTypedValue>> encodingOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20BitmapTypedValue%3E%3E%20encodingOptions%29");
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BitmapEncoder.IsThumbnailGenerated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapEncoder.IsThumbnailGenerated");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "bool BitmapEncoder.IsThumbnailGenerated");
+			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction FlushAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.FlushAsync%28%29");
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void SetSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "void BitmapEncoder.SetSoftwareBitmap(SoftwareBitmap bitmap)");
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.HeifEncoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BmpEncoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.PngEncoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.TiffEncoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GifEncoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.JpegXREncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Imaging.BitmapCodecInformation> GetEncoderInformationEnumerator()
@@ -184,5 +133,68 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateForInPlacePropertyEncodingAsync(BitmapDecoder bitmapDecoder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapEncoder%3E%20BitmapEncoder.CreateForInPlacePropertyEncodingAsync%28BitmapDecoder%20bitmapDecoder%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BmpEncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GifEncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.HeifEncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.JpegXREncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.PngEncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.TiffEncoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.operator ==(Windows.Graphics.Imaging.BitmapEncoder, Windows.Graphics.Imaging.BitmapEncoder)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.operator !=(Windows.Graphics.Imaging.BitmapEncoder, Windows.Graphics.Imaging.BitmapEncoder)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.Equals(Windows.Graphics.Imaging.BitmapEncoder)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.AdditionalTypeData.get
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public void SetPixelData(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "void BitmapEncoder.SetPixelData(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> encodingOptions)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync(IEnumerable<KeyValuePair<string, BitmapTypedValue>> encodingOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20BitmapTypedValue%3E%3E%20encodingOptions%29");
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction FlushAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.FlushAsync%28%29");
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public void SetSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "void BitmapEncoder.SetSoftwareBitmap(SoftwareBitmap bitmap)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapContainerProperties.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapProperties.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapTransform.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.EncoderInformation.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailHeight.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailHeight.set
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailWidth.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailWidth.set
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.IsThumbnailGenerated.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.IsThumbnailGenerated.set
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

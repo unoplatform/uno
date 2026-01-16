@@ -15,20 +15,6 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManager.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackCommandManager.IsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "bool MediaPlaybackCommandManager.IsEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior AutoRepeatModeBehavior
 		{
 			get
@@ -44,6 +30,20 @@ namespace Windows.Media.Playback
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.FastForwardBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.FastForwardBehavior");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManager.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackCommandManager.IsEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "bool MediaPlaybackCommandManager.IsEnabled");
 			}
 		}
 #endif
@@ -137,39 +137,50 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.IsEnabled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.IsEnabled.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.MediaPlayer.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PlayBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PauseBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.NextBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PreviousBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.FastForwardBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RewindBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.ShuffleBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.AutoRepeatModeBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PositionBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateBehavior.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PlayReceived.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PlayReceived.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PauseReceived.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PauseReceived.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.NextReceived.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.NextReceived.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PreviousReceived.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PreviousReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.operator ==(Windows.Media.Playback.MediaPlaybackCommandManager, Windows.Media.Playback.MediaPlaybackCommandManager)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.operator !=(Windows.Media.Playback.MediaPlaybackCommandManager, Windows.Media.Playback.MediaPlaybackCommandManager)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.Equals(Windows.Media.Playback.MediaPlaybackCommandManager)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.AutoRepeatModeReceived.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.AutoRepeatModeReceived.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.FastForwardReceived.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.FastForwardReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.NextReceived.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.NextReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PauseReceived.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PauseReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PlayReceived.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PlayReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PositionReceived.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PositionReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PreviousReceived.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PreviousReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateReceived.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateReceived.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RewindReceived.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RewindReceived.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.ShuffleReceived.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.ShuffleReceived.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.AutoRepeatModeReceived.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.AutoRepeatModeReceived.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PositionReceived.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PositionReceived.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateReceived.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateReceived.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.AutoRepeatModeBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.FastForwardBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.IsEnabled.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.IsEnabled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.MediaPlayer.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.NextBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PauseBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PlayBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PositionBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PreviousBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RewindBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.ShuffleBehavior.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs> AutoRepeatModeReceived

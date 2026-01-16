@@ -15,62 +15,6 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDataTerminalReadyEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.IsDataTerminalReadyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.IsDataTerminalReadyEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.IsDataTerminalReadyEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort DataBits
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort SerialDevice.DataBits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20SerialDevice.DataBits");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "ushort SerialDevice.DataBits");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.SerialCommunication.SerialHandshake Handshake
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SerialHandshake SerialDevice.Handshake is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialHandshake%20SerialDevice.Handshake");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialHandshake SerialDevice.Handshake");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool BreakSignalState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.BreakSignalState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.BreakSignalState");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.BreakSignalState");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint BaudRate
 		{
 			get
@@ -85,71 +29,15 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan WriteTimeout
+		public bool BreakSignalState
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SerialDevice.WriteTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SerialDevice.WriteTimeout");
+				throw new global::System.NotImplementedException("The member bool SerialDevice.BreakSignalState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.BreakSignalState");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "TimeSpan SerialDevice.WriteTimeout");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.SerialCommunication.SerialStopBitCount StopBits
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SerialStopBitCount SerialDevice.StopBits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialStopBitCount%20SerialDevice.StopBits");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialStopBitCount SerialDevice.StopBits");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan ReadTimeout
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan SerialDevice.ReadTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SerialDevice.ReadTimeout");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "TimeSpan SerialDevice.ReadTimeout");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.SerialCommunication.SerialParity Parity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SerialParity SerialDevice.Parity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialParity%20SerialDevice.Parity");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialParity SerialDevice.Parity");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRequestToSendEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.IsRequestToSendEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.IsRequestToSendEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.IsRequestToSendEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.BreakSignalState");
 			}
 		}
 #endif
@@ -185,11 +73,39 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ushort DataBits
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort SerialDevice.DataBits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20SerialDevice.DataBits");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "ushort SerialDevice.DataBits");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool DataSetReadyState
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool SerialDevice.DataSetReadyState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.DataSetReadyState");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.SerialCommunication.SerialHandshake Handshake
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SerialHandshake SerialDevice.Handshake is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialHandshake%20SerialDevice.Handshake");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialHandshake SerialDevice.Handshake");
 			}
 		}
 #endif
@@ -205,6 +121,34 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDataTerminalReadyEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SerialDevice.IsDataTerminalReadyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.IsDataTerminalReadyEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.IsDataTerminalReadyEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsRequestToSendEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SerialDevice.IsRequestToSendEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.IsRequestToSendEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.IsRequestToSendEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream OutputStream
 		{
 			get
@@ -215,11 +159,53 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.SerialCommunication.SerialParity Parity
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SerialParity SerialDevice.Parity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialParity%20SerialDevice.Parity");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialParity SerialDevice.Parity");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string PortName
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string SerialDevice.PortName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SerialDevice.PortName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan ReadTimeout
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan SerialDevice.ReadTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SerialDevice.ReadTimeout");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "TimeSpan SerialDevice.ReadTimeout");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.SerialCommunication.SerialStopBitCount StopBits
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SerialStopBitCount SerialDevice.StopBits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialStopBitCount%20SerialDevice.StopBits");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialStopBitCount SerialDevice.StopBits");
 			}
 		}
 #endif
@@ -243,46 +229,21 @@ namespace Windows.Devices.SerialCommunication
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BaudRate.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BaudRate.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BreakSignalState.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BreakSignalState.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BytesReceived.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.CarrierDetectState.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ClearToSendState.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.DataBits.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.DataBits.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.DataSetReadyState.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Handshake.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Handshake.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsDataTerminalReadyEnabled.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsDataTerminalReadyEnabled.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsRequestToSendEnabled.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsRequestToSendEnabled.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Parity.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Parity.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PortName.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ReadTimeout.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ReadTimeout.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.StopBits.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.StopBits.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.UsbVendorId.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.UsbProductId.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WriteTimeout.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WriteTimeout.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.InputStream.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.OutputStream.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ErrorReceived.add
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ErrorReceived.remove
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PinChanged.add
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PinChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
+		public global::System.TimeSpan WriteTimeout
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "void SerialDevice.Dispose()");
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan SerialDevice.WriteTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SerialDevice.WriteTimeout");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "TimeSpan SerialDevice.WriteTimeout");
+			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -311,6 +272,57 @@ namespace Windows.Devices.SerialCommunication
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SerialDevice> SerialDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSerialDevice%3E%20SerialDevice.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.operator ==(Windows.Devices.SerialCommunication.SerialDevice, Windows.Devices.SerialCommunication.SerialDevice)
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.operator !=(Windows.Devices.SerialCommunication.SerialDevice, Windows.Devices.SerialCommunication.SerialDevice)
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Equals(Windows.Devices.SerialCommunication.SerialDevice)
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Equals(object)
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.GetHashCode()
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ErrorReceived.add
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ErrorReceived.remove
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PinChanged.add
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PinChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "void SerialDevice.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BaudRate.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BaudRate.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BreakSignalState.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BreakSignalState.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BytesReceived.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.CarrierDetectState.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ClearToSendState.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.DataBits.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.DataBits.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.DataSetReadyState.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Handshake.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Handshake.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.InputStream.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsDataTerminalReadyEnabled.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsDataTerminalReadyEnabled.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsRequestToSendEnabled.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.IsRequestToSendEnabled.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.OutputStream.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Parity.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Parity.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PortName.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ReadTimeout.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ReadTimeout.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.StopBits.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.StopBits.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.UsbProductId.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.UsbVendorId.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WriteTimeout.get
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WriteTimeout.set
+		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SerialCommunication.SerialDevice, global::Windows.Devices.SerialCommunication.ErrorReceivedEventArgs> ErrorReceived

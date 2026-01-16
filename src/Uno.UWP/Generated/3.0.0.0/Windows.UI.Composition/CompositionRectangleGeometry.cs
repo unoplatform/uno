@@ -15,20 +15,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionRectangleGeometry.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRectangleGeometry.Size");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRectangleGeometry", "Vector2 CompositionRectangleGeometry.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector2 Offset
 		{
 			get
@@ -41,9 +27,33 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 Size
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 CompositionRectangleGeometry.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRectangleGeometry.Size");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRectangleGeometry", "Vector2 CompositionRectangleGeometry.Size");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.operator ==(Windows.UI.Composition.CompositionRectangleGeometry, Windows.UI.Composition.CompositionRectangleGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.operator !=(Windows.UI.Composition.CompositionRectangleGeometry, Windows.UI.Composition.CompositionRectangleGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Equals(Windows.UI.Composition.CompositionRectangleGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Offset.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Offset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Size.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Size.set
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
