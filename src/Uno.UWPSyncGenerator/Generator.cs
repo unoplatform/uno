@@ -282,11 +282,19 @@ namespace Uno.UWPSyncGenerator
 
 				case "Microsoft.Windows.ApplicationModel.DynamicDependency.Projection":
 				case "Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Projection":
+				case "Microsoft.Windows.ApplicationModel.Background.Projection":
 				case "Microsoft.Windows.AppNotifications.Builder.Projection":
 				case "Microsoft.Windows.AppNotifications.Projection":
+				case "Microsoft.Windows.BadgeNotifications.Projection":
+				case "Microsoft.Windows.Foundation.Projection":
+				case "Microsoft.Windows.Management.Deployment.Projection":
+				case "Microsoft.Windows.Media.Capture.Projection":
 				case "Microsoft.Windows.Security.AccessControl.Projection":
+				case "Microsoft.Windows.Storage.Pickers.Projection":
+				case "Microsoft.Windows.Storage.Projection":
 				case "Microsoft.Windows.System.Projection":
 				case "Microsoft.Windows.Widgets.Projection":
+				case "Microsoft.Security.Authentication.OAuth.Projection":
 					return false;
 
 				default:
@@ -1005,8 +1013,8 @@ namespace Uno.UWPSyncGenerator
 			// Skip for now.
 			// For IFormattable and IEquatable, this should be fixed in the future. Currently, just removing this condition doesn't work as the implementation isn't generated properly.
 			// Note that no types implement these interfaces in UWP, but there are types that implement it in WinUI.
-			// For IDynamicInterfaceCastable or ICustomQueryInterface, they are not important for now.
-			return iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface";
+			// For IDynamicInterfaceCastable, ICustomQueryInterface, or IUnmanagedVirtualMethodTableProvider, they are WinRT projection infrastructure and not important for Uno.
+			return iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface" or "IUnmanagedVirtualMethodTableProvider";
 		}
 
 		protected string BuildInterfaces(INamedTypeSymbol type)
@@ -1568,6 +1576,12 @@ namespace Uno.UWPSyncGenerator
 					else
 					{
 						var type2 = s_referenceCompilation.GetTypeByMetadataName(uwpIface);
+
+						if (type2 == null)
+						{
+							// Type not found in reference compilation, continue checking other interfaces
+							continue;
+						}
 
 						INamedTypeSymbol build()
 						{
