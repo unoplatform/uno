@@ -10,6 +10,19 @@ namespace Windows.Gaming.Input
 	{
 		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GamepadVibration()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public GamepadVibration(double _LeftMotor, double _RightMotor, double _LeftTrigger, double _RightTrigger)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.GamepadVibration", "GamepadVibration.GamepadVibration(double _LeftMotor, double _RightMotor, double _LeftTrigger, double _RightTrigger)");
+		}
+#endif
+		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GamepadVibration(double, double, double, double)
+		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.operator ==(Windows.Gaming.Input.GamepadVibration, Windows.Gaming.Input.GamepadVibration)
+		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.operator !=(Windows.Gaming.Input.GamepadVibration, Windows.Gaming.Input.GamepadVibration)
+		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.Equals(Windows.Gaming.Input.GamepadVibration)
+		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double LeftMotor;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

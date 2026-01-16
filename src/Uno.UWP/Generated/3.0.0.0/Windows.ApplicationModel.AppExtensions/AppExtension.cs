@@ -63,21 +63,16 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string AppUserModelId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppExtension.AppUserModelId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppExtension.AppUserModelId");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Id.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Description.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Package.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.AppInfo.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.operator ==(Windows.ApplicationModel.AppExtensions.AppExtension, Windows.ApplicationModel.AppExtensions.AppExtension)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.operator !=(Windows.ApplicationModel.AppExtensions.AppExtension, Windows.ApplicationModel.AppExtensions.AppExtension)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Equals(Windows.ApplicationModel.AppExtensions.AppExtension)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Collections.IPropertySet> GetExtensionPropertiesAsync()
@@ -92,6 +87,11 @@ namespace Windows.ApplicationModel.AppExtensions
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> AppExtension.GetPublicFolderAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20AppExtension.GetPublicFolderAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.AppUserModelId.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.AppInfo.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Description.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Id.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Package.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

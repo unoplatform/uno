@@ -10,6 +10,19 @@ namespace Windows.Graphics.Display.Core
 	{
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.HdmiDisplayHdr2086Metadata()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public HdmiDisplayHdr2086Metadata(ushort _RedPrimaryX, ushort _RedPrimaryY, ushort _GreenPrimaryX, ushort _GreenPrimaryY, ushort _BluePrimaryX, ushort _BluePrimaryY, ushort _WhitePointX, ushort _WhitePointY, ushort _MaxMasteringLuminance, ushort _MinMasteringLuminance, ushort _MaxContentLightLevel, ushort _MaxFrameAverageLightLevel)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata", "HdmiDisplayHdr2086Metadata.HdmiDisplayHdr2086Metadata(ushort _RedPrimaryX, ushort _RedPrimaryY, ushort _GreenPrimaryX, ushort _GreenPrimaryY, ushort _BluePrimaryX, ushort _BluePrimaryY, ushort _WhitePointX, ushort _WhitePointY, ushort _MaxMasteringLuminance, ushort _MinMasteringLuminance, ushort _MaxContentLightLevel, ushort _MaxFrameAverageLightLevel)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.HdmiDisplayHdr2086Metadata(ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort)
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.operator ==(Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata, Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata)
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.operator !=(Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata, Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata)
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.Equals(Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata)
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.Equals(object)
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ushort RedPrimaryX;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

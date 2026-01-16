@@ -10,6 +10,19 @@ namespace Windows.ApplicationModel.Resources.Core
 	{
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.ResourceLayoutInfo()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ResourceLayoutInfo(uint _MajorVersion, uint _MinorVersion, uint _ResourceSubtreeCount, uint _NamedResourceCount, int _Checksum)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo", "ResourceLayoutInfo.ResourceLayoutInfo(uint _MajorVersion, uint _MinorVersion, uint _ResourceSubtreeCount, uint _NamedResourceCount, int _Checksum)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.ResourceLayoutInfo(uint, uint, uint, uint, int)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.operator ==(Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo, Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.operator !=(Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo, Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.Equals(Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint MajorVersion;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

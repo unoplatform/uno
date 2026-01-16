@@ -9,11 +9,6 @@ namespace Windows.UI.WindowManagement
 	public partial class AppWindowPresentationConfiguration
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal AppWindowPresentationConfiguration()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WindowManagement.AppWindowPresentationKind Kind
 		{
@@ -23,6 +18,20 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.AppWindowPresentationConfiguration(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.operator ==(Windows.UI.WindowManagement.AppWindowPresentationConfiguration, Windows.UI.WindowManagement.AppWindowPresentationConfiguration)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.operator !=(Windows.UI.WindowManagement.AppWindowPresentationConfiguration, Windows.UI.WindowManagement.AppWindowPresentationConfiguration)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.Equals(Windows.UI.WindowManagement.AppWindowPresentationConfiguration)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.AppWindowPresentationConfiguration(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.Kind.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresentationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

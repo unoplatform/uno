@@ -10,6 +10,19 @@ namespace Windows.Web.Syndication
 	{
 		// Forced skipping of method Windows.Web.Syndication.TransferProgress.TransferProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public TransferProgress(uint _BytesSent, uint _TotalBytesToSend, uint _BytesRetrieved, uint _TotalBytesToRetrieve)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.TransferProgress", "TransferProgress.TransferProgress(uint _BytesSent, uint _TotalBytesToSend, uint _BytesRetrieved, uint _TotalBytesToRetrieve)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Syndication.TransferProgress.TransferProgress(uint, uint, uint, uint)
+		// Forced skipping of method Windows.Web.Syndication.TransferProgress.operator ==(Windows.Web.Syndication.TransferProgress, Windows.Web.Syndication.TransferProgress)
+		// Forced skipping of method Windows.Web.Syndication.TransferProgress.operator !=(Windows.Web.Syndication.TransferProgress, Windows.Web.Syndication.TransferProgress)
+		// Forced skipping of method Windows.Web.Syndication.TransferProgress.Equals(Windows.Web.Syndication.TransferProgress)
+		// Forced skipping of method Windows.Web.Syndication.TransferProgress.Equals(object)
+		// Forced skipping of method Windows.Web.Syndication.TransferProgress.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint BytesSent;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

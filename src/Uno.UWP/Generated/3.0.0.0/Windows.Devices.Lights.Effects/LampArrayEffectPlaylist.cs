@@ -6,33 +6,25 @@ namespace Windows.Devices.Lights.Effects
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class LampArrayEffectPlaylist : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Lights.Effects.ILampArrayEffect>, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.ILampArrayEffect>
+	public partial class LampArrayEffectPlaylist : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Lights.Effects.ILampArrayEffect>, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.ILampArrayEffect>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Devices.Lights.Effects.ILampArrayEffect>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Lights.Effects.LampArrayRepetitionMode RepetitionMode
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayRepetitionMode%20LampArrayEffectPlaylist.RepetitionMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode");
+				throw new global::System.NotImplementedException("The member int LampArrayEffectPlaylist.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayEffectPlaylist.Count");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Occurrences
+		public global::Windows.Devices.Lights.Effects.ILampArrayEffect this[int index]
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayEffectPlaylist.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayEffectPlaylist.Occurrences");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "int LampArrayEffectPlaylist.Occurrences");
+				throw new global::System.NotImplementedException("The member ILampArrayEffect LampArrayEffectPlaylist.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ILampArrayEffect%20LampArrayEffectPlaylist.this%5Bint%20index%5D");
 			}
 		}
 #endif
@@ -52,11 +44,29 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Occurrences
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LampArrayEffectPlaylist.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LampArrayEffectPlaylist.Size");
+				throw new global::System.NotImplementedException("The member int LampArrayEffectPlaylist.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayEffectPlaylist.Occurrences");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "int LampArrayEffectPlaylist.Occurrences");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Lights.Effects.LampArrayRepetitionMode RepetitionMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayRepetitionMode%20LampArrayEffectPlaylist.RepetitionMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode");
 			}
 		}
 #endif
@@ -68,6 +78,38 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.LampArrayEffectPlaylist()
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void StartAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.StartAll(IEnumerable<LampArrayEffectPlaylist> value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void StopAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.StopAll(IEnumerable<LampArrayEffectPlaylist> value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void PauseAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.PauseAll(IEnumerable<LampArrayEffectPlaylist> value)");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.operator ==(Windows.Devices.Lights.Effects.LampArrayEffectPlaylist, Windows.Devices.Lights.Effects.LampArrayEffectPlaylist)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.operator !=(Windows.Devices.Lights.Effects.LampArrayEffectPlaylist, Windows.Devices.Lights.Effects.LampArrayEffectPlaylist)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Equals(Windows.Devices.Lights.Effects.LampArrayEffectPlaylist)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Append(global::Windows.Devices.Lights.Effects.ILampArrayEffect effect)
@@ -103,58 +145,26 @@ namespace Windows.Devices.Lights.Effects
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.Pause()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Count.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.this[int].get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::Windows.Devices.Lights.Effects.ILampArrayEffect> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<ILampArrayEffect> LampArrayEffectPlaylist.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CILampArrayEffect%3E%20LampArrayEffectPlaylist.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.EffectStartMode.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.EffectStartMode.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Occurrences.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Occurrences.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.RepetitionMode.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.RepetitionMode.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.GetAt(uint)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Size.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.IndexOf(Windows.Devices.Lights.Effects.ILampArrayEffect, out uint)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.GetMany(uint, Windows.Devices.Lights.Effects.ILampArrayEffect[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.First()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void StartAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.StartAll(IEnumerable<LampArrayEffectPlaylist> value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void StopAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.StopAll(IEnumerable<LampArrayEffectPlaylist> value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void PauseAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.PauseAll(IEnumerable<LampArrayEffectPlaylist> value)");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.System.Collections.Generic.IReadOnlyList<Windows.Devices.Lights.Effects.ILampArrayEffect>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Devices.Lights.Effects.ILampArrayEffect>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Lights.Effects.ILampArrayEffect this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Lights.Effects.ILampArrayEffect>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Devices.Lights.Effects.ILampArrayEffect>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.Devices.Lights.Effects.ILampArrayEffect> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -165,15 +175,5 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Devices.Lights.Effects.ILampArrayEffect>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

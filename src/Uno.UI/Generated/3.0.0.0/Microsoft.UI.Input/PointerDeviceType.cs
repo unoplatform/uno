@@ -9,9 +9,7 @@ namespace Microsoft.UI.Input
 		// Skipping already declared field Microsoft.UI.Input.PointerDeviceType.Touch
 		// Skipping already declared field Microsoft.UI.Input.PointerDeviceType.Pen
 		// Skipping already declared field Microsoft.UI.Input.PointerDeviceType.Mouse
-#if false
-		Touchpad = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Input.PointerDeviceType.Touchpad
 	}
 #endif
 }

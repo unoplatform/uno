@@ -10,6 +10,19 @@ namespace Windows.Gaming.Input
 	{
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.ArcadeStickReading()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ArcadeStickReading(ulong _Timestamp, global::Windows.Gaming.Input.ArcadeStickButtons _Buttons)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ArcadeStickReading", "ArcadeStickReading.ArcadeStickReading(ulong _Timestamp, ArcadeStickButtons _Buttons)");
+		}
+#endif
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.ArcadeStickReading(ulong, Windows.Gaming.Input.ArcadeStickButtons)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.operator ==(Windows.Gaming.Input.ArcadeStickReading, Windows.Gaming.Input.ArcadeStickReading)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.operator !=(Windows.Gaming.Input.ArcadeStickReading, Windows.Gaming.Input.ArcadeStickReading)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.Equals(Windows.Gaming.Input.ArcadeStickReading)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

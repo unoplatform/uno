@@ -14,34 +14,34 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property Heading
 		// Skipping already declared property Latitude
 		// Skipping already declared property Longitude
-		// Skipping already declared property Speed
-		// Skipping already declared property Timestamp
 		// Skipping already declared property Point
 		// Skipping already declared property PositionSource
-		// Skipping already declared property SatelliteData
 		// Skipping already declared property PositionSourceTimestamp
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRemoteSource
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool Geocoordinate.IsRemoteSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Geocoordinate.IsRemoteSource");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Latitude.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Longitude.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Altitude.get
+		// Skipping already declared property SatelliteData
+		// Skipping already declared property Speed
+		// Skipping already declared property Timestamp
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.operator ==(Windows.Devices.Geolocation.Geocoordinate, Windows.Devices.Geolocation.Geocoordinate)
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.operator !=(Windows.Devices.Geolocation.Geocoordinate, Windows.Devices.Geolocation.Geocoordinate)
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Equals(Windows.Devices.Geolocation.Geocoordinate)
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Accuracy.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Altitude.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.AltitudeAccuracy.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Heading.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Latitude.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Longitude.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Point.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.PositionSource.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.PositionSourceTimestamp.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.SatelliteData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Speed.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Timestamp.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.PositionSource.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.SatelliteData.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Point.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.PositionSourceTimestamp.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.IsRemoteSource.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

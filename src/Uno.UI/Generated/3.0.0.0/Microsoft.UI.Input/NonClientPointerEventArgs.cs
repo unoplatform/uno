@@ -3,59 +3,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class NonClientPointerEventArgs
 	{
-#if false
-		internal NonClientPointerEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPointInRegion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool NonClientPointerEventArgs.IsPointInRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NonClientPointerEventArgs.IsPointInRegion");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point Point
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Point NonClientPointerEventArgs.Point is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20NonClientPointerEventArgs.Point");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Input.PointerDeviceType PointerDeviceType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointerDeviceType NonClientPointerEventArgs.PointerDeviceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerDeviceType%20NonClientPointerEventArgs.PointerDeviceType");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Input.NonClientRegionKind RegionKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member NonClientRegionKind NonClientPointerEventArgs.RegionKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NonClientRegionKind%20NonClientPointerEventArgs.RegionKind");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.PointerDeviceType.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Point.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.RegionKind.get
+		// Skipping already declared property IsPointInRegion
+		// Skipping already declared property Point
+		// Skipping already declared property PointerDeviceType
+		// Skipping already declared property RegionKind
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.operator ==(Microsoft.UI.Input.NonClientPointerEventArgs, Microsoft.UI.Input.NonClientPointerEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.operator !=(Microsoft.UI.Input.NonClientPointerEventArgs, Microsoft.UI.Input.NonClientPointerEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Equals(Microsoft.UI.Input.NonClientPointerEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.IsPointInRegion.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Point.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.RegionKind.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

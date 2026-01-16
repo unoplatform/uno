@@ -6,35 +6,11 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ImageStream : global::Windows.Storage.Streams.IRandomAccessStreamWithContentType, global::Windows.Storage.Streams.IContentTypeProvider, global::Windows.Storage.Streams.IRandomAccessStream, global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable, global::Windows.Storage.Streams.IInputStream
+	public partial class ImageStream : global::Windows.Storage.Streams.IRandomAccessStreamWithContentType, global::Windows.Storage.Streams.IRandomAccessStream, global::System.IDisposable, global::Windows.Storage.Streams.IInputStream, global::Windows.Storage.Streams.IOutputStream, global::Windows.Storage.Streams.IContentTypeProvider
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal ImageStream()
 		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContentType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ImageStream.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageStream.ContentType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong ImageStream.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ImageStream.Size");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.ImageStream", "ulong ImageStream.Size");
-			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -59,6 +35,16 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ContentType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ImageStream.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageStream.ContentType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong Position
 		{
 			get
@@ -67,8 +53,30 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Size.get
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Size.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong Size
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong ImageStream.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ImageStream.Size");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.ImageStream", "ulong ImageStream.Size");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.operator ==(Windows.Graphics.Imaging.ImageStream, Windows.Graphics.Imaging.ImageStream)
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.operator !=(Windows.Graphics.Imaging.ImageStream, Windows.Graphics.Imaging.ImageStream)
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Equals(Windows.Graphics.Imaging.ImageStream)
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
@@ -83,7 +91,6 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member IOutputStream ImageStream.GetOutputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20ImageStream.GetOutputStreamAt%28ulong%20position%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Position.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Seek(ulong position)
@@ -96,22 +103,6 @@ namespace Windows.Graphics.Imaging
 		public global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
 			throw new global::System.NotImplementedException("The member IRandomAccessStream ImageStream.CloneStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20ImageStream.CloneStream%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.CanRead.get
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.CanWrite.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.ImageStream", "void ImageStream.Dispose()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> ImageStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20ImageStream.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -128,7 +119,27 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ImageStream.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ImageStream.FlushAsync%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.ImageStream", "void ImageStream.Dispose()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> ImageStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20ImageStream.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.CanRead.get
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.CanWrite.get
 		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.ContentType.get
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Position.get
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Size.get
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Size.set
+		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamWithContentType
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable

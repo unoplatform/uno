@@ -113,26 +113,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellNR> NeighboringCellsNR
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.NeighboringCellsNR is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellNR%3E%20MobileBroadbandCellsInfo.NeighboringCellsNR");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellNR> ServingCellsNR
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.ServingCellsNR is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellNR%3E%20MobileBroadbandCellsInfo.ServingCellsNR");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo, Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo, Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.Equals(Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsCdma.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsGsm.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsLte.get
@@ -143,7 +133,6 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsLte.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsTdscdma.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsUmts.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsNR.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsNR.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

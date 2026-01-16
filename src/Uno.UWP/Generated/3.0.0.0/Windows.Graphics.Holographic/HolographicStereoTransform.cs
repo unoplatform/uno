@@ -10,6 +10,19 @@ namespace Windows.Graphics.Holographic
 	{
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.HolographicStereoTransform()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public HolographicStereoTransform(global::System.Numerics.Matrix4x4 _Left, global::System.Numerics.Matrix4x4 _Right)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicStereoTransform", "HolographicStereoTransform.HolographicStereoTransform(Matrix4x4 _Left, Matrix4x4 _Right)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.HolographicStereoTransform(System.Numerics.Matrix4x4, System.Numerics.Matrix4x4)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.operator ==(Windows.Graphics.Holographic.HolographicStereoTransform, Windows.Graphics.Holographic.HolographicStereoTransform)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.operator !=(Windows.Graphics.Holographic.HolographicStereoTransform, Windows.Graphics.Holographic.HolographicStereoTransform)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.Equals(Windows.Graphics.Holographic.HolographicStereoTransform)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Matrix4x4 Left;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

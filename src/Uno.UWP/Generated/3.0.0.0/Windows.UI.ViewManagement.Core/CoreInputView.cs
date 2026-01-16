@@ -13,8 +13,31 @@ namespace Windows.UI.ViewManagement.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.OcclusionsChanged.add
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.OcclusionsChanged.remove
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputView%20CoreInputView.GetForCurrentView%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForUIContext(global::Windows.UI.UIContext context)
+		{
+			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputView%20CoreInputView.GetForUIContext%28UIContext%20context%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.operator ==(Windows.UI.ViewManagement.Core.CoreInputView, Windows.UI.ViewManagement.Core.CoreInputView)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.operator !=(Windows.UI.ViewManagement.Core.CoreInputView, Windows.UI.ViewManagement.Core.CoreInputView)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.Equals(Windows.UI.ViewManagement.Core.CoreInputView)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.Equals(object)
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.GetHashCode()
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.ViewManagement.Core.CoreInputViewOcclusion> GetCoreInputViewOcclusions()
@@ -36,10 +59,8 @@ namespace Windows.UI.ViewManagement.Core
 			throw new global::System.NotImplementedException("The member bool CoreInputView.TryHidePrimaryView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputView.TryHidePrimaryView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferringFromPrimaryView.add
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferringFromPrimaryView.remove
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferredToPrimaryView.add
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferredToPrimaryView.remove
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.OcclusionsChanged.add
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.OcclusionsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryTransferXYFocusToPrimaryView(global::Windows.Foundation.Rect origin, global::Windows.UI.ViewManagement.Core.CoreInputViewXYFocusTransferDirection direction)
@@ -47,6 +68,10 @@ namespace Windows.UI.ViewManagement.Core
 			throw new global::System.NotImplementedException("The member bool CoreInputView.TryTransferXYFocusToPrimaryView(Rect origin, CoreInputViewXYFocusTransferDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputView.TryTransferXYFocusToPrimaryView%28Rect%20origin%2C%20CoreInputViewXYFocusTransferDirection%20direction%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferredToPrimaryView.add
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferredToPrimaryView.remove
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferringFromPrimaryView.add
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferringFromPrimaryView.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryShow()
@@ -68,35 +93,11 @@ namespace Windows.UI.ViewManagement.Core
 			throw new global::System.NotImplementedException("The member bool CoreInputView.TryHide() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputView.TryHide%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewShowing.add
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewShowing.remove
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewHiding.add
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewHiding.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsKindSupported(global::Windows.UI.ViewManagement.Core.CoreInputViewKind type)
-		{
-			throw new global::System.NotImplementedException("The member bool CoreInputView.IsKindSupported(CoreInputViewKind type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputView.IsKindSupported%28CoreInputViewKind%20type%29");
-		}
-#endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.SupportedKindsChanged.add
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.SupportedKindsChanged.remove
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewAnimationStarting.add
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewAnimationStarting.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForUIContext(global::Windows.UI.UIContext context)
-		{
-			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputView%20CoreInputView.GetForUIContext%28UIContext%20context%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputView%20CoreInputView.GetForCurrentView%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewShowing.add
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewShowing.remove
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.Core.CoreInputView, global::Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs> OcclusionsChanged
@@ -174,38 +175,6 @@ namespace Windows.UI.ViewManagement.Core
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event TypedEventHandler<CoreInputView, CoreInputViewShowingEventArgs> CoreInputView.PrimaryViewShowing");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.Core.CoreInputView, global::Windows.UI.ViewManagement.Core.CoreInputViewAnimationStartingEventArgs> PrimaryViewAnimationStarting
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event TypedEventHandler<CoreInputView, CoreInputViewAnimationStartingEventArgs> CoreInputView.PrimaryViewAnimationStarting");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event TypedEventHandler<CoreInputView, CoreInputViewAnimationStartingEventArgs> CoreInputView.PrimaryViewAnimationStarting");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.Core.CoreInputView, object> SupportedKindsChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event TypedEventHandler<CoreInputView, object> CoreInputView.SupportedKindsChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event TypedEventHandler<CoreInputView, object> CoreInputView.SupportedKindsChanged");
 			}
 		}
 #endif

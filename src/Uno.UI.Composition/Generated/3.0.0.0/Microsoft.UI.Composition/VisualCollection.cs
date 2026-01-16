@@ -6,17 +6,28 @@ namespace Microsoft.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class VisualCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Visual>
+	public partial class VisualCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Visual>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
-		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.First()
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.operator ==(Microsoft.UI.Composition.VisualCollection, Microsoft.UI.Composition.VisualCollection)
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.operator !=(Microsoft.UI.Composition.VisualCollection, Microsoft.UI.Composition.VisualCollection)
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.Equals(Microsoft.UI.Composition.VisualCollection)
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.VisualCollection.InsertAbove(Microsoft.UI.Composition.Visual, Microsoft.UI.Composition.Visual)
 		// Skipping already declared method Microsoft.UI.Composition.VisualCollection.InsertAtBottom(Microsoft.UI.Composition.Visual)
 		// Skipping already declared method Microsoft.UI.Composition.VisualCollection.InsertAtTop(Microsoft.UI.Composition.Visual)
 		// Skipping already declared method Microsoft.UI.Composition.VisualCollection.InsertBelow(Microsoft.UI.Composition.Visual, Microsoft.UI.Composition.Visual)
 		// Skipping already declared method Microsoft.UI.Composition.VisualCollection.Remove(Microsoft.UI.Composition.Visual)
 		// Skipping already declared method Microsoft.UI.Composition.VisualCollection.RemoveAll()
+		// Skipping already declared method Microsoft.UI.Composition.VisualCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.VisualCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Visual>
 		// Processing: System.Collections.IEnumerable
 	}

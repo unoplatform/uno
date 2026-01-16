@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class VisualCollection : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Visual>
+	public partial class VisualCollection : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Visual>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal VisualCollection()
@@ -23,7 +23,14 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.VisualCollection.Count.get
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.operator ==(Windows.UI.Composition.VisualCollection, Windows.UI.Composition.VisualCollection)
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.operator !=(Windows.UI.Composition.VisualCollection, Windows.UI.Composition.VisualCollection)
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.Equals(Windows.UI.Composition.VisualCollection)
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertAbove(global::Windows.UI.Composition.Visual newChild, global::Windows.UI.Composition.Visual sibling)
@@ -66,16 +73,18 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.VisualCollection", "void VisualCollection.RemoveAll()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.VisualCollection.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Visual>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Visual>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.Visual> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<Visual> VisualCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CVisual%3E%20VisualCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.Count.get
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.VisualCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Visual>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

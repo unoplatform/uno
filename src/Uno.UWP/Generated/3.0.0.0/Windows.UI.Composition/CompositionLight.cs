@@ -9,21 +9,6 @@ namespace Windows.UI.Composition
 	public partial class CompositionLight : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionLight()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.VisualUnorderedCollection Targets
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.Targets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.Targets");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.VisualUnorderedCollection ExclusionsFromTargets
 		{
@@ -47,9 +32,31 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.VisualUnorderedCollection Targets
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.Targets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.Targets");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.CompositionLight(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.operator ==(Windows.UI.Composition.CompositionLight, Windows.UI.Composition.CompositionLight)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.operator !=(Windows.UI.Composition.CompositionLight, Windows.UI.Composition.CompositionLight)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.Equals(Windows.UI.Composition.CompositionLight)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.CompositionLight(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.ExclusionsFromTargets.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.set
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

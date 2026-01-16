@@ -6,40 +6,40 @@ namespace Microsoft.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BlockCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Documents.Block>
+	public partial class BlockCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.IndexOf(Microsoft.UI.Xaml.Documents.Block, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.SetAt(uint, Microsoft.UI.Xaml.Documents.Block)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.InsertAt(uint, Microsoft.UI.Xaml.Documents.Block)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Append(Microsoft.UI.Xaml.Documents.Block)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.GetMany(uint, Microsoft.UI.Xaml.Documents.Block[])
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.ReplaceAll(Microsoft.UI.Xaml.Documents.Block[])
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.First()
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.operator ==(Microsoft.UI.Xaml.Documents.BlockCollection, Microsoft.UI.Xaml.Documents.BlockCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.operator !=(Microsoft.UI.Xaml.Documents.BlockCollection, Microsoft.UI.Xaml.Documents.BlockCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Equals(Microsoft.UI.Xaml.Documents.BlockCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.IndexOf(Microsoft.UI.Xaml.Documents.Block)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.Insert(int, Microsoft.UI.Xaml.Documents.Block)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.Add(Microsoft.UI.Xaml.Documents.Block)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.Contains(Microsoft.UI.Xaml.Documents.Block)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.CopyTo(Microsoft.UI.Xaml.Documents.Block[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.Remove(Microsoft.UI.Xaml.Documents.Block)
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Documents.Block>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Documents.Block>.set_Item(int, Microsoft.UI.Xaml.Documents.Block)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Documents.Block>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.Block this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Documents.Block>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Documents.Block>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Documents.Block>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Documents.Block>
 		// Processing: System.Collections.IEnumerable
 	}

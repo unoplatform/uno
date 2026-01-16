@@ -6,25 +6,13 @@ namespace Windows.Storage.Streams
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FileRandomAccessStream : global::Windows.Storage.Streams.IRandomAccessStream, global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable, global::Windows.Storage.Streams.IInputStream
+	public partial class FileRandomAccessStream : global::Windows.Storage.Streams.IRandomAccessStream, global::System.IDisposable, global::Windows.Storage.Streams.IInputStream, global::Windows.Storage.Streams.IOutputStream
 	{
-		// Skipping already declared property Size
 		// Skipping already declared property CanRead
 		// Skipping already declared property CanWrite
 		// Skipping already declared property Position
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Size.get
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Size.set
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.GetInputStreamAt(ulong)
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.GetOutputStreamAt(ulong)
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Position.get
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.Seek(ulong)
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.CloneStream()
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.CanRead.get
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.CanWrite.get
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.Dispose()
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.ReadAsync(Windows.Storage.Streams.IBuffer, uint, Windows.Storage.Streams.InputStreamOptions)
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.WriteAsync(Windows.Storage.Streams.IBuffer)
-		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.FlushAsync()
+		// Skipping already declared property Size
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync(string filePath, global::Windows.Storage.FileAccessMode accessMode)
@@ -81,6 +69,30 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageStreamTransaction%3E%20FileRandomAccessStream.OpenTransactedWriteForUserAsync%28User%20user%2C%20string%20filePath%2C%20StorageOpenOptions%20openOptions%2C%20FileOpenDisposition%20openDisposition%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.operator ==(Windows.Storage.Streams.FileRandomAccessStream, Windows.Storage.Streams.FileRandomAccessStream)
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.operator !=(Windows.Storage.Streams.FileRandomAccessStream, Windows.Storage.Streams.FileRandomAccessStream)
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Equals(Windows.Storage.Streams.FileRandomAccessStream)
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Equals(object)
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.GetHashCode()
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.GetInputStreamAt(ulong)
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.GetOutputStreamAt(ulong)
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.Seek(ulong)
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.CloneStream()
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.WriteAsync(Windows.Storage.Streams.IBuffer)
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.FlushAsync()
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.Dispose()
+		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.ReadAsync(Windows.Storage.Streams.IBuffer, uint, Windows.Storage.Streams.InputStreamOptions)
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.CanRead.get
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.CanWrite.get
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Position.get
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Size.get
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Size.set
+		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable
 		// Processing: Windows.Storage.Streams.IInputStream

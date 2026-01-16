@@ -9,8 +9,17 @@ namespace Windows.UI.Composition
 	public partial class CompositionObject : global::System.IDisposable, global::Windows.UI.Composition.IAnimationObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionObject()
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Comment
 		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CompositionObject.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CompositionObject.Comment");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "string CompositionObject.Comment");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -35,11 +44,11 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionPropertySet Properties
+		public global::Windows.System.DispatcherQueue DispatcherQueue
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionPropertySet CompositionObject.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20CompositionObject.Properties");
+				throw new global::System.NotImplementedException("The member DispatcherQueue CompositionObject.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20CompositionObject.DispatcherQueue");
 			}
 		}
 #endif
@@ -59,31 +68,41 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Comment
+		public global::Windows.UI.Composition.CompositionPropertySet Properties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CompositionObject.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CompositionObject.Comment");
+				throw new global::System.NotImplementedException("The member CompositionPropertySet CompositionObject.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20CompositionObject.Properties");
 			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "string CompositionObject.Comment");
-			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void StartAnimationWithIAnimationObject(global::Windows.UI.Composition.IAnimationObject target, string propertyName, global::Windows.UI.Composition.CompositionAnimation animation)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationWithIAnimationObject(IAnimationObject target, string propertyName, CompositionAnimation animation)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.DispatcherQueue DispatcherQueue
+		public static void StartAnimationGroupWithIAnimationObject(global::Windows.UI.Composition.IAnimationObject target, global::Windows.UI.Composition.ICompositionAnimationBase animation)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CompositionObject.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20CompositionObject.DispatcherQueue");
-			}
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationGroupWithIAnimationObject(IAnimationObject target, ICompositionAnimationBase animation)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.Compositor.get
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.Dispatcher.get
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.Properties.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.CompositionObject(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.operator ==(Windows.UI.Composition.CompositionObject, Windows.UI.Composition.CompositionObject)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.operator !=(Windows.UI.Composition.CompositionObject, Windows.UI.Composition.CompositionObject)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.Equals(Windows.UI.Composition.CompositionObject)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.CompositionObject(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartAnimation(string propertyName, global::Windows.UI.Composition.CompositionAnimation animation)
@@ -98,10 +117,6 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StopAnimation(string propertyName)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.Comment.get
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.Comment.set
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.ImplicitAnimations.get
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.ImplicitAnimations.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartAnimationGroup(global::Windows.UI.Composition.ICompositionAnimationBase value)
@@ -116,7 +131,6 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StopAnimationGroup(ICompositionAnimationBase value)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionObject.DispatcherQueue.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.AnimationController TryGetAnimationController(string propertyName)
@@ -138,20 +152,16 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void StartAnimationWithIAnimationObject(global::Windows.UI.Composition.IAnimationObject target, string propertyName, global::Windows.UI.Composition.CompositionAnimation animation)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationWithIAnimationObject(IAnimationObject target, string propertyName, CompositionAnimation animation)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void StartAnimationGroupWithIAnimationObject(global::Windows.UI.Composition.IAnimationObject target, global::Windows.UI.Composition.ICompositionAnimationBase animation)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationGroupWithIAnimationObject(IAnimationObject target, ICompositionAnimationBase animation)");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.Comment.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.Comment.set
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.Compositor.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.Dispatcher.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.DispatcherQueue.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.ImplicitAnimations.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.ImplicitAnimations.set
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.Properties.get
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 		// Processing: Windows.UI.Composition.IAnimationObject
 	}

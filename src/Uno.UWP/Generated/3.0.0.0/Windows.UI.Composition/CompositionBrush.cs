@@ -8,10 +8,17 @@ namespace Windows.UI.Composition
 #endif
 	public partial class CompositionBrush : global::Windows.UI.Composition.CompositionObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionBrush()
-		{
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.CompositionBrush(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.operator ==(Windows.UI.Composition.CompositionBrush, Windows.UI.Composition.CompositionBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.operator !=(Windows.UI.Composition.CompositionBrush, Windows.UI.Composition.CompositionBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.Equals(Windows.UI.Composition.CompositionBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.CompositionBrush(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

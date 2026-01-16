@@ -23,39 +23,7 @@ namespace Windows.System
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppUriHandlerRegistrationManager.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUriHandlerRegistrationManager.PackageFamilyName");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.User.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.AppUriHandlerRegistration TryGetRegistration(string name)
-		{
-			throw new global::System.NotImplementedException("The member AppUriHandlerRegistration AppUriHandlerRegistrationManager.TryGetRegistration(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppUriHandlerRegistration%20AppUriHandlerRegistrationManager.TryGetRegistration%28string%20name%29");
-		}
-#endif
-		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.PackageFamilyName.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.System.AppUriHandlerRegistrationManager GetForPackage(string packageFamilyName)
-		{
-			throw new global::System.NotImplementedException("The member AppUriHandlerRegistrationManager AppUriHandlerRegistrationManager.GetForPackage(string packageFamilyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppUriHandlerRegistrationManager%20AppUriHandlerRegistrationManager.GetForPackage%28string%20packageFamilyName%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.System.AppUriHandlerRegistrationManager GetForPackageForUser(string packageFamilyName, global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member AppUriHandlerRegistrationManager AppUriHandlerRegistrationManager.GetForPackageForUser(string packageFamilyName, User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppUriHandlerRegistrationManager%20AppUriHandlerRegistrationManager.GetForPackageForUser%28string%20packageFamilyName%2C%20User%20user%29");
-		}
-#endif
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.AppUriHandlerRegistrationManager GetDefault()
@@ -70,5 +38,24 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member AppUriHandlerRegistrationManager AppUriHandlerRegistrationManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppUriHandlerRegistrationManager%20AppUriHandlerRegistrationManager.GetForUser%28User%20user%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.FromAbi(nint)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.operator ==(Windows.System.AppUriHandlerRegistrationManager, Windows.System.AppUriHandlerRegistrationManager)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.operator !=(Windows.System.AppUriHandlerRegistrationManager, Windows.System.AppUriHandlerRegistrationManager)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.Equals(Windows.System.AppUriHandlerRegistrationManager)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.Equals(object)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.GetHashCode()
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.AppUriHandlerRegistration TryGetRegistration(string name)
+		{
+			throw new global::System.NotImplementedException("The member AppUriHandlerRegistration AppUriHandlerRegistrationManager.TryGetRegistration(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppUriHandlerRegistration%20AppUriHandlerRegistrationManager.TryGetRegistration%28string%20name%29");
+		}
+#endif
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.User.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

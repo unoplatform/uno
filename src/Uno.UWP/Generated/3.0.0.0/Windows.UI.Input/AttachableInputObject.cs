@@ -8,11 +8,18 @@ namespace Windows.UI.Input
 #endif
 	public partial class AttachableInputObject : global::System.IDisposable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal AttachableInputObject()
-		{
-		}
-#endif
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.AttachableInputObject(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.operator ==(Windows.UI.Input.AttachableInputObject, Windows.UI.Input.AttachableInputObject)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.operator !=(Windows.UI.Input.AttachableInputObject, Windows.UI.Input.AttachableInputObject)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.Equals(Windows.UI.Input.AttachableInputObject)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.Equals(object)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.AttachableInputObject(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -20,6 +27,8 @@ namespace Windows.UI.Input
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.AttachableInputObject", "void AttachableInputObject.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Input.AttachableInputObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

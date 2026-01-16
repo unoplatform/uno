@@ -6,7 +6,7 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpMultipartFormDataContent : global::Windows.Web.Http.IHttpContent, global::System.IDisposable, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.IHttpContent>, global::Windows.Foundation.IStringable
+	public partial class HttpMultipartFormDataContent : global::Windows.Web.Http.IHttpContent, global::System.IDisposable, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.IHttpContent>, global::System.Collections.IEnumerable, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -20,20 +20,30 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public HttpMultipartFormDataContent(string boundary)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "HttpMultipartFormDataContent.HttpMultipartFormDataContent(string boundary)");
-		}
-#endif
-		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.HttpMultipartFormDataContent(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpMultipartFormDataContent()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "HttpMultipartFormDataContent.HttpMultipartFormDataContent()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.HttpMultipartFormDataContent()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public HttpMultipartFormDataContent(string boundary)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "HttpMultipartFormDataContent.HttpMultipartFormDataContent(string boundary)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.HttpMultipartFormDataContent(string)
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.operator ==(Windows.Web.Http.HttpMultipartFormDataContent, Windows.Web.Http.HttpMultipartFormDataContent)
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.operator !=(Windows.Web.Http.HttpMultipartFormDataContent, Windows.Web.Http.HttpMultipartFormDataContent)
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.Equals(Windows.Web.Http.HttpMultipartFormDataContent)
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::Windows.Web.Http.IHttpContent content)
@@ -55,7 +65,6 @@ namespace Windows.Web.Http
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Add(IHttpContent content, string name, string fileName)");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.Headers.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> BufferAllAsync()
@@ -105,7 +114,14 @@ namespace Windows.Web.Http
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.First()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.IHttpContent> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<IHttpContent> HttpMultipartFormDataContent.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CIHttpContent%3E%20HttpMultipartFormDataContent.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.System.Collections.IEnumerable.GetEnumerator()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
@@ -113,17 +129,11 @@ namespace Windows.Web.Http
 			throw new global::System.NotImplementedException("The member string HttpMultipartFormDataContent.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMultipartFormDataContent.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.Headers.get
+		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Http.IHttpContent
 		// Processing: System.IDisposable
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.IHttpContent>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Web.Http.IHttpContent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.IHttpContent> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

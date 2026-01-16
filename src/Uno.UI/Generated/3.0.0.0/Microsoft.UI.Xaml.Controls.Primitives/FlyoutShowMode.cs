@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum FlyoutShowMode
 	{
-#if false
-		Auto = 0,
-#endif
-#if false
-		Standard = 1,
-#endif
-#if false
-		Transient = 2,
-#endif
-#if false
-		TransientWithDismissOnPointerMoveAway = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowMode.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowMode.Standard
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowMode.Transient
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowMode.TransientWithDismissOnPointerMoveAway
 	}
 #endif
 }

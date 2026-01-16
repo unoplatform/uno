@@ -6,8 +6,62 @@ namespace Windows.Data.Json
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class JsonObject : global::Windows.Data.Json.IJsonValue, global::System.Collections.Generic.IDictionary<string, global::Windows.Data.Json.IJsonValue>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue>>, global::Windows.Foundation.IStringable
+	public partial class JsonObject : global::Windows.Data.Json.IJsonValue, global::System.Collections.Generic.IDictionary<string, global::Windows.Data.Json.IJsonValue>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue>>, global::System.Collections.IEnumerable, global::Windows.Foundation.IStringable
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.ICollection<string> Keys
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ICollection<string> JsonObject.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20JsonObject.Keys");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.ICollection<global::Windows.Data.Json.IJsonValue> Values
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ICollection<IJsonValue> JsonObject.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3CIJsonValue%3E%20JsonObject.Values");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Count
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int JsonObject.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20JsonObject.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JsonObject.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Data.Json.IJsonValue this[string key]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IJsonValue JsonObject.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IJsonValue%20JsonObject.this%5Bstring%20key%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Json.JsonObject", "IJsonValue JsonObject.this[string key]");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Json.JsonValueType ValueType
@@ -20,22 +74,37 @@ namespace Windows.Data.Json
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint JsonObject.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20JsonObject.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public JsonObject()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Json.JsonObject", "JsonObject.JsonObject()");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Json.JsonObject.JsonObject()
+		// Forced skipping of method Windows.Data.Json.JsonObject.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Data.Json.JsonObject Parse(string input)
+		{
+			throw new global::System.NotImplementedException("The member JsonObject JsonObject.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonObject%20JsonObject.Parse%28string%20input%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool TryParse(string input, out global::Windows.Data.Json.JsonObject result)
+		{
+			throw new global::System.NotImplementedException("The member bool JsonObject.TryParse(string input, out JsonObject result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.TryParse%28string%20input%2C%20out%20JsonObject%20result%29");
+		}
+#endif
+		// Forced skipping of method Windows.Data.Json.JsonObject.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Json.JsonObject.operator ==(Windows.Data.Json.JsonObject, Windows.Data.Json.JsonObject)
+		// Forced skipping of method Windows.Data.Json.JsonObject.operator !=(Windows.Data.Json.JsonObject, Windows.Data.Json.JsonObject)
+		// Forced skipping of method Windows.Data.Json.JsonObject.Equals(Windows.Data.Json.JsonObject)
+		// Forced skipping of method Windows.Data.Json.JsonObject.Equals(object)
+		// Forced skipping of method Windows.Data.Json.JsonObject.GetHashCode()
+		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Json.JsonValue GetNamedValue(string name)
@@ -85,7 +154,6 @@ namespace Windows.Data.Json
 			throw new global::System.NotImplementedException("The member bool JsonObject.GetNamedBoolean(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.GetNamedBoolean%28string%20name%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Json.JsonObject.ValueType.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Stringify()
@@ -128,14 +196,77 @@ namespace Windows.Data.Json
 			throw new global::System.NotImplementedException("The member JsonObject JsonObject.GetObject() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonObject%20JsonObject.GetObject%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Json.JsonObject.Lookup(string)
-		// Forced skipping of method Windows.Data.Json.JsonObject.Size.get
-		// Forced skipping of method Windows.Data.Json.JsonObject.HasKey(string)
-		// Forced skipping of method Windows.Data.Json.JsonObject.GetView()
-		// Forced skipping of method Windows.Data.Json.JsonObject.Insert(string, Windows.Data.Json.IJsonValue)
-		// Forced skipping of method Windows.Data.Json.JsonObject.Remove(string)
-		// Forced skipping of method Windows.Data.Json.JsonObject.Clear()
-		// Forced skipping of method Windows.Data.Json.JsonObject.First()
+		// Forced skipping of method Windows.Data.Json.JsonObject.Keys.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.Values.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.Count.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.IsReadOnly.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.this[string].get
+		// Forced skipping of method Windows.Data.Json.JsonObject.this[string].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(string key, global::Windows.Data.Json.IJsonValue value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Json.JsonObject", "void JsonObject.Add(string key, IJsonValue value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ContainsKey(string key)
+		{
+			throw new global::System.NotImplementedException("The member bool JsonObject.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.ContainsKey%28string%20key%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(string key)
+		{
+			throw new global::System.NotImplementedException("The member bool JsonObject.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.Remove%28string%20key%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TryGetValue(string key, out global::Windows.Data.Json.IJsonValue value)
+		{
+			throw new global::System.NotImplementedException("The member bool JsonObject.TryGetValue(string key, out IJsonValue value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.TryGetValue%28string%20key%2C%20out%20IJsonValue%20value%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue> item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Json.JsonObject", "void JsonObject.Add(KeyValuePair<string, IJsonValue> item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Json.JsonObject", "void JsonObject.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue> item)
+		{
+			throw new global::System.NotImplementedException("The member bool JsonObject.Contains(KeyValuePair<string, IJsonValue> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.Contains%28KeyValuePair%3Cstring%2C%20IJsonValue%3E%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue>[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Json.JsonObject", "void JsonObject.CopyTo(KeyValuePair<string, IJsonValue>[] array, int arrayIndex)");
+		}
+#endif
+		// Forced skipping of method Windows.Data.Json.JsonObject.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>.Remove(System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue>> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, IJsonValue>> JsonObject.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20IJsonValue%3E%3E%20JsonObject.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Data.Json.JsonObject.System.Collections.IEnumerable.GetEnumerator()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Json.JsonValue GetNamedValue(string name, global::Windows.Data.Json.JsonValue defaultValue)
@@ -185,121 +316,11 @@ namespace Windows.Data.Json
 			throw new global::System.NotImplementedException("The member string JsonObject.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JsonObject.ToString%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Data.Json.JsonObject Parse(string input)
-		{
-			throw new global::System.NotImplementedException("The member JsonObject JsonObject.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonObject%20JsonObject.Parse%28string%20input%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool TryParse(string input, out global::Windows.Data.Json.JsonObject result)
-		{
-			throw new global::System.NotImplementedException("The member bool JsonObject.TryParse(string input, out JsonObject result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.TryParse%28string%20input%2C%20out%20JsonObject%20result%29");
-		}
-#endif
+		// Forced skipping of method Windows.Data.Json.JsonObject.ValueType.get
+		// Forced skipping of method Windows.Data.Json.JsonObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Json.IJsonValue
 		// Processing: System.Collections.Generic.IDictionary<string, Windows.Data.Json.IJsonValue>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Data.Json.IJsonValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(string key, global::Windows.Data.Json.IJsonValue value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Data.Json.IJsonValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ContainsKey(string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Data.Json.IJsonValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Data.Json.IJsonValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TryGetValue(string key, out global::Windows.Data.Json.IJsonValue value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Data.Json.IJsonValue this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<string> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<global::Windows.Data.Json.IJsonValue> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue>[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -308,35 +329,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Data.Json.IJsonValue>> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

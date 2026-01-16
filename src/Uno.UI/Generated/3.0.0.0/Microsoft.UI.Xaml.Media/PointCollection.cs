@@ -6,38 +6,42 @@ namespace Microsoft.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PointCollection : global::System.Collections.Generic.IList<global::Windows.Foundation.Point>, global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>
+	public partial class PointCollection : global::System.Collections.Generic.IList<global::Windows.Foundation.Point>, global::System.Collections.Generic.ICollection<global::Windows.Foundation.Point>, global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>, global::System.Collections.IEnumerable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PointCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PointCollection.Size");
-			}
-		}
-#endif
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.PointCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.PointCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.IndexOf(Windows.Foundation.Point, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.SetAt(uint, Windows.Foundation.Point)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.InsertAt(uint, Windows.Foundation.Point)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Append(Windows.Foundation.Point)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.GetMany(uint, Windows.Foundation.Point[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.ReplaceAll(Windows.Foundation.Point[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.operator ==(Microsoft.UI.Xaml.Media.PointCollection, Microsoft.UI.Xaml.Media.PointCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.operator !=(Microsoft.UI.Xaml.Media.PointCollection, Microsoft.UI.Xaml.Media.PointCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Equals(Microsoft.UI.Xaml.Media.PointCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.IndexOf(Windows.Foundation.Point)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.Insert(int, Windows.Foundation.Point)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.Add(Windows.Foundation.Point)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.Contains(Windows.Foundation.Point)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.CopyTo(Windows.Foundation.Point[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.Remove(Windows.Foundation.Point)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Collections.Generic.IList<Windows.Foundation.Point>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Collections.Generic.IList<Windows.Foundation.Point>.set_Item(int, Windows.Foundation.Point)
 		// Processing: System.Collections.Generic.IList<Windows.Foundation.Point>
-		// Skipping already implement System.Collections.Generic.IList<Windows.Foundation.Point>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Windows.Foundation.Point>
-		// Skipping already implement System.Collections.Generic.ICollection<Windows.Foundation.Point>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Windows.Foundation.Point>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Foundation.Point>
 		// Processing: System.Collections.IEnumerable
 	}

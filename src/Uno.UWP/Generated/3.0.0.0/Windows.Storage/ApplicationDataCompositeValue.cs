@@ -6,31 +6,50 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ApplicationDataCompositeValue : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
+	public partial class ApplicationDataCompositeValue : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Keys
+		// Skipping already declared property Values
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.ApplicationDataCompositeValue()
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.ApplicationDataCompositeValue()
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.operator ==(Windows.Storage.ApplicationDataCompositeValue, Windows.Storage.ApplicationDataCompositeValue)
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.operator !=(Windows.Storage.ApplicationDataCompositeValue, Windows.Storage.ApplicationDataCompositeValue)
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Equals(Windows.Storage.ApplicationDataCompositeValue)
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Equals(object)
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.GetHashCode()
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.MapChanged.add
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.MapChanged.remove
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Lookup(string)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Size.get
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.HasKey(string)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.GetView()
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Insert(string, object)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Remove(string)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Clear()
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.First()
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Keys.get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Values.get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Count.get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.IsReadOnly.get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.this[string].get
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.this[string].set
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.Add(string, object)
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.ContainsKey(string)
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.Remove(string)
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.TryGetValue(string, out object)
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.Add(System.Collections.Generic.KeyValuePair<string, object>)
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.Clear()
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.Contains(System.Collections.Generic.KeyValuePair<string, object>)
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.CopyTo(System.Collections.Generic.KeyValuePair<string, object>[], int)
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Remove(System.Collections.Generic.KeyValuePair<string, object>)
+		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.GetEnumerator()
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.Storage.ApplicationDataCompositeValue.MapChanged
 		// Processing: Windows.Foundation.Collections.IPropertySet
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, object>
 		// Processing: System.Collections.Generic.IDictionary<string, object>
-		// Skipping already implement System.Collections.Generic.IDictionary<string, object>.this[string]
-		// Skipping already implement System.Collections.Generic.IDictionary<string, object>.Keys
-		// Skipping already implement System.Collections.Generic.IDictionary<string, object>.Values
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 		// Processing: System.Collections.IEnumerable
 	}

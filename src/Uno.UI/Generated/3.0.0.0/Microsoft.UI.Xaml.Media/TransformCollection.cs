@@ -6,47 +6,57 @@ namespace Microsoft.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TransformCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Transform>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Transform>
+	public partial class TransformCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Transform>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Transform>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Transform>, global::System.Collections.IEnumerable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint TransformCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20TransformCollection.Size");
-			}
-		}
-#endif
-		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.IndexOf(Microsoft.UI.Xaml.Media.Transform, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.SetAt(uint, Microsoft.UI.Xaml.Media.Transform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.Transform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Append(Microsoft.UI.Xaml.Media.Transform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.GetMany(uint, Microsoft.UI.Xaml.Media.Transform[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.ReplaceAll(Microsoft.UI.Xaml.Media.Transform[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.First()
-		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>.this[int]
-		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Transform>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Transform>.Count
+		// Skipping already declared property Count
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsReadOnly
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member bool TransformCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TransformCollection.IsReadOnly");
 			}
 		}
 #endif
+		// Skipping already declared property this[]
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.operator ==(Microsoft.UI.Xaml.Media.TransformCollection, Microsoft.UI.Xaml.Media.TransformCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.operator !=(Microsoft.UI.Xaml.Media.TransformCollection, Microsoft.UI.Xaml.Media.TransformCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Equals(Microsoft.UI.Xaml.Media.TransformCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.IndexOf(Microsoft.UI.Xaml.Media.Transform)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Insert(int, Microsoft.UI.Xaml.Media.Transform)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Add(Microsoft.UI.Xaml.Media.Transform)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Contains(Microsoft.UI.Xaml.Media.Transform)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Microsoft.UI.Xaml.Media.Transform[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.TransformCollection", "void TransformCollection.CopyTo(Transform[] array, int arrayIndex)");
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Remove(Microsoft.UI.Xaml.Media.Transform)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>.set_Item(int, Microsoft.UI.Xaml.Media.Transform)
+		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Transform>
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Transform>
 		// Processing: System.Collections.IEnumerable
 	}

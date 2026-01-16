@@ -9,12 +9,20 @@ namespace Windows.Graphics.Printing.Workflow
 	public partial class PrintWorkflowObjectModelSourceFileContent
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PrintWorkflowObjectModelSourceFileContent(global::Windows.Storage.Streams.IInputStream xpsStream)
+		internal PrintWorkflowObjectModelSourceFileContent()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent", "PrintWorkflowObjectModelSourceFileContent.PrintWorkflowObjectModelSourceFileContent(IInputStream xpsStream)");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.PrintWorkflowObjectModelSourceFileContent(Windows.Storage.Streams.IInputStream)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent, Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent, Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
