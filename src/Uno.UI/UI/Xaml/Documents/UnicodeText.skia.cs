@@ -102,6 +102,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
 	private static readonly SKPaint _spareDrawPaint = new();
+	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
@@ -1045,22 +1046,24 @@ internal readonly partial struct UnicodeText : IParsedText
 
 							var leftX = positions[correctionLeft].X;
 							var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
+							
+							var fontSize = (float)run.inline.FontSize;
+							var scale = fontSize / 12.0f;
+							var step = 4 * scale;
+							var amplitude = 2 * scale;
+							var yOffset = 2 * scale;
+
 							using var p = new SKPath();
-							var y = line.y + line.baselineOffset + 2; // +2 to be below the text
+							var y = line.y + line.baselineOffset + yOffset;
 							p.MoveTo(currentLineX + leftX, y);
-							for (float x = currentLineX + leftX; x < currentLineX + rightX; x += 4)
+							for (float x = currentLineX + leftX; x < currentLineX + rightX; x += step)
 							{
-								p.LineTo(x + 2, y + 2);
-								p.LineTo(x + 4, y);
+								p.LineTo(x + step / 2, y + amplitude);
+								p.LineTo(x + step, y);
 							}
 
-							using var paint = new SKPaint();
-							paint.Color = SKColors.Red;
-							paint.Style = SKPaintStyle.Stroke;
-							paint.StrokeWidth = 1;
-							paint.IsAntialias = true;
-
-							session.Canvas.DrawPath(p, paint);
+							_spareSpellCheckPaint.StrokeWidth = scale;
+							session.Canvas.DrawPath(p, _spareSpellCheckPaint);
 						}
 
 						lastCorrectionIndex++;
