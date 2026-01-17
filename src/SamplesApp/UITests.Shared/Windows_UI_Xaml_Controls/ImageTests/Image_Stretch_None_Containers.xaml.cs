@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[Controls.SampleControlInfo("Image", "Image_Stretch_None_ScrollViewer")]
+	[Controls.Sample("Image", "Image_Stretch_None_ScrollViewer")]
 	public sealed partial class Image_Stretch_None_Containers : UserControl
 	{
 		public Image_Stretch_None_Containers()

@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 
 namespace UITests.Shared.Toolkit
 {
-	[SampleControlInfo("Toolkit", nameof(Elevation))]
+	[Sample("Toolkit", nameof(Elevation))]
 	public sealed partial class Elevation : UserControl
 	{
 		public Elevation()

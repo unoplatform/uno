@@ -13,7 +13,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Geolocator", description: "Demonstrates use of Windows.Devices.Geolocation.Geolocator", viewModelType: typeof(GeolocatorTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "Geolocator", ViewModelType = typeof(GeolocatorTestsViewModel), IgnoreInSnapshotTests = true, Description = "Demonstrates use of Windows.Devices.Geolocation.Geolocator")]
 	public sealed partial class GeolocatorTests : UserControl
 	{
 		public GeolocatorTests()

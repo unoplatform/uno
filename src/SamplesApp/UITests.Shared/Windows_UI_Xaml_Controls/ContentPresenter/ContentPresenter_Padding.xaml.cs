@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfo("ContentPresenter", "ContentPresenter_Padding")]
+	[Sample("ContentPresenter", "ContentPresenter_Padding")]
 	public sealed partial class ContentPresenter_Padding : UserControl
 	{
 		public ContentPresenter_Padding()

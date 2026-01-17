@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_Corners", typeof(ListViewViewModel))]
+	[Sample("ComboBox", Name = "ComboBox_Corners")]
 	public sealed partial class ComboBox_Corners : UserControl
 	{
 		public ComboBox_Corners()

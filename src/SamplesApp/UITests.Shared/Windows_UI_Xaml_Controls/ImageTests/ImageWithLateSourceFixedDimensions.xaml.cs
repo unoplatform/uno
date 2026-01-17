@@ -20,7 +20,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo("Image", "ImageWithLateSourceFixedDimensions", Description = "Source is set after the image is loaded and visible.")]
+	[Sample("Image", Name = "ImageWithLateSourceFixedDimensions")]
 	public sealed partial class ImageWithLateSourceFixedDimensions : UserControl
 	{
 		public ImageWithLateSourceFixedDimensions()

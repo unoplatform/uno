@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo(category: "Image", controlName: nameof(ImageSourceStream))]
+	[Sample("Image", Name = nameof(ImageSourceStream))]
 	public sealed partial class ImageSourceStream : Page
 	{
 		public ImageSourceStream()

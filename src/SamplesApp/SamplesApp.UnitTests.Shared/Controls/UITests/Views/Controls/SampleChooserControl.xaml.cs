@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Input;
 using System.Threading;
 using SampleControl.Entities;
+using Windows.System;
 
 
 #if WINAPPSDK
@@ -34,6 +35,69 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
+			KeyDown += OnKeyDown;
+		}
+
+		private SampleChooserViewModel ViewModel => (SampleChooserViewModel)DataContext;
+
+		private void OnKeyDown(object sender, KeyRoutedEventArgs e)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			var ctrl = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
+			var shift = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
+			var alt = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
+
+			switch (e.Key)
+			{
+				case VirtualKey.F when ctrl && !shift && !alt:
+					// Ctrl+F: Focus search box
+					SearchBox.Focus(FocusState.Keyboard);
+					e.Handled = true;
+					break;
+
+				case VirtualKey.F5 when !ctrl && !shift && !alt:
+					// F5: Reload current sample
+					if (ViewModel.ReloadCurrentTestCommand.CanExecute(null))
+					{
+						ViewModel.ReloadCurrentTestCommand.Execute(null);
+					}
+					e.Handled = true;
+					break;
+
+				case VirtualKey.Left when alt && !ctrl && !shift:
+					// Alt+Left: Previous sample
+					if (ViewModel.LoadPreviousTestCommand.CanExecute(null))
+					{
+						ViewModel.LoadPreviousTestCommand.Execute(null);
+					}
+					e.Handled = true;
+					break;
+
+				case VirtualKey.Right when alt && !ctrl && !shift:
+					// Alt+Right: Next sample
+					if (ViewModel.LoadNextTestCommand.CanExecute(null))
+					{
+						ViewModel.LoadNextTestCommand.Execute(null);
+					}
+					e.Handled = true;
+					break;
+
+				case VirtualKey.F when ctrl && shift && !alt:
+					// Ctrl+Shift+F: Toggle favorites view
+					ViewModel.ShowNewSectionCommand.Execute("Favorites");
+					e.Handled = true;
+					break;
+
+				case VirtualKey.H when ctrl && !shift && !alt:
+					// Ctrl+H: Toggle history/recents view
+					ViewModel.ShowNewSectionCommand.Execute("Recents");
+					e.Handled = true;
+					break;
+			}
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

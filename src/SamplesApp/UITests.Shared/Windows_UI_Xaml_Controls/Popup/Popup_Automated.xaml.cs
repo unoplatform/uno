@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Popup
 {
-	[SampleControlInfo("Popup", nameof(Popup_Automated))]
+	[Sample("Popup", Name = nameof(Popup_Automated))]
 	public sealed partial class Popup_Automated : UserControl
 	{
 		public Popup_Automated()

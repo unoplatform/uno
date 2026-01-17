@@ -21,7 +21,7 @@ namespace Benchmarks.Shared.Controls
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("Performance", "BenchmarkDotNet")]
+	[Sample("Performance", "BenchmarkDotNet")]
 	public sealed partial class BenchmarkDotNetTestsPage : Page
 	{
 		public BenchmarkDotNetTestsPage()

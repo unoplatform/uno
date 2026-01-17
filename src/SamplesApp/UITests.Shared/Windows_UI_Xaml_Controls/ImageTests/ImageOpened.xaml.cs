@@ -18,7 +18,7 @@ using SamplesApp;
 
 namespace Uno.UI.Samples.UITests.Image
 {
-	[SampleControlInfo("Image", "ImageOpened")]
+	[Sample("Image", Name = "ImageOpened")]
 	public sealed partial class ImageOpened : UserControl
 	{
 		public ImageOpened()

@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_SelectedItem", typeof(ListViewViewModel))]
+	[Sample("ListView", "ListView_SelectedItem", typeof(ListViewViewModel))]
 	public sealed partial class ListView_SelectedItem : UserControl
 	{
 		public ListView_SelectedItem()

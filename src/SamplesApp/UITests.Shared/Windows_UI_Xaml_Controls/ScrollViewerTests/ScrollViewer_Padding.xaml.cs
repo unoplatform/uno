@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo(category: "ScrollViewer")]
+	[Sample(category: "ScrollViewer")]
 	public sealed partial class ScrollViewer_Padding : Page
 	{
 		public ScrollViewer_Padding()

@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "RadioButton_With_GroupName", typeof(ButtonTestsViewModel))]
+	[Sample("Buttons", "RadioButton_With_GroupName", typeof(ButtonTestsViewModel))]
 
 	public sealed partial class RadioButton_With_GroupName : UserControl
 	{

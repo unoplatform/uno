@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Resources.StaticResource
 {
-	[SampleControlInfo("Resources", "StaticResource_Simple")]
+	[Sample("Resources", "StaticResource_Simple")]
 	public sealed partial class StaticResource_Simple : UserControl
 	{
 		public StaticResource_Simple()

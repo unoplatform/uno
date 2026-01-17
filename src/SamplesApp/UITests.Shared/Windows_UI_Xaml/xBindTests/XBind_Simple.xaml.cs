@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.XBind
 {
-	[SampleControlInfo("x:Bind", "XBind_Simple", Description = "Description for sample of XBind_Simple")]
+	[Sample("x:Bind", "XBind_Simple", Description = "Description for sample of XBind_Simple")]
 	public sealed partial class XBind_Simple : UserControl
 	{
 		public XBind_Simple()

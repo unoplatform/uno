@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[SampleControlInfo("Flyouts", "Flyout_Unloaded")]
+	[Sample("Flyouts", "Flyout_Unloaded")]
 	public sealed partial class Flyout_Unloaded : UserControl
 	{
 		public Flyout_Unloaded()

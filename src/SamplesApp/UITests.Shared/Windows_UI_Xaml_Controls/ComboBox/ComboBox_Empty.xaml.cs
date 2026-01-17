@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo(viewModelType: typeof(ListViewViewModel))]
+	[Sample(ViewModelType = typeof(ListViewViewModel))]
 	public sealed partial class ComboBox_Empty : Page
 	{
 		public ComboBox_Empty()

@@ -13,7 +13,7 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("TextBox", "WASM Multiline TextBox")]
+	[Sample("TextBox", "WASM Multiline TextBox")]
 	public sealed partial class WASM_Multiline : Page
 	{
 		public WASM_Multiline()

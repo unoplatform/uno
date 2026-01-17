@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
-	[SampleControlInfo(category: "Clipping")]
+	[Sample(category: "Clipping")]
 	public sealed partial class UIElementClipping : Page
 	{
 		public UIElementClipping()

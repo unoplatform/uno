@@ -25,7 +25,7 @@ using Uno.Logging;
 
 namespace Uno.UI.Samples.Content.UITests
 {
-	[SampleControlInfo("Animations", "DoubleAnimationTestsControl")]
+	[Sample("Animations", "DoubleAnimationTestsControl")]
 
 	public sealed partial class DoubleAnimationTestsControl : UserControl
 	{

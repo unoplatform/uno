@@ -21,9 +21,9 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollBar
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("Scrolling"
+	[Sample("Scrolling"
 #if __WASM__
-		, ignoreInSnapshotTests: true
+		, IgnoreInSnapshotTests: true
 #endif
 		)]
 	public sealed partial class ScrollBar_Simple : Page

@@ -22,7 +22,7 @@ using UIKit;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.Keyboard
 {
-	[SampleControlInfo("Keyboard", "Keyboard_Clickthrough_Modal", null, true, "Currently only implemented for iOS")]
+	[Sample("Keyboard", "Keyboard_Clickthrough_Modal", null, true, "Currently only implemented for iOS")]
 	public sealed partial class Keyboard_Clickthrough_Modal : Page
 	{
 		public Keyboard_Clickthrough_Modal()

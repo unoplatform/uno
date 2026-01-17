@@ -19,7 +19,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls
 {
-	[SampleControlInfo("ListView", "ListView_Header_DataContextChanging")]
+	[Sample("ListView", "ListView_Header_DataContextChanging")]
 	public sealed partial class ListView_Header_DataContextChanging : UserControl
 	{
 		public ListView_Header_DataContextChanging()

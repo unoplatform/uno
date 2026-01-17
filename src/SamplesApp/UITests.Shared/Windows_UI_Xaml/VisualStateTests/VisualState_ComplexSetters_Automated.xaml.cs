@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.VisualStateTests
 {
-	[SampleControlInfo("Visual states", "VisualState_ComplexSetters_Automated")]
+	[Sample("Visual states", "VisualState_ComplexSetters_Automated")]
 	public sealed partial class VisualState_ComplexSetters_Automated : UserControl
 	{
 		public VisualState_ComplexSetters_Automated()

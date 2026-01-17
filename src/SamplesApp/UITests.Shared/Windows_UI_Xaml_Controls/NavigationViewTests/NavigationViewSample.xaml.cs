@@ -19,7 +19,7 @@ namespace SamplesApp.Samples.NavigationViewSample
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("NavigationView", "NavigationViewSample")]
+	[Sample("NavigationView", "NavigationViewSample")]
 #pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class NavigationViewSample
 #pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.

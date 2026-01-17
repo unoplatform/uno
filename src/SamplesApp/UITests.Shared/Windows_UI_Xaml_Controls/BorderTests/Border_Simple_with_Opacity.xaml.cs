@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "Border_Simple_with_Opacity")]
+	[Sample("Border", "Border_Simple_with_Opacity")]
 	public sealed partial class Border_Simple_with_Opacity : UserControl
 	{
 		public Border_Simple_with_Opacity()

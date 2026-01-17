@@ -22,7 +22,7 @@ using UITests.Shared.Helpers;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 {
-	[SampleControlInfo(category: "Brushes")]
+	[Sample(category: "Brushes")]
 	public sealed partial class ImageBrush_SameWithDelay : UserControl, IWaitableSample
 	{
 		private BrushContext _ctx = new BrushContext();

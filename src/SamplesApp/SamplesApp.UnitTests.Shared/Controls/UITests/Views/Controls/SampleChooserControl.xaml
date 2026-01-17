@@ -317,6 +317,7 @@
                         IsTabStop="True"
                         Spacing="4">
                         <AutoSuggestBox
+                            x:Name="SearchBox"
                             HorizontalAlignment="Stretch"
                             ItemsSource="{Binding FilteredSamples}"
                             PlaceholderText="Search..."
@@ -631,6 +632,12 @@
                                         Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem Command="{Binding OpenHelpCommand}" Text="Help">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE897;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
                                 </MenuFlyout>

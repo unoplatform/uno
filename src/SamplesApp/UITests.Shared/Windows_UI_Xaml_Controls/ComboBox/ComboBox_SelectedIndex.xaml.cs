@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_SelectedIndex")]
+	[Sample("ComboBox", Name = "ComboBox_SelectedIndex")]
 	public sealed partial class ComboBox_SelectedIndex : Page
 	{
 		public ComboBox_SelectedIndex()

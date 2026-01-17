@@ -25,7 +25,7 @@ namespace Uno.UI.Samples.UITests.Image
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo]
+	[Sample]
 	public sealed partial class Image_UseTargetSize : Page
 	{
 		public Image_UseTargetSize()

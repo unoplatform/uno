@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfo("ContentPresenter", "ContentPresenter_Template")]
+	[Sample("ContentPresenter", "ContentPresenter_Template")]
 	public sealed partial class ContentPresenter_Template : UserControl
 	{
 		public ContentPresenter_Template()

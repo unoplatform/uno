@@ -22,9 +22,9 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
 #if __WASM__
-	[SampleControlInfo("CommandBar", "Long Title", ignoreInSnapshotTests: true)]
+	[Sample("CommandBar", Name = "Long Title", IgnoreInSnapshotTests = true)]
 #else
-	[SampleControlInfo("CommandBar", "Long Title")]
+	[Sample("CommandBar", Name = "Long Title")]
 #endif
 	public sealed partial class CommandBar_LongTitle : Page
 	{

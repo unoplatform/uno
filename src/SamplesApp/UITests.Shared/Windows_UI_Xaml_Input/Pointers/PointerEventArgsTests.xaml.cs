@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.Pointers
 {
-	[SampleControlInfo("Pointers", "PointerEventArgsTests", Description =
+	[Sample("Pointers", "PointerEventArgsTests", Description =
 			"You should utilize the mouse and touch to hit the current control, observing its event triggers and parameter status. LeftButtonPressed will be a value that is true when the touch is pressed and moved, and a value that is false when the touch is up or canceled.", IsManualTest = true)]
 	public sealed partial class PointerEventArgsTests : UserControl
 	{

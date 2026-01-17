@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
-	[Uno.UI.Samples.Controls.SampleControlInfo("Flyouts")]
+	[Uno.UI.Samples.Controls.Sample("Flyouts")]
 	public sealed partial class UIElement_ContextFlyout : UserControl
 	{
 		public UIElement_ContextFlyout()

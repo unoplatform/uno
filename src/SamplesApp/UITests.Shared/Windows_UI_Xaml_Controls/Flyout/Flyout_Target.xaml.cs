@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Samples.Content.UITests.Flyout
 {
-	[SampleControlInfo("Flyouts", "Flyout_Target")]
+	[Sample("Flyouts", "Flyout_Target")]
 	public sealed partial class Flyout_Target : UserControl
 	{
 		public Flyout_Target()

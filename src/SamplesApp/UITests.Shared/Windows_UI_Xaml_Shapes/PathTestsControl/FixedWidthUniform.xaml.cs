@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "FixedWidthUniform")]
+	[Sample("Path", "FixedWidthUniform")]
 	public sealed partial class FixedWidthUniform : UserControl
 	{
 		public FixedWidthUniform()

@@ -6,7 +6,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo(category: "TextBox")]
+	[Sample(category: "TextBox")]
 	public sealed partial class PasswordBox_Reveal_Scroll : Page
 	{
 		public PasswordBox_Reveal_Scroll()

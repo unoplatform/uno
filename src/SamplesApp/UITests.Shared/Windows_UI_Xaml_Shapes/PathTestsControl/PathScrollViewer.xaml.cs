@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "PathScrollViewer")]
+	[Sample("Path", "PathScrollViewer")]
 	public sealed partial class PathScrollViewer : UserControl
 	{
 		public PathScrollViewer()

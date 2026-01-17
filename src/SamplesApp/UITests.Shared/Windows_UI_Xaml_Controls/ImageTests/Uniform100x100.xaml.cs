@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "Uniform100x100", Description = "Uniform100x100")]
+	[Sample("Image", Name = "Uniform100x100")]
 	public sealed partial class Uniform100x100 : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

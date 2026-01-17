@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Grid_Auto_Text_Block_Trimming")]
+	[Sample("Grid", "Grid_Auto_Text_Block_Trimming")]
 	public sealed partial class Grid_Auto_Text_Block_Trimming : UserControl
 	{
 		public Grid_Auto_Text_Block_Trimming()

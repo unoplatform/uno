@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_ToggleDisabled", typeof(ListViewViewModel), description: "Toggling button to disable the ComboBox should disable it.")]
+	[Sample("ComboBox", Name = "ComboBox_ToggleDisabled", Description = "Toggling button to disable the ComboBox should disable it.")]
 	public sealed partial class ComboBox_ToggleDisabled : UserControl
 	{
 		public ComboBox_ToggleDisabled()

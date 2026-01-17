@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.Enability
 {
-	[SampleControlInfo("Control", "BasicEnability")]
+	[Sample("Control", "BasicEnability")]
 	public sealed partial class BasicEnability : Page
 	{
 		public BasicEnability()

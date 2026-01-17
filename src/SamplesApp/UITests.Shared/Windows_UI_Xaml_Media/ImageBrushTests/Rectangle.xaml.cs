@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("Brushes", "Rectangle")]
+	[Sample("Brushes", "Rectangle")]
 	public sealed partial class Rectangle : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", "Progressing_TextBlock_with_margin")]
+	[Sample("TextBlock", "Progressing_TextBlock_with_margin")]
 	public sealed partial class Progressing_TextBlock_with_margin : UserControl
 	{
 		public Progressing_TextBlock_with_margin()

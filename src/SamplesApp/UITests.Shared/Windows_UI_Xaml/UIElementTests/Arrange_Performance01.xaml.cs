@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", nameof(Arrange_Performance01))]
+	[Sample("UIElement", nameof(Arrange_Performance01))]
 	public sealed partial class Arrange_Performance01 : UserControl
 	{
 

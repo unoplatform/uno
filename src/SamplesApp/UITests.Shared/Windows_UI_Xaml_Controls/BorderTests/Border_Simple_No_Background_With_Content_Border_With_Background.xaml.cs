@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "Border_Simple_No_Background_With_Content_Border_With_Background")]
+	[Sample("Border", "Border_Simple_No_Background_With_Content_Border_With_Background")]
 	public sealed partial class Border_Simple_No_Background_With_Content_Border_With_Background : UserControl
 	{
 		public Border_Simple_No_Background_With_Content_Border_With_Background()

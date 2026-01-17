@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 {
-	[SampleControlInfo("XAML", "BasicThemeResources")]
+	[Sample("XAML", "BasicThemeResources")]
 	public sealed partial class BasicThemeResources : Page
 	{
 		public BasicThemeResources()
