@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
@@ -995,7 +996,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 							var leftX = positions[correctionLeft].X;
 							var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
-							
+
 							var fontSize = (float)run.inline.FontSize;
 							var scale = fontSize / 12.0f;
 							var step = 4 * scale;
@@ -1461,5 +1462,28 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return ret;
+	}
+
+	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions) GetSpellCheckSuggestions(int correctionStart, int correctionEnd)
+	{
+		var wordBoundaries = _wordBoundaries;
+		var text = _text;
+		var index = wordBoundaries.BinarySearch(correctionStart);
+		var i = index >= 0 ? index + 1 : ~index;
+
+		if (i < wordBoundaries.Count)
+		{
+			var boundary = wordBoundaries[i];
+			var start = i == 0 ? 0 : wordBoundaries[i - 1];
+
+			if (start <= correctionStart && boundary >= correctionEnd)
+			{
+				var word = text.Substring(start, boundary - start);
+				var startTrimmedWord = word.TrimStart();
+				var trimmedWord = startTrimmedWord.TrimEnd();
+				return (start + word.Length - startTrimmedWord.Length, start + word.Length - startTrimmedWord.Length + trimmedWord.Length, _wordList.Suggest(trimmedWord).ToList());
+			}
+		}
+		return (correctionStart, correctionEnd, new List<string>(0));
 	}
 }
