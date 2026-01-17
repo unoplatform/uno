@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
@@ -342,6 +343,37 @@ public partial class TextBox
 
 			_contextMenu.Items.Clear();
 
+			if (IsSpellCheckEnabled && TextBoxView?.DisplayBlock?.ParsedText is UnicodeText unicodeText)
+			{
+				var (correctionIndexStart, correctionIndexEnd, suggestions) = unicodeText.GetSpellCheckSuggestions(SelectionStart, SelectionStart + SelectionLength);
+
+				if (suggestions.Count > 0)
+				{
+					var proofingMenuHeader = new MenuFlyoutSubItem
+					{
+						Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SPELLCHECK_SUGGESTIONS_HEADER"),
+					};
+					_contextMenu.Items.Add(proofingMenuHeader);
+
+					// Add up to 5 suggestions
+					var maxSuggestions = suggestions.Count < 5 ? suggestions.Count : 5;
+					for (int i = 0; i < maxSuggestions; i++)
+					{
+						var suggestion = suggestions[i];
+						var menuItem = new MenuFlyoutItem
+						{
+							Text = suggestion,
+							FontWeight = Microsoft.UI.Text.FontWeights.Bold,
+							Command = new TextBoxCommand(() => ReplaceWithSuggestion(correctionIndexStart, correctionIndexEnd, suggestion))
+						};
+						proofingMenuHeader.Items.Add(menuItem);
+					}
+
+					// Add separator after suggestions
+					_contextMenu.Items.Add(new MenuFlyoutSeparator());
+				}
+			}
+
 			var hasSelection = _selection.length > 0;
 
 			if (!IsReadOnly && hasSelection)
@@ -371,5 +403,13 @@ public partial class TextBox
 
 			_contextMenu.ShowAt(this, p);
 		}
+	}
+
+	private void ReplaceWithSuggestion(int correctionStart, int correctionEnd, string suggestion)
+	{
+		var text = Text;
+		var newText = text[..correctionStart] + suggestion + text[correctionEnd..];
+		Text = newText;
+		Select(correctionStart + suggestion.Length, 0);
 	}
 }
