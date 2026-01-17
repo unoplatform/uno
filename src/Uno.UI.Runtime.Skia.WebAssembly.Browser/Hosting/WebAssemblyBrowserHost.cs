@@ -24,26 +24,39 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 {
 	private readonly CoreApplicationExtension? _coreApplicationExtension;
 
-	private Func<Application> _appBuilder;
+	private readonly bool _forceSoftwareRendering;
+	private readonly Func<Application> _appBuilder;
 	private BrowserRenderer? _renderer;
-	private ManualResetEvent _terminationGate = new(false);
+	private readonly ManualResetEvent _terminationGate = new(false);
 
 	/// <summary>
 	/// Creates a host for a Uno Skia FrameBuffer application.
 	/// </summary>
 	/// <param name="appBuilder">App builder.</param>
+	/// <param name="forceSoftwareRendering">Whether to force software rendering.</param>
 	/// <remarks>
 	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 	/// </remarks>
-	public WebAssemblyBrowserHost(Func<Application> appBuilder)
+	public WebAssemblyBrowserHost(Func<Application> appBuilder, bool forceSoftwareRendering)
 	{
+		_forceSoftwareRendering = forceSoftwareRendering;
 		_appBuilder = appBuilder;
 
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}
 
-	protected override void Initialize()
+	protected override void Initialize() { }
+
+	protected async override Task InitializeAsync()
 	{
+		NativeMethods.PersistBootstrapperLoader();
+		CompositionTarget.Rendering += OnCompositionTargetOnRendering;
+		void OnCompositionTargetOnRendering(object? sender, object o)
+		{
+			NativeMethods.RemoveLoading();
+			CompositionTarget.Rendering -= OnCompositionTargetOnRendering;
+		}
+
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
@@ -55,10 +68,10 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
 		ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
 
-		NativeMethods.PersistBootstrapperLoader();
+		await WebAssemblyWindowWrapper.Initialize();
 
 		CompositionTarget.FrameRenderingOptions = (false, false);
-		_renderer = new BrowserRenderer(this);
+		_renderer = new BrowserRenderer(this, _forceSoftwareRendering);
 	}
 
 	protected async override Task RunLoop()
@@ -110,5 +123,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	{
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.persistBootstrapperLoader")]
 		public static partial void PersistBootstrapperLoader();
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.removeLoading")]
+		public static partial void RemoveLoading();
 	}
 }
