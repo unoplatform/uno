@@ -1,0 +1,380 @@
+name: Monitor Master Build Health
+
+on:
+  schedule:
+    # Run every 6 hours to check build status
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+env:
+  ADO_ORGANIZATION: uno-platform
+  ADO_PROJECT: Uno Platform
+  ADO_PIPELINE_ID: 5
+  FAILURE_THRESHOLD_HOURS: 24
+  ISSUE_TITLE: "Master build is failing"
+
+jobs:
+  check-master-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for existing open issue
+        id: check_issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING_ISSUE=$(gh issue list --repo ${{ github.repository }} --state open --search "in:title \"${{ env.ISSUE_TITLE }}\"" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING_ISSUE" ]; then
+            echo "existing_issue=$EXISTING_ISSUE" >> $GITHUB_OUTPUT
+            echo "::notice::Existing open issue found: #$EXISTING_ISSUE"
+          else
+            echo "existing_issue=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Query Azure DevOps Pipeline Runs
+        id: query_ado
+        env:
+          ADO_PAT: ${{ secrets.ADO_PAT }}
+        run: |
+          # URL encode the project name
+          PROJECT_ENCODED=$(echo "${{ env.ADO_PROJECT }}" | sed 's/ /%20/g')
+
+          # Query pipeline runs from the last 7 days (to have enough history)
+          API_URL="https://dev.azure.com/${{ env.ADO_ORGANIZATION }}/${PROJECT_ENCODED}/_apis/pipelines/${{ env.ADO_PIPELINE_ID }}/runs?api-version=7.1"
+
+          echo "Querying: $API_URL"
+
+          # Fetch pipeline runs
+          RUNS=$(curl -s -u ":${ADO_PAT}" "$API_URL")
+
+          if [ -z "$RUNS" ] || [ "$(echo "$RUNS" | jq -r '.value // empty')" == "" ]; then
+            echo "::error::Failed to fetch pipeline runs or no runs found"
+            echo "has_failure=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Save runs to file for processing
+          echo "$RUNS" > /tmp/pipeline_runs.json
+
+      - name: Analyze Build Status
+        id: analyze
+        run: |
+          if [ ! -f /tmp/pipeline_runs.json ]; then
+            echo "has_failure=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Filter runs for master branch only
+          MASTER_RUNS=$(jq '[.value[] | select(.templateParameters.BranchOverride == "refs/heads/master" or (.resources.repositories.self.refName == "refs/heads/master"))] | sort_by(.createdDate) | reverse' /tmp/pipeline_runs.json)
+
+          # If no master runs found, try alternative filter
+          if [ "$(echo "$MASTER_RUNS" | jq 'length')" == "0" ]; then
+            MASTER_RUNS=$(jq '[.value[]] | sort_by(.createdDate) | reverse' /tmp/pipeline_runs.json)
+          fi
+
+          echo "$MASTER_RUNS" > /tmp/master_runs.json
+
+          # Get the most recent completed run
+          LATEST_RUN=$(jq '.[0]' /tmp/master_runs.json)
+          LATEST_STATE=$(echo "$LATEST_RUN" | jq -r '.state')
+          LATEST_RESULT=$(echo "$LATEST_RUN" | jq -r '.result // "unknown"')
+
+          echo "Latest run state: $LATEST_STATE, result: $LATEST_RESULT"
+
+          # Check if the latest run is failing
+          if [ "$LATEST_RESULT" != "failed" ] && [ "$LATEST_RESULT" != "canceled" ]; then
+            echo "::notice::Latest master build is passing or in progress"
+            echo "has_failure=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Find the last successful run
+          LAST_SUCCESS=$(jq '[.[] | select(.result == "succeeded")] | .[0]' /tmp/master_runs.json)
+          LAST_SUCCESS_DATE=$(echo "$LAST_SUCCESS" | jq -r '.createdDate // empty')
+          LAST_SUCCESS_ID=$(echo "$LAST_SUCCESS" | jq -r '.id // empty')
+          LAST_SUCCESS_NAME=$(echo "$LAST_SUCCESS" | jq -r '.name // empty')
+
+          if [ -z "$LAST_SUCCESS_DATE" ]; then
+            echo "::warning::No successful master build found in recent history"
+            LAST_SUCCESS_DATE="unknown"
+            LAST_SUCCESS_URL="N/A"
+          else
+            PROJECT_ENCODED=$(echo "${{ env.ADO_PROJECT }}" | sed 's/ /%20/g')
+            LAST_SUCCESS_URL="https://dev.azure.com/${{ env.ADO_ORGANIZATION }}/${PROJECT_ENCODED}/_build/results?buildId=${LAST_SUCCESS_ID}"
+          fi
+
+          # Find the first failing run after the last success
+          if [ "$LAST_SUCCESS_DATE" != "unknown" ]; then
+            FIRST_FAILURE=$(jq --arg date "$LAST_SUCCESS_DATE" '[.[] | select(.result == "failed" and .createdDate > $date)] | sort_by(.createdDate) | .[0]' /tmp/master_runs.json)
+          else
+            FIRST_FAILURE=$(jq '[.[] | select(.result == "failed")] | sort_by(.createdDate) | .[0]' /tmp/master_runs.json)
+          fi
+
+          FIRST_FAILURE_DATE=$(echo "$FIRST_FAILURE" | jq -r '.createdDate // empty')
+          FIRST_FAILURE_ID=$(echo "$FIRST_FAILURE" | jq -r '.id // empty')
+
+          if [ -z "$FIRST_FAILURE_DATE" ]; then
+            echo "::error::Could not determine first failure date"
+            echo "has_failure=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          PROJECT_ENCODED=$(echo "${{ env.ADO_PROJECT }}" | sed 's/ /%20/g')
+          FIRST_FAILURE_URL="https://dev.azure.com/${{ env.ADO_ORGANIZATION }}/${PROJECT_ENCODED}/_build/results?buildId=${FIRST_FAILURE_ID}"
+
+          # Calculate hours since first failure
+          FIRST_FAILURE_EPOCH=$(date -d "$FIRST_FAILURE_DATE" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%S" "${FIRST_FAILURE_DATE%%.*}" +%s 2>/dev/null || echo "0")
+          NOW_EPOCH=$(date +%s)
+          HOURS_FAILING=$(( (NOW_EPOCH - FIRST_FAILURE_EPOCH) / 3600 ))
+
+          echo "Build has been failing for approximately $HOURS_FAILING hours"
+
+          if [ "$HOURS_FAILING" -lt "${{ env.FAILURE_THRESHOLD_HOURS }}" ]; then
+            echo "::notice::Build failing for $HOURS_FAILING hours, below threshold of ${{ env.FAILURE_THRESHOLD_HOURS }} hours"
+            echo "has_failure=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "has_failure=true" >> $GITHUB_OUTPUT
+          echo "hours_failing=$HOURS_FAILING" >> $GITHUB_OUTPUT
+          echo "last_success_url=$LAST_SUCCESS_URL" >> $GITHUB_OUTPUT
+          echo "last_success_date=$LAST_SUCCESS_DATE" >> $GITHUB_OUTPUT
+          echo "first_failure_url=$FIRST_FAILURE_URL" >> $GITHUB_OUTPUT
+          echo "first_failure_date=$FIRST_FAILURE_DATE" >> $GITHUB_OUTPUT
+          echo "first_failure_id=$FIRST_FAILURE_ID" >> $GITHUB_OUTPUT
+
+      - name: Get Failing Steps Details
+        id: failing_steps
+        if: steps.analyze.outputs.has_failure == 'true'
+        env:
+          ADO_PAT: ${{ secrets.ADO_PAT }}
+        run: |
+          BUILD_ID="${{ steps.analyze.outputs.first_failure_id }}"
+          PROJECT_ENCODED=$(echo "${{ env.ADO_PROJECT }}" | sed 's/ /%20/g')
+
+          # Get the build timeline to find failing steps
+          TIMELINE_URL="https://dev.azure.com/${{ env.ADO_ORGANIZATION }}/${PROJECT_ENCODED}/_apis/build/builds/${BUILD_ID}/timeline?api-version=7.1"
+
+          TIMELINE=$(curl -s -u ":${ADO_PAT}" "$TIMELINE_URL")
+
+          # Extract failing tasks/stages
+          FAILING_ITEMS=$(echo "$TIMELINE" | jq -r '
+            [.records[] | select(.result == "failed" and .type == "Task")] |
+            map({
+              name: .name,
+              id: .id,
+              parentId: .parentId,
+              log: .log.url
+            }) |
+            .[0:10]
+          ')
+
+          # Build markdown list of failing steps
+          FAILING_STEPS_MD=""
+          while IFS= read -r item; do
+            NAME=$(echo "$item" | jq -r '.name // "Unknown"')
+            if [ "$NAME" != "null" ] && [ "$NAME" != "Unknown" ]; then
+              FAILING_STEPS_MD="${FAILING_STEPS_MD}- ${NAME}\n"
+            fi
+          done < <(echo "$FAILING_ITEMS" | jq -c '.[]')
+
+          if [ -z "$FAILING_STEPS_MD" ]; then
+            FAILING_STEPS_MD="- Unable to determine specific failing steps. Please check the build logs."
+          fi
+
+          # Save to file to preserve newlines
+          echo -e "$FAILING_STEPS_MD" > /tmp/failing_steps.md
+
+          # Also output the build URL for direct access to failing steps
+          echo "build_url=https://dev.azure.com/${{ env.ADO_ORGANIZATION }}/${PROJECT_ENCODED}/_build/results?buildId=${BUILD_ID}&view=logs" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Issue
+        if: steps.analyze.outputs.has_failure == 'true' && steps.check_issue.outputs.existing_issue == ''
+        id: create_issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FAILING_STEPS=$(cat /tmp/failing_steps.md 2>/dev/null || echo "- Check build logs for details")
+
+          ISSUE_BODY=$(cat <<'EOF'
+          ## Master Build Failure Alert
+
+          The master branch build has been failing for more than ${{ env.FAILURE_THRESHOLD_HOURS }} hours.
+
+          ### Build Status Summary
+
+          | Status | Details |
+          |--------|---------|
+          | **Hours Failing** | ~${{ steps.analyze.outputs.hours_failing }} hours |
+          | **Last Passing Build** | [View Build](${{ steps.analyze.outputs.last_success_url }}) |
+          | **First Failing Build** | [View Build](${{ steps.analyze.outputs.first_failure_url }}) |
+          | **Build Logs** | [View Logs](${{ steps.failing_steps.outputs.build_url }}) |
+
+          ### Last Passing Build
+          - **Date:** ${{ steps.analyze.outputs.last_success_date }}
+          - **Link:** ${{ steps.analyze.outputs.last_success_url }}
+
+          ### First Failing Build
+          - **Date:** ${{ steps.analyze.outputs.first_failure_date }}
+          - **Link:** ${{ steps.analyze.outputs.first_failure_url }}
+
+          ### Failing Steps
+          EOF
+          )
+
+          ISSUE_BODY="${ISSUE_BODY}
+          ${FAILING_STEPS}
+
+          ---
+
+          > This issue was automatically created by the master build monitoring workflow.
+          > Please investigate and fix the failing build as soon as possible."
+
+          # Create the issue
+          ISSUE_URL=$(gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "${{ env.ISSUE_TITLE }}" \
+            --body "$ISSUE_BODY" \
+            --label "kind/bug,priority/high" \
+            --assignee "Copilot")
+
+          echo "issue_url=$ISSUE_URL" >> $GITHUB_OUTPUT
+
+          # Extract issue number from URL
+          ISSUE_NUMBER=$(echo "$ISSUE_URL" | grep -oE '[0-9]+$')
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+          echo "::notice::Created issue: $ISSUE_URL"
+
+      - name: Add Issue to Uno Team Backlog Project
+        if: steps.create_issue.outputs.issue_number != ''
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_PAT }}
+        run: |
+          ISSUE_NUMBER="${{ steps.create_issue.outputs.issue_number }}"
+
+          # Get the issue node ID
+          ISSUE_NODE_ID=$(gh api graphql -f query='
+            query($owner: String!, $repo: String!, $number: Int!) {
+              repository(owner: $owner, name: $repo) {
+                issue(number: $number) {
+                  id
+                }
+              }
+            }
+          ' -f owner="${{ github.repository_owner }}" -f repo="${{ github.event.repository.name }}" -F number="$ISSUE_NUMBER" --jq '.data.repository.issue.id')
+
+          if [ -z "$ISSUE_NODE_ID" ]; then
+            echo "::warning::Could not get issue node ID"
+            exit 0
+          fi
+
+          # Find the Uno Team Backlog project
+          # Note: You may need to adjust the project number or use project name search
+          PROJECT_ID=$(gh api graphql -f query='
+            query($org: String!) {
+              organization(login: $org) {
+                projectsV2(first: 20) {
+                  nodes {
+                    id
+                    title
+                  }
+                }
+              }
+            }
+          ' -f org="${{ github.repository_owner }}" --jq '.data.organization.projectsV2.nodes[] | select(.title == "Uno Team Backlog") | .id')
+
+          if [ -z "$PROJECT_ID" ]; then
+            echo "::warning::Could not find 'Uno Team Backlog' project"
+            exit 0
+          fi
+
+          # Add issue to project
+          ITEM_ID=$(gh api graphql -f query='
+            mutation($projectId: ID!, $contentId: ID!) {
+              addProjectV2ItemById(input: {projectId: $projectId, contentId: $contentId}) {
+                item {
+                  id
+                }
+              }
+            }
+          ' -f projectId="$PROJECT_ID" -f contentId="$ISSUE_NODE_ID" --jq '.data.addProjectV2ItemById.item.id')
+
+          if [ -z "$ITEM_ID" ]; then
+            echo "::warning::Could not add issue to project"
+            exit 0
+          fi
+
+          echo "::notice::Added issue to Uno Team Backlog project"
+
+          # Try to set priority field to High
+          # First, find the priority field ID
+          PRIORITY_FIELD=$(gh api graphql -f query='
+            query($projectId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  fields(first: 50) {
+                    nodes {
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' -f projectId="$PROJECT_ID" --jq '.data.node.fields.nodes[] | select(.name == "Priority" or .name == "priority")')
+
+          if [ -n "$PRIORITY_FIELD" ]; then
+            FIELD_ID=$(echo "$PRIORITY_FIELD" | jq -r '.id')
+            HIGH_OPTION_ID=$(echo "$PRIORITY_FIELD" | jq -r '.options[] | select(.name == "High" or .name == "high" or .name == "P1" or .name == "🔴 High") | .id' | head -1)
+
+            if [ -n "$HIGH_OPTION_ID" ] && [ "$HIGH_OPTION_ID" != "null" ]; then
+              gh api graphql -f query='
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                  updateProjectV2ItemFieldValue(input: {
+                    projectId: $projectId
+                    itemId: $itemId
+                    fieldId: $fieldId
+                    value: { singleSelectOptionId: $optionId }
+                  }) {
+                    projectV2Item {
+                      id
+                    }
+                  }
+                }
+              ' -f projectId="$PROJECT_ID" -f itemId="$ITEM_ID" -f fieldId="$FIELD_ID" -f optionId="$HIGH_OPTION_ID"
+
+              echo "::notice::Set priority to High"
+            fi
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Master Build Monitor Summary" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.analyze.outputs.has_failure }}" == "true" ]; then
+            echo "### :x: Build Failing" >> $GITHUB_STEP_SUMMARY
+            echo "- Hours failing: ~${{ steps.analyze.outputs.hours_failing }}" >> $GITHUB_STEP_SUMMARY
+            echo "- Last success: ${{ steps.analyze.outputs.last_success_url }}" >> $GITHUB_STEP_SUMMARY
+            echo "- First failure: ${{ steps.analyze.outputs.first_failure_url }}" >> $GITHUB_STEP_SUMMARY
+
+            if [ -n "${{ steps.create_issue.outputs.issue_url }}" ]; then
+              echo "- **Issue created:** ${{ steps.create_issue.outputs.issue_url }}" >> $GITHUB_STEP_SUMMARY
+            elif [ -n "${{ steps.check_issue.outputs.existing_issue }}" ]; then
+              echo "- **Existing issue:** #${{ steps.check_issue.outputs.existing_issue }}" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "### :white_check_mark: Build Healthy" >> $GITHUB_STEP_SUMMARY
+            echo "Master build is passing or has not been failing long enough to trigger an alert." >> $GITHUB_STEP_SUMMARY
+          fi
