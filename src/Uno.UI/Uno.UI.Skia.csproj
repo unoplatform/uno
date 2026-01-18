@@ -52,7 +52,10 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
+		<EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
+		<!--	Hunspell dictionary from http://downloads.sourceforge.net/wordlist/hunspell-en_US-2020.12.07.zip	-->
+		<EmbeddedResource Include="Resources\en_US.aff" />
+		<EmbeddedResource Include="Resources\en_US.dic" />
 	</ItemGroup>
 
 	<ItemGroup>
