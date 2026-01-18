@@ -20,7 +20,7 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 		_fonts = Task.Factory.StartNew(() =>
 		{
 			return Directory.EnumerateFiles("/system/fonts")
-				.Select(f => (Path.GetFileName(f), SKTypeface.FromStream(new MemoryStream(File.ReadAllBytes(f)))))
+				.Select(f => (Path.GetFileName(f), SKTypeface.FromFile(f)))
 				.ToList();
 		}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
 	}
