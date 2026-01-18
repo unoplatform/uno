@@ -1,11 +1,11 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents
 {
-	[SampleControlInfo("Routed Events", "GotFocus/LostFocus")]
+	[Sample("Routed Events", Name = "GotFocus/LostFocus")]
 	public sealed partial class RoutedEvent_Focus : Page
 	{
 		public RoutedEvent_Focus()

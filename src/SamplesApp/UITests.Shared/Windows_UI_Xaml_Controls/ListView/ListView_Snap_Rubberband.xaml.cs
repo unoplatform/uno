@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", nameof(ListView_Snap_Rubberband), IsManualTest = true, Description = SampleDescription)]
+	[Sample("ListView", Name = nameof(ListView_Snap_Rubberband), IsManualTest = true, Description = SampleDescription)]
 	public sealed partial class ListView_Snap_Rubberband : UserControl
 	{
 		private const string SampleDescription =

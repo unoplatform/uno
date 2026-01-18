@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 
 namespace UITests.Shared.Toolkit
 {
-	[SampleControlInfo("Toolkit", nameof(Elevation))]
+	[Sample("Toolkit", Name = nameof(Elevation))]
 	public sealed partial class Elevation : UserControl
 	{
 		public Elevation()

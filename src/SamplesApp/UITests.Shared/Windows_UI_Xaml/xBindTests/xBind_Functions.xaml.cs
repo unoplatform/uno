@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_UI_Xaml.xBindTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("x:Bind")]
+	[Sample("x:Bind")]
 	public sealed partial class xBind_Functions : Page
 	{
 		public xBind_Functions()

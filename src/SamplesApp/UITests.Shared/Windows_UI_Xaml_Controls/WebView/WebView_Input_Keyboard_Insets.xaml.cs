@@ -1,4 +1,4 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
@@ -12,9 +12,9 @@ using Android.App;
 
 namespace UITests.Windows_UI_Xaml_Controls.WebView;
 
-[SampleControlInfo("WebView", "WebView_Input_Keyboard_Insets",
-	isManualTest: true,
-	description: "Android Only. Other platform you will see an empty page. \n" +
+[Sample("WebView", Name = "WebView_Input_Keyboard_Insets",
+	IsManualTest = true,
+	Description = "Android Only. Other platform you will see an empty page. \n" +
 	"When focusing inputs, inset will be properly added preventing keyboard from covering the focused input.")]
 public sealed partial class WebView_Input_Keyboard_Insets : Page
 {
@@ -113,7 +113,7 @@ public partial class WebViewContainer
     }
 
     .group {
-      margin-bottom: 48px; /* spacing 3배 증가 */
+      margin-bottom: 48px; /* spacing 3? ?? */
     }
 
     label {

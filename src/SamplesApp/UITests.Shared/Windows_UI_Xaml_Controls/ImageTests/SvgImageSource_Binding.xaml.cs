@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
-[SampleControlInfo("Image", "SvgImageSource_Binding", typeof(ImageViewViewModel), isManualTest: true)]
+[Sample("Image", Name = "SvgImageSource_Binding", ViewModelType = typeof(ImageViewViewModel), IsManualTest = true)]
 public sealed partial class SvgImageSource_Binding : Page
 {
 	public SvgImageSource_Binding()

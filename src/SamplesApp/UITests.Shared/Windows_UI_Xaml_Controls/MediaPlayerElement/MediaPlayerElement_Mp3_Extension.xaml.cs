@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("MediaPlayerElement", "Using .mp3 (Audio only)", description: "MediaPlayerElement test using .mp3 (Audio only) with PosterSource", IgnoreInSnapshotTests = true)]
+	[Sample("MediaPlayerElement", Name = "Using .mp3 (Audio only)", Description = "MediaPlayerElement test using .mp3 (Audio only) with PosterSource", IgnoreInSnapshotTests = true)]
 	public sealed partial class MediaPlayerElement_Mp3_Extension : Page
 	{
 		public MediaPlayerElement_Mp3_Extension()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ToolTip
 {
-	[SampleControlInfo(nameof(ToolTip), nameof(ToolTip_CollapsedHost), description: SampleDescription)]
+	[Sample(nameof(ToolTip), nameof(ToolTip_CollapsedHost), Description = SampleDescription)]
 	public sealed partial class ToolTip_CollapsedHost : Page
 	{
 		private const string SampleDescription =

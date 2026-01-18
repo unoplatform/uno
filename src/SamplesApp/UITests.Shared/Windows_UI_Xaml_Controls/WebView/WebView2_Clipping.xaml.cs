@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Windows.Foundation.Collections;
 
 namespace UITests.Windows_UI_Xaml_Controls.WebView;
 
-[SampleControlInfo("WebView",
+[Sample("WebView",
 	IsManualTest = true,
 	Description = "Shows a Webview between two rectangles and when scrolling it should have the right clipping")]
 public sealed partial class WebView2_Clipping : Page

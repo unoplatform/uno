@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +23,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls
 {
-	[SampleControlInfo("Buttons", "Buttons_Native")]
+	[Sample("Buttons", Name = "Buttons_Native")]
 
 	public sealed partial class Buttons_Native : UserControl
 	{

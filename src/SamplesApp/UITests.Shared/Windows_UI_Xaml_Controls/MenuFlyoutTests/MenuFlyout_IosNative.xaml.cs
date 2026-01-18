@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
-	[Uno.UI.Samples.Controls.SampleControlInfo("Flyouts", nameof(MenuFlyout_IosNative), description: "ios native MenuFlyout")]
+	[Uno.UI.Samples.Controls.Sample("Flyouts", Name = nameof(MenuFlyout_IosNative), Description = "ios native MenuFlyout")]
 	public sealed partial class MenuFlyout_IosNative : UserControl
 	{
 		public MenuFlyout_IosNative()
