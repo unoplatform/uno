@@ -153,16 +153,28 @@ internal static class FontDetailsCache
 		}
 
 		var details = FontDetails.Create(typeface, fontSize);
+		var detailsTask = AwaitDetails(typefaceTask);
+		return (details, detailsTask);
 
-		var detailsTask = typefaceTask.ContinueWith(t =>
+		async Task<FontDetails> AwaitDetails(Task<SKTypeface?> t)
 		{
-			var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
+			SKTypeface? loadedTypeface = null;
+			Exception? exception = null;
+
+			try
+			{
+				loadedTypeface = await t;
+			}
+			catch (Exception e)
+			{
+				exception = e;
+			}
 
 			if (loadedTypeface is null)
 			{
 				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
+					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", exception);
 				}
 
 				return details;
@@ -171,8 +183,7 @@ internal static class FontDetailsCache
 			{
 				return FontDetails.Create(loadedTypeface, details.SKFontSize);
 			}
-		});
-		return (details, detailsTask);
+		}
 	});
 
 	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
@@ -194,7 +205,21 @@ internal static class FontDetailsCache
 		var (tempFont, task) = GetFont(name, fontSize, weight, stretch, style);
 		if (!task.IsCompleted)
 		{
-			_ = task.ContinueWith(_ => onFontLoaded(), TaskScheduler.FromCurrentSynchronizationContext());
+			async void Wait()
+			{
+				try
+				{
+					await task;
+				}
+				catch
+				{
+					// Ignore
+				}
+
+				onFontLoaded();
+			}
+
+			Wait();
 		}
 
 		var completedSuccessfully = task.IsCompletedSuccessfully;
