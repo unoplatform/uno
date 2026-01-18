@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -567,6 +568,13 @@ namespace Uno.UI
 			/// Uno skia-based TextBox implementation.
 			/// </summary>
 			public static bool UseOverlayOnSkia { get; set; }
+
+			/// <summary>
+			/// Hunspell dictionaries to be used for spell checking in TextBox and RichEditBox controls.
+			/// By default, an english dictionary is provided.
+			/// This is currently a skia-only feature.
+			/// </summary>
+			public static List<(Stream dictionary, Stream affinities)> CustomSpellCheckDictionaries { get; set; }
 
 #if __ANDROID__
 			/// <summary>
