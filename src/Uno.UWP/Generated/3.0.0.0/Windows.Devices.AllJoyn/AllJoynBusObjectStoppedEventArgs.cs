@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.AllJoynBusObjectStoppedEventArgs(int)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

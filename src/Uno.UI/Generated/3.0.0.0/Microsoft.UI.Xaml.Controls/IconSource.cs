@@ -8,13 +8,28 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class IconSource : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Foreground
 		// Skipping already declared property ForegroundProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.set
+		// Skipping already declared property Foreground
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.ForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.IconSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.operator ==(Microsoft.UI.Xaml.Controls.IconSource, Microsoft.UI.Xaml.Controls.IconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.operator !=(Microsoft.UI.Xaml.Controls.IconSource, Microsoft.UI.Xaml.Controls.IconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Equals(Microsoft.UI.Xaml.Controls.IconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.IconSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.CreateIconElement()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.CreateIconElementCore()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Microsoft.UI.Xaml.Controls.IIconSourceOverrides.CreateIconElementCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.GetIconElementPropertyCore(Microsoft.UI.Xaml.DependencyProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.ForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Microsoft.UI.Xaml.Controls.IIconSourceOverrides.GetIconElementPropertyCore(Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

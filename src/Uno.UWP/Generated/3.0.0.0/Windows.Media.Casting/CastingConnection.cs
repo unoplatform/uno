@@ -15,6 +15,16 @@ namespace Windows.Media.Casting
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Casting.CastingDevice Device
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CastingDevice CastingConnection.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingDevice%20CastingConnection.Device");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Casting.CastingSource Source
 		{
 			get
@@ -29,16 +39,6 @@ namespace Windows.Media.Casting
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Casting.CastingDevice Device
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CastingDevice CastingConnection.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingDevice%20CastingConnection.Device");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Casting.CastingConnectionState State
 		{
 			get
@@ -47,14 +47,16 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.State.get
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.Device.get
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.Source.get
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.Source.set
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.StateChanged.add
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.StateChanged.remove
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.ErrorOccurred.add
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.ErrorOccurred.remove
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.operator ==(Windows.Media.Casting.CastingConnection, Windows.Media.Casting.CastingConnection)
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.operator !=(Windows.Media.Casting.CastingConnection, Windows.Media.Casting.CastingConnection)
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.Equals(Windows.Media.Casting.CastingConnection)
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.Equals(object)
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.GetHashCode()
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingConnectionErrorStatus> RequestStartCastingAsync(global::Windows.Media.Casting.CastingSource value)
@@ -69,6 +71,10 @@ namespace Windows.Media.Casting
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CastingConnectionErrorStatus> CastingConnection.DisconnectAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCastingConnectionErrorStatus%3E%20CastingConnection.DisconnectAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.ErrorOccurred.add
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.ErrorOccurred.remove
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.StateChanged.add
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.StateChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -76,6 +82,11 @@ namespace Windows.Media.Casting
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "void CastingConnection.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.Device.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.Source.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.Source.set
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.State.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Casting.CastingConnection, global::Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs> ErrorOccurred

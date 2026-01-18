@@ -10,6 +10,16 @@ namespace Microsoft.Web.WebView2.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<object> AdditionalObjects
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Source
 		{
 			get
@@ -19,19 +29,20 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property WebMessageAsJson
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<object> AdditionalObjects
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects");
-			}
-		}
-#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.TryGetWebMessageAsString()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.Source.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WebMessageAsJson.get
-		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.TryGetWebMessageAsString()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

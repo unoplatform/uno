@@ -33,8 +33,7 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.Kind.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.ConeProperties.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterShape CreateCone(double innerAngle, double outerAngle, double outerAngleGain)
@@ -49,5 +48,18 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitterShape.CreateOmnidirectional() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterShape%20AudioNodeEmitterShape.CreateOmnidirectional%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.operator ==(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterShape)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.operator !=(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterShape)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.Equals(Windows.Media.Audio.AudioNodeEmitterShape)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.ConeProperties.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.Kind.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

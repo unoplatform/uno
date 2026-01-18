@@ -10,16 +10,6 @@ namespace Windows.Security.Cryptography.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string EcdsaP521Sha512
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaP521Sha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaP521Sha512");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string DsaSha1
 		{
 			get
@@ -60,11 +50,41 @@ namespace Windows.Security.Cryptography.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string RsaSignPkcs1Sha256
+		public static string EcdsaP521Sha512
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPkcs1Sha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPkcs1Sha256");
+				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaP521Sha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaP521Sha512");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string EcdsaSha256
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha256");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string EcdsaSha384
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha384");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string EcdsaSha512
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha512");
 			}
 		}
 #endif
@@ -130,6 +150,16 @@ namespace Windows.Security.Cryptography.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string RsaSignPkcs1Sha256
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPkcs1Sha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPkcs1Sha256");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string RsaSignPkcs1Sha384
 		{
 			get
@@ -188,49 +218,20 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string EcdsaSha384
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha384");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string EcdsaSha512
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha512");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string EcdsaSha256
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha256");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.As<I>()
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.DsaSha1.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.DsaSha256.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaP256Sha256.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaP384Sha384.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaP521Sha512.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaSha256.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaSha384.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaSha512.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaPkcs1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaOaepSha1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaOaepSha256.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaOaepSha384.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaOaepSha512.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaP256Sha256.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaP384Sha384.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaP521Sha512.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.DsaSha1.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.DsaSha256.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaPkcs1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaSignPkcs1Sha1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaSignPkcs1Sha256.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.RsaSignPkcs1Sha384.get

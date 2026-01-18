@@ -15,6 +15,16 @@ namespace Windows.System.Diagnostics.DevicePortal
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsWebSocketUpgradeRequest
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.HttpRequestMessage RequestMessage
 		{
 			get
@@ -35,16 +45,6 @@ namespace Windows.System.Diagnostics.DevicePortal
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsWebSocketUpgradeRequest
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> WebSocketProtocolsRequested
 		{
 			get
@@ -53,10 +53,16 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.RequestMessage.get
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.ResponseMessage.get
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest.get
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WebSocketProtocolsRequested.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.operator ==(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs, Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.operator !=(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs, Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.Equals(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -64,5 +70,10 @@ namespace Windows.System.Diagnostics.DevicePortal
 			throw new global::System.NotImplementedException("The member Deferral DevicePortalConnectionRequestReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20DevicePortalConnectionRequestReceivedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.RequestMessage.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.ResponseMessage.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WebSocketProtocolsRequested.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

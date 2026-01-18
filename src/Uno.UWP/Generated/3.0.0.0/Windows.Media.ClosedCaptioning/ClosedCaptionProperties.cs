@@ -128,17 +128,18 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontColor.get
+		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.As<I>()
+		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundColor.get
+		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundOpacity.get
+		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.ComputedBackgroundColor.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.ComputedFontColor.get
+		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.ComputedRegionColor.get
+		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontColor.get
+		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontEffect.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontOpacity.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontSize.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontStyle.get
-		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontEffect.get
-		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundColor.get
-		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.ComputedBackgroundColor.get
-		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundOpacity.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.RegionColor.get
-		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.ComputedRegionColor.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.RegionOpacity.get
 	}
 }

@@ -10,11 +10,22 @@ namespace Windows.Security.Credentials
 	{
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.PasswordVault()
 		// Forced skipping of method Windows.Security.Credentials.PasswordVault.PasswordVault()
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.operator ==(Windows.Security.Credentials.PasswordVault, Windows.Security.Credentials.PasswordVault)
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.operator !=(Windows.Security.Credentials.PasswordVault, Windows.Security.Credentials.PasswordVault)
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.Equals(Windows.Security.Credentials.PasswordVault)
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.Equals(object)
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.GetHashCode()
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.Add(Windows.Security.Credentials.PasswordCredential)
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.Remove(Windows.Security.Credentials.PasswordCredential)
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.Retrieve(string, string)
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.FindAllByResource(string)
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.FindAllByUserName(string)
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.RetrieveAll()
+		// Forced skipping of method Windows.Security.Credentials.PasswordVault.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

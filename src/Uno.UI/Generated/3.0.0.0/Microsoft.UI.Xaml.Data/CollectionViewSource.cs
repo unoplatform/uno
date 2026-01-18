@@ -8,26 +8,37 @@ namespace Microsoft.UI.Xaml.Data
 #endif
 	public partial class CollectionViewSource : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Source
-		// Skipping already declared property ItemsPath
-		// Skipping already declared property IsSourceGrouped
-		// Skipping already declared property View
 		// Skipping already declared property IsSourceGroupedProperty
 		// Skipping already declared property ItemsPathProperty
 		// Skipping already declared property SourceProperty
 		// Skipping already declared property ViewProperty
+		// Skipping already declared property IsSourceGrouped
+		// Skipping already declared property ItemsPath
+		// Skipping already declared property Source
+		// Skipping already declared property View
 		// Skipping already declared method Microsoft.UI.Xaml.Data.CollectionViewSource.CollectionViewSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.CollectionViewSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Source.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.View.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.IsSourceGroupedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ItemsPathProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.SourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ViewProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.operator ==(Microsoft.UI.Xaml.Data.CollectionViewSource, Microsoft.UI.Xaml.Data.CollectionViewSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.operator !=(Microsoft.UI.Xaml.Data.CollectionViewSource, Microsoft.UI.Xaml.Data.CollectionViewSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Equals(Microsoft.UI.Xaml.Data.CollectionViewSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.IsSourceGrouped.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.IsSourceGrouped.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ItemsPath.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ItemsPath.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ViewProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.IsSourceGroupedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ItemsPathProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Source.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Source.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.View.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -28,8 +28,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.LowLightFusion.SupportedBitmapPixelFormats.get
-		// Forced skipping of method Windows.Media.Core.LowLightFusion.MaxSupportedFrameCount.get
+		// Forced skipping of method Windows.Media.Core.LowLightFusion.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Core.LowLightFusionResult, double> FuseAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Graphics.Imaging.SoftwareBitmap> frameSet)
@@ -37,5 +36,7 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<LowLightFusionResult, double> LowLightFusion.FuseAsync(IEnumerable<SoftwareBitmap> frameSet) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CLowLightFusionResult%2C%20double%3E%20LowLightFusion.FuseAsync%28IEnumerable%3CSoftwareBitmap%3E%20frameSet%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.LowLightFusion.MaxSupportedFrameCount.get
+		// Forced skipping of method Windows.Media.Core.LowLightFusion.SupportedBitmapPixelFormats.get
 	}
 }

@@ -53,6 +53,16 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.operator ==(Windows.Media.Miracast.MiracastReceiverConnection, Windows.Media.Miracast.MiracastReceiverConnection)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.operator !=(Windows.Media.Miracast.MiracastReceiverConnection, Windows.Media.Miracast.MiracastReceiverConnection)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.Equals(Windows.Media.Miracast.MiracastReceiverConnection)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Disconnect(global::Windows.Media.Miracast.MiracastReceiverDisconnectReason reason)
@@ -95,10 +105,6 @@ namespace Windows.Media.Miracast
 			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.ResumeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MiracastReceiverConnection.ResumeAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.Transmitter.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.InputDevices.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.CursorImageChannel.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.StreamControl.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -106,6 +112,11 @@ namespace Windows.Media.Miracast
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverConnection", "void MiracastReceiverConnection.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.CursorImageChannel.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.InputDevices.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.StreamControl.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.Transmitter.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

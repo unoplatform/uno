@@ -37,8 +37,19 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemDisplayName.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemDisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemDisplayName.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

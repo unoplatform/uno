@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RatingItemInfo.RatingItemInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.RatingItemInfo()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.RatingItemInfo(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.operator ==(Microsoft.UI.Xaml.Controls.RatingItemInfo, Microsoft.UI.Xaml.Controls.RatingItemInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.operator !=(Microsoft.UI.Xaml.Controls.RatingItemInfo, Microsoft.UI.Xaml.Controls.RatingItemInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.Equals(Microsoft.UI.Xaml.Controls.RatingItemInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.RatingItemInfo(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

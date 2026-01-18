@@ -97,29 +97,29 @@ namespace Windows.Graphics.Printing
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaSize.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaSize.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaType.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaType.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Orientation.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Orientation.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.PrintQuality.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.PrintQuality.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.ColorMode.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.ColorMode.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Duplex.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Duplex.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Collation.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Collation.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Staple.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Staple.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.HolePunch.set
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.HolePunch.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Binding.set
 		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Binding.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MinCopies.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Binding.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Collation.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Collation.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.ColorMode.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.ColorMode.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Duplex.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Duplex.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.HolePunch.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.HolePunch.set
 		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MaxCopies.get
-		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.NumberOfCopies.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaSize.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaSize.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaType.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MediaType.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.MinCopies.get
 		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.NumberOfCopies.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.NumberOfCopies.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Orientation.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Orientation.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.PrintQuality.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.PrintQuality.set
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Staple.get
+		// Forced skipping of method Windows.Graphics.Printing.IPrintTaskOptionsCoreProperties.Staple.set
 	}
 }

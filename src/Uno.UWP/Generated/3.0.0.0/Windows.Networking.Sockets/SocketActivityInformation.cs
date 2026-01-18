@@ -15,6 +15,16 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Networking.Sockets.SocketActivityInformation> AllSockets
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, SocketActivityInformation> SocketActivityInformation.AllSockets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20SocketActivityInformation%3E%20SocketActivityInformation.AllSockets");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.SocketActivityContext Context
 		{
 			get
@@ -83,23 +93,25 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Networking.Sockets.SocketActivityInformation> AllSockets
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, SocketActivityInformation> SocketActivityInformation.AllSockets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20SocketActivityInformation%3E%20SocketActivityInformation.AllSockets");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.TaskId.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.Id.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.SocketKind.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.As<I>()
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.AllSockets.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.operator ==(Windows.Networking.Sockets.SocketActivityInformation, Windows.Networking.Sockets.SocketActivityInformation)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.operator !=(Windows.Networking.Sockets.SocketActivityInformation, Windows.Networking.Sockets.SocketActivityInformation)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.Equals(Windows.Networking.Sockets.SocketActivityInformation)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.Context.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.DatagramSocket.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.Id.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.SocketKind.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.StreamSocket.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.StreamSocketListener.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.AllSockets.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.TaskId.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

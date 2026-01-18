@@ -6,7 +6,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpMethodHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.HttpMethod>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.HttpMethod>, global::Windows.Foundation.IStringable
+	public partial class HttpMethodHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.HttpMethod>, global::System.Collections.Generic.ICollection<global::Windows.Web.Http.HttpMethod>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.HttpMethod>, global::System.Collections.IEnumerable, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal HttpMethodHeaderValueCollection()
@@ -15,14 +15,48 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpMethodHeaderValueCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HttpMethodHeaderValueCollection.Size");
+				throw new global::System.NotImplementedException("The member int HttpMethodHeaderValueCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpMethodHeaderValueCollection.Count");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HttpMethodHeaderValueCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMethodHeaderValueCollection.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.HttpMethod this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethodHeaderValueCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMethod%20HttpMethodHeaderValueCollection.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMethodHeaderValueCollection", "HttpMethod HttpMethodHeaderValueCollection.this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.operator ==(Windows.Web.Http.Headers.HttpMethodHeaderValueCollection, Windows.Web.Http.Headers.HttpMethodHeaderValueCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.operator !=(Windows.Web.Http.Headers.HttpMethodHeaderValueCollection, Windows.Web.Http.Headers.HttpMethodHeaderValueCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.Equals(Windows.Web.Http.Headers.HttpMethodHeaderValueCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ParseAdd(string input)
@@ -37,19 +71,74 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpMethodHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMethodHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.GetAt(uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.Size.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.GetView()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.IndexOf(Windows.Web.Http.HttpMethod, out uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.SetAt(uint, Windows.Web.Http.HttpMethod)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.InsertAt(uint, Windows.Web.Http.HttpMethod)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.RemoveAt(uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.Append(Windows.Web.Http.HttpMethod)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.RemoveAtEnd()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.Clear()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.GetMany(uint, Windows.Web.Http.HttpMethod[])
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.ReplaceAll(Windows.Web.Http.HttpMethod[])
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.First()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.Count.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.IsReadOnly.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.this[int].get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Windows.Web.Http.HttpMethod item)
+		{
+			throw new global::System.NotImplementedException("The member int HttpMethodHeaderValueCollection.IndexOf(HttpMethod item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpMethodHeaderValueCollection.IndexOf%28HttpMethod%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Windows.Web.Http.HttpMethod item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMethodHeaderValueCollection", "void HttpMethodHeaderValueCollection.Insert(int index, HttpMethod item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMethodHeaderValueCollection", "void HttpMethodHeaderValueCollection.RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Windows.Web.Http.HttpMethod item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMethodHeaderValueCollection", "void HttpMethodHeaderValueCollection.Add(HttpMethod item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMethodHeaderValueCollection", "void HttpMethodHeaderValueCollection.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Windows.Web.Http.HttpMethod item)
+		{
+			throw new global::System.NotImplementedException("The member bool HttpMethodHeaderValueCollection.Contains(HttpMethod item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMethodHeaderValueCollection.Contains%28HttpMethod%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Windows.Web.Http.HttpMethod[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMethodHeaderValueCollection", "void HttpMethodHeaderValueCollection.CopyTo(HttpMethod[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Windows.Web.Http.HttpMethod item)
+		{
+			throw new global::System.NotImplementedException("The member bool HttpMethodHeaderValueCollection.Remove(HttpMethod item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMethodHeaderValueCollection.Remove%28HttpMethod%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.HttpMethod> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<HttpMethod> HttpMethodHeaderValueCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CHttpMethod%3E%20HttpMethodHeaderValueCollection.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
@@ -57,115 +146,12 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member string HttpMethodHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMethodHeaderValueCollection.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>.get_Item(int)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>.set_Item(int, Windows.Web.Http.HttpMethod)
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Windows.Web.Http.HttpMethod item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Windows.Web.Http.HttpMethod item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.HttpMethod this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.Web.Http.HttpMethod>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Windows.Web.Http.HttpMethod item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Windows.Web.Http.HttpMethod item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Windows.Web.Http.HttpMethod[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Windows.Web.Http.HttpMethod item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.HttpMethod>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Web.Http.HttpMethod>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.HttpMethod> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

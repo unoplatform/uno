@@ -63,10 +63,21 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Country.get
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.State.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.operator ==(Windows.Devices.Geolocation.CivicAddress, Windows.Devices.Geolocation.CivicAddress)
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.operator !=(Windows.Devices.Geolocation.CivicAddress, Windows.Devices.Geolocation.CivicAddress)
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Equals(Windows.Devices.Geolocation.CivicAddress)
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.City.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Country.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.PostalCode.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.State.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Timestamp.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

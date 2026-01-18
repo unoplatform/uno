@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.ItemsPanelTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.ItemsPanelTemplate()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.operator ==(Microsoft.UI.Xaml.Controls.ItemsPanelTemplate, Microsoft.UI.Xaml.Controls.ItemsPanelTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.operator !=(Microsoft.UI.Xaml.Controls.ItemsPanelTemplate, Microsoft.UI.Xaml.Controls.ItemsPanelTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.Equals(Microsoft.UI.Xaml.Controls.ItemsPanelTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

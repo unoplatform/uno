@@ -8,7 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionEffectBrush : global::Microsoft.UI.Composition.CompositionBrush
 	{
-		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectBrush.SetSourceParameter(string, Microsoft.UI.Composition.CompositionBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.operator ==(Microsoft.UI.Composition.CompositionEffectBrush, Microsoft.UI.Composition.CompositionEffectBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.operator !=(Microsoft.UI.Composition.CompositionEffectBrush, Microsoft.UI.Composition.CompositionEffectBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.Equals(Microsoft.UI.Composition.CompositionEffectBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectBrush.GetSourceParameter(string)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectBrush.SetSourceParameter(string, Microsoft.UI.Composition.CompositionBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

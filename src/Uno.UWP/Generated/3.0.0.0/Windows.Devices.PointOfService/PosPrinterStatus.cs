@@ -33,7 +33,18 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.StatusKind.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.operator ==(Windows.Devices.PointOfService.PosPrinterStatus, Windows.Devices.PointOfService.PosPrinterStatus)
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.operator !=(Windows.Devices.PointOfService.PosPrinterStatus, Windows.Devices.PointOfService.PosPrinterStatus)
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.Equals(Windows.Devices.PointOfService.PosPrinterStatus)
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.ExtendedStatus.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.StatusKind.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

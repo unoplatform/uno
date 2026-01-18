@@ -8,5 +8,16 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class XamlRootChangedEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.operator ==(Microsoft.UI.Xaml.XamlRootChangedEventArgs, Microsoft.UI.Xaml.XamlRootChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.operator !=(Microsoft.UI.Xaml.XamlRootChangedEventArgs, Microsoft.UI.Xaml.XamlRootChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.Equals(Microsoft.UI.Xaml.XamlRootChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRootChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,71 +10,15 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ReaderName
+		public string ContainerNamePrefix
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.ReaderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.ReaderName");
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.ContainerNamePrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.ContainerNamePrefix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ReaderName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string KeyStorageProviderName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.KeyStorageProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.KeyStorageProviderName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.KeyStorageProviderName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.KeyProtectionLevel KeyProtectionLevel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member KeyProtectionLevel PfxImportParameters.KeyProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyProtectionLevel%20PfxImportParameters.KeyProtectionLevel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyProtectionLevel PfxImportParameters.KeyProtectionLevel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.InstallOptions InstallOptions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InstallOptions PfxImportParameters.InstallOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InstallOptions%20PfxImportParameters.InstallOptions");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "InstallOptions PfxImportParameters.InstallOptions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FriendlyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.FriendlyName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.FriendlyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ContainerNamePrefix");
 			}
 		}
 #endif
@@ -94,15 +38,71 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContainerNamePrefix
+		public string FriendlyName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.ContainerNamePrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.ContainerNamePrefix");
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.FriendlyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ContainerNamePrefix");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.FriendlyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Certificates.InstallOptions InstallOptions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InstallOptions PfxImportParameters.InstallOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InstallOptions%20PfxImportParameters.InstallOptions");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "InstallOptions PfxImportParameters.InstallOptions");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Certificates.KeyProtectionLevel KeyProtectionLevel
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member KeyProtectionLevel PfxImportParameters.KeyProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyProtectionLevel%20PfxImportParameters.KeyProtectionLevel");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyProtectionLevel PfxImportParameters.KeyProtectionLevel");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string KeyStorageProviderName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.KeyStorageProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.KeyStorageProviderName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.KeyStorageProviderName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ReaderName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.ReaderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PfxImportParameters.ReaderName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ReaderName");
 			}
 		}
 #endif
@@ -114,19 +114,30 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.PfxImportParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Exportable.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Exportable.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyProtectionLevel.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyProtectionLevel.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.InstallOptions.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.InstallOptions.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.FriendlyName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.FriendlyName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyStorageProviderName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyStorageProviderName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.operator ==(Windows.Security.Cryptography.Certificates.PfxImportParameters, Windows.Security.Cryptography.Certificates.PfxImportParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.operator !=(Windows.Security.Cryptography.Certificates.PfxImportParameters, Windows.Security.Cryptography.Certificates.PfxImportParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Equals(Windows.Security.Cryptography.Certificates.PfxImportParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ContainerNamePrefix.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ContainerNamePrefix.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Exportable.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Exportable.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.FriendlyName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.FriendlyName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.InstallOptions.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.InstallOptions.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyProtectionLevel.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyProtectionLevel.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyStorageProviderName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyStorageProviderName.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ReaderName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ReaderName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -27,7 +27,18 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.operator ==(Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs, Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.operator !=(Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs, Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.Equals(Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.Handled.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.Handled.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,40 +15,6 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Audio.AudioGraphConnection> OutgoingConnections
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioSubmixNode.OutgoingConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAudioGraphConnection%3E%20AudioSubmixNode.OutgoingConnections");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Audio.AudioNodeEmitter Emitter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioSubmixNode.Emitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitter%20AudioSubmixNode.Emitter");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OutgoingGain
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double AudioSubmixNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioSubmixNode.OutgoingGain");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "double AudioSubmixNode.OutgoingGain");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ConsumeInput
 		{
 			get
@@ -73,6 +39,16 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Audio.AudioNodeEmitter Emitter
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioSubmixNode.Emitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitter%20AudioSubmixNode.Emitter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.AudioEncodingProperties EncodingProperties
 		{
 			get
@@ -81,7 +57,40 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.OutgoingConnections.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Audio.AudioGraphConnection> OutgoingConnections
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioSubmixNode.OutgoingConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAudioGraphConnection%3E%20AudioSubmixNode.OutgoingConnections");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OutgoingGain
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double AudioSubmixNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioSubmixNode.OutgoingGain");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "double AudioSubmixNode.OutgoingGain");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.operator ==(Windows.Media.Audio.AudioSubmixNode, Windows.Media.Audio.AudioSubmixNode)
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.operator !=(Windows.Media.Audio.AudioSubmixNode, Windows.Media.Audio.AudioSubmixNode)
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.Equals(Windows.Media.Audio.AudioSubmixNode)
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
@@ -103,12 +112,6 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.RemoveOutgoingConnection(IAudioNode destination)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.EffectDefinitions.get
-		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.OutgoingGain.set
-		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.OutgoingGain.get
-		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.EncodingProperties.get
-		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.ConsumeInput.get
-		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.ConsumeInput.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -151,7 +154,15 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.ConsumeInput.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.ConsumeInput.set
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.EffectDefinitions.get
 		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.Emitter.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.EncodingProperties.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.OutgoingConnections.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.OutgoingGain.get
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.OutgoingGain.set
+		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Audio.IAudioInputNode
 		// Processing: Windows.Media.Audio.IAudioNode
 		// Processing: System.IDisposable

@@ -63,10 +63,21 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.operator ==(Windows.Storage.SystemVideoProperties, Windows.Storage.SystemVideoProperties)
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.operator !=(Windows.Storage.SystemVideoProperties, Windows.Storage.SystemVideoProperties)
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.Equals(Windows.Storage.SystemVideoProperties)
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.Equals(object)
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.GetHashCode()
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.SystemVideoProperties.Director.get
 		// Forced skipping of method Windows.Storage.SystemVideoProperties.FrameHeight.get
 		// Forced skipping of method Windows.Storage.SystemVideoProperties.FrameWidth.get
 		// Forced skipping of method Windows.Storage.SystemVideoProperties.Orientation.get
 		// Forced skipping of method Windows.Storage.SystemVideoProperties.TotalBitrate.get
+		// Forced skipping of method Windows.Storage.SystemVideoProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

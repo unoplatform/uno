@@ -3,53 +3,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TabViewTabTearOutWindowRequestedEventArgs
 	{
-#if false
-		internal TabViewTabTearOutWindowRequestedEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.WindowId NewWindowId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WindowId TabViewTabTearOutWindowRequestedEventArgs.NewWindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20TabViewTabTearOutWindowRequestedEventArgs.NewWindowId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs", "WindowId TabViewTabTearOutWindowRequestedEventArgs.NewWindowId");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object[] Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object[] TabViewTabTearOutWindowRequestedEventArgs.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%5B%5D%20TabViewTabTearOutWindowRequestedEventArgs.Items");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement[] Tabs
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement[] TabViewTabTearOutWindowRequestedEventArgs.Tabs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%5B%5D%20TabViewTabTearOutWindowRequestedEventArgs.Tabs");
-			}
-		}
-#endif
+		// Skipping already declared property Items
+		// Skipping already declared property NewWindowId
+		// Skipping already declared property Tabs
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.Items.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.Tabs.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.NewWindowId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.NewWindowId.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.Tabs.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

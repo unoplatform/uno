@@ -73,11 +73,23 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.SurfaceInfo.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.~SpatialSurfaceMesh()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.operator ==(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.operator !=(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.Equals(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.CoordinateSystem.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.SurfaceInfo.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.TriangleIndices.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositions.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositionScale.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexNormals.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositionScale.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositions.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

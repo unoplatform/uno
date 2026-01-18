@@ -10,6 +10,19 @@ namespace Windows.Web.Http
 	{
 		// Forced skipping of method Windows.Web.Http.HttpProgress.HttpProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public HttpProgress(global::Windows.Web.Http.HttpProgressStage _Stage, ulong _BytesSent, ulong? _TotalBytesToSend, ulong _BytesReceived, ulong? _TotalBytesToReceive, uint _Retries)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpProgress", "HttpProgress.HttpProgress(HttpProgressStage _Stage, ulong _BytesSent, ulong? _TotalBytesToSend, ulong _BytesReceived, ulong? _TotalBytesToReceive, uint _Retries)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.HttpProgress.HttpProgress(Windows.Web.Http.HttpProgressStage, ulong, ulong?, ulong, ulong?, uint)
+		// Forced skipping of method Windows.Web.Http.HttpProgress.operator ==(Windows.Web.Http.HttpProgress, Windows.Web.Http.HttpProgress)
+		// Forced skipping of method Windows.Web.Http.HttpProgress.operator !=(Windows.Web.Http.HttpProgress, Windows.Web.Http.HttpProgress)
+		// Forced skipping of method Windows.Web.Http.HttpProgress.Equals(Windows.Web.Http.HttpProgress)
+		// Forced skipping of method Windows.Web.Http.HttpProgress.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpProgress.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Web.Http.HttpProgressStage Stage;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -63,11 +63,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Operation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Triggers.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.OldBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.NewBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.HasStarted.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.operator ==(Microsoft.UI.Xaml.Controls.ItemCollectionTransition, Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.operator !=(Microsoft.UI.Xaml.Controls.ItemCollectionTransition, Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Equals(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress Start()
@@ -75,5 +80,11 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member ItemCollectionTransitionProgress ItemCollectionTransition.Start() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemCollectionTransitionProgress%20ItemCollectionTransition.Start%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.HasStarted.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.NewBounds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.OldBounds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Operation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Triggers.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

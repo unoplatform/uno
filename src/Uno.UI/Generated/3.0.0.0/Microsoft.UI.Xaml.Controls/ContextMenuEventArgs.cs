@@ -15,20 +15,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContextMenuEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContextMenuEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "bool ContextMenuEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double CursorLeft
 		{
 			get
@@ -47,9 +33,33 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Handled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Handled.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Handled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContextMenuEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContextMenuEventArgs.Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "bool ContextMenuEventArgs.Handled");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ContextMenuEventArgs, Microsoft.UI.Xaml.Controls.ContextMenuEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ContextMenuEventArgs, Microsoft.UI.Xaml.Controls.ContextMenuEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Equals(Microsoft.UI.Xaml.Controls.ContextMenuEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.CursorLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.CursorTop.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

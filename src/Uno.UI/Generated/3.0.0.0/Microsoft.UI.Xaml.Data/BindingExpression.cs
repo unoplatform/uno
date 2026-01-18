@@ -10,8 +10,20 @@ namespace Microsoft.UI.Xaml.Data
 	{
 		// Skipping already declared property DataItem
 		// Skipping already declared property ParentBinding
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.BindingExpression(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.operator ==(Microsoft.UI.Xaml.Data.BindingExpression, Microsoft.UI.Xaml.Data.BindingExpression)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.operator !=(Microsoft.UI.Xaml.Data.BindingExpression, Microsoft.UI.Xaml.Data.BindingExpression)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.Equals(Microsoft.UI.Xaml.Data.BindingExpression)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.BindingExpression(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingExpression.UpdateSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.DataItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.ParentBinding.get
-		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingExpression.UpdateSource()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

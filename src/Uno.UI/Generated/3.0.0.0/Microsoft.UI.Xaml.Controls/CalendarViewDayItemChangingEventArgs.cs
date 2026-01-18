@@ -11,10 +11,21 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property InRecycleQueue
 		// Skipping already declared property Item
 		// Skipping already declared property Phase
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs, Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs, Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.RegisterUpdateCallback(Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs>)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.RegisterUpdateCallback(uint, Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs>)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.InRecycleQueue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.Phase.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.RegisterUpdateCallback(Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs>)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.RegisterUpdateCallback(uint, Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs>)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

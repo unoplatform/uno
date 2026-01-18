@@ -16,6 +16,45 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.PhoneNumberFormatter()
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void TryCreate(string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter phoneNumber)
+		{
+			throw new global::System.NotImplementedException("The member void PhoneNumberFormatter.TryCreate(string regionCode, out PhoneNumberFormatter phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20PhoneNumberFormatter.TryCreate%28string%20regionCode%2C%20out%20PhoneNumberFormatter%20phoneNumber%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static int GetCountryCodeForRegion(string regionCode)
+		{
+			throw new global::System.NotImplementedException("The member int PhoneNumberFormatter.GetCountryCodeForRegion(string regionCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PhoneNumberFormatter.GetCountryCodeForRegion%28string%20regionCode%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetNationalDirectDialingPrefixForRegion(string regionCode, bool stripNonDigit)
+		{
+			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.GetNationalDirectDialingPrefixForRegion(string regionCode, bool stripNonDigit) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.GetNationalDirectDialingPrefixForRegion%28string%20regionCode%2C%20bool%20stripNonDigit%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string WrapWithLeftToRightMarkers(string number)
+		{
+			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.WrapWithLeftToRightMarkers(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.WrapWithLeftToRightMarkers%28string%20number%29");
+		}
+#endif
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.operator ==(Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter, Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter)
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.operator !=(Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter, Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter)
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.Equals(Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter)
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.Equals(object)
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.GetHashCode()
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo number)
@@ -51,33 +90,6 @@ namespace Windows.Globalization.PhoneNumberFormatting
 			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.FormatStringWithLeftToRightMarkers(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.FormatStringWithLeftToRightMarkers%28string%20number%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void TryCreate(string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter phoneNumber)
-		{
-			throw new global::System.NotImplementedException("The member void PhoneNumberFormatter.TryCreate(string regionCode, out PhoneNumberFormatter phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20PhoneNumberFormatter.TryCreate%28string%20regionCode%2C%20out%20PhoneNumberFormatter%20phoneNumber%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static int GetCountryCodeForRegion(string regionCode)
-		{
-			throw new global::System.NotImplementedException("The member int PhoneNumberFormatter.GetCountryCodeForRegion(string regionCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PhoneNumberFormatter.GetCountryCodeForRegion%28string%20regionCode%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetNationalDirectDialingPrefixForRegion(string regionCode, bool stripNonDigit)
-		{
-			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.GetNationalDirectDialingPrefixForRegion(string regionCode, bool stripNonDigit) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.GetNationalDirectDialingPrefixForRegion%28string%20regionCode%2C%20bool%20stripNonDigit%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string WrapWithLeftToRightMarkers(string number)
-		{
-			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.WrapWithLeftToRightMarkers(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.WrapWithLeftToRightMarkers%28string%20number%29");
-		}
-#endif
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

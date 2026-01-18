@@ -30,8 +30,14 @@ namespace Microsoft.UI.Xaml.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.ContextRequestedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ContextRequestedEventArgs, Microsoft.UI.Xaml.Input.ContextRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ContextRequestedEventArgs, Microsoft.UI.Xaml.Input.ContextRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Equals(Microsoft.UI.Xaml.Input.ContextRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetPosition(global::Microsoft.UI.Xaml.UIElement relativeTo, out global::Windows.Foundation.Point point)
@@ -39,5 +45,9 @@ namespace Microsoft.UI.Xaml.Input
 			throw new global::System.NotImplementedException("The member bool ContextRequestedEventArgs.TryGetPosition(UIElement relativeTo, out Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContextRequestedEventArgs.TryGetPosition%28UIElement%20relativeTo%2C%20out%20Point%20point%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

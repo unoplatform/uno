@@ -33,7 +33,18 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.Status.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.operator ==(Windows.Devices.Display.Core.DisplayStateOperationResult, Windows.Devices.Display.Core.DisplayStateOperationResult)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.operator !=(Windows.Devices.Display.Core.DisplayStateOperationResult, Windows.Devices.Display.Core.DisplayStateOperationResult)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.Equals(Windows.Devices.Display.Core.DisplayStateOperationResult)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.ExtendedErrorCode.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.Status.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

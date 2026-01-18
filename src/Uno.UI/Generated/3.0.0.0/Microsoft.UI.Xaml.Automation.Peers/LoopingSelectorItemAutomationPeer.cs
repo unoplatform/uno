@@ -10,12 +10,22 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared property IsSelected
 		// Skipping already declared property SelectionContainer
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.ScrollIntoView()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.IsSelected.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.SelectionContainer.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.AddToSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.RemoveFromSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.Select()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.IsSelected.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.SelectionContainer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider
 	}

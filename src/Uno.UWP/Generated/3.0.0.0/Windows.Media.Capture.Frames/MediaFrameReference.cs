@@ -15,6 +15,16 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Capture.Frames.AudioMediaFrame AudioMediaFrame
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AudioMediaFrame MediaFrameReference.AudioMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioMediaFrame%20MediaFrameReference.AudioMediaFrame");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.Frames.BufferMediaFrame BufferMediaFrame
 		{
 			get
@@ -93,24 +103,16 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.Frames.AudioMediaFrame AudioMediaFrame
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AudioMediaFrame MediaFrameReference.AudioMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioMediaFrame%20MediaFrameReference.AudioMediaFrame");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SourceKind.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Format.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SystemRelativeTime.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Duration.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Properties.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.BufferMediaFrame.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.VideoMediaFrame.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.CoordinateSystem.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.operator ==(Windows.Media.Capture.Frames.MediaFrameReference, Windows.Media.Capture.Frames.MediaFrameReference)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.operator !=(Windows.Media.Capture.Frames.MediaFrameReference, Windows.Media.Capture.Frames.MediaFrameReference)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Equals(Windows.Media.Capture.Frames.MediaFrameReference)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -119,6 +121,15 @@ namespace Windows.Media.Capture.Frames
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.AudioMediaFrame.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.BufferMediaFrame.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.CoordinateSystem.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Duration.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Format.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Properties.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SourceKind.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SystemRelativeTime.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.VideoMediaFrame.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.AllJoynSessionLostEventArgs(Windows.Devices.AllJoyn.AllJoynSessionLostReason)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs, Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs, Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.Reason.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

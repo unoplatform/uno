@@ -23,6 +23,18 @@ namespace Windows.UI.Notifications.Management
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.As<I>()
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Current.get
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.operator ==(Windows.UI.Notifications.Management.UserNotificationListener, Windows.UI.Notifications.Management.UserNotificationListener)
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.operator !=(Windows.UI.Notifications.Management.UserNotificationListener, Windows.UI.Notifications.Management.UserNotificationListener)
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Equals(Windows.UI.Notifications.Management.UserNotificationListener)
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Notifications.Management.UserNotificationListenerAccessStatus> RequestAccessAsync()
@@ -37,8 +49,6 @@ namespace Windows.UI.Notifications.Management
 			throw new global::System.NotImplementedException("The member UserNotificationListenerAccessStatus UserNotificationListener.GetAccessStatus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserNotificationListenerAccessStatus%20UserNotificationListener.GetAccessStatus%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.add
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.UserNotification>> GetNotificationsAsync(global::Windows.UI.Notifications.NotificationKinds kinds)
@@ -67,7 +77,9 @@ namespace Windows.UI.Notifications.Management
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Management.UserNotificationListener", "void UserNotificationListener.RemoveNotification(uint notificationId)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Current.get
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.add
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.remove
+		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.Management.UserNotificationListener, global::Windows.UI.Notifications.UserNotificationChangedEventArgs> NotificationChanged

@@ -33,8 +33,16 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Language.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Name.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition, Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition, Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPhraseListAsync(string phraseListName, global::System.Collections.Generic.IEnumerable<string> phraseList)
@@ -42,5 +50,8 @@ namespace Windows.ApplicationModel.VoiceCommands
 			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandDefinition.SetPhraseListAsync(string phraseListName, IEnumerable<string> phraseList) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VoiceCommandDefinition.SetPhraseListAsync%28string%20phraseListName%2C%20IEnumerable%3Cstring%3E%20phraseList%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Language.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Name.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

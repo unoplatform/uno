@@ -8,17 +8,28 @@ namespace Windows.ApplicationModel.Email
 #endif
 	public partial class EmailRecipient
 	{
-		// Skipping already declared property Name
 		// Skipping already declared property Address
+		// Skipping already declared property Name
+		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
 		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string)
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string)
 		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string, string)
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string, string)
-		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.operator ==(Windows.ApplicationModel.Email.EmailRecipient, Windows.ApplicationModel.Email.EmailRecipient)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.operator !=(Windows.ApplicationModel.Email.EmailRecipient, Windows.ApplicationModel.Email.EmailRecipient)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Equals(Windows.ApplicationModel.Email.EmailRecipient)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Address.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

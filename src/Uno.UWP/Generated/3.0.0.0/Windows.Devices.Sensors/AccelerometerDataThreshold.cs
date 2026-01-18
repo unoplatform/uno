@@ -15,15 +15,15 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ZAxisInGForce
+		public double XAxisInGForce
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.ZAxisInGForce is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AccelerometerDataThreshold.ZAxisInGForce");
+				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.XAxisInGForce is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AccelerometerDataThreshold.XAxisInGForce");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.AccelerometerDataThreshold", "double AccelerometerDataThreshold.ZAxisInGForce");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.AccelerometerDataThreshold", "double AccelerometerDataThreshold.XAxisInGForce");
 			}
 		}
 #endif
@@ -43,23 +43,34 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double XAxisInGForce
+		public double ZAxisInGForce
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.XAxisInGForce is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AccelerometerDataThreshold.XAxisInGForce");
+				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.ZAxisInGForce is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AccelerometerDataThreshold.ZAxisInGForce");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.AccelerometerDataThreshold", "double AccelerometerDataThreshold.XAxisInGForce");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.AccelerometerDataThreshold", "double AccelerometerDataThreshold.ZAxisInGForce");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.operator ==(Windows.Devices.Sensors.AccelerometerDataThreshold, Windows.Devices.Sensors.AccelerometerDataThreshold)
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.operator !=(Windows.Devices.Sensors.AccelerometerDataThreshold, Windows.Devices.Sensors.AccelerometerDataThreshold)
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.Equals(Windows.Devices.Sensors.AccelerometerDataThreshold)
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.XAxisInGForce.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.XAxisInGForce.set
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.YAxisInGForce.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.YAxisInGForce.set
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.ZAxisInGForce.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.ZAxisInGForce.set
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

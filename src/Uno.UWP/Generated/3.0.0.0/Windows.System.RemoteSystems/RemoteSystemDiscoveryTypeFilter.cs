@@ -26,7 +26,18 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryTypeFilter(Windows.System.RemoteSystems.RemoteSystemDiscoveryType)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.operator ==(Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter, Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.operator !=(Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter, Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.Equals(Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.System.RemoteSystems.IRemoteSystemFilter
 	}
 }

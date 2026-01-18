@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ConnectionId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string BarcodeScannerPreviewActivatedEventArgs.ConnectionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BarcodeScannerPreviewActivatedEventArgs.ConnectionId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,21 +63,22 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ConnectionId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string BarcodeScannerPreviewActivatedEventArgs.ConnectionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BarcodeScannerPreviewActivatedEventArgs.ConnectionId");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs, Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs, Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.ConnectionId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IBarcodeScannerPreviewActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

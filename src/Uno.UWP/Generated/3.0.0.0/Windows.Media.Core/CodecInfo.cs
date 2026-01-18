@@ -63,10 +63,21 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.CodecInfo.Kind.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.CodecInfo.operator ==(Windows.Media.Core.CodecInfo, Windows.Media.Core.CodecInfo)
+		// Forced skipping of method Windows.Media.Core.CodecInfo.operator !=(Windows.Media.Core.CodecInfo, Windows.Media.Core.CodecInfo)
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Equals(Windows.Media.Core.CodecInfo)
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Equals(object)
+		// Forced skipping of method Windows.Media.Core.CodecInfo.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.CodecInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.Category.get
-		// Forced skipping of method Windows.Media.Core.CodecInfo.Subtypes.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.DisplayName.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.IsTrusted.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Kind.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Subtypes.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,20 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ScreenCaptureStartingEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ScreenCaptureStartingEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "bool CoreWebView2ScreenCaptureStartingEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Cancel
 		{
 			get
@@ -43,6 +29,20 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Handled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWebView2ScreenCaptureStartingEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ScreenCaptureStartingEventArgs.Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "bool CoreWebView2ScreenCaptureStartingEventArgs.Handled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo OriginalSourceFrameInfo
 		{
 			get
@@ -51,11 +51,16 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Cancel.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Handled.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Handled.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.OriginalSourceFrameInfo.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -63,5 +68,11 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreWebView2ScreenCaptureStartingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2ScreenCaptureStartingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Cancel.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Handled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Handled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.OriginalSourceFrameInfo.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

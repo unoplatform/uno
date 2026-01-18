@@ -8,20 +8,30 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionViewBox : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Skipping already declared property VerticalAlignmentRatio
-		// Skipping already declared property Stretch
-		// Skipping already declared property Size
-		// Skipping already declared property Offset
 		// Skipping already declared property HorizontalAlignmentRatio
-		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Stretch.set
+		// Skipping already declared property Offset
+		// Skipping already declared property Size
+		// Skipping already declared property Stretch
+		// Skipping already declared property VerticalAlignmentRatio
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.operator ==(Microsoft.UI.Composition.CompositionViewBox, Microsoft.UI.Composition.CompositionViewBox)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.operator !=(Microsoft.UI.Composition.CompositionViewBox, Microsoft.UI.Composition.CompositionViewBox)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Equals(Microsoft.UI.Composition.CompositionViewBox)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Size.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Stretch.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Stretch.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

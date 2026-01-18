@@ -23,6 +23,17 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.Equals(Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.Invitation.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.operator ==(Windows.ApplicationModel.AppService.AppServiceClosedEventArgs, Windows.ApplicationModel.AppService.AppServiceClosedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.operator !=(Windows.ApplicationModel.AppService.AppServiceClosedEventArgs, Windows.ApplicationModel.AppService.AppServiceClosedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.Equals(Windows.ApplicationModel.AppService.AppServiceClosedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.Status.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

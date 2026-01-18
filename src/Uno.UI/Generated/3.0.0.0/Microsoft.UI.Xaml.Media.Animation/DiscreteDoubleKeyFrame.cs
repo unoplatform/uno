@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.DiscreteDoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.DiscreteDoubleKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame, Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

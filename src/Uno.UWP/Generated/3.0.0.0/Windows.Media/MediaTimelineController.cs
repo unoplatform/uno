@@ -10,20 +10,6 @@ namespace Windows.Media
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaTimelineController.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTimelineController.Position");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaTimelineController", "TimeSpan MediaTimelineController.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double ClockRate
 		{
 			get
@@ -33,30 +19,6 @@ namespace Windows.Media
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaTimelineController", "double MediaTimelineController.ClockRate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaTimelineControllerState State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaTimelineControllerState MediaTimelineController.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaTimelineControllerState%20MediaTimelineController.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsLoopingEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MediaTimelineController.IsLoopingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaTimelineController.IsLoopingEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaTimelineController", "bool MediaTimelineController.IsLoopingEnabled");
 			}
 		}
 #endif
@@ -76,12 +38,60 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsLoopingEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MediaTimelineController.IsLoopingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaTimelineController.IsLoopingEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaTimelineController", "bool MediaTimelineController.IsLoopingEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Position
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MediaTimelineController.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTimelineController.Position");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaTimelineController", "TimeSpan MediaTimelineController.Position");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaTimelineControllerState State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaTimelineControllerState MediaTimelineController.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaTimelineControllerState%20MediaTimelineController.State");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaTimelineController()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaTimelineController", "MediaTimelineController.MediaTimelineController()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaTimelineController.MediaTimelineController()
+		// Forced skipping of method Windows.Media.MediaTimelineController.FromAbi(nint)
+		// Forced skipping of method Windows.Media.MediaTimelineController.operator ==(Windows.Media.MediaTimelineController, Windows.Media.MediaTimelineController)
+		// Forced skipping of method Windows.Media.MediaTimelineController.operator !=(Windows.Media.MediaTimelineController, Windows.Media.MediaTimelineController)
+		// Forced skipping of method Windows.Media.MediaTimelineController.Equals(Windows.Media.MediaTimelineController)
+		// Forced skipping of method Windows.Media.MediaTimelineController.Equals(object)
+		// Forced skipping of method Windows.Media.MediaTimelineController.GetHashCode()
+		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -103,23 +113,24 @@ namespace Windows.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaTimelineController", "void MediaTimelineController.Pause()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaTimelineController.Position.get
-		// Forced skipping of method Windows.Media.MediaTimelineController.Position.set
-		// Forced skipping of method Windows.Media.MediaTimelineController.ClockRate.get
-		// Forced skipping of method Windows.Media.MediaTimelineController.ClockRate.set
-		// Forced skipping of method Windows.Media.MediaTimelineController.State.get
 		// Forced skipping of method Windows.Media.MediaTimelineController.PositionChanged.add
 		// Forced skipping of method Windows.Media.MediaTimelineController.PositionChanged.remove
 		// Forced skipping of method Windows.Media.MediaTimelineController.StateChanged.add
 		// Forced skipping of method Windows.Media.MediaTimelineController.StateChanged.remove
+		// Forced skipping of method Windows.Media.MediaTimelineController.Ended.add
+		// Forced skipping of method Windows.Media.MediaTimelineController.Ended.remove
+		// Forced skipping of method Windows.Media.MediaTimelineController.Failed.add
+		// Forced skipping of method Windows.Media.MediaTimelineController.Failed.remove
+		// Forced skipping of method Windows.Media.MediaTimelineController.ClockRate.get
+		// Forced skipping of method Windows.Media.MediaTimelineController.ClockRate.set
 		// Forced skipping of method Windows.Media.MediaTimelineController.Duration.get
 		// Forced skipping of method Windows.Media.MediaTimelineController.Duration.set
 		// Forced skipping of method Windows.Media.MediaTimelineController.IsLoopingEnabled.get
 		// Forced skipping of method Windows.Media.MediaTimelineController.IsLoopingEnabled.set
-		// Forced skipping of method Windows.Media.MediaTimelineController.Failed.add
-		// Forced skipping of method Windows.Media.MediaTimelineController.Failed.remove
-		// Forced skipping of method Windows.Media.MediaTimelineController.Ended.add
-		// Forced skipping of method Windows.Media.MediaTimelineController.Ended.remove
+		// Forced skipping of method Windows.Media.MediaTimelineController.Position.get
+		// Forced skipping of method Windows.Media.MediaTimelineController.Position.set
+		// Forced skipping of method Windows.Media.MediaTimelineController.State.get
+		// Forced skipping of method Windows.Media.MediaTimelineController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.MediaTimelineController, object> PositionChanged

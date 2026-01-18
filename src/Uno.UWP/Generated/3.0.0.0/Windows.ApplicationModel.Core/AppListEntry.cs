@@ -15,16 +15,6 @@ namespace Windows.ApplicationModel.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.AppDisplayInfo DisplayInfo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppDisplayInfo AppListEntry.DisplayInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDisplayInfo%20AppListEntry.DisplayInfo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AppUserModelId
 		{
 			get
@@ -35,15 +25,24 @@ namespace Windows.ApplicationModel.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.AppInfo AppInfo
+		public global::Windows.ApplicationModel.AppDisplayInfo DisplayInfo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInfo AppListEntry.AppInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInfo%20AppListEntry.AppInfo");
+				throw new global::System.NotImplementedException("The member AppDisplayInfo AppListEntry.DisplayInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDisplayInfo%20AppListEntry.DisplayInfo");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.DisplayInfo.get
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.operator ==(Windows.ApplicationModel.Core.AppListEntry, Windows.ApplicationModel.Core.AppListEntry)
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.operator !=(Windows.ApplicationModel.Core.AppListEntry, Windows.ApplicationModel.Core.AppListEntry)
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.Equals(Windows.ApplicationModel.Core.AppListEntry)
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> LaunchAsync()
@@ -51,7 +50,6 @@ namespace Windows.ApplicationModel.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppListEntry.LaunchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppListEntry.LaunchAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppUserModelId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> LaunchForUserAsync(global::Windows.System.User user)
@@ -59,6 +57,8 @@ namespace Windows.ApplicationModel.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppListEntry.LaunchForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppListEntry.LaunchForUserAsync%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppInfo.get
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppUserModelId.get
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.DisplayInfo.get
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

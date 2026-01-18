@@ -8,11 +8,24 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MenuBar : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Items
 		// Skipping already declared property ItemsProperty
+		// Skipping already declared property Items
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuBar.MenuBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.MenuBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.Items.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.ItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.MenuBar(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.operator ==(Microsoft.UI.Xaml.Controls.MenuBar, Microsoft.UI.Xaml.Controls.MenuBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.operator !=(Microsoft.UI.Xaml.Controls.MenuBar, Microsoft.UI.Xaml.Controls.MenuBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.Equals(Microsoft.UI.Xaml.Controls.MenuBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.MenuBar(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.Items.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

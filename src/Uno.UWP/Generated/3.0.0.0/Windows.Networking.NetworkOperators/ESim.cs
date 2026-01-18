@@ -73,12 +73,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.AvailableMemoryInBytes.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Eid.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.FirmwareVersion.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.MobileBroadbandModemDeviceId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Policy.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.State.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.operator ==(Windows.Networking.NetworkOperators.ESim, Windows.Networking.NetworkOperators.ESim)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.operator !=(Windows.Networking.NetworkOperators.ESim, Windows.Networking.NetworkOperators.ESim)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Equals(Windows.Networking.NetworkOperators.ESim)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.ESimProfile> GetProfiles()
@@ -137,6 +141,13 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync(string serverAddress, string matchingId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimDiscoverResult%3E%20ESim.DiscoverAsync%28string%20serverAddress%2C%20string%20matchingId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.AvailableMemoryInBytes.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Eid.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.FirmwareVersion.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.MobileBroadbandModemDeviceId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Policy.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.State.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.ESim, object> ProfileChanged

@@ -15,34 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ContextMenuItem.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ContextMenuItem.IsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "bool CoreWebView2ContextMenuItem.IsEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsChecked
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ContextMenuItem.IsChecked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ContextMenuItem.IsChecked");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "bool CoreWebView2ContextMenuItem.IsChecked");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem> Children
 		{
 			get
@@ -68,6 +40,34 @@ namespace Microsoft.Web.WebView2.Core
 			get
 			{
 				throw new global::System.NotImplementedException("The member IRandomAccessStream CoreWebView2ContextMenuItem.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20CoreWebView2ContextMenuItem.Icon");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsChecked
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWebView2ContextMenuItem.IsChecked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ContextMenuItem.IsChecked");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "bool CoreWebView2ContextMenuItem.IsChecked");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWebView2ContextMenuItem.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ContextMenuItem.IsEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "bool CoreWebView2ContextMenuItem.IsEnabled");
 			}
 		}
 #endif
@@ -111,19 +111,30 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Name.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Label.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.CommandId.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.ShortcutKeyDescription.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Icon.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Kind.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsEnabled.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsEnabled.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsChecked.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsChecked.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Children.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.CustomItemSelected.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.CustomItemSelected.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Children.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.CommandId.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Icon.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsChecked.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsChecked.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsEnabled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.IsEnabled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Kind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Label.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Name.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.ShortcutKeyDescription.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem, object> CustomItemSelected

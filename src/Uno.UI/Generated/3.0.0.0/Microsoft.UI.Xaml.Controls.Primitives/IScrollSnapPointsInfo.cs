@@ -10,14 +10,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared property AreHorizontalSnapPointsRegular
 		// Skipping already declared property AreVerticalSnapPointsRegular
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.GetIrregularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.GetRegularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.AreHorizontalSnapPointsRegular.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.AreVerticalSnapPointsRegular.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.HorizontalSnapPointsChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.HorizontalSnapPointsChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.VerticalSnapPointsChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.VerticalSnapPointsChanged.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.GetIrregularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.GetRegularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.HorizontalSnapPointsChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo.VerticalSnapPointsChanged
 	}

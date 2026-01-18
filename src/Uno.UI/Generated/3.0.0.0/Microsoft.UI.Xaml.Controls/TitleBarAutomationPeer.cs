@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.TitleBarAutomationPeer(Microsoft.UI.Xaml.Controls.TitleBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.TitleBarAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.operator ==(Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer, Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.operator !=(Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer, Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.Equals(Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.TitleBarAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

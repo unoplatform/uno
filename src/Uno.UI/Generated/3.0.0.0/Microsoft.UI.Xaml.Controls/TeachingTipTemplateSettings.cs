@@ -8,22 +8,35 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TeachingTipTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property TopRightHighlightMargin
-		// Skipping already declared property TopLeftHighlightMargin
-		// Skipping already declared property IconElement
 		// Skipping already declared property IconElementProperty
 		// Skipping already declared property TopLeftHighlightMarginProperty
 		// Skipping already declared property TopRightHighlightMarginProperty
+		// Skipping already declared property IconElement
+		// Skipping already declared property TopLeftHighlightMargin
+		// Skipping already declared property TopRightHighlightMargin
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TeachingTipTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TeachingTipTemplateSettings()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMargin.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMargin.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IconElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMarginProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMarginProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TeachingTipTemplateSettings(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings, Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings, Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TeachingTipTemplateSettings(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IconElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMarginProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMarginProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IconElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMargin.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMargin.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

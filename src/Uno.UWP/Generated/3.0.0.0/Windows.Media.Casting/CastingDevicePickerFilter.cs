@@ -15,29 +15,11 @@ namespace Windows.Media.Casting
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SupportsVideo
+		public global::System.Collections.Generic.IList<global::Windows.Media.Casting.CastingSource> SupportedCastingSources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsVideo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsVideo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SupportsPictures
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsPictures");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsPictures");
+				throw new global::System.NotImplementedException("The member IList<CastingSource> CastingDevicePickerFilter.SupportedCastingSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCastingSource%3E%20CastingDevicePickerFilter.SupportedCastingSources");
 			}
 		}
 #endif
@@ -57,20 +39,49 @@ namespace Windows.Media.Casting
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Media.Casting.CastingSource> SupportedCastingSources
+		public bool SupportsPictures
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CastingSource> CastingDevicePickerFilter.SupportedCastingSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCastingSource%3E%20CastingDevicePickerFilter.SupportedCastingSources");
+				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsPictures");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsPictures");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool SupportsVideo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsVideo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsVideo");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.operator ==(Windows.Media.Casting.CastingDevicePickerFilter, Windows.Media.Casting.CastingDevicePickerFilter)
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.operator !=(Windows.Media.Casting.CastingDevicePickerFilter, Windows.Media.Casting.CastingDevicePickerFilter)
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.Equals(Windows.Media.Casting.CastingDevicePickerFilter)
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.Equals(object)
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.GetHashCode()
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportedCastingSources.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsAudio.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsAudio.set
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsVideo.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsVideo.set
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsPictures.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsPictures.set
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportedCastingSources.get
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsVideo.get
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsVideo.set
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,20 +10,6 @@ namespace Microsoft.UI.Xaml
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan Vector3Transition.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20Vector3Transition.Duration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Vector3Transition", "TimeSpan Vector3Transition.Duration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Vector3TransitionComponents Components
 		{
 			get
@@ -38,15 +24,43 @@ namespace Microsoft.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Duration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan Vector3Transition.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20Vector3Transition.Duration");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Vector3Transition", "TimeSpan Vector3Transition.Duration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Vector3Transition()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Vector3Transition", "Vector3Transition.Vector3Transition()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Vector3Transition()
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.get
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.set
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Vector3Transition(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.operator ==(Microsoft.UI.Xaml.Vector3Transition, Microsoft.UI.Xaml.Vector3Transition)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.operator !=(Microsoft.UI.Xaml.Vector3Transition, Microsoft.UI.Xaml.Vector3Transition)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Equals(Microsoft.UI.Xaml.Vector3Transition)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Vector3Transition(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Components.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Components.set
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.get
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.set
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

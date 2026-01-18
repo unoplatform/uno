@@ -28,13 +28,7 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.Cryptography.Certificates.UserCertificateStore GetUserStoreByName(string storeName)
-		{
-			throw new global::System.NotImplementedException("The member UserCertificateStore CertificateStores.GetUserStoreByName(string storeName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserCertificateStore%20CertificateStores.GetUserStoreByName%28string%20storeName%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateStores.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate>> FindAllAsync()
@@ -49,8 +43,6 @@ namespace Windows.Security.Cryptography.Certificates
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Certificate>> CertificateStores.FindAllAsync(CertificateQuery query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CCertificate%3E%3E%20CertificateStores.FindAllAsync%28CertificateQuery%20query%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateStores.TrustedRootCertificationAuthorities.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateStores.IntermediateCertificationAuthorities.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Certificates.CertificateStore GetStoreByName(string storeName)
@@ -58,5 +50,14 @@ namespace Windows.Security.Cryptography.Certificates
 			throw new global::System.NotImplementedException("The member CertificateStore CertificateStores.GetStoreByName(string storeName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CertificateStore%20CertificateStores.GetStoreByName%28string%20storeName%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.Cryptography.Certificates.UserCertificateStore GetUserStoreByName(string storeName)
+		{
+			throw new global::System.NotImplementedException("The member UserCertificateStore CertificateStores.GetUserStoreByName(string storeName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserCertificateStore%20CertificateStores.GetUserStoreByName%28string%20storeName%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateStores.IntermediateCertificationAuthorities.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateStores.TrustedRootCertificationAuthorities.get
 	}
 }

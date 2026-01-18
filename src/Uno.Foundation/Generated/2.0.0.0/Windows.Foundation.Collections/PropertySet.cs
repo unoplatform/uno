@@ -6,31 +6,50 @@ namespace Windows.Foundation.Collections
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PropertySet : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
+	public partial class PropertySet : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Keys
+		// Skipping already declared property Values
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Foundation.Collections.PropertySet.PropertySet()
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.PropertySet()
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.FromAbi(nint)
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.operator ==(Windows.Foundation.Collections.PropertySet, Windows.Foundation.Collections.PropertySet)
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.operator !=(Windows.Foundation.Collections.PropertySet, Windows.Foundation.Collections.PropertySet)
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Equals(Windows.Foundation.Collections.PropertySet)
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Equals(object)
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.GetHashCode()
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.MapChanged.add
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.MapChanged.remove
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Lookup(string)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Size.get
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.HasKey(string)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.GetView()
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Insert(string, object)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Remove(string)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Clear()
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.First()
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Keys.get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Values.get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Count.get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.IsReadOnly.get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.this[string].get
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.this[string].set
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.Add(string, object)
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.ContainsKey(string)
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.Remove(string)
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.TryGetValue(string, out object)
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.Add(System.Collections.Generic.KeyValuePair<string, object>)
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.Clear()
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.Contains(System.Collections.Generic.KeyValuePair<string, object>)
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.CopyTo(System.Collections.Generic.KeyValuePair<string, object>[], int)
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Remove(System.Collections.Generic.KeyValuePair<string, object>)
+		// Skipping already declared method Windows.Foundation.Collections.PropertySet.GetEnumerator()
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Foundation.Collections.PropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.Foundation.Collections.PropertySet.MapChanged
 		// Processing: Windows.Foundation.Collections.IPropertySet
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, object>
 		// Processing: System.Collections.Generic.IDictionary<string, object>
-		// Skipping already implement System.Collections.Generic.IDictionary<string, object>.this[string]
-		// Skipping already implement System.Collections.Generic.IDictionary<string, object>.Keys
-		// Skipping already implement System.Collections.Generic.IDictionary<string, object>.Values
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 		// Processing: System.Collections.IEnumerable
 	}

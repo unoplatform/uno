@@ -23,6 +23,17 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation, Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation, Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.Equals(object)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.GetHashCode()
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.Properties.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

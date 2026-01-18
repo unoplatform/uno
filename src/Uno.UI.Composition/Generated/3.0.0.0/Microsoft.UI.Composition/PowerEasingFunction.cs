@@ -10,7 +10,17 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Mode
 		// Skipping already declared property Power
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.operator ==(Microsoft.UI.Composition.PowerEasingFunction, Microsoft.UI.Composition.PowerEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.operator !=(Microsoft.UI.Composition.PowerEasingFunction, Microsoft.UI.Composition.PowerEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.Equals(Microsoft.UI.Composition.PowerEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.Mode.get
 		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.Power.get
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

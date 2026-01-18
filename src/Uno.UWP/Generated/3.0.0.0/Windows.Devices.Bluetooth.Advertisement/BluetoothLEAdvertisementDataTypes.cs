@@ -228,27 +228,28 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.Flags.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.IncompleteService16BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteService16BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.IncompleteService32BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteService32BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.IncompleteService128BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteService128BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ShortenedLocalName.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.As<I>()
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.AdvertisingInterval.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.Appearance.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteLocalName.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.TxPowerLevel.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.SlaveConnectionIntervalRange.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceSolicitation16BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceSolicitation32BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceSolicitation128BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceData16BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceData32BitUuids.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceData128BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteService128BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteService16BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteService32BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.Flags.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.IncompleteService128BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.IncompleteService16BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.IncompleteService32BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ManufacturerSpecificData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.PublicTargetAddress.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.RandomTargetAddress.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.Appearance.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.AdvertisingInterval.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ManufacturerSpecificData.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceData128BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceData16BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceData32BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceSolicitation128BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceSolicitation16BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ServiceSolicitation32BitUuids.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.ShortenedLocalName.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.SlaveConnectionIntervalRange.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.TxPowerLevel.get
 	}
 }

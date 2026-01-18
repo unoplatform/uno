@@ -23,7 +23,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.IsProximal.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionInfo TryCreateFromAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection connection)
@@ -31,5 +31,17 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member RemoteSystemConnectionInfo RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection(AppServiceConnection connection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemConnectionInfo%20RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection%28AppServiceConnection%20connection%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.operator ==(Windows.System.RemoteSystems.RemoteSystemConnectionInfo, Windows.System.RemoteSystems.RemoteSystemConnectionInfo)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.operator !=(Windows.System.RemoteSystems.RemoteSystemConnectionInfo, Windows.System.RemoteSystems.RemoteSystemConnectionInfo)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.Equals(Windows.System.RemoteSystems.RemoteSystemConnectionInfo)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.IsProximal.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

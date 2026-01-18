@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,9 +26,6 @@ namespace Windows.Devices.Perception.Provider
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.Provider.IPerceptionFrameProvider.FrameProviderInfo.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.IPerceptionFrameProvider.Available.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.IPerceptionFrameProvider.Properties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void Start();
 #endif
@@ -39,5 +35,8 @@ namespace Windows.Devices.Perception.Provider
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void SetProperty(global::Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest value);
 #endif
+		// Forced skipping of method Windows.Devices.Perception.Provider.IPerceptionFrameProvider.Available.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.IPerceptionFrameProvider.FrameProviderInfo.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.IPerceptionFrameProvider.Properties.get
 	}
 }

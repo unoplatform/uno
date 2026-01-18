@@ -12,13 +12,27 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsEnabled
 		// Skipping already declared method Microsoft.UI.Xaml.DispatcherTimer.DispatcherTimer()
 		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.DispatcherTimer()
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.DispatcherTimer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.operator ==(Microsoft.UI.Xaml.DispatcherTimer, Microsoft.UI.Xaml.DispatcherTimer)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.operator !=(Microsoft.UI.Xaml.DispatcherTimer, Microsoft.UI.Xaml.DispatcherTimer)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Equals(Microsoft.UI.Xaml.DispatcherTimer)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.DispatcherTimer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.UI.Xaml.DispatcherTimer.Start()
+		// Skipping already declared method Microsoft.UI.Xaml.DispatcherTimer.Stop()
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Tick.add
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Tick.remove
 		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Interval.get
 		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Interval.set
 		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.IsEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Tick.add
-		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.Tick.remove
-		// Skipping already declared method Microsoft.UI.Xaml.DispatcherTimer.Start()
-		// Skipping already declared method Microsoft.UI.Xaml.DispatcherTimer.Stop()
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.DispatcherTimer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.DispatcherTimer.Tick
 	}
 }

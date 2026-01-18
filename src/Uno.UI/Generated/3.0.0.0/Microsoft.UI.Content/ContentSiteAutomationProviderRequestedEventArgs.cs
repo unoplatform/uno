@@ -15,20 +15,6 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteAutomationProviderRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteAutomationProviderRequestedEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "bool ContentSiteAutomationProviderRequestedEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object AutomationProvider
 		{
 			get
@@ -41,9 +27,34 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Handled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentSiteAutomationProviderRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteAutomationProviderRequestedEventArgs.Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "bool ContentSiteAutomationProviderRequestedEventArgs.Handled");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.operator ==(Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs, Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.operator !=(Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs, Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.Equals(Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.AutomationProvider.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.AutomationProvider.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

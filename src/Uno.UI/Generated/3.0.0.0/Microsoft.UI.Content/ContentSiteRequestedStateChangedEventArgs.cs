@@ -23,6 +23,17 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.operator ==(Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs, Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.operator !=(Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs, Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.Equals(Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.DidRequestedSizeChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

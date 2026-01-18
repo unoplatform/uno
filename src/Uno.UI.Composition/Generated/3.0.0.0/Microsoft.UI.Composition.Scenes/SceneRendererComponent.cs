@@ -8,10 +8,17 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 	public partial class SceneRendererComponent : global::Microsoft.UI.Composition.Scenes.SceneComponent
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SceneRendererComponent()
-		{
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.SceneRendererComponent(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.operator ==(Microsoft.UI.Composition.Scenes.SceneRendererComponent, Microsoft.UI.Composition.Scenes.SceneRendererComponent)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.operator !=(Microsoft.UI.Composition.Scenes.SceneRendererComponent, Microsoft.UI.Composition.Scenes.SceneRendererComponent)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.Equals(Microsoft.UI.Composition.Scenes.SceneRendererComponent)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.SceneRendererComponent(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneRendererComponent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

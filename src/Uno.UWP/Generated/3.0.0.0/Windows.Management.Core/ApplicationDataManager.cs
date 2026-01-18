@@ -13,6 +13,7 @@ namespace Windows.Management.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.ApplicationData CreateForPackageFamily(string packageFamilyName)
@@ -20,5 +21,16 @@ namespace Windows.Management.Core
 			throw new global::System.NotImplementedException("The member ApplicationData ApplicationDataManager.CreateForPackageFamily(string packageFamilyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationData%20ApplicationDataManager.CreateForPackageFamily%28string%20packageFamilyName%29");
 		}
 #endif
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.FromAbi(nint)
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.operator ==(Windows.Management.Core.ApplicationDataManager, Windows.Management.Core.ApplicationDataManager)
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.operator !=(Windows.Management.Core.ApplicationDataManager, Windows.Management.Core.ApplicationDataManager)
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.Equals(Windows.Management.Core.ApplicationDataManager)
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.Equals(object)
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.GetHashCode()
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Management.Core.ApplicationDataManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

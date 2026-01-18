@@ -23,6 +23,17 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.operator ==(Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs, Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.operator !=(Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs, Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.Equals(Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.Time.get
+		// Forced skipping of method Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

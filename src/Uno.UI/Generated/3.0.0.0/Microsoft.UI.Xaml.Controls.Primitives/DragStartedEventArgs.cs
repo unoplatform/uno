@@ -12,7 +12,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.DragStartedEventArgs(double, double)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.DragStartedEventArgs(double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.DragStartedEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.DragStartedEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.HorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.VerticalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -38,8 +38,9 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames.As<I>()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames.IntermediateCertificationAuthorities.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames.Personal.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames.TrustedRootCertificationAuthorities.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames.IntermediateCertificationAuthorities.get
 	}
 }

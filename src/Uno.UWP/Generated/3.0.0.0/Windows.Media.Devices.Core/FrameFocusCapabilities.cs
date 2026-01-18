@@ -53,9 +53,20 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Min.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.operator ==(Windows.Media.Devices.Core.FrameFocusCapabilities, Windows.Media.Devices.Core.FrameFocusCapabilities)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.operator !=(Windows.Media.Devices.Core.FrameFocusCapabilities, Windows.Media.Devices.Core.FrameFocusCapabilities)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Equals(Windows.Media.Devices.Core.FrameFocusCapabilities)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Supported.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

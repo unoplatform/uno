@@ -25,13 +25,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ItemContainer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.InRecycleQueue.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ItemIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Item.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Phase.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Handled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs, Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs, Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RegisterUpdateCallback(global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs> callback)
@@ -46,5 +49,13 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "void ContainerContentChangingEventArgs.RegisterUpdateCallback(uint callbackPhase, TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.InRecycleQueue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Item.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ItemContainer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ItemIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Phase.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,43 +15,15 @@ namespace Windows.ApplicationModel.UserDataAccounts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserDisplayName
+		public bool CanShowCreateContactGroup
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataAccount.UserDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.UserDisplayName");
+				throw new global::System.NotImplementedException("The member bool UserDataAccount.CanShowCreateContactGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserDataAccount.CanShowCreateContactGroup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.UserDisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountOtherAppReadAccess OtherAppReadAccess
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UserDataAccountOtherAppReadAccess UserDataAccount.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAccountOtherAppReadAccess%20UserDataAccount.OtherAppReadAccess");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "UserDataAccountOtherAppReadAccess UserDataAccount.OtherAppReadAccess");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference Icon
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference UserDataAccount.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20UserDataAccount.Icon");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IRandomAccessStreamReference UserDataAccount.Icon");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.CanShowCreateContactGroup");
 			}
 		}
 #endif
@@ -62,50 +34,6 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			get
 			{
 				throw new global::System.NotImplementedException("The member string UserDataAccount.DeviceAccountTypeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.DeviceAccountTypeId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string UserDataAccount.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.Id");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string UserDataAccount.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.PackageFamilyName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsProtectedUnderLock
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool UserDataAccount.IsProtectedUnderLock is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserDataAccount.IsProtectedUnderLock");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.IsProtectedUnderLock");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string EnterpriseId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string UserDataAccount.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.EnterpriseId");
 			}
 		}
 #endif
@@ -125,6 +53,16 @@ namespace Windows.ApplicationModel.UserDataAccounts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string EnterpriseId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string UserDataAccount.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.EnterpriseId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> ExplictReadAccessPackageFamilyNames
 		{
 			get
@@ -135,15 +73,63 @@ namespace Windows.ApplicationModel.UserDataAccounts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanShowCreateContactGroup
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Icon
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserDataAccount.CanShowCreateContactGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserDataAccount.CanShowCreateContactGroup");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference UserDataAccount.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20UserDataAccount.Icon");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.CanShowCreateContactGroup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IRandomAccessStreamReference UserDataAccount.Icon");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string UserDataAccount.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsProtectedUnderLock
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool UserDataAccount.IsProtectedUnderLock is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserDataAccount.IsProtectedUnderLock");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.IsProtectedUnderLock");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountOtherAppReadAccess OtherAppReadAccess
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UserDataAccountOtherAppReadAccess UserDataAccount.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAccountOtherAppReadAccess%20UserDataAccount.OtherAppReadAccess");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "UserDataAccountOtherAppReadAccess UserDataAccount.OtherAppReadAccess");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string PackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string UserDataAccount.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.PackageFamilyName");
 			}
 		}
 #endif
@@ -157,14 +143,30 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Id.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.UserDisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.UserDisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.OtherAppReadAccess.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.OtherAppReadAccess.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Icon.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.DeviceAccountTypeId.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.PackageFamilyName.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string UserDisplayName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string UserDataAccount.UserDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccount.UserDisplayName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.UserDisplayName");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.operator ==(Windows.ApplicationModel.UserDataAccounts.UserDataAccount, Windows.ApplicationModel.UserDataAccounts.UserDataAccount)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.operator !=(Windows.ApplicationModel.UserDataAccounts.UserDataAccount, Windows.ApplicationModel.UserDataAccounts.UserDataAccount)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Equals(Windows.ApplicationModel.UserDataAccounts.UserDataAccount)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
@@ -207,14 +209,6 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ContactAnnotationList>> UserDataAccount.FindContactAnnotationListsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CContactAnnotationList%3E%3E%20UserDataAccount.FindContactAnnotationListsAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.EnterpriseId.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.IsProtectedUnderLock.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.ExplictReadAccessPackageFamilyNames.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.DisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.CanShowCreateContactGroup.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.CanShowCreateContactGroup.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.ProviderProperties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskList>> FindUserDataTaskListsAsync()
@@ -236,7 +230,24 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> UserDataAccount.TryShowCreateContactGroupAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20UserDataAccount.TryShowCreateContactGroupAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.IsProtectedUnderLock.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.CanShowCreateContactGroup.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.CanShowCreateContactGroup.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.DeviceAccountTypeId.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.DisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.EnterpriseId.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.ExplictReadAccessPackageFamilyNames.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Icon.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Icon.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Id.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.IsProtectedUnderLock.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.IsProtectedUnderLock.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.OtherAppReadAccess.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.OtherAppReadAccess.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.PackageFamilyName.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.ProviderProperties.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.UserDisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.UserDisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

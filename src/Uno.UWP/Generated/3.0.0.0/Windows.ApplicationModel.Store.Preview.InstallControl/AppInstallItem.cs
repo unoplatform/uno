@@ -15,6 +15,44 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem> Children
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AppInstallItem> AppInstallItem.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAppInstallItem%3E%20AppInstallItem.Children");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode CompletedInstallToastNotificationMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstallationToastNotificationMode%20AppInstallItem.CompletedInstallToastNotificationMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode InstallInProgressToastNotificationMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstallationToastNotificationMode%20AppInstallItem.InstallInProgressToastNotificationMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallType InstallType
 		{
 			get
@@ -30,36 +68,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool AppInstallItem.IsUserInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallItem.IsUserInitiated");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppInstallItem.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInstallItem.PackageFamilyName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProductId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppInstallItem.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInstallItem.ProductId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem> Children
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AppInstallItem> AppInstallItem.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAppInstallItem%3E%20AppInstallItem.Children");
 			}
 		}
 #endif
@@ -89,29 +97,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool PinToTaskbarAfterInstall
+		public string PackageFamilyName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToTaskbarAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallItem.PinToTaskbarAfterInstall");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToTaskbarAfterInstall");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool PinToStartAfterInstall
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToStartAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallItem.PinToStartAfterInstall");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToStartAfterInstall");
+				throw new global::System.NotImplementedException("The member string AppInstallItem.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInstallItem.PackageFamilyName");
 			}
 		}
 #endif
@@ -131,36 +121,52 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode InstallInProgressToastNotificationMode
+		public bool PinToStartAfterInstall
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstallationToastNotificationMode%20AppInstallItem.InstallInProgressToastNotificationMode");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToStartAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallItem.PinToStartAfterInstall");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToStartAfterInstall");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode CompletedInstallToastNotificationMode
+		public bool PinToTaskbarAfterInstall
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstallationToastNotificationMode%20AppInstallItem.CompletedInstallToastNotificationMode");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToTaskbarAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallItem.PinToTaskbarAfterInstall");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToTaskbarAfterInstall");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.ProductId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PackageFamilyName.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.InstallType.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.IsUserInitiated.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ProductId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppInstallItem.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInstallItem.ProductId");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus GetCurrentStatus()
@@ -215,19 +221,24 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.Children.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.CompletedInstallToastNotificationMode.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.CompletedInstallToastNotificationMode.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.InstallInProgressToastNotificationMode.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.InstallInProgressToastNotificationMode.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.InstallType.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.IsUserInitiated.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.ItemOperationsMightAffectOtherItems.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.LaunchAfterInstall.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.LaunchAfterInstall.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PinToDesktopAfterInstall.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PinToDesktopAfterInstall.set
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PinToStartAfterInstall.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PinToStartAfterInstall.set
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PinToTaskbarAfterInstall.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.PinToTaskbarAfterInstall.set
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.CompletedInstallToastNotificationMode.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.CompletedInstallToastNotificationMode.set
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.InstallInProgressToastNotificationMode.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.InstallInProgressToastNotificationMode.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.ProductId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem, object> Completed

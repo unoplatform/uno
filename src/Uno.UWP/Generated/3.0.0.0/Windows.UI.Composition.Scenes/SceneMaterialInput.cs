@@ -8,10 +8,17 @@ namespace Windows.UI.Composition.Scenes
 #endif
 	public partial class SceneMaterialInput : global::Windows.UI.Composition.Scenes.SceneObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SceneMaterialInput()
-		{
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.SceneMaterialInput(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.operator ==(Windows.UI.Composition.Scenes.SceneMaterialInput, Windows.UI.Composition.Scenes.SceneMaterialInput)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.operator !=(Windows.UI.Composition.Scenes.SceneMaterialInput, Windows.UI.Composition.Scenes.SceneMaterialInput)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.Equals(Windows.UI.Composition.Scenes.SceneMaterialInput)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.SceneMaterialInput(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterialInput.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

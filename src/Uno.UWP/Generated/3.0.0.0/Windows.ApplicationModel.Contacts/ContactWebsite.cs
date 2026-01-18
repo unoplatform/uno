@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Uri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri ContactWebsite.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ContactWebsite.Uri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactWebsite", "Uri ContactWebsite.Uri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Description
 		{
 			get
@@ -52,17 +38,42 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Uri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri ContactWebsite.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ContactWebsite.Uri");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactWebsite", "Uri ContactWebsite.Uri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactWebsite()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactWebsite", "ContactWebsite.ContactWebsite()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.ContactWebsite()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Uri.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Uri.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.operator ==(Windows.ApplicationModel.Contacts.ContactWebsite, Windows.ApplicationModel.Contacts.ContactWebsite)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.operator !=(Windows.ApplicationModel.Contacts.ContactWebsite, Windows.ApplicationModel.Contacts.ContactWebsite)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Equals(Windows.ApplicationModel.Contacts.ContactWebsite)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.RawValue.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.RawValue.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Uri.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

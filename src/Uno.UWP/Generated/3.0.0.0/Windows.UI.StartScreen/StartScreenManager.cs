@@ -23,7 +23,31 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.User.get
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.StartScreen.StartScreenManager GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member StartScreenManager StartScreenManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StartScreenManager%20StartScreenManager.GetDefault%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.StartScreen.StartScreenManager GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member StartScreenManager StartScreenManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StartScreenManager%20StartScreenManager.GetForUser%28User%20user%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.FromAbi(nint)
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.operator ==(Windows.UI.StartScreen.StartScreenManager, Windows.UI.StartScreen.StartScreenManager)
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.operator !=(Windows.UI.StartScreen.StartScreenManager, Windows.UI.StartScreen.StartScreenManager)
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.Equals(Windows.UI.StartScreen.StartScreenManager)
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.Equals(object)
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.GetHashCode()
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool SupportsAppListEntry(global::Windows.ApplicationModel.Core.AppListEntry appListEntry)
@@ -59,19 +83,7 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StartScreenManager.TryRemoveSecondaryTileAsync(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StartScreenManager.TryRemoveSecondaryTileAsync%28string%20tileId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.StartScreen.StartScreenManager GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member StartScreenManager StartScreenManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StartScreenManager%20StartScreenManager.GetDefault%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.StartScreen.StartScreenManager GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member StartScreenManager StartScreenManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StartScreenManager%20StartScreenManager.GetForUser%28User%20user%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.User.get
+		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

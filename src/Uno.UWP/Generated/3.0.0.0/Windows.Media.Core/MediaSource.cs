@@ -10,11 +10,31 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource AdaptiveMediaSource
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AdaptiveMediaSource MediaSource.AdaptiveMediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSource%20MediaSource.AdaptiveMediaSource");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.ValueSet CustomProperties
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member ValueSet MediaSource.CustomProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20MediaSource.CustomProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.BackgroundTransfer.DownloadOperation DownloadOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DownloadOperation MediaSource.DownloadOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DownloadOperation%20MediaSource.DownloadOperation");
 			}
 		}
 #endif
@@ -60,26 +80,6 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.MediaSourceState State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaSourceState MediaSource.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSourceState%20MediaSource.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource AdaptiveMediaSource
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSource MediaSource.AdaptiveMediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSource%20MediaSource.AdaptiveMediaSource");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSource MediaStreamSource
 		{
 			get
@@ -98,74 +98,18 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Skipping already declared property Uri
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.BackgroundTransfer.DownloadOperation DownloadOperation
+		public global::Windows.Media.Core.MediaSourceState State
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DownloadOperation MediaSource.DownloadOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DownloadOperation%20MediaSource.DownloadOperation");
+				throw new global::System.NotImplementedException("The member MediaSourceState MediaSource.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSourceState%20MediaSource.State");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaSource.OpenOperationCompleted.add
-		// Forced skipping of method Windows.Media.Core.MediaSource.OpenOperationCompleted.remove
-		// Forced skipping of method Windows.Media.Core.MediaSource.CustomProperties.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.Duration.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.IsOpen.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedTextSources.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedMetadataTracks.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSource", "void MediaSource.Dispose()");
-		}
-#endif
-		// Forced skipping of method Windows.Media.Core.MediaSource.StateChanged.add
-		// Forced skipping of method Windows.Media.Core.MediaSource.StateChanged.remove
-		// Forced skipping of method Windows.Media.Core.MediaSource.State.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Reset()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSource", "void MediaSource.Reset()");
-		}
-#endif
-		// Forced skipping of method Windows.Media.Core.MediaSource.AdaptiveMediaSource.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.MediaStreamSource.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.MseStreamSource.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.Uri.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction OpenAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MediaSource.OpenAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MediaSource.OpenAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.Core.MediaSource.DownloadOperation.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromDownloadOperation(global::Windows.Networking.BackgroundTransfer.DownloadOperation downloadOperation)
-		{
-			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromDownloadOperation(DownloadOperation downloadOperation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromDownloadOperation%28DownloadOperation%20downloadOperation%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromMediaFrameSource(global::Windows.Media.Capture.Frames.MediaFrameSource frameSource)
-		{
-			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaFrameSource(MediaFrameSource frameSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMediaFrameSource%28MediaFrameSource%20frameSource%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromMediaBinder(global::Windows.Media.Core.MediaBinder binder)
-		{
-			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaBinder(MediaBinder binder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMediaBinder%28MediaBinder%20binder%29");
-		}
-#endif
+		// Skipping already declared property Uri
+		// Forced skipping of method Windows.Media.Core.MediaSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.MediaSource CreateFromAdaptiveMediaSource(global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource mediaSource)
@@ -216,6 +160,74 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Skipping already declared method Windows.Media.Core.MediaSource.CreateFromUri(System.Uri)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.Core.MediaSource CreateFromMediaBinder(global::Windows.Media.Core.MediaBinder binder)
+		{
+			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaBinder(MediaBinder binder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMediaBinder%28MediaBinder%20binder%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.Core.MediaSource CreateFromMediaFrameSource(global::Windows.Media.Capture.Frames.MediaFrameSource frameSource)
+		{
+			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaFrameSource(MediaFrameSource frameSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMediaFrameSource%28MediaFrameSource%20frameSource%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.Core.MediaSource CreateFromDownloadOperation(global::Windows.Networking.BackgroundTransfer.DownloadOperation downloadOperation)
+		{
+			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromDownloadOperation(DownloadOperation downloadOperation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromDownloadOperation%28DownloadOperation%20downloadOperation%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Core.MediaSource.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MediaSource.operator ==(Windows.Media.Core.MediaSource, Windows.Media.Core.MediaSource)
+		// Forced skipping of method Windows.Media.Core.MediaSource.operator !=(Windows.Media.Core.MediaSource, Windows.Media.Core.MediaSource)
+		// Forced skipping of method Windows.Media.Core.MediaSource.Equals(Windows.Media.Core.MediaSource)
+		// Forced skipping of method Windows.Media.Core.MediaSource.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MediaSource.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.OpenOperationCompleted.add
+		// Forced skipping of method Windows.Media.Core.MediaSource.OpenOperationCompleted.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSource", "void MediaSource.Dispose()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Reset()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSource", "void MediaSource.Reset()");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Core.MediaSource.StateChanged.add
+		// Forced skipping of method Windows.Media.Core.MediaSource.StateChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction OpenAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction MediaSource.OpenAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MediaSource.OpenAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Core.MediaSource.AdaptiveMediaSource.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.CustomProperties.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.DownloadOperation.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.Duration.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedMetadataTracks.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedTextSources.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.IsOpen.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.MediaStreamSource.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.MseStreamSource.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.State.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.Uri.get
+		// Forced skipping of method Windows.Media.Core.MediaSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs> OpenOperationCompleted

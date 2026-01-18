@@ -13,6 +13,16 @@ namespace Windows.Media.Devices.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.operator ==(Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper, Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper)
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.operator !=(Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper, Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper)
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.Equals(Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper)
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3 UnprojectPoint(global::Windows.Foundation.Point sourcePoint, global::Windows.Perception.Spatial.SpatialCoordinateSystem targetCoordinateSystem)
@@ -48,6 +58,7 @@ namespace Windows.Media.Devices.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper", "void DepthCorrelatedCoordinateMapper.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

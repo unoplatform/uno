@@ -3,39 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum NonClientRegionKind
 	{
-#if false
-		Close = 0,
-#endif
-#if false
-		Maximize = 1,
-#endif
-#if false
-		Minimize = 2,
-#endif
-#if false
-		Icon = 3,
-#endif
-#if false
-		Caption = 4,
-#endif
-#if false
-		TopBorder = 5,
-#endif
-#if false
-		LeftBorder = 6,
-#endif
-#if false
-		BottomBorder = 7,
-#endif
-#if false
-		RightBorder = 8,
-#endif
-#if false
-		Passthrough = 9,
-#endif
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.Close
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.Maximize
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.Minimize
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.Icon
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.Caption
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.TopBorder
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.LeftBorder
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.BottomBorder
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.RightBorder
+		// Skipping already declared field Microsoft.UI.Input.NonClientRegionKind.Passthrough
 	}
 #endif
 }

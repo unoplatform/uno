@@ -23,6 +23,16 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.operator ==(Windows.UI.Notifications.TileUpdater, Windows.UI.Notifications.TileUpdater)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.operator !=(Windows.UI.Notifications.TileUpdater, Windows.UI.Notifications.TileUpdater)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Equals(Windows.UI.Notifications.TileUpdater)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update(global::Windows.UI.Notifications.TileNotification notification)
@@ -44,7 +54,6 @@ namespace Windows.UI.Notifications
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueue(bool enable)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Setting.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddToSchedule(global::Windows.UI.Notifications.ScheduledTileNotification scheduledTile)
@@ -122,5 +131,7 @@ namespace Windows.UI.Notifications
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueueForSquare310x310(bool enable)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Setting.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

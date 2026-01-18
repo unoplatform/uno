@@ -10,17 +10,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Brush Enabled
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(EnabledProperty);
-			}
-			set
-			{
-				this.SetValue(EnabledProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty DisabledProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Disabled), typeof(global::Microsoft.UI.Xaml.Media.Brush),
+			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty EnabledProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Enabled), typeof(global::Microsoft.UI.Xaml.Media.Brush),
+			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -38,19 +40,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty DisabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Disabled), typeof(global::Microsoft.UI.Xaml.Media.Brush),
-			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty EnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Enabled), typeof(global::Microsoft.UI.Xaml.Media.Brush),
-			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
+		public global::Microsoft.UI.Xaml.Media.Brush Enabled
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(EnabledProperty);
+			}
+			set
+			{
+				this.SetValue(EnabledProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -60,10 +60,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.JumpListItemBackgroundConverter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Disabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Disabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.DisabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.EnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.operator ==(Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter, Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.operator !=(Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter, Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Equals(Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Convert(object value, global::System.Type targetType, object parameter, string language)
@@ -78,8 +85,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			throw new global::System.NotImplementedException("The member object JumpListItemBackgroundConverter.ConvertBack(object value, Type targetType, object parameter, string language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20JumpListItemBackgroundConverter.ConvertBack%28object%20value%2C%20Type%20targetType%2C%20object%20parameter%2C%20string%20language%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.EnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.DisabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Disabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Disabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Data.IValueConverter
 	}
 }

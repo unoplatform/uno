@@ -23,6 +23,17 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.operator ==(Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs, Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.operator !=(Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs, Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.Equals(Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.Request.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

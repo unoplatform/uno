@@ -8,9 +8,18 @@ namespace Windows.UI.Core
 #endif
 	public partial class CoreDispatcher : global::Windows.UI.Core.ICoreAcceleratorKeys
 	{
-		// Skipping already declared property HasThreadAccess
 		// Skipping already declared property CurrentPriority
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.HasThreadAccess.get
+		// Skipping already declared property HasThreadAccess
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.operator ==(Windows.UI.Core.CoreDispatcher, Windows.UI.Core.CoreDispatcher)
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.operator !=(Windows.UI.Core.CoreDispatcher, Windows.UI.Core.CoreDispatcher)
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.Equals(Windows.UI.Core.CoreDispatcher)
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.Equals(object)
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ProcessEvents(global::Windows.UI.Core.CoreProcessEventsOption options)
@@ -22,8 +31,6 @@ namespace Windows.UI.Core
 		// Skipping already declared method Windows.UI.Core.CoreDispatcher.RunIdleAsync(Windows.UI.Core.IdleDispatchedHandler)
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.AcceleratorKeyActivated.add
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.AcceleratorKeyActivated.remove
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.get
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ShouldYield()
@@ -59,6 +66,10 @@ namespace Windows.UI.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunIdleAsync(IdleDispatchedHandler agileCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20CoreDispatcher.TryRunIdleAsync%28IdleDispatchedHandler%20agileCallback%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.get
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.set
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.HasThreadAccess.get
+		// Forced skipping of method Windows.UI.Core.CoreDispatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreDispatcher, global::Windows.UI.Core.AcceleratorKeyEventArgs> AcceleratorKeyActivated

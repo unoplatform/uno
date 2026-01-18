@@ -37,16 +37,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.SiteView.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Content.DesktopChildSiteBridge CreateWithDispatcherQueue(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Microsoft.UI.WindowId parentWindowId)
-		{
-			throw new global::System.NotImplementedException("The member DesktopChildSiteBridge DesktopChildSiteBridge.CreateWithDispatcherQueue(DispatcherQueue queue, WindowId parentWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopChildSiteBridge%20DesktopChildSiteBridge.CreateWithDispatcherQueue%28DispatcherQueue%20queue%2C%20WindowId%20parentWindowId%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.DesktopChildSiteBridge Create(global::Microsoft.UI.Composition.Compositor compositor, global::Microsoft.UI.WindowId parentWindowId)
@@ -54,5 +45,25 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member DesktopChildSiteBridge DesktopChildSiteBridge.Create(Compositor compositor, WindowId parentWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopChildSiteBridge%20DesktopChildSiteBridge.Create%28Compositor%20compositor%2C%20WindowId%20parentWindowId%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Content.DesktopChildSiteBridge CreateWithDispatcherQueue(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Microsoft.UI.WindowId parentWindowId)
+		{
+			throw new global::System.NotImplementedException("The member DesktopChildSiteBridge DesktopChildSiteBridge.CreateWithDispatcherQueue(DispatcherQueue queue, WindowId parentWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopChildSiteBridge%20DesktopChildSiteBridge.CreateWithDispatcherQueue%28DispatcherQueue%20queue%2C%20WindowId%20parentWindowId%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.operator ==(Microsoft.UI.Content.DesktopChildSiteBridge, Microsoft.UI.Content.DesktopChildSiteBridge)
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.operator !=(Microsoft.UI.Content.DesktopChildSiteBridge, Microsoft.UI.Content.DesktopChildSiteBridge)
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.Equals(Microsoft.UI.Content.DesktopChildSiteBridge)
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.SiteView.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

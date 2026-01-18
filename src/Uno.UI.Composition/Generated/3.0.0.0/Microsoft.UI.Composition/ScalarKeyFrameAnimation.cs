@@ -8,7 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class ScalarKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.operator ==(Microsoft.UI.Composition.ScalarKeyFrameAnimation, Microsoft.UI.Composition.ScalarKeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.operator !=(Microsoft.UI.Composition.ScalarKeyFrameAnimation, Microsoft.UI.Composition.ScalarKeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.Equals(Microsoft.UI.Composition.ScalarKeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float)
+		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

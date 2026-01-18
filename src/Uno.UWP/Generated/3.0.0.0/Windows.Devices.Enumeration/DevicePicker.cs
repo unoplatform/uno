@@ -46,15 +46,16 @@ namespace Windows.Devices.Enumeration
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DevicePicker()
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.Filter.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.Appearance.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.RequestedProperties.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DeviceSelected.add
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DeviceSelected.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DisconnectButtonClicked.add
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DisconnectButtonClicked.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DevicePickerDismissed.add
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DevicePickerDismissed.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.operator ==(Windows.Devices.Enumeration.DevicePicker, Windows.Devices.Enumeration.DevicePicker)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.operator !=(Windows.Devices.Enumeration.DevicePicker, Windows.Devices.Enumeration.DevicePicker)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.Equals(Windows.Devices.Enumeration.DevicePicker)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection)
@@ -97,6 +98,16 @@ namespace Windows.Devices.Enumeration
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePicker", "void DevicePicker.SetDisplayStatus(DeviceInformation device, string status, DevicePickerDisplayStatusOptions options)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DevicePickerDismissed.add
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DevicePickerDismissed.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DeviceSelected.add
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DeviceSelected.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DisconnectButtonClicked.add
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DisconnectButtonClicked.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.Appearance.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.Filter.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.RequestedProperties.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.DevicePicker, object> DevicePickerDismissed

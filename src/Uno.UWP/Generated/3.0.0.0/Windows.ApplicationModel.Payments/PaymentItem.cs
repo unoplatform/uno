@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.Payments
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Pending
+		public global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount Amount
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentItem.Pending is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentItem.Pending");
+				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentItem.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCurrencyAmount%20PaymentItem.Amount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "bool PaymentItem.Pending");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "PaymentCurrencyAmount PaymentItem.Amount");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount Amount
+		public bool Pending
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentItem.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCurrencyAmount%20PaymentItem.Amount");
+				throw new global::System.NotImplementedException("The member bool PaymentItem.Pending is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentItem.Pending");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "PaymentCurrencyAmount PaymentItem.Amount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "bool PaymentItem.Pending");
 			}
 		}
 #endif
@@ -58,11 +58,22 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.PaymentItem(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Label.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Label.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.operator ==(Windows.ApplicationModel.Payments.PaymentItem, Windows.ApplicationModel.Payments.PaymentItem)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.operator !=(Windows.ApplicationModel.Payments.PaymentItem, Windows.ApplicationModel.Payments.PaymentItem)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Equals(Windows.ApplicationModel.Payments.PaymentItem)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Amount.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Amount.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Label.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Label.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Pending.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.Pending.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

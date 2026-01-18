@@ -33,18 +33,16 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplaySourceStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplaySourceStatus DisplaySource.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplaySourceStatus%20DisplaySource.Status");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.AdapterId.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.SourceId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.operator ==(Windows.Devices.Display.Core.DisplaySource, Windows.Devices.Display.Core.DisplaySource)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.operator !=(Windows.Devices.Display.Core.DisplaySource, Windows.Devices.Display.Core.DisplaySource)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.Equals(Windows.Devices.Display.Core.DisplaySource)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer GetMetadata(global::System.Guid Key)
@@ -52,24 +50,8 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member IBuffer DisplaySource.GetMetadata(Guid Key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20DisplaySource.GetMetadata%28Guid%20Key%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.Status.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.StatusChanged.add
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.StatusChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplaySource, object> StatusChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplaySource", "event TypedEventHandler<DisplaySource, object> DisplaySource.StatusChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplaySource", "event TypedEventHandler<DisplaySource, object> DisplaySource.StatusChanged");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.AdapterId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.SourceId.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

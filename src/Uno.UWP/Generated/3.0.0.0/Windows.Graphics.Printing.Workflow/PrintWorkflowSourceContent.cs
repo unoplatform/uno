@@ -13,6 +13,16 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent, Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent, Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket> GetJobPrintTicketAsync()
@@ -34,5 +44,6 @@ namespace Windows.Graphics.Printing.Workflow
 			throw new global::System.NotImplementedException("The member PrintWorkflowObjectModelSourceFileContent PrintWorkflowSourceContent.GetSourceSpoolDataAsXpsObjectModel() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintWorkflowObjectModelSourceFileContent%20PrintWorkflowSourceContent.GetSourceSpoolDataAsXpsObjectModel%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSourceContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Background
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter SignalStrengthFilter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter AdvertisementFilter
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.ApplicationModel.Background
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool AllowExtendedAdvertisements
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements");
 			}
 		}
 #endif
@@ -78,15 +78,15 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowExtendedAdvertisements
+		public global::Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter SignalStrengthFilter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements");
+				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter");
 			}
 		}
 #endif
@@ -98,16 +98,27 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.BluetoothLEAdvertisementWatcherTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MinSamplingInterval.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MaxSamplingInterval.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MinOutOfRangeTimeout.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MaxOutOfRangeTimeout.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter.set
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.operator ==(Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger, Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.operator !=(Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger, Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.Equals(Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter.set
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements.set
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MaxOutOfRangeTimeout.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MaxSamplingInterval.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MinOutOfRangeTimeout.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.MinSamplingInterval.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter.set
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

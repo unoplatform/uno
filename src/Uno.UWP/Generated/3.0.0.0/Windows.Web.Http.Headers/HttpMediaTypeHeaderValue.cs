@@ -10,20 +10,6 @@ namespace Windows.Web.Http.Headers
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string MediaType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpMediaTypeHeaderValue.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeHeaderValue.MediaType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.MediaType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string CharSet
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.Web.Http.Headers
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.CharSet");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string MediaType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string HttpMediaTypeHeaderValue.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeHeaderValue.MediaType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.MediaType");
 			}
 		}
 #endif
@@ -54,18 +54,7 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.HttpMediaTypeHeaderValue(string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.CharSet.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.CharSet.set
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.MediaType.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.MediaType.set
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.Parameters.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpMediaTypeHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeHeaderValue.ToString%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue Parse(string input)
@@ -80,5 +69,28 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpMediaTypeHeaderValue.TryParse(string input, out HttpMediaTypeHeaderValue mediaTypeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMediaTypeHeaderValue.TryParse%28string%20input%2C%20out%20HttpMediaTypeHeaderValue%20mediaTypeHeaderValue%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.operator ==(Windows.Web.Http.Headers.HttpMediaTypeHeaderValue, Windows.Web.Http.Headers.HttpMediaTypeHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.operator !=(Windows.Web.Http.Headers.HttpMediaTypeHeaderValue, Windows.Web.Http.Headers.HttpMediaTypeHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.Equals(Windows.Web.Http.Headers.HttpMediaTypeHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public override string ToString()
+		{
+			throw new global::System.NotImplementedException("The member string HttpMediaTypeHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeHeaderValue.ToString%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.CharSet.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.CharSet.set
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.MediaType.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.MediaType.set
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.Parameters.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

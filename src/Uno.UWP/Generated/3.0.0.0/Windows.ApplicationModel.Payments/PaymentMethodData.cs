@@ -44,7 +44,18 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.PaymentMethodData(System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.SupportedMethodIds.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.operator ==(Windows.ApplicationModel.Payments.PaymentMethodData, Windows.ApplicationModel.Payments.PaymentMethodData)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.operator !=(Windows.ApplicationModel.Payments.PaymentMethodData, Windows.ApplicationModel.Payments.PaymentMethodData)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.Equals(Windows.ApplicationModel.Payments.PaymentMethodData)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.JsonData.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.SupportedMethodIds.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

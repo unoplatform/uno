@@ -8,17 +8,28 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class PathGeometry : global::Microsoft.UI.Xaml.Media.Geometry
 	{
-		// Skipping already declared property FillRule
-		// Skipping already declared property Figures
 		// Skipping already declared property FiguresProperty
 		// Skipping already declared property FillRuleProperty
+		// Skipping already declared property Figures
+		// Skipping already declared property FillRule
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathGeometry.PathGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.PathGeometry()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRule.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRule.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FiguresProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRuleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.operator ==(Microsoft.UI.Xaml.Media.PathGeometry, Microsoft.UI.Xaml.Media.PathGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.operator !=(Microsoft.UI.Xaml.Media.PathGeometry, Microsoft.UI.Xaml.Media.PathGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.Equals(Microsoft.UI.Xaml.Media.PathGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.Figures.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.Figures.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRuleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FiguresProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRule.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRule.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

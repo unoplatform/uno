@@ -43,8 +43,19 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.operator ==(Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs, Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.operator !=(Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs, Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.Equals(Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.NewItem.get
 		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.OldItem.get
 		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.Reason.get
+		// Forced skipping of method Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

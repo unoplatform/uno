@@ -23,6 +23,17 @@ namespace Windows.Media
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.operator ==(Windows.Media.ShuffleEnabledChangeRequestedEventArgs, Windows.Media.ShuffleEnabledChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.operator !=(Windows.Media.ShuffleEnabledChangeRequestedEventArgs, Windows.Media.ShuffleEnabledChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.Equals(Windows.Media.ShuffleEnabledChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.RequestedShuffleEnabled.get
+		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

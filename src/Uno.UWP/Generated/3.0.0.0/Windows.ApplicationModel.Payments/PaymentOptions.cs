@@ -10,43 +10,15 @@ namespace Windows.ApplicationModel.Payments
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Payments.PaymentShippingType ShippingType
+		public global::Windows.ApplicationModel.Payments.PaymentOptionPresence RequestPayerEmail
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentShippingType PaymentOptions.ShippingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentShippingType%20PaymentOptions.ShippingType");
+				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptionPresence%20PaymentOptions.RequestPayerEmail");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentShippingType PaymentOptions.ShippingType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RequestShipping
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PaymentOptions.RequestShipping is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentOptions.RequestShipping");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "bool PaymentOptions.RequestShipping");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Payments.PaymentOptionPresence RequestPayerPhoneNumber
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptionPresence%20PaymentOptions.RequestPayerPhoneNumber");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentOptionPresence PaymentOptions.RequestPayerEmail");
 			}
 		}
 #endif
@@ -66,15 +38,43 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Payments.PaymentOptionPresence RequestPayerEmail
+		public global::Windows.ApplicationModel.Payments.PaymentOptionPresence RequestPayerPhoneNumber
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptionPresence%20PaymentOptions.RequestPayerEmail");
+				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptionPresence%20PaymentOptions.RequestPayerPhoneNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentOptionPresence PaymentOptions.RequestPayerEmail");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool RequestShipping
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PaymentOptions.RequestShipping is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentOptions.RequestShipping");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "bool PaymentOptions.RequestShipping");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Payments.PaymentShippingType ShippingType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PaymentShippingType PaymentOptions.ShippingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentShippingType%20PaymentOptions.ShippingType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentShippingType PaymentOptions.ShippingType");
 			}
 		}
 #endif
@@ -86,6 +86,16 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.PaymentOptions()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.operator ==(Windows.ApplicationModel.Payments.PaymentOptions, Windows.ApplicationModel.Payments.PaymentOptions)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.operator !=(Windows.ApplicationModel.Payments.PaymentOptions, Windows.ApplicationModel.Payments.PaymentOptions)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.Equals(Windows.ApplicationModel.Payments.PaymentOptions)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.RequestPayerEmail.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.RequestPayerEmail.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.RequestPayerName.get
@@ -96,5 +106,6 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.RequestShipping.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.ShippingType.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.ShippingType.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

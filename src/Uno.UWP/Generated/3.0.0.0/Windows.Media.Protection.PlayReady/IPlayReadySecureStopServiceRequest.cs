@@ -38,10 +38,10 @@ namespace Windows.Media.Protection.PlayReady
 			get;
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest.PublisherCertificate.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest.SessionID.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest.StartTime.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest.UpdateTime.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest.Stopped.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest.PublisherCertificate.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest.UpdateTime.get
 	}
 }

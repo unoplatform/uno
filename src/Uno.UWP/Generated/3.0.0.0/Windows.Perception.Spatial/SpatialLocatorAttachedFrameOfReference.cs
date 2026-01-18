@@ -15,20 +15,6 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 RelativePosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocatorAttachedFrameOfReference.RelativePosition");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Quaternion RelativeOrientation
 		{
 			get
@@ -41,10 +27,30 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativePosition.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativePosition.set
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 RelativePosition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocatorAttachedFrameOfReference.RelativePosition");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.operator ==(Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference, Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.operator !=(Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference, Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.Equals(Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AdjustHeading(double headingOffsetInRadians)
@@ -66,5 +72,10 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member double? SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp(PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp%28PerceptionTimestamp%20timestamp%29");
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.set
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativePosition.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativePosition.set
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

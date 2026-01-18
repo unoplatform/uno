@@ -10,6 +10,19 @@ namespace Windows.Foundation.Numerics
 	{
 		// Forced skipping of method Windows.Foundation.Numerics.Rational.Rational()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public Rational(uint _Numerator, uint _Denominator)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Numerics.Rational", "Rational.Rational(uint _Numerator, uint _Denominator)");
+		}
+#endif
+		// Forced skipping of method Windows.Foundation.Numerics.Rational.Rational(uint, uint)
+		// Forced skipping of method Windows.Foundation.Numerics.Rational.operator ==(Windows.Foundation.Numerics.Rational, Windows.Foundation.Numerics.Rational)
+		// Forced skipping of method Windows.Foundation.Numerics.Rational.operator !=(Windows.Foundation.Numerics.Rational, Windows.Foundation.Numerics.Rational)
+		// Forced skipping of method Windows.Foundation.Numerics.Rational.Equals(Windows.Foundation.Numerics.Rational)
+		// Forced skipping of method Windows.Foundation.Numerics.Rational.Equals(object)
+		// Forced skipping of method Windows.Foundation.Numerics.Rational.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Numerator;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

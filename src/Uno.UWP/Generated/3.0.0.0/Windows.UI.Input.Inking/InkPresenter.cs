@@ -15,29 +15,25 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Inking.InkStrokeContainer StrokeContainer
+		public global::Windows.UI.Input.Inking.InkHighContrastAdjustment HighContrastAdjustment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkStrokeContainer InkPresenter.StrokeContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkStrokeContainer%20InkPresenter.StrokeContainer");
+				throw new global::System.NotImplementedException("The member InkHighContrastAdjustment InkPresenter.HighContrastAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkHighContrastAdjustment%20InkPresenter.HighContrastAdjustment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "InkStrokeContainer InkPresenter.StrokeContainer");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "InkHighContrastAdjustment InkPresenter.HighContrastAdjustment");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInputEnabled
+		public global::Windows.UI.Input.Inking.InkInputConfiguration InputConfiguration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenter.IsInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenter.IsInputEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "bool InkPresenter.IsInputEnabled");
+				throw new global::System.NotImplementedException("The member InkInputConfiguration InkPresenter.InputConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkInputConfiguration%20InkPresenter.InputConfiguration");
 			}
 		}
 #endif
@@ -67,6 +63,34 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsInputEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool InkPresenter.IsInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenter.IsInputEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "bool InkPresenter.IsInputEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.Inking.InkStrokeContainer StrokeContainer
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InkStrokeContainer InkPresenter.StrokeContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkStrokeContainer%20InkPresenter.StrokeContainer");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "InkStrokeContainer InkPresenter.StrokeContainer");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.InkStrokeInput StrokeInput
 		{
 			get
@@ -85,39 +109,16 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Inking.InkHighContrastAdjustment HighContrastAdjustment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InkHighContrastAdjustment InkPresenter.HighContrastAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkHighContrastAdjustment%20InkPresenter.HighContrastAdjustment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "InkHighContrastAdjustment InkPresenter.HighContrastAdjustment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Inking.InkInputConfiguration InputConfiguration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InkInputConfiguration InkPresenter.InputConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkInputConfiguration%20InkPresenter.InputConfiguration");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.IsInputEnabled.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.IsInputEnabled.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.InputDeviceTypes.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.InputDeviceTypes.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.UnprocessedInput.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.StrokeInput.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.InputProcessingConfiguration.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.StrokeContainer.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.StrokeContainer.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.operator ==(Windows.UI.Input.Inking.InkPresenter, Windows.UI.Input.Inking.InkPresenter)
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.operator !=(Windows.UI.Input.Inking.InkPresenter, Windows.UI.Input.Inking.InkPresenter)
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.Equals(Windows.UI.Input.Inking.InkPresenter)
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.InkDrawingAttributes CopyDefaultDrawingAttributes()
@@ -153,6 +154,16 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.HighContrastAdjustment.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.HighContrastAdjustment.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.InputConfiguration.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.InputDeviceTypes.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.InputDeviceTypes.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.InputProcessingConfiguration.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.IsInputEnabled.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.IsInputEnabled.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.StrokeContainer.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.StrokeContainer.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.StrokeInput.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.UnprocessedInput.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkPresenter, global::Windows.UI.Input.Inking.InkStrokesCollectedEventArgs> StrokesCollected

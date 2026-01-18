@@ -13,5 +13,16 @@ namespace Windows.Devices.PointOfService
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.operator ==(Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs, Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.operator !=(Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs, Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.Equals(Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -16,6 +16,10 @@ namespace Microsoft.UI.Xaml.Media
 		{
 		}
 
+#if HAS_UNO_WINUI
+		public new IEnumerator<double> GetEnumerator() => base.GetEnumerator();
+#endif
+
 		static public implicit operator DoubleCollection(string value)
 		{
 			return value.Split(',', ' ').Select(str => double.Parse(str, CultureInfo.InvariantCulture)).ToArray();

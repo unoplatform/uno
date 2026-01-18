@@ -43,9 +43,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.Id.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.DisplayName.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.SourceInfos.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.Frames.MediaFrameSourceGroup>> FindAllAsync()
@@ -67,5 +65,19 @@ namespace Windows.Media.Capture.Frames
 			throw new global::System.NotImplementedException("The member string MediaFrameSourceGroup.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameSourceGroup.GetDeviceSelector%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.operator ==(Windows.Media.Capture.Frames.MediaFrameSourceGroup, Windows.Media.Capture.Frames.MediaFrameSourceGroup)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.operator !=(Windows.Media.Capture.Frames.MediaFrameSourceGroup, Windows.Media.Capture.Frames.MediaFrameSourceGroup)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.Equals(Windows.Media.Capture.Frames.MediaFrameSourceGroup)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.DisplayName.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.Id.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.SourceInfos.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

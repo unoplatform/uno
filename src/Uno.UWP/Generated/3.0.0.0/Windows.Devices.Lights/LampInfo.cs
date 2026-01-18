@@ -103,14 +103,16 @@ namespace Windows.Devices.Lights
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.Index.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.Purposes.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.Position.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.RedLevelCount.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.GreenLevelCount.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.BlueLevelCount.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.GainLevelCount.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.FixedColor.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.operator ==(Windows.Devices.Lights.LampInfo, Windows.Devices.Lights.LampInfo)
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.operator !=(Windows.Devices.Lights.LampInfo, Windows.Devices.Lights.LampInfo)
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.Equals(Windows.Devices.Lights.LampInfo)
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Color GetNearestSupportedColor(global::Windows.UI.Color desiredColor)
@@ -118,6 +120,15 @@ namespace Windows.Devices.Lights
 			throw new global::System.NotImplementedException("The member Color LampInfo.GetNearestSupportedColor(Color desiredColor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20LampInfo.GetNearestSupportedColor%28Color%20desiredColor%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.BlueLevelCount.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.FixedColor.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.GainLevelCount.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.GreenLevelCount.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.Index.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.Position.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.Purposes.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.RedLevelCount.get
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.UpdateLatency.get
+		// Forced skipping of method Windows.Devices.Lights.LampInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

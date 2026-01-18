@@ -8,10 +8,21 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ScrollingAnchorRequestedEventArgs
 	{
-		// Skipping already declared property AnchorElement
 		// Skipping already declared property AnchorCandidates
+		// Skipping already declared property AnchorElement
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs, Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs, Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.AnchorCandidates.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.AnchorElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.AnchorElement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

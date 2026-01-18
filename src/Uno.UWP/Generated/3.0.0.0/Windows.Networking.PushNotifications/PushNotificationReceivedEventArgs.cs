@@ -15,6 +15,16 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Notifications.BadgeNotification BadgeNotification
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BadgeNotification PushNotificationReceivedEventArgs.BadgeNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BadgeNotification%20PushNotificationReceivedEventArgs.BadgeNotification");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Cancel
 		{
 			get
@@ -24,16 +34,6 @@ namespace Windows.Networking.PushNotifications
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "bool PushNotificationReceivedEventArgs.Cancel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Notifications.BadgeNotification BadgeNotification
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BadgeNotification PushNotificationReceivedEventArgs.BadgeNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BadgeNotification%20PushNotificationReceivedEventArgs.BadgeNotification");
 			}
 		}
 #endif
@@ -77,12 +77,23 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Cancel.set
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Cancel.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.NotificationType.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.ToastNotification.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.TileNotification.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.operator ==(Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs, Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.operator !=(Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs, Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Equals(Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.BadgeNotification.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Cancel.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Cancel.set
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.NotificationType.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.RawNotification.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.TileNotification.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.ToastNotification.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

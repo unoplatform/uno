@@ -10,43 +10,15 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort Weight
+		public string DnssdServiceInstanceName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Weight");
+				throw new global::System.NotImplementedException("The member string DnssdServiceInstance.DnssdServiceInstanceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DnssdServiceInstance.DnssdServiceInstanceName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Weight");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort Priority
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Priority");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Priority");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort Port
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Port is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Port");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Port");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "string DnssdServiceInstance.DnssdServiceInstanceName");
 			}
 		}
 #endif
@@ -66,15 +38,29 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DnssdServiceInstanceName
+		public ushort Port
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DnssdServiceInstance.DnssdServiceInstanceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DnssdServiceInstance.DnssdServiceInstanceName");
+				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Port is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Port");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "string DnssdServiceInstance.DnssdServiceInstanceName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Port");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ushort Priority
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Priority");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Priority");
 			}
 		}
 #endif
@@ -90,23 +76,36 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ushort Weight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Weight");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Weight");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DnssdServiceInstance(string dnssdServiceInstanceName, global::Windows.Networking.HostName hostName, ushort port)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "DnssdServiceInstance.DnssdServiceInstance(string dnssdServiceInstanceName, HostName hostName, ushort port)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstance(string, Windows.Networking.HostName, ushort)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstanceName.get
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstanceName.set
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.HostName.get
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.HostName.set
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Port.get
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Port.set
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Priority.get
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Priority.set
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Weight.get
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Weight.set
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.TextAttributes.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.operator ==(Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance, Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance)
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.operator !=(Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance, Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance)
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Equals(Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance)
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Equals(object)
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.GetHashCode()
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync(global::Windows.Networking.Sockets.StreamSocketListener socket)
@@ -142,5 +141,17 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 			throw new global::System.NotImplementedException("The member string DnssdServiceInstance.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DnssdServiceInstance.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstanceName.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstanceName.set
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.HostName.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.HostName.set
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Port.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Port.set
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Priority.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Priority.set
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.TextAttributes.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Weight.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.Weight.set
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

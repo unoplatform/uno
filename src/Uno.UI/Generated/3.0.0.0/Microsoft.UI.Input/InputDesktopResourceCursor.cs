@@ -10,9 +10,20 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property ModuleName
 		// Skipping already declared property ResourceId
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ResourceId.get
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ModuleName.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.As<I>()
 		// Skipping already declared method Microsoft.UI.Input.InputDesktopResourceCursor.Create(uint)
 		// Skipping already declared method Microsoft.UI.Input.InputDesktopResourceCursor.CreateFromModule(string, uint)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.operator ==(Microsoft.UI.Input.InputDesktopResourceCursor, Microsoft.UI.Input.InputDesktopResourceCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.operator !=(Microsoft.UI.Input.InputDesktopResourceCursor, Microsoft.UI.Input.InputDesktopResourceCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.Equals(Microsoft.UI.Input.InputDesktopResourceCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ModuleName.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ResourceId.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

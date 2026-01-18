@@ -35,11 +35,51 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Is180RotationSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.Is180RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.Is180RotationSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsBarcodeSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBarcodeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBarcodeSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsBitmapSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBitmapSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBitmapSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsBoldSupported
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBoldSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBoldSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsBothSidesPrintingSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBothSidesPrintingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBothSidesPrintingSupported");
 			}
 		}
 #endif
@@ -85,11 +125,31 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsFullLengthSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsFullLengthSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsFullLengthSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsItalicSupported
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsItalicSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsItalicSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsLeft90RotationSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsLeft90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsLeft90RotationSupported");
 			}
 		}
 #endif
@@ -115,76 +175,6 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPrinterPresent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsPrinterPresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsPrinterPresent");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsUnderlineSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsUnderlineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsUnderlineSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedCharactersPerLine
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> SlipPrinterCapabilities.SupportedCharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20SlipPrinterCapabilities.SupportedCharactersPerLine");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Is180RotationSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.Is180RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.Is180RotationSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBarcodeSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBarcodeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBarcodeSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBitmapSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBitmapSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBitmapSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsLeft90RotationSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsLeft90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsLeft90RotationSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsPrintAreaSupported
 		{
 			get
@@ -195,61 +185,11 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRight90RotationSupported
+		public bool IsPrinterPresent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsRight90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsRight90RotationSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.PosPrinterRuledLineCapabilities RuledLineCapabilities
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PosPrinterRuledLineCapabilities SlipPrinterCapabilities.RuledLineCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterRuledLineCapabilities%20SlipPrinterCapabilities.RuledLineCapabilities");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBarcodeRotations
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBarcodeRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPosPrinterRotation%3E%20SlipPrinterCapabilities.SupportedBarcodeRotations");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBitmapRotations
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBitmapRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPosPrinterRotation%3E%20SlipPrinterCapabilities.SupportedBitmapRotations");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBothSidesPrintingSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBothSidesPrintingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBothSidesPrintingSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsFullLengthSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsFullLengthSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsFullLengthSupported");
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsPrinterPresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsPrinterPresent");
 			}
 		}
 #endif
@@ -285,6 +225,16 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsRight90RotationSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsRight90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsRight90RotationSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsStrikethroughSupported
 		{
 			get
@@ -313,36 +263,97 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsFullLengthSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsBothSidesPrintingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsReverseVideoSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsStrikethroughSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsSuperscriptSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsSubscriptSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsReversePaperFeedByLineSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsUnderlineSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsUnderlineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsUnderlineSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.PosPrinterRuledLineCapabilities RuledLineCapabilities
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PosPrinterRuledLineCapabilities SlipPrinterCapabilities.RuledLineCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterRuledLineCapabilities%20SlipPrinterCapabilities.RuledLineCapabilities");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBarcodeRotations
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBarcodeRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPosPrinterRotation%3E%20SlipPrinterCapabilities.SupportedBarcodeRotations");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBitmapRotations
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBitmapRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPosPrinterRotation%3E%20SlipPrinterCapabilities.SupportedBitmapRotations");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedCharactersPerLine
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> SlipPrinterCapabilities.SupportedCharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20SlipPrinterCapabilities.SupportedCharactersPerLine");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.operator ==(Windows.Devices.PointOfService.SlipPrinterCapabilities, Windows.Devices.PointOfService.SlipPrinterCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.operator !=(Windows.Devices.PointOfService.SlipPrinterCapabilities, Windows.Devices.PointOfService.SlipPrinterCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.Equals(Windows.Devices.PointOfService.SlipPrinterCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.CartridgeSensors.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.ColorCartridgeCapabilities.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.Is180RotationSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsBarcodeSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsBitmapSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsBoldSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsBothSidesPrintingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDoubleHighPrintSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDoubleWidePrintSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDualColorSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsFullLengthSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsItalicSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsLeft90RotationSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsRight90RotationSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.Is180RotationSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsPaperEmptySensorSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsPaperNearEndSensorSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsPrintAreaSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsPrinterPresent.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsReversePaperFeedByLineSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsReverseVideoSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsRight90RotationSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsStrikethroughSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsSubscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsSuperscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsUnderlineSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.RuledLineCapabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.SupportedBarcodeRotations.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.SupportedBitmapRotations.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsPrinterPresent.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDualColorSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.ColorCartridgeCapabilities.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.CartridgeSensors.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsBoldSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsItalicSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsUnderlineSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDoubleHighPrintSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDoubleWidePrintSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsPaperEmptySensorSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.IsPaperNearEndSensorSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.SupportedCharactersPerLine.get
+		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities
 		// Processing: Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities
 	}

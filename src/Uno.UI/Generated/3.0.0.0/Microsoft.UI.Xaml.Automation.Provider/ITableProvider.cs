@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	public partial interface ITableProvider
 	{
 		// Skipping already declared property RowOrColumnMajor
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITableProvider.RowOrColumnMajor.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITableProvider.GetColumnHeaders()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITableProvider.GetRowHeaders()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITableProvider.RowOrColumnMajor.get
 	}
 }

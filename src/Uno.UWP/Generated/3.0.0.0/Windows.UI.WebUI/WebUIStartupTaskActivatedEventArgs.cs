@@ -15,6 +15,16 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIStartupTaskActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIStartupTaskActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -45,16 +55,6 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User WebUIStartupTaskActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIStartupTaskActivatedEventArgs.User");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TaskId
 		{
 			get
@@ -65,20 +65,31 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		public global::Windows.System.User User
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIStartupTaskActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIStartupTaskActivatedEventArgs.ActivatedOperation");
+				throw new global::System.NotImplementedException("The member User WebUIStartupTaskActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIStartupTaskActivatedEventArgs.User");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.TaskId.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs, Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs, Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.SplashScreen.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.TaskId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.User.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIStartupTaskActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IStartupTaskActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

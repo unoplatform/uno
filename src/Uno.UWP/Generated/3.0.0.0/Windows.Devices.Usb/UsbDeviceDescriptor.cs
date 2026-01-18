@@ -73,11 +73,22 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.operator ==(Windows.Devices.Usb.UsbDeviceDescriptor, Windows.Devices.Usb.UsbDeviceDescriptor)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.operator !=(Windows.Devices.Usb.UsbDeviceDescriptor, Windows.Devices.Usb.UsbDeviceDescriptor)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.Equals(Windows.Devices.Usb.UsbDeviceDescriptor)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdDeviceRevision.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdUsb.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.MaxPacketSize0.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.VendorId.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.ProductId.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdDeviceRevision.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.NumberOfConfigurations.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.ProductId.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.VendorId.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

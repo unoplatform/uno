@@ -8,25 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class NumberBox : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property ValidationMode
-		// Skipping already declared property TextReadingOrder
-		// Skipping already declared property Text
-		// Skipping already declared property SpinButtonPlacementMode
-		// Skipping already declared property SmallChange
-		// Skipping already declared property SelectionHighlightColor
-		// Skipping already declared property SelectionFlyout
-		// Skipping already declared property PreventKeyboardDisplayOnProgrammaticFocus
-		// Skipping already declared property PlaceholderText
-		// Skipping already declared property NumberFormatter
-		// Skipping already declared property Minimum
-		// Skipping already declared property Maximum
-		// Skipping already declared property LargeChange
-		// Skipping already declared property IsWrapEnabled
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property Header
-		// Skipping already declared property Description
-		// Skipping already declared property AcceptsExpression
 		// Skipping already declared property AcceptsExpressionProperty
 		// Skipping already declared property DescriptionProperty
 		// Skipping already declared property HeaderProperty
@@ -46,67 +27,99 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TextReadingOrderProperty
 		// Skipping already declared property ValidationModeProperty
 		// Skipping already declared property ValueProperty
+		// Skipping already declared property AcceptsExpression
+		// Skipping already declared property Description
+		// Skipping already declared property Header
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property IsWrapEnabled
+		// Skipping already declared property LargeChange
+		// Skipping already declared property Maximum
+		// Skipping already declared property Minimum
+		// Skipping already declared property NumberFormatter
+		// Skipping already declared property PlaceholderText
+		// Skipping already declared property PreventKeyboardDisplayOnProgrammaticFocus
+		// Skipping already declared property SelectionFlyout
+		// Skipping already declared property SelectionHighlightColor
+		// Skipping already declared property SmallChange
+		// Skipping already declared property SpinButtonPlacementMode
+		// Skipping already declared property Text
+		// Skipping already declared property TextReadingOrder
+		// Skipping already declared property ValidationMode
+		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Minimum.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Minimum.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Maximum.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Maximum.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SmallChange.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SmallChange.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.LargeChange.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.LargeChange.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.AcceptsExpressionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.DescriptionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.HeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsWrapEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.LargeChangeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.MaximumProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.MinimumProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberFormatterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PlaceholderTextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PreventKeyboardDisplayOnProgrammaticFocusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionFlyoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionHighlightColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SmallChangeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SpinButtonPlacementModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextReadingOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.operator ==(Microsoft.UI.Xaml.Controls.NumberBox, Microsoft.UI.Xaml.Controls.NumberBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.operator !=(Microsoft.UI.Xaml.Controls.NumberBox, Microsoft.UI.Xaml.Controls.NumberBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Equals(Microsoft.UI.Xaml.Controls.NumberBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.AcceptsExpression.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.AcceptsExpression.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Description.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Description.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Header.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.HeaderTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.HeaderTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsWrapEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsWrapEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.LargeChange.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.LargeChange.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Maximum.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Maximum.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Minimum.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Minimum.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberFormatter.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberFormatter.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PlaceholderText.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PlaceholderText.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PreventKeyboardDisplayOnProgrammaticFocus.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PreventKeyboardDisplayOnProgrammaticFocus.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionFlyout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionFlyout.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionHighlightColor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionHighlightColor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextReadingOrder.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextReadingOrder.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PreventKeyboardDisplayOnProgrammaticFocus.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PreventKeyboardDisplayOnProgrammaticFocus.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Description.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Description.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SmallChange.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SmallChange.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SpinButtonPlacementMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SpinButtonPlacementMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsWrapEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsWrapEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.AcceptsExpression.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.AcceptsExpression.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberFormatter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberFormatter.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.MinimumProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.MaximumProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SmallChangeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.LargeChangeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.HeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PlaceholderTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionFlyoutProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SelectionHighlightColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextReadingOrderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.PreventKeyboardDisplayOnProgrammaticFocusProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.DescriptionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.SpinButtonPlacementModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsWrapEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.AcceptsExpressionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberFormatterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextReadingOrder.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextReadingOrder.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.NumberBox.ValueChanged
 	}
 }

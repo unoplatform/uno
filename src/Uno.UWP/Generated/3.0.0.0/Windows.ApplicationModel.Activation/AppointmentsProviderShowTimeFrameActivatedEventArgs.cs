@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Duration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -45,6 +55,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset TimeToShow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.User User
 		{
 			get
@@ -63,33 +83,24 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset TimeToShow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs, Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs, Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.Verb.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.Verb.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IAppointmentsProviderShowTimeFrameActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IAppointmentsProviderActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

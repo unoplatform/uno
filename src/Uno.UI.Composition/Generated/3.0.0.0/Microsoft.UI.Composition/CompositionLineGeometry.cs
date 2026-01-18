@@ -8,11 +8,21 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionLineGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
-		// Skipping already declared property Start
 		// Skipping already declared property End
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.set
+		// Skipping already declared property Start
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.operator ==(Microsoft.UI.Composition.CompositionLineGeometry, Microsoft.UI.Composition.CompositionLineGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.operator !=(Microsoft.UI.Composition.CompositionLineGeometry, Microsoft.UI.Composition.CompositionLineGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Equals(Microsoft.UI.Composition.CompositionLineGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

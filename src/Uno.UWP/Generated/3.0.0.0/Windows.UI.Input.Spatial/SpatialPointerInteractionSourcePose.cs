@@ -25,31 +25,21 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialPointerInteractionSourcePose.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 UpDirection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.UpDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialPointerInteractionSourcePose.UpDirection");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Quaternion Orientation
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member Quaternion SpatialPointerInteractionSourcePose.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SpatialPointerInteractionSourcePose.Orientation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Position
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialPointerInteractionSourcePose.Position");
 			}
 		}
 #endif
@@ -63,10 +53,31 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.Position.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 UpDirection
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.UpDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialPointerInteractionSourcePose.UpDirection");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.operator ==(Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose, Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.operator !=(Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose, Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.Equals(Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.ForwardDirection.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.UpDirection.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.Orientation.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.Position.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.PositionAccuracy.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.UpDirection.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

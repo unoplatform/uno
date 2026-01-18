@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.PivotHeaderPanel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.PivotHeaderPanel()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.operator ==(Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel, Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.operator !=(Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel, Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.Equals(Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,7 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewDate
 		// Skipping already declared property OldDate
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs, Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs, Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.NewDate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.OldDate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

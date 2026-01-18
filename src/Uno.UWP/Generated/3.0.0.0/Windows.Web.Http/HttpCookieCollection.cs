@@ -6,7 +6,7 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpCookieCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.Http.HttpCookie>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.HttpCookie>
+	public partial class HttpCookieCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.Http.HttpCookie>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.HttpCookie>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Web.Http.HttpCookie>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal HttpCookieCollection()
@@ -15,39 +15,48 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpCookieCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HttpCookieCollection.Size");
+				throw new global::System.NotImplementedException("The member int HttpCookieCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpCookieCollection.Count");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.GetAt(uint)
-		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.Size.get
-		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.IndexOf(Windows.Web.Http.HttpCookie, out uint)
-		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.GetMany(uint, Windows.Web.Http.HttpCookie[])
-		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.First()
-		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Web.Http.HttpCookie>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.HttpCookie this[int index]
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member HttpCookie HttpCookieCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCookie%20HttpCookieCollection.this%5Bint%20index%5D");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.HttpCookie>
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.operator ==(Windows.Web.Http.HttpCookieCollection, Windows.Web.Http.HttpCookieCollection)
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.operator !=(Windows.Web.Http.HttpCookieCollection, Windows.Web.Http.HttpCookieCollection)
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.Equals(Windows.Web.Http.HttpCookieCollection)
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.Count.get
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Web.Http.HttpCookie>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.HttpCookie> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<HttpCookie> HttpCookieCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CHttpCookie%3E%20HttpCookieCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.System.Collections.Generic.IReadOnlyList<Windows.Web.Http.HttpCookie>.get_Item(int)
+		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Web.Http.HttpCookie>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.HttpCookie>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -58,15 +67,5 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Web.Http.HttpCookie>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

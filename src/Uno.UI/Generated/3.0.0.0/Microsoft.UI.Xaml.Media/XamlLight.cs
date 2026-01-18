@@ -30,29 +30,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.XamlLight()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual string GetId()
-		{
-			throw new global::System.NotImplementedException("The member string XamlLight.GetId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20XamlLight.GetId%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual void OnConnected(global::Microsoft.UI.Xaml.UIElement newElement)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnConnected(UIElement newElement)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual void OnDisconnected(global::Microsoft.UI.Xaml.UIElement oldElement)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnDisconnected(UIElement oldElement)");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void AddTargetElement(string lightId, global::Microsoft.UI.Xaml.UIElement element)
@@ -81,5 +59,43 @@ namespace Microsoft.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.RemoveTargetBrush(string lightId, Brush brush)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.XamlLight(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.operator ==(Microsoft.UI.Xaml.Media.XamlLight, Microsoft.UI.Xaml.Media.XamlLight)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.operator !=(Microsoft.UI.Xaml.Media.XamlLight, Microsoft.UI.Xaml.Media.XamlLight)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.Equals(Microsoft.UI.Xaml.Media.XamlLight)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.XamlLight(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.WinRT.IWinRTObject.NativeObject.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		protected virtual string GetId()
+		{
+			throw new global::System.NotImplementedException("The member string XamlLight.GetId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20XamlLight.GetId%28%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.Microsoft.UI.Xaml.Media.IXamlLightOverrides.GetId()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		protected virtual void OnConnected(global::Microsoft.UI.Xaml.UIElement newElement)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnConnected(UIElement newElement)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.Microsoft.UI.Xaml.Media.IXamlLightOverrides.OnConnected(Microsoft.UI.Xaml.UIElement)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		protected virtual void OnDisconnected(global::Microsoft.UI.Xaml.UIElement oldElement)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnDisconnected(UIElement oldElement)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.Microsoft.UI.Xaml.Media.IXamlLightOverrides.OnDisconnected(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

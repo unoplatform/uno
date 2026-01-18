@@ -53,9 +53,20 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.UserNotification.Notification.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.operator ==(Windows.UI.Notifications.UserNotification, Windows.UI.Notifications.UserNotification)
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.operator !=(Windows.UI.Notifications.UserNotification, Windows.UI.Notifications.UserNotification)
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.Equals(Windows.UI.Notifications.UserNotification)
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.UserNotification.AppInfo.get
-		// Forced skipping of method Windows.UI.Notifications.UserNotification.Id.get
 		// Forced skipping of method Windows.UI.Notifications.UserNotification.CreationTime.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.Id.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.Notification.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

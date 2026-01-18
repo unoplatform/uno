@@ -8,7 +8,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial struct KeyTime
 	{
+		// Skipping already declared property TimeSpan
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.KeyTime()
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Animation.KeyTime.TimeSpan
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.KeyTime.FromTimeSpan(System.TimeSpan)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime, Microsoft.UI.Xaml.Media.Animation.KeyTime)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.operator ==(Microsoft.UI.Xaml.Media.Animation.KeyTime, Microsoft.UI.Xaml.Media.Animation.KeyTime)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.operator !=(Microsoft.UI.Xaml.Media.Animation.KeyTime, Microsoft.UI.Xaml.Media.Animation.KeyTime)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.GetHashCode()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.KeyTime.ToString()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.implicit operator Microsoft.UI.Xaml.Media.Animation.KeyTime(System.TimeSpan)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.TimeSpan.get
 	}
 }

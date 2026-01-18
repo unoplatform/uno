@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,13 +23,24 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.State.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.operator ==(Windows.Media.PlayTo.PlayToConnection, Windows.Media.PlayTo.PlayToConnection)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.operator !=(Windows.Media.PlayTo.PlayToConnection, Windows.Media.PlayTo.PlayToConnection)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Equals(Windows.Media.PlayTo.PlayToConnection)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.remove
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.StateChanged.add
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.StateChanged.remove
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Transferred.add
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Transferred.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.State.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionErrorEventArgs> Error

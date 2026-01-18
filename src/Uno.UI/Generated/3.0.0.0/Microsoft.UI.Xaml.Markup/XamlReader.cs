@@ -8,7 +8,19 @@ namespace Microsoft.UI.Xaml.Markup
 #endif
 	public partial class XamlReader
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlReader.Load(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlReader.LoadWithInitialTemplateValidation(string)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.operator ==(Microsoft.UI.Xaml.Markup.XamlReader, Microsoft.UI.Xaml.Markup.XamlReader)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.operator !=(Microsoft.UI.Xaml.Markup.XamlReader, Microsoft.UI.Xaml.Markup.XamlReader)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.Equals(Microsoft.UI.Xaml.Markup.XamlReader)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.operator ==(Windows.ApplicationModel.Contacts.AggregateContactManager, Windows.ApplicationModel.Contacts.AggregateContactManager)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.operator !=(Windows.ApplicationModel.Contacts.AggregateContactManager, Windows.ApplicationModel.Contacts.AggregateContactManager)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.Equals(Windows.ApplicationModel.Contacts.AggregateContactManager)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.Contact>> FindRawContactsAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
@@ -48,5 +58,6 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IAsyncAction AggregateContactManager.SetRemoteIdentificationInformationAsync(string contactListId, string remoteSourceId, string accountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AggregateContactManager.SetRemoteIdentificationInformationAsync%28string%20contactListId%2C%20string%20remoteSourceId%2C%20string%20accountId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

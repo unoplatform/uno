@@ -30,27 +30,28 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared property Uncategorized
 		// Skipping already declared property Watch
 		// Skipping already declared property WeightScale
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Uncategorized.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Phone.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Computer.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Watch.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.As<I>()
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.BarcodeScanner.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.BloodPressure.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Clock.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Computer.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Cycling.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Display.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.RemoteControl.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.EyeGlasses.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Tag.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.GlucoseMeter.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.HeartRate.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.HumanInterfaceDevice.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Keyring.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.MediaPlayer.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.BarcodeScanner.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Thermometer.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.HeartRate.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.BloodPressure.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.HumanInterfaceDevice.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.GlucoseMeter.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.RunningWalking.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Cycling.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.PulseOximeter.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.WeightScale.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.OutdoorSportActivity.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Phone.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.PulseOximeter.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.RemoteControl.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.RunningWalking.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Tag.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Thermometer.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Uncategorized.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Watch.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.WeightScale.get
 	}
 }

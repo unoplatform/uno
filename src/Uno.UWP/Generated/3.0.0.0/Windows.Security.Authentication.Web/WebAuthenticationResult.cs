@@ -11,8 +11,19 @@ namespace Windows.Security.Authentication.Web
 		// Skipping already declared property ResponseData
 		// Skipping already declared property ResponseErrorDetail
 		// Skipping already declared property ResponseStatus
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.operator ==(Windows.Security.Authentication.Web.WebAuthenticationResult, Windows.Security.Authentication.Web.WebAuthenticationResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.operator !=(Windows.Security.Authentication.Web.WebAuthenticationResult, Windows.Security.Authentication.Web.WebAuthenticationResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.Equals(Windows.Security.Authentication.Web.WebAuthenticationResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseData.get
-		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseStatus.get
 		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseErrorDetail.get
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseStatus.get
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

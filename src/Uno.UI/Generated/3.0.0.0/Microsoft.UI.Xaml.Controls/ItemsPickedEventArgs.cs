@@ -36,7 +36,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.ItemsPickedEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs, Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs, Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.AddedItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.RemovedItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

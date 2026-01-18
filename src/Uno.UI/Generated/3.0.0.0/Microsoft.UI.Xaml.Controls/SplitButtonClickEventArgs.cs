@@ -8,5 +8,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SplitButtonClickEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.operator ==(Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs, Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.operator !=(Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs, Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.Equals(Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButtonClickEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

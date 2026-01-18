@@ -9,6 +9,17 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class SwipeItemInvokedEventArgs
 	{
 		// Skipping already declared property SwipeControl
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs, Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs, Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.Equals(Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.SwipeControl.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

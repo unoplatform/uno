@@ -10,76 +10,6 @@ namespace Windows.UI.StartScreen
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ShortName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SecondaryTile.ShortName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryTile.ShortName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "string SecondaryTile.ShortName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Logo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTile.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.Logo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.Logo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TileId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SecondaryTile.TileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryTile.TileId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "string SecondaryTile.TileId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool LockScreenDisplayBadgeAndTileText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTile.LockScreenDisplayBadgeAndTileText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTile.LockScreenDisplayBadgeAndTileText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "bool SecondaryTile.LockScreenDisplayBadgeAndTileText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri LockScreenBadgeLogo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTile.LockScreenBadgeLogo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.LockScreenBadgeLogo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.LockScreenBadgeLogo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Arguments
 		{
 			get
@@ -89,34 +19,6 @@ namespace Windows.UI.StartScreen
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "string SecondaryTile.Arguments");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.StartScreen.ForegroundText ForegroundText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ForegroundText SecondaryTile.ForegroundText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForegroundText%20SecondaryTile.ForegroundText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "ForegroundText SecondaryTile.ForegroundText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SecondaryTile.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryTile.DisplayName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "string SecondaryTile.DisplayName");
 			}
 		}
 #endif
@@ -136,57 +38,71 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri WideLogo
+		public string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTile.WideLogo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.WideLogo");
+				throw new global::System.NotImplementedException("The member string SecondaryTile.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryTile.DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.WideLogo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "string SecondaryTile.DisplayName");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.StartScreen.TileOptions TileOptions
+		public global::Windows.UI.StartScreen.ForegroundText ForegroundText
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileOptions SecondaryTile.TileOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileOptions%20SecondaryTile.TileOptions");
+				throw new global::System.NotImplementedException("The member ForegroundText SecondaryTile.ForegroundText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForegroundText%20SecondaryTile.ForegroundText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "TileOptions SecondaryTile.TileOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "ForegroundText SecondaryTile.ForegroundText");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri SmallLogo
+		public global::System.Uri LockScreenBadgeLogo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTile.SmallLogo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.SmallLogo");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTile.LockScreenBadgeLogo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.LockScreenBadgeLogo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.SmallLogo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.LockScreenBadgeLogo");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RoamingEnabled
+		public bool LockScreenDisplayBadgeAndTileText
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTile.RoamingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTile.RoamingEnabled");
+				throw new global::System.NotImplementedException("The member bool SecondaryTile.LockScreenDisplayBadgeAndTileText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTile.LockScreenDisplayBadgeAndTileText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "bool SecondaryTile.RoamingEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "bool SecondaryTile.LockScreenDisplayBadgeAndTileText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Logo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri SecondaryTile.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.Logo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.Logo");
 			}
 		}
 #endif
@@ -206,6 +122,76 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool RoamingEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SecondaryTile.RoamingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTile.RoamingEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "bool SecondaryTile.RoamingEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ShortName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SecondaryTile.ShortName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryTile.ShortName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "string SecondaryTile.ShortName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri SmallLogo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri SecondaryTile.SmallLogo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.SmallLogo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.SmallLogo");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TileId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SecondaryTile.TileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryTile.TileId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "string SecondaryTile.TileId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.StartScreen.TileOptions TileOptions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TileOptions SecondaryTile.TileOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileOptions%20SecondaryTile.TileOptions");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "TileOptions SecondaryTile.TileOptions");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.StartScreen.SecondaryTileVisualElements VisualElements
 		{
 			get
@@ -216,12 +202,26 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public SecondaryTile(string tileId, string displayName, string arguments, global::System.Uri square150x150Logo, global::Windows.UI.StartScreen.TileSize desiredSize)
+		public global::System.Uri WideLogo
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile(string tileId, string displayName, string arguments, Uri square150x150Logo, TileSize desiredSize)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri SecondaryTile.WideLogo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTile.WideLogo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "Uri SecondaryTile.WideLogo");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile(string, string, string, System.Uri, Windows.UI.StartScreen.TileSize)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SecondaryTile()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile()");
+		}
+#endif
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SecondaryTile(string tileId, string shortName, string displayName, string arguments, global::Windows.UI.StartScreen.TileOptions tileOptions, global::System.Uri logoReference)
@@ -248,36 +248,51 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public SecondaryTile()
+		public SecondaryTile(string tileId, string displayName, string arguments, global::System.Uri square150x150Logo, global::Windows.UI.StartScreen.TileSize desiredSize)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile(string tileId, string displayName, string arguments, Uri square150x150Logo, TileSize desiredSize)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile()
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileId.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileId.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Arguments.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Arguments.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ShortName.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ShortName.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.DisplayName.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.DisplayName.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SmallLogo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SmallLogo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WideLogo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WideLogo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenBadgeLogo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenBadgeLogo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenDisplayBadgeAndTileText.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenDisplayBadgeAndTileText.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileOptions.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileOptions.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ForegroundText.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ForegroundText.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.BackgroundColor.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.BackgroundColor.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile(string, string, string, System.Uri, Windows.UI.StartScreen.TileSize)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool Exists(string tileId)
+		{
+			throw new global::System.NotImplementedException("The member bool SecondaryTile.Exists(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTile.Exists%28string%20tileId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SecondaryTile>> SecondaryTile.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSecondaryTile%3E%3E%20SecondaryTile.FindAllAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllAsync(string applicationId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SecondaryTile>> SecondaryTile.FindAllAsync(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSecondaryTile%3E%3E%20SecondaryTile.FindAllAsync%28string%20applicationId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllForPackageAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SecondaryTile>> SecondaryTile.FindAllForPackageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSecondaryTile%3E%3E%20SecondaryTile.FindAllForPackageAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.FromAbi(nint)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.operator ==(Windows.UI.StartScreen.SecondaryTile, Windows.UI.StartScreen.SecondaryTile)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.operator !=(Windows.UI.StartScreen.SecondaryTile, Windows.UI.StartScreen.SecondaryTile)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Equals(Windows.UI.StartScreen.SecondaryTile)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Equals(object)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.GetHashCode()
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestCreateAsync()
@@ -341,41 +356,38 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SecondaryTile.UpdateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SecondaryTile.UpdateAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.PhoneticName.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.PhoneticName.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.VisualElements.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.RoamingEnabled.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.RoamingEnabled.get
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.VisualElementsRequested.add
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.VisualElementsRequested.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool Exists(string tileId)
-		{
-			throw new global::System.NotImplementedException("The member bool SecondaryTile.Exists(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTile.Exists%28string%20tileId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SecondaryTile>> SecondaryTile.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSecondaryTile%3E%3E%20SecondaryTile.FindAllAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllAsync(string applicationId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SecondaryTile>> SecondaryTile.FindAllAsync(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSecondaryTile%3E%3E%20SecondaryTile.FindAllAsync%28string%20applicationId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllForPackageAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SecondaryTile>> SecondaryTile.FindAllForPackageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSecondaryTile%3E%3E%20SecondaryTile.FindAllForPackageAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Arguments.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Arguments.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.BackgroundColor.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.BackgroundColor.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.DisplayName.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.DisplayName.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ForegroundText.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ForegroundText.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenBadgeLogo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenBadgeLogo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenDisplayBadgeAndTileText.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.LockScreenDisplayBadgeAndTileText.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.PhoneticName.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.PhoneticName.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.RoamingEnabled.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.RoamingEnabled.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ShortName.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.ShortName.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SmallLogo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SmallLogo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileId.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileId.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileOptions.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.TileOptions.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.VisualElements.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WideLogo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.WideLogo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.StartScreen.SecondaryTile, global::Windows.UI.StartScreen.VisualElementsRequestedEventArgs> VisualElementsRequested

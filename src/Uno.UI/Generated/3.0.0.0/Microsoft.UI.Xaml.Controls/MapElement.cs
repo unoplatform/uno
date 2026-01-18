@@ -8,10 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MapElement : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal MapElement()
-		{
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.MapElement(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.operator ==(Microsoft.UI.Xaml.Controls.MapElement, Microsoft.UI.Xaml.Controls.MapElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.operator !=(Microsoft.UI.Xaml.Controls.MapElement, Microsoft.UI.Xaml.Controls.MapElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.Equals(Microsoft.UI.Xaml.Controls.MapElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.MapElement(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

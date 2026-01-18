@@ -33,7 +33,18 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.operator ==(Windows.Media.Core.HighDynamicRangeOutput, Windows.Media.Core.HighDynamicRangeOutput)
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.operator !=(Windows.Media.Core.HighDynamicRangeOutput, Windows.Media.Core.HighDynamicRangeOutput)
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.Equals(Windows.Media.Core.HighDynamicRangeOutput)
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.Equals(object)
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.Certainty.get
 		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.FrameControllers.get
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeOutput.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

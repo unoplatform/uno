@@ -23,6 +23,17 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.operator ==(Windows.Networking.Vpn.VpnSystemHealth, Windows.Networking.Vpn.VpnSystemHealth)
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.operator !=(Windows.Networking.Vpn.VpnSystemHealth, Windows.Networking.Vpn.VpnSystemHealth)
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.Equals(Windows.Networking.Vpn.VpnSystemHealth)
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.StatementOfHealth.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnSystemHealth.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

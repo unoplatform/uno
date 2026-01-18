@@ -8,13 +8,24 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2NavigationCompletedEventArgs
 	{
+		// Skipping already declared property HttpStatusCode
 		// Skipping already declared property IsSuccess
 		// Skipping already declared property NavigationId
 		// Skipping already declared property WebErrorStatus
-		// Skipping already declared property HttpStatusCode
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.HttpStatusCode.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.IsSuccess.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WebErrorStatus.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.NavigationId.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WebErrorStatus.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

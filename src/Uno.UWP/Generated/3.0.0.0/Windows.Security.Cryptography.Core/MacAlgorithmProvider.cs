@@ -33,8 +33,24 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.AlgorithmName.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.MacLength.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.Cryptography.Core.MacAlgorithmProvider OpenAlgorithm(string algorithm)
+		{
+			throw new global::System.NotImplementedException("The member MacAlgorithmProvider MacAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MacAlgorithmProvider%20MacAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.operator ==(Windows.Security.Cryptography.Core.MacAlgorithmProvider, Windows.Security.Cryptography.Core.MacAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.operator !=(Windows.Security.Cryptography.Core.MacAlgorithmProvider, Windows.Security.Cryptography.Core.MacAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.Equals(Windows.Security.Cryptography.Core.MacAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKey(global::Windows.Storage.Streams.IBuffer keyMaterial)
@@ -49,12 +65,8 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member CryptographicHash MacAlgorithmProvider.CreateHash(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicHash%20MacAlgorithmProvider.CreateHash%28IBuffer%20keyMaterial%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.Cryptography.Core.MacAlgorithmProvider OpenAlgorithm(string algorithm)
-		{
-			throw new global::System.NotImplementedException("The member MacAlgorithmProvider MacAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MacAlgorithmProvider%20MacAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.AlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.MacLength.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

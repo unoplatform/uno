@@ -10,6 +10,16 @@ namespace Windows.Networking.BackgroundTransfer
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IList<global::System.Uri> ContentUris
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<Uri> ContentPrefetcher.ContentUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20ContentPrefetcher.ContentUris");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Uri IndirectContentUri
 		{
 			get
@@ -24,16 +34,6 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IList<global::System.Uri> ContentUris
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<Uri> ContentPrefetcher.ContentUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20ContentPrefetcher.ContentUris");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.DateTimeOffset? LastSuccessfulPrefetchTime
 		{
 			get
@@ -42,9 +42,10 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.LastSuccessfulPrefetchTime.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.As<I>()
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.ContentUris.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.IndirectContentUri.set
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.IndirectContentUri.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.IndirectContentUri.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.LastSuccessfulPrefetchTime.get
 	}
 }

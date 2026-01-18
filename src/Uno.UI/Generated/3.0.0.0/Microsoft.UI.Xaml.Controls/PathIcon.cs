@@ -8,12 +8,25 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class PathIcon : global::Microsoft.UI.Xaml.Controls.IconElement
 	{
-		// Skipping already declared property Data
 		// Skipping already declared property DataProperty
+		// Skipping already declared property Data
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PathIcon.PathIcon()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.PathIcon()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.DataProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.PathIcon(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.operator ==(Microsoft.UI.Xaml.Controls.PathIcon, Microsoft.UI.Xaml.Controls.PathIcon)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.operator !=(Microsoft.UI.Xaml.Controls.PathIcon, Microsoft.UI.Xaml.Controls.PathIcon)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.Equals(Microsoft.UI.Xaml.Controls.PathIcon)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.PathIcon(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.Data.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.DataProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

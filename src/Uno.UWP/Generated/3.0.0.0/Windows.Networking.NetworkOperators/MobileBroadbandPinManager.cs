@@ -23,7 +23,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.SupportedPins.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandPinManager, Windows.Networking.NetworkOperators.MobileBroadbandPinManager)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandPinManager, Windows.Networking.NetworkOperators.MobileBroadbandPinManager)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.Equals(Windows.Networking.NetworkOperators.MobileBroadbandPinManager)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandPin GetPin(global::Windows.Networking.NetworkOperators.MobileBroadbandPinType pinType)
@@ -31,5 +40,7 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member MobileBroadbandPin MobileBroadbandPinManager.GetPin(MobileBroadbandPinType pinType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandPin%20MobileBroadbandPinManager.GetPin%28MobileBroadbandPinType%20pinType%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.SupportedPins.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

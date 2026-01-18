@@ -10,7 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Element
 		// Skipping already declared property Index
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs, Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs, Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.Index.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

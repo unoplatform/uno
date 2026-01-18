@@ -43,27 +43,7 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.DeviceId.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Name.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Kind.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardReaderStatus> GetStatusAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardReaderStatus> SmartCardReader.GetStatusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardReaderStatus%3E%20SmartCardReader.GetStatusAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.SmartCards.SmartCard>> FindAllCardsAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SmartCard>> SmartCardReader.FindAllCardsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSmartCard%3E%3E%20SmartCardReader.FindAllCardsAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardAdded.add
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardAdded.remove
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardRemoved.add
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardRemoved.remove
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -85,6 +65,38 @@ namespace Windows.Devices.SmartCards
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardReader> SmartCardReader.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardReader%3E%20SmartCardReader.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.operator ==(Windows.Devices.SmartCards.SmartCardReader, Windows.Devices.SmartCards.SmartCardReader)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.operator !=(Windows.Devices.SmartCards.SmartCardReader, Windows.Devices.SmartCards.SmartCardReader)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Equals(Windows.Devices.SmartCards.SmartCardReader)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Equals(object)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.GetHashCode()
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardReaderStatus> GetStatusAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardReaderStatus> SmartCardReader.GetStatusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardReaderStatus%3E%20SmartCardReader.GetStatusAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.SmartCards.SmartCard>> FindAllCardsAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SmartCard>> SmartCardReader.FindAllCardsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSmartCard%3E%3E%20SmartCardReader.FindAllCardsAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardAdded.add
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardAdded.remove
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardRemoved.add
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardRemoved.remove
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.DeviceId.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Kind.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Name.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SmartCards.SmartCardReader, global::Windows.Devices.SmartCards.CardAddedEventArgs> CardAdded

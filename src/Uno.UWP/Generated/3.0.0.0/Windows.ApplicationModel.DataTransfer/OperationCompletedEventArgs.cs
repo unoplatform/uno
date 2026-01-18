@@ -8,9 +8,20 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 	public partial class OperationCompletedEventArgs
 	{
-		// Skipping already declared property Operation
 		// Skipping already declared property AcceptedFormatId
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Operation.get
+		// Skipping already declared property Operation
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.operator ==(Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs, Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.operator !=(Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs, Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Equals(Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.AcceptedFormatId.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Operation.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,6 +13,16 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.operator ==(Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager, Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.operator !=(Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager, Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.Equals(Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> CreateRequestAsync(global::Windows.Security.Cryptography.Certificates.CertificateRequestProperties request)
@@ -48,5 +58,6 @@ namespace Windows.Security.Cryptography.Certificates
 			throw new global::System.NotImplementedException("The member IAsyncAction UserCertificateEnrollmentManager.ImportPfxDataAsync(string pfxData, string password, PfxImportParameters pfxImportParameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserCertificateEnrollmentManager.ImportPfxDataAsync%28string%20pfxData%2C%20string%20password%2C%20PfxImportParameters%20pfxImportParameters%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -26,7 +26,16 @@ namespace Windows.UI.Composition.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.CompositorController()
-		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.Compositor.get
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.operator ==(Windows.UI.Composition.Core.CompositorController, Windows.UI.Composition.Core.CompositorController)
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.operator !=(Windows.UI.Composition.Core.CompositorController, Windows.UI.Composition.Core.CompositorController)
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.Equals(Windows.UI.Composition.Core.CompositorController)
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Commit()
@@ -50,6 +59,8 @@ namespace Windows.UI.Composition.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Core.CompositorController", "void CompositorController.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.Compositor.get
+		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Composition.Core.CompositorController, object> CommitNeeded

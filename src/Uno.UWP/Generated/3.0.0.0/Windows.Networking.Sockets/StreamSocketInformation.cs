@@ -105,16 +105,6 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer SessionKey
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer StreamSocketInformation.SessionKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20StreamSocketInformation.SessionKey");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.Certificate ServerCertificate
 		{
 			get
@@ -153,19 +143,40 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IBuffer SessionKey
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer StreamSocketInformation.SessionKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20StreamSocketInformation.SessionKey");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.operator ==(Windows.Networking.Sockets.StreamSocketInformation, Windows.Networking.Sockets.StreamSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.operator !=(Windows.Networking.Sockets.StreamSocketInformation, Windows.Networking.Sockets.StreamSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.Equals(Windows.Networking.Sockets.StreamSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.BandwidthStatistics.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.LocalPort.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteHostName.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteAddress.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteServiceName.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemotePort.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RoundTripTimeStatistics.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.BandwidthStatistics.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ProtectionLevel.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.SessionKey.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteAddress.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteHostName.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemotePort.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteServiceName.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RoundTripTimeStatistics.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificate.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificateErrorSeverity.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificateErrors.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificate.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerIntermediateCertificates.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.SessionKey.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

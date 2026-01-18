@@ -8,19 +8,23 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class RectangleClip : global::Microsoft.UI.Composition.CompositionClip
 	{
-		// Skipping already declared property TopRightRadius
-		// Skipping already declared property TopLeftRadius
-		// Skipping already declared property Top
-		// Skipping already declared property Right
-		// Skipping already declared property Left
-		// Skipping already declared property BottomRightRadius
-		// Skipping already declared property BottomLeftRadius
 		// Skipping already declared property Bottom
+		// Skipping already declared property BottomLeftRadius
+		// Skipping already declared property BottomRightRadius
+		// Skipping already declared property Left
+		// Skipping already declared property Right
+		// Skipping already declared property Top
+		// Skipping already declared property TopLeftRadius
+		// Skipping already declared property TopRightRadius
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.operator ==(Microsoft.UI.Composition.RectangleClip, Microsoft.UI.Composition.RectangleClip)
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.operator !=(Microsoft.UI.Composition.RectangleClip, Microsoft.UI.Composition.RectangleClip)
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Equals(Microsoft.UI.Composition.RectangleClip)
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Bottom.get
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Top.get
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Top.set
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopLeftRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Right.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Bottom.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomLeftRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomLeftRadius.set
@@ -29,8 +33,14 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Left.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Left.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Right.get
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Right.set
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Top.get
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Top.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopLeftRadius.get
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopLeftRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopRightRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopRightRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

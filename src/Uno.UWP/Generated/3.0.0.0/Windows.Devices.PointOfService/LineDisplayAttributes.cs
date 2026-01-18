@@ -15,71 +15,15 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Size ScreenSizeInCharacters
+		public global::System.TimeSpan BlinkRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size LineDisplayAttributes.ScreenSizeInCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20LineDisplayAttributes.ScreenSizeInCharacters");
+				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayAttributes.BlinkRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LineDisplayAttributes.BlinkRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "Size LineDisplayAttributes.ScreenSizeInCharacters");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPowerNotifyEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsPowerNotifyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayAttributes.IsPowerNotifyEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "bool LineDisplayAttributes.IsPowerNotifyEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCharacterSetMappingEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsCharacterSetMappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayAttributes.IsCharacterSetMappingEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "bool LineDisplayAttributes.IsCharacterSetMappingEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.LineDisplayWindow CurrentWindow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LineDisplayWindow LineDisplayAttributes.CurrentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayWindow%20LineDisplayAttributes.CurrentWindow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "LineDisplayWindow LineDisplayAttributes.CurrentWindow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int CharacterSet
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.CharacterSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LineDisplayAttributes.CharacterSet");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "int LineDisplayAttributes.CharacterSet");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "TimeSpan LineDisplayAttributes.BlinkRate");
 			}
 		}
 #endif
@@ -99,31 +43,98 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan BlinkRate
+		public int CharacterSet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayAttributes.BlinkRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LineDisplayAttributes.BlinkRate");
+				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.CharacterSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LineDisplayAttributes.CharacterSet");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "TimeSpan LineDisplayAttributes.BlinkRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "int LineDisplayAttributes.CharacterSet");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsPowerNotifyEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsPowerNotifyEnabled.set
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.Brightness.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.Brightness.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.LineDisplayWindow CurrentWindow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LineDisplayWindow LineDisplayAttributes.CurrentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayWindow%20LineDisplayAttributes.CurrentWindow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "LineDisplayWindow LineDisplayAttributes.CurrentWindow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCharacterSetMappingEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsCharacterSetMappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayAttributes.IsCharacterSetMappingEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "bool LineDisplayAttributes.IsCharacterSetMappingEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPowerNotifyEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsPowerNotifyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayAttributes.IsPowerNotifyEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "bool LineDisplayAttributes.IsPowerNotifyEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Size ScreenSizeInCharacters
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Size LineDisplayAttributes.ScreenSizeInCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20LineDisplayAttributes.ScreenSizeInCharacters");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayAttributes", "Size LineDisplayAttributes.ScreenSizeInCharacters");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.operator ==(Windows.Devices.PointOfService.LineDisplayAttributes, Windows.Devices.PointOfService.LineDisplayAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.operator !=(Windows.Devices.PointOfService.LineDisplayAttributes, Windows.Devices.PointOfService.LineDisplayAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.Equals(Windows.Devices.PointOfService.LineDisplayAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.BlinkRate.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.BlinkRate.set
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.ScreenSizeInCharacters.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.ScreenSizeInCharacters.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.Brightness.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.Brightness.set
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.CharacterSet.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.CharacterSet.set
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsCharacterSetMappingEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsCharacterSetMappingEnabled.set
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.CurrentWindow.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.CurrentWindow.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsCharacterSetMappingEnabled.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsCharacterSetMappingEnabled.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsPowerNotifyEnabled.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.IsPowerNotifyEnabled.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.ScreenSizeInCharacters.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.ScreenSizeInCharacters.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayAttributes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

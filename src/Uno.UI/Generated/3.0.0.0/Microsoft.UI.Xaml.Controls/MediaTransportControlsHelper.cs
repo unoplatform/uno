@@ -9,8 +9,20 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class MediaTransportControlsHelper
 	{
 		// Skipping already declared property DropoutOrderProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.DropoutOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.GetDropoutOrder(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.SetDropoutOrder(Microsoft.UI.Xaml.UIElement, int?)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.DropoutOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.operator ==(Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper, Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.operator !=(Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper, Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.Equals(Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

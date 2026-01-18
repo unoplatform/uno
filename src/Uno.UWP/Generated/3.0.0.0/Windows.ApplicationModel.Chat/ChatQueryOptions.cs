@@ -30,7 +30,18 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.ChatQueryOptions()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.operator ==(Windows.ApplicationModel.Chat.ChatQueryOptions, Windows.ApplicationModel.Chat.ChatQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.operator !=(Windows.ApplicationModel.Chat.ChatQueryOptions, Windows.ApplicationModel.Chat.ChatQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.Equals(Windows.ApplicationModel.Chat.ChatQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.SearchString.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.SearchString.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

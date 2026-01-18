@@ -8,50 +8,63 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class NavigationViewItem : global::Microsoft.UI.Xaml.Controls.NavigationViewItemBase
 	{
-		// Skipping already declared property Icon
-		// Skipping already declared property CompactPaneLength
-		// Skipping already declared property SelectsOnInvoked
-		// Skipping already declared property MenuItemsSource
-		// Skipping already declared property IsExpanded
-		// Skipping already declared property IsChildSelected
-		// Skipping already declared property HasUnrealizedChildren
-		// Skipping already declared property MenuItems
-		// Skipping already declared property InfoBadge
 		// Skipping already declared property CompactPaneLengthProperty
-		// Skipping already declared property IconProperty
 		// Skipping already declared property HasUnrealizedChildrenProperty
+		// Skipping already declared property IconProperty
+		// Skipping already declared property InfoBadgeProperty
 		// Skipping already declared property IsChildSelectedProperty
 		// Skipping already declared property IsExpandedProperty
 		// Skipping already declared property MenuItemsProperty
 		// Skipping already declared property MenuItemsSourceProperty
 		// Skipping already declared property SelectsOnInvokedProperty
-		// Skipping already declared property InfoBadgeProperty
+		// Skipping already declared property CompactPaneLength
+		// Skipping already declared property HasUnrealizedChildren
+		// Skipping already declared property Icon
+		// Skipping already declared property InfoBadge
+		// Skipping already declared property IsChildSelected
+		// Skipping already declared property IsExpanded
+		// Skipping already declared property MenuItems
+		// Skipping already declared property MenuItemsSource
+		// Skipping already declared property SelectsOnInvoked
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewItem.NavigationViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.NavigationViewItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.Icon.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.Icon.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.CompactPaneLengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.HasUnrealizedChildrenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IconProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.InfoBadgeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsChildSelectedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsExpandedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvokedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.NavigationViewItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewItem, Microsoft.UI.Xaml.Controls.NavigationViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewItem, Microsoft.UI.Xaml.Controls.NavigationViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.Equals(Microsoft.UI.Xaml.Controls.NavigationViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.NavigationViewItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.CompactPaneLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvoked.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvoked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsExpanded.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsExpanded.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.HasUnrealizedChildren.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.HasUnrealizedChildren.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.Icon.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.Icon.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.InfoBadge.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.InfoBadge.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsChildSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsChildSelected.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsExpanded.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsExpanded.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.InfoBadge.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.InfoBadge.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.InfoBadgeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvokedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsExpandedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.HasUnrealizedChildrenProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsChildSelectedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IconProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.CompactPaneLengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvoked.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvoked.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

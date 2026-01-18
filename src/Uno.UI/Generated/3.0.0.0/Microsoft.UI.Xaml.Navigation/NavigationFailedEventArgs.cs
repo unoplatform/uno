@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Navigation
 #endif
 	public partial class NavigationFailedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Exception
+		// Skipping already declared property Handled
 		// Skipping already declared property SourcePageType
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.operator ==(Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs, Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.operator !=(Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs, Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.Equals(Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.Exception.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.SourcePageType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

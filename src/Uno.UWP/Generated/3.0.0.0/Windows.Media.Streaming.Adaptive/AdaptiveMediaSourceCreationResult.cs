@@ -15,6 +15,16 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Exception ExtendedError
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceCreationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20AdaptiveMediaSourceCreationResult.ExtendedError");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.HttpResponseMessage HttpResponseMessage
 		{
 			get
@@ -43,19 +53,20 @@ namespace Windows.Media.Streaming.Adaptive
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Exception ExtendedError
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceCreationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20AdaptiveMediaSourceCreationResult.ExtendedError");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.Status.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.MediaSource.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.HttpResponseMessage.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.operator ==(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.operator !=(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.Equals(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.Equals(object)
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.GetHashCode()
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.HttpResponseMessage.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.MediaSource.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.Status.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

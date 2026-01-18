@@ -9,11 +9,23 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 	public partial class CoreDragDropManager
 	{
 		// Skipping already declared property AreConcurrentOperationsEnabled
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.As<I>()
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.GetForCurrentView()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.operator ==(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.operator !=(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.Equals(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested.remove
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.AreConcurrentOperationsEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.AreConcurrentOperationsEnabled.set
-		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.GetForCurrentView()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested
 	}
 }

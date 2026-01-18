@@ -8,21 +8,32 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class AutomationPeerAnnotation : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Type
-		// Skipping already declared property Peer
 		// Skipping already declared property PeerProperty
 		// Skipping already declared property TypeProperty
+		// Skipping already declared property Peer
+		// Skipping already declared property Type
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType, Microsoft.UI.Xaml.Automation.Peers.AutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType, Microsoft.UI.Xaml.Automation.Peers.AutomationPeer)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.set
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.PeerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.TypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.operator ==(Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation, Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.operator !=(Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation, Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Equals(Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Peer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Peer.set
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.TypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.PeerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.set
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

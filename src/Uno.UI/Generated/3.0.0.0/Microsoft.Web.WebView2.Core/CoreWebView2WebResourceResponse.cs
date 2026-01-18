@@ -15,34 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int StatusCode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2WebResourceResponse.StatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2WebResourceResponse.StatusCode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse", "int CoreWebView2WebResourceResponse.StatusCode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ReasonPhrase
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2WebResourceResponse.ReasonPhrase is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebResourceResponse.ReasonPhrase");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse", "string CoreWebView2WebResourceResponse.ReasonPhrase");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream Content
 		{
 			get
@@ -65,12 +37,51 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ReasonPhrase
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2WebResourceResponse.ReasonPhrase is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebResourceResponse.ReasonPhrase");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse", "string CoreWebView2WebResourceResponse.ReasonPhrase");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int StatusCode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int CoreWebView2WebResourceResponse.StatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2WebResourceResponse.StatusCode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse", "int CoreWebView2WebResourceResponse.StatusCode");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Content.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Content.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Headers.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.StatusCode.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.StatusCode.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.ReasonPhrase.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.ReasonPhrase.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.StatusCode.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.StatusCode.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

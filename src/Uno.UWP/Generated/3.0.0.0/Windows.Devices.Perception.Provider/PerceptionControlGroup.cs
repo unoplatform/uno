@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.PerceptionControlGroup(System.Collections.Generic.IEnumerable<string>)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.operator ==(Windows.Devices.Perception.Provider.PerceptionControlGroup, Windows.Devices.Perception.Provider.PerceptionControlGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.operator !=(Windows.Devices.Perception.Provider.PerceptionControlGroup, Windows.Devices.Perception.Provider.PerceptionControlGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.Equals(Windows.Devices.Perception.Provider.PerceptionControlGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.FrameProviderIds.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,8 +11,19 @@ namespace Windows.Media.Playback
 		// Skipping already declared property Error
 		// Skipping already declared property ErrorMessage
 		// Skipping already declared property ExtendedErrorCode
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.operator ==(Windows.Media.Playback.MediaPlayerFailedEventArgs, Windows.Media.Playback.MediaPlayerFailedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.operator !=(Windows.Media.Playback.MediaPlayerFailedEventArgs, Windows.Media.Playback.MediaPlayerFailedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.Equals(Windows.Media.Playback.MediaPlayerFailedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.Error.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.ExtendedErrorCode.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.ErrorMessage.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.ExtendedErrorCode.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

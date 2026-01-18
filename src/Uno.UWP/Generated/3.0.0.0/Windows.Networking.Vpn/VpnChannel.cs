@@ -15,25 +15,21 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object PlugInContext
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object VpnChannel.PlugInContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VpnChannel.PlugInContext");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "object VpnChannel.PlugInContext");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Vpn.VpnChannelConfiguration Configuration
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member VpnChannelConfiguration VpnChannel.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnChannelConfiguration%20VpnChannel.Configuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object CurrentRequestTransportContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object VpnChannel.CurrentRequestTransportContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VpnChannel.CurrentRequestTransportContext");
 			}
 		}
 #endif
@@ -49,6 +45,20 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object PlugInContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object VpnChannel.PlugInContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VpnChannel.PlugInContext");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "object VpnChannel.PlugInContext");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Vpn.VpnSystemHealth SystemHealth
 		{
 			get
@@ -57,16 +67,24 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object CurrentRequestTransportContext
+		public static void ProcessEventAsync(object thirdPartyPlugIn, object @event)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object VpnChannel.CurrentRequestTransportContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VpnChannel.CurrentRequestTransportContext");
-			}
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.ProcessEventAsync(object thirdPartyPlugIn, object @event)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.operator ==(Windows.Networking.Vpn.VpnChannel, Windows.Networking.Vpn.VpnChannel)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.operator !=(Windows.Networking.Vpn.VpnChannel, Windows.Networking.Vpn.VpnChannel)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Equals(Windows.Networking.Vpn.VpnChannel)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AssociateTransport(object mainOuterTunnelTransport, object optionalOuterTunnelTransport)
@@ -109,13 +127,6 @@ namespace Windows.Networking.Vpn
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.LogDiagnosticMessage(string message)");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Id.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Configuration.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityChange.add
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityChange.remove
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.PlugInContext.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.PlugInContext.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.SystemHealth.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RequestCustomPrompt(global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Vpn.IVpnCustomPrompt> customPrompt)
@@ -137,6 +148,8 @@ namespace Windows.Networking.Vpn
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.SetAllowedSslTlsVersions(object tunnelTransport, bool useTls12)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityChange.add
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityChange.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartWithMainTransport(global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.HostName> assignedClientIPv4list, global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.HostName> assignedClientIPv6list, global::Windows.Networking.Vpn.VpnInterfaceId vpnInterfaceId, global::Windows.Networking.Vpn.VpnRouteAssignment assignedRoutes, global::Windows.Networking.Vpn.VpnDomainNameAssignment assignedDomainName, uint mtuSize, uint maxFrameSize, bool Reserved, object mainOuterTunnelTransport)
@@ -151,8 +164,6 @@ namespace Windows.Networking.Vpn
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.StartExistingTransports(IReadOnlyList<HostName> assignedClientIPv4list, IReadOnlyList<HostName> assignedClientIPv6list, VpnInterfaceId vpnInterfaceId, VpnRouteAssignment assignedRoutes, VpnDomainNameAssignment assignedDomainName, uint mtuSize, uint maxFrameSize, bool Reserved)");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityStateChange.add
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityStateChange.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Vpn.VpnPacketBuffer GetVpnSendPacketBuffer()
@@ -209,6 +220,8 @@ namespace Windows.Networking.Vpn
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.StartWithTrafficFilter(IReadOnlyList<HostName> assignedClientIpv4List, IReadOnlyList<HostName> assignedClientIpv6List, VpnInterfaceId vpnInterfaceId, VpnRouteAssignment assignedRoutes, VpnDomainNameAssignment assignedNamespace, uint mtuSize, uint maxFrameSize, bool reserved, object mainOuterTunnelTransport, object optionalOuterTunnelTransport, VpnTrafficFilterAssignment assignedTrafficFilters)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityStateChange.add
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ActivityStateChange.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddAndAssociateTransport(object transport, object context)
@@ -244,49 +257,13 @@ namespace Windows.Networking.Vpn
 			throw new global::System.NotImplementedException("The member ControlChannelTriggerStatus VpnChannel.GetSlotTypeForTransportContext(object context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ControlChannelTriggerStatus%20VpnChannel.GetSlotTypeForTransportContext%28object%20context%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Configuration.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.CurrentRequestTransportContext.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AppendVpnReceivePacketBuffer(global::Windows.Networking.Vpn.VpnPacketBuffer decapsulatedPacketBuffer)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.AppendVpnReceivePacketBuffer(VpnPacketBuffer decapsulatedPacketBuffer)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AppendVpnSendPacketBuffer(global::Windows.Networking.Vpn.VpnPacketBuffer encapsulatedPacketBuffer)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.AppendVpnSendPacketBuffer(VpnPacketBuffer encapsulatedPacketBuffer)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void FlushVpnReceivePacketBuffers()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.FlushVpnReceivePacketBuffers()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void FlushVpnSendPacketBuffers()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.FlushVpnSendPacketBuffers()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.ValueSet ActivateForeground(string packageRelativeAppId, global::Windows.Foundation.Collections.ValueSet sharedContext)
-		{
-			throw new global::System.NotImplementedException("The member ValueSet VpnChannel.ActivateForeground(string packageRelativeAppId, ValueSet sharedContext) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20VpnChannel.ActivateForeground%28string%20packageRelativeAppId%2C%20ValueSet%20sharedContext%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void ProcessEventAsync(object thirdPartyPlugIn, object @event)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.ProcessEventAsync(object thirdPartyPlugIn, object @event)");
-		}
-#endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Id.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.PlugInContext.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.PlugInContext.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.SystemHealth.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Vpn.VpnChannel, global::Windows.Networking.Vpn.VpnChannelActivityEventArgs> ActivityChange

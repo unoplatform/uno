@@ -8,41 +8,10 @@ namespace Windows.ApplicationModel
 #endif
 	public partial class Package
 	{
+		// Skipping already declared property Current
 		// Skipping already declared property Dependencies
-		// Skipping already declared property Id
-		// Skipping already declared property InstalledLocation
-		// Skipping already declared property IsFramework
 		// Skipping already declared property Description
 		// Skipping already declared property DisplayName
-		// Skipping already declared property IsBundle
-		// Skipping already declared property IsDevelopmentMode
-		// Skipping already declared property IsResourcePackage
-		// Skipping already declared property Logo
-		// Skipping already declared property PublisherDisplayName
-		// Skipping already declared property InstalledDate
-		// Skipping already declared property Status
-		// Skipping already declared property IsOptional
-		// Skipping already declared property SignatureKind
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.StorageFolder EffectiveLocation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFolder Package.EffectiveLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20Package.EffectiveLocation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.StorageFolder MutableLocation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFolder Package.MutableLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20Package.MutableLocation");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.StorageFolder EffectiveExternalLocation
@@ -65,6 +34,16 @@ namespace Windows.ApplicationModel
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.StorageFolder EffectiveLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.EffectiveLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20Package.EffectiveLocation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string EffectivePath
 		{
 			get
@@ -73,7 +52,16 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Skipping already declared property Id
+		// Skipping already declared property InstallDate
+		// Skipping already declared property InstalledDate
+		// Skipping already declared property InstalledLocation
 		// Skipping already declared property InstalledPath
+		// Skipping already declared property IsBundle
+		// Skipping already declared property IsDevelopmentMode
+		// Skipping already declared property IsFramework
+		// Skipping already declared property IsOptional
+		// Skipping already declared property IsResourcePackage
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsStub
@@ -84,6 +72,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Skipping already declared property Logo
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.StorageFolder MachineExternalLocation
@@ -106,6 +95,16 @@ namespace Windows.ApplicationModel
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.StorageFolder MutableLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.MutableLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20Package.MutableLocation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string MutablePath
 		{
 			get
@@ -114,6 +113,9 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Skipping already declared property PublisherDisplayName
+		// Skipping already declared property SignatureKind
+		// Skipping already declared property Status
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.StorageFolder UserExternalLocation
@@ -134,27 +136,21 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Skipping already declared property InstallDate
-		// Skipping already declared property Current
-		// Forced skipping of method Windows.ApplicationModel.Package.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Package.InstalledLocation.get
-		// Forced skipping of method Windows.ApplicationModel.Package.IsFramework.get
-		// Forced skipping of method Windows.ApplicationModel.Package.Dependencies.get
-		// Forced skipping of method Windows.ApplicationModel.Package.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Package.PublisherDisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Package.Description.get
-		// Forced skipping of method Windows.ApplicationModel.Package.Logo.get
-		// Forced skipping of method Windows.ApplicationModel.Package.IsResourcePackage.get
-		// Forced skipping of method Windows.ApplicationModel.Package.IsBundle.get
-		// Forced skipping of method Windows.ApplicationModel.Package.IsDevelopmentMode.get
-		// Forced skipping of method Windows.ApplicationModel.Package.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Package.InstalledDate.get
+		// Forced skipping of method Windows.ApplicationModel.Package.As<I>()
+		// Forced skipping of method Windows.ApplicationModel.Package.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Package.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Package.operator ==(Windows.ApplicationModel.Package, Windows.ApplicationModel.Package)
+		// Forced skipping of method Windows.ApplicationModel.Package.operator !=(Windows.ApplicationModel.Package, Windows.ApplicationModel.Package)
+		// Forced skipping of method Windows.ApplicationModel.Package.Equals(Windows.ApplicationModel.Package)
+		// Forced skipping of method Windows.ApplicationModel.Package.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Package.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.ApplicationModel.Package.GetAppListEntriesAsync()
-		// Forced skipping of method Windows.ApplicationModel.Package.InstallDate.get
 		// Skipping already declared method Windows.ApplicationModel.Package.GetThumbnailToken()
 		// Skipping already declared method Windows.ApplicationModel.Package.Launch(string)
-		// Forced skipping of method Windows.ApplicationModel.Package.SignatureKind.get
-		// Forced skipping of method Windows.ApplicationModel.Package.IsOptional.get
 		// Skipping already declared method Windows.ApplicationModel.Package.VerifyContentIntegrityAsync()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -205,17 +201,6 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageUpdateAvailabilityResult> Package.CheckUpdateAvailabilityAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPackageUpdateAvailabilityResult%3E%20Package.CheckUpdateAvailabilityAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Package.MutableLocation.get
-		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveLocation.get
-		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveExternalLocation.get
-		// Forced skipping of method Windows.ApplicationModel.Package.MachineExternalLocation.get
-		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalLocation.get
-		// Forced skipping of method Windows.ApplicationModel.Package.InstalledPath.get
-		// Forced skipping of method Windows.ApplicationModel.Package.MutablePath.get
-		// Forced skipping of method Windows.ApplicationModel.Package.EffectivePath.get
-		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveExternalPath.get
-		// Forced skipping of method Windows.ApplicationModel.Package.MachineExternalPath.get
-		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalPath.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.RandomAccessStreamReference GetLogoAsRandomAccessStreamReference(global::Windows.Foundation.Size size)
@@ -230,7 +215,34 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IReadOnlyList<AppListEntry> Package.GetAppListEntries() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAppListEntry%3E%20Package.GetAppListEntries%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Package.Dependencies.get
+		// Forced skipping of method Windows.ApplicationModel.Package.Description.get
+		// Forced skipping of method Windows.ApplicationModel.Package.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveExternalLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveExternalPath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectivePath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Package.InstallDate.get
+		// Forced skipping of method Windows.ApplicationModel.Package.InstalledDate.get
+		// Forced skipping of method Windows.ApplicationModel.Package.InstalledLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.InstalledPath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.IsBundle.get
+		// Forced skipping of method Windows.ApplicationModel.Package.IsDevelopmentMode.get
+		// Forced skipping of method Windows.ApplicationModel.Package.IsFramework.get
+		// Forced skipping of method Windows.ApplicationModel.Package.IsOptional.get
+		// Forced skipping of method Windows.ApplicationModel.Package.IsResourcePackage.get
 		// Forced skipping of method Windows.ApplicationModel.Package.IsStub.get
-		// Forced skipping of method Windows.ApplicationModel.Package.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Package.Logo.get
+		// Forced skipping of method Windows.ApplicationModel.Package.MachineExternalLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.MachineExternalPath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.MutableLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.MutablePath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.PublisherDisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Package.SignatureKind.get
+		// Forced skipping of method Windows.ApplicationModel.Package.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalPath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

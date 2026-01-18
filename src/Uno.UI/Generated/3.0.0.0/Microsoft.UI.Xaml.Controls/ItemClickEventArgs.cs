@@ -11,6 +11,16 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ClickedItem
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.ItemClickEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.ItemClickEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemClickEventArgs, Microsoft.UI.Xaml.Controls.ItemClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemClickEventArgs, Microsoft.UI.Xaml.Controls.ItemClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.ClickedItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemClickEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

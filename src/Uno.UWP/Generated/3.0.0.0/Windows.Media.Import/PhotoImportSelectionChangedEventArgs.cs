@@ -23,6 +23,17 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.operator ==(Windows.Media.Import.PhotoImportSelectionChangedEventArgs, Windows.Media.Import.PhotoImportSelectionChangedEventArgs)
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.operator !=(Windows.Media.Import.PhotoImportSelectionChangedEventArgs, Windows.Media.Import.PhotoImportSelectionChangedEventArgs)
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.Equals(Windows.Media.Import.PhotoImportSelectionChangedEventArgs)
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.IsSelectionEmpty.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,34 +10,6 @@ namespace Windows.Devices.Bluetooth.Advertisement
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter SignalStrengthFilter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEScanningMode ScanningMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEScanningMode%20BluetoothLEAdvertisementWatcher.ScanningMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter AdvertisementFilter
 		{
 			get
@@ -47,6 +19,20 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcher.AdvertisementFilter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool AllowExtendedAdvertisements
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
 			}
 		}
 #endif
@@ -92,25 +78,39 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcherStatus Status
+		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEScanningMode ScanningMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementWatcherStatus BluetoothLEAdvertisementWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementWatcherStatus%20BluetoothLEAdvertisementWatcher.Status");
+				throw new global::System.NotImplementedException("The member BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEScanningMode%20BluetoothLEAdvertisementWatcher.ScanningMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowExtendedAdvertisements
+		public global::Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter SignalStrengthFilter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
+				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcherStatus Status
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementWatcherStatus BluetoothLEAdvertisementWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementWatcherStatus%20BluetoothLEAdvertisementWatcher.Status");
 			}
 		}
 #endif
@@ -130,17 +130,16 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.BluetoothLEAdvertisementWatcher(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MinSamplingInterval.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MaxSamplingInterval.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Status.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.ScanningMode.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.ScanningMode.set
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.SignalStrengthFilter.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.SignalStrengthFilter.set
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.AdvertisementFilter.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.AdvertisementFilter.set
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.operator ==(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.operator !=(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Equals(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -159,8 +158,20 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Received.remove
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Stopped.add
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Stopped.remove
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.AdvertisementFilter.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.AdvertisementFilter.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements.set
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MaxSamplingInterval.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.MinSamplingInterval.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.ScanningMode.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.ScanningMode.set
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.SignalStrengthFilter.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.SignalStrengthFilter.set
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Status.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher, global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs> Received

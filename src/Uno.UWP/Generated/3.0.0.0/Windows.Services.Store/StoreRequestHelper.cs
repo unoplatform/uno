@@ -8,6 +8,7 @@ namespace Windows.Services.Store
 #endif
 	public static partial class StoreRequestHelper
 	{
+		// Forced skipping of method Windows.Services.Store.StoreRequestHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreSendRequestResult> SendRequestAsync(global::Windows.Services.Store.StoreContext context, uint requestKind, string parametersAsJson)

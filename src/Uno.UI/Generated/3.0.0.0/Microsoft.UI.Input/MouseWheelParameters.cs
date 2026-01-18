@@ -15,29 +15,15 @@ namespace Microsoft.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point PageTranslation
+		public global::Windows.Foundation.Point CharTranslation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.PageTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20MouseWheelParameters.PageTranslation");
+				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.CharTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20MouseWheelParameters.CharTranslation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.PageTranslation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float DeltaScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20MouseWheelParameters.DeltaScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.CharTranslation");
 			}
 		}
 #endif
@@ -57,25 +43,50 @@ namespace Microsoft.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point CharTranslation
+		public float DeltaScale
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.CharTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20MouseWheelParameters.CharTranslation");
+				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20MouseWheelParameters.DeltaScale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.CharTranslation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaScale");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.set
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Point PageTranslation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.PageTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20MouseWheelParameters.PageTranslation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.PageTranslation");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.operator ==(Microsoft.UI.Input.MouseWheelParameters, Microsoft.UI.Input.MouseWheelParameters)
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.operator !=(Microsoft.UI.Input.MouseWheelParameters, Microsoft.UI.Input.MouseWheelParameters)
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.Equals(Microsoft.UI.Input.MouseWheelParameters)
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.get
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.set
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.set
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaRotationAngle.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaRotationAngle.set
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.get
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.set
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.PageTranslation.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.PageTranslation.set
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,26 +3,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class NonClientRegionsChangedEventArgs
 	{
-#if false
-		internal NonClientRegionsChangedEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Input.NonClientRegionKind[] ChangedRegions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member NonClientRegionKind[] NonClientRegionsChangedEventArgs.ChangedRegions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NonClientRegionKind%5B%5D%20NonClientRegionsChangedEventArgs.ChangedRegions");
-			}
-		}
-#endif
+		// Skipping already declared property ChangedRegions
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.operator ==(Microsoft.UI.Input.NonClientRegionsChangedEventArgs, Microsoft.UI.Input.NonClientRegionsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.operator !=(Microsoft.UI.Input.NonClientRegionsChangedEventArgs, Microsoft.UI.Input.NonClientRegionsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.Equals(Microsoft.UI.Input.NonClientRegionsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.ChangedRegions.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

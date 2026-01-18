@@ -8,6 +8,7 @@ namespace Windows.Storage
 #endif
 	public static partial class FileIO
 	{
+		// Forced skipping of method Windows.Storage.FileIO.As<I>()
 		// Skipping already declared method Windows.Storage.FileIO.ReadTextAsync(Windows.Storage.IStorageFile)
 		// Skipping already declared method Windows.Storage.FileIO.ReadTextAsync(Windows.Storage.IStorageFile, Windows.Storage.Streams.UnicodeEncoding)
 		// Skipping already declared method Windows.Storage.FileIO.WriteTextAsync(Windows.Storage.IStorageFile, string)

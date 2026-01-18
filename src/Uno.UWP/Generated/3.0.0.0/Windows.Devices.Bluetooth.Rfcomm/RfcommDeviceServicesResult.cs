@@ -33,7 +33,18 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.operator ==(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult, Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.operator !=(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult, Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.Equals(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.Services.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

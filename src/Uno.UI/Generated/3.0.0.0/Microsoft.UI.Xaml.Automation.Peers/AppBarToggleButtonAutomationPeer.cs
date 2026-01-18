@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.AppBarToggleButtonAutomationPeer(Microsoft.UI.Xaml.Controls.AppBarToggleButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.AppBarToggleButtonAutomationPeer(Microsoft.UI.Xaml.Controls.AppBarToggleButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.AppBarToggleButtonAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.AppBarToggleButtonAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

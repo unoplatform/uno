@@ -15,6 +15,36 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanDelete
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ConnectionProfile.CanDelete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfile.CanDelete");
+			}
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__")]
+		public bool IsWlanConnectionProfile
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ConnectionProfile.IsWlanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfile.IsWlanConnectionProfile");
+			}
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__")]
+		public bool IsWwanConnectionProfile
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ConnectionProfile.IsWwanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfile.IsWwanConnectionProfile");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.NetworkAdapter NetworkAdapter
 		{
 			get
@@ -40,26 +70,6 @@ namespace Windows.Networking.Connectivity
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ConnectionProfile.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ConnectionProfile.ProfileName");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__")]
-		public bool IsWlanConnectionProfile
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfile.IsWlanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfile.IsWlanConnectionProfile");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__")]
-		public bool IsWwanConnectionProfile
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfile.IsWwanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfile.IsWwanConnectionProfile");
 			}
 		}
 #endif
@@ -93,17 +103,16 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanDelete
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfile.CanDelete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfile.CanDelete");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ProfileName.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.operator ==(Windows.Networking.Connectivity.ConnectionProfile, Windows.Networking.Connectivity.ConnectionProfile)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.operator !=(Windows.Networking.Connectivity.ConnectionProfile, Windows.Networking.Connectivity.ConnectionProfile)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.Equals(Windows.Networking.Connectivity.ConnectionProfile)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Windows.Networking.Connectivity.NetworkConnectivityLevel GetNetworkConnectivityLevel()
@@ -132,7 +141,6 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member DataPlanStatus ConnectionProfile.GetDataPlanStatus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPlanStatus%20ConnectionProfile.GetDataPlanStatus%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.NetworkAdapter.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.DataUsage GetLocalUsage(global::System.DateTimeOffset StartTime, global::System.DateTimeOffset EndTime)
@@ -147,12 +155,6 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member DataUsage ConnectionProfile.GetLocalUsage(DateTimeOffset StartTime, DateTimeOffset EndTime, RoamingStates States) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataUsage%20ConnectionProfile.GetLocalUsage%28DateTimeOffset%20StartTime%2C%20DateTimeOffset%20EndTime%2C%20RoamingStates%20States%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.NetworkSecuritySettings.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.IsWwanConnectionProfile.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.IsWlanConnectionProfile.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WwanConnectionProfileDetails.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WlanConnectionProfileDetails.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ServiceProviderGuid.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte? GetSignalBars()
@@ -195,7 +197,6 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ProviderNetworkUsage>> ConnectionProfile.GetProviderNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CProviderNetworkUsage%3E%3E%20ConnectionProfile.GetProviderNetworkUsageAsync%28DateTimeOffset%20startTime%2C%20DateTimeOffset%20endTime%2C%20NetworkUsageStates%20states%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.CanDelete.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfileDeleteStatus> TryDeleteAsync()
@@ -203,5 +204,15 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionProfileDeleteStatus> ConnectionProfile.TryDeleteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConnectionProfileDeleteStatus%3E%20ConnectionProfile.TryDeleteAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.CanDelete.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.IsWlanConnectionProfile.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.IsWwanConnectionProfile.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.NetworkAdapter.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.NetworkSecuritySettings.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ProfileName.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ServiceProviderGuid.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WlanConnectionProfileDetails.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WwanConnectionProfileDetails.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

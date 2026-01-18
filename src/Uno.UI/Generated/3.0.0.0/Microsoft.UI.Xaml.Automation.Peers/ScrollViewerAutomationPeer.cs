@@ -16,14 +16,26 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property VerticallyScrollable
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(Microsoft.UI.Xaml.Controls.ScrollViewer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(Microsoft.UI.Xaml.Controls.ScrollViewer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalScrollPercent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalViewSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalScrollPercent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalViewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.Scroll(Microsoft.UI.Xaml.Automation.ScrollAmount, Microsoft.UI.Xaml.Automation.ScrollAmount)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.SetScrollPercent(double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalScrollPercent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalViewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontallyScrollable.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalScrollPercent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalViewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticallyScrollable.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollProvider
 	}
 }

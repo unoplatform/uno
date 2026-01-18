@@ -24,6 +24,34 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Duration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan DataCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20DataCue.Duration");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.DataCue", "TimeSpan DataCue.Duration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DataCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DataCue.Id");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.DataCue", "string DataCue.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.PropertySet Properties
 		{
 			get
@@ -48,49 +76,32 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DataCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DataCue.Id");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.DataCue", "string DataCue.Id");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan DataCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20DataCue.Duration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.DataCue", "TimeSpan DataCue.Duration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DataCue()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.DataCue", "DataCue.DataCue()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.DataCue.DataCue()
-		// Forced skipping of method Windows.Media.Core.DataCue.Data.set
+		// Forced skipping of method Windows.Media.Core.DataCue.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.DataCue.operator ==(Windows.Media.Core.DataCue, Windows.Media.Core.DataCue)
+		// Forced skipping of method Windows.Media.Core.DataCue.operator !=(Windows.Media.Core.DataCue, Windows.Media.Core.DataCue)
+		// Forced skipping of method Windows.Media.Core.DataCue.Equals(Windows.Media.Core.DataCue)
+		// Forced skipping of method Windows.Media.Core.DataCue.Equals(object)
+		// Forced skipping of method Windows.Media.Core.DataCue.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.DataCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.DataCue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.DataCue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.DataCue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.DataCue.Data.get
-		// Forced skipping of method Windows.Media.Core.DataCue.StartTime.set
-		// Forced skipping of method Windows.Media.Core.DataCue.StartTime.get
-		// Forced skipping of method Windows.Media.Core.DataCue.Duration.set
+		// Forced skipping of method Windows.Media.Core.DataCue.Data.set
 		// Forced skipping of method Windows.Media.Core.DataCue.Duration.get
-		// Forced skipping of method Windows.Media.Core.DataCue.Id.set
+		// Forced skipping of method Windows.Media.Core.DataCue.Duration.set
 		// Forced skipping of method Windows.Media.Core.DataCue.Id.get
+		// Forced skipping of method Windows.Media.Core.DataCue.Id.set
 		// Forced skipping of method Windows.Media.Core.DataCue.Properties.get
+		// Forced skipping of method Windows.Media.Core.DataCue.StartTime.get
+		// Forced skipping of method Windows.Media.Core.DataCue.StartTime.set
+		// Forced skipping of method Windows.Media.Core.DataCue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaCue
 	}
 }

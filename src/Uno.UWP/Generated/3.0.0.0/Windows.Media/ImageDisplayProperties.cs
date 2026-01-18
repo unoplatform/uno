@@ -15,20 +15,6 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageDisplayProperties.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ImageDisplayProperties", "string ImageDisplayProperties.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Subtitle
 		{
 			get
@@ -41,9 +27,34 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.get
-		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageDisplayProperties.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ImageDisplayProperties", "string ImageDisplayProperties.Title");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.operator ==(Windows.Media.ImageDisplayProperties, Windows.Media.ImageDisplayProperties)
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.operator !=(Windows.Media.ImageDisplayProperties, Windows.Media.ImageDisplayProperties)
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.Equals(Windows.Media.ImageDisplayProperties)
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.Equals(object)
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Subtitle.get
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Subtitle.set
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.get
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.set
+		// Forced skipping of method Windows.Media.ImageDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

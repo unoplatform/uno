@@ -15,20 +15,6 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Chat.ChatRestoreHistorySpan RestoreHistorySpan
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatRestoreHistorySpan%20ChatSyncConfiguration.RestoreHistorySpan");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatSyncConfiguration", "ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSyncEnabled
 		{
 			get
@@ -41,9 +27,34 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Chat.ChatRestoreHistorySpan RestoreHistorySpan
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatRestoreHistorySpan%20ChatSyncConfiguration.RestoreHistorySpan");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatSyncConfiguration", "ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.operator ==(Windows.ApplicationModel.Chat.ChatSyncConfiguration, Windows.ApplicationModel.Chat.ChatSyncConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.operator !=(Windows.ApplicationModel.Chat.ChatSyncConfiguration, Windows.ApplicationModel.Chat.ChatSyncConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.Equals(Windows.ApplicationModel.Chat.ChatSyncConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.IsSyncEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.IsSyncEnabled.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.RestoreHistorySpan.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.RestoreHistorySpan.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

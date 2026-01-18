@@ -8,8 +8,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial struct GeneratorPosition
 	{
+		// Skipping already declared property Index
+		// Skipping already declared property Offset
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.GeneratorPosition()
-		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Index
-		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Offset
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Index.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Index.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Offset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Offset.set
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.GeneratorPosition(int, int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.GeneratorPosition(int, int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.GetHashCode()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.ToString()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.operator ==(Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition, Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition.operator !=(Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition, Microsoft.UI.Xaml.Controls.Primitives.GeneratorPosition)
 	}
 }

@@ -9,7 +9,6 @@ namespace Windows.Devices.Sensors
 	public partial class LightSensorReading
 	{
 		// Skipping already declared property IlluminanceInLux
-		// Skipping already declared property Timestamp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? PerformanceCount
@@ -30,9 +29,21 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Timestamp.get
+		// Skipping already declared property Timestamp
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.operator ==(Windows.Devices.Sensors.LightSensorReading, Windows.Devices.Sensors.LightSensorReading)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.operator !=(Windows.Devices.Sensors.LightSensorReading, Windows.Devices.Sensors.LightSensorReading)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Equals(Windows.Devices.Sensors.LightSensorReading)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.IlluminanceInLux.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

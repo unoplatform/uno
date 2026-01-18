@@ -15,20 +15,6 @@ namespace Windows.Web.Http.Filters
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.Filters.HttpCacheWriteBehavior WriteBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpCacheWriteBehavior HttpCacheControl.WriteBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCacheWriteBehavior%20HttpCacheControl.WriteBehavior");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheWriteBehavior HttpCacheControl.WriteBehavior");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.Filters.HttpCacheReadBehavior ReadBehavior
 		{
 			get
@@ -41,9 +27,34 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.Filters.HttpCacheWriteBehavior WriteBehavior
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpCacheWriteBehavior HttpCacheControl.WriteBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCacheWriteBehavior%20HttpCacheControl.WriteBehavior");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheWriteBehavior HttpCacheControl.WriteBehavior");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.operator ==(Windows.Web.Http.Filters.HttpCacheControl, Windows.Web.Http.Filters.HttpCacheControl)
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.operator !=(Windows.Web.Http.Filters.HttpCacheControl, Windows.Web.Http.Filters.HttpCacheControl)
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.Equals(Windows.Web.Http.Filters.HttpCacheControl)
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.ReadBehavior.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.ReadBehavior.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WriteBehavior.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WriteBehavior.set
+		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

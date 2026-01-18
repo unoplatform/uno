@@ -11,10 +11,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property IsRailEnabled
 		// Skipping already declared property PanOrientation
 		// Skipping already declared property PanningElementAncestor
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.SetPanningElementExpressionAnimationSources(Microsoft.UI.Composition.CompositionPropertySet, string, string, string, string)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.IsRailEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.PanOrientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.PanningElementAncestor.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.SetPanningElementExpressionAnimationSources(Microsoft.UI.Composition.CompositionPropertySet, string, string, string, string)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.Changed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.Changed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo.PanRequested.add

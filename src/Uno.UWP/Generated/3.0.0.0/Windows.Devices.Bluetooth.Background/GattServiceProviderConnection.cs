@@ -15,6 +15,16 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Devices.Bluetooth.Background.GattServiceProviderConnection> AllServices
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, GattServiceProviderConnection> GattServiceProviderConnection.AllServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20GattServiceProviderConnection%3E%20GattServiceProviderConnection.AllServices");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService Service
 		{
 			get
@@ -33,18 +43,18 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Devices.Bluetooth.Background.GattServiceProviderConnection> AllServices
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, GattServiceProviderConnection> GattServiceProviderConnection.AllServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20GattServiceProviderConnection%3E%20GattServiceProviderConnection.AllServices");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.TriggerId.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Service.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.As<I>()
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.AllServices.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.operator ==(Windows.Devices.Bluetooth.Background.GattServiceProviderConnection, Windows.Devices.Bluetooth.Background.GattServiceProviderConnection)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.operator !=(Windows.Devices.Bluetooth.Background.GattServiceProviderConnection, Windows.Devices.Bluetooth.Background.GattServiceProviderConnection)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Equals(Windows.Devices.Bluetooth.Background.GattServiceProviderConnection)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -52,6 +62,8 @@ namespace Windows.Devices.Bluetooth.Background
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "void GattServiceProviderConnection.Start()");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.AllServices.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Service.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.TriggerId.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

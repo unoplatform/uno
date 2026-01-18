@@ -8,6 +8,18 @@ namespace Microsoft.UI.Xaml.Data
 #endif
 	public partial class BindingOperations
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.operator ==(Microsoft.UI.Xaml.Data.BindingOperations, Microsoft.UI.Xaml.Data.BindingOperations)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.operator !=(Microsoft.UI.Xaml.Data.BindingOperations, Microsoft.UI.Xaml.Data.BindingOperations)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.Equals(Microsoft.UI.Xaml.Data.BindingOperations)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

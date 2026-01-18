@@ -15,15 +15,15 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Gain
+		public double Bandwidth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Gain");
+				throw new global::System.NotImplementedException("The member double EqualizerBand.Bandwidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Bandwidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Gain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Bandwidth");
 			}
 		}
 #endif
@@ -43,23 +43,34 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Bandwidth
+		public double Gain
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Bandwidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Bandwidth");
+				throw new global::System.NotImplementedException("The member double EqualizerBand.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Gain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Bandwidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Gain");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.operator ==(Windows.Media.Audio.EqualizerBand, Windows.Media.Audio.EqualizerBand)
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.operator !=(Windows.Media.Audio.EqualizerBand, Windows.Media.Audio.EqualizerBand)
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Equals(Windows.Media.Audio.EqualizerBand)
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Bandwidth.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Bandwidth.set
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.FrequencyCenter.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.FrequencyCenter.set
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Gain.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Gain.set
+		// Forced skipping of method Windows.Media.Audio.EqualizerBand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

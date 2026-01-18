@@ -13,6 +13,16 @@ namespace Windows.Storage
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.operator ==(Windows.Storage.SetVersionDeferral, Windows.Storage.SetVersionDeferral)
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.operator !=(Windows.Storage.SetVersionDeferral, Windows.Storage.SetVersionDeferral)
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.Equals(Windows.Storage.SetVersionDeferral)
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.Equals(object)
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.GetHashCode()
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete()
@@ -20,5 +30,6 @@ namespace Windows.Storage
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.SetVersionDeferral", "void SetVersionDeferral.Complete()");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SetVersionDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

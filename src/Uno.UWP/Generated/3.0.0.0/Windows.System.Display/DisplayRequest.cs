@@ -16,6 +16,16 @@ namespace Windows.System.Display
 		}
 #endif
 		// Forced skipping of method Windows.System.Display.DisplayRequest.DisplayRequest()
+		// Forced skipping of method Windows.System.Display.DisplayRequest.FromAbi(nint)
+		// Forced skipping of method Windows.System.Display.DisplayRequest.operator ==(Windows.System.Display.DisplayRequest, Windows.System.Display.DisplayRequest)
+		// Forced skipping of method Windows.System.Display.DisplayRequest.operator !=(Windows.System.Display.DisplayRequest, Windows.System.Display.DisplayRequest)
+		// Forced skipping of method Windows.System.Display.DisplayRequest.Equals(Windows.System.Display.DisplayRequest)
+		// Forced skipping of method Windows.System.Display.DisplayRequest.Equals(object)
+		// Forced skipping of method Windows.System.Display.DisplayRequest.GetHashCode()
+		// Forced skipping of method Windows.System.Display.DisplayRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Display.DisplayRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Display.DisplayRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Display.DisplayRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RequestActive()
@@ -30,5 +40,6 @@ namespace Windows.System.Display
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Display.DisplayRequest", "void DisplayRequest.RequestRelease()");
 		}
 #endif
+		// Forced skipping of method Windows.System.Display.DisplayRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

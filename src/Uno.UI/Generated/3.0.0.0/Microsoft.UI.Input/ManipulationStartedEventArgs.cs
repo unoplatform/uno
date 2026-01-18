@@ -11,8 +11,19 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Cumulative
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.operator ==(Microsoft.UI.Input.ManipulationStartedEventArgs, Microsoft.UI.Input.ManipulationStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.operator !=(Microsoft.UI.Input.ManipulationStartedEventArgs, Microsoft.UI.Input.ManipulationStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.Equals(Microsoft.UI.Input.ManipulationStartedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.Cumulative.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.Position.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

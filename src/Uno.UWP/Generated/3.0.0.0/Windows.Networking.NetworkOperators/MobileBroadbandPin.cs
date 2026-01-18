@@ -83,13 +83,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Type.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.LockState.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Format.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Enabled.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.MaxLength.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.MinLength.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.AttemptsRemaining.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandPin, Windows.Networking.NetworkOperators.MobileBroadbandPin)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandPin, Windows.Networking.NetworkOperators.MobileBroadbandPin)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Equals(Windows.Networking.NetworkOperators.MobileBroadbandPin)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult> EnableAsync(string currentPin)
@@ -125,5 +128,13 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandPinOperationResult> MobileBroadbandPin.UnblockAsync(string pinUnblockKey, string newPin) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMobileBroadbandPinOperationResult%3E%20MobileBroadbandPin.UnblockAsync%28string%20pinUnblockKey%2C%20string%20newPin%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.AttemptsRemaining.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Enabled.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Format.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.LockState.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.MaxLength.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.MinLength.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.Type.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPin.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

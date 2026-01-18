@@ -32,9 +32,9 @@ namespace Windows.ApplicationModel.Contacts
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.IContactField.Type.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.IContactField.Category.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.IContactField.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.IContactField.Type.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.IContactField.Value.get
 	}
 }

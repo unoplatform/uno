@@ -15,15 +15,11 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Template
+		public global::System.Collections.Generic.IDictionary<string, string> Hints
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotificationBinding.Template is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NotificationBinding.Template");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationBinding", "string NotificationBinding.Template");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> NotificationBinding.Hints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20NotificationBinding.Hints");
 			}
 		}
 #endif
@@ -43,19 +39,28 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IDictionary<string, string> Hints
+		public string Template
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> NotificationBinding.Hints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20NotificationBinding.Hints");
+				throw new global::System.NotImplementedException("The member string NotificationBinding.Template is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NotificationBinding.Template");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationBinding", "string NotificationBinding.Template");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.set
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.set
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Hints.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.operator ==(Windows.UI.Notifications.NotificationBinding, Windows.UI.Notifications.NotificationBinding)
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.operator !=(Windows.UI.Notifications.NotificationBinding, Windows.UI.Notifications.NotificationBinding)
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Equals(Windows.UI.Notifications.NotificationBinding)
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.AdaptiveNotificationText> GetTextElements()
@@ -63,5 +68,11 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member IReadOnlyList<AdaptiveNotificationText> NotificationBinding.GetTextElements() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAdaptiveNotificationText%3E%20NotificationBinding.GetTextElements%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Hints.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.set
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.set
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

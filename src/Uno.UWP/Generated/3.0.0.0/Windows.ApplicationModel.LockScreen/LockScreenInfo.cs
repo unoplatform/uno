@@ -53,18 +53,29 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImageChanged.add
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImageChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImage.get
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.BadgesChanged.add
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.BadgesChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.Badges.get
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.DetailTextChanged.add
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.DetailTextChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.DetailText.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.operator ==(Windows.ApplicationModel.LockScreen.LockScreenInfo, Windows.ApplicationModel.LockScreen.LockScreenInfo)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.operator !=(Windows.ApplicationModel.LockScreen.LockScreenInfo, Windows.ApplicationModel.LockScreen.LockScreenInfo)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.Equals(Windows.ApplicationModel.LockScreen.LockScreenInfo)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIconChanged.add
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIconChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.BadgesChanged.add
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.BadgesChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.DetailTextChanged.add
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.DetailTextChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImageChanged.add
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImageChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIcon.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.Badges.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.DetailText.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImage.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> AlarmIconChanged

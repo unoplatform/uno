@@ -13,8 +13,19 @@ namespace Windows.ApplicationModel.Chat
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.operator ==(Windows.ApplicationModel.Chat.RcsEndUserMessageManager, Windows.ApplicationModel.Chat.RcsEndUserMessageManager)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.operator !=(Windows.ApplicationModel.Chat.RcsEndUserMessageManager, Windows.ApplicationModel.Chat.RcsEndUserMessageManager)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.Equals(Windows.ApplicationModel.Chat.RcsEndUserMessageManager)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.MessageAvailableChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.MessageAvailableChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.RcsEndUserMessageManager, global::Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableEventArgs> MessageAvailableChanged

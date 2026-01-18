@@ -43,8 +43,19 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.operator ==(Windows.System.Diagnostics.SystemCpuUsageReport, Windows.System.Diagnostics.SystemCpuUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.operator !=(Windows.System.Diagnostics.SystemCpuUsageReport, Windows.System.Diagnostics.SystemCpuUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.Equals(Windows.System.Diagnostics.SystemCpuUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.IdleTime.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.KernelTime.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.UserTime.get
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.IdleTime.get
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

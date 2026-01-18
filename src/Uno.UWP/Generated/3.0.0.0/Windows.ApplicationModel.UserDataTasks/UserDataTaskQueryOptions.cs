@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQuerySortProperty SortProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskQuerySortProperty%20UserDataTaskQueryOptions.SortProperty");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryKind Kind
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQuerySortProperty SortProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskQuerySortProperty%20UserDataTaskQueryOptions.SortProperty");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UserDataTaskQueryOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQueryOptions.UserDataTaskQueryOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.UserDataTaskQueryOptions()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions, Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions, Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Kind.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -6,51 +6,43 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class XmlProcessingInstruction : global::Windows.Data.Xml.Dom.IXmlNode, global::Windows.Data.Xml.Dom.IXmlNodeSerializer, global::Windows.Data.Xml.Dom.IXmlNodeSelector
+	public partial class XmlProcessingInstruction : global::Windows.Data.Xml.Dom.IXmlNode, global::Windows.Data.Xml.Dom.IXmlNodeSelector, global::Windows.Data.Xml.Dom.IXmlNodeSerializer
 	{
-		// Skipping already declared property Prefix
-		// Skipping already declared property NodeValue
 		// Skipping already declared property Attributes
-		// Skipping already declared property FirstChild
 		// Skipping already declared property ChildNodes
+		// Skipping already declared property Data
+		// Skipping already declared property FirstChild
+		// Skipping already declared property InnerText
 		// Skipping already declared property LastChild
 		// Skipping already declared property LocalName
 		// Skipping already declared property NamespaceUri
 		// Skipping already declared property NextSibling
 		// Skipping already declared property NodeName
 		// Skipping already declared property NodeType
+		// Skipping already declared property NodeValue
 		// Skipping already declared property OwnerDocument
 		// Skipping already declared property ParentNode
+		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
-		// Skipping already declared property InnerText
-		// Skipping already declared property Data
 		// Skipping already declared property Target
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Target.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Data.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Data.set
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeValue.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeValue.set
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeType.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.ParentNode.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.ChildNodes.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.FirstChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.LastChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.PreviousSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NextSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Attributes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.operator ==(Windows.Data.Xml.Dom.XmlProcessingInstruction, Windows.Data.Xml.Dom.XmlProcessingInstruction)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.operator !=(Windows.Data.Xml.Dom.XmlProcessingInstruction, Windows.Data.Xml.Dom.XmlProcessingInstruction)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Equals(Windows.Data.Xml.Dom.XmlProcessingInstruction)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Equals(object)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.GetHashCode()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.HasChildNodes()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.OwnerDocument.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.InsertBefore(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.ReplaceChild(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.RemoveChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.AppendChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.CloneNode(bool)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NamespaceUri.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.LocalName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Prefix.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.Normalize()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Prefix.set
+		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.GetXml()
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.SelectNodes(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -67,9 +59,28 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member XmlNodeList XmlProcessingInstruction.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlNodeList%20XmlProcessingInstruction.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 #endif
-		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.GetXml()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Attributes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.ChildNodes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Data.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Data.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.FirstChild.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.InnerText.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.InnerText.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.LastChild.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.LocalName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NamespaceUri.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NextSibling.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeType.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeValue.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.NodeValue.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.OwnerDocument.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.ParentNode.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Prefix.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Prefix.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.PreviousSibling.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.Target.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlProcessingInstruction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Xml.Dom.IXmlNode
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSelector
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSerializer

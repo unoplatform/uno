@@ -9,6 +9,19 @@ namespace Windows.UI.Input.Preview.Injection
 	public partial struct InjectedInputRectangle
 	{
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.InjectedInputRectangle()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public InjectedInputRectangle(int _Left, int _Top, int _Bottom, int _Right)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputRectangle", "InjectedInputRectangle.InjectedInputRectangle(int _Left, int _Top, int _Bottom, int _Right)");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.InjectedInputRectangle(int, int, int, int)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputRectangle, Windows.UI.Input.Preview.Injection.InjectedInputRectangle)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputRectangle, Windows.UI.Input.Preview.Injection.InjectedInputRectangle)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Equals(Windows.UI.Input.Preview.Injection.InjectedInputRectangle)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.GetHashCode()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Left
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Top
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Bottom

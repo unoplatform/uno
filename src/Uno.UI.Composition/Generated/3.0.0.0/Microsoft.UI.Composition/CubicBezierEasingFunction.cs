@@ -10,7 +10,17 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property ControlPoint1
 		// Skipping already declared property ControlPoint2
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.operator ==(Microsoft.UI.Composition.CubicBezierEasingFunction, Microsoft.UI.Composition.CubicBezierEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.operator !=(Microsoft.UI.Composition.CubicBezierEasingFunction, Microsoft.UI.Composition.CubicBezierEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.Equals(Microsoft.UI.Composition.CubicBezierEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.ControlPoint1.get
 		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.ControlPoint2.get
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

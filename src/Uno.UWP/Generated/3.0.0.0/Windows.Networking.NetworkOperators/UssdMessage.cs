@@ -10,20 +10,6 @@ namespace Windows.Networking.NetworkOperators
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PayloadAsText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string UssdMessage.PayloadAsText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UssdMessage.PayloadAsText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.UssdMessage", "string UssdMessage.PayloadAsText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte DataCodingScheme
 		{
 			get
@@ -38,14 +24,36 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string PayloadAsText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string UssdMessage.PayloadAsText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UssdMessage.PayloadAsText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.UssdMessage", "string UssdMessage.PayloadAsText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UssdMessage(string messageText)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.UssdMessage", "UssdMessage.UssdMessage(string messageText)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.UssdMessage(string)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.DataCodingScheme.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.DataCodingScheme.set
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.operator ==(Windows.Networking.NetworkOperators.UssdMessage, Windows.Networking.NetworkOperators.UssdMessage)
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.operator !=(Windows.Networking.NetworkOperators.UssdMessage, Windows.Networking.NetworkOperators.UssdMessage)
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.Equals(Windows.Networking.NetworkOperators.UssdMessage)
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetPayload()
@@ -60,7 +68,10 @@ namespace Windows.Networking.NetworkOperators
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.UssdMessage", "void UssdMessage.SetPayload(byte[] value)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.DataCodingScheme.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.DataCodingScheme.set
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.PayloadAsText.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.PayloadAsText.set
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

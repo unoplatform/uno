@@ -10,57 +10,15 @@ namespace Windows.Management
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Type
+		public string Data
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Type");
+				throw new global::System.NotImplementedException("The member string MdmAlert.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Data");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Type");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Target
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Target is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Target");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Target");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Source");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Source");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Management.MdmAlertMark Mark
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MdmAlertMark MdmAlert.Mark is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MdmAlertMark%20MdmAlert.Mark");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "MdmAlertMark MdmAlert.Mark");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Data");
 			}
 		}
 #endif
@@ -80,15 +38,29 @@ namespace Windows.Management
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Data
+		public global::Windows.Management.MdmAlertMark Mark
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Data");
+				throw new global::System.NotImplementedException("The member MdmAlertMark MdmAlert.Mark is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MdmAlertMark%20MdmAlert.Mark");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Data");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "MdmAlertMark MdmAlert.Mark");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Source
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MdmAlert.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Source");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Source");
 			}
 		}
 #endif
@@ -104,12 +76,50 @@ namespace Windows.Management
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Target
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MdmAlert.Target is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Target");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Target");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MdmAlert.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Type");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Type");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MdmAlert()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "MdmAlert.MdmAlert()");
 		}
 #endif
 		// Forced skipping of method Windows.Management.MdmAlert.MdmAlert()
+		// Forced skipping of method Windows.Management.MdmAlert.FromAbi(nint)
+		// Forced skipping of method Windows.Management.MdmAlert.operator ==(Windows.Management.MdmAlert, Windows.Management.MdmAlert)
+		// Forced skipping of method Windows.Management.MdmAlert.operator !=(Windows.Management.MdmAlert, Windows.Management.MdmAlert)
+		// Forced skipping of method Windows.Management.MdmAlert.Equals(Windows.Management.MdmAlert)
+		// Forced skipping of method Windows.Management.MdmAlert.Equals(object)
+		// Forced skipping of method Windows.Management.MdmAlert.GetHashCode()
+		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Management.MdmAlert.Data.get
 		// Forced skipping of method Windows.Management.MdmAlert.Data.set
 		// Forced skipping of method Windows.Management.MdmAlert.Format.get
@@ -123,5 +133,6 @@ namespace Windows.Management
 		// Forced skipping of method Windows.Management.MdmAlert.Target.set
 		// Forced skipping of method Windows.Management.MdmAlert.Type.get
 		// Forced skipping of method Windows.Management.MdmAlert.Type.set
+		// Forced skipping of method Windows.Management.MdmAlert.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Identity.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -34,7 +33,18 @@ namespace Windows.Security.Authentication.Identity.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Status.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.operator ==(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult, Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.operator !=(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult, Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Equals(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Registration.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Status.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

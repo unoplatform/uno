@@ -8,11 +8,21 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionEllipseGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
-		// Skipping already declared property Radius
 		// Skipping already declared property Center
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.set
+		// Skipping already declared property Radius
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.operator ==(Microsoft.UI.Composition.CompositionEllipseGeometry, Microsoft.UI.Composition.CompositionEllipseGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.operator !=(Microsoft.UI.Composition.CompositionEllipseGeometry, Microsoft.UI.Composition.CompositionEllipseGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Equals(Microsoft.UI.Composition.CompositionEllipseGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Center.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Center.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

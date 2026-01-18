@@ -3,18 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TextCommandBarFlyout : global::Microsoft.UI.Xaml.Controls.CommandBarFlyout
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public TextCommandBarFlyout() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextCommandBarFlyout", "TextCommandBarFlyout.TextCommandBarFlyout()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.TextCommandBarFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.TextCommandBarFlyout()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.TextCommandBarFlyout(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.operator ==(Microsoft.UI.Xaml.Controls.TextCommandBarFlyout, Microsoft.UI.Xaml.Controls.TextCommandBarFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.operator !=(Microsoft.UI.Xaml.Controls.TextCommandBarFlyout, Microsoft.UI.Xaml.Controls.TextCommandBarFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.Equals(Microsoft.UI.Xaml.Controls.TextCommandBarFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.TextCommandBarFlyout(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCommandBarFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

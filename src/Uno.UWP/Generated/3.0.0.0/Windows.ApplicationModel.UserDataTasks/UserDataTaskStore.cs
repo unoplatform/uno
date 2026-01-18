@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskStore, Windows.ApplicationModel.UserDataTasks.UserDataTaskStore)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskStore, Windows.ApplicationModel.UserDataTasks.UserDataTaskStore)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskStore)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskList> CreateListAsync(string name)
@@ -41,5 +51,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataTaskList> UserDataTaskStore.GetListAsync(string taskListId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataTaskList%3E%20UserDataTaskStore.GetListAsync%28string%20taskListId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskStore.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

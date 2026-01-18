@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	public partial interface ISpreadsheetItemProvider
 	{
 		// Skipping already declared property Formula
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISpreadsheetItemProvider.Formula.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ISpreadsheetItemProvider.GetAnnotationObjects()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ISpreadsheetItemProvider.GetAnnotationTypes()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISpreadsheetItemProvider.Formula.get
 	}
 }

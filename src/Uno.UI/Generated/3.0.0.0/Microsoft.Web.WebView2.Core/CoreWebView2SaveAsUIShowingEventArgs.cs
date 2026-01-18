@@ -15,43 +15,15 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SuppressDefaultDialog
+		public bool AllowReplace
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
+				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SaveAsFilePath
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2SaveAsKind%20CoreWebView2SaveAsUIShowingEventArgs.Kind");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
 			}
 		}
 #endif
@@ -71,20 +43,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowReplace
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ContentMimeType
 		{
 			get
@@ -93,17 +51,58 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.ContentMimeType.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Cancel.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.AllowReplace.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.AllowReplace.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Kind.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Kind.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsKind Kind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2SaveAsKind%20CoreWebView2SaveAsUIShowingEventArgs.Kind");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SaveAsFilePath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool SuppressDefaultDialog
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -111,5 +110,17 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreWebView2SaveAsUIShowingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2SaveAsUIShowingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.AllowReplace.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.AllowReplace.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Cancel.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.ContentMimeType.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Kind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.Kind.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

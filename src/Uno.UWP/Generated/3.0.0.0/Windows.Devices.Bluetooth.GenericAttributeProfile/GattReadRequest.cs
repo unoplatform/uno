@@ -43,11 +43,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.Offset.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.Length.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.State.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.StateChanged.add
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.StateChanged.remove
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest, Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest, Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RespondWithValue(global::Windows.Storage.Streams.IBuffer value)
@@ -62,6 +67,12 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest", "void GattReadRequest.RespondWithProtocolError(byte protocolError)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.StateChanged.add
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.StateChanged.remove
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.Length.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.Offset.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.State.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequest, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs> StateChanged

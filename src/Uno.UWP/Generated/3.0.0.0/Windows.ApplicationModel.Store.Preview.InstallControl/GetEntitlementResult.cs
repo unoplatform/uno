@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult, Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult, Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

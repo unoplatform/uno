@@ -10,29 +10,15 @@ namespace Windows.Media.Transcoding
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan TrimStopTime
+		public bool AlwaysReencode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaTranscoder.TrimStopTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTranscoder.TrimStopTime");
+				throw new global::System.NotImplementedException("The member bool MediaTranscoder.AlwaysReencode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaTranscoder.AlwaysReencode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStopTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan TrimStartTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaTranscoder.TrimStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTranscoder.TrimStartTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.AlwaysReencode");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.Media.Transcoding
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AlwaysReencode
+		public global::System.TimeSpan TrimStartTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaTranscoder.AlwaysReencode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaTranscoder.AlwaysReencode");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaTranscoder.TrimStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTranscoder.TrimStartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.AlwaysReencode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStartTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan TrimStopTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MediaTranscoder.TrimStopTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTranscoder.TrimStopTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStopTime");
 			}
 		}
 #endif
@@ -86,14 +86,16 @@ namespace Windows.Media.Transcoding
 		}
 #endif
 		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.MediaTranscoder()
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStartTime.set
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStartTime.get
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStopTime.set
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStopTime.get
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.AlwaysReencode.set
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.AlwaysReencode.get
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.HardwareAccelerationEnabled.set
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.HardwareAccelerationEnabled.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.operator ==(Windows.Media.Transcoding.MediaTranscoder, Windows.Media.Transcoding.MediaTranscoder)
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.operator !=(Windows.Media.Transcoding.MediaTranscoder, Windows.Media.Transcoding.MediaTranscoder)
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.Equals(Windows.Media.Transcoding.MediaTranscoder)
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.Equals(object)
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.GetHashCode()
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddAudioEffect(string activatableClassId)
@@ -150,7 +152,16 @@ namespace Windows.Media.Transcoding
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareMediaStreamSourceTranscodeAsync(IMediaSource source, IRandomAccessStream destination, MediaEncodingProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPrepareTranscodeResult%3E%20MediaTranscoder.PrepareMediaStreamSourceTranscodeAsync%28IMediaSource%20source%2C%20IRandomAccessStream%20destination%2C%20MediaEncodingProfile%20profile%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.VideoProcessingAlgorithm.set
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.AlwaysReencode.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.AlwaysReencode.set
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.HardwareAccelerationEnabled.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.HardwareAccelerationEnabled.set
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStartTime.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStartTime.set
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStopTime.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.TrimStopTime.set
 		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.VideoProcessingAlgorithm.get
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.VideoProcessingAlgorithm.set
+		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

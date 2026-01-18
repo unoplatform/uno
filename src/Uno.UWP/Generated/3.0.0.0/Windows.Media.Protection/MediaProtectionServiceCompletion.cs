@@ -13,6 +13,16 @@ namespace Windows.Media.Protection
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.operator ==(Windows.Media.Protection.MediaProtectionServiceCompletion, Windows.Media.Protection.MediaProtectionServiceCompletion)
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.operator !=(Windows.Media.Protection.MediaProtectionServiceCompletion, Windows.Media.Protection.MediaProtectionServiceCompletion)
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.Equals(Windows.Media.Protection.MediaProtectionServiceCompletion)
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete(bool success)
@@ -20,5 +30,6 @@ namespace Windows.Media.Protection
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.MediaProtectionServiceCompletion", "void MediaProtectionServiceCompletion.Complete(bool success)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

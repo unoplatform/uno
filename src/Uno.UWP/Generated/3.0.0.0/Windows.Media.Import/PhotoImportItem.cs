@@ -15,20 +15,6 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSelected
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportItem.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportItem.IsSelected");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportItem", "bool PhotoImportItem.IsSelected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Import.PhotoImportContentType ContentType
 		{
 			get
@@ -69,6 +55,20 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSelected
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PhotoImportItem.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportItem.IsSelected");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportItem", "bool PhotoImportItem.IsSelected");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong ItemKey
 		{
 			get
@@ -84,6 +84,16 @@ namespace Windows.Media.Import
 			get
 			{
 				throw new global::System.NotImplementedException("The member string PhotoImportItem.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhotoImportItem.Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Path
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PhotoImportItem.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhotoImportItem.Path");
 			}
 		}
 #endif
@@ -137,29 +147,30 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Path
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PhotoImportItem.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhotoImportItem.Path");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Name.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ItemKey.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.operator ==(Windows.Media.Import.PhotoImportItem, Windows.Media.Import.PhotoImportItem)
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.operator !=(Windows.Media.Import.PhotoImportItem, Windows.Media.Import.PhotoImportItem)
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Equals(Windows.Media.Import.PhotoImportItem)
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Equals(object)
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.GetHashCode()
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ContentType.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.SizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Date.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sibling.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sidecars.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.VideoSegments.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.DeletedFileNames.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ImportedFileNames.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.IsSelected.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.IsSelected.set
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Thumbnail.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ImportedFileNames.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.DeletedFileNames.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ItemKey.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Name.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Path.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sibling.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sidecars.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.SizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Thumbnail.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.VideoSegments.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

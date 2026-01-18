@@ -38,10 +38,10 @@ namespace Windows.Devices.Sms
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.ISmsMessageBase.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.ISmsMessageBase.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sms.ISmsMessageBase.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.ISmsMessageBase.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sms.ISmsMessageBase.MessageClass.get
+		// Forced skipping of method Windows.Devices.Sms.ISmsMessageBase.MessageType.get
 		// Forced skipping of method Windows.Devices.Sms.ISmsMessageBase.SimIccId.get
 	}
 }

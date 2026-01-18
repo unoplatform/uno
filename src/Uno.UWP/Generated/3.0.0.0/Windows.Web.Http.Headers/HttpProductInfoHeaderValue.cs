@@ -44,15 +44,7 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.HttpProductInfoHeaderValue(string, string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.Product.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.Comment.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpProductInfoHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpProductInfoHeaderValue.ToString%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue Parse(string input)
@@ -67,5 +59,25 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpProductInfoHeaderValue.TryParse(string input, out HttpProductInfoHeaderValue productInfoHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpProductInfoHeaderValue.TryParse%28string%20input%2C%20out%20HttpProductInfoHeaderValue%20productInfoHeaderValue%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.operator ==(Windows.Web.Http.Headers.HttpProductInfoHeaderValue, Windows.Web.Http.Headers.HttpProductInfoHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.operator !=(Windows.Web.Http.Headers.HttpProductInfoHeaderValue, Windows.Web.Http.Headers.HttpProductInfoHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.Equals(Windows.Web.Http.Headers.HttpProductInfoHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public override string ToString()
+		{
+			throw new global::System.NotImplementedException("The member string HttpProductInfoHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpProductInfoHeaderValue.ToString%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.Comment.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.Product.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

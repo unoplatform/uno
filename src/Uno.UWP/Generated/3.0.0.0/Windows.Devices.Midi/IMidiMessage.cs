@@ -11,8 +11,8 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property RawData
 		// Skipping already declared property Timestamp
 		// Skipping already declared property Type
-		// Forced skipping of method Windows.Devices.Midi.IMidiMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.IMidiMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.IMidiMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.IMidiMessage.Type.get
 	}
 }

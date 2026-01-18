@@ -6,37 +6,41 @@ namespace Microsoft.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionColorGradientStopCollection : global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionColorGradientStop>, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.CompositionColorGradientStop>
+	public partial class CompositionColorGradientStopCollection : global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionColorGradientStop>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.CompositionColorGradientStop>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Composition.CompositionColorGradientStop>
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint CompositionColorGradientStopCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CompositionColorGradientStopCollection.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.IndexOf(Microsoft.UI.Composition.CompositionColorGradientStop, out uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.InsertAt(uint, Microsoft.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.First()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.ReplaceAll(Microsoft.UI.Composition.CompositionColorGradientStop[])
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Append(Microsoft.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.SetAt(uint, Microsoft.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetMany(uint, Microsoft.UI.Composition.CompositionColorGradientStop[])
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.operator ==(Microsoft.UI.Composition.CompositionColorGradientStopCollection, Microsoft.UI.Composition.CompositionColorGradientStopCollection)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.operator !=(Microsoft.UI.Composition.CompositionColorGradientStopCollection, Microsoft.UI.Composition.CompositionColorGradientStopCollection)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Equals(Microsoft.UI.Composition.CompositionColorGradientStopCollection)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.IndexOf(Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Insert(int, Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Add(Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Contains(Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.CopyTo(Microsoft.UI.Composition.CompositionColorGradientStop[], int)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Remove(Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionColorGradientStop>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionColorGradientStop>.set_Item(int, Microsoft.UI.Composition.CompositionColorGradientStop)
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionColorGradientStop>
 		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionColorGradientStop>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionColorGradientStop>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Composition.CompositionColorGradientStop>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Composition.CompositionColorGradientStop>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Composition.CompositionColorGradientStop>.IsReadOnly
 	}
 }

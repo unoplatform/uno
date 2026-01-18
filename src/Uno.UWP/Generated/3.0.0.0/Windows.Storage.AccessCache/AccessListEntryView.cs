@@ -6,7 +6,7 @@ namespace Windows.Storage.AccessCache
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AccessListEntryView : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.AccessCache.AccessListEntry>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.AccessCache.AccessListEntry>
+	public partial class AccessListEntryView : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.AccessCache.AccessListEntry>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.AccessCache.AccessListEntry>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Storage.AccessCache.AccessListEntry>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal AccessListEntryView()
@@ -15,39 +15,48 @@ namespace Windows.Storage.AccessCache
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AccessListEntryView.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AccessListEntryView.Size");
+				throw new global::System.NotImplementedException("The member int AccessListEntryView.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AccessListEntryView.Count");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.GetAt(uint)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.Size.get
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.IndexOf(Windows.Storage.AccessCache.AccessListEntry, out uint)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.GetMany(uint, Windows.Storage.AccessCache.AccessListEntry[])
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.First()
-		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Storage.AccessCache.AccessListEntry>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.AccessCache.AccessListEntry this[int index]
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member AccessListEntry AccessListEntryView.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccessListEntry%20AccessListEntryView.this%5Bint%20index%5D");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.AccessCache.AccessListEntry>
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.operator ==(Windows.Storage.AccessCache.AccessListEntryView, Windows.Storage.AccessCache.AccessListEntryView)
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.operator !=(Windows.Storage.AccessCache.AccessListEntryView, Windows.Storage.AccessCache.AccessListEntryView)
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.Equals(Windows.Storage.AccessCache.AccessListEntryView)
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.Equals(object)
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.GetHashCode()
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.Count.get
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Storage.AccessCache.AccessListEntry>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Storage.AccessCache.AccessListEntry> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<AccessListEntry> AccessListEntryView.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CAccessListEntry%3E%20AccessListEntryView.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Collections.Generic.IReadOnlyList<Windows.Storage.AccessCache.AccessListEntry>.get_Item(int)
+		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Storage.AccessCache.AccessListEntry>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.AccessCache.AccessListEntry>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -58,15 +67,5 @@ namespace Windows.Storage.AccessCache
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Storage.AccessCache.AccessListEntry>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

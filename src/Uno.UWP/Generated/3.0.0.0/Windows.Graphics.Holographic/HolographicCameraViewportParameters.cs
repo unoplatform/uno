@@ -33,7 +33,18 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.operator ==(Windows.Graphics.Holographic.HolographicCameraViewportParameters, Windows.Graphics.Holographic.HolographicCameraViewportParameters)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.operator !=(Windows.Graphics.Holographic.HolographicCameraViewportParameters, Windows.Graphics.Holographic.HolographicCameraViewportParameters)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.Equals(Windows.Graphics.Holographic.HolographicCameraViewportParameters)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.HiddenAreaMesh.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.VisibleAreaMesh.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

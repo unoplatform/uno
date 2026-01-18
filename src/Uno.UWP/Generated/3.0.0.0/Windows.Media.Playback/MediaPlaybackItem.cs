@@ -18,33 +18,27 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.MediaSource Source
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Playback.AutoLoadedDisplayPropertyKind AutoLoadedDisplayProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSource MediaPlaybackItem.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaPlaybackItem.Source");
+				throw new global::System.NotImplementedException("The member AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AutoLoadedDisplayPropertyKind%20MediaPlaybackItem.AutoLoadedDisplayProperties");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList TimedMetadataTracks
+		public global::Windows.Media.Playback.MediaBreakSchedule BreakSchedule
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackTimedMetadataTrackList MediaPlaybackItem.TimedMetadataTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackTimedMetadataTrackList%20MediaPlaybackItem.TimedMetadataTracks");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.MediaPlaybackVideoTrackList VideoTracks
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackVideoTrackList MediaPlaybackItem.VideoTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackVideoTrackList%20MediaPlaybackItem.VideoTracks");
+				throw new global::System.NotImplementedException("The member MediaBreakSchedule MediaPlaybackItem.BreakSchedule is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaBreakSchedule%20MediaPlaybackItem.BreakSchedule");
 			}
 		}
 #endif
@@ -64,31 +58,11 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.MediaBreakSchedule BreakSchedule
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaBreakSchedule MediaPlaybackItem.BreakSchedule is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaBreakSchedule%20MediaPlaybackItem.BreakSchedule");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? DurationLimit
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member TimeSpan? MediaPlaybackItem.DurationLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MediaPlaybackItem.DurationLimit");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan StartTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaPlaybackItem.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaPlaybackItem.StartTime");
 			}
 		}
 #endif
@@ -106,17 +80,33 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.AutoLoadedDisplayPropertyKind AutoLoadedDisplayProperties
+#if false || false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.MediaSource Source
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AutoLoadedDisplayPropertyKind%20MediaPlaybackItem.AutoLoadedDisplayProperties");
+				throw new global::System.NotImplementedException("The member MediaSource MediaPlaybackItem.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaPlaybackItem.Source");
 			}
-			set
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan StartTime
+		{
+			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaPlaybackItem.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaPlaybackItem.StartTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList TimedMetadataTracks
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaPlaybackTimedMetadataTrackList MediaPlaybackItem.TimedMetadataTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackTimedMetadataTrackList%20MediaPlaybackItem.TimedMetadataTracks");
 			}
 		}
 #endif
@@ -130,6 +120,24 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Playback.MediaPlaybackVideoTrackList VideoTracks
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaPlaybackVideoTrackList MediaPlaybackItem.VideoTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackVideoTrackList%20MediaPlaybackItem.VideoTracks");
+			}
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public MediaPlaybackItem(global::Windows.Media.Core.MediaSource source)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem.MediaPlaybackItem(MediaSource source)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaPlaybackItem(global::Windows.Media.Core.MediaSource source, global::System.TimeSpan startTime)
@@ -146,29 +154,30 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource, System.TimeSpan, System.TimeSpan)
-#if false || false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public MediaPlaybackItem(global::Windows.Media.Core.MediaSource source)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.Playback.MediaPlaybackItem FindFromMediaSource(global::Windows.Media.Core.MediaSource source)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem.MediaPlaybackItem(MediaSource source)");
+			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackItem.FindFromMediaSource(MediaSource source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaPlaybackItem.FindFromMediaSource%28MediaSource%20source%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.operator ==(Windows.Media.Playback.MediaPlaybackItem, Windows.Media.Playback.MediaPlaybackItem)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.operator !=(Windows.Media.Playback.MediaPlaybackItem, Windows.Media.Playback.MediaPlaybackItem)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.Equals(Windows.Media.Playback.MediaPlaybackItem)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AudioTracksChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AudioTracksChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.VideoTracksChanged.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.VideoTracksChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.TimedMetadataTracksChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.TimedMetadataTracksChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.Source.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AudioTracks.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.VideoTracks.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.TimedMetadataTracks.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.BreakSchedule.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.StartTime.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.DurationLimit.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.VideoTracksChanged.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.VideoTracksChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaItemDisplayProperties GetDisplayProperties()
@@ -183,18 +192,21 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "void MediaPlaybackItem.ApplyDisplayProperties(MediaItemDisplayProperties value)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.IsDisabledInPlaybackList.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.IsDisabledInPlaybackList.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.TotalDownloadProgress.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AudioTracks.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AutoLoadedDisplayProperties.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AutoLoadedDisplayProperties.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.Playback.MediaPlaybackItem FindFromMediaSource(global::Windows.Media.Core.MediaSource source)
-		{
-			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackItem.FindFromMediaSource(MediaSource source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaPlaybackItem.FindFromMediaSource%28MediaSource%20source%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.BreakSchedule.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.DurationLimit.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.IsDisabledInPlaybackList.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.IsDisabledInPlaybackList.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.Source.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.StartTime.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.TimedMetadataTracks.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.TotalDownloadProgress.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.VideoTracks.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackItem, global::Windows.Foundation.Collections.IVectorChangedEventArgs> AudioTracksChanged

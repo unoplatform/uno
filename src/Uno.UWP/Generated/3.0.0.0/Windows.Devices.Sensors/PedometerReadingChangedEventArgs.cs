@@ -9,6 +9,17 @@ namespace Windows.Devices.Sensors
 	public partial class PedometerReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.PedometerReadingChangedEventArgs, Windows.Devices.Sensors.PedometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.PedometerReadingChangedEventArgs, Windows.Devices.Sensors.PedometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.Equals(Windows.Devices.Sensors.PedometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

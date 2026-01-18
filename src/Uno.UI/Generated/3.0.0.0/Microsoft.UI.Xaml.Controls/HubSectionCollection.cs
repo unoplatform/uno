@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HubSectionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.HubSection>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.HubSection>
+	public partial class HubSectionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.HubSection>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Controls.HubSection>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.HubSection>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal HubSectionCollection()
@@ -15,114 +15,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint HubSectionCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HubSectionCollection.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.IndexOf(Microsoft.UI.Xaml.Controls.HubSection, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.SetAt(uint, Microsoft.UI.Xaml.Controls.HubSection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.InsertAt(uint, Microsoft.UI.Xaml.Controls.HubSection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Append(Microsoft.UI.Xaml.Controls.HubSection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.GetMany(uint, Microsoft.UI.Xaml.Controls.HubSection[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.ReplaceAll(Microsoft.UI.Xaml.Controls.HubSection[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.First()
-		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Microsoft.UI.Xaml.Controls.HubSection item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Microsoft.UI.Xaml.Controls.HubSection item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.HubSection this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.HubSection>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Microsoft.UI.Xaml.Controls.HubSection item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Microsoft.UI.Xaml.Controls.HubSection item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Microsoft.UI.Xaml.Controls.HubSection[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.HubSection>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Microsoft.UI.Xaml.Controls.HubSection item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Count
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member int HubSectionCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HubSectionCollection.Count");
 			}
 		}
 #endif
@@ -132,19 +29,108 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member bool HubSectionCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HubSectionCollection.IsReadOnly");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Controls.HubSection>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Controls.HubSection>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.HubSection this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HubSection HubSectionCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HubSection%20HubSectionCollection.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.HubSectionCollection", "HubSection HubSectionCollection.this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.operator ==(Microsoft.UI.Xaml.Controls.HubSectionCollection, Microsoft.UI.Xaml.Controls.HubSectionCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.operator !=(Microsoft.UI.Xaml.Controls.HubSectionCollection, Microsoft.UI.Xaml.Controls.HubSectionCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Equals(Microsoft.UI.Xaml.Controls.HubSectionCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Microsoft.UI.Xaml.Controls.HubSection item)
+		{
+			throw new global::System.NotImplementedException("The member int HubSectionCollection.IndexOf(HubSection item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HubSectionCollection.IndexOf%28HubSection%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Microsoft.UI.Xaml.Controls.HubSection item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.HubSectionCollection", "void HubSectionCollection.Insert(int index, HubSection item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.HubSectionCollection", "void HubSectionCollection.RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Microsoft.UI.Xaml.Controls.HubSection item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.HubSectionCollection", "void HubSectionCollection.Add(HubSection item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.HubSectionCollection", "void HubSectionCollection.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Microsoft.UI.Xaml.Controls.HubSection item)
+		{
+			throw new global::System.NotImplementedException("The member bool HubSectionCollection.Contains(HubSection item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HubSectionCollection.Contains%28HubSection%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Microsoft.UI.Xaml.Controls.HubSection[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.HubSectionCollection", "void HubSectionCollection.CopyTo(HubSection[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Microsoft.UI.Xaml.Controls.HubSection item)
+		{
+			throw new global::System.NotImplementedException("The member bool HubSectionCollection.Remove(HubSection item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HubSectionCollection.Remove%28HubSection%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.Controls.HubSection> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<HubSection> HubSectionCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CHubSection%3E%20HubSectionCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>.set_Item(int, Microsoft.UI.Xaml.Controls.HubSection)
+		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.HubSection>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Controls.HubSection>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

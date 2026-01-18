@@ -8,7 +8,9 @@ namespace Windows.UI.ViewManagement
 #endif
 	public partial class UISettings
 	{
+		// Skipping already declared property AdvancedEffectsEnabled
 		// Skipping already declared property AnimationsEnabled
+		// Skipping already declared property AutoHideScrollBars
 		// Skipping already declared property CaretBlinkRate
 		// Skipping already declared property CaretBrowsingEnabled
 		// Skipping already declared property CaretWidth
@@ -21,39 +23,48 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property ScrollBarSize
 		// Skipping already declared property ScrollBarThumbBoxSize
 		// Skipping already declared property TextScaleFactor
-		// Skipping already declared property AdvancedEffectsEnabled
-		// Skipping already declared property AutoHideScrollBars
 		// Skipping already declared method Windows.UI.ViewManagement.UISettings.UISettings()
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.UISettings()
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.HandPreference.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CursorSize.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarSize.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarArrowSize.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarThumbBoxSize.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MessageDuration.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AnimationsEnabled.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CaretBrowsingEnabled.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CaretBlinkRate.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CaretWidth.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.DoubleClickTime.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MouseHoverTime.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.operator ==(Windows.UI.ViewManagement.UISettings, Windows.UI.ViewManagement.UISettings)
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.operator !=(Windows.UI.ViewManagement.UISettings, Windows.UI.ViewManagement.UISettings)
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.Equals(Windows.UI.ViewManagement.UISettings)
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.Equals(object)
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.GetHashCode()
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.UI.ViewManagement.UISettings.UIElementColor(Windows.UI.ViewManagement.UIElementType)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.TextScaleFactor.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.TextScaleFactorChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.TextScaleFactorChanged.remove
 		// Skipping already declared method Windows.UI.ViewManagement.UISettings.GetColorValue(Windows.UI.ViewManagement.UIColorType)
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ColorValuesChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ColorValuesChanged.remove
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabled.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabledChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabledChanged.remove
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AutoHideScrollBars.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AutoHideScrollBarsChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AutoHideScrollBarsChanged.remove
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AnimationsEnabledChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AnimationsEnabledChanged.remove
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MessageDurationChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MessageDurationChanged.remove
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabled.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AnimationsEnabled.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AutoHideScrollBars.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CaretBlinkRate.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CaretBrowsingEnabled.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CaretWidth.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.CursorSize.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.DoubleClickTime.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.HandPreference.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MessageDuration.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MouseHoverTime.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarArrowSize.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarSize.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarThumbBoxSize.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.TextScaleFactor.get
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.TextScaleFactorChanged
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.ColorValuesChanged
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabledChanged

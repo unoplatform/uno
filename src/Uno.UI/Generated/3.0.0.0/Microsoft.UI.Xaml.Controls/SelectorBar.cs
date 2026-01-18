@@ -8,19 +8,32 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SelectorBar : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property SelectedItem
-		// Skipping already declared property Items
 		// Skipping already declared property ItemsProperty
 		// Skipping already declared property SelectedItemProperty
+		// Skipping already declared property Items
+		// Skipping already declared property SelectedItem
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SelectorBar.SelectorBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectorBar()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.ItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectedItemProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectorBar(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.operator ==(Microsoft.UI.Xaml.Controls.SelectorBar, Microsoft.UI.Xaml.Controls.SelectorBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.operator !=(Microsoft.UI.Xaml.Controls.SelectorBar, Microsoft.UI.Xaml.Controls.SelectorBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.Equals(Microsoft.UI.Xaml.Controls.SelectorBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectorBar(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectedItem.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.ItemsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectedItemProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged
 	}
 }

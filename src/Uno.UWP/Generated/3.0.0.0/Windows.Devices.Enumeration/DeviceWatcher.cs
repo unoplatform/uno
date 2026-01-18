@@ -9,19 +9,28 @@ namespace Windows.Devices.Enumeration
 	public partial class DeviceWatcher
 	{
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Added.add
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Added.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Updated.add
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Updated.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Removed.add
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Removed.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Stopped.add
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Stopped.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Status.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.operator ==(Windows.Devices.Enumeration.DeviceWatcher, Windows.Devices.Enumeration.DeviceWatcher)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.operator !=(Windows.Devices.Enumeration.DeviceWatcher, Windows.Devices.Enumeration.DeviceWatcher)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Equals(Windows.Devices.Enumeration.DeviceWatcher)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceWatcher.Start()
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceWatcher.Stop()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Added.add
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Added.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Removed.add
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Removed.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Stopped.add
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Stopped.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Updated.add
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Updated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Background.DeviceWatcherTrigger GetBackgroundTrigger(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceWatcherEventKind> requestedEventKinds)
@@ -29,6 +38,8 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceWatcherTrigger DeviceWatcher.GetBackgroundTrigger(IEnumerable<DeviceWatcherEventKind> requestedEventKinds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcherTrigger%20DeviceWatcher.GetBackgroundTrigger%28IEnumerable%3CDeviceWatcherEventKind%3E%20requestedEventKinds%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Status.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.Devices.Enumeration.DeviceWatcher.Added
 		// Skipping already declared event Windows.Devices.Enumeration.DeviceWatcher.EnumerationCompleted
 		// Skipping already declared event Windows.Devices.Enumeration.DeviceWatcher.Removed

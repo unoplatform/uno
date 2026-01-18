@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(TargetName), typeof(string),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TargetName
 		{
 			get
@@ -24,22 +32,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TargetName), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DragItemThemeAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation", "DragItemThemeAnimation.DragItemThemeAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.DragItemThemeAnimation()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

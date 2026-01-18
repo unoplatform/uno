@@ -13,19 +13,7 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool PenDockListener.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PenDockListener.IsSupported%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Input.PenDockListener.IsSupportedChanged.add
-		// Forced skipping of method Windows.Devices.Input.PenDockListener.IsSupportedChanged.remove
-		// Forced skipping of method Windows.Devices.Input.PenDockListener.Docked.add
-		// Forced skipping of method Windows.Devices.Input.PenDockListener.Docked.remove
-		// Forced skipping of method Windows.Devices.Input.PenDockListener.Undocked.add
-		// Forced skipping of method Windows.Devices.Input.PenDockListener.Undocked.remove
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenDockListener GetDefault()
@@ -33,6 +21,30 @@ namespace Windows.Devices.Input
 			throw new global::System.NotImplementedException("The member PenDockListener PenDockListener.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenDockListener%20PenDockListener.GetDefault%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.operator ==(Windows.Devices.Input.PenDockListener, Windows.Devices.Input.PenDockListener)
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.operator !=(Windows.Devices.Input.PenDockListener, Windows.Devices.Input.PenDockListener)
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.Equals(Windows.Devices.Input.PenDockListener)
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.GetHashCode()
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSupported()
+		{
+			throw new global::System.NotImplementedException("The member bool PenDockListener.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PenDockListener.IsSupported%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.Docked.add
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.Docked.remove
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.IsSupportedChanged.add
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.IsSupportedChanged.remove
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.Undocked.add
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.Undocked.remove
+		// Forced skipping of method Windows.Devices.Input.PenDockListener.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenDockListener, global::Windows.Devices.Input.PenDockedEventArgs> Docked

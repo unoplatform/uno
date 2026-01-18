@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.ScrollPresenterAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.ScrollPresenterAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.ScrollPresenterAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.ScrollPresenterAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

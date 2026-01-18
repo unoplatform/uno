@@ -8,5 +8,15 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class TimePickerFlyoutPresenterAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

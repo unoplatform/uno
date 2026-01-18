@@ -43,9 +43,7 @@ namespace Windows.Perception.People
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.EyesPose.IsCalibrationValid.get
-		// Forced skipping of method Windows.Perception.People.EyesPose.Gaze.get
-		// Forced skipping of method Windows.Perception.People.EyesPose.UpdateTimestamp.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -60,5 +58,19 @@ namespace Windows.Perception.People
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GazeInputAccessStatus> EyesPose.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGazeInputAccessStatus%3E%20EyesPose.RequestAccessAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Perception.People.EyesPose.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.People.EyesPose.operator ==(Windows.Perception.People.EyesPose, Windows.Perception.People.EyesPose)
+		// Forced skipping of method Windows.Perception.People.EyesPose.operator !=(Windows.Perception.People.EyesPose, Windows.Perception.People.EyesPose)
+		// Forced skipping of method Windows.Perception.People.EyesPose.Equals(Windows.Perception.People.EyesPose)
+		// Forced skipping of method Windows.Perception.People.EyesPose.Equals(object)
+		// Forced skipping of method Windows.Perception.People.EyesPose.GetHashCode()
+		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.Gaze.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.IsCalibrationValid.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.UpdateTimestamp.get
+		// Forced skipping of method Windows.Perception.People.EyesPose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

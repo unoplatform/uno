@@ -113,15 +113,26 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Stream.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Title.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Author.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.operator ==(Windows.Media.PlayTo.SourceChangeRequestedEventArgs, Windows.Media.PlayTo.SourceChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.operator !=(Windows.Media.PlayTo.SourceChangeRequestedEventArgs, Windows.Media.PlayTo.SourceChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Equals(Windows.Media.PlayTo.SourceChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Album.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Genre.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Description.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Author.get
 		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Date.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Thumbnail.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Rating.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Description.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Genre.get
 		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Properties.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Rating.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Stream.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Thumbnail.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Title.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

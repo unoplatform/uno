@@ -33,8 +33,16 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.ContactListId.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.Contact.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.Contacts.Contact createdOrUpdatedContact)
@@ -49,5 +57,8 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactListCreateOrUpdateContactRequest.ReportFailedAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.Contact.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.ContactListId.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

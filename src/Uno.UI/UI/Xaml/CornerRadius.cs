@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.ComponentModel;
 using System.Globalization;

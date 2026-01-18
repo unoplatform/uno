@@ -8,5 +8,16 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputLightDismissEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.operator ==(Microsoft.UI.Input.InputLightDismissEventArgs, Microsoft.UI.Input.InputLightDismissEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.operator !=(Microsoft.UI.Input.InputLightDismissEventArgs, Microsoft.UI.Input.InputLightDismissEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.Equals(Microsoft.UI.Input.InputLightDismissEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Input.InputLightDismissEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

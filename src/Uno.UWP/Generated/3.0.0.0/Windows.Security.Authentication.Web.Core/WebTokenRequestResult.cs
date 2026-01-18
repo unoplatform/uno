@@ -43,9 +43,16 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseData.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseStatus.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.operator ==(Windows.Security.Authentication.Web.Core.WebTokenRequestResult, Windows.Security.Authentication.Web.Core.WebTokenRequestResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.operator !=(Windows.Security.Authentication.Web.Core.WebTokenRequestResult, Windows.Security.Authentication.Web.Core.WebTokenRequestResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.Equals(Windows.Security.Authentication.Web.Core.WebTokenRequestResult)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction InvalidateCacheAsync()
@@ -53,5 +60,9 @@ namespace Windows.Security.Authentication.Web.Core
 			throw new global::System.NotImplementedException("The member IAsyncAction WebTokenRequestResult.InvalidateCacheAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebTokenRequestResult.InvalidateCacheAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseData.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseStatus.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

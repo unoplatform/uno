@@ -16,6 +16,16 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.DeviceUseTrigger()
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.operator ==(Windows.ApplicationModel.Background.DeviceUseTrigger, Windows.ApplicationModel.Background.DeviceUseTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.operator !=(Windows.ApplicationModel.Background.DeviceUseTrigger, Windows.ApplicationModel.Background.DeviceUseTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.Equals(Windows.ApplicationModel.Background.DeviceUseTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync(string deviceId)
@@ -30,6 +40,7 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceTriggerResult> DeviceUseTrigger.RequestAsync(string deviceId, string arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceTriggerResult%3E%20DeviceUseTrigger.RequestAsync%28string%20deviceId%2C%20string%20arguments%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

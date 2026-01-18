@@ -10,6 +10,19 @@ namespace Windows.Networking.BackgroundTransfer
 	{
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.BackgroundUploadProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public BackgroundUploadProgress(ulong _BytesReceived, ulong _BytesSent, ulong _TotalBytesToReceive, ulong _TotalBytesToSend, global::Windows.Networking.BackgroundTransfer.BackgroundTransferStatus _Status, bool _HasResponseChanged, bool _HasRestarted)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploadProgress", "BackgroundUploadProgress.BackgroundUploadProgress(ulong _BytesReceived, ulong _BytesSent, ulong _TotalBytesToReceive, ulong _TotalBytesToSend, BackgroundTransferStatus _Status, bool _HasResponseChanged, bool _HasRestarted)");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.BackgroundUploadProgress(ulong, ulong, ulong, ulong, Windows.Networking.BackgroundTransfer.BackgroundTransferStatus, bool, bool)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.operator ==(Windows.Networking.BackgroundTransfer.BackgroundUploadProgress, Windows.Networking.BackgroundTransfer.BackgroundUploadProgress)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.operator !=(Windows.Networking.BackgroundTransfer.BackgroundUploadProgress, Windows.Networking.BackgroundTransfer.BackgroundUploadProgress)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.Equals(Windows.Networking.BackgroundTransfer.BackgroundUploadProgress)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.Equals(object)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong BytesReceived;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

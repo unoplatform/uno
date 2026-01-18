@@ -53,17 +53,7 @@ namespace Windows.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Children.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Components.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Parent.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Transform.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType(global::Windows.UI.Composition.Scenes.SceneComponentType value)
-		{
-			throw new global::System.NotImplementedException("The member SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponent%20SceneNode.FindFirstComponentOfType%28SceneComponentType%20value%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Scenes.SceneNode Create(global::Windows.UI.Composition.Compositor compositor)
@@ -71,5 +61,26 @@ namespace Windows.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneNode SceneNode.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNode%20SceneNode.Create%28Compositor%20compositor%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.operator ==(Windows.UI.Composition.Scenes.SceneNode, Windows.UI.Composition.Scenes.SceneNode)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.operator !=(Windows.UI.Composition.Scenes.SceneNode, Windows.UI.Composition.Scenes.SceneNode)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Equals(Windows.UI.Composition.Scenes.SceneNode)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.WinRT.IWinRTObject.NativeObject.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType(global::Windows.UI.Composition.Scenes.SceneComponentType value)
+		{
+			throw new global::System.NotImplementedException("The member SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponent%20SceneNode.FindFirstComponentOfType%28SceneComponentType%20value%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Children.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Components.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Parent.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Transform.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

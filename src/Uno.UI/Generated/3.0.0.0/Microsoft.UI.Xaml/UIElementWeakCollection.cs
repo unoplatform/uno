@@ -6,29 +6,45 @@ namespace Microsoft.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class UIElementWeakCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.UIElement>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.UIElement>
+	public partial class UIElementWeakCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.UIElement>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.UIElement>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.UIElement>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.IndexOf(Microsoft.UI.Xaml.UIElement, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.SetAt(uint, Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.InsertAt(uint, Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Append(Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.GetMany(uint, Microsoft.UI.Xaml.UIElement[])
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.ReplaceAll(Microsoft.UI.Xaml.UIElement[])
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.operator ==(Microsoft.UI.Xaml.UIElementWeakCollection, Microsoft.UI.Xaml.UIElementWeakCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.operator !=(Microsoft.UI.Xaml.UIElementWeakCollection, Microsoft.UI.Xaml.UIElementWeakCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Equals(Microsoft.UI.Xaml.UIElementWeakCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.IndexOf(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.Insert(int, Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.Add(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.Contains(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.CopyTo(Microsoft.UI.Xaml.UIElement[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.Remove(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.UIElement>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.UIElement>.set_Item(int, Microsoft.UI.Xaml.UIElement)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.UIElement>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.UIElement>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.UIElement>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.UIElement>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.UIElement>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.UIElement>
 		// Processing: System.Collections.IEnumerable
 	}

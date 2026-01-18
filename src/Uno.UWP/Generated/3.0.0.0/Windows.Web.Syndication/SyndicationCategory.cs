@@ -10,99 +10,11 @@ namespace Windows.Web.Syndication
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Term
+		public global::System.Collections.Generic.IList<global::Windows.Web.Syndication.SyndicationAttribute> AttributeExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationCategory.Term is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Term");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Term");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Scheme
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SyndicationCategory.Scheme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Scheme");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Scheme");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SyndicationCategory.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Label");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Label");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string NodeValue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SyndicationCategory.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.NodeValue");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.NodeValue");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string NodeNamespace
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SyndicationCategory.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.NodeNamespace");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.NodeNamespace");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string NodeName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SyndicationCategory.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.NodeName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.NodeName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SyndicationCategory.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Language");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Language");
+				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationCategory.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20SyndicationCategory.AttributeExtensions");
 			}
 		}
 #endif
@@ -122,16 +34,6 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Web.Syndication.SyndicationAttribute> AttributeExtensions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationCategory.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20SyndicationCategory.AttributeExtensions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Web.Syndication.ISyndicationNode> ElementExtensions
 		{
 			get
@@ -140,6 +42,112 @@ namespace Windows.Web.Syndication
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Label
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SyndicationCategory.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Label");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Label");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Language
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SyndicationCategory.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Language");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Language");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string NodeName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SyndicationCategory.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.NodeName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.NodeName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string NodeNamespace
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SyndicationCategory.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.NodeNamespace");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.NodeNamespace");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string NodeValue
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SyndicationCategory.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.NodeValue");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.NodeValue");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Scheme
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SyndicationCategory.Scheme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Scheme");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Scheme");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Term
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SyndicationCategory.Term is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationCategory.Term");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "string SyndicationCategory.Term");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SyndicationCategory()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "SyndicationCategory.SyndicationCategory()");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.SyndicationCategory()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationCategory(string term)
@@ -156,32 +164,16 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.SyndicationCategory(string, string, string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public SyndicationCategory()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationCategory", "SyndicationCategory.SyndicationCategory()");
-		}
-#endif
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.SyndicationCategory()
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Label.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Label.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Scheme.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Scheme.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Term.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Term.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeName.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeName.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeNamespace.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeNamespace.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeValue.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeValue.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Language.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Language.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.BaseUri.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.BaseUri.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.AttributeExtensions.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.ElementExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.operator ==(Windows.Web.Syndication.SyndicationCategory, Windows.Web.Syndication.SyndicationCategory)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.operator !=(Windows.Web.Syndication.SyndicationCategory, Windows.Web.Syndication.SyndicationCategory)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Equals(Windows.Web.Syndication.SyndicationCategory)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Equals(object)
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.GetHashCode()
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
@@ -189,6 +181,25 @@ namespace Windows.Web.Syndication
 			throw new global::System.NotImplementedException("The member XmlDocument SyndicationCategory.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20SyndicationCategory.GetXmlDocument%28SyndicationFormat%20format%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.AttributeExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.BaseUri.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.BaseUri.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.ElementExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Label.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Label.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Language.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Language.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeName.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeName.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeNamespace.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeNamespace.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeValue.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.NodeValue.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Scheme.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Scheme.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Term.get
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.Term.set
+		// Forced skipping of method Windows.Web.Syndication.SyndicationCategory.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Syndication.ISyndicationNode
 	}
 }

@@ -8,15 +8,27 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class ElementSoundPlayer
 	{
-		// Skipping already declared property Volume
-		// Skipping already declared property State
 		// Skipping already declared property SpatialAudioMode
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Volume.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Volume.set
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.State.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.State.set
+		// Skipping already declared property State
+		// Skipping already declared property Volume
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.As<I>()
+		// Skipping already declared method Microsoft.UI.Xaml.ElementSoundPlayer.Play(Microsoft.UI.Xaml.ElementSoundKind)
 		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.SpatialAudioMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.SpatialAudioMode.set
-		// Skipping already declared method Microsoft.UI.Xaml.ElementSoundPlayer.Play(Microsoft.UI.Xaml.ElementSoundKind)
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.State.get
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.State.set
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Volume.get
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Volume.set
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.operator ==(Microsoft.UI.Xaml.ElementSoundPlayer, Microsoft.UI.Xaml.ElementSoundPlayer)
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.operator !=(Microsoft.UI.Xaml.ElementSoundPlayer, Microsoft.UI.Xaml.ElementSoundPlayer)
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Equals(Microsoft.UI.Xaml.ElementSoundPlayer)
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

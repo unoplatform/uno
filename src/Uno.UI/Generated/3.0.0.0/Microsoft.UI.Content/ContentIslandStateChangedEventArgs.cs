@@ -10,9 +10,6 @@ namespace Microsoft.UI.Content
 	{
 		// Skipping already declared property DidActualSizeChange
 		// Skipping already declared property DidLayoutDirectionChange
-		// Skipping already declared property DidRasterizationScaleChange
-		// Skipping already declared property DidSiteEnabledChange
-		// Skipping already declared property DidSiteVisibleChange
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool DidLocalToClientTransformMatrixChange
@@ -33,12 +30,26 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLayoutDirectionChange.get
+		// Skipping already declared property DidRasterizationScaleChange
+		// Skipping already declared property DidSiteEnabledChange
+		// Skipping already declared property DidSiteVisibleChange
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.operator ==(Microsoft.UI.Content.ContentIslandStateChangedEventArgs, Microsoft.UI.Content.ContentIslandStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.operator !=(Microsoft.UI.Content.ContentIslandStateChangedEventArgs, Microsoft.UI.Content.ContentIslandStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.Equals(Microsoft.UI.Content.ContentIslandStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidActualSizeChange.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteVisibleChange.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteEnabledChange.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidRasterizationScaleChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLayoutDirectionChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLocalToClientTransformMatrixChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLocalToParentTransformMatrixChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidRasterizationScaleChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteEnabledChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteVisibleChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

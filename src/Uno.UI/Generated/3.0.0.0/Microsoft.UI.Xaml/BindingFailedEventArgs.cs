@@ -9,6 +9,17 @@ namespace Microsoft.UI.Xaml
 	public partial class BindingFailedEventArgs
 	{
 		// Skipping already declared property Message
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.operator ==(Microsoft.UI.Xaml.BindingFailedEventArgs, Microsoft.UI.Xaml.BindingFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.operator !=(Microsoft.UI.Xaml.BindingFailedEventArgs, Microsoft.UI.Xaml.BindingFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.Equals(Microsoft.UI.Xaml.BindingFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.Message.get
+		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

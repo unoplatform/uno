@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Email
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.operator ==(Windows.ApplicationModel.Email.EmailStore, Windows.ApplicationModel.Email.EmailStore)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.operator !=(Windows.ApplicationModel.Email.EmailStore, Windows.ApplicationModel.Email.EmailStore)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.Equals(Windows.ApplicationModel.Email.EmailStore)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Email.EmailMailbox>> FindMailboxesAsync()
@@ -90,5 +100,6 @@ namespace Windows.ApplicationModel.Email
 			throw new global::System.NotImplementedException("The member IAsyncOperation<EmailMailbox> EmailStore.CreateMailboxAsync(string accountName, string accountAddress, string userDataAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEmailMailbox%3E%20EmailStore.CreateMailboxAsync%28string%20accountName%2C%20string%20accountAddress%2C%20string%20userDataAccountId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailStore.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -20,56 +20,6 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> DnsName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.DnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.DnsName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> EmailName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.EmailName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.EmailName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> IPAddress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.IPAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.IPAddress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> PrincipalName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.PrincipalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.PrincipalName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> Url
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.Url is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.Url");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> DistinguishedNames
 		{
 			get
@@ -80,11 +30,31 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<string> DnsName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.DnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.DnsName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> DnsNames
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.DnsNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.DnsNames");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<string> EmailName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.EmailName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.EmailName");
 			}
 		}
 #endif
@@ -110,6 +80,16 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<string> IPAddress
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.IPAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.IPAddress");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> IPAddresses
 		{
 			get
@@ -120,11 +100,31 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<string> PrincipalName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.PrincipalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.PrincipalName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> PrincipalNames
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.PrincipalNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.PrincipalNames");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<string> Url
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.Url is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.Url");
 			}
 		}
 #endif
@@ -146,18 +146,29 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.SubjectAlternativeNameInfo()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.EmailName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.IPAddress.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Url.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DnsName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.operator ==(Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo, Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.operator !=(Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo, Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Equals(Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DistinguishedName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.PrincipalName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.EmailNames.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.IPAddresses.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Urls.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DnsNames.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DistinguishedNames.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.PrincipalNames.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DnsName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DnsNames.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.EmailName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.EmailNames.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Extension.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.IPAddress.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.IPAddresses.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.PrincipalName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.PrincipalNames.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Url.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Urls.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Automation
 {
-	public class ElementNotEnabledException : Exception
+	public partial class ElementNotEnabledException : Exception
 	{
 		public ElementNotEnabledException() : base()
 		{

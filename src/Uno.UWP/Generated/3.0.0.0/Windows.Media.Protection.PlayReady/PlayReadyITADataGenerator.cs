@@ -16,6 +16,16 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.PlayReadyITADataGenerator()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.operator ==(Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator, Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.operator !=(Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator, Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.Equals(Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GenerateData(global::System.Guid guidCPSystemId, uint countOfStreams, global::Windows.Foundation.Collections.IPropertySet configuration, global::Windows.Media.Protection.PlayReady.PlayReadyITADataFormat format)
@@ -23,5 +33,6 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member byte[] PlayReadyITADataGenerator.GenerateData(Guid guidCPSystemId, uint countOfStreams, IPropertySet configuration, PlayReadyITADataFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20PlayReadyITADataGenerator.GenerateData%28Guid%20guidCPSystemId%2C%20uint%20countOfStreams%2C%20IPropertySet%20configuration%2C%20PlayReadyITADataFormat%20format%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyITADataGenerator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

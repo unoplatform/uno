@@ -10,20 +10,6 @@ namespace Windows.System.Diagnostics.Telemetry
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint UploadQuotaSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.UploadQuotaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.UploadQuotaSize");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.UploadQuotaSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint StorageSize
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.System.Diagnostics.Telemetry
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint UploadQuotaSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.UploadQuotaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.UploadQuotaSize");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.UploadQuotaSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlatformTelemetryRegistrationSettings()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "PlatformTelemetryRegistrationSettings.PlatformTelemetryRegistrationSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.PlatformTelemetryRegistrationSettings()
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.operator ==(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings, Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.operator !=(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings, Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.Equals(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.StorageSize.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.StorageSize.set
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.UploadQuotaSize.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.UploadQuotaSize.set
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,29 +15,15 @@ namespace Microsoft.UI.Input.DragDrop
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsGlyphVisible
+		public string Caption
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DragUIOverride.IsGlyphVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DragUIOverride.IsGlyphVisible");
+				throw new global::System.NotImplementedException("The member string DragUIOverride.Caption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DragUIOverride.Caption");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsGlyphVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsContentVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DragUIOverride.IsContentVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DragUIOverride.IsContentVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsContentVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "string DragUIOverride.Caption");
 			}
 		}
 #endif
@@ -57,26 +43,42 @@ namespace Microsoft.UI.Input.DragDrop
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Caption
+		public bool IsContentVisible
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DragUIOverride.Caption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DragUIOverride.Caption");
+				throw new global::System.NotImplementedException("The member bool DragUIOverride.IsContentVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DragUIOverride.IsContentVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "string DragUIOverride.Caption");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsContentVisible");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsGlyphVisible.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsCaptionVisible.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsCaptionVisible.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsContentVisible.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsContentVisible.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsGlyphVisible.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsGlyphVisible
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DragUIOverride.IsGlyphVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DragUIOverride.IsGlyphVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsGlyphVisible");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.operator ==(Microsoft.UI.Input.DragDrop.DragUIOverride, Microsoft.UI.Input.DragDrop.DragUIOverride)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.operator !=(Microsoft.UI.Input.DragDrop.DragUIOverride, Microsoft.UI.Input.DragDrop.DragUIOverride)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Equals(Microsoft.UI.Input.DragDrop.DragUIOverride)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
@@ -98,5 +100,14 @@ namespace Microsoft.UI.Input.DragDrop
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "void DragUIOverride.SetContentFromSoftwareBitmap(SoftwareBitmap bitmap, Point anchorPoint)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsCaptionVisible.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsCaptionVisible.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsContentVisible.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsContentVisible.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsGlyphVisible.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsGlyphVisible.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

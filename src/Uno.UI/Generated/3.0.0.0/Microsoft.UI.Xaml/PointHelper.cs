@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.Point FromCoordinates(float x, float y)
@@ -20,5 +21,16 @@ namespace Microsoft.UI.Xaml
 			throw new global::System.NotImplementedException("The member Point PointHelper.FromCoordinates(float x, float y) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20PointHelper.FromCoordinates%28float%20x%2C%20float%20y%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.operator ==(Microsoft.UI.Xaml.PointHelper, Microsoft.UI.Xaml.PointHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.operator !=(Microsoft.UI.Xaml.PointHelper, Microsoft.UI.Xaml.PointHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.Equals(Microsoft.UI.Xaml.PointHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

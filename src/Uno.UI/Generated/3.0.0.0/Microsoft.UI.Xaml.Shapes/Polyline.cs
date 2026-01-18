@@ -8,7 +8,15 @@ namespace Microsoft.UI.Xaml.Shapes
 #endif
 	public partial class Polyline : global::Microsoft.UI.Xaml.Shapes.Shape
 	{
-		// Skipping already declared property Points
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty FillRuleProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(FillRule), typeof(global::Microsoft.UI.Xaml.Media.FillRule),
+			typeof(global::Microsoft.UI.Xaml.Shapes.Polyline),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.FillRule)));
+#endif
+		// Skipping already declared property PointsProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.FillRule FillRule
@@ -23,22 +31,25 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FillRuleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FillRule), typeof(global::Microsoft.UI.Xaml.Media.FillRule),
-			typeof(global::Microsoft.UI.Xaml.Shapes.Polyline),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.FillRule)));
-#endif
-		// Skipping already declared property PointsProperty
+		// Skipping already declared property Points
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Polyline.Polyline()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Polyline()
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRuleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.PointsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.operator ==(Microsoft.UI.Xaml.Shapes.Polyline, Microsoft.UI.Xaml.Shapes.Polyline)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.operator !=(Microsoft.UI.Xaml.Shapes.Polyline, Microsoft.UI.Xaml.Shapes.Polyline)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Equals(Microsoft.UI.Xaml.Shapes.Polyline)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRule.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRule.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRuleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.PointsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

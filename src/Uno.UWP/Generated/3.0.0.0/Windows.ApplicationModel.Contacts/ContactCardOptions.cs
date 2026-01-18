@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactCardTabKind InitialTabKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardTabKind%20ContactCardOptions.InitialTabKind");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardTabKind ContactCardOptions.InitialTabKind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactCardHeaderKind HeaderKind
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.ApplicationModel.Contacts
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardHeaderKind ContactCardOptions.HeaderKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactCardTabKind InitialTabKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardTabKind%20ContactCardOptions.InitialTabKind");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardTabKind ContactCardOptions.InitialTabKind");
 			}
 		}
 #endif
@@ -54,10 +54,21 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.ContactCardOptions()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.operator ==(Windows.ApplicationModel.Contacts.ContactCardOptions, Windows.ApplicationModel.Contacts.ContactCardOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.operator !=(Windows.ApplicationModel.Contacts.ContactCardOptions, Windows.ApplicationModel.Contacts.ContactCardOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.Equals(Windows.ApplicationModel.Contacts.ContactCardOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.HeaderKind.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.HeaderKind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.InitialTabKind.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.InitialTabKind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.ServerSearchContactListIds.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

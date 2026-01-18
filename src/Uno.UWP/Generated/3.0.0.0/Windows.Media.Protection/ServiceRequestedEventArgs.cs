@@ -25,16 +25,6 @@ namespace Windows.Media.Protection
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Protection.IMediaProtectionServiceRequest Request
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaProtectionServiceRequest%20ServiceRequestedEventArgs.Request");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaPlaybackItem MediaPlaybackItem
 		{
 			get
@@ -43,8 +33,29 @@ namespace Windows.Media.Protection
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Request.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Protection.IMediaProtectionServiceRequest Request
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaProtectionServiceRequest%20ServiceRequestedEventArgs.Request");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.operator ==(Windows.Media.Protection.ServiceRequestedEventArgs, Windows.Media.Protection.ServiceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.operator !=(Windows.Media.Protection.ServiceRequestedEventArgs, Windows.Media.Protection.ServiceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Equals(Windows.Media.Protection.ServiceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Completion.get
 		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.MediaPlaybackItem.get
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Request.get
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,8 +43,19 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.PartialInputData.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.IsRetriable.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.operator ==(Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs, Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.operator !=(Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs, Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.Equals(Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.ErrorData.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.IsRetriable.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.PartialInputData.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

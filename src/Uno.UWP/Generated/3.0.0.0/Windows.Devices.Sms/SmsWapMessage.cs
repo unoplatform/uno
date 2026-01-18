@@ -15,6 +15,26 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ApplicationId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.ApplicationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsWapMessage.ApplicationId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IBuffer BinaryBody
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer SmsWapMessage.BinaryBody is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmsWapMessage.BinaryBody");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sms.CellularClass CellularClass
 		{
 			get
@@ -25,11 +45,41 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ContentType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsWapMessage.ContentType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DeviceId
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string SmsWapMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsWapMessage.DeviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string From
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsWapMessage.From");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IDictionary<string, string> Headers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> SmsWapMessage.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20SmsWapMessage.Headers");
 			}
 		}
 #endif
@@ -75,56 +125,6 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ApplicationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.ApplicationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsWapMessage.ApplicationId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer BinaryBody
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer SmsWapMessage.BinaryBody is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmsWapMessage.BinaryBody");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContentType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsWapMessage.ContentType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string From
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsWapMessage.From");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IDictionary<string, string> Headers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> SmsWapMessage.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20SmsWapMessage.Headers");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string To
 		{
 			get
@@ -133,18 +133,29 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.operator ==(Windows.Devices.Sms.SmsWapMessage, Windows.Devices.Sms.SmsWapMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.operator !=(Windows.Devices.Sms.SmsWapMessage, Windows.Devices.Sms.SmsWapMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.Equals(Windows.Devices.Sms.SmsWapMessage)
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.ApplicationId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.BinaryBody.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.ContentType.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.From.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.Headers.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.MessageClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.MessageType.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.SimIccId.get
 		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.To.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.From.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.ApplicationId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.ContentType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.BinaryBody.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.Headers.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.CellularClass.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.MessageClass.get
-		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.SimIccId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsWapMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Sms.ISmsMessageBase
 	}
 }

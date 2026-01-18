@@ -33,8 +33,16 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.Id.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.UpdateTime.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.operator ==(Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo, Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.operator !=(Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo, Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.Equals(Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialBoundingOrientedBox? TryGetBounds(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -56,5 +64,8 @@ namespace Windows.Perception.Spatial.Surfaces
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialSurfaceMesh> SpatialSurfaceInfo.TryComputeLatestMeshAsync(double maxTrianglesPerCubicMeter, SpatialSurfaceMeshOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialSurfaceMesh%3E%20SpatialSurfaceInfo.TryComputeLatestMeshAsync%28double%20maxTrianglesPerCubicMeter%2C%20SpatialSurfaceMeshOptions%20options%29");
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.Id.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.UpdateTime.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

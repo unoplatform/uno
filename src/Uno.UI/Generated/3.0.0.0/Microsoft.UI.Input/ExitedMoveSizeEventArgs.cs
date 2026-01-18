@@ -3,37 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ExitedMoveSizeEventArgs
 	{
-#if false
-		internal ExitedMoveSizeEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Input.MoveSizeOperation MoveSizeOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MoveSizeOperation ExitedMoveSizeEventArgs.MoveSizeOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MoveSizeOperation%20ExitedMoveSizeEventArgs.MoveSizeOperation");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.PointInt32 PointerScreenPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointInt32 ExitedMoveSizeEventArgs.PointerScreenPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20ExitedMoveSizeEventArgs.PointerScreenPoint");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.PointerScreenPoint.get
+		// Skipping already declared property MoveSizeOperation
+		// Skipping already declared property PointerScreenPoint
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.operator ==(Microsoft.UI.Input.ExitedMoveSizeEventArgs, Microsoft.UI.Input.ExitedMoveSizeEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.operator !=(Microsoft.UI.Input.ExitedMoveSizeEventArgs, Microsoft.UI.Input.ExitedMoveSizeEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.Equals(Microsoft.UI.Input.ExitedMoveSizeEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.MoveSizeOperation.get
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.PointerScreenPoint.get
+		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

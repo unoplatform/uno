@@ -23,6 +23,17 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.operator ==(Windows.Perception.Spatial.SpatialEntityRemovedEventArgs, Windows.Perception.Spatial.SpatialEntityRemovedEventArgs)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.operator !=(Windows.Perception.Spatial.SpatialEntityRemovedEventArgs, Windows.Perception.Spatial.SpatialEntityRemovedEventArgs)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.Equals(Windows.Perception.Spatial.SpatialEntityRemovedEventArgs)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.Entity.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

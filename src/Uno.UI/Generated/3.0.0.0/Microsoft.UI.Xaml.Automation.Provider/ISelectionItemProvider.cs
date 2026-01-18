@@ -10,10 +10,10 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	{
 		// Skipping already declared property IsSelected
 		// Skipping already declared property SelectionContainer
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider.IsSelected.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider.SelectionContainer.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider.AddToSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider.RemoveFromSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider.Select()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider.IsSelected.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider.SelectionContainer.get
 	}
 }

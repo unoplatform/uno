@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundReason Reason
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExtendedExecutionForegroundReason%20ExtendedExecutionForegroundSession.Reason");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Description
 		{
 			get
@@ -38,16 +24,36 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundReason Reason
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExtendedExecutionForegroundReason%20ExtendedExecutionForegroundSession.Reason");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ExtendedExecutionForegroundSession()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "ExtendedExecutionForegroundSession.ExtendedExecutionForegroundSession()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.ExtendedExecutionForegroundSession()
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Description.get
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Description.set
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Revoked.add
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Revoked.remove
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.operator ==(Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession, Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession)
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.operator !=(Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession, Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession)
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Equals(Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession)
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundResult> RequestExtensionAsync()
@@ -55,8 +61,8 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionForegroundResult> ExtendedExecutionForegroundSession.RequestExtensionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CExtendedExecutionForegroundResult%3E%20ExtendedExecutionForegroundSession.RequestExtensionAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Reason.get
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Reason.set
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Revoked.add
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Revoked.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -64,6 +70,11 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "void ExtendedExecutionForegroundSession.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Description.get
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Description.set
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Reason.get
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Reason.set
+		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<object, global::Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundRevokedEventArgs> Revoked

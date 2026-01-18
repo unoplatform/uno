@@ -12,8 +12,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property PointerPoint
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.ScrollControllerPanRequestedEventArgs(Microsoft.UI.Input.PointerPoint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.ScrollControllerPanRequestedEventArgs(Microsoft.UI.Input.PointerPoint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.PointerPoint.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.PointerPoint.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

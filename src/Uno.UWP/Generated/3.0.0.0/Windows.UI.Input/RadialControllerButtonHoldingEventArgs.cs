@@ -33,7 +33,18 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.operator ==(Windows.UI.Input.RadialControllerButtonHoldingEventArgs, Windows.UI.Input.RadialControllerButtonHoldingEventArgs)
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.operator !=(Windows.UI.Input.RadialControllerButtonHoldingEventArgs, Windows.UI.Input.RadialControllerButtonHoldingEventArgs)
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.Equals(Windows.UI.Input.RadialControllerButtonHoldingEventArgs)
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.Contact.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.SimpleHapticsController.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerButtonHoldingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

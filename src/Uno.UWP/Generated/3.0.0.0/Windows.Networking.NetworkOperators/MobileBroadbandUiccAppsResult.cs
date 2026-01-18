@@ -33,7 +33,18 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult, Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult, Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.Equals(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.UiccApps.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -14,9 +14,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Start
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.RepeatedScrollSnapPoint(double, double, double, double, Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.RepeatedScrollSnapPoint(double, double, double, double, Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Offset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Interval.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Start.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.RepeatedScrollSnapPoint(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.operator ==(Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint, Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.operator !=(Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint, Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Equals(Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.RepeatedScrollSnapPoint(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.End.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Interval.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Offset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Start.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

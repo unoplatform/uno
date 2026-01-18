@@ -23,7 +23,16 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.Message.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.operator ==(Windows.ApplicationModel.AppService.AppServiceRequest, Windows.ApplicationModel.AppService.AppServiceRequest)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.operator !=(Windows.ApplicationModel.AppService.AppServiceRequest, Windows.ApplicationModel.AppService.AppServiceRequest)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.Equals(Windows.ApplicationModel.AppService.AppServiceRequest)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceResponseStatus> SendResponseAsync(global::Windows.Foundation.Collections.ValueSet message)
@@ -31,5 +40,7 @@ namespace Windows.ApplicationModel.AppService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppServiceResponseStatus> AppServiceRequest.SendResponseAsync(ValueSet message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppServiceResponseStatus%3E%20AppServiceRequest.SendResponseAsync%28ValueSet%20message%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.Message.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

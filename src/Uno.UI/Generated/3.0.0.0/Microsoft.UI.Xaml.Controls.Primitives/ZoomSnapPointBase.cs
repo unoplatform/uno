@@ -8,5 +8,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ZoomSnapPointBase : global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.ZoomSnapPointBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase, Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase, Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.Equals(Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.ZoomSnapPointBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

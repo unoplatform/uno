@@ -8,8 +8,6 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 	public partial class FindAppointmentsOptions
 	{
-		// Skipping already declared property MaxCount
-		// Skipping already declared property IncludeHidden
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> CalendarIds
@@ -21,13 +19,26 @@ namespace Windows.ApplicationModel.Appointments
 		}
 #endif
 		// Skipping already declared property FetchProperties
+		// Skipping already declared property IncludeHidden
+		// Skipping already declared property MaxCount
 		// Skipping already declared method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.operator ==(Windows.ApplicationModel.Appointments.FindAppointmentsOptions, Windows.ApplicationModel.Appointments.FindAppointmentsOptions)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.operator !=(Windows.ApplicationModel.Appointments.FindAppointmentsOptions, Windows.ApplicationModel.Appointments.FindAppointmentsOptions)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.Equals(Windows.ApplicationModel.Appointments.FindAppointmentsOptions)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.CalendarIds.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FetchProperties.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.IncludeHidden.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.IncludeHidden.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.MaxCount.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.MaxCount.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

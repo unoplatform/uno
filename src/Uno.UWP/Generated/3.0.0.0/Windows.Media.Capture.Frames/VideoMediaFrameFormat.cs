@@ -53,9 +53,20 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.MediaFrameFormat.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.operator ==(Windows.Media.Capture.Frames.VideoMediaFrameFormat, Windows.Media.Capture.Frames.VideoMediaFrameFormat)
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.operator !=(Windows.Media.Capture.Frames.VideoMediaFrameFormat, Windows.Media.Capture.Frames.VideoMediaFrameFormat)
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Equals(Windows.Media.Capture.Frames.VideoMediaFrameFormat)
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.DepthFormat.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Width.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Height.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.MediaFrameFormat.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Width.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -27,7 +27,18 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.operator ==(Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs, Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.operator !=(Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs, Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.Equals(Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.CustomResourceManager.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.CustomResourceManager.set
+		// Forced skipping of method Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

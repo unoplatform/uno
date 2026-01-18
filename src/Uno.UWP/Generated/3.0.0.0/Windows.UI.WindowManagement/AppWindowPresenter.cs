@@ -13,6 +13,16 @@ namespace Windows.UI.WindowManagement
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.operator ==(Windows.UI.WindowManagement.AppWindowPresenter, Windows.UI.WindowManagement.AppWindowPresenter)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.operator !=(Windows.UI.WindowManagement.AppWindowPresenter, Windows.UI.WindowManagement.AppWindowPresenter)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.Equals(Windows.UI.WindowManagement.AppWindowPresenter)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WindowManagement.AppWindowPresentationConfiguration GetConfiguration()
@@ -41,5 +51,6 @@ namespace Windows.UI.WindowManagement
 			throw new global::System.NotImplementedException("The member bool AppWindowPresenter.RequestPresentation(AppWindowPresentationKind presentationKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowPresenter.RequestPresentation%28AppWindowPresentationKind%20presentationKind%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

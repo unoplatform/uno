@@ -10,29 +10,11 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnRoutingPolicyType RoutingPolicyType
+		public global::System.Collections.Generic.IList<string> AppClaims
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnRoutingPolicyType VpnTrafficFilter.RoutingPolicyType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnRoutingPolicyType%20VpnTrafficFilter.RoutingPolicyType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilter", "VpnRoutingPolicyType VpnTrafficFilter.RoutingPolicyType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnIPProtocol Protocol
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VpnIPProtocol VpnTrafficFilter.Protocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnIPProtocol%20VpnTrafficFilter.Protocol");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilter", "VpnIPProtocol VpnTrafficFilter.Protocol");
+				throw new global::System.NotImplementedException("The member IList<string> VpnTrafficFilter.AppClaims is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnTrafficFilter.AppClaims");
 			}
 		}
 #endif
@@ -47,16 +29,6 @@ namespace Windows.Networking.Vpn
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilter", "VpnAppId VpnTrafficFilter.AppId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> AppClaims
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnTrafficFilter.AppClaims is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnTrafficFilter.AppClaims");
 			}
 		}
 #endif
@@ -82,6 +54,20 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Vpn.VpnIPProtocol Protocol
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VpnIPProtocol VpnTrafficFilter.Protocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnIPProtocol%20VpnTrafficFilter.Protocol");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilter", "VpnIPProtocol VpnTrafficFilter.Protocol");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> RemoteAddressRanges
 		{
 			get
@@ -102,22 +88,47 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Vpn.VpnRoutingPolicyType RoutingPolicyType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VpnRoutingPolicyType VpnTrafficFilter.RoutingPolicyType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnRoutingPolicyType%20VpnTrafficFilter.RoutingPolicyType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilter", "VpnRoutingPolicyType VpnTrafficFilter.RoutingPolicyType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnTrafficFilter(global::Windows.Networking.Vpn.VpnAppId appId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilter", "VpnTrafficFilter.VpnTrafficFilter(VpnAppId appId)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.VpnTrafficFilter(Windows.Networking.Vpn.VpnAppId)
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.operator ==(Windows.Networking.Vpn.VpnTrafficFilter, Windows.Networking.Vpn.VpnTrafficFilter)
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.operator !=(Windows.Networking.Vpn.VpnTrafficFilter, Windows.Networking.Vpn.VpnTrafficFilter)
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.Equals(Windows.Networking.Vpn.VpnTrafficFilter)
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.AppClaims.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.AppId.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.AppId.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.AppClaims.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.LocalAddressRanges.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.LocalPortRanges.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.Protocol.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.Protocol.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.LocalPortRanges.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RemotePortRanges.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.LocalAddressRanges.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RemoteAddressRanges.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RemotePortRanges.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RoutingPolicyType.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RoutingPolicyType.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

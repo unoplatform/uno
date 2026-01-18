@@ -27,6 +27,16 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.operator ==(Windows.Media.Miracast.MiracastReceiverStreamControl, Windows.Media.Miracast.MiracastReceiverStreamControl)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.operator !=(Windows.Media.Miracast.MiracastReceiverStreamControl, Windows.Media.Miracast.MiracastReceiverStreamControl)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.Equals(Windows.Media.Miracast.MiracastReceiverStreamControl)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Miracast.MiracastReceiverVideoStreamSettings GetVideoStreamSettings()
@@ -57,5 +67,6 @@ namespace Windows.Media.Miracast
 #endif
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.MuteAudio.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.MuteAudio.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

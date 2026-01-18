@@ -27,8 +27,16 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.Handled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.Handled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.operator ==(Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.operator !=(Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.Equals(Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -36,5 +44,8 @@ namespace Windows.Media.Playback
 			throw new global::System.NotImplementedException("The member Deferral MediaPlaybackCommandManagerRewindReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20MediaPlaybackCommandManagerRewindReceivedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.Handled.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.Handled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

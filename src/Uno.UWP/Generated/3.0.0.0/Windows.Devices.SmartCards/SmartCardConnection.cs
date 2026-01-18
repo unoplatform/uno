@@ -13,6 +13,16 @@ namespace Windows.Devices.SmartCards
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.operator ==(Windows.Devices.SmartCards.SmartCardConnection, Windows.Devices.SmartCards.SmartCardConnection)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.operator !=(Windows.Devices.SmartCards.SmartCardConnection, Windows.Devices.SmartCards.SmartCardConnection)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.Equals(Windows.Devices.SmartCards.SmartCardConnection)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.Equals(object)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.GetHashCode()
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> TransmitAsync(global::Windows.Storage.Streams.IBuffer command)
@@ -27,6 +37,7 @@ namespace Windows.Devices.SmartCards
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardConnection", "void SmartCardConnection.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

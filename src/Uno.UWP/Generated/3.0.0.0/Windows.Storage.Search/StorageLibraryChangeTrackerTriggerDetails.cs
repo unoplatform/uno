@@ -33,7 +33,18 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Folder.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.operator ==(Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails, Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails)
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.operator !=(Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails, Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails)
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Equals(Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails)
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.ChangeTracker.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Folder.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

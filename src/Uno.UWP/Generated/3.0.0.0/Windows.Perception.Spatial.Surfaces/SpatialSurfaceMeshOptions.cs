@@ -10,62 +10,6 @@ namespace Windows.Perception.Spatial.Surfaces
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.DirectXPixelFormat VertexPositionFormat
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.VertexPositionFormat");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.DirectXPixelFormat VertexNormalFormat
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.VertexNormalFormat");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.DirectXPixelFormat TriangleIndexFormat
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.TriangleIndexFormat");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IncludeVertexNormals
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SpatialSurfaceMeshOptions.IncludeVertexNormals is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialSurfaceMeshOptions.IncludeVertexNormals");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "bool SpatialSurfaceMeshOptions.IncludeVertexNormals");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.DirectX.DirectXPixelFormat> SupportedTriangleIndexFormats
 		{
 			get
@@ -96,22 +40,90 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IncludeVertexNormals
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SpatialSurfaceMeshOptions.IncludeVertexNormals is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialSurfaceMeshOptions.IncludeVertexNormals");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "bool SpatialSurfaceMeshOptions.IncludeVertexNormals");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat TriangleIndexFormat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.TriangleIndexFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat VertexNormalFormat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.VertexNormalFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat VertexPositionFormat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.VertexPositionFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpatialSurfaceMeshOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "SpatialSurfaceMeshOptions.SpatialSurfaceMeshOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SpatialSurfaceMeshOptions()
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexPositionFormat.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexPositionFormat.set
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.As<I>()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexNormalFormats.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexPositionFormats.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.operator ==(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.operator !=(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.Equals(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.IncludeVertexNormals.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.IncludeVertexNormals.set
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.TriangleIndexFormat.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.TriangleIndexFormat.set
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexNormalFormat.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexNormalFormat.set
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.IncludeVertexNormals.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.IncludeVertexNormals.set
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexPositionFormats.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexNormalFormats.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexPositionFormat.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexPositionFormat.set
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

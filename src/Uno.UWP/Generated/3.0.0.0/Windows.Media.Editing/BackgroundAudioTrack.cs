@@ -15,43 +15,11 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Volume
+		public global::System.Collections.Generic.IList<global::Windows.Media.Effects.IAudioEffectDefinition> AudioEffectDefinitions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double BackgroundAudioTrack.Volume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20BackgroundAudioTrack.Volume");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "double BackgroundAudioTrack.Volume");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan TrimTimeFromStart
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan BackgroundAudioTrack.TrimTimeFromStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BackgroundAudioTrack.TrimTimeFromStart");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromStart");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan TrimTimeFromEnd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan BackgroundAudioTrack.TrimTimeFromEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BackgroundAudioTrack.TrimTimeFromEnd");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromEnd");
+				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> BackgroundAudioTrack.AudioEffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIAudioEffectDefinition%3E%20BackgroundAudioTrack.AudioEffectDefinitions");
 			}
 		}
 #endif
@@ -71,21 +39,39 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Media.Effects.IAudioEffectDefinition> AudioEffectDefinitions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> BackgroundAudioTrack.AudioEffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIAudioEffectDefinition%3E%20BackgroundAudioTrack.AudioEffectDefinitions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan OriginalDuration
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member TimeSpan BackgroundAudioTrack.OriginalDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BackgroundAudioTrack.OriginalDuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan TrimTimeFromEnd
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan BackgroundAudioTrack.TrimTimeFromEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BackgroundAudioTrack.TrimTimeFromEnd");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromEnd");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan TrimTimeFromStart
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan BackgroundAudioTrack.TrimTimeFromStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BackgroundAudioTrack.TrimTimeFromStart");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromStart");
 			}
 		}
 #endif
@@ -109,17 +95,46 @@ namespace Windows.Media.Editing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromStart.get
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromStart.set
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromEnd.get
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromEnd.set
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.OriginalDuration.get
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimmedDuration.get
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.UserData.get
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Delay.set
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Delay.get
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Volume.set
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Volume.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double Volume
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double BackgroundAudioTrack.Volume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20BackgroundAudioTrack.Volume");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "double BackgroundAudioTrack.Volume");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.Editing.BackgroundAudioTrack CreateFromEmbeddedAudioTrack(global::Windows.Media.Editing.EmbeddedAudioTrack embeddedAudioTrack)
+		{
+			throw new global::System.NotImplementedException("The member BackgroundAudioTrack BackgroundAudioTrack.CreateFromEmbeddedAudioTrack(EmbeddedAudioTrack embeddedAudioTrack) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundAudioTrack%20BackgroundAudioTrack.CreateFromEmbeddedAudioTrack%28EmbeddedAudioTrack%20embeddedAudioTrack%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.BackgroundAudioTrack> CreateFromFileAsync(global::Windows.Storage.IStorageFile file)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<BackgroundAudioTrack> BackgroundAudioTrack.CreateFromFileAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBackgroundAudioTrack%3E%20BackgroundAudioTrack.CreateFromFileAsync%28IStorageFile%20file%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.~BackgroundAudioTrack()
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.operator ==(Windows.Media.Editing.BackgroundAudioTrack, Windows.Media.Editing.BackgroundAudioTrack)
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.operator !=(Windows.Media.Editing.BackgroundAudioTrack, Windows.Media.Editing.BackgroundAudioTrack)
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Equals(Windows.Media.Editing.BackgroundAudioTrack)
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Equals(object)
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.GetHashCode()
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.BackgroundAudioTrack Clone()
@@ -135,19 +150,17 @@ namespace Windows.Media.Editing
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.AudioEffectDefinitions.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.Editing.BackgroundAudioTrack CreateFromEmbeddedAudioTrack(global::Windows.Media.Editing.EmbeddedAudioTrack embeddedAudioTrack)
-		{
-			throw new global::System.NotImplementedException("The member BackgroundAudioTrack BackgroundAudioTrack.CreateFromEmbeddedAudioTrack(EmbeddedAudioTrack embeddedAudioTrack) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundAudioTrack%20BackgroundAudioTrack.CreateFromEmbeddedAudioTrack%28EmbeddedAudioTrack%20embeddedAudioTrack%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.BackgroundAudioTrack> CreateFromFileAsync(global::Windows.Storage.IStorageFile file)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BackgroundAudioTrack> BackgroundAudioTrack.CreateFromFileAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBackgroundAudioTrack%3E%20BackgroundAudioTrack.CreateFromFileAsync%28IStorageFile%20file%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Delay.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Delay.set
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.OriginalDuration.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromEnd.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromEnd.set
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromStart.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimTimeFromStart.set
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.TrimmedDuration.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.UserData.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Volume.get
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Volume.set
+		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

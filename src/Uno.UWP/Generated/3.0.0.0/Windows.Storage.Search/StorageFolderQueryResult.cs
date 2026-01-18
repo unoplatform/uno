@@ -23,6 +23,16 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.operator ==(Windows.Storage.Search.StorageFolderQueryResult, Windows.Storage.Search.StorageFolderQueryResult)
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.operator !=(Windows.Storage.Search.StorageFolderQueryResult, Windows.Storage.Search.StorageFolderQueryResult)
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.Equals(Windows.Storage.Search.StorageFolderQueryResult)
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync(uint startIndex, uint maxNumberOfItems)
@@ -44,11 +54,6 @@ namespace Windows.Storage.Search
 			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> StorageFolderQueryResult.GetItemCountAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cuint%3E%20StorageFolderQueryResult.GetItemCountAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.Folder.get
-		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.ContentsChanged.add
-		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.ContentsChanged.remove
-		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.OptionsChanged.add
-		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.OptionsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync(object value)
@@ -70,6 +75,12 @@ namespace Windows.Storage.Search
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.StorageFolderQueryResult", "void StorageFolderQueryResult.ApplyNewQueryOptions(QueryOptions newQueryOptions)");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.ContentsChanged.add
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.ContentsChanged.remove
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.OptionsChanged.add
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.OptionsChanged.remove
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.Folder.get
+		// Forced skipping of method Windows.Storage.Search.StorageFolderQueryResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Search.IStorageQueryResultBase, object> ContentsChanged

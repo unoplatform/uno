@@ -27,15 +27,7 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void NotifyLayoutCompleted()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "void CoreWindowResizeManager.NotifyLayoutCompleted()");
-		}
-#endif
-		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.set
-		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Core.CoreWindowResizeManager GetForCurrentView()
@@ -43,5 +35,25 @@ namespace Windows.UI.Core
 			throw new global::System.NotImplementedException("The member CoreWindowResizeManager CoreWindowResizeManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWindowResizeManager%20CoreWindowResizeManager.GetForCurrentView%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.operator ==(Windows.UI.Core.CoreWindowResizeManager, Windows.UI.Core.CoreWindowResizeManager)
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.operator !=(Windows.UI.Core.CoreWindowResizeManager, Windows.UI.Core.CoreWindowResizeManager)
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.Equals(Windows.UI.Core.CoreWindowResizeManager)
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.Equals(object)
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void NotifyLayoutCompleted()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "void CoreWindowResizeManager.NotifyLayoutCompleted()");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.set
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -6,29 +6,42 @@ namespace Microsoft.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PathSegmentCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.PathSegment>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.PathSegment>
+	public partial class PathSegmentCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.PathSegment>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.PathSegment>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.PathSegment>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.PathSegmentCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.PathSegmentCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.IndexOf(Microsoft.UI.Xaml.Media.PathSegment, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.SetAt(uint, Microsoft.UI.Xaml.Media.PathSegment)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.PathSegment)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Append(Microsoft.UI.Xaml.Media.PathSegment)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.GetMany(uint, Microsoft.UI.Xaml.Media.PathSegment[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.ReplaceAll(Microsoft.UI.Xaml.Media.PathSegment[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.operator ==(Microsoft.UI.Xaml.Media.PathSegmentCollection, Microsoft.UI.Xaml.Media.PathSegmentCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.operator !=(Microsoft.UI.Xaml.Media.PathSegmentCollection, Microsoft.UI.Xaml.Media.PathSegmentCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Equals(Microsoft.UI.Xaml.Media.PathSegmentCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.IndexOf(Microsoft.UI.Xaml.Media.PathSegment)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.Insert(int, Microsoft.UI.Xaml.Media.PathSegment)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.Add(Microsoft.UI.Xaml.Media.PathSegment)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.Contains(Microsoft.UI.Xaml.Media.PathSegment)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.CopyTo(Microsoft.UI.Xaml.Media.PathSegment[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.Remove(Microsoft.UI.Xaml.Media.PathSegment)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathSegment>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathSegment>.set_Item(int, Microsoft.UI.Xaml.Media.PathSegment)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathSegment>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathSegment>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathSegment>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathSegment>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathSegment>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathSegment>
 		// Processing: System.Collections.IEnumerable
 	}

@@ -13,5 +13,16 @@ namespace Windows.Devices.PointOfService
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.operator ==(Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs, Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.operator !=(Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs, Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.Equals(Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

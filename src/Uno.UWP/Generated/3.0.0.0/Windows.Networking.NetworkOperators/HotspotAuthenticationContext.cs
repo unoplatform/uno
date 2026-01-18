@@ -63,11 +63,24 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WirelessNetworkId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.NetworkAdapter.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.RedirectMessageUrl.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.RedirectMessageXml.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.AuthenticationUrl.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool TryGetAuthenticationContext(string evenToken, out global::Windows.Networking.NetworkOperators.HotspotAuthenticationContext context)
+		{
+			throw new global::System.NotImplementedException("The member bool HotspotAuthenticationContext.TryGetAuthenticationContext(string evenToken, out HotspotAuthenticationContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HotspotAuthenticationContext.TryGetAuthenticationContext%28string%20evenToken%2C%20out%20HotspotAuthenticationContext%20context%29");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.operator ==(Windows.Networking.NetworkOperators.HotspotAuthenticationContext, Windows.Networking.NetworkOperators.HotspotAuthenticationContext)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.operator !=(Windows.Networking.NetworkOperators.HotspotAuthenticationContext, Windows.Networking.NetworkOperators.HotspotAuthenticationContext)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.Equals(Windows.Networking.NetworkOperators.HotspotAuthenticationContext)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void IssueCredentials(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure)
@@ -103,12 +116,11 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<HotspotCredentialsAuthenticationResult> HotspotAuthenticationContext.IssueCredentialsAsync(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHotspotCredentialsAuthenticationResult%3E%20HotspotAuthenticationContext.IssueCredentialsAsync%28string%20userName%2C%20string%20password%2C%20string%20extraParameters%2C%20bool%20markAsManualConnectOnFailure%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool TryGetAuthenticationContext(string evenToken, out global::Windows.Networking.NetworkOperators.HotspotAuthenticationContext context)
-		{
-			throw new global::System.NotImplementedException("The member bool HotspotAuthenticationContext.TryGetAuthenticationContext(string evenToken, out HotspotAuthenticationContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HotspotAuthenticationContext.TryGetAuthenticationContext%28string%20evenToken%2C%20out%20HotspotAuthenticationContext%20context%29");
-		}
-#endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.AuthenticationUrl.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.NetworkAdapter.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.RedirectMessageUrl.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.RedirectMessageXml.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WirelessNetworkId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

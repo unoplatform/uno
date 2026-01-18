@@ -10,11 +10,31 @@ namespace Windows.Devices.Geolocation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Geolocation.AltitudeReferenceSystem AltitudeReferenceSystem
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AltitudeReferenceSystem GeoboundingBox.AltitudeReferenceSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltitudeReferenceSystem%20GeoboundingBox.AltitudeReferenceSystem");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Geolocation.BasicGeoposition Center
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member BasicGeoposition GeoboundingBox.Center is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BasicGeoposition%20GeoboundingBox.Center");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Geolocation.GeoshapeType GeoshapeType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member GeoshapeType GeoboundingBox.GeoshapeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoshapeType%20GeoboundingBox.GeoshapeType");
 			}
 		}
 #endif
@@ -60,26 +80,6 @@ namespace Windows.Devices.Geolocation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Geolocation.AltitudeReferenceSystem AltitudeReferenceSystem
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AltitudeReferenceSystem GeoboundingBox.AltitudeReferenceSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltitudeReferenceSystem%20GeoboundingBox.AltitudeReferenceSystem");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Geolocation.GeoshapeType GeoshapeType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GeoshapeType GeoboundingBox.GeoshapeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoshapeType%20GeoboundingBox.GeoshapeType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint SpatialReferenceId
 		{
 			get
@@ -112,14 +112,7 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GeoboundingBox(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.NorthwestCorner.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.SoutheastCorner.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.Center.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.MinAltitude.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.MaxAltitude.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GeoshapeType.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.SpatialReferenceId.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.AltitudeReferenceSystem.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Geolocation.GeoboundingBox TryCompute(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions)
@@ -141,6 +134,25 @@ namespace Windows.Devices.Geolocation
 			throw new global::System.NotImplementedException("The member GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeRefSystem, uint spatialReferenceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoboundingBox%20GeoboundingBox.TryCompute%28IEnumerable%3CBasicGeoposition%3E%20positions%2C%20AltitudeReferenceSystem%20altitudeRefSystem%2C%20uint%20spatialReferenceId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.operator ==(Windows.Devices.Geolocation.GeoboundingBox, Windows.Devices.Geolocation.GeoboundingBox)
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.operator !=(Windows.Devices.Geolocation.GeoboundingBox, Windows.Devices.Geolocation.GeoboundingBox)
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.Equals(Windows.Devices.Geolocation.GeoboundingBox)
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.AltitudeReferenceSystem.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.Center.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GeoshapeType.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.MaxAltitude.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.MinAltitude.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.NorthwestCorner.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.SoutheastCorner.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.SpatialReferenceId.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Geolocation.IGeoshape
 	}
 }

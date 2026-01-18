@@ -13,5 +13,16 @@ namespace Windows.Media.Capture.Frames
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.operator ==(Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs, Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.operator !=(Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs, Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.Equals(Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

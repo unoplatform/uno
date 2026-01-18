@@ -10,7 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property AddedItems
 		// Skipping already declared property RemovedItems
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.AddedItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.RemovedItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

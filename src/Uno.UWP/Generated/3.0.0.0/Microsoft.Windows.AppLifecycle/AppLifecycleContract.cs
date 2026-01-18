@@ -4,10 +4,8 @@
 namespace Microsoft.Windows.AppLifecycle
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented]
-#endif
-	public partial struct AppLifecycleContract
+	public enum AppLifecycleContract
 	{
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppLifecycleContract.AppLifecycleContract()
 	}
+#endif
 }

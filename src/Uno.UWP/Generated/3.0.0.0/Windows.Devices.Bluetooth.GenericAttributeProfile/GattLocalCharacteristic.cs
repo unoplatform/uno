@@ -103,11 +103,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.Uuid.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.StaticValue.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.CharacteristicProperties.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.ReadProtectionLevel.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WriteProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic, Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic, Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptorResult> CreateDescriptorAsync(global::System.Guid descriptorUuid, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptorParameters parameters)
@@ -115,16 +120,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattLocalDescriptorResult> GattLocalCharacteristic.CreateDescriptorAsync(Guid descriptorUuid, GattLocalDescriptorParameters parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattLocalDescriptorResult%3E%20GattLocalCharacteristic.CreateDescriptorAsync%28Guid%20descriptorUuid%2C%20GattLocalDescriptorParameters%20parameters%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.Descriptors.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.UserDescription.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.PresentationFormats.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.SubscribedClients.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.SubscribedClientsChanged.add
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.SubscribedClientsChanged.remove
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.ReadRequested.add
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.ReadRequested.remove
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WriteRequested.add
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WriteRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult>> NotifyValueAsync(global::Windows.Storage.Streams.IBuffer value)
@@ -139,6 +134,22 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattClientNotificationResult> GattLocalCharacteristic.NotifyValueAsync(IBuffer value, GattSubscribedClient subscribedClient) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattClientNotificationResult%3E%20GattLocalCharacteristic.NotifyValueAsync%28IBuffer%20value%2C%20GattSubscribedClient%20subscribedClient%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.ReadRequested.add
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.ReadRequested.remove
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.SubscribedClientsChanged.add
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.SubscribedClientsChanged.remove
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WriteRequested.add
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WriteRequested.remove
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.CharacteristicProperties.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.Descriptors.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.PresentationFormats.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.ReadProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.StaticValue.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.SubscribedClients.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.UserDescription.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.Uuid.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.WriteProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadRequestedEventArgs> ReadRequested

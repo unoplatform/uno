@@ -23,6 +23,17 @@ namespace Windows.System.Diagnostics.Telemetry
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.operator ==(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult, Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.operator !=(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult, Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.Equals(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.Status.get
+		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

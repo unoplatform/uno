@@ -30,20 +30,6 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Text
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AdaptiveNotificationText.Text");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.AdaptiveNotificationText", "string AdaptiveNotificationText.Text");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Language
 		{
 			get
@@ -58,18 +44,43 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Text
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AdaptiveNotificationText.Text");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.AdaptiveNotificationText", "string AdaptiveNotificationText.Text");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AdaptiveNotificationText()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.AdaptiveNotificationText", "AdaptiveNotificationText.AdaptiveNotificationText()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.AdaptiveNotificationText()
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Text.get
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Text.set
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.operator ==(Windows.UI.Notifications.AdaptiveNotificationText, Windows.UI.Notifications.AdaptiveNotificationText)
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.operator !=(Windows.UI.Notifications.AdaptiveNotificationText, Windows.UI.Notifications.AdaptiveNotificationText)
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Equals(Windows.UI.Notifications.AdaptiveNotificationText)
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Hints.get
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Kind.get
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Language.get
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Language.set
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Kind.get
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Hints.get
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Text.get
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Text.set
+		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Notifications.IAdaptiveNotificationContent
 	}
 }

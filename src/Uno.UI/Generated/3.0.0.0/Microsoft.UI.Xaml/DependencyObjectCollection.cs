@@ -6,33 +6,47 @@ namespace Microsoft.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DependencyObjectCollection : global::Microsoft.UI.Xaml.DependencyObject, global::Windows.Foundation.Collections.IObservableVector<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.DependencyObject>
+	public partial class DependencyObjectCollection : global::Microsoft.UI.Xaml.DependencyObject, global::Windows.Foundation.Collections.IObservableVector<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.operator ==(Microsoft.UI.Xaml.DependencyObjectCollection, Microsoft.UI.Xaml.DependencyObjectCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.operator !=(Microsoft.UI.Xaml.DependencyObjectCollection, Microsoft.UI.Xaml.DependencyObjectCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Equals(Microsoft.UI.Xaml.DependencyObjectCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.VectorChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.VectorChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.IndexOf(Microsoft.UI.Xaml.DependencyObject, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.SetAt(uint, Microsoft.UI.Xaml.DependencyObject)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.InsertAt(uint, Microsoft.UI.Xaml.DependencyObject)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Append(Microsoft.UI.Xaml.DependencyObject)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.GetMany(uint, Microsoft.UI.Xaml.DependencyObject[])
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.ReplaceAll(Microsoft.UI.Xaml.DependencyObject[])
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.IndexOf(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.Insert(int, Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.Add(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.Contains(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.CopyTo(Microsoft.UI.Xaml.DependencyObject[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.Remove(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>.set_Item(int, Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared event Microsoft.UI.Xaml.DependencyObjectCollection.VectorChanged
 		// Processing: Windows.Foundation.Collections.IObservableVector<Microsoft.UI.Xaml.DependencyObject>
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.DependencyObject>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.DependencyObject>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.DependencyObject>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.DependencyObject>
 		// Processing: System.Collections.IEnumerable
 	}

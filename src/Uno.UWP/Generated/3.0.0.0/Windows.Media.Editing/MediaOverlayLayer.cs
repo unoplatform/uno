@@ -30,14 +30,6 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public MediaOverlayLayer(global::Windows.Media.Effects.IVideoCompositorDefinition compositorDefinition)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer.MediaOverlayLayer(IVideoCompositorDefinition compositorDefinition)");
-		}
-#endif
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.MediaOverlayLayer(Windows.Media.Effects.IVideoCompositorDefinition)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaOverlayLayer()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer.MediaOverlayLayer()");
@@ -46,12 +38,32 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.MediaOverlayLayer()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public MediaOverlayLayer(global::Windows.Media.Effects.IVideoCompositorDefinition compositorDefinition)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer.MediaOverlayLayer(IVideoCompositorDefinition compositorDefinition)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.MediaOverlayLayer(Windows.Media.Effects.IVideoCompositorDefinition)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.~MediaOverlayLayer()
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.operator ==(Windows.Media.Editing.MediaOverlayLayer, Windows.Media.Editing.MediaOverlayLayer)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.operator !=(Windows.Media.Editing.MediaOverlayLayer, Windows.Media.Editing.MediaOverlayLayer)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.Equals(Windows.Media.Editing.MediaOverlayLayer)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.Equals(object)
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.GetHashCode()
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlayLayer Clone()
 		{
 			throw new global::System.NotImplementedException("The member MediaOverlayLayer MediaOverlayLayer.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaOverlayLayer%20MediaOverlayLayer.Clone%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.Overlays.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.CustomCompositorDefinition.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.Overlays.get
+		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

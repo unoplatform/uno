@@ -23,26 +23,12 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.AppInfo.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.System.AppResourceGroupInfo> GetResourceGroups()
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo>> RequestInfoAsync()
 		{
-			throw new global::System.NotImplementedException("The member IList<AppResourceGroupInfo> AppDiagnosticInfo.GetResourceGroups() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppResourceGroupInfo%3E%20AppDiagnosticInfo.GetResourceGroups%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.AppResourceGroupInfoWatcher CreateResourceGroupWatcher()
-		{
-			throw new global::System.NotImplementedException("The member AppResourceGroupInfoWatcher AppDiagnosticInfo.CreateResourceGroupWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupInfoWatcher%20AppDiagnosticInfo.CreateResourceGroupWatcher%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppActivationResult> LaunchAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppActivationResult> AppDiagnosticInfo.LaunchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppActivationResult%3E%20AppDiagnosticInfo.LaunchAsync%28%29");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppDiagnosticInfo>> AppDiagnosticInfo.RequestInfoAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppDiagnosticInfo%3E%3E%20AppDiagnosticInfo.RequestInfoAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -80,12 +66,38 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppDiagnosticInfo>> AppDiagnosticInfo.RequestInfoForAppAsync(string appUserModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppDiagnosticInfo%3E%3E%20AppDiagnosticInfo.RequestInfoForAppAsync%28string%20appUserModelId%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.FromAbi(nint)
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.operator ==(Windows.System.AppDiagnosticInfo, Windows.System.AppDiagnosticInfo)
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.operator !=(Windows.System.AppDiagnosticInfo, Windows.System.AppDiagnosticInfo)
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.Equals(Windows.System.AppDiagnosticInfo)
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.Equals(object)
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.GetHashCode()
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo>> RequestInfoAsync()
+		public global::System.Collections.Generic.IList<global::Windows.System.AppResourceGroupInfo> GetResourceGroups()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppDiagnosticInfo>> AppDiagnosticInfo.RequestInfoAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppDiagnosticInfo%3E%3E%20AppDiagnosticInfo.RequestInfoAsync%28%29");
+			throw new global::System.NotImplementedException("The member IList<AppResourceGroupInfo> AppDiagnosticInfo.GetResourceGroups() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppResourceGroupInfo%3E%20AppDiagnosticInfo.GetResourceGroups%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.AppResourceGroupInfoWatcher CreateResourceGroupWatcher()
+		{
+			throw new global::System.NotImplementedException("The member AppResourceGroupInfoWatcher AppDiagnosticInfo.CreateResourceGroupWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupInfoWatcher%20AppDiagnosticInfo.CreateResourceGroupWatcher%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppActivationResult> LaunchAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AppActivationResult> AppDiagnosticInfo.LaunchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppActivationResult%3E%20AppDiagnosticInfo.LaunchAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.AppInfo.get
+		// Forced skipping of method Windows.System.AppDiagnosticInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

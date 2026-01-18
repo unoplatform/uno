@@ -15,141 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float QuadraticAttenuation
+		public float ConstantAttenuation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.QuadraticAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.QuadraticAttenuation");
+				throw new global::System.NotImplementedException("The member float SpotLight.ConstantAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.ConstantAttenuation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.QuadraticAttenuation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color OuterConeColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color SpotLight.OuterConeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20SpotLight.OuterConeColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Color SpotLight.OuterConeColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float OuterConeAngleInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.OuterConeAngleInDegrees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngleInDegrees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float OuterConeAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.OuterConeAngle");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngle");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Offset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpotLight.Offset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Vector3 SpotLight.Offset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float LinearAttenuation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.LinearAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.LinearAttenuation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.LinearAttenuation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color InnerConeColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color SpotLight.InnerConeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20SpotLight.InnerConeColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Color SpotLight.InnerConeColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float InnerConeAngleInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.InnerConeAngleInDegrees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.InnerConeAngleInDegrees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float InnerConeAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.InnerConeAngle");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.InnerConeAngle");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Direction
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpotLight.Direction");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Vector3 SpotLight.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.ConstantAttenuation");
 			}
 		}
 #endif
@@ -169,29 +43,57 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float ConstantAttenuation
+		public global::System.Numerics.Vector3 Direction
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.ConstantAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.ConstantAttenuation");
+				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpotLight.Direction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.ConstantAttenuation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Vector3 SpotLight.Direction");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float OuterConeIntensity
+		public float InnerConeAngle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeIntensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.OuterConeIntensity");
+				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.InnerConeAngle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeIntensity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.InnerConeAngle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float InnerConeAngleInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.InnerConeAngleInDegrees");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.InnerConeAngleInDegrees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color InnerConeColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color SpotLight.InnerConeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20SpotLight.InnerConeColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Color SpotLight.InnerConeColor");
 			}
 		}
 #endif
@@ -211,15 +113,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float MinAttenuationCutoff
+		public float LinearAttenuation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.MinAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.MinAttenuationCutoff");
+				throw new global::System.NotImplementedException("The member float SpotLight.LinearAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.LinearAttenuation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.MinAttenuationCutoff");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.LinearAttenuation");
 			}
 		}
 #endif
@@ -237,6 +139,112 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float MinAttenuationCutoff
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.MinAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.MinAttenuationCutoff");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.MinAttenuationCutoff");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Offset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpotLight.Offset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Vector3 SpotLight.Offset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float OuterConeAngle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.OuterConeAngle");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float OuterConeAngleInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.OuterConeAngleInDegrees");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngleInDegrees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color OuterConeColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color SpotLight.OuterConeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20SpotLight.OuterConeColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Color SpotLight.OuterConeColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float OuterConeIntensity
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeIntensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.OuterConeIntensity");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeIntensity");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float QuadraticAttenuation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.QuadraticAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpotLight.QuadraticAttenuation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.QuadraticAttenuation");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.SpotLight.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.SpotLight.operator ==(Windows.UI.Composition.SpotLight, Windows.UI.Composition.SpotLight)
+		// Forced skipping of method Windows.UI.Composition.SpotLight.operator !=(Windows.UI.Composition.SpotLight, Windows.UI.Composition.SpotLight)
+		// Forced skipping of method Windows.UI.Composition.SpotLight.Equals(Windows.UI.Composition.SpotLight)
+		// Forced skipping of method Windows.UI.Composition.SpotLight.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.SpotLight.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.SpotLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.SpotLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.ConstantAttenuation.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.ConstantAttenuation.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.CoordinateSpace.get
@@ -249,8 +257,14 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.SpotLight.InnerConeAngleInDegrees.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.InnerConeColor.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.InnerConeColor.set
+		// Forced skipping of method Windows.UI.Composition.SpotLight.InnerConeIntensity.get
+		// Forced skipping of method Windows.UI.Composition.SpotLight.InnerConeIntensity.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.LinearAttenuation.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.LinearAttenuation.set
+		// Forced skipping of method Windows.UI.Composition.SpotLight.MaxAttenuationCutoff.get
+		// Forced skipping of method Windows.UI.Composition.SpotLight.MaxAttenuationCutoff.set
+		// Forced skipping of method Windows.UI.Composition.SpotLight.MinAttenuationCutoff.get
+		// Forced skipping of method Windows.UI.Composition.SpotLight.MinAttenuationCutoff.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.Offset.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.Offset.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.OuterConeAngle.get
@@ -259,15 +273,11 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.SpotLight.OuterConeAngleInDegrees.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.OuterConeColor.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.OuterConeColor.set
-		// Forced skipping of method Windows.UI.Composition.SpotLight.QuadraticAttenuation.get
-		// Forced skipping of method Windows.UI.Composition.SpotLight.QuadraticAttenuation.set
-		// Forced skipping of method Windows.UI.Composition.SpotLight.InnerConeIntensity.get
-		// Forced skipping of method Windows.UI.Composition.SpotLight.InnerConeIntensity.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.OuterConeIntensity.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.OuterConeIntensity.set
-		// Forced skipping of method Windows.UI.Composition.SpotLight.MinAttenuationCutoff.get
-		// Forced skipping of method Windows.UI.Composition.SpotLight.MinAttenuationCutoff.set
-		// Forced skipping of method Windows.UI.Composition.SpotLight.MaxAttenuationCutoff.get
-		// Forced skipping of method Windows.UI.Composition.SpotLight.MaxAttenuationCutoff.set
+		// Forced skipping of method Windows.UI.Composition.SpotLight.QuadraticAttenuation.get
+		// Forced skipping of method Windows.UI.Composition.SpotLight.QuadraticAttenuation.set
+		// Forced skipping of method Windows.UI.Composition.SpotLight.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.SpotLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

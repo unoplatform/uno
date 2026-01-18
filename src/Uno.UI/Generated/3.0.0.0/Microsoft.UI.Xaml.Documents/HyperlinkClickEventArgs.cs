@@ -8,5 +8,15 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class HyperlinkClickEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.operator ==(Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.operator !=(Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.Equals(Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

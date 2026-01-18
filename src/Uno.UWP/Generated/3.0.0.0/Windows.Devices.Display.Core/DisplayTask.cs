@@ -13,6 +13,16 @@ namespace Windows.Devices.Display.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.operator ==(Windows.Devices.Display.Core.DisplayTask, Windows.Devices.Display.Core.DisplayTask)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.operator !=(Windows.Devices.Display.Core.DisplayTask, Windows.Devices.Display.Core.DisplayTask)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.Equals(Windows.Devices.Display.Core.DisplayTask)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetScanout(global::Windows.Devices.Display.Core.DisplayScanout scanout)
@@ -27,12 +37,6 @@ namespace Windows.Devices.Display.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTask", "void DisplayTask.SetWait(DisplayFence readyFence, ulong readyFenceValue)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetSignal(global::Windows.Devices.Display.Core.DisplayTaskSignalKind signalKind, global::Windows.Devices.Display.Core.DisplayFence fence)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTask", "void DisplayTask.SetSignal(DisplayTaskSignalKind signalKind, DisplayFence fence)");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayTask.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

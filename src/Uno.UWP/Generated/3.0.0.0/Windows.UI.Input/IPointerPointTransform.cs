@@ -14,12 +14,12 @@ namespace Windows.UI.Input
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.IPointerPointTransform.Inverse.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		bool TryTransform(global::Windows.Foundation.Point inPoint, out global::Windows.Foundation.Point outPoint);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.Rect TransformBounds(global::Windows.Foundation.Rect rect);
 #endif
+		// Forced skipping of method Windows.UI.Input.IPointerPointTransform.Inverse.get
 	}
 }

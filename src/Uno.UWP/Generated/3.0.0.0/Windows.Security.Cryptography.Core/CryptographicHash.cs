@@ -13,6 +13,16 @@ namespace Windows.Security.Cryptography.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.operator ==(Windows.Security.Cryptography.Core.CryptographicHash, Windows.Security.Cryptography.Core.CryptographicHash)
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.operator !=(Windows.Security.Cryptography.Core.CryptographicHash, Windows.Security.Cryptography.Core.CryptographicHash)
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.Equals(Windows.Security.Cryptography.Core.CryptographicHash)
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Append(global::Windows.Storage.Streams.IBuffer data)
@@ -27,5 +37,6 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member IBuffer CryptographicHash.GetValueAndReset() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20CryptographicHash.GetValueAndReset%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

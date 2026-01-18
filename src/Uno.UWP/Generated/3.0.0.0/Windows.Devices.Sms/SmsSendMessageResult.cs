@@ -83,12 +83,23 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.operator ==(Windows.Devices.Sms.SmsSendMessageResult, Windows.Devices.Sms.SmsSendMessageResult)
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.operator !=(Windows.Devices.Sms.SmsSendMessageResult, Windows.Devices.Sms.SmsSendMessageResult)
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.Equals(Windows.Devices.Sms.SmsSendMessageResult)
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.Equals(object)
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsErrorTransient.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsSuccessful.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.MessageReferenceNumbers.get
-		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.CellularClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.ModemErrorCode.get
-		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsErrorTransient.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.NetworkCauseCode.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.TransportFailureCause.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

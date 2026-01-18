@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.KeepInteriorCornersSquareProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.ComboBox comboBox, bool value)
@@ -36,5 +36,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return (bool)comboBox.GetValue(KeepInteriorCornersSquareProperty);
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.KeepInteriorCornersSquareProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper, Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper, Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.Equals(Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

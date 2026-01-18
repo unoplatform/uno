@@ -26,7 +26,24 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.GeovisitMonitor()
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.MonitoringScope.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeovisit%3E%20GeovisitMonitor.GetLastReportAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.operator ==(Windows.Devices.Geolocation.GeovisitMonitor, Windows.Devices.Geolocation.GeovisitMonitor)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.operator !=(Windows.Devices.Geolocation.GeovisitMonitor, Windows.Devices.Geolocation.GeovisitMonitor)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.Equals(Windows.Devices.Geolocation.GeovisitMonitor)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start(global::Windows.Devices.Geolocation.VisitMonitoringScope value)
@@ -43,13 +60,8 @@ namespace Windows.Devices.Geolocation
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.add
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeovisit%3E%20GeovisitMonitor.GetLastReportAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.MonitoringScope.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.GeovisitMonitor, global::Windows.Devices.Geolocation.GeovisitStateChangedEventArgs> VisitStateChanged

@@ -10,20 +10,6 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string HashAlgorithmName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CmsSignerInfo.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CmsSignerInfo.HashAlgorithmName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "string CmsSignerInfo.HashAlgorithmName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.Certificate Certificate
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.Security.Cryptography.Certificates
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate CmsSignerInfo.Certificate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string HashAlgorithmName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CmsSignerInfo.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CmsSignerInfo.HashAlgorithmName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "string CmsSignerInfo.HashAlgorithmName");
 			}
 		}
 #endif
@@ -54,10 +54,21 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.CmsSignerInfo()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.operator ==(Windows.Security.Cryptography.Certificates.CmsSignerInfo, Windows.Security.Cryptography.Certificates.CmsSignerInfo)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.operator !=(Windows.Security.Cryptography.Certificates.CmsSignerInfo, Windows.Security.Cryptography.Certificates.CmsSignerInfo)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Equals(Windows.Security.Cryptography.Certificates.CmsSignerInfo)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Certificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Certificate.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.HashAlgorithmName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.HashAlgorithmName.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.TimestampInfo.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

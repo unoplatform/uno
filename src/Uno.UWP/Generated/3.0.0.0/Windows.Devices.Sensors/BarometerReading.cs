@@ -8,13 +8,24 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class BarometerReading
 	{
-		// Skipping already declared property StationPressureInHectopascals
-		// Skipping already declared property Timestamp
 		// Skipping already declared property PerformanceCount
 		// Skipping already declared property Properties
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.StationPressureInHectopascals.get
+		// Skipping already declared property StationPressureInHectopascals
+		// Skipping already declared property Timestamp
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.operator ==(Windows.Devices.Sensors.BarometerReading, Windows.Devices.Sensors.BarometerReading)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.operator !=(Windows.Devices.Sensors.BarometerReading, Windows.Devices.Sensors.BarometerReading)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Equals(Windows.Devices.Sensors.BarometerReading)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.StationPressureInHectopascals.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

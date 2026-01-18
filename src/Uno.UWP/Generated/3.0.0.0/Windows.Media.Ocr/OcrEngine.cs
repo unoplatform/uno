@@ -15,16 +15,6 @@ namespace Windows.Media.Ocr
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Globalization.Language RecognizerLanguage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Language OcrEngine.RecognizerLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Language%20OcrEngine.RecognizerLanguage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Language> AvailableRecognizerLanguages
 		{
 			get
@@ -45,14 +35,15 @@ namespace Windows.Media.Ocr
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Ocr.OcrResult> RecognizeAsync(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
+		public global::Windows.Globalization.Language RecognizerLanguage
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<OcrResult> OcrEngine.RecognizeAsync(SoftwareBitmap bitmap) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COcrResult%3E%20OcrEngine.RecognizeAsync%28SoftwareBitmap%20bitmap%29");
+			get
+			{
+				throw new global::System.NotImplementedException("The member Language OcrEngine.RecognizerLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Language%20OcrEngine.RecognizerLanguage");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.RecognizerLanguage.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.MaxImageDimension.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.AvailableRecognizerLanguages.get
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsLanguageSupported(global::Windows.Globalization.Language language)
@@ -74,5 +65,26 @@ namespace Windows.Media.Ocr
 			throw new global::System.NotImplementedException("The member OcrEngine OcrEngine.TryCreateFromUserProfileLanguages() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=OcrEngine%20OcrEngine.TryCreateFromUserProfileLanguages%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.AvailableRecognizerLanguages.get
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.MaxImageDimension.get
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.operator ==(Windows.Media.Ocr.OcrEngine, Windows.Media.Ocr.OcrEngine)
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.operator !=(Windows.Media.Ocr.OcrEngine, Windows.Media.Ocr.OcrEngine)
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.Equals(Windows.Media.Ocr.OcrEngine)
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.Equals(object)
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.GetHashCode()
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Ocr.OcrResult> RecognizeAsync(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<OcrResult> OcrEngine.RecognizeAsync(SoftwareBitmap bitmap) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COcrResult%3E%20OcrEngine.RecognizeAsync%28SoftwareBitmap%20bitmap%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.RecognizerLanguage.get
+		// Forced skipping of method Windows.Media.Ocr.OcrEngine.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

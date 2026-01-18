@@ -6,7 +6,7 @@ namespace Windows.Storage.Search
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SortEntryVector : global::System.Collections.Generic.IList<global::Windows.Storage.Search.SortEntry>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry>
+	public partial class SortEntryVector : global::System.Collections.Generic.IList<global::Windows.Storage.Search.SortEntry>, global::System.Collections.Generic.ICollection<global::Windows.Storage.Search.SortEntry>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal SortEntryVector()
@@ -15,114 +15,11 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint SortEntryVector.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SortEntryVector.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.GetAt(uint)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Size.get
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.GetView()
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.IndexOf(Windows.Storage.Search.SortEntry, out uint)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.SetAt(uint, Windows.Storage.Search.SortEntry)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.InsertAt(uint, Windows.Storage.Search.SortEntry)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.RemoveAt(uint)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Append(Windows.Storage.Search.SortEntry)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.RemoveAtEnd()
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Clear()
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.GetMany(uint, Windows.Storage.Search.SortEntry[])
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.ReplaceAll(Windows.Storage.Search.SortEntry[])
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.First()
-		// Processing: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Windows.Storage.Search.SortEntry item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Windows.Storage.Search.SortEntry item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Search.SortEntry this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Windows.Storage.Search.SortEntry item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Windows.Storage.Search.SortEntry item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Windows.Storage.Search.SortEntry[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Windows.Storage.Search.SortEntry item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Count
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member int SortEntryVector.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SortEntryVector.Count");
 			}
 		}
 #endif
@@ -132,19 +29,108 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member bool SortEntryVector.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SortEntryVector.IsReadOnly");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.Search.SortEntry>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Storage.Search.SortEntry>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Search.SortEntry this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SortEntry SortEntryVector.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SortEntry%20SortEntryVector.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.SortEntryVector", "SortEntry SortEntryVector.this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.operator ==(Windows.Storage.Search.SortEntryVector, Windows.Storage.Search.SortEntryVector)
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.operator !=(Windows.Storage.Search.SortEntryVector, Windows.Storage.Search.SortEntryVector)
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Equals(Windows.Storage.Search.SortEntryVector)
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Count.get
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.IsReadOnly.get
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.this[int].get
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Windows.Storage.Search.SortEntry item)
+		{
+			throw new global::System.NotImplementedException("The member int SortEntryVector.IndexOf(SortEntry item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SortEntryVector.IndexOf%28SortEntry%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Windows.Storage.Search.SortEntry item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.SortEntryVector", "void SortEntryVector.Insert(int index, SortEntry item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.SortEntryVector", "void SortEntryVector.RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Windows.Storage.Search.SortEntry item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.SortEntryVector", "void SortEntryVector.Add(SortEntry item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.SortEntryVector", "void SortEntryVector.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Windows.Storage.Search.SortEntry item)
+		{
+			throw new global::System.NotImplementedException("The member bool SortEntryVector.Contains(SortEntry item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SortEntryVector.Contains%28SortEntry%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Windows.Storage.Search.SortEntry[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.SortEntryVector", "void SortEntryVector.CopyTo(SortEntry[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Windows.Storage.Search.SortEntry item)
+		{
+			throw new global::System.NotImplementedException("The member bool SortEntryVector.Remove(SortEntry item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SortEntryVector.Remove%28SortEntry%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Storage.Search.SortEntry> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<SortEntry> SortEntryVector.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CSortEntry%3E%20SortEntryVector.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>.get_Item(int)
+		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>.set_Item(int, Windows.Storage.Search.SortEntry)
+		// Processing: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
+		// Processing: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.Search.SortEntry>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

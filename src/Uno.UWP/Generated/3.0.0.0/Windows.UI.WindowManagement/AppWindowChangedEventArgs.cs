@@ -93,13 +93,24 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.operator ==(Windows.UI.WindowManagement.AppWindowChangedEventArgs, Windows.UI.WindowManagement.AppWindowChangedEventArgs)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.operator !=(Windows.UI.WindowManagement.AppWindowChangedEventArgs, Windows.UI.WindowManagement.AppWindowChangedEventArgs)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.Equals(Windows.UI.WindowManagement.AppWindowChangedEventArgs)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidDisplayRegionsChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidFrameChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidSizeChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidTitleBarChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidVisibilityChange.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowingEnvironmentChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowPresentationChange.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowingEnvironmentChange.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

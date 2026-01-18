@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.CubicEase.CubicEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.CubicEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.operator ==(Microsoft.UI.Xaml.Media.Animation.CubicEase, Microsoft.UI.Xaml.Media.Animation.CubicEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.operator !=(Microsoft.UI.Xaml.Media.Animation.CubicEase, Microsoft.UI.Xaml.Media.Animation.CubicEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.Equals(Microsoft.UI.Xaml.Media.Animation.CubicEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CubicEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

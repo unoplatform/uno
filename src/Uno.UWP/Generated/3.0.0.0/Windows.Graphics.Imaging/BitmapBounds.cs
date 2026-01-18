@@ -10,6 +10,19 @@ namespace Windows.Graphics.Imaging
 	{
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.BitmapBounds()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public BitmapBounds(uint _X, uint _Y, uint _Width, uint _Height)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapBounds", "BitmapBounds.BitmapBounds(uint _X, uint _Y, uint _Width, uint _Height)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.BitmapBounds(uint, uint, uint, uint)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.operator ==(Windows.Graphics.Imaging.BitmapBounds, Windows.Graphics.Imaging.BitmapBounds)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.operator !=(Windows.Graphics.Imaging.BitmapBounds, Windows.Graphics.Imaging.BitmapBounds)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.Equals(Windows.Graphics.Imaging.BitmapBounds)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint X;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

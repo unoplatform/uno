@@ -6,26 +6,28 @@ namespace Windows.Globalization.Collation
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CharacterGroupings : global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Collation.CharacterGrouping>, global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Collation.CharacterGrouping>
+	public partial class CharacterGroupings : global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Collation.CharacterGrouping>, global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Collation.CharacterGrouping>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Globalization.Collation.CharacterGrouping>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CharacterGroupings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CharacterGroupings.Size");
+				throw new global::System.NotImplementedException("The member int CharacterGroupings.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CharacterGroupings.Count");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public CharacterGroupings(string language)
+		public global::Windows.Globalization.Collation.CharacterGrouping this[int index]
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings.CharacterGroupings(string language)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member CharacterGrouping CharacterGroupings.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CharacterGrouping%20CharacterGroupings.this%5Bint%20index%5D");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CharacterGroupings()
@@ -36,36 +38,43 @@ namespace Windows.Globalization.Collation
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public CharacterGroupings(string language)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings.CharacterGroupings(string language)");
+		}
+#endif
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings(string)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.operator ==(Windows.Globalization.Collation.CharacterGroupings, Windows.Globalization.Collation.CharacterGroupings)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.operator !=(Windows.Globalization.Collation.CharacterGroupings, Windows.Globalization.Collation.CharacterGroupings)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Equals(Windows.Globalization.Collation.CharacterGroupings)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Equals(object)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.GetHashCode()
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Lookup(string text)
 		{
 			throw new global::System.NotImplementedException("The member string CharacterGroupings.Lookup(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CharacterGroupings.Lookup%28string%20text%29");
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.GetAt(uint)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Size.get
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.IndexOf(Windows.Globalization.Collation.CharacterGrouping, out uint)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.GetMany(uint, Windows.Globalization.Collation.CharacterGrouping[])
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.First()
-		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Globalization.Collation.CharacterGrouping>
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Count.get
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Globalization.Collation.CharacterGrouping this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Globalization.Collation.CharacterGrouping>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Globalization.Collation.CharacterGrouping>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Globalization.Collation.CharacterGrouping> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<CharacterGrouping> CharacterGroupings.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CCharacterGrouping%3E%20CharacterGroupings.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Collections.Generic.IReadOnlyList<Windows.Globalization.Collation.CharacterGrouping>.get_Item(int)
+		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Globalization.Collation.CharacterGrouping>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Globalization.Collation.CharacterGrouping>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -76,15 +85,5 @@ namespace Windows.Globalization.Collation
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Globalization.Collation.CharacterGrouping>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

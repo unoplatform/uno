@@ -15,85 +15,15 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float TopMargin
+		public float BottomMargin
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.TopMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.TopMargin");
+				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.BottomMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.BottomMargin");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.TopMargin");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShrinkToFit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.ShrinkToFit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.ShrinkToFit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.ShrinkToFit");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RightMargin
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.RightMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.RightMargin");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.RightMargin");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PercentScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.PercentScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.PercentScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.PercentScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float LeftMargin
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.LeftMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.LeftMargin");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.LeftMargin");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool EnableHeaderFooter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.EnableHeaderFooter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.EnableHeaderFooter");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.EnableHeaderFooter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.BottomMargin");
 			}
 		}
 #endif
@@ -113,15 +43,29 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float BottomMargin
+		public bool EnableHeaderFooter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.BottomMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.BottomMargin");
+				throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.EnableHeaderFooter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.EnableHeaderFooter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.BottomMargin");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.EnableHeaderFooter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float LeftMargin
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.LeftMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.LeftMargin");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.LeftMargin");
 			}
 		}
 #endif
@@ -135,23 +79,72 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Content.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Content.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.LeftMargin.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.LeftMargin.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.TopMargin.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.TopMargin.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.RightMargin.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.RightMargin.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.BottomMargin.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.BottomMargin.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.EnableHeaderFooter.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.EnableHeaderFooter.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.ShrinkToFit.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.ShrinkToFit.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.PercentScale.get
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.PercentScale.set
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.PageRange.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float PercentScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.PercentScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.PercentScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.PercentScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RightMargin
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.RightMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.RightMargin");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.RightMargin");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShrinkToFit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.ShrinkToFit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.ShrinkToFit");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.ShrinkToFit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float TopMargin
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.TopMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.TopMargin");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.TopMargin");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.operator ==(Windows.UI.WebUI.HtmlPrintDocumentSource, Windows.UI.WebUI.HtmlPrintDocumentSource)
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.operator !=(Windows.UI.WebUI.HtmlPrintDocumentSource, Windows.UI.WebUI.HtmlPrintDocumentSource)
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Equals(Windows.UI.WebUI.HtmlPrintDocumentSource)
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetPageRange(string strPageRange)
@@ -166,6 +159,24 @@ namespace Windows.UI.WebUI
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "void HtmlPrintDocumentSource.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.BottomMargin.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.BottomMargin.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Content.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Content.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.EnableHeaderFooter.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.EnableHeaderFooter.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.LeftMargin.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.LeftMargin.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.PageRange.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.PercentScale.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.PercentScale.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.RightMargin.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.RightMargin.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.ShrinkToFit.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.ShrinkToFit.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.TopMargin.get
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.TopMargin.set
+		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Printing.IPrintDocumentSource
 		// Processing: System.IDisposable
 	}

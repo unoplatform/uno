@@ -86,18 +86,18 @@ namespace Windows.Devices.PointOfService
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsPrinterPresent.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsDualColorSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.ColorCartridgeCapabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.CartridgeSensors.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.ColorCartridgeCapabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsBoldSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsItalicSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsUnderlineSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsDoubleHighDoubleWidePrintSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsDoubleHighPrintSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsDoubleWidePrintSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsDoubleHighDoubleWidePrintSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsDualColorSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsItalicSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsPaperEmptySensorSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsPaperNearEndSensorSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsPrinterPresent.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.IsUnderlineSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities.SupportedCharactersPerLine.get
 	}
 }

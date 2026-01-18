@@ -36,15 +36,7 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.HttpTransferCodingHeaderValue(string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.Parameters.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.Value.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpTransferCodingHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpTransferCodingHeaderValue.ToString%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValue Parse(string input)
@@ -59,5 +51,25 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpTransferCodingHeaderValue.TryParse(string input, out HttpTransferCodingHeaderValue transferCodingHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpTransferCodingHeaderValue.TryParse%28string%20input%2C%20out%20HttpTransferCodingHeaderValue%20transferCodingHeaderValue%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.operator ==(Windows.Web.Http.Headers.HttpTransferCodingHeaderValue, Windows.Web.Http.Headers.HttpTransferCodingHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.operator !=(Windows.Web.Http.Headers.HttpTransferCodingHeaderValue, Windows.Web.Http.Headers.HttpTransferCodingHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.Equals(Windows.Web.Http.Headers.HttpTransferCodingHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public override string ToString()
+		{
+			throw new global::System.NotImplementedException("The member string HttpTransferCodingHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpTransferCodingHeaderValue.ToString%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.Parameters.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.Value.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

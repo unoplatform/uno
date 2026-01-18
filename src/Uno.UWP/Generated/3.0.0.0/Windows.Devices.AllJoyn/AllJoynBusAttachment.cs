@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -61,24 +60,45 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public AllJoynBusAttachment(string connectionSpecification)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusAttachment", "AllJoynBusAttachment.AllJoynBusAttachment(string connectionSpecification)");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AllJoynBusAttachment(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynBusAttachment()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusAttachment", "AllJoynBusAttachment.AllJoynBusAttachment()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AllJoynBusAttachment()
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AboutData.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.ConnectionSpecification.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.State.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.UniqueName.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public AllJoynBusAttachment(string connectionSpecification)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusAttachment", "AllJoynBusAttachment.AllJoynBusAttachment(string connectionSpecification)");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AllJoynBusAttachment(string)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.AllJoyn.AllJoynBusAttachment GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member AllJoynBusAttachment AllJoynBusAttachment.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AllJoynBusAttachment%20AllJoynBusAttachment.GetDefault%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.Enumeration.DeviceWatcher GetWatcher(global::System.Collections.Generic.IEnumerable<string> requiredInterfaces)
+		{
+			throw new global::System.NotImplementedException("The member DeviceWatcher AllJoynBusAttachment.GetWatcher(IEnumerable<string> requiredInterfaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20AllJoynBusAttachment.GetWatcher%28IEnumerable%3Cstring%3E%20requiredInterfaces%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.operator ==(Windows.Devices.AllJoyn.AllJoynBusAttachment, Windows.Devices.AllJoyn.AllJoynBusAttachment)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.operator !=(Windows.Devices.AllJoyn.AllJoynBusAttachment, Windows.Devices.AllJoyn.AllJoynBusAttachment)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.Equals(Windows.Devices.AllJoyn.AllJoynBusAttachment)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<int> PingAsync(string uniqueName)
@@ -100,15 +120,14 @@ namespace Windows.Devices.AllJoyn
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusAttachment", "void AllJoynBusAttachment.Disconnect()");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.StateChanged.add
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.StateChanged.remove
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AuthenticationMechanisms.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AuthenticationComplete.add
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AuthenticationComplete.remove
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.CredentialsRequested.add
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.CredentialsRequested.remove
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.CredentialsVerificationRequested.add
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.CredentialsVerificationRequested.remove
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AuthenticationComplete.add
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AuthenticationComplete.remove
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.StateChanged.add
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.StateChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetAboutDataAsync(global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo)
@@ -127,20 +146,12 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AcceptSessionJoinerRequested.remove
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.SessionJoined.add
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.SessionJoined.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.AllJoyn.AllJoynBusAttachment GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member AllJoynBusAttachment AllJoynBusAttachment.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AllJoynBusAttachment%20AllJoynBusAttachment.GetDefault%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Enumeration.DeviceWatcher GetWatcher(global::System.Collections.Generic.IEnumerable<string> requiredInterfaces)
-		{
-			throw new global::System.NotImplementedException("The member DeviceWatcher AllJoynBusAttachment.GetWatcher(IEnumerable<string> requiredInterfaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20AllJoynBusAttachment.GetWatcher%28IEnumerable%3Cstring%3E%20requiredInterfaces%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AboutData.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AuthenticationMechanisms.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.ConnectionSpecification.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.State.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.UniqueName.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynBusAttachment, global::Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs> AuthenticationComplete

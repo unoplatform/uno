@@ -6,13 +6,23 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreWebView2HttpResponseHeaders : global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>
+	public partial class CoreWebView2HttpResponseHeaders : global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CoreWebView2HttpResponseHeaders()
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders, Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders, Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.Equals(Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AppendHeader(string name, string value)
@@ -41,16 +51,16 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member CoreWebView2HttpHeadersCollectionIterator CoreWebView2HttpResponseHeaders.GetHeaders(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2HttpHeadersCollectionIterator%20CoreWebView2HttpResponseHeaders.GetHeaders%28string%20name%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.First()
-		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, string>> CoreWebView2HttpResponseHeaders.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20string%3E%3E%20CoreWebView2HttpResponseHeaders.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

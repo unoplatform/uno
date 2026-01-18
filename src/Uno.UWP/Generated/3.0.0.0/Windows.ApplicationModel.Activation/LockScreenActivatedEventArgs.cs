@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object Info
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object LockScreenActivatedEventArgs.Info is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20LockScreenActivatedEventArgs.Info");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,21 +63,22 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Info
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object LockScreenActivatedEventArgs.Info is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20LockScreenActivatedEventArgs.Info");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs, Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs, Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.Info.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.ILockScreenActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

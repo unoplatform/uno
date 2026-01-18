@@ -9,11 +9,6 @@ namespace Microsoft.UI.Composition.Scenes
 	public partial class SceneComponent : global::Microsoft.UI.Composition.Scenes.SceneObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SceneComponent()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneComponentType ComponentType
 		{
@@ -23,6 +18,18 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.SceneComponent(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.operator ==(Microsoft.UI.Composition.Scenes.SceneComponent, Microsoft.UI.Composition.Scenes.SceneComponent)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.operator !=(Microsoft.UI.Composition.Scenes.SceneComponent, Microsoft.UI.Composition.Scenes.SceneComponent)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.Equals(Microsoft.UI.Composition.Scenes.SceneComponent)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.SceneComponent(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.ComponentType.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -6,7 +6,7 @@ namespace Windows.Media.Playback
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlaybackMediaMarkerSequence : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.PlaybackMediaMarker>
+	public partial class PlaybackMediaMarkerSequence : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.PlaybackMediaMarker>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal PlaybackMediaMarkerSequence()
@@ -23,7 +23,16 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Size.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.operator ==(Windows.Media.Playback.PlaybackMediaMarkerSequence, Windows.Media.Playback.PlaybackMediaMarkerSequence)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.operator !=(Windows.Media.Playback.PlaybackMediaMarkerSequence, Windows.Media.Playback.PlaybackMediaMarkerSequence)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Equals(Windows.Media.Playback.PlaybackMediaMarkerSequence)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Insert(global::Windows.Media.Playback.PlaybackMediaMarker value)
@@ -38,16 +47,17 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarkerSequence", "void PlaybackMediaMarkerSequence.Clear()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Playback.PlaybackMediaMarker>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Media.Playback.PlaybackMediaMarker>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Playback.PlaybackMediaMarker> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<PlaybackMediaMarker> PlaybackMediaMarkerSequence.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CPlaybackMediaMarker%3E%20PlaybackMediaMarkerSequence.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Size.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Playback.PlaybackMediaMarker>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

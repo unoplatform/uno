@@ -15,20 +15,6 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.SizeInt32 Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverVideoStreamSettings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20MiracastReceiverVideoStreamSettings.Size");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "SizeInt32 MiracastReceiverVideoStreamSettings.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Bitrate
 		{
 			get
@@ -41,9 +27,34 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Size.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Size.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.SizeInt32 Size
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverVideoStreamSettings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20MiracastReceiverVideoStreamSettings.Size");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "SizeInt32 MiracastReceiverVideoStreamSettings.Size");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.operator ==(Windows.Media.Miracast.MiracastReceiverVideoStreamSettings, Windows.Media.Miracast.MiracastReceiverVideoStreamSettings)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.operator !=(Windows.Media.Miracast.MiracastReceiverVideoStreamSettings, Windows.Media.Miracast.MiracastReceiverVideoStreamSettings)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Equals(Windows.Media.Miracast.MiracastReceiverVideoStreamSettings)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Bitrate.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Bitrate.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Size.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Size.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

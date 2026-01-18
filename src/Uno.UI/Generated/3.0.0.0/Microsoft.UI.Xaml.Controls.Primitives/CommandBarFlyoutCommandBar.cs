@@ -3,54 +3,32 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CommandBarFlyoutCommandBar : global::Microsoft.UI.Xaml.Controls.CommandBar
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarTemplateSettings FlyoutTemplateSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CommandBarFlyoutCommandBarTemplateSettings CommandBarFlyoutCommandBar.FlyoutTemplateSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CommandBarFlyoutCommandBarTemplateSettings%20CommandBarFlyoutCommandBar.FlyoutTemplateSettings");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.SystemBackdrop)this.GetValue(SystemBackdropProperty);
-			}
-			set
-			{
-				this.SetValue(SystemBackdropProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SystemBackdropProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SystemBackdrop), typeof(global::Microsoft.UI.Xaml.Media.SystemBackdrop),
-			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SystemBackdrop)));
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CommandBarFlyoutCommandBar() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar", "CommandBarFlyoutCommandBar.CommandBarFlyoutCommandBar()");
-		}
-#endif
+		// Skipping already declared property SystemBackdropProperty
+		// Skipping already declared property FlyoutTemplateSettings
+		// Skipping already declared property SystemBackdrop
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.CommandBarFlyoutCommandBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.CommandBarFlyoutCommandBar()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.SystemBackdropProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.CommandBarFlyoutCommandBar(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.operator ==(Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar, Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.operator !=(Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar, Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.Equals(Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.CommandBarFlyoutCommandBar(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.FlyoutTemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.SystemBackdrop.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.SystemBackdropProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -83,12 +83,23 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByDevice.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByOpenLicense.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByTrial.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByPass.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByInstallMedia.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedBySignedInUser.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.operator ==(Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo, Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.operator !=(Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo, Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.Equals(Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.IsSatisfied.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByDevice.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByInstallMedia.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByOpenLicense.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByPass.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedBySignedInUser.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByTrial.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

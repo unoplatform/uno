@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.MediaPlayerElementAutomationPeer(Microsoft.UI.Xaml.Controls.MediaPlayerElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.MediaPlayerElementAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.MediaPlayerElementAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,9 +8,21 @@ namespace Windows.UI.Core.Preview
 #endif
 	public partial class SystemNavigationManagerPreview
 	{
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.As<I>()
+		// Skipping already declared method Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView()
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.operator ==(Windows.UI.Core.Preview.SystemNavigationManagerPreview, Windows.UI.Core.Preview.SystemNavigationManagerPreview)
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.operator !=(Windows.UI.Core.Preview.SystemNavigationManagerPreview, Windows.UI.Core.Preview.SystemNavigationManagerPreview)
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.Equals(Windows.UI.Core.Preview.SystemNavigationManagerPreview)
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.Equals(object)
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.add
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.remove
-		// Skipping already declared method Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView()
+		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<global::Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs> CloseRequested

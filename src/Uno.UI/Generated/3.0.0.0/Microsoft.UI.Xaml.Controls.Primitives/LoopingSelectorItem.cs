@@ -8,5 +8,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class LoopingSelectorItem : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.operator ==(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem, Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.operator !=(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem, Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.Equals(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

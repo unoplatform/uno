@@ -15,20 +15,6 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PhotosPerSecondLimit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float VariablePhotoSequenceController.PhotosPerSecondLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20VariablePhotoSequenceController.PhotosPerSecondLimit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.VariablePhotoSequenceController", "float VariablePhotoSequenceController.PhotosPerSecondLimit");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Media.Devices.Core.FrameController> DesiredFrameControllers
 		{
 			get
@@ -59,6 +45,20 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float PhotosPerSecondLimit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float VariablePhotoSequenceController.PhotosPerSecondLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20VariablePhotoSequenceController.PhotosPerSecondLimit");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.VariablePhotoSequenceController", "float VariablePhotoSequenceController.PhotosPerSecondLimit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Supported
 		{
 			get
@@ -67,10 +67,16 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.Supported.get
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.MaxPhotosPerSecond.get
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.PhotosPerSecondLimit.get
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.PhotosPerSecondLimit.set
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.operator ==(Windows.Media.Devices.Core.VariablePhotoSequenceController, Windows.Media.Devices.Core.VariablePhotoSequenceController)
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.operator !=(Windows.Media.Devices.Core.VariablePhotoSequenceController, Windows.Media.Devices.Core.VariablePhotoSequenceController)
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.Equals(Windows.Media.Devices.Core.VariablePhotoSequenceController)
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate(global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
@@ -85,7 +91,12 @@ namespace Windows.Media.Devices.Core
 			throw new global::System.NotImplementedException("The member MediaRatio VariablePhotoSequenceController.GetCurrentFrameRate() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20VariablePhotoSequenceController.GetCurrentFrameRate%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.FrameCapabilities.get
 		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.DesiredFrameControllers.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.FrameCapabilities.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.MaxPhotosPerSecond.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.PhotosPerSecondLimit.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.PhotosPerSecondLimit.set
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.Supported.get
+		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

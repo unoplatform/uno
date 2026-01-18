@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetRelativeScrollPosition(global::Microsoft.UI.Xaml.Controls.ListViewBase listViewBase, global::Microsoft.UI.Xaml.Controls.ListViewItemToKeyHandler itemToKeyHandler)
@@ -27,5 +28,16 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member IAsyncAction ListViewPersistenceHelper.SetRelativeScrollPositionAsync(ListViewBase listViewBase, string relativeScrollPosition, ListViewKeyToItemHandler keyToItemHandler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ListViewPersistenceHelper.SetRelativeScrollPositionAsync%28ListViewBase%20listViewBase%2C%20string%20relativeScrollPosition%2C%20ListViewKeyToItemHandler%20keyToItemHandler%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.operator ==(Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper, Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.operator !=(Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper, Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.Equals(Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

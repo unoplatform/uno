@@ -10,85 +10,15 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
+		public string CompanyAddress
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Title");
+				throw new global::System.NotImplementedException("The member string ContactJobInfo.CompanyAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.CompanyAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Office
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Office is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Office");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Office");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Manager
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Manager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Manager");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Manager");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Description
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Description");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Description");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Department
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Department is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Department");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Department");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CompanyYomiName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.CompanyYomiName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.CompanyYomiName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyYomiName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyAddress");
 			}
 		}
 #endif
@@ -108,15 +38,85 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CompanyAddress
+		public string CompanyYomiName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.CompanyAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.CompanyAddress");
+				throw new global::System.NotImplementedException("The member string ContactJobInfo.CompanyYomiName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.CompanyYomiName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyYomiName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Department
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactJobInfo.Department is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Department");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Department");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Description
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactJobInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Description");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Description");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Manager
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactJobInfo.Manager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Manager");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Manager");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Office
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactJobInfo.Office is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Office");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Office");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ContactJobInfo.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Title");
 			}
 		}
 #endif
@@ -128,21 +128,32 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.ContactJobInfo()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.operator ==(Windows.ApplicationModel.Contacts.ContactJobInfo, Windows.ApplicationModel.Contacts.ContactJobInfo)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.operator !=(Windows.ApplicationModel.Contacts.ContactJobInfo, Windows.ApplicationModel.Contacts.ContactJobInfo)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Equals(Windows.ApplicationModel.Contacts.ContactJobInfo)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyAddress.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyName.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyName.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyYomiName.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyYomiName.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Department.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Department.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Title.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Title.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Description.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Manager.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Manager.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Office.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Office.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyAddress.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Description.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Description.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Title.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Title.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

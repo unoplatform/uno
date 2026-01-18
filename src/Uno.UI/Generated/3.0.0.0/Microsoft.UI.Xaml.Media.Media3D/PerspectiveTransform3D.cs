@@ -10,48 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OffsetY
-		{
-			get
-			{
-				return (double)this.GetValue(OffsetYProperty);
-			}
-			set
-			{
-				this.SetValue(OffsetYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OffsetX
-		{
-			get
-			{
-				return (double)this.GetValue(OffsetXProperty);
-			}
-			set
-			{
-				this.SetValue(OffsetXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Depth
-		{
-			get
-			{
-				return (double)this.GetValue(DepthProperty);
-			}
-			set
-			{
-				this.SetValue(DepthProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DepthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Depth), typeof(double),
@@ -76,20 +34,73 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double Depth
+		{
+			get
+			{
+				return (double)this.GetValue(DepthProperty);
+			}
+			set
+			{
+				this.SetValue(DepthProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OffsetX
+		{
+			get
+			{
+				return (double)this.GetValue(OffsetXProperty);
+			}
+			set
+			{
+				this.SetValue(OffsetXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OffsetY
+		{
+			get
+			{
+				return (double)this.GetValue(OffsetYProperty);
+			}
+			set
+			{
+				this.SetValue(OffsetYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PerspectiveTransform3D() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D", "PerspectiveTransform3D.PerspectiveTransform3D()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.PerspectiveTransform3D()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.DepthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.operator ==(Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D, Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.operator !=(Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D, Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Equals(Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Depth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Depth.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.DepthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

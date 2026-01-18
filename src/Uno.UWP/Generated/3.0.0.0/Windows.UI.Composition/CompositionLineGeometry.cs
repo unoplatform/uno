@@ -15,20 +15,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Start
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionLineGeometry.Start is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionLineGeometry.Start");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionLineGeometry", "Vector2 CompositionLineGeometry.Start");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector2 End
 		{
 			get
@@ -41,9 +27,33 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.Start.get
-		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.Start.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 Start
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 CompositionLineGeometry.Start is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionLineGeometry.Start");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionLineGeometry", "Vector2 CompositionLineGeometry.Start");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.operator ==(Windows.UI.Composition.CompositionLineGeometry, Windows.UI.Composition.CompositionLineGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.operator !=(Windows.UI.Composition.CompositionLineGeometry, Windows.UI.Composition.CompositionLineGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.Equals(Windows.UI.Composition.CompositionLineGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.End.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.End.set
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.Start.get
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.Start.set
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionLineGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

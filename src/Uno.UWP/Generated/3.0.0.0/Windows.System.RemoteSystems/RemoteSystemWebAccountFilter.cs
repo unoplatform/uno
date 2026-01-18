@@ -26,7 +26,18 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.RemoteSystemWebAccountFilter(Windows.Security.Credentials.WebAccount)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.operator ==(Windows.System.RemoteSystems.RemoteSystemWebAccountFilter, Windows.System.RemoteSystems.RemoteSystemWebAccountFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.operator !=(Windows.System.RemoteSystems.RemoteSystemWebAccountFilter, Windows.System.RemoteSystems.RemoteSystemWebAccountFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.Equals(Windows.System.RemoteSystems.RemoteSystemWebAccountFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.Account.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.System.RemoteSystems.IRemoteSystemFilter
 	}
 }

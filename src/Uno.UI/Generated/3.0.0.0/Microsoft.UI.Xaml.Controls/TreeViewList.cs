@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.operator ==(Microsoft.UI.Xaml.Controls.TreeViewList, Microsoft.UI.Xaml.Controls.TreeViewList)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.operator !=(Microsoft.UI.Xaml.Controls.TreeViewList, Microsoft.UI.Xaml.Controls.TreeViewList)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.Equals(Microsoft.UI.Xaml.Controls.TreeViewList)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

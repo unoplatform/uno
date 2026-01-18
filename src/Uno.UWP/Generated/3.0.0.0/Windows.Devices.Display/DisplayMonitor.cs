@@ -95,6 +95,16 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDolbyVisionSupportedInHdrMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DisplayMonitor.IsDolbyVisionSupportedInHdrMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayMonitor.IsDolbyVisionSupportedInHdrMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float MaxAverageFullFrameLuminanceInNits
 		{
 			get
@@ -203,43 +213,7 @@ namespace Windows.Devices.Display
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDolbyVisionSupportedInHdrMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DisplayMonitor.IsDolbyVisionSupportedInHdrMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayMonitor.IsDolbyVisionSupportedInHdrMode");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DeviceId.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayName.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.ConnectionKind.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.PhysicalConnector.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayAdapterDeviceId.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayAdapterId.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayAdapterTargetId.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.UsageKind.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.NativeResolutionInRawPixels.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.PhysicalSizeInInches.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.RawDpiX.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.RawDpiY.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.RedPrimary.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.GreenPrimary.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.BluePrimary.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WhitePoint.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MaxLuminanceInNits.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MinLuminanceInNits.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MaxAverageFullFrameLuminanceInNits.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte[] GetDescriptor(global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
-		{
-			throw new global::System.NotImplementedException("The member byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20DisplayMonitor.GetDescriptor%28DisplayMonitorDescriptorKind%20descriptorKind%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.IsDolbyVisionSupportedInHdrMode.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -261,5 +235,43 @@ namespace Windows.Devices.Display
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DisplayMonitor> DisplayMonitor.FromInterfaceIdAsync(string deviceInterfaceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDisplayMonitor%3E%20DisplayMonitor.FromInterfaceIdAsync%28string%20deviceInterfaceId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.operator ==(Windows.Devices.Display.DisplayMonitor, Windows.Devices.Display.DisplayMonitor)
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.operator !=(Windows.Devices.Display.DisplayMonitor, Windows.Devices.Display.DisplayMonitor)
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.Equals(Windows.Devices.Display.DisplayMonitor)
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public byte[] GetDescriptor(global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
+		{
+			throw new global::System.NotImplementedException("The member byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20DisplayMonitor.GetDescriptor%28DisplayMonitorDescriptorKind%20descriptorKind%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.BluePrimary.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.ConnectionKind.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DeviceId.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayAdapterDeviceId.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayAdapterId.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayAdapterTargetId.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayName.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.GreenPrimary.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.IsDolbyVisionSupportedInHdrMode.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MaxAverageFullFrameLuminanceInNits.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MaxLuminanceInNits.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MinLuminanceInNits.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.NativeResolutionInRawPixels.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.PhysicalConnector.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.PhysicalSizeInInches.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.RawDpiX.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.RawDpiY.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.RedPrimary.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.UsageKind.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WhitePoint.get
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

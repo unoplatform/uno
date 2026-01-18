@@ -10,85 +10,15 @@ namespace Windows.ApplicationModel.Email
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FileName
+		public string ContentId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.FileName");
+				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.ContentId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.FileName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference Data
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference EmailAttachment.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20EmailAttachment.Data");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "IRandomAccessStreamReference EmailAttachment.Data");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string MimeType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.MimeType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.MimeType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInline
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsInline is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailAttachment.IsInline");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "bool EmailAttachment.IsInline");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong EstimatedDownloadSizeInBytes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong EmailAttachment.EstimatedDownloadSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20EmailAttachment.EstimatedDownloadSizeInBytes");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "ulong EmailAttachment.EstimatedDownloadSizeInBytes");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailAttachmentDownloadState DownloadState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member EmailAttachmentDownloadState EmailAttachment.DownloadState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailAttachmentDownloadState%20EmailAttachment.DownloadState");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachmentDownloadState EmailAttachment.DownloadState");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.ContentId");
 			}
 		}
 #endif
@@ -108,15 +38,57 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContentId
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Data
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.ContentId");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference EmailAttachment.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20EmailAttachment.Data");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.ContentId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "IRandomAccessStreamReference EmailAttachment.Data");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Email.EmailAttachmentDownloadState DownloadState
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member EmailAttachmentDownloadState EmailAttachment.DownloadState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailAttachmentDownloadState%20EmailAttachment.DownloadState");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachmentDownloadState EmailAttachment.DownloadState");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong EstimatedDownloadSizeInBytes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong EmailAttachment.EstimatedDownloadSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20EmailAttachment.EstimatedDownloadSizeInBytes");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "ulong EmailAttachment.EstimatedDownloadSizeInBytes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string FileName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EmailAttachment.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.FileName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.FileName");
 			}
 		}
 #endif
@@ -142,12 +114,40 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public EmailAttachment(string fileName, global::Windows.Storage.Streams.IRandomAccessStreamReference data, string mimeType)
+		public bool IsInline
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachment.EmailAttachment(string fileName, IRandomAccessStreamReference data, string mimeType)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsInline is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailAttachment.IsInline");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "bool EmailAttachment.IsInline");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference, string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string MimeType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EmailAttachment.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.MimeType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.MimeType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public EmailAttachment()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachment.EmailAttachment()");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailAttachment(string fileName, global::Windows.Storage.Streams.IRandomAccessStreamReference data)
@@ -158,29 +158,40 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public EmailAttachment()
+		public EmailAttachment(string fileName, global::Windows.Storage.Streams.IRandomAccessStreamReference data, string mimeType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachment.EmailAttachment()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachment.EmailAttachment(string fileName, IRandomAccessStreamReference data, string mimeType)");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.FileName.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.FileName.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Data.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Data.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference, string)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.operator ==(Windows.ApplicationModel.Email.EmailAttachment, Windows.ApplicationModel.Email.EmailAttachment)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.operator !=(Windows.ApplicationModel.Email.EmailAttachment, Windows.ApplicationModel.Email.EmailAttachment)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Equals(Windows.ApplicationModel.Email.EmailAttachment)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.ContentId.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.ContentId.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.ContentLocation.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.ContentLocation.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Data.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Data.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.DownloadState.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.DownloadState.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EstimatedDownloadSizeInBytes.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EstimatedDownloadSizeInBytes.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.FileName.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.FileName.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.IsFromBaseMessage.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.IsInline.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.IsInline.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.MimeType.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.MimeType.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

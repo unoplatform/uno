@@ -10,160 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string OpenedTargetName
-		{
-			get
-			{
-				return (string)this.GetValue(OpenedTargetNameProperty);
-			}
-			set
-			{
-				this.SetValue(OpenedTargetNameProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DependencyObject OpenedTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(OpenedTargetProperty);
-			}
-			set
-			{
-				this.SetValue(OpenedTargetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OpenedLength
-		{
-			get
-			{
-				return (double)this.GetValue(OpenedLengthProperty);
-			}
-			set
-			{
-				this.SetValue(OpenedLengthProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OffsetFromCenter
-		{
-			get
-			{
-				return (double)this.GetValue(OffsetFromCenterProperty);
-			}
-			set
-			{
-				this.SetValue(OffsetFromCenterProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ContentTranslationOffset
-		{
-			get
-			{
-				return (double)this.GetValue(ContentTranslationOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(ContentTranslationOffsetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection ContentTranslationDirection
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection)this.GetValue(ContentTranslationDirectionProperty);
-			}
-			set
-			{
-				this.SetValue(ContentTranslationDirectionProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContentTargetName
-		{
-			get
-			{
-				return (string)this.GetValue(ContentTargetNameProperty);
-			}
-			set
-			{
-				this.SetValue(ContentTargetNameProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DependencyObject ContentTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(ContentTargetProperty);
-			}
-			set
-			{
-				this.SetValue(ContentTargetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ClosedTargetName
-		{
-			get
-			{
-				return (string)this.GetValue(ClosedTargetNameProperty);
-			}
-			set
-			{
-				this.SetValue(ClosedTargetNameProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DependencyObject ClosedTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(ClosedTargetProperty);
-			}
-			set
-			{
-				this.SetValue(ClosedTargetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ClosedLength
-		{
-			get
-			{
-				return (double)this.GetValue(ClosedLengthProperty);
-			}
-			set
-			{
-				this.SetValue(ClosedLengthProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ClosedLengthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ClosedLength), typeof(double),
@@ -252,44 +98,209 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double ClosedLength
+		{
+			get
+			{
+				return (double)this.GetValue(ClosedLengthProperty);
+			}
+			set
+			{
+				this.SetValue(ClosedLengthProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DependencyObject ClosedTarget
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(ClosedTargetProperty);
+			}
+			set
+			{
+				this.SetValue(ClosedTargetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ClosedTargetName
+		{
+			get
+			{
+				return (string)this.GetValue(ClosedTargetNameProperty);
+			}
+			set
+			{
+				this.SetValue(ClosedTargetNameProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DependencyObject ContentTarget
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(ContentTargetProperty);
+			}
+			set
+			{
+				this.SetValue(ContentTargetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ContentTargetName
+		{
+			get
+			{
+				return (string)this.GetValue(ContentTargetNameProperty);
+			}
+			set
+			{
+				this.SetValue(ContentTargetNameProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection ContentTranslationDirection
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection)this.GetValue(ContentTranslationDirectionProperty);
+			}
+			set
+			{
+				this.SetValue(ContentTranslationDirectionProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double ContentTranslationOffset
+		{
+			get
+			{
+				return (double)this.GetValue(ContentTranslationOffsetProperty);
+			}
+			set
+			{
+				this.SetValue(ContentTranslationOffsetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OffsetFromCenter
+		{
+			get
+			{
+				return (double)this.GetValue(OffsetFromCenterProperty);
+			}
+			set
+			{
+				this.SetValue(OffsetFromCenterProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OpenedLength
+		{
+			get
+			{
+				return (double)this.GetValue(OpenedLengthProperty);
+			}
+			set
+			{
+				this.SetValue(OpenedLengthProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DependencyObject OpenedTarget
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(OpenedTargetProperty);
+			}
+			set
+			{
+				this.SetValue(OpenedTargetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string OpenedTargetName
+		{
+			get
+			{
+				return (string)this.GetValue(OpenedTargetNameProperty);
+			}
+			set
+			{
+				this.SetValue(OpenedTargetNameProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SplitCloseThemeAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation", "SplitCloseThemeAnimation.SplitCloseThemeAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.SplitCloseThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTarget.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTarget.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTargetName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTarget.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTarget.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTargetName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTarget.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTarget.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedLength.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedLength.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OffsetFromCenter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OffsetFromCenter.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationDirection.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationDirection.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedLengthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTargetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OffsetFromCenterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationDirectionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OffsetFromCenterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedLengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTarget.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTarget.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTargetName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ClosedTargetName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTarget.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTarget.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTargetName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTargetName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationDirection.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationDirection.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.ContentTranslationOffset.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OffsetFromCenter.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OffsetFromCenter.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTarget.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTarget.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.OpenedTargetName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitCloseThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -63,11 +63,16 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.IsReadOnly.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.IsStale.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Targets.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Views.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.operator ==(Windows.Devices.Display.Core.DisplayState, Windows.Devices.Display.Core.DisplayState)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.operator !=(Windows.Devices.Display.Core.DisplayState, Windows.Devices.Display.Core.DisplayState)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Equals(Windows.Devices.Display.Core.DisplayState)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayPath ConnectTarget(global::Windows.Devices.Display.Core.DisplayTarget target)
@@ -131,5 +136,11 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayState DisplayState.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayState%20DisplayState.Clone%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.IsReadOnly.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.IsStale.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Targets.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Views.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

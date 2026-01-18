@@ -15,110 +15,6 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Appointments.AppointmentSummaryCardView SummaryCardView
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppointmentSummaryCardView AppointmentCalendar.SummaryCardView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentSummaryCardView%20AppointmentCalendar.SummaryCardView");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentSummaryCardView AppointmentCalendar.SummaryCardView");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Appointments.AppointmentCalendarOtherAppWriteAccess OtherAppWriteAccess
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarOtherAppWriteAccess%20AppointmentCalendar.OtherAppWriteAccess");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color DisplayColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color AppointmentCalendar.DisplayColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20AppointmentCalendar.DisplayColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "Color AppointmentCalendar.DisplayColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsHidden
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.IsHidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.IsHidden");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.IsHidden");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.DisplayName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.DisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Appointments.AppointmentCalendarOtherAppReadAccess OtherAppReadAccess
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarOtherAppReadAccess%20AppointmentCalendar.OtherAppReadAccess");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string LocalId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.LocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.LocalId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SourceDisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.SourceDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.SourceDisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanCancelMeetings
 		{
 			get
@@ -128,76 +24,6 @@ namespace Windows.ApplicationModel.Appointments
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanCancelMeetings");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanNotifyInvitees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanNotifyInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanNotifyInvitees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanNotifyInvitees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RemoteId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.RemoteId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.RemoteId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool MustNofityInvitees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.MustNofityInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.MustNofityInvitees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.MustNofityInvitees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanUpdateMeetingResponses
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanUpdateMeetingResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanUpdateMeetingResponses");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanUpdateMeetingResponses");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanProposeNewTimeForMeetings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanProposeNewTimeForMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanProposeNewTimeForMeetings");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanProposeNewTimeForMeetings");
 			}
 		}
 #endif
@@ -231,6 +57,180 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanNotifyInvitees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanNotifyInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanNotifyInvitees");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanNotifyInvitees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanProposeNewTimeForMeetings
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanProposeNewTimeForMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanProposeNewTimeForMeetings");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanProposeNewTimeForMeetings");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanUpdateMeetingResponses
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanUpdateMeetingResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanUpdateMeetingResponses");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanUpdateMeetingResponses");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color DisplayColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color AppointmentCalendar.DisplayColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20AppointmentCalendar.DisplayColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "Color AppointmentCalendar.DisplayColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DisplayName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.DisplayName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.DisplayName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsHidden
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.IsHidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.IsHidden");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.IsHidden");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string LocalId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.LocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.LocalId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool MustNofityInvitees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.MustNofityInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.MustNofityInvitees");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.MustNofityInvitees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Appointments.AppointmentCalendarOtherAppReadAccess OtherAppReadAccess
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarOtherAppReadAccess%20AppointmentCalendar.OtherAppReadAccess");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Appointments.AppointmentCalendarOtherAppWriteAccess OtherAppWriteAccess
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarOtherAppWriteAccess%20AppointmentCalendar.OtherAppWriteAccess");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string RemoteId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.RemoteId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.RemoteId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SourceDisplayName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.SourceDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.SourceDisplayName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Appointments.AppointmentSummaryCardView SummaryCardView
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppointmentSummaryCardView AppointmentCalendar.SummaryCardView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentSummaryCardView%20AppointmentCalendar.SummaryCardView");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentSummaryCardView AppointmentCalendar.SummaryCardView");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager SyncManager
 		{
 			get
@@ -249,18 +249,16 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayColor.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.LocalId.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.IsHidden.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppReadAccess.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppReadAccess.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppWriteAccess.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppWriteAccess.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SourceDisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SummaryCardView.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SummaryCardView.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.operator ==(Windows.ApplicationModel.Appointments.AppointmentCalendar, Windows.ApplicationModel.Appointments.AppointmentCalendar)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.operator !=(Windows.ApplicationModel.Appointments.AppointmentCalendar, Windows.ApplicationModel.Appointments.AppointmentCalendar)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.Equals(Windows.ApplicationModel.Appointments.AppointmentCalendar)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
@@ -359,26 +357,6 @@ namespace Windows.ApplicationModel.Appointments
 			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.SaveAppointmentAsync(Appointment pAppointment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.SaveAppointmentAsync%28Appointment%20pAppointment%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SyncManager.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.RemoteId.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.RemoteId.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayColor.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.IsHidden.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.UserDataAccountId.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCreateOrUpdateAppointments.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCreateOrUpdateAppointments.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCancelMeetings.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCancelMeetings.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanForwardMeetings.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanForwardMeetings.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanProposeNewTimeForMeetings.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanProposeNewTimeForMeetings.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanUpdateMeetingResponses.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanUpdateMeetingResponses.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanNotifyInvitees.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanNotifyInvitees.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.MustNofityInvitees.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.MustNofityInvitees.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryCreateOrUpdateAppointmentAsync(global::Windows.ApplicationModel.Appointments.Appointment appointment, bool notifyInvitees)
@@ -421,5 +399,38 @@ namespace Windows.ApplicationModel.Appointments
 			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.RegisterSyncManagerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.RegisterSyncManagerAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCancelMeetings.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCancelMeetings.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCreateOrUpdateAppointments.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCreateOrUpdateAppointments.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanForwardMeetings.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanForwardMeetings.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanNotifyInvitees.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanNotifyInvitees.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanProposeNewTimeForMeetings.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanProposeNewTimeForMeetings.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanUpdateMeetingResponses.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanUpdateMeetingResponses.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayColor.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayColor.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.DisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.IsHidden.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.IsHidden.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.LocalId.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.MustNofityInvitees.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.MustNofityInvitees.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppReadAccess.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppReadAccess.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppWriteAccess.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.OtherAppWriteAccess.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.RemoteId.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.RemoteId.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SourceDisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SummaryCardView.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SummaryCardView.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SyncManager.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.UserDataAccountId.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

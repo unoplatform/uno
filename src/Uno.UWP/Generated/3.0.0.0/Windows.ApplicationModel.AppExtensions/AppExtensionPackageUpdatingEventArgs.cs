@@ -33,7 +33,18 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.operator ==(Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs, Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.operator !=(Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs, Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.Equals(Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.AppExtensionName.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.Package.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

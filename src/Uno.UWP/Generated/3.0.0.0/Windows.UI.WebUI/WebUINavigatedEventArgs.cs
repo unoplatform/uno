@@ -23,7 +23,18 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.operator ==(Windows.UI.WebUI.WebUINavigatedEventArgs, Windows.UI.WebUI.WebUINavigatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.operator !=(Windows.UI.WebUI.WebUINavigatedEventArgs, Windows.UI.WebUI.WebUINavigatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.Equals(Windows.UI.WebUI.WebUINavigatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.NavigatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUINavigatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.WebUI.IWebUINavigatedEventArgs
 	}
 }

@@ -16,6 +16,24 @@ namespace Microsoft.UI.Xaml.XamlTypeInfo
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.XamlControlsXamlMetaDataProvider()
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void Initialize()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "void XamlControlsXamlMetaDataProvider.Initialize()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.operator ==(Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider, Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.operator !=(Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider, Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.Equals(Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Markup.IXamlType GetXamlType(global::System.Type type)
@@ -37,13 +55,7 @@ namespace Microsoft.UI.Xaml.XamlTypeInfo
 			throw new global::System.NotImplementedException("The member XmlnsDefinition[] XamlControlsXamlMetaDataProvider.GetXmlnsDefinitions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlnsDefinition%5B%5D%20XamlControlsXamlMetaDataProvider.GetXmlnsDefinitions%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void Initialize()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "void XamlControlsXamlMetaDataProvider.Initialize()");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Markup.IXamlMetadataProvider
 	}
 }

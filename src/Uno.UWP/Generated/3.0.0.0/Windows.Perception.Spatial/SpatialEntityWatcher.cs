@@ -23,15 +23,16 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Status.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Added.add
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Added.remove
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Updated.add
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Updated.remove
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Removed.add
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Removed.remove
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.operator ==(Windows.Perception.Spatial.SpatialEntityWatcher, Windows.Perception.Spatial.SpatialEntityWatcher)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.operator !=(Windows.Perception.Spatial.SpatialEntityWatcher, Windows.Perception.Spatial.SpatialEntityWatcher)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Equals(Windows.Perception.Spatial.SpatialEntityWatcher)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -46,6 +47,16 @@ namespace Windows.Perception.Spatial
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntityWatcher", "void SpatialEntityWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Added.add
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Added.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Removed.add
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Removed.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Updated.add
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Updated.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Status.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialEntityWatcher, global::Windows.Perception.Spatial.SpatialEntityAddedEventArgs> Added

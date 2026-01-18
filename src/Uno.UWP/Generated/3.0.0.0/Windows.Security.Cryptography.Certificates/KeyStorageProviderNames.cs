@@ -10,6 +10,16 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string PassportKeyStorageProvider
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PassportKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyStorageProviderNames.PassportKeyStorageProvider");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string PlatformKeyStorageProvider
 		{
 			get
@@ -38,19 +48,10 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string PassportKeyStorageProvider
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PassportKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyStorageProviderNames.PassportKeyStorageProvider");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyStorageProviderNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyStorageProviderNames.PassportKeyStorageProvider.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyStorageProviderNames.SoftwareKeyStorageProvider.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyStorageProviderNames.SmartcardKeyStorageProvider.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyStorageProviderNames.PlatformKeyStorageProvider.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyStorageProviderNames.SmartcardKeyStorageProvider.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyStorageProviderNames.SoftwareKeyStorageProvider.get
 	}
 }

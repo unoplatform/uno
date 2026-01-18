@@ -23,6 +23,17 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.operator ==(Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs, Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.operator !=(Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs, Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.Equals(Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.Rate.get
+		// Forced skipping of method Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,34 +15,6 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaPlaybackType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%20SystemMediaTransportControlsDisplayUpdater.Type");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.RandomAccessStreamReference Thumbnail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20SystemMediaTransportControlsDisplayUpdater.Thumbnail");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AppMediaId
 		{
 			get
@@ -77,6 +49,34 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.RandomAccessStreamReference Thumbnail
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20SystemMediaTransportControlsDisplayUpdater.Thumbnail");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaPlaybackType Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%20SystemMediaTransportControlsDisplayUpdater.Type");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.VideoDisplayProperties VideoProperties
 		{
 			get
@@ -85,15 +85,16 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Type.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Type.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.AppMediaId.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.AppMediaId.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Thumbnail.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Thumbnail.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.MusicProperties.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.VideoProperties.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.ImageProperties.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.operator ==(Windows.Media.SystemMediaTransportControlsDisplayUpdater, Windows.Media.SystemMediaTransportControlsDisplayUpdater)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.operator !=(Windows.Media.SystemMediaTransportControlsDisplayUpdater, Windows.Media.SystemMediaTransportControlsDisplayUpdater)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Equals(Windows.Media.SystemMediaTransportControlsDisplayUpdater)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Equals(object)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.GetHashCode()
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> CopyFromFileAsync(global::Windows.Media.MediaPlaybackType type, global::Windows.Storage.StorageFile source)
@@ -115,5 +116,15 @@ namespace Windows.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "void SystemMediaTransportControlsDisplayUpdater.Update()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.AppMediaId.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.AppMediaId.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.ImageProperties.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.MusicProperties.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Thumbnail.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Thumbnail.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Type.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Type.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.VideoProperties.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

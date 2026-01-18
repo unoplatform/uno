@@ -23,6 +23,17 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.operator ==(Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs, Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.operator !=(Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs, Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.Equals(Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.RequestId.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

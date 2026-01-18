@@ -68,6 +68,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids.CharacteristicAggregateFormat.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids.CharacteristicExtendedProperties.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids.CharacteristicPresentationFormat.get

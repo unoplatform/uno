@@ -27,7 +27,18 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.operator ==(Windows.Networking.Sockets.ServerMessageWebSocketControl, Windows.Networking.Sockets.ServerMessageWebSocketControl)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.operator !=(Windows.Networking.Sockets.ServerMessageWebSocketControl, Windows.Networking.Sockets.ServerMessageWebSocketControl)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.Equals(Windows.Networking.Sockets.ServerMessageWebSocketControl)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.MessageType.get
 		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.MessageType.set
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,8 +11,20 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property ColumnHeadersProperty
 		// Skipping already declared property RowHeadersProperty
 		// Skipping already declared property RowOrColumnMajorProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.ColumnHeadersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.RowHeadersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.RowOrColumnMajorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.TablePatternIdentifiers, Microsoft.UI.Xaml.Automation.TablePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.TablePatternIdentifiers, Microsoft.UI.Xaml.Automation.TablePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.TablePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TablePatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -28,6 +28,14 @@ namespace Microsoft.UI.Xaml.Controls
 			remove => _untypedVectorChanged -= value;
 		}
 
+#if HAS_UNO_WINUI
+		event VectorChangedEventHandler<object> IObservableVector<object>.VectorChanged
+		{
+			add => VectorChanged += value;
+			remove => VectorChanged -= value;
+		}
+#endif
+
 		public IEnumerator<object> GetEnumerator()
 		{
 			if (_itemsSource == null)

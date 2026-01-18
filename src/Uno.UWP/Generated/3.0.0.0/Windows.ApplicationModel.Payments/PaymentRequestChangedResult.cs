@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.Payments
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Payments.PaymentDetails UpdatedPaymentDetails
+		public bool ChangeAcceptedByMerchant
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentDetails%20PaymentRequestChangedResult.UpdatedPaymentDetails");
+				throw new global::System.NotImplementedException("The member bool PaymentRequestChangedResult.ChangeAcceptedByMerchant is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentRequestChangedResult.ChangeAcceptedByMerchant");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "bool PaymentRequestChangedResult.ChangeAcceptedByMerchant");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ChangeAcceptedByMerchant
+		public global::Windows.ApplicationModel.Payments.PaymentDetails UpdatedPaymentDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentRequestChangedResult.ChangeAcceptedByMerchant is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentRequestChangedResult.ChangeAcceptedByMerchant");
+				throw new global::System.NotImplementedException("The member PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentDetails%20PaymentRequestChangedResult.UpdatedPaymentDetails");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "bool PaymentRequestChangedResult.ChangeAcceptedByMerchant");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails");
 			}
 		}
 #endif
@@ -66,11 +66,22 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.PaymentRequestChangedResult(bool, Windows.ApplicationModel.Payments.PaymentDetails)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.operator ==(Windows.ApplicationModel.Payments.PaymentRequestChangedResult, Windows.ApplicationModel.Payments.PaymentRequestChangedResult)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.operator !=(Windows.ApplicationModel.Payments.PaymentRequestChangedResult, Windows.ApplicationModel.Payments.PaymentRequestChangedResult)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Equals(Windows.ApplicationModel.Payments.PaymentRequestChangedResult)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.ChangeAcceptedByMerchant.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.ChangeAcceptedByMerchant.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Message.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Message.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.UpdatedPaymentDetails.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.UpdatedPaymentDetails.set
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

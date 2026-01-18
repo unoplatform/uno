@@ -15,11 +15,31 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.Frames.MediaFrameSourceInfo> FrameSourceInfos
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaFrameSourceInfo> MediaCaptureVideoProfile.FrameSourceInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaFrameSourceInfo%3E%20MediaCaptureVideoProfile.FrameSourceInfos");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string MediaCaptureVideoProfile.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureVideoProfile.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaCaptureVideoProfile.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaCaptureVideoProfile.Properties");
 			}
 		}
 #endif
@@ -63,31 +83,16 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.Frames.MediaFrameSourceInfo> FrameSourceInfos
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaFrameSourceInfo> MediaCaptureVideoProfile.FrameSourceInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaFrameSourceInfo%3E%20MediaCaptureVideoProfile.FrameSourceInfos");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaCaptureVideoProfile.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaCaptureVideoProfile.Properties");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.Id.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.VideoDeviceId.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedPreviewMediaDescription.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedRecordMediaDescription.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedPhotoMediaDescription.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.operator ==(Windows.Media.Capture.MediaCaptureVideoProfile, Windows.Media.Capture.MediaCaptureVideoProfile)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.operator !=(Windows.Media.Capture.MediaCaptureVideoProfile, Windows.Media.Capture.MediaCaptureVideoProfile)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.Equals(Windows.Media.Capture.MediaCaptureVideoProfile)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> GetConcurrency()
@@ -96,6 +101,12 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.FrameSourceInfos.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.Id.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.Properties.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedPhotoMediaDescription.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedPreviewMediaDescription.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedRecordMediaDescription.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.VideoDeviceId.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

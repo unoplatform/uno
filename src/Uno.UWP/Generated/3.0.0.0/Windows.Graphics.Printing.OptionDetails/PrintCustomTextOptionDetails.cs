@@ -15,48 +15,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.DisplayName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.DisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaxCharacters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PrintCustomTextOptionDetails.MaxCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintCustomTextOptionDetails.MaxCharacters");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "uint PrintCustomTextOptionDetails.MaxCharacters");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string WarningText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.WarningText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.WarningText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Description
 		{
 			get
@@ -71,15 +29,15 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
+		public string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCustomTextOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintCustomTextOptionDetails.State");
+				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "PrintOptionStates PrintCustomTextOptionDetails.State");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.DisplayName");
 			}
 		}
 #endif
@@ -94,6 +52,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.ErrorText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaxCharacters
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint PrintCustomTextOptionDetails.MaxCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintCustomTextOptionDetails.MaxCharacters");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "uint PrintCustomTextOptionDetails.MaxCharacters");
 			}
 		}
 #endif
@@ -119,6 +91,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCustomTextOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintCustomTextOptionDetails.State");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "PrintOptionStates PrintCustomTextOptionDetails.State");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Value
 		{
 			get
@@ -127,13 +113,30 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.OptionId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.OptionType.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.ErrorText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.ErrorText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.State.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.State.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Value.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string WarningText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.WarningText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.WarningText");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
@@ -141,14 +144,22 @@ namespace Windows.Graphics.Printing.OptionDetails
 			throw new global::System.NotImplementedException("The member bool PrintCustomTextOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintCustomTextOptionDetails.TrySetValue%28object%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.DisplayName.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.DisplayName.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.MaxCharacters.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.MaxCharacters.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WarningText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WarningText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Description.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Description.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Description.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.DisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.DisplayName.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.ErrorText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.ErrorText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.MaxCharacters.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.MaxCharacters.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.OptionId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.OptionType.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.State.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.State.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Value.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WarningText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WarningText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails
 	}

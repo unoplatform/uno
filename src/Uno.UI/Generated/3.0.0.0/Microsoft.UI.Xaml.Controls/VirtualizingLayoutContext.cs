@@ -8,10 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class VirtualizingLayoutContext : global::Microsoft.UI.Xaml.Controls.LayoutContext
 	{
-		// Skipping already declared property LayoutOrigin
 		// Skipping already declared property ItemCount
+		// Skipping already declared property LayoutOrigin
+		// Skipping already declared property LayoutOriginCore
 		// Skipping already declared property RealizationRect
 		// Skipping already declared property RecommendedAnchorIndex
+		// Skipping already declared property RecommendedAnchorIndexCore
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect VisibleRect
@@ -22,28 +24,35 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Skipping already declared property LayoutOriginCore
-		// Skipping already declared property RecommendedAnchorIndexCore
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.ItemCount.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.operator ==(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.operator !=(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Equals(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetItemAt(int)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RealizationRect.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAt(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAt(int, Microsoft.UI.Xaml.Controls.ElementRealizationOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecycleElement(Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VisibleRect.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.ItemCountCore()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.ItemCountCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetItemAtCore(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.GetItemAtCore(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RealizationRectCore()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.RealizationRectCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAtCore(int, Microsoft.UI.Xaml.Controls.ElementRealizationOptions)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.GetOrCreateElementAtCore(int, Microsoft.UI.Xaml.Controls.ElementRealizationOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecycleElementCore(Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndexCore.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.RecycleElementCore(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.LayoutOriginCore.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.LayoutOriginCore.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides.RecommendedAnchorIndexCore.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual global::Windows.Foundation.Rect VisibleRectCore()
@@ -51,5 +60,17 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member Rect VirtualizingLayoutContext.VisibleRectCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20VirtualizingLayoutContext.VisibleRectCore%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.IVirtualizingLayoutContextOverrides2.VisibleRectCore()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.ItemCount.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RealizationRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndexCore.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VisibleRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

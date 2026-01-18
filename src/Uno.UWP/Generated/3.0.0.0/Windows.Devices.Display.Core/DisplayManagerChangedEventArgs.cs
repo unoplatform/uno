@@ -27,8 +27,16 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.Handled.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.operator ==(Windows.Devices.Display.Core.DisplayManagerChangedEventArgs, Windows.Devices.Display.Core.DisplayManagerChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.operator !=(Windows.Devices.Display.Core.DisplayManagerChangedEventArgs, Windows.Devices.Display.Core.DisplayManagerChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.Equals(Windows.Devices.Display.Core.DisplayManagerChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -36,5 +44,8 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member Deferral DisplayManagerChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20DisplayManagerChangedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.Handled.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

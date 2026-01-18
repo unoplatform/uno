@@ -175,6 +175,15 @@ namespace Windows.UI.Text
 			set;
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		void SetClone(global::Windows.UI.Text.ITextCharacterFormat value);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		global::Windows.UI.Text.ITextCharacterFormat GetClone();
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		bool IsEqual(global::Windows.UI.Text.ITextCharacterFormat format);
+#endif
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.AllCaps.get
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.AllCaps.set
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.BackgroundColor.get
@@ -222,14 +231,5 @@ namespace Windows.UI.Text
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.Underline.set
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.Weight.get
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.Weight.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void SetClone(global::Windows.UI.Text.ITextCharacterFormat value);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		global::Windows.UI.Text.ITextCharacterFormat GetClone();
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		bool IsEqual(global::Windows.UI.Text.ITextCharacterFormat format);
-#endif
 	}
 }

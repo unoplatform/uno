@@ -10,6 +10,19 @@ namespace Windows.Data.Text
 	{
 		// Forced skipping of method Windows.Data.Text.TextSegment.TextSegment()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public TextSegment(uint _StartPosition, uint _Length)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextSegment", "TextSegment.TextSegment(uint _StartPosition, uint _Length)");
+		}
+#endif
+		// Forced skipping of method Windows.Data.Text.TextSegment.TextSegment(uint, uint)
+		// Forced skipping of method Windows.Data.Text.TextSegment.operator ==(Windows.Data.Text.TextSegment, Windows.Data.Text.TextSegment)
+		// Forced skipping of method Windows.Data.Text.TextSegment.operator !=(Windows.Data.Text.TextSegment, Windows.Data.Text.TextSegment)
+		// Forced skipping of method Windows.Data.Text.TextSegment.Equals(Windows.Data.Text.TextSegment)
+		// Forced skipping of method Windows.Data.Text.TextSegment.Equals(object)
+		// Forced skipping of method Windows.Data.Text.TextSegment.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint StartPosition;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

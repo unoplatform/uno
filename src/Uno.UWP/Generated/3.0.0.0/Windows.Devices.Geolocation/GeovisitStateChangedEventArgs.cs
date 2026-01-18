@@ -23,6 +23,17 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.operator ==(Windows.Devices.Geolocation.GeovisitStateChangedEventArgs, Windows.Devices.Geolocation.GeovisitStateChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.operator !=(Windows.Devices.Geolocation.GeovisitStateChangedEventArgs, Windows.Devices.Geolocation.GeovisitStateChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.Equals(Windows.Devices.Geolocation.GeovisitStateChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.Visit.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.NavigationViewItemHeader()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.NavigationViewItemHeader()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.NavigationViewItemHeader(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewItemHeader, Microsoft.UI.Xaml.Controls.NavigationViewItemHeader)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewItemHeader, Microsoft.UI.Xaml.Controls.NavigationViewItemHeader)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.Equals(Microsoft.UI.Xaml.Controls.NavigationViewItemHeader)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.NavigationViewItemHeader(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemHeader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

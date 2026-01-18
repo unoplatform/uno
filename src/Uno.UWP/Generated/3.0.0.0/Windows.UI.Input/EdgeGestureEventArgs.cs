@@ -23,6 +23,17 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.operator ==(Windows.UI.Input.EdgeGestureEventArgs, Windows.UI.Input.EdgeGestureEventArgs)
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.operator !=(Windows.UI.Input.EdgeGestureEventArgs, Windows.UI.Input.EdgeGestureEventArgs)
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.Equals(Windows.UI.Input.EdgeGestureEventArgs)
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.Kind.get
+		// Forced skipping of method Windows.UI.Input.EdgeGestureEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

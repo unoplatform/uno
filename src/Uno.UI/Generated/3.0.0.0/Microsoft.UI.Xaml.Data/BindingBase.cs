@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Data
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingBase.BindingBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.BindingBase()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.BindingBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.operator ==(Microsoft.UI.Xaml.Data.BindingBase, Microsoft.UI.Xaml.Data.BindingBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.operator !=(Microsoft.UI.Xaml.Data.BindingBase, Microsoft.UI.Xaml.Data.BindingBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.Equals(Microsoft.UI.Xaml.Data.BindingBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.BindingBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

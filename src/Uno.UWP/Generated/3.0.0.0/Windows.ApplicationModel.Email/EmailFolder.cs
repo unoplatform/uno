@@ -15,48 +15,6 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RemoteId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailFolder.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailFolder.RemoteId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailFolder", "string EmailFolder.RemoteId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset LastSuccessfulSyncTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailFolder.LastSuccessfulSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20EmailFolder.LastSuccessfulSyncTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailFolder", "DateTimeOffset EmailFolder.LastSuccessfulSyncTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSyncEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool EmailFolder.IsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailFolder.IsSyncEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailFolder", "bool EmailFolder.IsSyncEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayName
 		{
 			get
@@ -81,11 +39,39 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSyncEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool EmailFolder.IsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailFolder.IsSyncEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailFolder", "bool EmailFolder.IsSyncEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Email.EmailSpecialFolderKind Kind
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member EmailSpecialFolderKind EmailFolder.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailSpecialFolderKind%20EmailFolder.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset LastSuccessfulSyncTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailFolder.LastSuccessfulSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20EmailFolder.LastSuccessfulSyncTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailFolder", "DateTimeOffset EmailFolder.LastSuccessfulSyncTime");
 			}
 		}
 #endif
@@ -109,18 +95,30 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.RemoteId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.RemoteId.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.MailboxId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.ParentFolderId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.DisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.IsSyncEnabled.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.IsSyncEnabled.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.LastSuccessfulSyncTime.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.LastSuccessfulSyncTime.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Kind.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string RemoteId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EmailFolder.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailFolder.RemoteId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailFolder", "string EmailFolder.RemoteId");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.operator ==(Windows.ApplicationModel.Email.EmailFolder, Windows.ApplicationModel.Email.EmailFolder)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.operator !=(Windows.ApplicationModel.Email.EmailFolder, Windows.ApplicationModel.Email.EmailFolder)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Equals(Windows.ApplicationModel.Email.EmailFolder)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailFolder> CreateFolderAsync(string name)
@@ -212,5 +210,18 @@ namespace Windows.ApplicationModel.Email
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailFolder.SaveMessageAsync(EmailMessage message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailFolder.SaveMessageAsync%28EmailMessage%20message%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.DisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.IsSyncEnabled.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.IsSyncEnabled.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.LastSuccessfulSyncTime.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.MailboxId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.ParentFolderId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.RemoteId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.RemoteId.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

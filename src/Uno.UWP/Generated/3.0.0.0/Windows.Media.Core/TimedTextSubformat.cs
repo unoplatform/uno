@@ -10,15 +10,15 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.TimedTextStyle SubformatStyle
+		public int Length
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextStyle TimedTextSubformat.SubformatStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextStyle%20TimedTextSubformat.SubformatStyle");
+				throw new global::System.NotImplementedException("The member int TimedTextSubformat.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TimedTextSubformat.Length");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSubformat", "TimedTextStyle TimedTextSubformat.SubformatStyle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSubformat", "int TimedTextSubformat.Length");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Length
+		public global::Windows.Media.Core.TimedTextStyle SubformatStyle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TimedTextSubformat.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TimedTextSubformat.Length");
+				throw new global::System.NotImplementedException("The member TimedTextStyle TimedTextSubformat.SubformatStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextStyle%20TimedTextSubformat.SubformatStyle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSubformat", "int TimedTextSubformat.Length");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSubformat", "TimedTextStyle TimedTextSubformat.SubformatStyle");
 			}
 		}
 #endif
@@ -58,11 +58,22 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.TimedTextSubformat()
-		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.StartIndex.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.StartIndex.set
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.operator ==(Windows.Media.Core.TimedTextSubformat, Windows.Media.Core.TimedTextSubformat)
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.operator !=(Windows.Media.Core.TimedTextSubformat, Windows.Media.Core.TimedTextSubformat)
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.Equals(Windows.Media.Core.TimedTextSubformat)
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.Equals(object)
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.Length.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.Length.set
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.StartIndex.get
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.StartIndex.set
 		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.SubformatStyle.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.SubformatStyle.set
+		// Forced skipping of method Windows.Media.Core.TimedTextSubformat.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

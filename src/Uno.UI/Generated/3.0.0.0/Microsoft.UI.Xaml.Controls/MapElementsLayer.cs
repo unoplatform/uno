@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty MapElementsProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(MapElements), typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapElement>),
+			typeof(global::Microsoft.UI.Xaml.Controls.MapElementsLayer),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapElement>)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapElement> MapElements
 		{
 			get
@@ -24,25 +32,30 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MapElementsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MapElements), typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapElement>),
-			typeof(global::Microsoft.UI.Xaml.Controls.MapElementsLayer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapElement>)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MapElementsLayer()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.MapElementsLayer", "MapElementsLayer.MapElementsLayer()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElementsLayer()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElements.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElements.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElementsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElementsLayer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.operator ==(Microsoft.UI.Xaml.Controls.MapElementsLayer, Microsoft.UI.Xaml.Controls.MapElementsLayer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.operator !=(Microsoft.UI.Xaml.Controls.MapElementsLayer, Microsoft.UI.Xaml.Controls.MapElementsLayer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.Equals(Microsoft.UI.Xaml.Controls.MapElementsLayer)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElementsLayer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElementClick.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElementClick.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElementsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElements.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.MapElements.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementsLayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.MapElementsLayer, global::Microsoft.UI.Xaml.Controls.MapElementClickEventArgs> MapElementClick

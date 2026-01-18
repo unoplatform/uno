@@ -33,8 +33,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.CanUseDiagnosticsToTailorExperiences.get
-		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.User.get
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.DiagnosticsSettings GetDefault()
@@ -49,5 +48,18 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotImplementedException("The member DiagnosticsSettings DiagnosticsSettings.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DiagnosticsSettings%20DiagnosticsSettings.GetForUser%28User%20user%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.FromAbi(nint)
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.operator ==(Windows.System.UserProfile.DiagnosticsSettings, Windows.System.UserProfile.DiagnosticsSettings)
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.operator !=(Windows.System.UserProfile.DiagnosticsSettings, Windows.System.UserProfile.DiagnosticsSettings)
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.Equals(Windows.System.UserProfile.DiagnosticsSettings)
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.Equals(object)
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.GetHashCode()
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.CanUseDiagnosticsToTailorExperiences.get
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.User.get
+		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

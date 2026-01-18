@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailMailboxSyncStatus Status
+		public global::System.DateTimeOffset LastAttemptedSyncTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSyncStatus EmailMailboxSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSyncStatus%20EmailMailboxSyncManager.Status");
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20EmailMailboxSyncManager.LastAttemptedSyncTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "EmailMailboxSyncStatus EmailMailboxSyncManager.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime");
 			}
 		}
 #endif
@@ -43,21 +43,28 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset LastAttemptedSyncTime
+		public global::Windows.ApplicationModel.Email.EmailMailboxSyncStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20EmailMailboxSyncManager.LastAttemptedSyncTime");
+				throw new global::System.NotImplementedException("The member EmailMailboxSyncStatus EmailMailboxSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSyncStatus%20EmailMailboxSyncManager.Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "EmailMailboxSyncStatus EmailMailboxSyncManager.Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastSuccessfulSyncTime.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastAttemptedSyncTime.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.operator ==(Windows.ApplicationModel.Email.EmailMailboxSyncManager, Windows.ApplicationModel.Email.EmailMailboxSyncManager)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.operator !=(Windows.ApplicationModel.Email.EmailMailboxSyncManager, Windows.ApplicationModel.Email.EmailMailboxSyncManager)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Equals(Windows.ApplicationModel.Email.EmailMailboxSyncManager)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
@@ -67,9 +74,13 @@ namespace Windows.ApplicationModel.Email
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.SyncStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.SyncStatusChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Status.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastAttemptedSyncTime.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastAttemptedSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastSuccessfulSyncTime.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Status.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.EmailMailboxSyncManager, object> SyncStatusChanged

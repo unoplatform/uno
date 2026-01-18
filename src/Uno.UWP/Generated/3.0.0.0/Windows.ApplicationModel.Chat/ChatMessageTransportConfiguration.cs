@@ -63,10 +63,21 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.operator ==(Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration, Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.operator !=(Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration, Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.Equals(Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.ExtendedProperties.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.MaxAttachmentCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.MaxMessageSizeInKilobytes.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.MaxRecipientCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.SupportedVideoFormat.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.ExtendedProperties.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

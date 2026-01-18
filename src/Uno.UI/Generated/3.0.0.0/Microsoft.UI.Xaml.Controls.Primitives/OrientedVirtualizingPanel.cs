@@ -10,29 +10,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object ScrollOwner
+		public bool AreHorizontalSnapPointsRegular
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object OrientedVirtualizingPanel.ScrollOwner is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20OrientedVirtualizingPanel.ScrollOwner");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "object OrientedVirtualizingPanel.ScrollOwner");
+				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanVerticallyScroll
+		public bool AreVerticalSnapPointsRegular
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.CanVerticallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.CanVerticallyScroll");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "bool OrientedVirtualizingPanel.CanVerticallyScroll");
+				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.AreVerticalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.AreVerticalSnapPointsRegular");
 			}
 		}
 #endif
@@ -47,6 +39,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "bool OrientedVirtualizingPanel.CanHorizontallyScroll");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanVerticallyScroll
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.CanVerticallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.CanVerticallyScroll");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "bool OrientedVirtualizingPanel.CanVerticallyScroll");
 			}
 		}
 #endif
@@ -82,6 +88,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object ScrollOwner
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object OrientedVirtualizingPanel.ScrollOwner is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20OrientedVirtualizingPanel.ScrollOwner");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "object OrientedVirtualizingPanel.ScrollOwner");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double VerticalOffset
 		{
 			get
@@ -110,38 +130,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AreHorizontalSnapPointsRegular
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AreVerticalSnapPointsRegular
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.AreVerticalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.AreVerticalSnapPointsRegular");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanVerticallyScroll.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanVerticallyScroll.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanHorizontallyScroll.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanHorizontallyScroll.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ExtentWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ExtentHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ViewportWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ViewportHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.HorizontalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ScrollOwner.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ScrollOwner.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.OrientedVirtualizingPanel(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.operator ==(Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel, Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.operator !=(Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel, Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.Equals(Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.OrientedVirtualizingPanel(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LineUp()
@@ -247,12 +245,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			throw new global::System.NotImplementedException("The member Rect OrientedVirtualizingPanel.MakeVisible(UIElement visual, Rect rectangle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20OrientedVirtualizingPanel.MakeVisible%28UIElement%20visual%2C%20Rect%20rectangle%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.AreVerticalSnapPointsRegular.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.HorizontalSnapPointsChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.HorizontalSnapPointsChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalSnapPointsChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalSnapPointsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
@@ -267,6 +259,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			throw new global::System.NotImplementedException("The member float OrientedVirtualizingPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20OrientedVirtualizingPanel.GetRegularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%2C%20out%20float%20offset%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.HorizontalSnapPointsChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.HorizontalSnapPointsChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalSnapPointsChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalSnapPointsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetInsertionIndexes(global::Windows.Foundation.Point position, out int first, out int second)
@@ -274,6 +270,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			throw new global::System.NotImplementedException("The member void OrientedVirtualizingPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20OrientedVirtualizingPanel.GetInsertionIndexes%28Point%20position%2C%20out%20int%20first%2C%20out%20int%20second%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.AreVerticalSnapPointsRegular.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanHorizontallyScroll.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanHorizontallyScroll.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanVerticallyScroll.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.CanVerticallyScroll.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ExtentHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ExtentWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.HorizontalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ScrollOwner.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ScrollOwner.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ViewportHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ViewportWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<object> HorizontalSnapPointsChanged

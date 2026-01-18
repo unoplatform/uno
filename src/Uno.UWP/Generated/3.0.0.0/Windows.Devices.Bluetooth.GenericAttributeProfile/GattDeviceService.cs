@@ -20,17 +20,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string GattDeviceService.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.DeviceId");
-			}
-		}
-#endif
-		// Skipping already declared property Uuid
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.BluetoothLEDevice Device
 		{
 			get
@@ -41,21 +30,31 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService> ParentServices
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<GattDeviceService> GattDeviceService.ParentServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattDeviceService%3E%20GattDeviceService.ParentServices");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.DeviceAccessInformation DeviceAccessInformation
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member DeviceAccessInformation GattDeviceService.DeviceAccessInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessInformation%20GattDeviceService.DeviceAccessInformation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string GattDeviceService.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.DeviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService> ParentServices
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<GattDeviceService> GattDeviceService.ParentServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattDeviceService%3E%20GattDeviceService.ParentServices");
 			}
 		}
 #endif
@@ -79,6 +78,81 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
+		// Skipping already declared property Uuid
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService> FromIdAsync(string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDeviceService> GattDeviceService.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattDeviceService%3E%20GattDeviceService.FromIdAsync%28string%20deviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelectorFromUuid(global::System.Guid serviceUuid)
+		{
+			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorFromUuid(Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorFromUuid%28Guid%20serviceUuid%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelectorFromShortId(ushort serviceShortId)
+		{
+			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorFromShortId(ushort serviceShortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorFromShortId%28ushort%20serviceShortId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
+		{
+			throw new global::System.NotImplementedException("The member Guid GattDeviceService.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDeviceService.ConvertShortIdToUuid%28ushort%20shortId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService> FromIdAsync(string deviceId, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSharingMode sharingMode)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDeviceService> GattDeviceService.FromIdAsync(string deviceId, GattSharingMode sharingMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattDeviceService%3E%20GattDeviceService.FromIdAsync%28string%20deviceId%2C%20GattSharingMode%20sharingMode%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelectorForBluetoothDeviceId(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId)
+		{
+			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceId(BluetoothDeviceId bluetoothDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceId%28BluetoothDeviceId%20bluetoothDeviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelectorForBluetoothDeviceId(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
+		{
+			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceId(BluetoothDeviceId bluetoothDeviceId, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceId%28BluetoothDeviceId%20bluetoothDeviceId%2C%20BluetoothCacheMode%20cacheMode%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelectorForBluetoothDeviceIdAndUuid(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId, global::System.Guid serviceUuid)
+		{
+			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid(BluetoothDeviceId bluetoothDeviceId, Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid%28BluetoothDeviceId%20bluetoothDeviceId%2C%20Guid%20serviceUuid%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelectorForBluetoothDeviceIdAndUuid(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId, global::System.Guid serviceUuid, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
+		{
+			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid(BluetoothDeviceId bluetoothDeviceId, Guid serviceUuid, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid%28BluetoothDeviceId%20bluetoothDeviceId%2C%20Guid%20serviceUuid%2C%20BluetoothCacheMode%20cacheMode%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService, Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService, Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic> GetCharacteristics(global::System.Guid characteristicUuid)
@@ -93,9 +167,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IReadOnlyList<GattDeviceService> GattDeviceService.GetIncludedServices(Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattDeviceService%3E%20GattDeviceService.GetIncludedServices%28Guid%20serviceUuid%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.DeviceId.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Uuid.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.AttributeHandle.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -103,8 +174,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService", "void GattDeviceService.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Device.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.ParentServices.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic> GetAllCharacteristics()
@@ -119,9 +188,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IReadOnlyList<GattDeviceService> GattDeviceService.GetAllIncludedServices() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattDeviceService%3E%20GattDeviceService.GetAllIncludedServices%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.DeviceAccessInformation.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Session.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.SharingMode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
@@ -192,69 +258,15 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDeviceServicesResult> GattDeviceService.GetIncludedServicesForUuidAsync(Guid serviceUuid, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattDeviceServicesResult%3E%20GattDeviceService.GetIncludedServicesForUuidAsync%28Guid%20serviceUuid%2C%20BluetoothCacheMode%20cacheMode%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService> FromIdAsync(string deviceId, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSharingMode sharingMode)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDeviceService> GattDeviceService.FromIdAsync(string deviceId, GattSharingMode sharingMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattDeviceService%3E%20GattDeviceService.FromIdAsync%28string%20deviceId%2C%20GattSharingMode%20sharingMode%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelectorForBluetoothDeviceId(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId)
-		{
-			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceId(BluetoothDeviceId bluetoothDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceId%28BluetoothDeviceId%20bluetoothDeviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelectorForBluetoothDeviceId(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
-		{
-			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceId(BluetoothDeviceId bluetoothDeviceId, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceId%28BluetoothDeviceId%20bluetoothDeviceId%2C%20BluetoothCacheMode%20cacheMode%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelectorForBluetoothDeviceIdAndUuid(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId, global::System.Guid serviceUuid)
-		{
-			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid(BluetoothDeviceId bluetoothDeviceId, Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid%28BluetoothDeviceId%20bluetoothDeviceId%2C%20Guid%20serviceUuid%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelectorForBluetoothDeviceIdAndUuid(global::Windows.Devices.Bluetooth.BluetoothDeviceId bluetoothDeviceId, global::System.Guid serviceUuid, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
-		{
-			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid(BluetoothDeviceId bluetoothDeviceId, Guid serviceUuid, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid%28BluetoothDeviceId%20bluetoothDeviceId%2C%20Guid%20serviceUuid%2C%20BluetoothCacheMode%20cacheMode%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService> FromIdAsync(string deviceId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDeviceService> GattDeviceService.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattDeviceService%3E%20GattDeviceService.FromIdAsync%28string%20deviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelectorFromUuid(global::System.Guid serviceUuid)
-		{
-			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorFromUuid(Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorFromUuid%28Guid%20serviceUuid%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelectorFromShortId(ushort serviceShortId)
-		{
-			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorFromShortId(ushort serviceShortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorFromShortId%28ushort%20serviceShortId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
-		{
-			throw new global::System.NotImplementedException("The member Guid GattDeviceService.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDeviceService.ConvertShortIdToUuid%28ushort%20shortId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.AttributeHandle.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Device.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.DeviceAccessInformation.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.DeviceId.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.ParentServices.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Session.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.SharingMode.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Uuid.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

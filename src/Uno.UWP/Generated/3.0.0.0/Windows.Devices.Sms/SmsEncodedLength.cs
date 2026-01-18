@@ -10,6 +10,19 @@ namespace Windows.Devices.Sms
 	{
 		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.SmsEncodedLength()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SmsEncodedLength(uint _SegmentCount, uint _CharacterCountLastSegment, uint _CharactersPerSegment, uint _ByteCountLastSegment, uint _BytesPerSegment)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsEncodedLength", "SmsEncodedLength.SmsEncodedLength(uint _SegmentCount, uint _CharacterCountLastSegment, uint _CharactersPerSegment, uint _ByteCountLastSegment, uint _BytesPerSegment)");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.SmsEncodedLength(uint, uint, uint, uint, uint)
+		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.operator ==(Windows.Devices.Sms.SmsEncodedLength, Windows.Devices.Sms.SmsEncodedLength)
+		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.operator !=(Windows.Devices.Sms.SmsEncodedLength, Windows.Devices.Sms.SmsEncodedLength)
+		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.Equals(Windows.Devices.Sms.SmsEncodedLength)
+		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.Equals(object)
+		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint SegmentCount;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

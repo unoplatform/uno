@@ -23,6 +23,17 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.operator ==(Windows.Devices.Enumeration.DeviceUnpairingResult, Windows.Devices.Enumeration.DeviceUnpairingResult)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.operator !=(Windows.Devices.Enumeration.DeviceUnpairingResult, Windows.Devices.Enumeration.DeviceUnpairingResult)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.Equals(Windows.Devices.Enumeration.DeviceUnpairingResult)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.Status.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

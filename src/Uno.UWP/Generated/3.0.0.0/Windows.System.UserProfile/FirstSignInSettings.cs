@@ -6,7 +6,7 @@ namespace Windows.System.UserProfile
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FirstSignInSettings : global::System.Collections.Generic.IReadOnlyDictionary<string, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
+	public partial class FirstSignInSettings : global::System.Collections.Generic.IReadOnlyDictionary<string, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::System.Collections.Generic.KeyValuePair<string, object>>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal FirstSignInSettings()
@@ -15,60 +15,11 @@ namespace Windows.System.UserProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint FirstSignInSettings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FirstSignInSettings.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Lookup(string)
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Size.get
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.HasKey(string)
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Split(out System.Collections.Generic.IReadOnlyDictionary<string, object>, out System.Collections.Generic.IReadOnlyDictionary<string, object>)
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.First()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.System.UserProfile.FirstSignInSettings GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member FirstSignInSettings FirstSignInSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FirstSignInSettings%20FirstSignInSettings.GetDefault%28%29");
-		}
-#endif
-		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ContainsKey(string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TryGetValue(string key, out object value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerable<string> Keys
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member IEnumerable<string> FirstSignInSettings.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3Cstring%3E%20FirstSignInSettings.Keys");
 			}
 		}
 #endif
@@ -78,19 +29,77 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member IEnumerable<object> FirstSignInSettings.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3Cobject%3E%20FirstSignInSettings.Values");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Count
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int FirstSignInSettings.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20FirstSignInSettings.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object this[string key]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object FirstSignInSettings.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20FirstSignInSettings.this%5Bstring%20key%5D");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.System.UserProfile.FirstSignInSettings GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member FirstSignInSettings FirstSignInSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FirstSignInSettings%20FirstSignInSettings.GetDefault%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.FromAbi(nint)
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.operator ==(Windows.System.UserProfile.FirstSignInSettings, Windows.System.UserProfile.FirstSignInSettings)
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.operator !=(Windows.System.UserProfile.FirstSignInSettings, Windows.System.UserProfile.FirstSignInSettings)
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Equals(Windows.System.UserProfile.FirstSignInSettings)
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Equals(object)
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.GetHashCode()
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Keys.get
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Values.get
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Count.get
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.this[string].get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ContainsKey(string key)
+		{
+			throw new global::System.NotImplementedException("The member bool FirstSignInSettings.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FirstSignInSettings.ContainsKey%28string%20key%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TryGetValue(string key, out object value)
+		{
+			throw new global::System.NotImplementedException("The member bool FirstSignInSettings.TryGetValue(string key, out object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FirstSignInSettings.TryGetValue%28string%20key%2C%20out%20object%20value%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, object>> FirstSignInSettings.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20FirstSignInSettings.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>
+		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -101,15 +110,5 @@ namespace Windows.System.UserProfile
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<System.Collections.Generic.KeyValuePair<string, object>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

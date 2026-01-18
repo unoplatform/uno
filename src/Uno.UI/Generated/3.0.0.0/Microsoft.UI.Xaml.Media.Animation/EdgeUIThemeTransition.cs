@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty EdgeProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Edge), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.EdgeTransitionLocation),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.EdgeTransitionLocation)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.Primitives.EdgeTransitionLocation Edge
 		{
 			get
@@ -24,22 +32,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty EdgeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Edge), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.EdgeTransitionLocation),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.EdgeTransitionLocation)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EdgeUIThemeTransition()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition", "EdgeUIThemeTransition.EdgeUIThemeTransition()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.EdgeUIThemeTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.EdgeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition, Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition, Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Edge.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Edge.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.EdgeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,7 +33,18 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.operator ==(Windows.Media.Capture.VideoStreamConfiguration, Windows.Media.Capture.VideoStreamConfiguration)
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.operator !=(Windows.Media.Capture.VideoStreamConfiguration, Windows.Media.Capture.VideoStreamConfiguration)
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.Equals(Windows.Media.Capture.VideoStreamConfiguration)
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.InputProperties.get
 		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.OutputProperties.get
+		// Forced skipping of method Windows.Media.Capture.VideoStreamConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

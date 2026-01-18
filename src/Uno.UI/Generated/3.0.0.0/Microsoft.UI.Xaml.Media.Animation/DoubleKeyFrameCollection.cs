@@ -6,29 +6,91 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DoubleKeyFrameCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
+	public partial class DoubleKeyFrameCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DoubleKeyFrame DoubleKeyFrameCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DoubleKeyFrame%20DoubleKeyFrameCollection.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection", "DoubleKeyFrame DoubleKeyFrameCollection.this[int index]");
+			}
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.SetAt(uint, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Append(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetMany(uint, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.ReplaceAll(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.operator ==(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.operator !=(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Equals(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame item)
+		{
+			throw new global::System.NotImplementedException("The member int DoubleKeyFrameCollection.IndexOf(DoubleKeyFrame item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DoubleKeyFrameCollection.IndexOf%28DoubleKeyFrame%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection", "void DoubleKeyFrameCollection.Insert(int index, DoubleKeyFrame item)");
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.RemoveAt(int)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection", "void DoubleKeyFrameCollection.Add(DoubleKeyFrame item)");
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Clear()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame item)
+		{
+			throw new global::System.NotImplementedException("The member bool DoubleKeyFrameCollection.Contains(DoubleKeyFrame item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DoubleKeyFrameCollection.Contains%28DoubleKeyFrame%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection", "void DoubleKeyFrameCollection.CopyTo(DoubleKeyFrame[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame item)
+		{
+			throw new global::System.NotImplementedException("The member bool DoubleKeyFrameCollection.Remove(DoubleKeyFrame item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DoubleKeyFrameCollection.Remove%28DoubleKeyFrame%20item%29");
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
 		// Processing: System.Collections.IEnumerable
 	}

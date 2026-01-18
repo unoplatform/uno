@@ -23,6 +23,18 @@ namespace Windows.Security.Authentication.Identity
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.As<I>()
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.Current.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.operator ==(Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager, Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager)
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.operator !=(Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager, Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager)
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.Equals(Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager)
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo>> GetRegistrationsAsync()
@@ -30,6 +42,6 @@ namespace Windows.Security.Authentication.Identity
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EnterpriseKeyCredentialRegistrationInfo>> EnterpriseKeyCredentialRegistrationManager.GetRegistrationsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEnterpriseKeyCredentialRegistrationInfo%3E%3E%20EnterpriseKeyCredentialRegistrationManager.GetRegistrationsAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.Current.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

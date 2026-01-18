@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.operator ==(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails, Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.operator !=(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails, Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.Equals(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.Connection.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

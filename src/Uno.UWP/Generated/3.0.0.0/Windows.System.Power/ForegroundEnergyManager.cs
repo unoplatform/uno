@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -69,16 +68,17 @@ namespace Windows.System.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.LowUsageLevel.get
-		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.NearMaxAcceptableUsageLevel.get
-		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.MaxAcceptableUsageLevel.get
-		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.ExcessiveUsageLevel.get
-		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsage.get
-		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsageLevel.get
+		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.As<I>()
 		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsageIncreased.add
 		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsageIncreased.remove
 		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsageReturnedToLow.add
 		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsageReturnedToLow.remove
+		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.ExcessiveUsageLevel.get
+		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.LowUsageLevel.get
+		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.MaxAcceptableUsageLevel.get
+		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.NearMaxAcceptableUsageLevel.get
+		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsage.get
+		// Forced skipping of method Windows.System.Power.ForegroundEnergyManager.RecentEnergyUsageLevel.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> RecentEnergyUsageIncreased

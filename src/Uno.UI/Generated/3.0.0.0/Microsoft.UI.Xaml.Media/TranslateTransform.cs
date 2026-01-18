@@ -8,17 +8,28 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class TranslateTransform : global::Microsoft.UI.Xaml.Media.Transform
 	{
-		// Skipping already declared property Y
-		// Skipping already declared property X
 		// Skipping already declared property XProperty
 		// Skipping already declared property YProperty
+		// Skipping already declared property X
+		// Skipping already declared property Y
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TranslateTransform.TranslateTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.TranslateTransform()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.XProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.YProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.operator ==(Microsoft.UI.Xaml.Media.TranslateTransform, Microsoft.UI.Xaml.Media.TranslateTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.operator !=(Microsoft.UI.Xaml.Media.TranslateTransform, Microsoft.UI.Xaml.Media.TranslateTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Equals(Microsoft.UI.Xaml.Media.TranslateTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.X.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.X.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Y.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Y.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.XProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.YProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

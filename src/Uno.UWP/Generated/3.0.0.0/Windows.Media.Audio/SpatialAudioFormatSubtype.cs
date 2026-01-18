@@ -68,22 +68,12 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string DTSXForHomeTheater
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSXForHomeTheater is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpatialAudioFormatSubtype.DTSXForHomeTheater");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSXForHomeTheater.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.WindowsSonic.get
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.As<I>()
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSHeadphoneX.get
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSXUltra.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForHeadphones.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForHomeTheater.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForSpeakers.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSHeadphoneX.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSXUltra.get
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.WindowsSonic.get
 	}
 }

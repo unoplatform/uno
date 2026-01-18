@@ -9,6 +9,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class MenuFlyoutItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property KeyboardAcceleratorTextMinWidth
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.KeyboardAcceleratorTextMinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

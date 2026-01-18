@@ -37,8 +37,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs, Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs, Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Anchor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Anchor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.AnchorCandidates.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

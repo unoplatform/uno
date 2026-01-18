@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.CalendarPanel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.CalendarPanel()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.operator ==(Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel, Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.operator !=(Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel, Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.Equals(Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

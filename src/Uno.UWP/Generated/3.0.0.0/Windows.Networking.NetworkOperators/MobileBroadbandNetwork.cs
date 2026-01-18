@@ -113,15 +113,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkAdapter.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkRegistrationState.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationNetworkError.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.PacketAttachNetworkError.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.ActivationNetworkError.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.AccessPointName.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredDataClass.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandNetwork, Windows.Networking.NetworkOperators.MobileBroadbandNetwork)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandNetwork, Windows.Networking.NetworkOperators.MobileBroadbandNetwork)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.Equals(Windows.Networking.NetworkOperators.MobileBroadbandNetwork)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShowConnectionUI()
@@ -136,7 +137,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandNetwork.GetVoiceCallSupportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20MobileBroadbandNetwork.GetVoiceCallSupportAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationUiccApps.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo> GetCellsInfoAsync()
@@ -144,5 +144,16 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandCellsInfo> MobileBroadbandNetwork.GetCellsInfoAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMobileBroadbandCellsInfo%3E%20MobileBroadbandNetwork.GetCellsInfoAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.AccessPointName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.ActivationNetworkError.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkAdapter.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkRegistrationState.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.PacketAttachNetworkError.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredDataClass.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationNetworkError.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationUiccApps.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

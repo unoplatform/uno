@@ -34,9 +34,9 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.IMediaTrack.Id.get
+		// Forced skipping of method Windows.Media.Core.IMediaTrack.Label.get
+		// Forced skipping of method Windows.Media.Core.IMediaTrack.Label.set
 		// Forced skipping of method Windows.Media.Core.IMediaTrack.Language.get
 		// Forced skipping of method Windows.Media.Core.IMediaTrack.TrackKind.get
-		// Forced skipping of method Windows.Media.Core.IMediaTrack.Label.set
-		// Forced skipping of method Windows.Media.Core.IMediaTrack.Label.get
 	}
 }

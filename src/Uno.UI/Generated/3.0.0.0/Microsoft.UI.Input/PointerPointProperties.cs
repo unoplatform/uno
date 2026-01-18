@@ -47,12 +47,22 @@ namespace Microsoft.UI.Input
 #endif
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsInRange.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.operator ==(Microsoft.UI.Input.PointerPointProperties, Microsoft.UI.Input.PointerPointProperties)
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.operator !=(Microsoft.UI.Input.PointerPointProperties, Microsoft.UI.Input.PointerPointProperties)
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Equals(Microsoft.UI.Input.PointerPointProperties)
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.ContactRect.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsBarrelButtonPressed.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsCanceled.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsEraser.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsHorizontalMouseWheel.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.ContactRect.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsInRange.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsInverted.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsLeftButtonPressed.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsMiddleButtonPressed.get
@@ -68,5 +78,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Twist.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.XTilt.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.YTilt.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

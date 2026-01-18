@@ -34,7 +34,16 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.RemoteSystemSessionMessageChannel(Windows.System.RemoteSystems.RemoteSystemSession, string, Windows.System.RemoteSystems.RemoteSystemSessionMessageChannelReliability)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Session.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel, Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel, Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Equals(Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> BroadcastValueSetAsync(global::Windows.Foundation.Collections.ValueSet messageData)
@@ -58,6 +67,8 @@ namespace Windows.System.RemoteSystems
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.ValueSetReceived.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.ValueSetReceived.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Session.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel, global::Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs> ValueSetReceived

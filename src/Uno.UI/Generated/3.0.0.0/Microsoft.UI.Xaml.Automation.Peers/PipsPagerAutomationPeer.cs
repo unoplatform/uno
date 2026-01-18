@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.PipsPagerAutomationPeer(Microsoft.UI.Xaml.Controls.PipsPager)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.PipsPagerAutomationPeer(Microsoft.UI.Xaml.Controls.PipsPager)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.PipsPagerAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.PipsPagerAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PipsPagerAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

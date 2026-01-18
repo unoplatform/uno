@@ -54,11 +54,22 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.BackgroundTaskRegistrationGroup(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.operator ==(Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup, Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.operator !=(Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup, Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Equals(Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.BackgroundActivated.add
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.BackgroundActivated.remove
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.AllTasks.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup, global::Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs> BackgroundActivated

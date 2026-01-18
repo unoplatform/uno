@@ -11,9 +11,21 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.AppBarButtonAutomationPeer(Microsoft.UI.Xaml.Controls.AppBarButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.AppBarButtonAutomationPeer(Microsoft.UI.Xaml.Controls.AppBarButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.AppBarButtonAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.AppBarButtonAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

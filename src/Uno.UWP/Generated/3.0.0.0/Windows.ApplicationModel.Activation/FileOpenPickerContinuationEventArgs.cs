@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -12,6 +11,26 @@ namespace Windows.ApplicationModel.Activation
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal FileOpenPickerContinuationEventArgs()
 		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Collections.ValueSet ContinuationData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ValueSet FileOpenPickerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20FileOpenPickerContinuationEventArgs.ContinuationData");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile> Files
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<StorageFile> FileOpenPickerContinuationEventArgs.Files is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStorageFile%3E%20FileOpenPickerContinuationEventArgs.Files");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -54,32 +73,23 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.ValueSet ContinuationData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ValueSet FileOpenPickerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20FileOpenPickerContinuationEventArgs.ContinuationData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile> Files
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StorageFile> FileOpenPickerContinuationEventArgs.Files is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStorageFile%3E%20FileOpenPickerContinuationEventArgs.Files");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Files.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.operator ==(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs, Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.operator !=(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs, Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Equals(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.ContinuationData.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Files.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IFileOpenPickerContinuationEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContinuationActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

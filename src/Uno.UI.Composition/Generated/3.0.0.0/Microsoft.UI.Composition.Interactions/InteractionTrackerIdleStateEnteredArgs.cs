@@ -8,9 +8,20 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerIdleStateEnteredArgs
 	{
-		// Skipping already declared property RequestId
 		// Skipping already declared property IsFromBinding
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.RequestId.get
+		// Skipping already declared property RequestId
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.operator ==(Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.operator !=(Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.Equals(Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.IsFromBinding.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.RequestId.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

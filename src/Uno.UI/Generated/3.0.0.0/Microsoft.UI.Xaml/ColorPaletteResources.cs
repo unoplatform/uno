@@ -10,351 +10,15 @@ namespace Microsoft.UI.Xaml
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ListMedium
+		public global::Windows.UI.Color? Accent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ListMedium");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.Accent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.Accent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ListMedium");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ListLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ListLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ListLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ErrorText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ErrorText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ErrorText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeWhite
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeWhite is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeWhite");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeWhite");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeMediumLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeMediumLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeMediumLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeMedium
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeMedium");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeMedium");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeHigh
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeHigh");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeHigh");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeGray
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeGray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeGray");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeGray");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeDisabledLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeDisabledLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeDisabledLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeDisabledHigh
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeDisabledHigh");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeDisabledHigh");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeBlackMediumLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackMediumLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackMediumLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeBlackMedium
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackMedium");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackMedium");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeBlackLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeBlackHigh
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackHigh");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackHigh");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? ChromeAltLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeAltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeAltLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeAltLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? BaseMediumLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMediumLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMediumLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? BaseMediumHigh
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMediumHigh");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMediumHigh");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? BaseMedium
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMedium");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMedium");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? BaseLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? BaseHigh
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseHigh");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseHigh");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? AltMediumLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMediumLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMediumLow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? AltMediumHigh
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMediumHigh");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMediumHigh");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? AltMedium
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMedium");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMedium");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? AltLow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltLow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltLow");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.Accent");
 			}
 		}
 #endif
@@ -374,15 +38,351 @@ namespace Microsoft.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? Accent
+		public global::Windows.UI.Color? AltLow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.Accent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.Accent");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltLow");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.Accent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? AltMedium
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMedium");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMedium");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? AltMediumHigh
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMediumHigh");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMediumHigh");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? AltMediumLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMediumLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMediumLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? BaseHigh
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseHigh");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseHigh");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? BaseLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? BaseMedium
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMedium");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMedium");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? BaseMediumHigh
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMediumHigh");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMediumHigh");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? BaseMediumLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMediumLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMediumLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeAltLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeAltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeAltLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeAltLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeBlackHigh
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackHigh");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackHigh");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeBlackLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeBlackMedium
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackMedium");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackMedium");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeBlackMediumLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackMediumLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackMediumLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeDisabledHigh
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeDisabledHigh");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeDisabledHigh");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeDisabledLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeDisabledLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeDisabledLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeGray
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeGray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeGray");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeGray");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeHigh
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeHigh");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeHigh");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeMedium
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeMedium");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeMedium");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeMediumLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeMediumLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeMediumLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ChromeWhite
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeWhite is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeWhite");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeWhite");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ErrorText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ErrorText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ErrorText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ListLow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ListLow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ListLow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color? ListMedium
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ListMedium");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ListMedium");
 			}
 		}
 #endif
@@ -394,6 +394,18 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ColorPaletteResources()
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ColorPaletteResources(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.operator ==(Microsoft.UI.Xaml.ColorPaletteResources, Microsoft.UI.Xaml.ColorPaletteResources)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.operator !=(Microsoft.UI.Xaml.ColorPaletteResources, Microsoft.UI.Xaml.ColorPaletteResources)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Equals(Microsoft.UI.Xaml.ColorPaletteResources)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ColorPaletteResources(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Accent.get
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Accent.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.AltHigh.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.AltHigh.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.AltLow.get
@@ -420,14 +432,16 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackHigh.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackLow.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackLow.set
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackMediumLow.get
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackMediumLow.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackMedium.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackMedium.set
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackMediumLow.get
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeBlackMediumLow.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeDisabledHigh.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeDisabledHigh.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeDisabledLow.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeDisabledLow.set
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeGray.get
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeGray.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeHigh.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeHigh.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeLow.get
@@ -438,15 +452,13 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeMediumLow.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeWhite.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeWhite.set
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeGray.get
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ChromeGray.set
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ErrorText.get
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ErrorText.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ListLow.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ListLow.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ListMedium.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ListMedium.set
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ErrorText.get
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ErrorText.set
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Accent.get
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Accent.set
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

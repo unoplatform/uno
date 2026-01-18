@@ -76,12 +76,7 @@ namespace Windows.Devices.Display.Core
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.DisplayWireFormat(Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding, int, Windows.Devices.Display.Core.DisplayWireFormatColorSpace, Windows.Devices.Display.Core.DisplayWireFormatEotf, Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.PixelEncoding.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.BitsPerChannel.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.ColorSpace.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Eotf.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.HdrMetadata.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Display.Core.DisplayWireFormat CreateWithProperties(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> extraProperties, global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace colorSpace, global::Windows.Devices.Display.Core.DisplayWireFormatEotf eotf, global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata hdrMetadata)
@@ -89,5 +84,22 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayWireFormat DisplayWireFormat.CreateWithProperties(IEnumerable<KeyValuePair<Guid, object>> extraProperties, DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, DisplayWireFormatColorSpace colorSpace, DisplayWireFormatEotf eotf, DisplayWireFormatHdrMetadata hdrMetadata) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayWireFormat%20DisplayWireFormat.CreateWithProperties%28IEnumerable%3CKeyValuePair%3CGuid%2C%20object%3E%3E%20extraProperties%2C%20DisplayWireFormatPixelEncoding%20pixelEncoding%2C%20int%20bitsPerChannel%2C%20DisplayWireFormatColorSpace%20colorSpace%2C%20DisplayWireFormatEotf%20eotf%2C%20DisplayWireFormatHdrMetadata%20hdrMetadata%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.operator ==(Windows.Devices.Display.Core.DisplayWireFormat, Windows.Devices.Display.Core.DisplayWireFormat)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.operator !=(Windows.Devices.Display.Core.DisplayWireFormat, Windows.Devices.Display.Core.DisplayWireFormat)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Equals(Windows.Devices.Display.Core.DisplayWireFormat)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.BitsPerChannel.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.ColorSpace.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Eotf.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.HdrMetadata.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.PixelEncoding.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

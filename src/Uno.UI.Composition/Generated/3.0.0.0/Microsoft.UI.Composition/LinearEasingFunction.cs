@@ -8,5 +8,15 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class LinearEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.operator ==(Microsoft.UI.Composition.LinearEasingFunction, Microsoft.UI.Composition.LinearEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.operator !=(Microsoft.UI.Composition.LinearEasingFunction, Microsoft.UI.Composition.LinearEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.Equals(Microsoft.UI.Composition.LinearEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

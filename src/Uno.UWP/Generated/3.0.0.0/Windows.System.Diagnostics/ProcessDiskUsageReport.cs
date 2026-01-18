@@ -73,11 +73,22 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.ReadOperationCount.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WriteOperationCount.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.operator ==(Windows.System.Diagnostics.ProcessDiskUsageReport, Windows.System.Diagnostics.ProcessDiskUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.operator !=(Windows.System.Diagnostics.ProcessDiskUsageReport, Windows.System.Diagnostics.ProcessDiskUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.Equals(Windows.System.Diagnostics.ProcessDiskUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.BytesReadCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.BytesWrittenCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherBytesCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.ReadOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WriteOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

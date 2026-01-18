@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CheckBox.CheckBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.CheckBox()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.CheckBox(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.operator ==(Microsoft.UI.Xaml.Controls.CheckBox, Microsoft.UI.Xaml.Controls.CheckBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.operator !=(Microsoft.UI.Xaml.Controls.CheckBox, Microsoft.UI.Xaml.Controls.CheckBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.Equals(Microsoft.UI.Xaml.Controls.CheckBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.CheckBox(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

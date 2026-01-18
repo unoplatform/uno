@@ -6,7 +6,7 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreWebView2HttpHeadersCollectionIterator : global::Windows.Foundation.Collections.IIterator<global::System.Collections.Generic.KeyValuePair<string, string>>
+	public partial class CoreWebView2HttpHeadersCollectionIterator : global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerator, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CoreWebView2HttpHeadersCollectionIterator()
@@ -25,16 +25,24 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasCurrent
+		object global::System.Collections.IEnumerator.Current
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2HttpHeadersCollectionIterator.HasCurrent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2HttpHeadersCollectionIterator.HasCurrent");
+				throw new global::System.NotImplementedException("The member object CoreWebView2HttpHeadersCollectionIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CoreWebView2HttpHeadersCollectionIterator.Current");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.Current.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.HasCurrent.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator, Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator, Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.Equals(Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
@@ -44,11 +52,23 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GetMany(global::System.Collections.Generic.KeyValuePair<string, string>[] items)
+		public void Reset()
 		{
-			throw new global::System.NotImplementedException("The member uint CoreWebView2HttpHeadersCollectionIterator.GetMany(KeyValuePair<string, string>[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2HttpHeadersCollectionIterator.GetMany%28KeyValuePair%3Cstring%2C%20string%3E%5B%5D%20items%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "void CoreWebView2HttpHeadersCollectionIterator.Reset()");
 		}
 #endif
-		// Processing: Windows.Foundation.Collections.IIterator<System.Collections.Generic.KeyValuePair<string, string>>
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "void CoreWebView2HttpHeadersCollectionIterator.Dispose()");
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.Current.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.System.Collections.IEnumerator.Current.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>>
+		// Processing: System.Collections.IEnumerator
+		// Processing: System.IDisposable
 	}
 }

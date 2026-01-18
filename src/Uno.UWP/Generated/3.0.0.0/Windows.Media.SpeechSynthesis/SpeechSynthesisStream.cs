@@ -6,55 +6,11 @@ namespace Windows.Media.SpeechSynthesis
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SpeechSynthesisStream : global::Windows.Storage.Streams.IRandomAccessStreamWithContentType, global::Windows.Storage.Streams.IContentTypeProvider, global::Windows.Storage.Streams.IRandomAccessStream, global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable, global::Windows.Storage.Streams.IInputStream, global::Windows.Media.Core.ITimedMetadataTrackProvider
+	public partial class SpeechSynthesisStream : global::Windows.Storage.Streams.IRandomAccessStreamWithContentType, global::Windows.Storage.Streams.IRandomAccessStream, global::System.IDisposable, global::Windows.Storage.Streams.IInputStream, global::Windows.Storage.Streams.IOutputStream, global::Windows.Storage.Streams.IContentTypeProvider, global::Windows.Media.Core.ITimedMetadataTrackProvider
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal SpeechSynthesisStream()
 		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.TimedMetadataTrack> TimedMetadataTracks
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<TimedMetadataTrack> SpeechSynthesisStream.TimedMetadataTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CTimedMetadataTrack%3E%20SpeechSynthesisStream.TimedMetadataTracks");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.IMediaMarker> Markers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaMarker> SpeechSynthesisStream.Markers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIMediaMarker%3E%20SpeechSynthesisStream.Markers");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContentType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SpeechSynthesisStream.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechSynthesisStream.ContentType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong SpeechSynthesisStream.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SpeechSynthesisStream.Size");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "ulong SpeechSynthesisStream.Size");
-			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -79,6 +35,26 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ContentType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SpeechSynthesisStream.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechSynthesisStream.ContentType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.IMediaMarker> Markers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaMarker> SpeechSynthesisStream.Markers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIMediaMarker%3E%20SpeechSynthesisStream.Markers");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong Position
 		{
 			get
@@ -87,9 +63,40 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Markers.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Size.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Size.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong Size
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong SpeechSynthesisStream.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SpeechSynthesisStream.Size");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "ulong SpeechSynthesisStream.Size");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.TimedMetadataTrack> TimedMetadataTracks
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<TimedMetadataTrack> SpeechSynthesisStream.TimedMetadataTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CTimedMetadataTrack%3E%20SpeechSynthesisStream.TimedMetadataTracks");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.operator ==(Windows.Media.SpeechSynthesis.SpeechSynthesisStream, Windows.Media.SpeechSynthesis.SpeechSynthesisStream)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.operator !=(Windows.Media.SpeechSynthesis.SpeechSynthesisStream, Windows.Media.SpeechSynthesis.SpeechSynthesisStream)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Equals(Windows.Media.SpeechSynthesis.SpeechSynthesisStream)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Equals(object)
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.GetHashCode()
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
@@ -104,7 +111,6 @@ namespace Windows.Media.SpeechSynthesis
 			throw new global::System.NotImplementedException("The member IOutputStream SpeechSynthesisStream.GetOutputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20SpeechSynthesisStream.GetOutputStreamAt%28ulong%20position%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Position.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Seek(ulong position)
@@ -117,22 +123,6 @@ namespace Windows.Media.SpeechSynthesis
 		public global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
 			throw new global::System.NotImplementedException("The member IRandomAccessStream SpeechSynthesisStream.CloneStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20SpeechSynthesisStream.CloneStream%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.CanRead.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.CanWrite.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "void SpeechSynthesisStream.Dispose()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> SpeechSynthesisStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20SpeechSynthesisStream.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -149,8 +139,29 @@ namespace Windows.Media.SpeechSynthesis
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SpeechSynthesisStream.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SpeechSynthesisStream.FlushAsync%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "void SpeechSynthesisStream.Dispose()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> SpeechSynthesisStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20SpeechSynthesisStream.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.CanRead.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.CanWrite.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.ContentType.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Markers.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Position.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Size.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Size.set
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.TimedMetadataTracks.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamWithContentType
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable

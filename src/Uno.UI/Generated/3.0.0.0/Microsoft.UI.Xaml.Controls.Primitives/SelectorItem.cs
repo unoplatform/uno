@@ -8,12 +8,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class SelectorItem : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
-		// Skipping already declared property IsSelected
 		// Skipping already declared property IsSelectedProperty
+		// Skipping already declared property IsSelected
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelectedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.operator ==(Microsoft.UI.Xaml.Controls.Primitives.SelectorItem, Microsoft.UI.Xaml.Controls.Primitives.SelectorItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.operator !=(Microsoft.UI.Xaml.Controls.Primitives.SelectorItem, Microsoft.UI.Xaml.Controls.Primitives.SelectorItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.Equals(Microsoft.UI.Xaml.Controls.Primitives.SelectorItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelectedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -16,6 +16,16 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.FrameworkViewSource()
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.operator ==(Microsoft.UI.Xaml.FrameworkViewSource, Microsoft.UI.Xaml.FrameworkViewSource)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.operator !=(Microsoft.UI.Xaml.FrameworkViewSource, Microsoft.UI.Xaml.FrameworkViewSource)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.Equals(Microsoft.UI.Xaml.FrameworkViewSource)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Core.IFrameworkView CreateView()
@@ -23,6 +33,7 @@ namespace Microsoft.UI.Xaml
 			throw new global::System.NotImplementedException("The member IFrameworkView FrameworkViewSource.CreateView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IFrameworkView%20FrameworkViewSource.CreateView%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Core.IFrameworkViewSource
 	}
 }

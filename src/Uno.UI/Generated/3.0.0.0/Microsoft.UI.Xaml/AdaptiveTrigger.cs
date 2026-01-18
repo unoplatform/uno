@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class AdaptiveTrigger : global::Microsoft.UI.Xaml.StateTriggerBase
 	{
-		// Skipping already declared property MinWindowWidth
-		// Skipping already declared property MinWindowHeight
 		// Skipping already declared property MinWindowHeightProperty
 		// Skipping already declared property MinWindowWidthProperty
+		// Skipping already declared property MinWindowHeight
+		// Skipping already declared property MinWindowWidth
 		// Skipping already declared method Microsoft.UI.Xaml.AdaptiveTrigger.AdaptiveTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.AdaptiveTrigger()
-		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.AdaptiveTrigger(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.operator ==(Microsoft.UI.Xaml.AdaptiveTrigger, Microsoft.UI.Xaml.AdaptiveTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.operator !=(Microsoft.UI.Xaml.AdaptiveTrigger, Microsoft.UI.Xaml.AdaptiveTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.Equals(Microsoft.UI.Xaml.AdaptiveTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.AdaptiveTrigger(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

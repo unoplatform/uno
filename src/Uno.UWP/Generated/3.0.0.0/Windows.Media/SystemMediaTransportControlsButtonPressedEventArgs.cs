@@ -23,6 +23,17 @@ namespace Windows.Media
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.operator ==(Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs, Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.operator !=(Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs, Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.Equals(Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.Button.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

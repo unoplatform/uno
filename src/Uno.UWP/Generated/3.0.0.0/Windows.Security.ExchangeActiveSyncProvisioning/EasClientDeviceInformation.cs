@@ -11,20 +11,31 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		// Skipping already declared property FriendlyName
 		// Skipping already declared property Id
 		// Skipping already declared property OperatingSystem
+		// Skipping already declared property SystemFirmwareVersion
+		// Skipping already declared property SystemHardwareVersion
 		// Skipping already declared property SystemManufacturer
 		// Skipping already declared property SystemProductName
 		// Skipping already declared property SystemSku
-		// Skipping already declared property SystemFirmwareVersion
-		// Skipping already declared property SystemHardwareVersion
 		// Skipping already declared method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.EasClientDeviceInformation()
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.EasClientDeviceInformation()
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.operator ==(Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation, Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation)
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.operator !=(Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation, Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation)
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.Equals(Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation)
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.Equals(object)
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.GetHashCode()
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.FriendlyName.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.Id.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.OperatingSystem.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.FriendlyName.get
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemFirmwareVersion.get
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemHardwareVersion.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemManufacturer.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemProductName.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemSku.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemHardwareVersion.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemFirmwareVersion.get
+		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

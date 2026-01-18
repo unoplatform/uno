@@ -13,13 +13,16 @@ namespace Microsoft.UI.Composition.Diagnostics
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ShowRedraw(global::Microsoft.UI.Composition.Visual subtree)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps", "void CompositionDebugHeatMaps.ShowRedraw(Visual subtree)");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.operator ==(Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps, Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps)
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.operator !=(Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps, Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps)
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.Equals(Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps)
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Hide(global::Microsoft.UI.Composition.Visual subtree)
@@ -41,5 +44,13 @@ namespace Microsoft.UI.Composition.Diagnostics
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps", "void CompositionDebugHeatMaps.ShowOverdraw(Visual subtree, CompositionDebugOverdrawContentKinds contentKinds)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void ShowRedraw(global::Microsoft.UI.Composition.Visual subtree)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps", "void CompositionDebugHeatMaps.ShowRedraw(Visual subtree)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

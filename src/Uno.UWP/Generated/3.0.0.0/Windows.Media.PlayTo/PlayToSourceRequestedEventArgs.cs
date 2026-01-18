@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,6 +23,17 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.operator ==(Windows.Media.PlayTo.PlayToSourceRequestedEventArgs, Windows.Media.PlayTo.PlayToSourceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.operator !=(Windows.Media.PlayTo.PlayToSourceRequestedEventArgs, Windows.Media.PlayTo.PlayToSourceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.Equals(Windows.Media.PlayTo.PlayToSourceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.SourceRequest.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

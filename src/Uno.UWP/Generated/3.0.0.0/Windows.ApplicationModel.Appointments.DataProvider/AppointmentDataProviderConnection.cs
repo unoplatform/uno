@@ -13,18 +13,16 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.SyncRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.SyncRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CreateOrUpdateAppointmentRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CreateOrUpdateAppointmentRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CancelMeetingRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CancelMeetingRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ForwardMeetingRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ForwardMeetingRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ProposeNewTimeForMeetingRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ProposeNewTimeForMeetingRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.UpdateMeetingResponseRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.UpdateMeetingResponseRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.operator ==(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection, Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.operator !=(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection, Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.Equals(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -32,6 +30,19 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection", "void AppointmentDataProviderConnection.Start()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CancelMeetingRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CancelMeetingRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CreateOrUpdateAppointmentRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.CreateOrUpdateAppointmentRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ForwardMeetingRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ForwardMeetingRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ProposeNewTimeForMeetingRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.ProposeNewTimeForMeetingRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.SyncRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.SyncRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.UpdateMeetingResponseRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.UpdateMeetingResponseRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection, global::Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequestEventArgs> CancelMeetingRequested

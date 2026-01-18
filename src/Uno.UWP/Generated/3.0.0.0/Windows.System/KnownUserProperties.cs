@@ -98,25 +98,15 @@ namespace Windows.System
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string AgeEnforcementRegion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.AgeEnforcementRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.AgeEnforcementRegion");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.System.KnownUserProperties.AgeEnforcementRegion.get
-		// Forced skipping of method Windows.System.KnownUserProperties.DisplayName.get
-		// Forced skipping of method Windows.System.KnownUserProperties.FirstName.get
-		// Forced skipping of method Windows.System.KnownUserProperties.LastName.get
-		// Forced skipping of method Windows.System.KnownUserProperties.ProviderName.get
+		// Forced skipping of method Windows.System.KnownUserProperties.As<I>()
 		// Forced skipping of method Windows.System.KnownUserProperties.AccountName.get
-		// Forced skipping of method Windows.System.KnownUserProperties.GuestHost.get
-		// Forced skipping of method Windows.System.KnownUserProperties.PrincipalName.get
+		// Forced skipping of method Windows.System.KnownUserProperties.DisplayName.get
 		// Forced skipping of method Windows.System.KnownUserProperties.DomainName.get
+		// Forced skipping of method Windows.System.KnownUserProperties.FirstName.get
+		// Forced skipping of method Windows.System.KnownUserProperties.GuestHost.get
+		// Forced skipping of method Windows.System.KnownUserProperties.LastName.get
+		// Forced skipping of method Windows.System.KnownUserProperties.PrincipalName.get
+		// Forced skipping of method Windows.System.KnownUserProperties.ProviderName.get
 		// Forced skipping of method Windows.System.KnownUserProperties.SessionInitiationProtocolUri.get
 	}
 }

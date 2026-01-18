@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.HeatMaps.get
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Diagnostics.CompositionDebugSettings TryGetSettings(global::Windows.UI.Composition.Compositor compositor)
@@ -31,5 +31,17 @@ namespace Windows.UI.Composition.Diagnostics
 			throw new global::System.NotImplementedException("The member CompositionDebugSettings CompositionDebugSettings.TryGetSettings(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionDebugSettings%20CompositionDebugSettings.TryGetSettings%28Compositor%20compositor%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.operator ==(Windows.UI.Composition.Diagnostics.CompositionDebugSettings, Windows.UI.Composition.Diagnostics.CompositionDebugSettings)
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.operator !=(Windows.UI.Composition.Diagnostics.CompositionDebugSettings, Windows.UI.Composition.Diagnostics.CompositionDebugSettings)
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.Equals(Windows.UI.Composition.Diagnostics.CompositionDebugSettings)
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.HeatMaps.get
+		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

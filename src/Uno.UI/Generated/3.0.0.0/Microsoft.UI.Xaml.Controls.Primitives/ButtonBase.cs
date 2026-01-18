@@ -8,33 +8,46 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ButtonBase : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
-		// Skipping already declared property CommandParameter
-		// Skipping already declared property Command
-		// Skipping already declared property ClickMode
-		// Skipping already declared property IsPointerOver
-		// Skipping already declared property IsPressed
 		// Skipping already declared property ClickModeProperty
 		// Skipping already declared property CommandParameterProperty
 		// Skipping already declared property CommandProperty
 		// Skipping already declared property IsPointerOverProperty
 		// Skipping already declared property IsPressedProperty
+		// Skipping already declared property ClickMode
+		// Skipping already declared property Command
+		// Skipping already declared property CommandParameter
+		// Skipping already declared property IsPointerOver
+		// Skipping already declared property IsPressed
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ButtonBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ButtonBase()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ClickModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.CommandParameterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.CommandProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPointerOverProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPressedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ButtonBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ButtonBase, Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ButtonBase, Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Equals(Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ButtonBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Click.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Click.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ClickMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ClickMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPointerOver.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPressed.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Command.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Command.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.CommandParameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.CommandParameter.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Click.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Click.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.ClickModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPointerOverProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPressedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.CommandProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.CommandParameterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPointerOver.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsPressed.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Click
 	}
 }

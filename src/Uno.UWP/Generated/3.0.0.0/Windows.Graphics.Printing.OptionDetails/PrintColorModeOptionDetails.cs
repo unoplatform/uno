@@ -15,20 +15,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string WarningText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintColorModeOptionDetails.WarningText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails", "string PrintColorModeOptionDetails.WarningText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Description
 		{
 			get
@@ -43,30 +29,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<object> Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintColorModeOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintColorModeOptionDetails.Items");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintColorModeOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintColorModeOptionDetails.State");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails", "PrintOptionStates PrintColorModeOptionDetails.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ErrorText
 		{
 			get
@@ -76,6 +38,16 @@ namespace Windows.Graphics.Printing.OptionDetails
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails", "string PrintColorModeOptionDetails.ErrorText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<object> Items
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintColorModeOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintColorModeOptionDetails.Items");
 			}
 		}
 #endif
@@ -101,6 +73,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintColorModeOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintColorModeOptionDetails.State");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails", "PrintOptionStates PrintColorModeOptionDetails.State");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Value
 		{
 			get
@@ -109,13 +95,30 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.OptionId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.OptionType.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.ErrorText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.ErrorText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.State.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.State.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Value.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string WarningText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintColorModeOptionDetails.WarningText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails", "string PrintColorModeOptionDetails.WarningText");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
@@ -123,11 +126,19 @@ namespace Windows.Graphics.Printing.OptionDetails
 			throw new global::System.NotImplementedException("The member bool PrintColorModeOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintColorModeOptionDetails.TrySetValue%28object%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Items.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WarningText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WarningText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Description.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Description.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Description.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.ErrorText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.ErrorText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Items.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.OptionId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.OptionType.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.State.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.State.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Value.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WarningText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WarningText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintItemListOptionDetails
 	}

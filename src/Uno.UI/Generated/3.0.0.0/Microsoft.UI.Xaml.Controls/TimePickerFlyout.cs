@@ -8,26 +8,37 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TimePickerFlyout
 	{
-		// Skipping already declared property Time
-		// Skipping already declared property MinuteIncrement
-		// Skipping already declared property ClockIdentifier
 		// Skipping already declared property ClockIdentifierProperty
 		// Skipping already declared property MinuteIncrementProperty
 		// Skipping already declared property TimeProperty
+		// Skipping already declared property ClockIdentifier
+		// Skipping already declared property MinuteIncrement
+		// Skipping already declared property Time
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TimePickerFlyout.TimePickerFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.TimePickerFlyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ClockIdentifier.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ClockIdentifier.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.Time.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.Time.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.MinuteIncrement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.MinuteIncrement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ClockIdentifierProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.MinuteIncrementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.TimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.operator ==(Microsoft.UI.Xaml.Controls.TimePickerFlyout, Microsoft.UI.Xaml.Controls.TimePickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.operator !=(Microsoft.UI.Xaml.Controls.TimePickerFlyout, Microsoft.UI.Xaml.Controls.TimePickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.Equals(Microsoft.UI.Xaml.Controls.TimePickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ShowAtAsync(Microsoft.UI.Xaml.FrameworkElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.TimePicked.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.TimePicked.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ShowAtAsync(Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ClockIdentifierProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.TimeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.MinuteIncrementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ClockIdentifier.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.ClockIdentifier.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.MinuteIncrement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.MinuteIncrement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.Time.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.Time.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TimePickerFlyout.TimePicked
 	}
 }

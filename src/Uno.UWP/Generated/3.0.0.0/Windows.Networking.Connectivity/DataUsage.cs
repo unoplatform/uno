@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -34,7 +33,18 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.BytesSent.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.operator ==(Windows.Networking.Connectivity.DataUsage, Windows.Networking.Connectivity.DataUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.operator !=(Windows.Networking.Connectivity.DataUsage, Windows.Networking.Connectivity.DataUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.Equals(Windows.Networking.Connectivity.DataUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.BytesReceived.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.BytesSent.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

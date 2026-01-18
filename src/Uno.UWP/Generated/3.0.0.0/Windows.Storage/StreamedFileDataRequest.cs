@@ -8,10 +8,21 @@ namespace Windows.Storage
 #endif
 	public partial class StreamedFileDataRequest : global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable, global::Windows.Storage.IStreamedFileDataRequest
 	{
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.operator ==(Windows.Storage.StreamedFileDataRequest, Windows.Storage.StreamedFileDataRequest)
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.operator !=(Windows.Storage.StreamedFileDataRequest, Windows.Storage.StreamedFileDataRequest)
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.Equals(Windows.Storage.StreamedFileDataRequest)
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.Equals(object)
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.GetHashCode()
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.StreamedFileDataRequest.WriteAsync(Windows.Storage.Streams.IBuffer)
 		// Skipping already declared method Windows.Storage.StreamedFileDataRequest.FlushAsync()
 		// Skipping already declared method Windows.Storage.StreamedFileDataRequest.Dispose()
 		// Skipping already declared method Windows.Storage.StreamedFileDataRequest.FailAndClose(Windows.Storage.StreamedFileFailureMode)
+		// Forced skipping of method Windows.Storage.StreamedFileDataRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IOutputStream
 		// Processing: System.IDisposable
 		// Processing: Windows.Storage.IStreamedFileDataRequest

@@ -8,27 +8,37 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class BringIntoViewRequestedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property VerticalOffset
-		// Skipping already declared property TargetRect
-		// Skipping already declared property TargetElement
-		// Skipping already declared property HorizontalOffset
-		// Skipping already declared property Handled
 		// Skipping already declared property AnimationDesired
+		// Skipping already declared property Handled
 		// Skipping already declared property HorizontalAlignmentRatio
+		// Skipping already declared property HorizontalOffset
+		// Skipping already declared property TargetElement
+		// Skipping already declared property TargetRect
 		// Skipping already declared property VerticalAlignmentRatio
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetElement.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetElement.set
+		// Skipping already declared property VerticalOffset
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.operator ==(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs, Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.operator !=(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs, Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.Equals(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.AnimationDesired.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.AnimationDesired.set
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetRect.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetRect.set
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.HorizontalAlignmentRatio.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalAlignmentRatio.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.HorizontalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.HorizontalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.HorizontalAlignmentRatio.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.HorizontalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.HorizontalOffset.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetElement.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.TargetRect.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalAlignmentRatio.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalOffset.set
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

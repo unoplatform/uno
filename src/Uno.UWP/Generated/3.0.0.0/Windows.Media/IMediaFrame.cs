@@ -54,16 +54,16 @@ namespace Windows.Media
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Media.IMediaFrame.Type.get
-		// Forced skipping of method Windows.Media.IMediaFrame.IsReadOnly.get
-		// Forced skipping of method Windows.Media.IMediaFrame.RelativeTime.set
-		// Forced skipping of method Windows.Media.IMediaFrame.RelativeTime.get
-		// Forced skipping of method Windows.Media.IMediaFrame.SystemRelativeTime.set
-		// Forced skipping of method Windows.Media.IMediaFrame.SystemRelativeTime.get
-		// Forced skipping of method Windows.Media.IMediaFrame.Duration.set
 		// Forced skipping of method Windows.Media.IMediaFrame.Duration.get
-		// Forced skipping of method Windows.Media.IMediaFrame.IsDiscontinuous.set
-		// Forced skipping of method Windows.Media.IMediaFrame.IsDiscontinuous.get
+		// Forced skipping of method Windows.Media.IMediaFrame.Duration.set
 		// Forced skipping of method Windows.Media.IMediaFrame.ExtendedProperties.get
+		// Forced skipping of method Windows.Media.IMediaFrame.IsDiscontinuous.get
+		// Forced skipping of method Windows.Media.IMediaFrame.IsDiscontinuous.set
+		// Forced skipping of method Windows.Media.IMediaFrame.IsReadOnly.get
+		// Forced skipping of method Windows.Media.IMediaFrame.RelativeTime.get
+		// Forced skipping of method Windows.Media.IMediaFrame.RelativeTime.set
+		// Forced skipping of method Windows.Media.IMediaFrame.SystemRelativeTime.get
+		// Forced skipping of method Windows.Media.IMediaFrame.SystemRelativeTime.set
+		// Forced skipping of method Windows.Media.IMediaFrame.Type.get
 	}
 }

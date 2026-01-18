@@ -10,18 +10,29 @@ namespace Microsoft.UI.Dispatching
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Complete()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherExitDeferral", "void DispatcherExitDeferral.Complete()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DispatcherExitDeferral()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherExitDeferral", "DispatcherExitDeferral.DispatcherExitDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.DispatcherExitDeferral()
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.operator ==(Microsoft.UI.Dispatching.DispatcherExitDeferral, Microsoft.UI.Dispatching.DispatcherExitDeferral)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.operator !=(Microsoft.UI.Dispatching.DispatcherExitDeferral, Microsoft.UI.Dispatching.DispatcherExitDeferral)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.Equals(Microsoft.UI.Dispatching.DispatcherExitDeferral)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.Equals(object)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Complete()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherExitDeferral", "void DispatcherExitDeferral.Complete()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

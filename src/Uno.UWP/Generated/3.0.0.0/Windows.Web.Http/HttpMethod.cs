@@ -8,7 +8,6 @@ namespace Windows.Web.Http
 #endif
 	public partial class HttpMethod : global::Windows.Foundation.IStringable
 	{
-		// Skipping already declared property Method
 		// Skipping already declared property Delete
 		// Skipping already declared property Get
 		// Skipping already declared property Head
@@ -16,10 +15,10 @@ namespace Windows.Web.Http
 		// Skipping already declared property Patch
 		// Skipping already declared property Post
 		// Skipping already declared property Put
+		// Skipping already declared property Method
 		// Skipping already declared method Windows.Web.Http.HttpMethod.HttpMethod(string)
 		// Forced skipping of method Windows.Web.Http.HttpMethod.HttpMethod(string)
-		// Forced skipping of method Windows.Web.Http.HttpMethod.Method.get
-		// Skipping already declared method Windows.Web.Http.HttpMethod.ToString()
+		// Forced skipping of method Windows.Web.Http.HttpMethod.As<I>()
 		// Forced skipping of method Windows.Web.Http.HttpMethod.Delete.get
 		// Forced skipping of method Windows.Web.Http.HttpMethod.Get.get
 		// Forced skipping of method Windows.Web.Http.HttpMethod.Head.get
@@ -27,5 +26,18 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpMethod.Patch.get
 		// Forced skipping of method Windows.Web.Http.HttpMethod.Post.get
 		// Forced skipping of method Windows.Web.Http.HttpMethod.Put.get
+		// Forced skipping of method Windows.Web.Http.HttpMethod.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpMethod.operator ==(Windows.Web.Http.HttpMethod, Windows.Web.Http.HttpMethod)
+		// Forced skipping of method Windows.Web.Http.HttpMethod.operator !=(Windows.Web.Http.HttpMethod, Windows.Web.Http.HttpMethod)
+		// Forced skipping of method Windows.Web.Http.HttpMethod.Equals(Windows.Web.Http.HttpMethod)
+		// Forced skipping of method Windows.Web.Http.HttpMethod.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpMethod.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpMethod.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpMethod.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpMethod.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpMethod.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Windows.Web.Http.HttpMethod.ToString()
+		// Forced skipping of method Windows.Web.Http.HttpMethod.Method.get
+		// Forced skipping of method Windows.Web.Http.HttpMethod.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

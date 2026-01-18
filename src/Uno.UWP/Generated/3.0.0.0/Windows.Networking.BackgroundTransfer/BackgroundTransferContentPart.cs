@@ -10,6 +10,14 @@ namespace Windows.Networking.BackgroundTransfer
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public BackgroundTransferContentPart()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "BackgroundTransferContentPart.BackgroundTransferContentPart()");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BackgroundTransferContentPart(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "BackgroundTransferContentPart.BackgroundTransferContentPart(string name)");
@@ -24,14 +32,16 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart(string, string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public BackgroundTransferContentPart()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "BackgroundTransferContentPart.BackgroundTransferContentPart()");
-		}
-#endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart()
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.operator ==(Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart, Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.operator !=(Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart, Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.Equals(Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.Equals(object)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.GetHashCode()
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetHeader(string headerName, string headerValue)
@@ -53,5 +63,6 @@ namespace Windows.Networking.BackgroundTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "void BackgroundTransferContentPart.SetFile(IStorageFile value)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

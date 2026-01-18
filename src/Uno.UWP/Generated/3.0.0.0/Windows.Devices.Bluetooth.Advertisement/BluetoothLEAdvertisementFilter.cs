@@ -40,8 +40,19 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.BluetoothLEAdvertisementFilter()
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.operator ==(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.operator !=(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.Equals(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.Advertisement.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.Advertisement.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.BytePatterns.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

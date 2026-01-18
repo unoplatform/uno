@@ -23,7 +23,16 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.Participant.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest, Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest, Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.Equals(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Accept()
@@ -31,5 +40,7 @@ namespace Windows.System.RemoteSystems
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest", "void RemoteSystemSessionJoinRequest.Accept()");
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.Participant.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,19 +8,30 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class FindNextElementOptions
 	{
-		// Skipping already declared property XYFocusNavigationStrategyOverride
-		// Skipping already declared property SearchRoot
-		// Skipping already declared property HintRect
 		// Skipping already declared property ExclusionRect
+		// Skipping already declared property HintRect
+		// Skipping already declared property SearchRoot
+		// Skipping already declared property XYFocusNavigationStrategyOverride
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FindNextElementOptions.FindNextElementOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.FindNextElementOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.SearchRoot.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.SearchRoot.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.operator ==(Microsoft.UI.Xaml.Input.FindNextElementOptions, Microsoft.UI.Xaml.Input.FindNextElementOptions)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.operator !=(Microsoft.UI.Xaml.Input.FindNextElementOptions, Microsoft.UI.Xaml.Input.FindNextElementOptions)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.Equals(Microsoft.UI.Xaml.Input.FindNextElementOptions)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.ExclusionRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.ExclusionRect.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.HintRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.HintRect.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.SearchRoot.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.SearchRoot.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.XYFocusNavigationStrategyOverride.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.XYFocusNavigationStrategyOverride.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

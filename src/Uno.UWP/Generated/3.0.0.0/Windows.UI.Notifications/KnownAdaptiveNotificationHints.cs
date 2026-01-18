@@ -68,11 +68,12 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Style.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Wrap.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.As<I>()
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Align.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.MaxLines.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.MinLines.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Style.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.TextStacking.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Align.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Wrap.get
 	}
 }

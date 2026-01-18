@@ -43,8 +43,19 @@ namespace Windows.ApplicationModel.Search
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.operator ==(Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails, Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.operator !=(Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails, Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.Equals(Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextAlternatives.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextCompositionStart.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextCompositionLength.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextCompositionStart.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

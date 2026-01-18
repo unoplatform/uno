@@ -10,20 +10,6 @@ namespace Windows.UI.Notifications
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Notifications.NotificationVisual Visual
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member NotificationVisual Notification.Visual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationVisual%20Notification.Visual");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Notification", "NotificationVisual Notification.Visual");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset? ExpirationTime
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Notifications.NotificationVisual Visual
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member NotificationVisual Notification.Visual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationVisual%20Notification.Visual");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Notification", "NotificationVisual Notification.Visual");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Notification()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Notification", "Notification.Notification()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.Notification.Notification()
+		// Forced skipping of method Windows.UI.Notifications.Notification.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.Notification.operator ==(Windows.UI.Notifications.Notification, Windows.UI.Notifications.Notification)
+		// Forced skipping of method Windows.UI.Notifications.Notification.operator !=(Windows.UI.Notifications.Notification, Windows.UI.Notifications.Notification)
+		// Forced skipping of method Windows.UI.Notifications.Notification.Equals(Windows.UI.Notifications.Notification)
+		// Forced skipping of method Windows.UI.Notifications.Notification.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.Notification.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.Notification.ExpirationTime.get
 		// Forced skipping of method Windows.UI.Notifications.Notification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.Notification.Visual.get
 		// Forced skipping of method Windows.UI.Notifications.Notification.Visual.set
+		// Forced skipping of method Windows.UI.Notifications.Notification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -47,9 +47,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionStart.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs, Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs, Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionStart.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

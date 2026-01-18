@@ -15,15 +15,11 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int SelectedCommandId
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget ContextMenuTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs", "int CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId");
+				throw new global::System.NotImplementedException("The member CoreWebView2ContextMenuTarget CoreWebView2ContextMenuRequestedEventArgs.ContextMenuTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ContextMenuTarget%20CoreWebView2ContextMenuRequestedEventArgs.ContextMenuTarget");
 			}
 		}
 #endif
@@ -38,16 +34,6 @@ namespace Microsoft.Web.WebView2.Core
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs", "bool CoreWebView2ContextMenuRequestedEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget ContextMenuTarget
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ContextMenuTarget CoreWebView2ContextMenuRequestedEventArgs.ContextMenuTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ContextMenuTarget%20CoreWebView2ContextMenuRequestedEventArgs.ContextMenuTarget");
 			}
 		}
 #endif
@@ -71,13 +57,30 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.MenuItems.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.ContextMenuTarget.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Location.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Handled.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Handled.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int SelectedCommandId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs", "int CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -85,5 +88,13 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreWebView2ContextMenuRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2ContextMenuRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.ContextMenuTarget.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Handled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Location.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.MenuItems.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.SelectedCommandId.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

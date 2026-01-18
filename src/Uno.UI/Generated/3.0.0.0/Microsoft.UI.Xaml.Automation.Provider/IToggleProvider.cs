@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	public partial interface IToggleProvider
 	{
 		// Skipping already declared property ToggleState
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IToggleProvider.ToggleState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IToggleProvider.Toggle()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IToggleProvider.ToggleState.get
 	}
 }

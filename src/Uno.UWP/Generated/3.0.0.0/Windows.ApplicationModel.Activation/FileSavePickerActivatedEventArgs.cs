@@ -15,6 +15,36 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string CallerPackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string FileSavePickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileSavePickerActivatedEventArgs.CallerPackageFamilyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string EnterpriseId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string FileSavePickerActivatedEventArgs.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileSavePickerActivatedEventArgs.EnterpriseId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Pickers.Provider.FileSavePickerUI FileSavePickerUI
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FileSavePickerUI FileSavePickerActivatedEventArgs.FileSavePickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileSavePickerUI%20FileSavePickerActivatedEventArgs.FileSavePickerUI");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,43 +83,24 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Pickers.Provider.FileSavePickerUI FileSavePickerUI
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FileSavePickerUI FileSavePickerActivatedEventArgs.FileSavePickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileSavePickerUI%20FileSavePickerActivatedEventArgs.FileSavePickerUI");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CallerPackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileSavePickerActivatedEventArgs.CallerPackageFamilyName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string EnterpriseId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerActivatedEventArgs.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileSavePickerActivatedEventArgs.EnterpriseId");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs, Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs, Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.CallerPackageFamilyName.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.EnterpriseId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.FileSavePickerUI.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.CallerPackageFamilyName.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.EnterpriseId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IFileSavePickerActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IFileSavePickerActivatedEventArgs2

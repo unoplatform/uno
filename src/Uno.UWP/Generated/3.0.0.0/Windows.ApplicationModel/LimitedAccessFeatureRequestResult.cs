@@ -43,8 +43,19 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.operator ==(Windows.ApplicationModel.LimitedAccessFeatureRequestResult, Windows.ApplicationModel.LimitedAccessFeatureRequestResult)
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.operator !=(Windows.ApplicationModel.LimitedAccessFeatureRequestResult, Windows.ApplicationModel.LimitedAccessFeatureRequestResult)
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.Equals(Windows.ApplicationModel.LimitedAccessFeatureRequestResult)
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.EstimatedRemovalDate.get
 		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.FeatureId.get
 		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.Status.get
-		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.EstimatedRemovalDate.get
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

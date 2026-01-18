@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Text
+		public global::Windows.ApplicationModel.Email.EmailQuerySearchFields Fields
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailQueryTextSearch.Text");
+				throw new global::System.NotImplementedException("The member EmailQuerySearchFields EmailQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySearchFields%20EmailQueryTextSearch.Fields");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryTextSearch", "string EmailQueryTextSearch.Text");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryTextSearch", "EmailQuerySearchFields EmailQueryTextSearch.Fields");
 			}
 		}
 #endif
@@ -43,23 +43,34 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailQuerySearchFields Fields
+		public string Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySearchFields EmailQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySearchFields%20EmailQueryTextSearch.Fields");
+				throw new global::System.NotImplementedException("The member string EmailQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailQueryTextSearch.Text");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryTextSearch", "EmailQuerySearchFields EmailQueryTextSearch.Fields");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryTextSearch", "string EmailQueryTextSearch.Text");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.operator ==(Windows.ApplicationModel.Email.EmailQueryTextSearch, Windows.ApplicationModel.Email.EmailQueryTextSearch)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.operator !=(Windows.ApplicationModel.Email.EmailQueryTextSearch, Windows.ApplicationModel.Email.EmailQueryTextSearch)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Equals(Windows.ApplicationModel.Email.EmailQueryTextSearch)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Fields.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Fields.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.SearchScope.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.SearchScope.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Text.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Text.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

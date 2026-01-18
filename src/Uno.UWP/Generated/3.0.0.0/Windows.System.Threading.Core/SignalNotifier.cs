@@ -13,20 +13,7 @@ namespace Windows.System.Threading.Core
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Enable()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.SignalNotifier", "void SignalNotifier.Enable()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Terminate()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.SignalNotifier", "void SignalNotifier.Terminate()");
-		}
-#endif
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Threading.Core.SignalNotifier AttachToEvent(string name, global::Windows.System.Threading.Core.SignalHandler handler)
@@ -55,5 +42,30 @@ namespace Windows.System.Threading.Core
 			throw new global::System.NotImplementedException("The member SignalNotifier SignalNotifier.AttachToSemaphore(string name, SignalHandler handler, TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SignalNotifier%20SignalNotifier.AttachToSemaphore%28string%20name%2C%20SignalHandler%20handler%2C%20TimeSpan%20timeout%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.FromAbi(nint)
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.operator ==(Windows.System.Threading.Core.SignalNotifier, Windows.System.Threading.Core.SignalNotifier)
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.operator !=(Windows.System.Threading.Core.SignalNotifier, Windows.System.Threading.Core.SignalNotifier)
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.Equals(Windows.System.Threading.Core.SignalNotifier)
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.Equals(object)
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.GetHashCode()
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Enable()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.SignalNotifier", "void SignalNotifier.Enable()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Terminate()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.SignalNotifier", "void SignalNotifier.Terminate()");
+		}
+#endif
+		// Forced skipping of method Windows.System.Threading.Core.SignalNotifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

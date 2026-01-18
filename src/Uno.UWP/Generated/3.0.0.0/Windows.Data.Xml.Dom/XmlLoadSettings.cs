@@ -10,43 +10,15 @@ namespace Windows.Data.Xml.Dom
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ValidateOnParse
+		public bool ElementContentWhiteSpace
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ValidateOnParse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ValidateOnParse");
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ElementContentWhiteSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ElementContentWhiteSpace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ValidateOnParse");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ResolveExternals
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ResolveExternals is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ResolveExternals");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ResolveExternals");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ProhibitDtd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ProhibitDtd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ProhibitDtd");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ProhibitDtd");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ElementContentWhiteSpace");
 			}
 		}
 #endif
@@ -66,15 +38,43 @@ namespace Windows.Data.Xml.Dom
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ElementContentWhiteSpace
+		public bool ProhibitDtd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ElementContentWhiteSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ElementContentWhiteSpace");
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ProhibitDtd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ProhibitDtd");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ElementContentWhiteSpace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ProhibitDtd");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ResolveExternals
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ResolveExternals is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ResolveExternals");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ResolveExternals");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ValidateOnParse
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ValidateOnParse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ValidateOnParse");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ValidateOnParse");
 			}
 		}
 #endif
@@ -86,6 +86,18 @@ namespace Windows.Data.Xml.Dom
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.XmlLoadSettings()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.operator ==(Windows.Data.Xml.Dom.XmlLoadSettings, Windows.Data.Xml.Dom.XmlLoadSettings)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.operator !=(Windows.Data.Xml.Dom.XmlLoadSettings, Windows.Data.Xml.Dom.XmlLoadSettings)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.Equals(Windows.Data.Xml.Dom.XmlLoadSettings)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.Equals(object)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.GetHashCode()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ElementContentWhiteSpace.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ElementContentWhiteSpace.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.MaxElementDepth.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.MaxElementDepth.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ProhibitDtd.get
@@ -94,7 +106,6 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ResolveExternals.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ValidateOnParse.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ValidateOnParse.set
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ElementContentWhiteSpace.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ElementContentWhiteSpace.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

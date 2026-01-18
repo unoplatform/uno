@@ -43,8 +43,19 @@ namespace Windows.Security.Credentials
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.CertificateChainBuffer.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.operator ==(Windows.Security.Credentials.KeyCredentialAttestationResult, Windows.Security.Credentials.KeyCredentialAttestationResult)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.operator !=(Windows.Security.Credentials.KeyCredentialAttestationResult, Windows.Security.Credentials.KeyCredentialAttestationResult)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.Equals(Windows.Security.Credentials.KeyCredentialAttestationResult)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.Equals(object)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.GetHashCode()
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.AttestationBuffer.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.CertificateChainBuffer.get
 		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.Status.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

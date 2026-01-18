@@ -23,7 +23,16 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.operator ==(Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs, Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs)
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.operator !=(Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs, Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs)
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.Equals(Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs)
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetExtendedStatus(global::Windows.Devices.Printers.Extensions.Print3DWorkflowDetail value)
@@ -45,5 +54,7 @@ namespace Windows.Devices.Printers.Extensions
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs", "void Print3DWorkflowPrintRequestedEventArgs.SetSourceChanged(bool value)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

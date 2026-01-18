@@ -8,24 +8,13 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial interface ICommandBarElement
 	{
-#if false
-		int DynamicOverflowOrder
-		{
-			get;
-			set;
-		}
-#endif
+		// Skipping already declared property DynamicOverflowOrder
 		// Skipping already declared property IsCompact
-#if false
-		bool IsInOverflow
-		{
-			get;
-		}
-#endif
+		// Skipping already declared property IsInOverflow
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ICommandBarElement.DynamicOverflowOrder.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ICommandBarElement.DynamicOverflowOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ICommandBarElement.IsCompact.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ICommandBarElement.IsCompact.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ICommandBarElement.IsInOverflow.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ICommandBarElement.DynamicOverflowOrder.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ICommandBarElement.DynamicOverflowOrder.set
 	}
 }

@@ -18,28 +18,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendMessage(IMidiMessage midiMessage)");
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendBuffer(IBuffer midiData)");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.DeviceId.get
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.Dispose()");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.IMidiOutPort> FromIdAsync(string deviceId)
@@ -54,6 +33,39 @@ namespace Windows.Devices.Midi
 			throw new global::System.NotImplementedException("The member string MidiOutPort.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MidiOutPort.GetDeviceSelector%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.operator ==(Windows.Devices.Midi.MidiOutPort, Windows.Devices.Midi.MidiOutPort)
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.operator !=(Windows.Devices.Midi.MidiOutPort, Windows.Devices.Midi.MidiOutPort)
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.Equals(Windows.Devices.Midi.MidiOutPort)
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.WinRT.IWinRTObject.AdditionalTypeData.get
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendMessage(IMidiMessage midiMessage)");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendBuffer(IBuffer midiData)");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.DeviceId.get
+		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiOutPort
 		// Processing: System.IDisposable
 	}

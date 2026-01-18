@@ -23,6 +23,17 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.operator ==(Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails, Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.operator !=(Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails, Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.Equals(Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.Connection.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

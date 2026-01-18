@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.DiscreteColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.DiscreteColorKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,6 +10,7 @@ namespace Windows.System.Profile
 	{
 		// Skipping already declared property DeviceForm
 		// Skipping already declared property VersionInfo
+		// Forced skipping of method Windows.System.Profile.AnalyticsInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, string>> GetSystemPropertiesAsync(global::System.Collections.Generic.IEnumerable<string> attributeNames)
@@ -17,7 +18,7 @@ namespace Windows.System.Profile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<string, string>> AnalyticsInfo.GetSystemPropertiesAsync(IEnumerable<string> attributeNames) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyDictionary%3Cstring%2C%20string%3E%3E%20AnalyticsInfo.GetSystemPropertiesAsync%28IEnumerable%3Cstring%3E%20attributeNames%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.AnalyticsInfo.VersionInfo.get
 		// Forced skipping of method Windows.System.Profile.AnalyticsInfo.DeviceForm.get
+		// Forced skipping of method Windows.System.Profile.AnalyticsInfo.VersionInfo.get
 	}
 }

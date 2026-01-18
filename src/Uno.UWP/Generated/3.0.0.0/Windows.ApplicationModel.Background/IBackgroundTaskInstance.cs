@@ -39,17 +39,17 @@ namespace Windows.ApplicationModel.Background
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.InstanceId.get
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Task.get
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Progress.set
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.TriggerDetails.get
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Canceled.add
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Canceled.remove
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.SuspendedCount.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.ApplicationModel.Background.BackgroundTaskDeferral GetDeferral();
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.InstanceId.get
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Progress.get
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Progress.set
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.SuspendedCount.get
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Task.get
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.TriggerDetails.get
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Canceled.add
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskInstance.Canceled.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.ApplicationModel.Background.BackgroundTaskCanceledEventHandler Canceled;
 #endif

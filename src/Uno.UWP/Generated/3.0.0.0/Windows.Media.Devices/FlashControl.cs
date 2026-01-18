@@ -15,43 +15,25 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RedEyeReduction
+		public bool AssistantLightEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReduction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.RedEyeReduction");
+				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.AssistantLightEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "bool FlashControl.RedEyeReduction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "bool FlashControl.AssistantLightEnabled");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PowerPercent
+		public bool AssistantLightSupported
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FlashControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FlashControl.PowerPercent");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "float FlashControl.PowerPercent");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Enabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.Enabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "bool FlashControl.Enabled");
+				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.AssistantLightSupported");
 			}
 		}
 #endif
@@ -71,11 +53,53 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Enabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool FlashControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.Enabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "bool FlashControl.Enabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float PowerPercent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float FlashControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FlashControl.PowerPercent");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "float FlashControl.PowerPercent");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool PowerSupported
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool FlashControl.PowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.PowerSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool RedEyeReduction
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReduction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.RedEyeReduction");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "bool FlashControl.RedEyeReduction");
 			}
 		}
 #endif
@@ -99,43 +123,30 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AssistantLightEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.AssistantLightEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FlashControl", "bool FlashControl.AssistantLightEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AssistantLightSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.AssistantLightSupported");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Devices.FlashControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.PowerSupported.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReductionSupported.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.Enabled.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.Enabled.set
-		// Forced skipping of method Windows.Media.Devices.FlashControl.Auto.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.Auto.set
-		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReduction.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReduction.set
-		// Forced skipping of method Windows.Media.Devices.FlashControl.PowerPercent.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.PowerPercent.set
-		// Forced skipping of method Windows.Media.Devices.FlashControl.AssistantLightSupported.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.FlashControl.operator ==(Windows.Media.Devices.FlashControl, Windows.Media.Devices.FlashControl)
+		// Forced skipping of method Windows.Media.Devices.FlashControl.operator !=(Windows.Media.Devices.FlashControl, Windows.Media.Devices.FlashControl)
+		// Forced skipping of method Windows.Media.Devices.FlashControl.Equals(Windows.Media.Devices.FlashControl)
+		// Forced skipping of method Windows.Media.Devices.FlashControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.FlashControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.FlashControl.AssistantLightEnabled.get
 		// Forced skipping of method Windows.Media.Devices.FlashControl.AssistantLightEnabled.set
+		// Forced skipping of method Windows.Media.Devices.FlashControl.AssistantLightSupported.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.Auto.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.Auto.set
+		// Forced skipping of method Windows.Media.Devices.FlashControl.Enabled.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.Enabled.set
+		// Forced skipping of method Windows.Media.Devices.FlashControl.PowerPercent.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.PowerPercent.set
+		// Forced skipping of method Windows.Media.Devices.FlashControl.PowerSupported.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReduction.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReduction.set
+		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReductionSupported.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.FlashControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,7 +23,16 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.ResourceCount.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.FromAbi(nint)
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.operator ==(Microsoft.Windows.ApplicationModel.Resources.ResourceMap, Microsoft.Windows.ApplicationModel.Resources.ResourceMap)
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.operator !=(Microsoft.Windows.ApplicationModel.Resources.ResourceMap, Microsoft.Windows.ApplicationModel.Resources.ResourceMap)
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.Equals(Microsoft.Windows.ApplicationModel.Resources.ResourceMap)
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.Equals(object)
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.GetHashCode()
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceMap GetSubtree(string reference)
@@ -80,5 +89,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 			throw new global::System.NotImplementedException("The member ResourceCandidate ResourceMap.TryGetValue(string resource, ResourceContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceCandidate%20ResourceMap.TryGetValue%28string%20resource%2C%20ResourceContext%20context%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.ResourceCount.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

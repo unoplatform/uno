@@ -8,14 +8,25 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class PointerEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property CurrentPoint
+		// Skipping already declared property Handled
 		// Skipping already declared property KeyModifiers
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.operator ==(Microsoft.UI.Input.PointerEventArgs, Microsoft.UI.Input.PointerEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.operator !=(Microsoft.UI.Input.PointerEventArgs, Microsoft.UI.Input.PointerEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.Equals(Microsoft.UI.Input.PointerEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Input.PointerEventArgs.GetIntermediatePoints()
+		// Skipping already declared method Microsoft.UI.Input.PointerEventArgs.GetIntermediateTransformedPoints(Microsoft.UI.Input.IPointerPointTransform)
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.CurrentPoint.get
 		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.KeyModifiers.get
-		// Skipping already declared method Microsoft.UI.Input.PointerEventArgs.GetIntermediateTransformedPoints(Microsoft.UI.Input.IPointerPointTransform)
-		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.CurrentPoint.get
+		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

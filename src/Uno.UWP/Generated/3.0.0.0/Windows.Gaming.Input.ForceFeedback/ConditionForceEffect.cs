@@ -10,16 +10,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ConditionForceEffectKind ConditionForceEffect.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConditionForceEffectKind%20ConditionForceEffect.Kind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double Gain
 		{
 			get
@@ -29,6 +19,16 @@ namespace Windows.Gaming.Input.ForceFeedback
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "double ConditionForceEffect.Gain");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind Kind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ConditionForceEffectKind ConditionForceEffect.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConditionForceEffectKind%20ConditionForceEffect.Kind");
 			}
 		}
 #endif
@@ -50,9 +50,16 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.ConditionForceEffect(Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Gain.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Gain.set
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.State.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.operator ==(Windows.Gaming.Input.ForceFeedback.ConditionForceEffect, Windows.Gaming.Input.ForceFeedback.ConditionForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.operator !=(Windows.Gaming.Input.ForceFeedback.ConditionForceEffect, Windows.Gaming.Input.ForceFeedback.ConditionForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Equals(Windows.Gaming.Input.ForceFeedback.ConditionForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -67,7 +74,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.Stop()");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Kind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParameters(global::System.Numerics.Vector3 direction, float positiveCoefficient, float negativeCoefficient, float maxPositiveMagnitude, float maxNegativeMagnitude, float deadZone, float bias)
@@ -75,6 +81,11 @@ namespace Windows.Gaming.Input.ForceFeedback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.SetParameters(Vector3 direction, float positiveCoefficient, float negativeCoefficient, float maxPositiveMagnitude, float maxNegativeMagnitude, float deadZone, float bias)");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Gain.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Gain.set
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Kind.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.State.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	}
 }

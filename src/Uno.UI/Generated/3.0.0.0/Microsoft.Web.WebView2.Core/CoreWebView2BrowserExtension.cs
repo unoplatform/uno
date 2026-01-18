@@ -43,9 +43,16 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.Id.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.Name.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.IsEnabled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension, Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension, Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.Equals(Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RemoveAsync()
@@ -60,5 +67,9 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2BrowserExtension.EnableAsync(bool IsEnabled) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2BrowserExtension.EnableAsync%28bool%20IsEnabled%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.Id.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.IsEnabled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.Name.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

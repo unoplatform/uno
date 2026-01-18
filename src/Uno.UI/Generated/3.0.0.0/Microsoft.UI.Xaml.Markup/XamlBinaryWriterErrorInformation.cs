@@ -10,6 +10,19 @@ namespace Microsoft.UI.Xaml.Markup
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.XamlBinaryWriterErrorInformation()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public XamlBinaryWriterErrorInformation(uint _InputStreamIndex, uint _LineNumber, uint _LinePosition)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation", "XamlBinaryWriterErrorInformation.XamlBinaryWriterErrorInformation(uint _InputStreamIndex, uint _LineNumber, uint _LinePosition)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.XamlBinaryWriterErrorInformation(uint, uint, uint)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.operator ==(Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation, Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.operator !=(Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation, Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.Equals(Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint InputStreamIndex;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

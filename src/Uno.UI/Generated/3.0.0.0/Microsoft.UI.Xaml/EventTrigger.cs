@@ -11,6 +11,16 @@ namespace Microsoft.UI.Xaml
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TriggerActionCollection Actions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TriggerActionCollection EventTrigger.Actions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TriggerActionCollection%20EventTrigger.Actions");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.RoutedEvent RoutedEvent
 		{
 			get
@@ -25,24 +35,24 @@ namespace Microsoft.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TriggerActionCollection Actions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TriggerActionCollection EventTrigger.Actions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TriggerActionCollection%20EventTrigger.Actions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EventTrigger()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.EventTrigger", "EventTrigger.EventTrigger()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.EventTrigger()
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.operator ==(Microsoft.UI.Xaml.EventTrigger, Microsoft.UI.Xaml.EventTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.operator !=(Microsoft.UI.Xaml.EventTrigger, Microsoft.UI.Xaml.EventTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.Equals(Microsoft.UI.Xaml.EventTrigger)
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.Actions.get
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.RoutedEvent.get
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.RoutedEvent.set
-		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.Actions.get
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

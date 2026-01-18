@@ -10,17 +10,19 @@ namespace Microsoft.UI.Xaml.Automation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Automation.AnnotationType Type
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Automation.AnnotationType)this.GetValue(TypeProperty);
-			}
-			set
-			{
-				this.SetValue(TypeProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty ElementProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Element), typeof(global::Microsoft.UI.Xaml.UIElement),
+			typeof(global::Microsoft.UI.Xaml.Automation.AutomationAnnotation),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty TypeProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Type), typeof(global::Microsoft.UI.Xaml.Automation.AnnotationType),
+			typeof(global::Microsoft.UI.Xaml.Automation.AutomationAnnotation),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Automation.AnnotationType)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -38,20 +40,26 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Element), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Automation.AutomationAnnotation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
+		public global::Microsoft.UI.Xaml.Automation.AnnotationType Type
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Automation.AnnotationType)this.GetValue(TypeProperty);
+			}
+			set
+			{
+				this.SetValue(TypeProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TypeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Type), typeof(global::Microsoft.UI.Xaml.Automation.AnnotationType),
-			typeof(global::Microsoft.UI.Xaml.Automation.AutomationAnnotation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Automation.AnnotationType)));
+		public AutomationAnnotation() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation()");
+		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AutomationAnnotation(global::Microsoft.UI.Xaml.Automation.AnnotationType type) : base()
@@ -68,19 +76,22 @@ namespace Microsoft.UI.Xaml.Automation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType, Microsoft.UI.Xaml.UIElement)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public AutomationAnnotation() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.set
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.ElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.TypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.operator ==(Microsoft.UI.Xaml.Automation.AutomationAnnotation, Microsoft.UI.Xaml.Automation.AutomationAnnotation)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.operator !=(Microsoft.UI.Xaml.Automation.AutomationAnnotation, Microsoft.UI.Xaml.Automation.AutomationAnnotation)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Equals(Microsoft.UI.Xaml.Automation.AutomationAnnotation)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Element.set
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.TypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.ElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.set
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

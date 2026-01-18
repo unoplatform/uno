@@ -43,8 +43,19 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.operator ==(Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs, Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.operator !=(Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs, Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.Equals(Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.DidAppWindowIdChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.DidDisplayIdChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.DidDisplayScaleChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

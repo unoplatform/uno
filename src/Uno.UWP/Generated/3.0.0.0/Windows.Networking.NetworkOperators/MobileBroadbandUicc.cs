@@ -23,7 +23,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.SimIccId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandUicc, Windows.Networking.NetworkOperators.MobileBroadbandUicc)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandUicc, Windows.Networking.NetworkOperators.MobileBroadbandUicc)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.Equals(Windows.Networking.NetworkOperators.MobileBroadbandUicc)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandUiccAppsResult> GetUiccAppsAsync()
@@ -31,5 +40,7 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandUiccAppsResult> MobileBroadbandUicc.GetUiccAppsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMobileBroadbandUiccAppsResult%3E%20MobileBroadbandUicc.GetUiccAppsAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.SimIccId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUicc.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

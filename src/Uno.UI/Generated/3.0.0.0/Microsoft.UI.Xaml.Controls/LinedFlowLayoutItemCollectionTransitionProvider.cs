@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.LinedFlowLayoutItemCollectionTransitionProvider()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.LinedFlowLayoutItemCollectionTransitionProvider(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.operator ==(Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider, Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.operator !=(Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider, Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.Equals(Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.LinedFlowLayoutItemCollectionTransitionProvider(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemCollectionTransitionProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

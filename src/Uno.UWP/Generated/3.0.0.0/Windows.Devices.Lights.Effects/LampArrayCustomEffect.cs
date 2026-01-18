@@ -10,20 +10,6 @@ namespace Windows.Devices.Lights.Effects
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan UpdateInterval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayCustomEffect.UpdateInterval");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "TimeSpan LampArrayCustomEffect.UpdateInterval");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan Duration
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.Devices.Lights.Effects
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "TimeSpan LampArrayCustomEffect.Duration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan UpdateInterval
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayCustomEffect.UpdateInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "TimeSpan LampArrayCustomEffect.UpdateInterval");
 			}
 		}
 #endif
@@ -58,14 +58,25 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.LampArrayCustomEffect(Windows.Devices.Lights.LampArray, int[])
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.operator ==(Windows.Devices.Lights.Effects.LampArrayCustomEffect, Windows.Devices.Lights.Effects.LampArrayCustomEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.operator !=(Windows.Devices.Lights.Effects.LampArrayCustomEffect, Windows.Devices.Lights.Effects.LampArrayCustomEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Equals(Windows.Devices.Lights.Effects.LampArrayCustomEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.UpdateRequested.add
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.UpdateRequested.remove
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Duration.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Duration.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.UpdateInterval.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.UpdateInterval.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.UpdateRequested.add
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.UpdateRequested.remove
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.ZIndex.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayCustomEffect, global::Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs> UpdateRequested

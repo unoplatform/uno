@@ -25,11 +25,31 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 AbsoluteAngularAccelerationAxisAngle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteAngularAccelerationAxisAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteAngularAccelerationAxisAngle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Quaternion AbsoluteAngularVelocity
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member Quaternion SpatialLocation.AbsoluteAngularVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SpatialLocation.AbsoluteAngularVelocity");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 AbsoluteAngularVelocityAxisAngle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteAngularVelocityAxisAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteAngularVelocityAxisAngle");
 			}
 		}
 #endif
@@ -73,33 +93,24 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 AbsoluteAngularAccelerationAxisAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteAngularAccelerationAxisAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteAngularAccelerationAxisAngle");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 AbsoluteAngularVelocityAxisAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteAngularVelocityAxisAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteAngularVelocityAxisAngle");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Position.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Orientation.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteLinearVelocity.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteLinearAcceleration.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularVelocity.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.operator ==(Windows.Perception.Spatial.SpatialLocation, Windows.Perception.Spatial.SpatialLocation)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.operator !=(Windows.Perception.Spatial.SpatialLocation, Windows.Perception.Spatial.SpatialLocation)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Equals(Windows.Perception.Spatial.SpatialLocation)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularAcceleration.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularVelocityAxisAngle.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularAccelerationAxisAngle.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularVelocity.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularVelocityAxisAngle.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteLinearAcceleration.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteLinearVelocity.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Orientation.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Position.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

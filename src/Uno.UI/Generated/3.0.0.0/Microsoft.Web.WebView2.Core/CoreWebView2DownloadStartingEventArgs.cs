@@ -15,34 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ResultFilePath
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DownloadStartingEventArgs.ResultFilePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DownloadStartingEventArgs.ResultFilePath");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs", "string CoreWebView2DownloadStartingEventArgs.ResultFilePath");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2DownloadStartingEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2DownloadStartingEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs", "bool CoreWebView2DownloadStartingEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Cancel
 		{
 			get
@@ -65,13 +37,44 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.DownloadOperation.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Cancel.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.ResultFilePath.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.ResultFilePath.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Handled.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Handled.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Handled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWebView2DownloadStartingEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2DownloadStartingEventArgs.Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs", "bool CoreWebView2DownloadStartingEventArgs.Handled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ResultFilePath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2DownloadStartingEventArgs.ResultFilePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DownloadStartingEventArgs.ResultFilePath");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs", "string CoreWebView2DownloadStartingEventArgs.ResultFilePath");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -79,5 +82,13 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreWebView2DownloadStartingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2DownloadStartingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Cancel.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.DownloadOperation.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Handled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.Handled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.ResultFilePath.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.ResultFilePath.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

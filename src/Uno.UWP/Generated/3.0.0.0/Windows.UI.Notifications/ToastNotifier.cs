@@ -23,6 +23,16 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.operator ==(Windows.UI.Notifications.ToastNotifier, Windows.UI.Notifications.ToastNotifier)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.operator !=(Windows.UI.Notifications.ToastNotifier, Windows.UI.Notifications.ToastNotifier)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.Equals(Windows.UI.Notifications.ToastNotifier)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.UI.Notifications.ToastNotification notification)
@@ -37,7 +47,6 @@ namespace Windows.UI.Notifications
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.Hide(ToastNotification notification)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.Setting.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddToSchedule(global::Windows.UI.Notifications.ScheduledToastNotification scheduledToast)
@@ -75,6 +84,8 @@ namespace Windows.UI.Notifications
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.ScheduledToastNotificationShowing.add
 		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.ScheduledToastNotificationShowing.remove
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.Setting.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.ToastNotifier, global::Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs> ScheduledToastNotificationShowing

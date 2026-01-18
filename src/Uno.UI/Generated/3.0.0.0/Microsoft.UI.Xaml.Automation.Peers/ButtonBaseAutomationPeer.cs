@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.ButtonBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.ButtonBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.ButtonBaseAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.ButtonBaseAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

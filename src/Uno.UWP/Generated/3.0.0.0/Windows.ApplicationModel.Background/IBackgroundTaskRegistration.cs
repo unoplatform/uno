@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.Background
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.TaskId.get
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Progress.add
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Progress.remove
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.add
-		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void Unregister(bool cancelTask);
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.TaskId.get
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.add
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.remove
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Progress.add
+		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Progress.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.ApplicationModel.Background.BackgroundTaskCompletedEventHandler Completed;
 #endif

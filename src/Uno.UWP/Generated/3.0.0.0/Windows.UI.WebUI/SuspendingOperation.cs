@@ -23,6 +23,16 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.operator ==(Windows.UI.WebUI.SuspendingOperation, Windows.UI.WebUI.SuspendingOperation)
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.operator !=(Windows.UI.WebUI.SuspendingOperation, Windows.UI.WebUI.SuspendingOperation)
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.Equals(Windows.UI.WebUI.SuspendingOperation)
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.SuspendingDeferral GetDeferral()
@@ -31,6 +41,7 @@ namespace Windows.UI.WebUI
 		}
 #endif
 		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.Deadline.get
+		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.ISuspendingOperation
 	}
 }

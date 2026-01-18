@@ -14,8 +14,22 @@ namespace Microsoft.UI.Xaml.Data
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs()
 		// Skipping already declared method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs(bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs(bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.operator ==(Microsoft.UI.Xaml.Data.CurrentChangingEventArgs, Microsoft.UI.Xaml.Data.CurrentChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.operator !=(Microsoft.UI.Xaml.Data.CurrentChangingEventArgs, Microsoft.UI.Xaml.Data.CurrentChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.Equals(Microsoft.UI.Xaml.Data.CurrentChangingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.IsCancelable.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

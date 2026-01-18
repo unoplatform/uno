@@ -15,20 +15,6 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int MaxSimultaneousConnections
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int MiracastReceiverSession.MaxSimultaneousConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MiracastReceiverSession.MaxSimultaneousConnections");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSession", "int MiracastReceiverSession.MaxSimultaneousConnections");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AllowConnectionTakeover
 		{
 			get
@@ -41,16 +27,30 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.ConnectionCreated.add
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.ConnectionCreated.remove
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MediaSourceCreated.add
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MediaSourceCreated.remove
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.Disconnected.add
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.Disconnected.remove
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.AllowConnectionTakeover.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.AllowConnectionTakeover.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MaxSimultaneousConnections.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MaxSimultaneousConnections.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int MaxSimultaneousConnections
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int MiracastReceiverSession.MaxSimultaneousConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MiracastReceiverSession.MaxSimultaneousConnections");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSession", "int MiracastReceiverSession.MaxSimultaneousConnections");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.operator ==(Windows.Media.Miracast.MiracastReceiverSession, Windows.Media.Miracast.MiracastReceiverSession)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.operator !=(Windows.Media.Miracast.MiracastReceiverSession, Windows.Media.Miracast.MiracastReceiverSession)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.Equals(Windows.Media.Miracast.MiracastReceiverSession)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Miracast.MiracastReceiverSessionStartResult Start()
@@ -65,6 +65,12 @@ namespace Windows.Media.Miracast
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MiracastReceiverSessionStartResult> MiracastReceiverSession.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMiracastReceiverSessionStartResult%3E%20MiracastReceiverSession.StartAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.ConnectionCreated.add
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.ConnectionCreated.remove
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.Disconnected.add
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.Disconnected.remove
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MediaSourceCreated.add
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MediaSourceCreated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -72,6 +78,11 @@ namespace Windows.Media.Miracast
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSession", "void MiracastReceiverSession.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.AllowConnectionTakeover.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.AllowConnectionTakeover.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MaxSimultaneousConnections.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.MaxSimultaneousConnections.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverSession, global::Windows.Media.Miracast.MiracastReceiverConnectionCreatedEventArgs> ConnectionCreated

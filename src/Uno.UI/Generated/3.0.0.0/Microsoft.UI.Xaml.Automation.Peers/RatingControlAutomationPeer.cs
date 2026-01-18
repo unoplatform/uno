@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.RatingControlAutomationPeer(Microsoft.UI.Xaml.Controls.RatingControl)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.RatingControlAutomationPeer(Microsoft.UI.Xaml.Controls.RatingControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.RatingControlAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.RatingControlAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

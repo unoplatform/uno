@@ -15,34 +15,6 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.PosPrinterMapMode MapMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PosPrinterMapMode ClaimedPosPrinter.MapMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterMapMode%20ClaimedPosPrinter.MapMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "PosPrinterMapMode ClaimedPosPrinter.MapMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCharacterSetMappingEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedPosPrinter.IsCharacterSetMappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedPosPrinter.IsCharacterSetMappingEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "bool ClaimedPosPrinter.IsCharacterSetMappingEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint CharacterSet
 		{
 			get
@@ -62,6 +34,20 @@ namespace Windows.Devices.PointOfService
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ClaimedPosPrinter.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClaimedPosPrinter.DeviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCharacterSetMappingEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedPosPrinter.IsCharacterSetMappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedPosPrinter.IsCharacterSetMappingEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "bool ClaimedPosPrinter.IsCharacterSetMappingEnabled");
 			}
 		}
 #endif
@@ -97,6 +83,20 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.PosPrinterMapMode MapMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PosPrinterMapMode ClaimedPosPrinter.MapMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterMapMode%20ClaimedPosPrinter.MapMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "PosPrinterMapMode ClaimedPosPrinter.MapMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.ClaimedReceiptPrinter Receipt
 		{
 			get
@@ -115,18 +115,16 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.DeviceId.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.CharacterSet.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.CharacterSet.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsCoverOpen.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsCharacterSetMappingEnabled.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsCharacterSetMappingEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.MapMode.set
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.MapMode.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Receipt.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Slip.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Journal.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.operator ==(Windows.Devices.PointOfService.ClaimedPosPrinter, Windows.Devices.PointOfService.ClaimedPosPrinter)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.operator !=(Windows.Devices.PointOfService.ClaimedPosPrinter, Windows.Devices.PointOfService.ClaimedPosPrinter)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Equals(Windows.Devices.PointOfService.ClaimedPosPrinter)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> EnableAsync()
@@ -173,6 +171,19 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "void ClaimedPosPrinter.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.CharacterSet.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.CharacterSet.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.DeviceId.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsCharacterSetMappingEnabled.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsCharacterSetMappingEnabled.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsCoverOpen.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.IsEnabled.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Journal.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.MapMode.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.MapMode.set
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Receipt.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Slip.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedPosPrinter, global::Windows.Devices.PointOfService.PosPrinterReleaseDeviceRequestedEventArgs> ReleaseDeviceRequested

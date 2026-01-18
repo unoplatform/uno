@@ -11,8 +11,19 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property DropResult
 		// Skipping already declared property Items
 		// Skipping already declared property NewParentItem
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.DropResult.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.NewParentItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

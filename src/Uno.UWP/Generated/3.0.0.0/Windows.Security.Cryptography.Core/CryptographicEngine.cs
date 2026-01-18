@@ -8,41 +8,7 @@ namespace Windows.Security.Cryptography.Core
 #endif
 	public static partial class CryptographicEngine
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.Streams.IBuffer SignHashedData(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data)
-		{
-			throw new global::System.NotImplementedException("The member IBuffer CryptographicEngine.SignHashedData(CryptographicKey key, IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20CryptographicEngine.SignHashedData%28CryptographicKey%20key%2C%20IBuffer%20data%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool VerifySignatureWithHashInput(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data, global::Windows.Storage.Streams.IBuffer signature)
-		{
-			throw new global::System.NotImplementedException("The member bool CryptographicEngine.VerifySignatureWithHashInput(CryptographicKey key, IBuffer data, IBuffer signature) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CryptographicEngine.VerifySignatureWithHashInput%28CryptographicKey%20key%2C%20IBuffer%20data%2C%20IBuffer%20signature%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> DecryptAsync(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data, global::Windows.Storage.Streams.IBuffer iv)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CryptographicEngine.DecryptAsync(CryptographicKey key, IBuffer data, IBuffer iv) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CryptographicEngine.DecryptAsync%28CryptographicKey%20key%2C%20IBuffer%20data%2C%20IBuffer%20iv%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> SignAsync(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CryptographicEngine.SignAsync(CryptographicKey key, IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CryptographicEngine.SignAsync%28CryptographicKey%20key%2C%20IBuffer%20data%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> SignHashedDataAsync(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CryptographicEngine.SignHashedDataAsync(CryptographicKey key, IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CryptographicEngine.SignHashedDataAsync%28CryptographicKey%20key%2C%20IBuffer%20data%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicEngine.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Streams.IBuffer Encrypt(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data, global::Windows.Storage.Streams.IBuffer iv)
@@ -90,6 +56,41 @@ namespace Windows.Security.Cryptography.Core
 		public static global::Windows.Storage.Streams.IBuffer DeriveKeyMaterial(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Security.Cryptography.Core.KeyDerivationParameters parameters, uint desiredKeySize)
 		{
 			throw new global::System.NotImplementedException("The member IBuffer CryptographicEngine.DeriveKeyMaterial(CryptographicKey key, KeyDerivationParameters parameters, uint desiredKeySize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20CryptographicEngine.DeriveKeyMaterial%28CryptographicKey%20key%2C%20KeyDerivationParameters%20parameters%2C%20uint%20desiredKeySize%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.Streams.IBuffer SignHashedData(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data)
+		{
+			throw new global::System.NotImplementedException("The member IBuffer CryptographicEngine.SignHashedData(CryptographicKey key, IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20CryptographicEngine.SignHashedData%28CryptographicKey%20key%2C%20IBuffer%20data%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool VerifySignatureWithHashInput(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data, global::Windows.Storage.Streams.IBuffer signature)
+		{
+			throw new global::System.NotImplementedException("The member bool CryptographicEngine.VerifySignatureWithHashInput(CryptographicKey key, IBuffer data, IBuffer signature) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CryptographicEngine.VerifySignatureWithHashInput%28CryptographicKey%20key%2C%20IBuffer%20data%2C%20IBuffer%20signature%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> DecryptAsync(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data, global::Windows.Storage.Streams.IBuffer iv)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CryptographicEngine.DecryptAsync(CryptographicKey key, IBuffer data, IBuffer iv) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CryptographicEngine.DecryptAsync%28CryptographicKey%20key%2C%20IBuffer%20data%2C%20IBuffer%20iv%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> SignAsync(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CryptographicEngine.SignAsync(CryptographicKey key, IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CryptographicEngine.SignAsync%28CryptographicKey%20key%2C%20IBuffer%20data%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> SignHashedDataAsync(global::Windows.Security.Cryptography.Core.CryptographicKey key, global::Windows.Storage.Streams.IBuffer data)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CryptographicEngine.SignHashedDataAsync(CryptographicKey key, IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CryptographicEngine.SignHashedDataAsync%28CryptographicKey%20key%2C%20IBuffer%20data%29");
 		}
 #endif
 	}

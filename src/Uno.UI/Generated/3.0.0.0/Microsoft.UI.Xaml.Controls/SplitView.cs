@@ -8,29 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SplitView : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property PanePlacement
-		// Skipping already declared property PaneBackground
-		// Skipping already declared property Pane
-		// Skipping already declared property OpenPaneLength
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property IsPaneOpen
-		// Skipping already declared property DisplayMode
-		// Skipping already declared property Content
-		// Skipping already declared property CompactPaneLength
-		// Skipping already declared property TemplateSettings
 		// Skipping already declared property CompactPaneLengthProperty
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property DisplayModeProperty
@@ -48,45 +25,81 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PanePlacementProperty
 		// Skipping already declared property PaneProperty
 		// Skipping already declared property TemplateSettingsProperty
+		// Skipping already declared property CompactPaneLength
+		// Skipping already declared property Content
+		// Skipping already declared property DisplayMode
+		// Skipping already declared property IsPaneOpen
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			}
+			set
+			{
+				this.SetValue(LightDismissOverlayModeProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property OpenPaneLength
+		// Skipping already declared property Pane
+		// Skipping already declared property PaneBackground
+		// Skipping already declared property PanePlacement
+		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SplitView.SplitView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.SplitView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Content.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Pane.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Pane.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.IsPaneOpen.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.IsPaneOpen.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.OpenPaneLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.OpenPaneLength.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.CompactPaneLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.CompactPaneLength.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.DisplayMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.DisplayMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneBackground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneBackground.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.LightDismissOverlayMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.LightDismissOverlayMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosing.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosing.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.CompactPaneLengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.DisplayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.IsPaneOpenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.LightDismissOverlayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.OpenPaneLengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneBackgroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.TemplateSettingsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.SplitView(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.operator ==(Microsoft.UI.Xaml.Controls.SplitView, Microsoft.UI.Xaml.Controls.SplitView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.operator !=(Microsoft.UI.Xaml.Controls.SplitView, Microsoft.UI.Xaml.Controls.SplitView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Equals(Microsoft.UI.Xaml.Controls.SplitView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.SplitView(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosed.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneOpening.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneOpening.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosing.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosing.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneOpened.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneOpened.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.IsPaneOpenProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.OpenPaneLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.CompactPaneLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.DisplayModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.TemplateSettingsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneBackgroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.LightDismissOverlayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneOpening.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneOpening.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.CompactPaneLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.CompactPaneLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Content.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Content.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.DisplayMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.DisplayMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.IsPaneOpen.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.IsPaneOpen.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.LightDismissOverlayMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.LightDismissOverlayMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.OpenPaneLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.OpenPaneLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Pane.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.Pane.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneBackground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneBackground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.TemplateSettings.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SplitView.PaneClosed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SplitView.PaneClosing
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SplitView.PaneOpened

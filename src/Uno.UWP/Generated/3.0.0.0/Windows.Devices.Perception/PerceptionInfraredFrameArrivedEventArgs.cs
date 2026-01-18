@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,7 +23,16 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.RelativeTime.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.operator ==(Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs, Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.operator !=(Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs, Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.Equals(Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionInfraredFrame TryOpenFrame()
@@ -32,5 +40,7 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionInfraredFrame PerceptionInfraredFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionInfraredFrame%20PerceptionInfraredFrameArrivedEventArgs.TryOpenFrame%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.RelativeTime.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

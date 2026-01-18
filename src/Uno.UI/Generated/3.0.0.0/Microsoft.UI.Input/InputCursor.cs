@@ -8,8 +8,23 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputCursor : global::System.IDisposable
 	{
-		// Skipping already declared method Microsoft.UI.Input.InputCursor.Dispose()
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.As<I>()
 		// Skipping already declared method Microsoft.UI.Input.InputCursor.CreateFromCoreCursor(Windows.UI.Core.CoreCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.InputCursor(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.operator ==(Microsoft.UI.Input.InputCursor, Microsoft.UI.Input.InputCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.operator !=(Microsoft.UI.Input.InputCursor, Microsoft.UI.Input.InputCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.Equals(Microsoft.UI.Input.InputCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.InputCursor(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.UI.Input.InputCursor.Dispose()
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

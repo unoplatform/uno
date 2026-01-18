@@ -33,7 +33,18 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Status.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.operator ==(Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult, Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.operator !=(Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult, Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Equals(Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Items.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Status.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

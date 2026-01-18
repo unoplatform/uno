@@ -15,25 +15,15 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<object> Items
+		public string Description
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintStapleOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintStapleOptionDetails.Items");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintStapleOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintStapleOptionDetails.State");
+				throw new global::System.NotImplementedException("The member string PrintStapleOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintStapleOptionDetails.Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "PrintOptionStates PrintStapleOptionDetails.State");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.Description");
 			}
 		}
 #endif
@@ -48,6 +38,16 @@ namespace Windows.Graphics.Printing.OptionDetails
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.ErrorText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<object> Items
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintStapleOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintStapleOptionDetails.Items");
 			}
 		}
 #endif
@@ -68,6 +68,20 @@ namespace Windows.Graphics.Printing.OptionDetails
 			get
 			{
 				throw new global::System.NotImplementedException("The member PrintOptionType PrintStapleOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionType%20PrintStapleOptionDetails.OptionType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintStapleOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintStapleOptionDetails.State");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "PrintOptionStates PrintStapleOptionDetails.State");
 			}
 		}
 #endif
@@ -95,27 +109,16 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Description
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PrintStapleOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintStapleOptionDetails.Description");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.Description");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.OptionId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.OptionType.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.ErrorText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.ErrorText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.State.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.State.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Value.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
@@ -123,11 +126,19 @@ namespace Windows.Graphics.Printing.OptionDetails
 			throw new global::System.NotImplementedException("The member bool PrintStapleOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintStapleOptionDetails.TrySetValue%28object%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Items.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WarningText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WarningText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Description.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Description.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Description.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.ErrorText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.ErrorText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Items.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.OptionId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.OptionType.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.State.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.State.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Value.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WarningText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.WarningText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails
 		// Processing: Windows.Graphics.Printing.OptionDetails.IPrintItemListOptionDetails
 	}

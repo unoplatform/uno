@@ -13,6 +13,16 @@ namespace Windows.Devices.Sensors
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.operator ==(Windows.Devices.Sensors.ActivitySensorTriggerDetails, Windows.Devices.Sensors.ActivitySensorTriggerDetails)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.operator !=(Windows.Devices.Sensors.ActivitySensorTriggerDetails, Windows.Devices.Sensors.ActivitySensorTriggerDetails)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.Equals(Windows.Devices.Sensors.ActivitySensorTriggerDetails)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReadingChangeReport> ReadReports()
@@ -20,5 +30,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ActivitySensorReadingChangeReport> ActivitySensorTriggerDetails.ReadReports() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CActivitySensorReadingChangeReport%3E%20ActivitySensorTriggerDetails.ReadReports%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

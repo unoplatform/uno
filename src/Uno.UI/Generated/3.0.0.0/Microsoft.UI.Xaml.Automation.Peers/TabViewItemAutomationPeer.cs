@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.TabViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.TabViewItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.TabViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.TabViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.TabViewItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.TabViewItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,17 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ItemsViewItemInvokedEventArgs
 	{
 		// Skipping already declared property InvokedItem
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs, Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs, Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.InvokedItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

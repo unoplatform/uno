@@ -3,24 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum DisabledFormattingAccelerators : uint
 	{
-#if false
-		None = 0,
-#endif
-#if false
-		Bold = 1,
-#endif
-#if false
-		Italic = 2,
-#endif
-#if false
-		Underline = 4,
-#endif
-#if false
-		All = 4294967295,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators.None
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators.Bold
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators.Italic
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators.Underline
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators.All
 	}
 #endif
 }

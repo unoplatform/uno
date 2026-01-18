@@ -10,43 +10,15 @@ namespace Windows.Web.AtomPub
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Timeout
+		public bool BypassCacheOnRetrieve
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AtomPubClient.Timeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AtomPubClient.Timeout");
+				throw new global::System.NotImplementedException("The member bool AtomPubClient.BypassCacheOnRetrieve is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AtomPubClient.BypassCacheOnRetrieve");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "uint AtomPubClient.Timeout");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Credentials.PasswordCredential ServerCredential
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PasswordCredential AtomPubClient.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20AtomPubClient.ServerCredential");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ServerCredential");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Credentials.PasswordCredential ProxyCredential
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PasswordCredential AtomPubClient.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20AtomPubClient.ProxyCredential");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ProxyCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "bool AtomPubClient.BypassCacheOnRetrieve");
 			}
 		}
 #endif
@@ -66,26 +38,46 @@ namespace Windows.Web.AtomPub
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool BypassCacheOnRetrieve
+		public global::Windows.Security.Credentials.PasswordCredential ProxyCredential
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AtomPubClient.BypassCacheOnRetrieve is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AtomPubClient.BypassCacheOnRetrieve");
+				throw new global::System.NotImplementedException("The member PasswordCredential AtomPubClient.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20AtomPubClient.ProxyCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "bool AtomPubClient.BypassCacheOnRetrieve");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ProxyCredential");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public AtomPubClient(global::Windows.Security.Credentials.PasswordCredential serverCredential)
+		public global::Windows.Security.Credentials.PasswordCredential ServerCredential
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient.AtomPubClient(PasswordCredential serverCredential)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member PasswordCredential AtomPubClient.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20AtomPubClient.ServerCredential");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ServerCredential");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient(Windows.Security.Credentials.PasswordCredential)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Timeout
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint AtomPubClient.Timeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AtomPubClient.Timeout");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "uint AtomPubClient.Timeout");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AtomPubClient()
@@ -94,6 +86,24 @@ namespace Windows.Web.AtomPub
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public AtomPubClient(global::Windows.Security.Credentials.PasswordCredential serverCredential)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient.AtomPubClient(PasswordCredential serverCredential)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient(Windows.Security.Credentials.PasswordCredential)
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.FromAbi(nint)
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.operator ==(Windows.Web.AtomPub.AtomPubClient, Windows.Web.AtomPub.AtomPubClient)
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.operator !=(Windows.Web.AtomPub.AtomPubClient, Windows.Web.AtomPub.AtomPubClient)
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Equals(Windows.Web.AtomPub.AtomPubClient)
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Equals(object)
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.GetHashCode()
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.AtomPub.ServiceDocument, global::Windows.Web.Syndication.RetrievalProgress> RetrieveServiceDocumentAsync(global::System.Uri uri)
@@ -171,16 +181,6 @@ namespace Windows.Web.AtomPub
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "void AtomPubClient.CancelAsyncOperations()");
 		}
 #endif
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ServerCredential.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ServerCredential.set
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ProxyCredential.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ProxyCredential.set
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.MaxResponseBufferSize.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.MaxResponseBufferSize.set
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Timeout.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Timeout.set
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.BypassCacheOnRetrieve.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.BypassCacheOnRetrieve.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRequestHeader(string name, string value)
@@ -195,6 +195,17 @@ namespace Windows.Web.AtomPub
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<SyndicationFeed, RetrievalProgress> AtomPubClient.RetrieveFeedAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CSyndicationFeed%2C%20RetrievalProgress%3E%20AtomPubClient.RetrieveFeedAsync%28Uri%20uri%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.BypassCacheOnRetrieve.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.BypassCacheOnRetrieve.set
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.MaxResponseBufferSize.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.MaxResponseBufferSize.set
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ProxyCredential.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ProxyCredential.set
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ServerCredential.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ServerCredential.set
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Timeout.get
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Timeout.set
+		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Syndication.ISyndicationClient
 	}
 }

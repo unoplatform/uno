@@ -11,142 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				return (string)this.GetValue(TitleProperty);
-			}
-			set
-			{
-				this.SetValue(TitleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Subtitle
-		{
-			get
-			{
-				return (string)this.GetValue(SubtitleProperty);
-			}
-			set
-			{
-				this.SetValue(SubtitleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement RightHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(RightHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(RightHeaderProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement LeftHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(LeftHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(LeftHeaderProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPaneToggleButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPaneToggleButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsPaneToggleButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBackButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsBackButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsBackButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBackButtonEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsBackButtonEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsBackButtonEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.IconSource IconSource
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.IconSource)this.GetValue(IconSourceProperty);
-			}
-			set
-			{
-				this.SetValue(IconSourceProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement Content
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ContentProperty);
-			}
-			set
-			{
-				this.SetValue(ContentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings TemplateSettings
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings)this.GetValue(TemplateSettingsProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ContentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Content), typeof(global::Microsoft.UI.Xaml.UIElement),
@@ -227,45 +91,194 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.UIElement Content
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ContentProperty);
+			}
+			set
+			{
+				this.SetValue(ContentProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.IconSource IconSource
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.IconSource)this.GetValue(IconSourceProperty);
+			}
+			set
+			{
+				this.SetValue(IconSourceProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsBackButtonEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsBackButtonEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsBackButtonEnabledProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsBackButtonVisible
+		{
+			get
+			{
+				return (bool)this.GetValue(IsBackButtonVisibleProperty);
+			}
+			set
+			{
+				this.SetValue(IsBackButtonVisibleProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPaneToggleButtonVisible
+		{
+			get
+			{
+				return (bool)this.GetValue(IsPaneToggleButtonVisibleProperty);
+			}
+			set
+			{
+				this.SetValue(IsPaneToggleButtonVisibleProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.UIElement LeftHeader
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(LeftHeaderProperty);
+			}
+			set
+			{
+				this.SetValue(LeftHeaderProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.UIElement RightHeader
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(RightHeaderProperty);
+			}
+			set
+			{
+				this.SetValue(RightHeaderProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Subtitle
+		{
+			get
+			{
+				return (string)this.GetValue(SubtitleProperty);
+			}
+			set
+			{
+				this.SetValue(SubtitleProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings TemplateSettings
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings)this.GetValue(TemplateSettingsProperty);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				return (string)this.GetValue(TitleProperty);
+			}
+			set
+			{
+				this.SetValue(TitleProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TitleBar() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "TitleBar.TitleBar()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Subtitle.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Subtitle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.LeftHeader.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.LeftHeader.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Content.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.RightHeader.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.RightHeader.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsPaneToggleButtonVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsPaneToggleButtonVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettings.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsPaneToggleButtonVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.LeftHeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.RightHeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.SubtitleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettingsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.operator ==(Microsoft.UI.Xaml.Controls.TitleBar, Microsoft.UI.Xaml.Controls.TitleBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.operator !=(Microsoft.UI.Xaml.Controls.TitleBar, Microsoft.UI.Xaml.Controls.TitleBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Equals(Microsoft.UI.Xaml.Controls.TitleBar)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.BackRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.BackRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.SubtitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.LeftHeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.RightHeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsPaneToggleButtonVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettingsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Content.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Content.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsPaneToggleButtonVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsPaneToggleButtonVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.LeftHeader.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.LeftHeader.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.RightHeader.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.RightHeader.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Subtitle.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Subtitle.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettings.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TitleBar, object> BackRequested

@@ -15,29 +15,11 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate SelectedCertificate
+		public global::System.Collections.Generic.IReadOnlyList<string> AllowedCertificateAuthorities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ClientCertificate CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ClientCertificate%20CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "CoreWebView2ClientCertificate CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ClientCertificateRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ClientCertificateRequestedEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "bool CoreWebView2ClientCertificateRequestedEventArgs.Handled");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities");
 			}
 		}
 #endif
@@ -57,11 +39,15 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> AllowedCertificateAuthorities
+		public bool Handled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities");
+				throw new global::System.NotImplementedException("The member bool CoreWebView2ClientCertificateRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ClientCertificateRequestedEventArgs.Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "bool CoreWebView2ClientCertificateRequestedEventArgs.Handled");
 			}
 		}
 #endif
@@ -105,17 +91,30 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Host.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Port.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.IsProxy.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.MutuallyTrustedCertificates.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Cancel.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Handled.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Handled.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate SelectedCertificate
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2ClientCertificate CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ClientCertificate%20CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "CoreWebView2ClientCertificate CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -123,5 +122,17 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreWebView2ClientCertificateRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2ClientCertificateRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Cancel.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Handled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Host.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.IsProxy.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.MutuallyTrustedCertificates.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.Port.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

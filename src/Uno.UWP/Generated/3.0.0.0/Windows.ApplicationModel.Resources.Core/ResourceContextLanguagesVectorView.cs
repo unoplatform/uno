@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ResourceContextLanguagesVectorView : global::System.Collections.Generic.IReadOnlyList<string>, global::System.Collections.Generic.IEnumerable<string>
+	public partial class ResourceContextLanguagesVectorView : global::System.Collections.Generic.IReadOnlyList<string>, global::System.Collections.Generic.IEnumerable<string>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<string>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal ResourceContextLanguagesVectorView()
@@ -15,39 +15,48 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ResourceContextLanguagesVectorView.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResourceContextLanguagesVectorView.Size");
+				throw new global::System.NotImplementedException("The member int ResourceContextLanguagesVectorView.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ResourceContextLanguagesVectorView.Count");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.GetAt(uint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.Size.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.IndexOf(string, out uint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.GetMany(uint, string[])
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.First()
-		// Processing: System.Collections.Generic.IReadOnlyList<string>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string this[int index]
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member string ResourceContextLanguagesVectorView.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceContextLanguagesVectorView.this%5Bint%20index%5D");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<string>
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.operator ==(Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView, Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.operator !=(Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView, Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.Equals(Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.Count.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<string>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<string> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<string> ResourceContextLanguagesVectorView.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3Cstring%3E%20ResourceContextLanguagesVectorView.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.System.Collections.Generic.IReadOnlyList<string>.get_Item(int)
+		// Processing: System.Collections.Generic.IReadOnlyList<string>
+		// Processing: System.Collections.Generic.IEnumerable<string>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -58,15 +67,5 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<string>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

@@ -13,6 +13,7 @@ namespace Microsoft.UI.Input
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputPreTranslateKeyboardSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
@@ -20,5 +21,15 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputPreTranslateKeyboardSource InputPreTranslateKeyboardSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputPreTranslateKeyboardSource%20InputPreTranslateKeyboardSource.GetForIsland%28ContentIsland%20island%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.operator ==(Microsoft.UI.Input.InputPreTranslateKeyboardSource, Microsoft.UI.Input.InputPreTranslateKeyboardSource)
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.operator !=(Microsoft.UI.Input.InputPreTranslateKeyboardSource, Microsoft.UI.Input.InputPreTranslateKeyboardSource)
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.Equals(Microsoft.UI.Input.InputPreTranslateKeyboardSource)
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputPreTranslateKeyboardSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

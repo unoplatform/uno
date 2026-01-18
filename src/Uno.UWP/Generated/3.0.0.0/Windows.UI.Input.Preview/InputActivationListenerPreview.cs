@@ -8,6 +8,7 @@ namespace Windows.UI.Input.Preview
 #endif
 	public static partial class InputActivationListenerPreview
 	{
+		// Forced skipping of method Windows.UI.Input.Preview.InputActivationListenerPreview.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.InputActivationListener CreateForApplicationWindow(global::Windows.UI.WindowManagement.AppWindow window)

@@ -193,24 +193,16 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.Name.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.XmlNamespace.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.XmlNode.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentBindingFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentCollateFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentDuplexFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentHolePunchFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentInputBinFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentNUpFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentStapleFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.JobPasscodeFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageBorderlessFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageMediaSizeFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageMediaTypeFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageOrientationFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageOutputColorFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageOutputQualityFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageResolutionFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.operator ==(Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities, Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.operator !=(Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities, Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.Equals(Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature(string name, string xmlNamespace)
@@ -225,5 +217,24 @@ namespace Windows.Graphics.Printing.PrintTicket
 			throw new global::System.NotImplementedException("The member PrintTicketParameterDefinition PrintTicketCapabilities.GetParameterDefinition(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketParameterDefinition%20PrintTicketCapabilities.GetParameterDefinition%28string%20name%2C%20string%20xmlNamespace%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentBindingFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentCollateFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentDuplexFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentHolePunchFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentInputBinFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentNUpFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentStapleFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.JobPasscodeFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.Name.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageBorderlessFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageMediaSizeFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageMediaTypeFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageOrientationFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageOutputColorFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageOutputQualityFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageResolutionFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.XmlNamespace.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.XmlNode.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

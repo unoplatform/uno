@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.CheckBoxAutomationPeer(Microsoft.UI.Xaml.Controls.CheckBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.CheckBoxAutomationPeer(Microsoft.UI.Xaml.Controls.CheckBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.CheckBoxAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.CheckBoxAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

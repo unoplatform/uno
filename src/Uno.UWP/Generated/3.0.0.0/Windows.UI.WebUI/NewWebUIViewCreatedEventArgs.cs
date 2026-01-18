@@ -43,9 +43,16 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.WebUIView.get
-		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.ActivatedEventArgs.get
-		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.HasPendingNavigate.get
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.operator ==(Windows.UI.WebUI.NewWebUIViewCreatedEventArgs, Windows.UI.WebUI.NewWebUIViewCreatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.operator !=(Windows.UI.WebUI.NewWebUIViewCreatedEventArgs, Windows.UI.WebUI.NewWebUIViewCreatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.Equals(Windows.UI.WebUI.NewWebUIViewCreatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -53,5 +60,9 @@ namespace Windows.UI.WebUI
 			throw new global::System.NotImplementedException("The member Deferral NewWebUIViewCreatedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20NewWebUIViewCreatedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.ActivatedEventArgs.get
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.HasPendingNavigate.get
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.WebUIView.get
+		// Forced skipping of method Windows.UI.WebUI.NewWebUIViewCreatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

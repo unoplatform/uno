@@ -33,24 +33,7 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.CapabilityName.get
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.User.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus> RequestAccessAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppCapabilityAccessStatus> AppCapability.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppCapabilityAccessStatus%3E%20AppCapability.RequestAccessAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus CheckAccess()
-		{
-			throw new global::System.NotImplementedException("The member AppCapabilityAccessStatus AppCapability.CheckAccess() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCapabilityAccessStatus%20AppCapability.CheckAccess%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.add
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.remove
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus>> RequestAccessForCapabilitiesAsync(global::System.Collections.Generic.IEnumerable<string> capabilityNames)
@@ -79,6 +62,35 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 			throw new global::System.NotImplementedException("The member AppCapability AppCapability.CreateWithProcessIdForUser(User user, string capabilityName, uint pid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCapability%20AppCapability.CreateWithProcessIdForUser%28User%20user%2C%20string%20capabilityName%2C%20uint%20pid%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.operator ==(Windows.Security.Authorization.AppCapabilityAccess.AppCapability, Windows.Security.Authorization.AppCapabilityAccess.AppCapability)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.operator !=(Windows.Security.Authorization.AppCapabilityAccess.AppCapability, Windows.Security.Authorization.AppCapabilityAccess.AppCapability)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.Equals(Windows.Security.Authorization.AppCapabilityAccess.AppCapability)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.Equals(object)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.GetHashCode()
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus> RequestAccessAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AppCapabilityAccessStatus> AppCapability.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppCapabilityAccessStatus%3E%20AppCapability.RequestAccessAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus CheckAccess()
+		{
+			throw new global::System.NotImplementedException("The member AppCapabilityAccessStatus AppCapability.CheckAccess() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCapabilityAccessStatus%20AppCapability.CheckAccess%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.add
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.remove
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.CapabilityName.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.User.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapability, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs> AccessChanged

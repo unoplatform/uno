@@ -15,16 +15,6 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Authentication.Web.Provider.WebAccountProviderOperationKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderSignOutAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderSignOutAccountOperation.Kind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Uri ApplicationCallbackUri
 		{
 			get
@@ -45,6 +35,16 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Authentication.Web.Provider.WebAccountProviderOperationKind Kind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderSignOutAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderSignOutAccountOperation.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Credentials.WebAccount WebAccount
 		{
 			get
@@ -53,10 +53,16 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.WebAccount.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.ApplicationCallbackUri.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.ClientId.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.Kind.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.Equals(Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
@@ -71,6 +77,11 @@ namespace Windows.Security.Authentication.Web.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "void WebAccountProviderSignOutAccountOperation.ReportError(WebProviderError value)");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.ApplicationCallbackUri.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.ClientId.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.Kind.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.WebAccount.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderBaseReportOperation
 	}

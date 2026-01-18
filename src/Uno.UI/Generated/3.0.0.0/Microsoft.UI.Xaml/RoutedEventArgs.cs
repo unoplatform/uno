@@ -11,6 +11,20 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property OriginalSource
 		// Skipping already declared method Microsoft.UI.Xaml.RoutedEventArgs.RoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.RoutedEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.RoutedEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.operator ==(Microsoft.UI.Xaml.RoutedEventArgs, Microsoft.UI.Xaml.RoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.operator !=(Microsoft.UI.Xaml.RoutedEventArgs, Microsoft.UI.Xaml.RoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.Equals(Microsoft.UI.Xaml.RoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.RoutedEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.OriginalSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

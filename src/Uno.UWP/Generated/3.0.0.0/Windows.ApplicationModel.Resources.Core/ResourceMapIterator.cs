@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ResourceMapIterator : global::Windows.Foundation.Collections.IIterator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>>
+	public partial class ResourceMapIterator : global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>>, global::System.Collections.IEnumerator, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal ResourceMapIterator()
@@ -25,16 +25,24 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasCurrent
+		object global::System.Collections.IEnumerator.Current
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceMapIterator.HasCurrent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceMapIterator.HasCurrent");
+				throw new global::System.NotImplementedException("The member object ResourceMapIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ResourceMapIterator.Current");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.Current.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.HasCurrent.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.operator ==(Windows.ApplicationModel.Resources.Core.ResourceMapIterator, Windows.ApplicationModel.Resources.Core.ResourceMapIterator)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.operator !=(Windows.ApplicationModel.Resources.Core.ResourceMapIterator, Windows.ApplicationModel.Resources.Core.ResourceMapIterator)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.Equals(Windows.ApplicationModel.Resources.Core.ResourceMapIterator)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
@@ -44,11 +52,23 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GetMany(global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>[] items)
+		public void Reset()
 		{
-			throw new global::System.NotImplementedException("The member uint ResourceMapIterator.GetMany(KeyValuePair<string, NamedResource>[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResourceMapIterator.GetMany%28KeyValuePair%3Cstring%2C%20NamedResource%3E%5B%5D%20items%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceMapIterator", "void ResourceMapIterator.Reset()");
 		}
 #endif
-		// Processing: Windows.Foundation.Collections.IIterator<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.NamedResource>>
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceMapIterator", "void ResourceMapIterator.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.System.Collections.IEnumerator.Current.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapIterator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.NamedResource>>
+		// Processing: System.Collections.IEnumerator
+		// Processing: System.IDisposable
 	}
 }

@@ -15,20 +15,6 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool MaintainConnection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DeviceConnectionChangeTrigger.MaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceConnectionChangeTrigger.MaintainConnection");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger", "bool DeviceConnectionChangeTrigger.MaintainConnection");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanMaintainConnection
 		{
 			get
@@ -47,10 +33,21 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.DeviceId.get
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.CanMaintainConnection.get
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.MaintainConnection.get
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.MaintainConnection.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool MaintainConnection
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DeviceConnectionChangeTrigger.MaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceConnectionChangeTrigger.MaintainConnection");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger", "bool DeviceConnectionChangeTrigger.MaintainConnection");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger> FromIdAsync(string deviceId)
@@ -58,6 +55,21 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceConnectionChangeTrigger> DeviceConnectionChangeTrigger.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceConnectionChangeTrigger%3E%20DeviceConnectionChangeTrigger.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.operator ==(Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger, Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.operator !=(Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger, Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.Equals(Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.CanMaintainConnection.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.DeviceId.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.MaintainConnection.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.MaintainConnection.set
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

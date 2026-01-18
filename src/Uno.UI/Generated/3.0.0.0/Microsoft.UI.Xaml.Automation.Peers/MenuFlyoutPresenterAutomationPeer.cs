@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.MenuFlyoutPresenterAutomationPeer(Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.MenuFlyoutPresenterAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.MenuFlyoutPresenterAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

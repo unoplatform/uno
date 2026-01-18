@@ -10,43 +10,15 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset ValidationTimestamp
+		public bool AuthorityInformationAccessEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ChainBuildingParameters.ValidationTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ChainBuildingParameters.ValidationTimestamp");
+				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.AuthorityInformationAccessEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChainBuildingParameters.AuthorityInformationAccessEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "DateTimeOffset ChainBuildingParameters.ValidationTimestamp");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RevocationCheckEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.RevocationCheckEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChainBuildingParameters.RevocationCheckEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.RevocationCheckEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool NetworkRetrievalEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.NetworkRetrievalEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChainBuildingParameters.NetworkRetrievalEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.NetworkRetrievalEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.AuthorityInformationAccessEnabled");
 			}
 		}
 #endif
@@ -61,20 +33,6 @@ namespace Windows.Security.Cryptography.Certificates
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.CurrentTimeValidationEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AuthorityInformationAccessEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.AuthorityInformationAccessEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChainBuildingParameters.AuthorityInformationAccessEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.AuthorityInformationAccessEnabled");
 			}
 		}
 #endif
@@ -100,23 +58,76 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool NetworkRetrievalEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.NetworkRetrievalEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChainBuildingParameters.NetworkRetrievalEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.NetworkRetrievalEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool RevocationCheckEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.RevocationCheckEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChainBuildingParameters.RevocationCheckEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.RevocationCheckEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset ValidationTimestamp
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset ChainBuildingParameters.ValidationTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ChainBuildingParameters.ValidationTimestamp");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "DateTimeOffset ChainBuildingParameters.ValidationTimestamp");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChainBuildingParameters()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "ChainBuildingParameters.ChainBuildingParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ChainBuildingParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.EnhancedKeyUsages.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ValidationTimestamp.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ValidationTimestamp.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.RevocationCheckEnabled.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.RevocationCheckEnabled.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.NetworkRetrievalEnabled.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.NetworkRetrievalEnabled.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.operator ==(Windows.Security.Cryptography.Certificates.ChainBuildingParameters, Windows.Security.Cryptography.Certificates.ChainBuildingParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.operator !=(Windows.Security.Cryptography.Certificates.ChainBuildingParameters, Windows.Security.Cryptography.Certificates.ChainBuildingParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.Equals(Windows.Security.Cryptography.Certificates.ChainBuildingParameters)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.AuthorityInformationAccessEnabled.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.AuthorityInformationAccessEnabled.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.CurrentTimeValidationEnabled.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.CurrentTimeValidationEnabled.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.EnhancedKeyUsages.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ExclusiveTrustRoots.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.NetworkRetrievalEnabled.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.NetworkRetrievalEnabled.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.RevocationCheckEnabled.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.RevocationCheckEnabled.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ValidationTimestamp.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ValidationTimestamp.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

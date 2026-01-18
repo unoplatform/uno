@@ -15,6 +15,16 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.StorageLibraryChangeTracker ChangeTracker
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageLibrary.ChangeTracker is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageLibraryChangeTracker%20StorageLibrary.ChangeTracker");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.IObservableVector<global::Windows.Storage.StorageFolder> Folders
 		{
 			get
@@ -33,16 +43,31 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.StorageLibrary.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.StorageLibraryChangeTracker ChangeTracker
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryAsync(global::Windows.Storage.KnownLibraryId libraryId)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageLibrary.ChangeTracker is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageLibraryChangeTracker%20StorageLibrary.ChangeTracker");
-			}
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryAsync(KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryAsync%28KnownLibraryId%20libraryId%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownLibraryId libraryId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryForUserAsync(User user, KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryForUserAsync%28User%20user%2C%20KnownLibraryId%20libraryId%29");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.StorageLibrary.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.StorageLibrary.operator ==(Windows.Storage.StorageLibrary, Windows.Storage.StorageLibrary)
+		// Forced skipping of method Windows.Storage.StorageLibrary.operator !=(Windows.Storage.StorageLibrary, Windows.Storage.StorageLibrary)
+		// Forced skipping of method Windows.Storage.StorageLibrary.Equals(Windows.Storage.StorageLibrary)
+		// Forced skipping of method Windows.Storage.StorageLibrary.Equals(object)
+		// Forced skipping of method Windows.Storage.StorageLibrary.GetHashCode()
+		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> RequestAddFolderAsync()
@@ -57,11 +82,8 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StorageLibrary.RequestRemoveFolderAsync(StorageFolder folder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StorageLibrary.RequestRemoveFolderAsync%28StorageFolder%20folder%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibrary.Folders.get
-		// Forced skipping of method Windows.Storage.StorageLibrary.SaveFolder.get
 		// Forced skipping of method Windows.Storage.StorageLibrary.DefinitionChanged.add
 		// Forced skipping of method Windows.Storage.StorageLibrary.DefinitionChanged.remove
-		// Forced skipping of method Windows.Storage.StorageLibrary.ChangeTracker.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> AreFolderSuggestionsAvailableAsync()
@@ -69,20 +91,10 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StorageLibrary.AreFolderSuggestionsAvailableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StorageLibrary.AreFolderSuggestionsAvailableAsync%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownLibraryId libraryId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryForUserAsync(User user, KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryForUserAsync%28User%20user%2C%20KnownLibraryId%20libraryId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryAsync(global::Windows.Storage.KnownLibraryId libraryId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryAsync(KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryAsync%28KnownLibraryId%20libraryId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Storage.StorageLibrary.ChangeTracker.get
+		// Forced skipping of method Windows.Storage.StorageLibrary.Folders.get
+		// Forced skipping of method Windows.Storage.StorageLibrary.SaveFolder.get
+		// Forced skipping of method Windows.Storage.StorageLibrary.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.StorageLibrary, object> DefinitionChanged

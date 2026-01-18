@@ -16,5 +16,15 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.PickerConfirmedEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs, Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs, Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.Equals(Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

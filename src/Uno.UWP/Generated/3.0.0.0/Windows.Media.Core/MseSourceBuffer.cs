@@ -15,29 +15,15 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan TimestampOffset
+		public global::System.TimeSpan? AppendWindowEnd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.TimestampOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MseSourceBuffer.TimestampOffset");
+				throw new global::System.NotImplementedException("The member TimeSpan? MseSourceBuffer.AppendWindowEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MseSourceBuffer.AppendWindowEnd");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan MseSourceBuffer.TimestampOffset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.MseAppendMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MseAppendMode MseSourceBuffer.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseAppendMode%20MseSourceBuffer.Mode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "MseAppendMode MseSourceBuffer.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan? MseSourceBuffer.AppendWindowEnd");
 			}
 		}
 #endif
@@ -52,20 +38,6 @@ namespace Windows.Media.Core
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan MseSourceBuffer.AppendWindowStart");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? AppendWindowEnd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MseSourceBuffer.AppendWindowEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MseSourceBuffer.AppendWindowEnd");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan? MseSourceBuffer.AppendWindowEnd");
 			}
 		}
 #endif
@@ -89,26 +61,44 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateStarting.add
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateStarting.remove
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Updated.add
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Updated.remove
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateEnded.add
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateEnded.remove
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.ErrorOccurred.add
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.ErrorOccurred.remove
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Aborted.add
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Aborted.remove
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Mode.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Mode.set
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.IsUpdating.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Buffered.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.TimestampOffset.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.TimestampOffset.set
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowStart.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowStart.set
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowEnd.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowEnd.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.MseAppendMode Mode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MseAppendMode MseSourceBuffer.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseAppendMode%20MseSourceBuffer.Mode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "MseAppendMode MseSourceBuffer.Mode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan TimestampOffset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.TimestampOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MseSourceBuffer.TimestampOffset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan MseSourceBuffer.TimestampOffset");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.operator ==(Windows.Media.Core.MseSourceBuffer, Windows.Media.Core.MseSourceBuffer)
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.operator !=(Windows.Media.Core.MseSourceBuffer, Windows.Media.Core.MseSourceBuffer)
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Equals(Windows.Media.Core.MseSourceBuffer)
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AppendBuffer(global::Windows.Storage.Streams.IBuffer buffer)
@@ -144,6 +134,27 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.Remove(TimeSpan start, TimeSpan? end)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Aborted.add
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Aborted.remove
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.ErrorOccurred.add
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.ErrorOccurred.remove
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateEnded.add
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateEnded.remove
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateStarting.add
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateStarting.remove
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Updated.add
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Updated.remove
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowEnd.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowEnd.set
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowStart.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowStart.set
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Buffered.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.IsUpdating.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Mode.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Mode.set
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.TimestampOffset.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.TimestampOffset.set
+		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBuffer, object> Aborted

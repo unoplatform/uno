@@ -33,7 +33,18 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.Validated.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.operator ==(Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult, Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.operator !=(Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult, Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.Equals(Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.ExtendedError.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.Validated.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

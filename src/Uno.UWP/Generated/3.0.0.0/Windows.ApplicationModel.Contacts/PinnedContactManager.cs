@@ -23,7 +23,38 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.User.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.Contacts.PinnedContactManager GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member PinnedContactManager PinnedContactManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PinnedContactManager%20PinnedContactManager.GetDefault%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.Contacts.PinnedContactManager GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member PinnedContactManager PinnedContactManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PinnedContactManager%20PinnedContactManager.GetForUser%28User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool IsSupported()
+		{
+			throw new global::System.NotImplementedException("The member bool PinnedContactManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PinnedContactManager.IsSupported%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.operator ==(Windows.ApplicationModel.Contacts.PinnedContactManager, Windows.ApplicationModel.Contacts.PinnedContactManager)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.operator !=(Windows.ApplicationModel.Contacts.PinnedContactManager, Windows.ApplicationModel.Contacts.PinnedContactManager)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.Equals(Windows.ApplicationModel.Contacts.PinnedContactManager)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsPinSurfaceSupported(global::Windows.ApplicationModel.Contacts.PinnedContactSurface surface)
@@ -73,26 +104,7 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PinnedContactIdsQueryResult> PinnedContactManager.GetPinnedContactIdsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPinnedContactIdsQueryResult%3E%20PinnedContactManager.GetPinnedContactIdsAsync%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.Contacts.PinnedContactManager GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member PinnedContactManager PinnedContactManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PinnedContactManager%20PinnedContactManager.GetDefault%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.Contacts.PinnedContactManager GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member PinnedContactManager PinnedContactManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PinnedContactManager%20PinnedContactManager.GetForUser%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool PinnedContactManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PinnedContactManager.IsSupported%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.User.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.PinnedContactManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

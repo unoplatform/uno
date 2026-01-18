@@ -39,17 +39,17 @@ namespace Windows.Networking.BackgroundTransfer
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.Guid.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.RequestedUri.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.Method.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.Group.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.CostPolicy.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.CostPolicy.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Storage.Streams.IInputStream GetResultStreamAt(ulong position);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Networking.BackgroundTransfer.ResponseInformation GetResponseInformation();
 #endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.CostPolicy.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.CostPolicy.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.Group.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.Guid.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.Method.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation.RequestedUri.get
 	}
 }

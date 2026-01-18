@@ -11,10 +11,10 @@ namespace Windows.Foundation
 		// Skipping already declared property ErrorCode
 		// Skipping already declared property Id
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Foundation.IAsyncInfo.Id.get
-		// Forced skipping of method Windows.Foundation.IAsyncInfo.Status.get
-		// Forced skipping of method Windows.Foundation.IAsyncInfo.ErrorCode.get
 		// Skipping already declared method Windows.Foundation.IAsyncInfo.Cancel()
 		// Skipping already declared method Windows.Foundation.IAsyncInfo.Close()
+		// Forced skipping of method Windows.Foundation.IAsyncInfo.ErrorCode.get
+		// Forced skipping of method Windows.Foundation.IAsyncInfo.Id.get
+		// Forced skipping of method Windows.Foundation.IAsyncInfo.Status.get
 	}
 }

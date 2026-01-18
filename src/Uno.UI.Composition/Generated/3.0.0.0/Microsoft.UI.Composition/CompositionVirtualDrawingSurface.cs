@@ -8,11 +8,16 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionVirtualDrawingSurface : global::Microsoft.UI.Composition.CompositionDrawingSurface
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionVirtualDrawingSurface()
-		{
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.CompositionVirtualDrawingSurface(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.operator ==(Microsoft.UI.Composition.CompositionVirtualDrawingSurface, Microsoft.UI.Composition.CompositionVirtualDrawingSurface)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.operator !=(Microsoft.UI.Composition.CompositionVirtualDrawingSurface, Microsoft.UI.Composition.CompositionVirtualDrawingSurface)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.Equals(Microsoft.UI.Composition.CompositionVirtualDrawingSurface)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.CompositionVirtualDrawingSurface(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Trim(global::Windows.Graphics.RectInt32[] rects)
@@ -20,5 +25,7 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionVirtualDrawingSurface", "void CompositionVirtualDrawingSurface.Trim(RectInt32[] rects)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVirtualDrawingSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

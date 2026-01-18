@@ -48,6 +48,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.KnownRemoteSystemCapabilities.As<I>()
 		// Forced skipping of method Windows.System.RemoteSystems.KnownRemoteSystemCapabilities.AppService.get
 		// Forced skipping of method Windows.System.RemoteSystems.KnownRemoteSystemCapabilities.LaunchUri.get
 		// Forced skipping of method Windows.System.RemoteSystems.KnownRemoteSystemCapabilities.RemoteSession.get

@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AutoUpdateSetting AutoUpdateSetting
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutoUpdateSetting AppInstallManager.AutoUpdateSetting is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AutoUpdateSetting%20AppInstallManager.AutoUpdateSetting");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager", "AutoUpdateSetting AppInstallManager.AutoUpdateSetting");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AcquisitionIdentity
 		{
 			get
@@ -58,6 +44,20 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AutoUpdateSetting AutoUpdateSetting
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutoUpdateSetting AppInstallManager.AutoUpdateSetting is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AutoUpdateSetting%20AppInstallManager.AutoUpdateSetting");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager", "AutoUpdateSetting AppInstallManager.AutoUpdateSetting");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanInstallForAllUsers
 		{
 			get
@@ -74,7 +74,16 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AppInstallManager()
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AppInstallItems.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel(string productId)
@@ -96,14 +105,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager", "void AppInstallManager.Restart(string productId)");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemCompleted.add
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemCompleted.remove
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemStatusChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemStatusChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AutoUpdateSetting.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AutoUpdateSetting.set
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AcquisitionIdentity.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AcquisitionIdentity.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> GetIsApplicableAsync(string productId, string skuId)
@@ -153,6 +154,10 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppInstallManager.GetIsAppAllowedToInstallAsync(string productId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppInstallManager.GetIsAppAllowedToInstallAsync%28string%20productId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemCompleted.add
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemCompleted.remove
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemStatusChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.ItemStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem> StartAppInstallAsync(string productId, string skuId, bool repair, bool forceUseOfNonRemovableStorage, string catalogId, string bundleId, string correlationVector)
@@ -286,7 +291,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GetEntitlementResult> AppInstallManager.GetFreeDeviceEntitlementAsync(string storeId, string campaignId, string correlationVector) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGetEntitlementResult%3E%20AppInstallManager.GetFreeDeviceEntitlementAsync%28string%20storeId%2C%20string%20campaignId%2C%20string%20correlationVector%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AppInstallItemsWithGroupSupport.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem>> SearchForAllUpdatesAsync(string correlationVector, string clientId, global::Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions updateOptions)
@@ -343,7 +347,14 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppInstallManager.GetIsPackageIdentityAllowedToInstallForUserAsync(User user, string correlationVector, string packageIdentityName, string publisherCertificateName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppInstallManager.GetIsPackageIdentityAllowedToInstallForUserAsync%28User%20user%2C%20string%20correlationVector%2C%20string%20packageIdentityName%2C%20string%20publisherCertificateName%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AcquisitionIdentity.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AcquisitionIdentity.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AppInstallItems.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AppInstallItemsWithGroupSupport.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AutoUpdateSetting.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.AutoUpdateSetting.set
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.CanInstallForAllUsers.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager, global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs> ItemCompleted

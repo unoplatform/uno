@@ -43,8 +43,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings, Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings, Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.EllipseDiameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.EllipseOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.MaxSideLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

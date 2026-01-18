@@ -491,11 +491,13 @@ namespace Microsoft.UI.Xaml
 			{
 				void ArrangeCoreWithTrace(Rect finalRect)
 				{
+#pragma warning disable CA1305 // Specify IFormatProvider
 					var traceActivity = _trace.WriteEventActivity(
 										TraceProvider.FrameworkElement_ArrangeStart,
 										TraceProvider.FrameworkElement_ArrangeStop,
 										new object[] { GetType().Name, this.GetDependencyObjectId(), Name, finalRect.ToString() }
 									);
+#pragma warning restore CA1305 // Specify IFormatProvider
 
 					using (traceActivity)
 					{

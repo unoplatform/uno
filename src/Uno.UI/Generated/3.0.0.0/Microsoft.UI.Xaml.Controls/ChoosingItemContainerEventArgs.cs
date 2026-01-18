@@ -10,20 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem ItemContainer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SelectorItem ChoosingItemContainerEventArgs.ItemContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SelectorItem%20ChoosingItemContainerEventArgs.ItemContainer");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "SelectorItem ChoosingItemContainerEventArgs.ItemContainer");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsContainerPrepared
 		{
 			get
@@ -48,6 +34,20 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem ItemContainer
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SelectorItem ChoosingItemContainerEventArgs.ItemContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SelectorItem%20ChoosingItemContainerEventArgs.ItemContainer");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "SelectorItem ChoosingItemContainerEventArgs.ItemContainer");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int ItemIndex
 		{
 			get
@@ -64,11 +64,22 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ChoosingItemContainerEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ItemIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.Equals(Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ItemContainer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ItemContainer.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ItemIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

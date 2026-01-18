@@ -9,6 +9,18 @@ namespace Microsoft.UI.Xaml
 	public partial class ExceptionRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property ErrorMessage
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.ExceptionRoutedEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.operator ==(Microsoft.UI.Xaml.ExceptionRoutedEventArgs, Microsoft.UI.Xaml.ExceptionRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.operator !=(Microsoft.UI.Xaml.ExceptionRoutedEventArgs, Microsoft.UI.Xaml.ExceptionRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.Equals(Microsoft.UI.Xaml.ExceptionRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.ExceptionRoutedEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.ErrorMessage.get
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

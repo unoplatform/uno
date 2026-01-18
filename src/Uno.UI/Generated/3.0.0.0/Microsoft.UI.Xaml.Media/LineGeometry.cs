@@ -10,17 +10,19 @@ namespace Microsoft.UI.Xaml.Media
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point StartPoint
-		{
-			get
-			{
-				return (global::Windows.Foundation.Point)this.GetValue(StartPointProperty);
-			}
-			set
-			{
-				this.SetValue(StartPointProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty EndPointProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(EndPoint), typeof(global::Windows.Foundation.Point),
+			typeof(global::Microsoft.UI.Xaml.Media.LineGeometry),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty StartPointProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(StartPoint), typeof(global::Windows.Foundation.Point),
+			typeof(global::Microsoft.UI.Xaml.Media.LineGeometry),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -38,19 +40,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty EndPointProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(EndPoint), typeof(global::Windows.Foundation.Point),
-			typeof(global::Microsoft.UI.Xaml.Media.LineGeometry),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StartPointProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(StartPoint), typeof(global::Windows.Foundation.Point),
-			typeof(global::Microsoft.UI.Xaml.Media.LineGeometry),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
+		public global::Windows.Foundation.Point StartPoint
+		{
+			get
+			{
+				return (global::Windows.Foundation.Point)this.GetValue(StartPointProperty);
+			}
+			set
+			{
+				this.SetValue(StartPointProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
@@ -60,11 +60,22 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.LineGeometry()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPointProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPointProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.operator ==(Microsoft.UI.Xaml.Media.LineGeometry, Microsoft.UI.Xaml.Media.LineGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.operator !=(Microsoft.UI.Xaml.Media.LineGeometry, Microsoft.UI.Xaml.Media.LineGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.Equals(Microsoft.UI.Xaml.Media.LineGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPoint.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPointProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPointProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

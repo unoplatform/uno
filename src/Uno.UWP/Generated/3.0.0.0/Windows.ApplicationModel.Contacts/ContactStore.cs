@@ -33,6 +33,16 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.operator ==(Windows.ApplicationModel.Contacts.ContactStore, Windows.ApplicationModel.Contacts.ContactStore)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.operator !=(Windows.ApplicationModel.Contacts.ContactStore, Windows.ApplicationModel.Contacts.ContactStore)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.Equals(Windows.ApplicationModel.Contacts.ContactStore)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.Contact>> FindContactsAsync()
@@ -54,10 +64,6 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactStore.GetContactAsync(string contactId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContact%3E%20ContactStore.GetContactAsync%28string%20contactId%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.ChangeTracker.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.ContactChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.ContactChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.AggregateContactManager.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactList>> FindContactListsAsync()
@@ -107,6 +113,8 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ContactList> ContactStore.CreateContactListAsync(string displayName, string userDataAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContactList%3E%20ContactStore.CreateContactListAsync%28string%20displayName%2C%20string%20userDataAccountId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.ContactChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.ContactChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactChangeTracker GetChangeTracker(string identity)
@@ -114,6 +122,9 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member ContactChangeTracker ContactStore.GetChangeTracker(string identity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactChangeTracker%20ContactStore.GetChangeTracker%28string%20identity%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.AggregateContactManager.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.ChangeTracker.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStore.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.ContactStore, global::Windows.ApplicationModel.Contacts.ContactChangedEventArgs> ContactChanged

@@ -23,6 +23,16 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.operator ==(Windows.UI.Notifications.TileUpdateManagerForUser, Windows.UI.Notifications.TileUpdateManagerForUser)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.operator !=(Windows.UI.Notifications.TileUpdateManagerForUser, Windows.UI.Notifications.TileUpdateManagerForUser)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.Equals(Windows.UI.Notifications.TileUpdateManagerForUser)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Notifications.TileUpdater CreateTileUpdaterForApplicationForUser()
@@ -45,5 +55,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.User.get
+		// Forced skipping of method Windows.UI.Notifications.TileUpdateManagerForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

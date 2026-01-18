@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.RichTextBlockAutomationPeer(Microsoft.UI.Xaml.Controls.RichTextBlock)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.RichTextBlockAutomationPeer(Microsoft.UI.Xaml.Controls.RichTextBlock)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.RichTextBlockAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.RichTextBlockAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichTextBlockAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

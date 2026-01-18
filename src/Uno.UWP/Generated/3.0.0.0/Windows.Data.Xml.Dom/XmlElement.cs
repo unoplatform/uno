@@ -6,25 +6,34 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class XmlElement : global::Windows.Data.Xml.Dom.IXmlNode, global::Windows.Data.Xml.Dom.IXmlNodeSerializer, global::Windows.Data.Xml.Dom.IXmlNodeSelector
+	public partial class XmlElement : global::Windows.Data.Xml.Dom.IXmlNode, global::Windows.Data.Xml.Dom.IXmlNodeSelector, global::Windows.Data.Xml.Dom.IXmlNodeSerializer
 	{
-		// Skipping already declared property TagName
-		// Skipping already declared property Prefix
-		// Skipping already declared property NodeValue
+		// Skipping already declared property Attributes
+		// Skipping already declared property ChildNodes
 		// Skipping already declared property FirstChild
+		// Skipping already declared property InnerText
 		// Skipping already declared property LastChild
 		// Skipping already declared property LocalName
-		// Skipping already declared property NextSibling
 		// Skipping already declared property NamespaceUri
-		// Skipping already declared property NodeType
+		// Skipping already declared property NextSibling
 		// Skipping already declared property NodeName
-		// Skipping already declared property Attributes
+		// Skipping already declared property NodeType
+		// Skipping already declared property NodeValue
 		// Skipping already declared property OwnerDocument
 		// Skipping already declared property ParentNode
-		// Skipping already declared property ChildNodes
+		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
-		// Skipping already declared property InnerText
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.TagName.get
+		// Skipping already declared property TagName
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.operator ==(Windows.Data.Xml.Dom.XmlElement, Windows.Data.Xml.Dom.XmlElement)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.operator !=(Windows.Data.Xml.Dom.XmlElement, Windows.Data.Xml.Dom.XmlElement)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Equals(Windows.Data.Xml.Dom.XmlElement)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Equals(object)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.GetHashCode()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.GetAttribute(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.SetAttribute(string, string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.RemoveAttribute(string)
@@ -67,29 +76,14 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member XmlAttribute XmlElement.GetAttributeNodeNS(object namespaceUri, string localName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlAttribute%20XmlElement.GetAttributeNodeNS%28object%20namespaceUri%2C%20string%20localName%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeValue.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeValue.set
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeType.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.ParentNode.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.ChildNodes.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.FirstChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.LastChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.PreviousSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NextSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Attributes.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.HasChildNodes()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.OwnerDocument.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.InsertBefore(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.ReplaceChild(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.RemoveChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.AppendChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.CloneNode(bool)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NamespaceUri.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.LocalName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Prefix.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.Normalize()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Prefix.set
+		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.GetXml()
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.SelectNodes(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -106,9 +100,26 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member XmlNodeList XmlElement.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlNodeList%20XmlElement.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 #endif
-		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.GetXml()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Attributes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.ChildNodes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.FirstChild.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.InnerText.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.InnerText.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.LastChild.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.LocalName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NamespaceUri.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NextSibling.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeType.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeValue.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeValue.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.OwnerDocument.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.ParentNode.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Prefix.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Prefix.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.PreviousSibling.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.TagName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Xml.Dom.IXmlNode
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSelector
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSerializer

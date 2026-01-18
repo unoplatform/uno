@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.RichEditBoxAutomationPeer(Microsoft.UI.Xaml.Controls.RichEditBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.RichEditBoxAutomationPeer(Microsoft.UI.Xaml.Controls.RichEditBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.RichEditBoxAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.RichEditBoxAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RichEditBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -26,8 +26,8 @@ namespace Windows.Security.Credentials
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Security.Credentials.IWebAccount.WebAccountProvider.get
-		// Forced skipping of method Windows.Security.Credentials.IWebAccount.UserName.get
 		// Forced skipping of method Windows.Security.Credentials.IWebAccount.State.get
+		// Forced skipping of method Windows.Security.Credentials.IWebAccount.UserName.get
+		// Forced skipping of method Windows.Security.Credentials.IWebAccount.WebAccountProvider.get
 	}
 }

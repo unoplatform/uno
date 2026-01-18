@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.BasicConnectedAnimationConfiguration()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.BasicConnectedAnimationConfiguration(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.operator ==(Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.operator !=(Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.Equals(Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.BasicConnectedAnimationConfiguration(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BasicConnectedAnimationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

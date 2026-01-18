@@ -8,13 +8,24 @@ namespace Windows.UI.Input
 #endif
 	public partial class ManipulationStartedEventArgs
 	{
+		// Skipping already declared property ContactCount
 		// Skipping already declared property Cumulative
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Skipping already declared property ContactCount
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.operator ==(Windows.UI.Input.ManipulationStartedEventArgs, Windows.UI.Input.ManipulationStartedEventArgs)
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.operator !=(Windows.UI.Input.ManipulationStartedEventArgs, Windows.UI.Input.ManipulationStartedEventArgs)
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Equals(Windows.UI.Input.ManipulationStartedEventArgs)
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.ContactCount.get
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Cumulative.get
 		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Position.get
-		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Cumulative.get
-		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.ContactCount.get
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

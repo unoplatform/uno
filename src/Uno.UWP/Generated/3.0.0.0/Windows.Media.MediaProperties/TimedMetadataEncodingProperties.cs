@@ -10,6 +10,16 @@ namespace Windows.Media.MediaProperties
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.MediaPropertySet Properties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaPropertySet TimedMetadataEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPropertySet%20TimedMetadataEncodingProperties.Properties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Subtype
 		{
 			get
@@ -19,16 +29,6 @@ namespace Windows.Media.MediaProperties
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "string TimedMetadataEncodingProperties.Subtype");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.MediaPropertySet Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPropertySet TimedMetadataEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPropertySet%20TimedMetadataEncodingProperties.Properties");
 			}
 		}
 #endif
@@ -50,31 +50,7 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.TimedMetadataEncodingProperties()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetFormatUserData(byte[] value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "void TimedMetadataEncodingProperties.SetFormatUserData(byte[] value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void GetFormatUserData(out byte[] value)
-		{
-			throw new global::System.NotImplementedException("The member void TimedMetadataEncodingProperties.GetFormatUserData(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20TimedMetadataEncodingProperties.GetFormatUserData%28out%20byte%5B%5D%20value%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties Copy()
-		{
-			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.Copy%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Properties.get
-		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Type.get
-		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Subtype.set
-		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Subtype.get
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreatePgs()
@@ -103,6 +79,42 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateVobSub(byte[] formatUserData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.CreateVobSub%28byte%5B%5D%20formatUserData%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.operator ==(Windows.Media.MediaProperties.TimedMetadataEncodingProperties, Windows.Media.MediaProperties.TimedMetadataEncodingProperties)
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.operator !=(Windows.Media.MediaProperties.TimedMetadataEncodingProperties, Windows.Media.MediaProperties.TimedMetadataEncodingProperties)
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Equals(Windows.Media.MediaProperties.TimedMetadataEncodingProperties)
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Equals(object)
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetFormatUserData(byte[] value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "void TimedMetadataEncodingProperties.SetFormatUserData(byte[] value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void GetFormatUserData(out byte[] value)
+		{
+			throw new global::System.NotImplementedException("The member void TimedMetadataEncodingProperties.GetFormatUserData(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20TimedMetadataEncodingProperties.GetFormatUserData%28out%20byte%5B%5D%20value%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties Copy()
+		{
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.Copy%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Properties.get
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Subtype.get
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Subtype.set
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Type.get
+		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.MediaProperties.IMediaEncodingProperties
 	}
 }

@@ -13,9 +13,20 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiTimingClockMessage.MidiTimingClockMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.MidiTimingClockMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.Timestamp.get
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.operator ==(Windows.Devices.Midi.MidiTimingClockMessage, Windows.Devices.Midi.MidiTimingClockMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.operator !=(Windows.Devices.Midi.MidiTimingClockMessage, Windows.Devices.Midi.MidiTimingClockMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.Equals(Windows.Devices.Midi.MidiTimingClockMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.Type.get
+		// Forced skipping of method Windows.Devices.Midi.MidiTimingClockMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

@@ -27,7 +27,18 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.operator ==(Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs, Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.operator !=(Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs, Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.Equals(Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.Canceled.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.Canceled.set
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

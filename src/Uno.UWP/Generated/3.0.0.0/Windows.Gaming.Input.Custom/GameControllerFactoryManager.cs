@@ -8,13 +8,7 @@ namespace Windows.Gaming.Input.Custom
 #endif
 	public static partial class GameControllerFactoryManager
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Gaming.Input.IGameController TryGetFactoryControllerFromGameController(global::Windows.Gaming.Input.Custom.ICustomGameControllerFactory factory, global::Windows.Gaming.Input.IGameController gameController)
-		{
-			throw new global::System.NotImplementedException("The member IGameController GameControllerFactoryManager.TryGetFactoryControllerFromGameController(ICustomGameControllerFactory factory, IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IGameController%20GameControllerFactoryManager.TryGetFactoryControllerFromGameController%28ICustomGameControllerFactory%20factory%2C%20IGameController%20gameController%29");
-		}
-#endif
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerFactoryManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void RegisterCustomFactoryForGipInterface(global::Windows.Gaming.Input.Custom.ICustomGameControllerFactory factory, global::System.Guid interfaceId)
@@ -34,6 +28,13 @@ namespace Windows.Gaming.Input.Custom
 		public static void RegisterCustomFactoryForXusbType(global::Windows.Gaming.Input.Custom.ICustomGameControllerFactory factory, global::Windows.Gaming.Input.Custom.XusbDeviceType xusbType, global::Windows.Gaming.Input.Custom.XusbDeviceSubtype xusbSubtype)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GameControllerFactoryManager", "void GameControllerFactoryManager.RegisterCustomFactoryForXusbType(ICustomGameControllerFactory factory, XusbDeviceType xusbType, XusbDeviceSubtype xusbSubtype)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Gaming.Input.IGameController TryGetFactoryControllerFromGameController(global::Windows.Gaming.Input.Custom.ICustomGameControllerFactory factory, global::Windows.Gaming.Input.IGameController gameController)
+		{
+			throw new global::System.NotImplementedException("The member IGameController GameControllerFactoryManager.TryGetFactoryControllerFromGameController(ICustomGameControllerFactory factory, IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IGameController%20GameControllerFactoryManager.TryGetFactoryControllerFromGameController%28ICustomGameControllerFactory%20factory%2C%20IGameController%20gameController%29");
 		}
 #endif
 	}

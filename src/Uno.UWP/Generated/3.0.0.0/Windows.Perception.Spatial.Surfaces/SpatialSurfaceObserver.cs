@@ -16,6 +16,31 @@ namespace Windows.Perception.Spatial.Surfaces
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.SpatialSurfaceObserver()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialPerceptionAccessStatus> RequestAccessAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialPerceptionAccessStatus> SpatialSurfaceObserver.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialPerceptionAccessStatus%3E%20SpatialSurfaceObserver.RequestAccessAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool IsSupported()
+		{
+			throw new global::System.NotImplementedException("The member bool SpatialSurfaceObserver.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialSurfaceObserver.IsSupported%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.operator ==(Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver, Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.operator !=(Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver, Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.Equals(Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo> GetObservedSurfaces()
@@ -39,20 +64,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.ObservedSurfacesChanged.add
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.ObservedSurfacesChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool SpatialSurfaceObserver.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialSurfaceObserver.IsSupported%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialPerceptionAccessStatus> RequestAccessAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialPerceptionAccessStatus> SpatialSurfaceObserver.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialPerceptionAccessStatus%3E%20SpatialSurfaceObserver.RequestAccessAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver, object> ObservedSurfacesChanged

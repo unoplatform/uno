@@ -10,5 +10,16 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.AccessKeyDisplayDismissedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.AccessKeyDisplayDismissedEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.operator ==(Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs, Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.operator !=(Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs, Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.Equals(Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,6 +23,17 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.operator ==(Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs, Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.operator !=(Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs, Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.Equals(Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.Connection.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

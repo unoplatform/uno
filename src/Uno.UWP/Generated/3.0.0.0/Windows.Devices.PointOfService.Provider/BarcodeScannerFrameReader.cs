@@ -23,6 +23,16 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.operator ==(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader, Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.operator !=(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader, Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.Equals(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> StartAsync()
@@ -44,7 +54,6 @@ namespace Windows.Devices.PointOfService.Provider
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BarcodeScannerVideoFrame> BarcodeScannerFrameReader.TryAcquireLatestFrameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBarcodeScannerVideoFrame%3E%20BarcodeScannerFrameReader.TryAcquireLatestFrameAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.Connection.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.FrameArrived.add
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -54,6 +63,8 @@ namespace Windows.Devices.PointOfService.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader", "void BarcodeScannerFrameReader.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.Connection.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader, global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs> FrameArrived

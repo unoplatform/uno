@@ -30,7 +30,17 @@ namespace Windows.UI.WindowManagement
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.FullScreenPresentationConfiguration()
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.operator ==(Windows.UI.WindowManagement.FullScreenPresentationConfiguration, Windows.UI.WindowManagement.FullScreenPresentationConfiguration)
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.operator !=(Windows.UI.WindowManagement.FullScreenPresentationConfiguration, Windows.UI.WindowManagement.FullScreenPresentationConfiguration)
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.Equals(Windows.UI.WindowManagement.FullScreenPresentationConfiguration)
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.IsExclusive.get
 		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.IsExclusive.set
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

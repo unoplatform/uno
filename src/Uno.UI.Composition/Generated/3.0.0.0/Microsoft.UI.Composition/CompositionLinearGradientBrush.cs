@@ -8,11 +8,21 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionLinearGradientBrush : global::Microsoft.UI.Composition.CompositionGradientBrush
 	{
-		// Skipping already declared property StartPoint
 		// Skipping already declared property EndPoint
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.get
+		// Skipping already declared property StartPoint
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.operator ==(Microsoft.UI.Composition.CompositionLinearGradientBrush, Microsoft.UI.Composition.CompositionLinearGradientBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.operator !=(Microsoft.UI.Composition.CompositionLinearGradientBrush, Microsoft.UI.Composition.CompositionLinearGradientBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.Equals(Microsoft.UI.Composition.CompositionLinearGradientBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.EndPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.EndPoint.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

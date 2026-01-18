@@ -15,62 +15,6 @@ namespace Windows.ApplicationModel.UserActivities
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityVisualElements.DisplayText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.DisplayText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Description
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityVisualElements.Description");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.Description");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Shell.IAdaptiveCard Content
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IAdaptiveCard UserActivityVisualElements.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAdaptiveCard%20UserActivityVisualElements.Content");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "IAdaptiveCard UserActivityVisualElements.Content");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color BackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color UserActivityVisualElements.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20UserActivityVisualElements.BackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Color UserActivityVisualElements.BackgroundColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserActivities.UserActivityAttribution Attribution
 		{
 			get
@@ -97,17 +41,84 @@ namespace Windows.ApplicationModel.UserActivities
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.DisplayText.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.DisplayText.set
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Description.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Description.set
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.BackgroundColor.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.BackgroundColor.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color BackgroundColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color UserActivityVisualElements.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20UserActivityVisualElements.BackgroundColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Color UserActivityVisualElements.BackgroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Shell.IAdaptiveCard Content
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IAdaptiveCard UserActivityVisualElements.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAdaptiveCard%20UserActivityVisualElements.Content");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "IAdaptiveCard UserActivityVisualElements.Content");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Description
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityVisualElements.Description");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.Description");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DisplayText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityVisualElements.DisplayText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.DisplayText");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.operator ==(Windows.ApplicationModel.UserActivities.UserActivityVisualElements, Windows.ApplicationModel.UserActivities.UserActivityVisualElements)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.operator !=(Windows.ApplicationModel.UserActivities.UserActivityVisualElements, Windows.ApplicationModel.UserActivities.UserActivityVisualElements)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Equals(Windows.ApplicationModel.UserActivities.UserActivityVisualElements)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Attribution.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Attribution.set
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Content.set
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Content.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.AttributionDisplayText.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.AttributionDisplayText.set
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.BackgroundColor.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.BackgroundColor.set
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Content.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Content.set
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Description.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Description.set
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.DisplayText.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.DisplayText.set
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

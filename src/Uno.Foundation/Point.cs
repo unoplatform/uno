@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -28,6 +28,14 @@ public partial struct Point
 		: this((float)x, (float)y)
 	{
 	}
+
+#if HAS_UNO_WINUI
+	public Point(float x, float y)
+	{
+		X = x;
+		Y = y;
+	}
+#endif
 
 	internal static Point Zero => new Point(0, 0);
 

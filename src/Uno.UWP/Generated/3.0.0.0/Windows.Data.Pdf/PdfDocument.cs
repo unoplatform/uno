@@ -33,15 +33,7 @@ namespace Windows.Data.Pdf
 			}
 		}
 #endif
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Data.Pdf.PdfPage GetPage(uint pageIndex)
-		{
-			throw new global::System.NotImplementedException("The member PdfPage PdfDocument.GetPage(uint pageIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PdfPage%20PdfDocument.GetPage%28uint%20pageIndex%29");
-		}
-#endif
-		// Forced skipping of method Windows.Data.Pdf.PdfDocument.PageCount.get
-		// Forced skipping of method Windows.Data.Pdf.PdfDocument.IsPasswordProtected.get
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.As<I>()
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Pdf.PdfDocument> LoadFromFileAsync(global::Windows.Storage.IStorageFile file)
@@ -70,5 +62,25 @@ namespace Windows.Data.Pdf
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PdfDocument> PdfDocument.LoadFromStreamAsync(IRandomAccessStream inputStream, string password) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPdfDocument%3E%20PdfDocument.LoadFromStreamAsync%28IRandomAccessStream%20inputStream%2C%20string%20password%29");
 		}
 #endif
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.operator ==(Windows.Data.Pdf.PdfDocument, Windows.Data.Pdf.PdfDocument)
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.operator !=(Windows.Data.Pdf.PdfDocument, Windows.Data.Pdf.PdfDocument)
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.Equals(Windows.Data.Pdf.PdfDocument)
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.Equals(object)
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.GetHashCode()
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.WinRT.IWinRTObject.AdditionalTypeData.get
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Data.Pdf.PdfPage GetPage(uint pageIndex)
+		{
+			throw new global::System.NotImplementedException("The member PdfPage PdfDocument.GetPage(uint pageIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PdfPage%20PdfDocument.GetPage%28uint%20pageIndex%29");
+		}
+#endif
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.IsPasswordProtected.get
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.PageCount.get
+		// Forced skipping of method Windows.Data.Pdf.PdfDocument.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

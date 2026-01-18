@@ -13,6 +13,14 @@ namespace Windows.UI.Composition
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.operator ==(Windows.UI.Composition.CompositionPropertySet, Windows.UI.Composition.CompositionPropertySet)
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.operator !=(Windows.UI.Composition.CompositionPropertySet, Windows.UI.Composition.CompositionPropertySet)
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.Equals(Windows.UI.Composition.CompositionPropertySet)
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertColor(string propertyName, global::Windows.UI.Color value)
@@ -139,5 +147,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetBoolean(string propertyName, out bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetBoolean%28string%20propertyName%2C%20out%20bool%20value%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionPropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

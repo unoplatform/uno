@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ExponentialEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Exponent
 		// Skipping already declared property ExponentProperty
+		// Skipping already declared property Exponent
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentialEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentialEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.operator ==(Microsoft.UI.Xaml.Media.Animation.ExponentialEase, Microsoft.UI.Xaml.Media.Animation.ExponentialEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.operator !=(Microsoft.UI.Xaml.Media.Animation.ExponentialEase, Microsoft.UI.Xaml.Media.Animation.ExponentialEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.Equals(Microsoft.UI.Xaml.Media.Animation.ExponentialEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.Exponent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.Exponent.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

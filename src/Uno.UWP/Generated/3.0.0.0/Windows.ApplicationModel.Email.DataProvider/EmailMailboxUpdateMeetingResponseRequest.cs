@@ -73,12 +73,16 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.EmailMailboxId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.EmailMessageId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Response.get
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Subject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Comment.get
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.SendUpdate.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Equals(Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
@@ -93,5 +97,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxUpdateMeetingResponseRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxUpdateMeetingResponseRequest.ReportFailedAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Comment.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.EmailMailboxId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.EmailMessageId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Response.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.SendUpdate.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.Subject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

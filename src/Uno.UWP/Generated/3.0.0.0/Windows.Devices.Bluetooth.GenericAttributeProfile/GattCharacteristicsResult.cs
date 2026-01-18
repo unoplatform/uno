@@ -11,8 +11,19 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Skipping already declared property Characteristics
 		// Skipping already declared property ProtocolError
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.Status.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.ProtocolError.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult, Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult, Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.Characteristics.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.ProtocolError.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.Status.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

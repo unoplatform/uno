@@ -4,10 +4,8 @@
 namespace Windows.Foundation
 {
 #if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-#endif
-	public partial struct FoundationContract
+	public enum FoundationContract
 	{
-		// Forced skipping of method Windows.Foundation.FoundationContract.FoundationContract()
 	}
+#endif
 }

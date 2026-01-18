@@ -4,10 +4,8 @@
 namespace Windows.Foundation
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented]
-#endif
-	public partial struct UniversalApiContract
+	public enum UniversalApiContract
 	{
-		// Forced skipping of method Windows.Foundation.UniversalApiContract.UniversalApiContract()
 	}
+#endif
 }

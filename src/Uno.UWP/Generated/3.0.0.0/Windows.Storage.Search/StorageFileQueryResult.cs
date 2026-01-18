@@ -23,6 +23,16 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.operator ==(Windows.Storage.Search.StorageFileQueryResult, Windows.Storage.Search.StorageFileQueryResult)
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.operator !=(Windows.Storage.Search.StorageFileQueryResult, Windows.Storage.Search.StorageFileQueryResult)
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.Equals(Windows.Storage.Search.StorageFileQueryResult)
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync(uint startIndex, uint maxNumberOfItems)
@@ -44,11 +54,6 @@ namespace Windows.Storage.Search
 			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> StorageFileQueryResult.GetItemCountAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cuint%3E%20StorageFileQueryResult.GetItemCountAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.Folder.get
-		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.ContentsChanged.add
-		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.ContentsChanged.remove
-		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.OptionsChanged.add
-		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.OptionsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync(object value)
@@ -70,6 +75,10 @@ namespace Windows.Storage.Search
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.StorageFileQueryResult", "void StorageFileQueryResult.ApplyNewQueryOptions(QueryOptions newQueryOptions)");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.ContentsChanged.add
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.ContentsChanged.remove
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.OptionsChanged.add
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.OptionsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IDictionary<string, global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.TextSegment>> GetMatchingPropertiesWithRanges(global::Windows.Storage.StorageFile file)
@@ -77,6 +86,8 @@ namespace Windows.Storage.Search
 			throw new global::System.NotImplementedException("The member IDictionary<string, IReadOnlyList<TextSegment>> StorageFileQueryResult.GetMatchingPropertiesWithRanges(StorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20IReadOnlyList%3CTextSegment%3E%3E%20StorageFileQueryResult.GetMatchingPropertiesWithRanges%28StorageFile%20file%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.Folder.get
+		// Forced skipping of method Windows.Storage.Search.StorageFileQueryResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Search.IStorageQueryResultBase, object> ContentsChanged

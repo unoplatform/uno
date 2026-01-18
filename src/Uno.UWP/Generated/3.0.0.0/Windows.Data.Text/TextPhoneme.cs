@@ -33,7 +33,18 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.operator ==(Windows.Data.Text.TextPhoneme, Windows.Data.Text.TextPhoneme)
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.operator !=(Windows.Data.Text.TextPhoneme, Windows.Data.Text.TextPhoneme)
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.Equals(Windows.Data.Text.TextPhoneme)
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.Equals(object)
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.GetHashCode()
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Text.TextPhoneme.DisplayText.get
 		// Forced skipping of method Windows.Data.Text.TextPhoneme.ReadingText.get
+		// Forced skipping of method Windows.Data.Text.TextPhoneme.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

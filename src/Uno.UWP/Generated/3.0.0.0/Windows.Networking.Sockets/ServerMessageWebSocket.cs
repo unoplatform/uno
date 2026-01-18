@@ -43,13 +43,16 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.MessageReceived.add
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.MessageReceived.remove
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Control.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Information.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.OutputStream.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Closed.add
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Closed.remove
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.operator ==(Windows.Networking.Sockets.ServerMessageWebSocket, Windows.Networking.Sockets.ServerMessageWebSocket)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.operator !=(Windows.Networking.Sockets.ServerMessageWebSocket, Windows.Networking.Sockets.ServerMessageWebSocket)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Equals(Windows.Networking.Sockets.ServerMessageWebSocket)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close(ushort code, string reason)
@@ -57,6 +60,10 @@ namespace Windows.Networking.Sockets
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerMessageWebSocket", "void ServerMessageWebSocket.Close(ushort code, string reason)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Closed.add
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Closed.remove
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.MessageReceived.add
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.MessageReceived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -64,6 +71,10 @@ namespace Windows.Networking.Sockets
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerMessageWebSocket", "void ServerMessageWebSocket.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Control.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.Information.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.OutputStream.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocket.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.ServerMessageWebSocket, global::Windows.Networking.Sockets.WebSocketClosedEventArgs> Closed

@@ -55,6 +55,16 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsStaged
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppInstallStatus.IsStaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallStatus.IsStaged");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double PercentComplete
 		{
 			get
@@ -83,23 +93,24 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsStaged
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppInstallStatus.IsStaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallStatus.IsStaged");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.InstallState.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.DownloadSizeInBytes.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.BytesDownloaded.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.PercentComplete.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.DownloadSizeInBytes.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.ErrorCode.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.User.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.ReadyForLaunch.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.InstallState.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.IsStaged.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.PercentComplete.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.ReadyForLaunch.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.User.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

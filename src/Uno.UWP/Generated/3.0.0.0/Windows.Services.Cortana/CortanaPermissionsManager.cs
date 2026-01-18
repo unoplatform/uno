@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Cortana
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -14,6 +13,24 @@ namespace Windows.Services.Cortana
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Services.Cortana.CortanaPermissionsManager GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member CortanaPermissionsManager CortanaPermissionsManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaPermissionsManager%20CortanaPermissionsManager.GetDefault%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.operator ==(Windows.Services.Cortana.CortanaPermissionsManager, Windows.Services.Cortana.CortanaPermissionsManager)
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.operator !=(Windows.Services.Cortana.CortanaPermissionsManager, Windows.Services.Cortana.CortanaPermissionsManager)
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.Equals(Windows.Services.Cortana.CortanaPermissionsManager)
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.Equals(object)
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.GetHashCode()
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSupported()
@@ -42,12 +59,6 @@ namespace Windows.Services.Cortana
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CortanaPermissionsChangeResult> CortanaPermissionsManager.RevokePermissionsAsync(IEnumerable<CortanaPermission> permissions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCortanaPermissionsChangeResult%3E%20CortanaPermissionsManager.RevokePermissionsAsync%28IEnumerable%3CCortanaPermission%3E%20permissions%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Services.Cortana.CortanaPermissionsManager GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member CortanaPermissionsManager CortanaPermissionsManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaPermissionsManager%20CortanaPermissionsManager.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

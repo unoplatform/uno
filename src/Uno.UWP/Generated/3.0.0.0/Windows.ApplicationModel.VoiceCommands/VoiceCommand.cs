@@ -43,8 +43,19 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommand, Windows.ApplicationModel.VoiceCommands.VoiceCommand)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommand, Windows.ApplicationModel.VoiceCommands.VoiceCommand)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommand)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.CommandName.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.Properties.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.SpeechRecognitionResult.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

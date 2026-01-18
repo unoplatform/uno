@@ -13,5 +13,16 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.operator ==(Windows.Devices.Input.PenUndockedEventArgs, Windows.Devices.Input.PenUndockedEventArgs)
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.operator !=(Windows.Devices.Input.PenUndockedEventArgs, Windows.Devices.Input.PenUndockedEventArgs)
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.Equals(Windows.Devices.Input.PenUndockedEventArgs)
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Input.PenUndockedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

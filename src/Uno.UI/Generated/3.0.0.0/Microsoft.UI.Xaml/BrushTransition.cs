@@ -11,7 +11,21 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Duration
 		// Skipping already declared method Microsoft.UI.Xaml.BrushTransition.BrushTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.BrushTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.BrushTransition(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.operator ==(Microsoft.UI.Xaml.BrushTransition, Microsoft.UI.Xaml.BrushTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.operator !=(Microsoft.UI.Xaml.BrushTransition, Microsoft.UI.Xaml.BrushTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Equals(Microsoft.UI.Xaml.BrushTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.BrushTransition(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Duration.set
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

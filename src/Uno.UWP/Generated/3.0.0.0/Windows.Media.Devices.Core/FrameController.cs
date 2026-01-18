@@ -10,20 +10,6 @@ namespace Windows.Media.Devices.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool? PhotoConfirmationEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool? FrameController.PhotoConfirmationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20FrameController.PhotoConfirmationEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameController", "bool? FrameController.PhotoConfirmationEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.Core.FrameExposureCompensationControl ExposureCompensationControl
 		{
 			get
@@ -39,6 +25,16 @@ namespace Windows.Media.Devices.Core
 			get
 			{
 				throw new global::System.NotImplementedException("The member FrameExposureControl FrameController.ExposureControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameExposureControl%20FrameController.ExposureControl");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.Core.FrameFlashControl FlashControl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FrameFlashControl FrameController.FlashControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFlashControl%20FrameController.FlashControl");
 			}
 		}
 #endif
@@ -64,11 +60,15 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.Core.FrameFlashControl FlashControl
+		public bool? PhotoConfirmationEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameFlashControl FrameController.FlashControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFlashControl%20FrameController.FlashControl");
+				throw new global::System.NotImplementedException("The member bool? FrameController.PhotoConfirmationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20FrameController.PhotoConfirmationEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameController", "bool? FrameController.PhotoConfirmationEnabled");
 			}
 		}
 #endif
@@ -80,12 +80,23 @@ namespace Windows.Media.Devices.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FrameController()
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.ExposureControl.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.operator ==(Windows.Media.Devices.Core.FrameController, Windows.Media.Devices.Core.FrameController)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.operator !=(Windows.Media.Devices.Core.FrameController, Windows.Media.Devices.Core.FrameController)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.Equals(Windows.Media.Devices.Core.FrameController)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.ExposureCompensationControl.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.IsoSpeedControl.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.ExposureControl.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FlashControl.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FocusControl.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.IsoSpeedControl.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.PhotoConfirmationEnabled.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.PhotoConfirmationEnabled.set
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FlashControl.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

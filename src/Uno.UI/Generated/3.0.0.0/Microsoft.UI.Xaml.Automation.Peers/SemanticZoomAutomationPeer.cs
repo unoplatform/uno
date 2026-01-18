@@ -11,8 +11,20 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ToggleState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(Microsoft.UI.Xaml.Controls.SemanticZoom)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(Microsoft.UI.Xaml.Controls.SemanticZoom)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.ToggleState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.Toggle()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.ToggleState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IToggleProvider
 	}
 }

@@ -25,6 +25,16 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ConnectionToken
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string RemoteSystemApp.ConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemApp.ConnectionToken");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayName
 		{
 			get
@@ -65,16 +75,6 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ConnectionToken
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemApp.ConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemApp.ConnectionToken");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.User User
 		{
 			get
@@ -83,12 +83,23 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Id.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.operator ==(Windows.System.RemoteSystems.RemoteSystemApp, Windows.System.RemoteSystems.RemoteSystemApp)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.operator !=(Windows.System.RemoteSystems.RemoteSystemApp, Windows.System.RemoteSystems.RemoteSystemApp)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Equals(Windows.System.RemoteSystems.RemoteSystemApp)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Attributes.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.ConnectionToken.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.DisplayName.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Id.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableByProximity.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableBySpatialProximity.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Attributes.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.User.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.ConnectionToken.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

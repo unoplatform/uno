@@ -15,20 +15,6 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Text
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreTextTextRequest.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreTextTextRequest.Text");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextTextRequest", "string CoreTextTextRequest.Text");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsCanceled
 		{
 			get
@@ -47,10 +33,30 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Range.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Text.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Text.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.IsCanceled.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Text
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreTextTextRequest.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreTextTextRequest.Text");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextTextRequest", "string CoreTextTextRequest.Text");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.operator ==(Windows.UI.Text.Core.CoreTextTextRequest, Windows.UI.Text.Core.CoreTextTextRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.operator !=(Windows.UI.Text.Core.CoreTextTextRequest, Windows.UI.Text.Core.CoreTextTextRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Equals(Windows.UI.Text.Core.CoreTextTextRequest)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Equals(object)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.GetHashCode()
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -58,5 +64,10 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreTextTextRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextTextRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.IsCanceled.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Range.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Text.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.Text.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

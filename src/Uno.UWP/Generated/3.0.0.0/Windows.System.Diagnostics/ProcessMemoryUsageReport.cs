@@ -133,6 +133,16 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.operator ==(Windows.System.Diagnostics.ProcessMemoryUsageReport, Windows.System.Diagnostics.ProcessMemoryUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.operator !=(Windows.System.Diagnostics.ProcessMemoryUsageReport, Windows.System.Diagnostics.ProcessMemoryUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.Equals(Windows.System.Diagnostics.ProcessMemoryUsageReport)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.NonPagedPoolSizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.PageFaultCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.PageFileSizeInBytes.get
@@ -145,5 +155,6 @@ namespace Windows.System.Diagnostics
 		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.PrivatePageCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.VirtualMemorySizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.WorkingSetSizeInBytes.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessMemoryUsageReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

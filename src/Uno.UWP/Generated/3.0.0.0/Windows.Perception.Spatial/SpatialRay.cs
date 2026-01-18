@@ -10,6 +10,19 @@ namespace Windows.Perception.Spatial
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.SpatialRay()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SpatialRay(global::System.Numerics.Vector3 _Origin, global::System.Numerics.Vector3 _Direction)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialRay", "SpatialRay.SpatialRay(Vector3 _Origin, Vector3 _Direction)");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.SpatialRay(System.Numerics.Vector3, System.Numerics.Vector3)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.operator ==(Windows.Perception.Spatial.SpatialRay, Windows.Perception.Spatial.SpatialRay)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.operator !=(Windows.Perception.Spatial.SpatialRay, Windows.Perception.Spatial.SpatialRay)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.Equals(Windows.Perception.Spatial.SpatialRay)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Origin;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

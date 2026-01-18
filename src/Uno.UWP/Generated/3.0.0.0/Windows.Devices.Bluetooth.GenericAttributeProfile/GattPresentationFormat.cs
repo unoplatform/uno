@@ -15,6 +15,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static byte BluetoothSigAssignedNumbers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member byte GattPresentationFormat.BluetoothSigAssignedNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormat.BluetoothSigAssignedNumbers");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ushort Description
 		{
 			get
@@ -63,21 +73,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static byte BluetoothSigAssignedNumbers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormat.BluetoothSigAssignedNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormat.BluetoothSigAssignedNumbers");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.FormatType.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Exponent.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Unit.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Namespace.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Description.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat FromParts(byte formatType, int exponent, ushort unit, byte namespaceId, ushort description)
@@ -86,5 +82,21 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.BluetoothSigAssignedNumbers.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat, Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat, Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Description.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Exponent.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.FormatType.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Namespace.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Unit.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

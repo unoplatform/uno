@@ -23,6 +23,17 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.operator ==(Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs, Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.operator !=(Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs, Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.Equals(Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.Device.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

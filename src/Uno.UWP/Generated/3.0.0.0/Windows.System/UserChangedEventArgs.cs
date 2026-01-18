@@ -15,16 +15,6 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User UserChangedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserChangedEventArgs.User");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.System.UserWatcherUpdateKind> ChangedPropertyKinds
 		{
 			get
@@ -33,7 +23,28 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserChangedEventArgs.User.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User UserChangedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserChangedEventArgs.User");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.System.UserChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.System.UserChangedEventArgs.operator ==(Windows.System.UserChangedEventArgs, Windows.System.UserChangedEventArgs)
+		// Forced skipping of method Windows.System.UserChangedEventArgs.operator !=(Windows.System.UserChangedEventArgs, Windows.System.UserChangedEventArgs)
+		// Forced skipping of method Windows.System.UserChangedEventArgs.Equals(Windows.System.UserChangedEventArgs)
+		// Forced skipping of method Windows.System.UserChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.System.UserChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.System.UserChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.UserChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.UserChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.UserChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.UserChangedEventArgs.ChangedPropertyKinds.get
+		// Forced skipping of method Windows.System.UserChangedEventArgs.User.get
+		// Forced skipping of method Windows.System.UserChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

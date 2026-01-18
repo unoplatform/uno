@@ -15,6 +15,16 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Core.CoreCursor Cursor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreCursor CoreWebView2CompositionController.Cursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreCursor%20CoreWebView2CompositionController.Cursor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object RootVisualTarget
 		{
 			get
@@ -27,16 +37,15 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Core.CoreCursor Cursor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreWebView2CompositionController.Cursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreCursor%20CoreWebView2CompositionController.Cursor");
-			}
-		}
-#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.As<I>()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2CompositionController, Microsoft.Web.WebView2.Core.CoreWebView2CompositionController)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2CompositionController, Microsoft.Web.WebView2.Core.CoreWebView2CompositionController)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Equals(Microsoft.Web.WebView2.Core.CoreWebView2CompositionController)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DragLeave()
@@ -44,8 +53,6 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "void CoreWebView2CompositionController.DragLeave()");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.NonClientRegionChanged.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.NonClientRegionChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2NonClientRegionKind GetNonClientRegionAtPoint(global::Windows.Foundation.Point point)
@@ -60,10 +67,8 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IReadOnlyList<Rect> CoreWebView2CompositionController.QueryNonClientRegion(CoreWebView2NonClientRegionKind Kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CRect%3E%20CoreWebView2CompositionController.QueryNonClientRegion%28CoreWebView2NonClientRegionKind%20Kind%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.CursorChanged.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.CursorChanged.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.NonClientRegionChanged.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.NonClientRegionChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendMouseInput(global::Microsoft.Web.WebView2.Core.CoreWebView2MouseEventKind eventKind, global::Microsoft.Web.WebView2.Core.CoreWebView2MouseEventVirtualKeys virtualKeys, uint mouseData, global::Windows.Foundation.Point point)
@@ -78,7 +83,6 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "void CoreWebView2CompositionController.SendPointerInput(CoreWebView2PointerEventKind eventKind, CoreWebView2PointerInfo pointerInfo)");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Cursor.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation DragEnter(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo, global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride dragUIOverride)
@@ -100,6 +104,13 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member DataPackageOperation CoreWebView2CompositionController.Drop(CoreDragInfo dragInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreWebView2CompositionController.Drop%28CoreDragInfo%20dragInfo%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.CursorChanged.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.CursorChanged.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Cursor.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController, global::Microsoft.Web.WebView2.Core.CoreWebView2NonClientRegionChangedEventArgs> NonClientRegionChanged

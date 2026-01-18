@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class RectangleGeometry : global::Microsoft.UI.Xaml.Media.Geometry
 	{
-		// Skipping already declared property Rect
 		// Skipping already declared property RectProperty
+		// Skipping already declared property Rect
 		// Skipping already declared method Microsoft.UI.Xaml.Media.RectangleGeometry.RectangleGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.RectangleGeometry()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.RectProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.operator ==(Microsoft.UI.Xaml.Media.RectangleGeometry, Microsoft.UI.Xaml.Media.RectangleGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.operator !=(Microsoft.UI.Xaml.Media.RectangleGeometry, Microsoft.UI.Xaml.Media.RectangleGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.Equals(Microsoft.UI.Xaml.Media.RectangleGeometry)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.Rect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.Rect.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.RectProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

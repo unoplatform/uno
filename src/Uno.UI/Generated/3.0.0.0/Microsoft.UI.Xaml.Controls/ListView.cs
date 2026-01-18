@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListView.ListView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.ListView()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.ListView(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.operator ==(Microsoft.UI.Xaml.Controls.ListView, Microsoft.UI.Xaml.Controls.ListView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.operator !=(Microsoft.UI.Xaml.Controls.ListView, Microsoft.UI.Xaml.Controls.ListView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.Equals(Microsoft.UI.Xaml.Controls.ListView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.ListView(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

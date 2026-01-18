@@ -10,29 +10,15 @@ namespace Windows.Devices.Lights.Effects
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan StartDelay
+		public global::Windows.UI.Color Color
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayColorRampEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayColorRampEffect.StartDelay");
+				throw new global::System.NotImplementedException("The member Color LampArrayColorRampEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20LampArrayColorRampEffect.Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.StartDelay");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan RampDuration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayColorRampEffect.RampDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayColorRampEffect.RampDuration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.RampDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "Color LampArrayColorRampEffect.Color");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color Color
+		public global::System.TimeSpan RampDuration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color LampArrayColorRampEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20LampArrayColorRampEffect.Color");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayColorRampEffect.RampDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayColorRampEffect.RampDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "Color LampArrayColorRampEffect.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.RampDuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan StartDelay
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayColorRampEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayColorRampEffect.StartDelay");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.StartDelay");
 			}
 		}
 #endif
@@ -86,16 +86,27 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.LampArrayColorRampEffect(Windows.Devices.Lights.LampArray, int[])
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.operator ==(Windows.Devices.Lights.Effects.LampArrayColorRampEffect, Windows.Devices.Lights.Effects.LampArrayColorRampEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.operator !=(Windows.Devices.Lights.Effects.LampArrayColorRampEffect, Windows.Devices.Lights.Effects.LampArrayColorRampEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Equals(Windows.Devices.Lights.Effects.LampArrayColorRampEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Color.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Color.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.CompletionBehavior.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.CompletionBehavior.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.RampDuration.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.RampDuration.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.StartDelay.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.StartDelay.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.CompletionBehavior.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.CompletionBehavior.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.ZIndex.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Lights.Effects.ILampArrayEffect
 	}
 }

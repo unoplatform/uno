@@ -11,10 +11,17 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property AvailableFormats
 		// Skipping already declared property Properties
 		// Skipping already declared property RequestedOperation
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Properties.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.RequestedOperation.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.operator ==(Windows.ApplicationModel.DataTransfer.DataPackageView, Windows.ApplicationModel.DataTransfer.DataPackageView)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.operator !=(Windows.ApplicationModel.DataTransfer.DataPackageView, Windows.ApplicationModel.DataTransfer.DataPackageView)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Equals(Windows.ApplicationModel.DataTransfer.DataPackageView)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.ReportOperationCompleted(Windows.ApplicationModel.DataTransfer.DataPackageOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.AvailableFormats.get
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.Contains(string)
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.GetDataAsync(string)
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.GetTextAsync()
@@ -55,5 +62,9 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.SetAcceptedFormatId(string)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.AvailableFormats.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Properties.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.RequestedOperation.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

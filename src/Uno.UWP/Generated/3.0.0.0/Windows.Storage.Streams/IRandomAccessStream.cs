@@ -12,14 +12,14 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property CanWrite
 		// Skipping already declared property Position
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.get
-		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.set
 		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.GetInputStreamAt(ulong)
 		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.GetOutputStreamAt(ulong)
-		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Position.get
 		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.Seek(ulong)
 		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.CloneStream()
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.CanRead.get
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.CanWrite.get
+		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Position.get
+		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.get
+		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.set
 	}
 }

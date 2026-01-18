@@ -73,8 +73,16 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposureControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.ExposureControl.Auto.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.operator ==(Windows.Media.Devices.ExposureControl, Windows.Media.Devices.ExposureControl)
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.operator !=(Windows.Media.Devices.ExposureControl, Windows.Media.Devices.ExposureControl)
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Equals(Windows.Media.Devices.ExposureControl)
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetAutoAsync(bool value)
@@ -82,10 +90,6 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetAutoAsync(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ExposureControl.SetAutoAsync%28bool%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposureControl.Min.get
-		// Forced skipping of method Windows.Media.Devices.ExposureControl.Max.get
-		// Forced skipping of method Windows.Media.Devices.ExposureControl.Step.get
-		// Forced skipping of method Windows.Media.Devices.ExposureControl.Value.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(global::System.TimeSpan shutterDuration)
@@ -93,5 +97,12 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetValueAsync(TimeSpan shutterDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ExposureControl.SetValueAsync%28TimeSpan%20shutterDuration%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Auto.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Max.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Min.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Step.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.Value.get
+		// Forced skipping of method Windows.Media.Devices.ExposureControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

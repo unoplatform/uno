@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Email
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.operator ==(Windows.ApplicationModel.Email.EmailConversationReader, Windows.ApplicationModel.Email.EmailConversationReader)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.operator !=(Windows.ApplicationModel.Email.EmailConversationReader, Windows.ApplicationModel.Email.EmailConversationReader)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.Equals(Windows.ApplicationModel.Email.EmailConversationReader)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailConversationBatch> ReadBatchAsync()
@@ -20,5 +30,6 @@ namespace Windows.ApplicationModel.Email
 			throw new global::System.NotImplementedException("The member IAsyncOperation<EmailConversationBatch> EmailConversationReader.ReadBatchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEmailConversationBatch%3E%20EmailConversationReader.ReadBatchAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversationReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

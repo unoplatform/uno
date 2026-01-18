@@ -11,8 +11,20 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property CanSelectMultipleProperty
 		// Skipping already declared property IsSelectionRequiredProperty
 		// Skipping already declared property SelectionProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.CanSelectMultipleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.IsSelectionRequiredProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.SelectionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers, Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers, Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.PasswordBoxAutomationPeer(Microsoft.UI.Xaml.Controls.PasswordBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.PasswordBoxAutomationPeer(Microsoft.UI.Xaml.Controls.PasswordBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.PasswordBoxAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.PasswordBoxAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PasswordBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

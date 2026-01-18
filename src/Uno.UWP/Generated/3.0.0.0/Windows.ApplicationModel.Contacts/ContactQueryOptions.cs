@@ -10,35 +10,6 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IncludeContactsFromHiddenLists
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContactQueryOptions.IncludeContactsFromHiddenLists is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContactQueryOptions.IncludeContactsFromHiddenLists");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "bool ContactQueryOptions.IncludeContactsFromHiddenLists");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactAnnotationOperations DesiredOperations
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactQueryOptions.DesiredOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactAnnotationOperations%20ContactQueryOptions.DesiredOperations");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactAnnotationOperations ContactQueryOptions.DesiredOperations");
-			}
-		}
-#endif
-		// Skipping already declared property DesiredFields
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> AnnotationListIds
 		{
 			get
@@ -57,6 +28,35 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
+		// Skipping already declared property DesiredFields
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactAnnotationOperations DesiredOperations
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactQueryOptions.DesiredOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactAnnotationOperations%20ContactQueryOptions.DesiredOperations");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactAnnotationOperations ContactQueryOptions.DesiredOperations");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IncludeContactsFromHiddenLists
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContactQueryOptions.IncludeContactsFromHiddenLists is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContactQueryOptions.IncludeContactsFromHiddenLists");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "bool ContactQueryOptions.IncludeContactsFromHiddenLists");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactQueryTextSearch TextSearch
@@ -67,20 +67,31 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions()
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string)
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string)
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
-		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.TextSearch.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.operator ==(Windows.ApplicationModel.Contacts.ContactQueryOptions, Windows.ApplicationModel.Contacts.ContactQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.operator !=(Windows.ApplicationModel.Contacts.ContactQueryOptions, Windows.ApplicationModel.Contacts.ContactQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.Equals(Windows.ApplicationModel.Contacts.ContactQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.AnnotationListIds.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactListIds.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.IncludeContactsFromHiddenLists.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.IncludeContactsFromHiddenLists.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.DesiredFields.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.DesiredFields.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.DesiredOperations.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.DesiredOperations.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.AnnotationListIds.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.IncludeContactsFromHiddenLists.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.IncludeContactsFromHiddenLists.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.TextSearch.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,22 +8,35 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class AppBarSeparator : global::Microsoft.UI.Xaml.Controls.ICommandBarElement
 	{
-		// Skipping already declared property IsCompact
-		// Skipping already declared property DynamicOverflowOrder
-		// Skipping already declared property IsInOverflow
 		// Skipping already declared property DynamicOverflowOrderProperty
 		// Skipping already declared property IsCompactProperty
 		// Skipping already declared property IsInOverflowProperty
+		// Skipping already declared property DynamicOverflowOrder
+		// Skipping already declared property IsCompact
+		// Skipping already declared property IsInOverflow
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBarSeparator.AppBarSeparator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.AppBarSeparator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompactProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflowProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.AppBarSeparator(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.operator ==(Microsoft.UI.Xaml.Controls.AppBarSeparator, Microsoft.UI.Xaml.Controls.AppBarSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.operator !=(Microsoft.UI.Xaml.Controls.AppBarSeparator, Microsoft.UI.Xaml.Controls.AppBarSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.Equals(Microsoft.UI.Xaml.Controls.AppBarSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.AppBarSeparator(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompact.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompact.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflow.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompactProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflowProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Controls.ICommandBarElement
 	}
 }

@@ -43,8 +43,19 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.UsbInterfaces.get
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.operator ==(Windows.Devices.Usb.UsbConfiguration, Windows.Devices.Usb.UsbConfiguration)
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.operator !=(Windows.Devices.Usb.UsbConfiguration, Windows.Devices.Usb.UsbConfiguration)
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.Equals(Windows.Devices.Usb.UsbConfiguration)
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.ConfigurationDescriptor.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.Descriptors.get
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.UsbInterfaces.get
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

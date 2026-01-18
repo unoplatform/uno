@@ -14,13 +14,13 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared property Name
 		// Skipping already declared property TargetType
 		// Skipping already declared property Type
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlMember.GetValue(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlMember.SetValue(object, object)
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlMember.IsAttachable.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlMember.IsDependencyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlMember.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlMember.Name.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlMember.TargetType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlMember.Type.get
-		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlMember.GetValue(object)
-		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlMember.SetValue(object, object)
 	}
 }

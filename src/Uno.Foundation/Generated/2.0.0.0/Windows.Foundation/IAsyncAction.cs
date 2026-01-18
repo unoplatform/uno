@@ -9,8 +9,8 @@ namespace Windows.Foundation
 	public partial interface IAsyncAction : global::Windows.Foundation.IAsyncInfo
 	{
 		// Skipping already declared property Completed
-		// Forced skipping of method Windows.Foundation.IAsyncAction.Completed.set
-		// Forced skipping of method Windows.Foundation.IAsyncAction.Completed.get
 		// Skipping already declared method Windows.Foundation.IAsyncAction.GetResults()
+		// Forced skipping of method Windows.Foundation.IAsyncAction.Completed.get
+		// Forced skipping of method Windows.Foundation.IAsyncAction.Completed.set
 	}
 }

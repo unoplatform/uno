@@ -23,7 +23,16 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Capabilities.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.operator ==(Windows.Media.Devices.MediaDeviceControl, Windows.Media.Devices.MediaDeviceControl)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.operator !=(Windows.Media.Devices.MediaDeviceControl, Windows.Media.Devices.MediaDeviceControl)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Equals(Windows.Media.Devices.MediaDeviceControl)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(out double value)
@@ -52,5 +61,7 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TrySetAuto(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TrySetAuto%28bool%20value%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Capabilities.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

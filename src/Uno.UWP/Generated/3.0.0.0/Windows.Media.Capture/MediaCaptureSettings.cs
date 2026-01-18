@@ -25,46 +25,6 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.PhotoCaptureSource PhotoCaptureSource
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PhotoCaptureSource MediaCaptureSettings.PhotoCaptureSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoCaptureSource%20MediaCaptureSettings.PhotoCaptureSource");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.StreamingCaptureMode StreamingCaptureMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StreamingCaptureMode MediaCaptureSettings.StreamingCaptureMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamingCaptureMode%20MediaCaptureSettings.StreamingCaptureMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.VideoDeviceCharacteristic VideoDeviceCharacteristic
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VideoDeviceCharacteristic MediaCaptureSettings.VideoDeviceCharacteristic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceCharacteristic%20MediaCaptureSettings.VideoDeviceCharacteristic");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string VideoDeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureSettings.VideoDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureSettings.VideoDeviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.AudioProcessing AudioProcessing
 		{
 			get
@@ -105,6 +65,16 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice Direct3D11Device
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IDirect3DDevice MediaCaptureSettings.Direct3D11Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DDevice%20MediaCaptureSettings.Direct3D11Device");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint? Horizontal35mmEquivalentFocalLength
 		{
 			get
@@ -125,11 +95,31 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Capture.PhotoCaptureSource PhotoCaptureSource
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PhotoCaptureSource MediaCaptureSettings.PhotoCaptureSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoCaptureSource%20MediaCaptureSettings.PhotoCaptureSource");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int? PitchOffsetDegrees
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member int? MediaCaptureSettings.PitchOffsetDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20MediaCaptureSettings.PitchOffsetDegrees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Capture.StreamingCaptureMode StreamingCaptureMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StreamingCaptureMode MediaCaptureSettings.StreamingCaptureMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamingCaptureMode%20MediaCaptureSettings.StreamingCaptureMode");
 			}
 		}
 #endif
@@ -145,27 +135,48 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice Direct3D11Device
+		public global::Windows.Media.Capture.VideoDeviceCharacteristic VideoDeviceCharacteristic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DDevice MediaCaptureSettings.Direct3D11Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DDevice%20MediaCaptureSettings.Direct3D11Device");
+				throw new global::System.NotImplementedException("The member VideoDeviceCharacteristic MediaCaptureSettings.VideoDeviceCharacteristic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceCharacteristic%20MediaCaptureSettings.VideoDeviceCharacteristic");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string VideoDeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaCaptureSettings.VideoDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureSettings.VideoDeviceId");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.operator ==(Windows.Media.Capture.MediaCaptureSettings, Windows.Media.Capture.MediaCaptureSettings)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.operator !=(Windows.Media.Capture.MediaCaptureSettings, Windows.Media.Capture.MediaCaptureSettings)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.Equals(Windows.Media.Capture.MediaCaptureSettings)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.AudioDeviceId.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.VideoDeviceId.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.StreamingCaptureMode.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.PhotoCaptureSource.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.VideoDeviceCharacteristic.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.ConcurrentRecordAndPhotoSupported.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.ConcurrentRecordAndPhotoSequenceSupported.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.CameraSoundRequiredForRegion.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.Horizontal35mmEquivalentFocalLength.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.PitchOffsetDegrees.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.Vertical35mmEquivalentFocalLength.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.MediaCategory.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.AudioProcessing.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.CameraSoundRequiredForRegion.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.ConcurrentRecordAndPhotoSequenceSupported.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.ConcurrentRecordAndPhotoSupported.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.Direct3D11Device.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.Horizontal35mmEquivalentFocalLength.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.MediaCategory.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.PhotoCaptureSource.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.PitchOffsetDegrees.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.StreamingCaptureMode.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.Vertical35mmEquivalentFocalLength.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.VideoDeviceCharacteristic.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.VideoDeviceId.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

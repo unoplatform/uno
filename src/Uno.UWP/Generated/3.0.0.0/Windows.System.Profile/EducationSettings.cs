@@ -18,6 +18,7 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.Profile.EducationSettings.As<I>()
 		// Forced skipping of method Windows.System.Profile.EducationSettings.IsEducationEnvironment.get
 	}
 }

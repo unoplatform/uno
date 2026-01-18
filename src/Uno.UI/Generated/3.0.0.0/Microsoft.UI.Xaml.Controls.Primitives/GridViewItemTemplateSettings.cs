@@ -9,6 +9,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class GridViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property DragItemsCount
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.DragItemsCount.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

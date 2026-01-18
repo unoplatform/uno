@@ -63,10 +63,20 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.operator ==(Microsoft.UI.Composition.Scenes.SceneBoundingBox, Microsoft.UI.Composition.Scenes.SceneBoundingBox)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.operator !=(Microsoft.UI.Composition.Scenes.SceneBoundingBox, Microsoft.UI.Composition.Scenes.SceneBoundingBox)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Equals(Microsoft.UI.Composition.Scenes.SceneBoundingBox)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Center.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Extents.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Max.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Min.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

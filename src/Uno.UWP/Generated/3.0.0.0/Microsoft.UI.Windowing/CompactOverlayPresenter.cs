@@ -22,8 +22,19 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.As<I>()
+		// Skipping already declared method Microsoft.UI.Windowing.CompactOverlayPresenter.Create()
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.operator ==(Microsoft.UI.Windowing.CompactOverlayPresenter, Microsoft.UI.Windowing.CompactOverlayPresenter)
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.operator !=(Microsoft.UI.Windowing.CompactOverlayPresenter, Microsoft.UI.Windowing.CompactOverlayPresenter)
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.Equals(Microsoft.UI.Windowing.CompactOverlayPresenter)
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.get
 		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.set
-		// Skipping already declared method Microsoft.UI.Windowing.CompactOverlayPresenter.Create()
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

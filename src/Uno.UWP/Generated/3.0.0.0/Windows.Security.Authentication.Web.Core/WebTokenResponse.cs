@@ -50,6 +50,14 @@ namespace Windows.Security.Authentication.Web.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public WebTokenResponse()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse.WebTokenResponse()");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenResponse(string token)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse.WebTokenResponse(string token)");
@@ -72,17 +80,20 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse(string, Windows.Security.Credentials.WebAccount, Windows.Security.Authentication.Web.Core.WebProviderError)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public WebTokenResponse()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse.WebTokenResponse()");
-		}
-#endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse()
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Token.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.ProviderError.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebAccount.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.operator ==(Windows.Security.Authentication.Web.Core.WebTokenResponse, Windows.Security.Authentication.Web.Core.WebTokenResponse)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.operator !=(Windows.Security.Authentication.Web.Core.WebTokenResponse, Windows.Security.Authentication.Web.Core.WebTokenResponse)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Equals(Windows.Security.Authentication.Web.Core.WebTokenResponse)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Properties.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.ProviderError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Token.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebAccount.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

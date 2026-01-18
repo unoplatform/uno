@@ -15,20 +15,6 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FrameExposureControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FrameExposureControl.Value");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameExposureControl", "TimeSpan? FrameExposureControl.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Auto
 		{
 			get
@@ -41,9 +27,34 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? FrameExposureControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FrameExposureControl.Value");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameExposureControl", "TimeSpan? FrameExposureControl.Value");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.operator ==(Windows.Media.Devices.Core.FrameExposureControl, Windows.Media.Devices.Core.FrameExposureControl)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.operator !=(Windows.Media.Devices.Core.FrameExposureControl, Windows.Media.Devices.Core.FrameExposureControl)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Equals(Windows.Media.Devices.Core.FrameExposureControl)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Auto.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Auto.set
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Value.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Value.set
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

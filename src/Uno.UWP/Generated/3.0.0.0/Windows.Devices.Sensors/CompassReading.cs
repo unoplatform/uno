@@ -8,9 +8,18 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class CompassReading
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sensors.MagnetometerAccuracy HeadingAccuracy
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MagnetometerAccuracy CompassReading.HeadingAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagnetometerAccuracy%20CompassReading.HeadingAccuracy");
+			}
+		}
+#endif
 		// Skipping already declared property HeadingMagneticNorth
 		// Skipping already declared property HeadingTrueNorth
-		// Skipping already declared property Timestamp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? PerformanceCount
@@ -31,21 +40,23 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sensors.MagnetometerAccuracy HeadingAccuracy
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MagnetometerAccuracy CompassReading.HeadingAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagnetometerAccuracy%20CompassReading.HeadingAccuracy");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Timestamp.get
+		// Skipping already declared property Timestamp
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.operator ==(Windows.Devices.Sensors.CompassReading, Windows.Devices.Sensors.CompassReading)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.operator !=(Windows.Devices.Sensors.CompassReading, Windows.Devices.Sensors.CompassReading)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Equals(Windows.Devices.Sensors.CompassReading)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.HeadingAccuracy.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.HeadingMagneticNorth.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.HeadingTrueNorth.get
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.HeadingAccuracy.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

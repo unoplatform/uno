@@ -13,10 +13,22 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property ContainingGridProperty
 		// Skipping already declared property RowProperty
 		// Skipping already declared property RowSpanProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.ColumnProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.ColumnSpanProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.ContainingGridProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.RowProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.RowSpanProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers, Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers, Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

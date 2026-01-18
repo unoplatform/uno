@@ -8,18 +8,14 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RadioMenuFlyoutItem
 	{
-		// Skipping already declared property IsChecked
-		// Skipping already declared property GroupName
+		// Skipping already declared property AreCheckStatesEnabledProperty
 		// Skipping already declared property GroupNameProperty
 		// Skipping already declared property IsCheckedProperty
-		// Skipping already declared property AreCheckStatesEnabledProperty
+		// Skipping already declared property GroupName
+		// Skipping already declared property IsChecked
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.RadioMenuFlyoutItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.RadioMenuFlyoutItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsChecked.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsChecked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.AreCheckStatesEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetAreCheckStatesEnabled(global::Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem @object, bool value)
@@ -34,7 +30,24 @@ namespace Microsoft.UI.Xaml.Controls
 			return (bool)@object.GetValue(AreCheckStatesEnabledProperty);
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsCheckedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.AreCheckStatesEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsCheckedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.RadioMenuFlyoutItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.operator ==(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem, Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.operator !=(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem, Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.Equals(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.RadioMenuFlyoutItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsChecked.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsChecked.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

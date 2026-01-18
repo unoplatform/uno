@@ -12,7 +12,19 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RemovedItems
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.SelectionChangedEventArgs(System.Collections.Generic.IList<object>, System.Collections.Generic.IList<object>)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.SelectionChangedEventArgs(System.Collections.Generic.IList<object>, System.Collections.Generic.IList<object>)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.SelectionChangedEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.SelectionChangedEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.AddedItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.RemovedItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

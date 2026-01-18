@@ -143,19 +143,16 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MailboxId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.FlagState.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.HasAttachment.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Importance.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.LastEmailResponseKind.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MessageCount.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MostRecentMessageId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MostRecentMessageTime.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Preview.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.LatestSender.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Subject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.UnreadMessageCount.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.operator ==(Windows.ApplicationModel.Email.EmailConversation, Windows.ApplicationModel.Email.EmailConversation)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.operator !=(Windows.ApplicationModel.Email.EmailConversation, Windows.ApplicationModel.Email.EmailConversation)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Equals(Windows.ApplicationModel.Email.EmailConversation)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Email.EmailMessage>> FindMessagesAsync()
@@ -170,5 +167,19 @@ namespace Windows.ApplicationModel.Email
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EmailMessage>> EmailConversation.FindMessagesAsync(uint count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEmailMessage%3E%3E%20EmailConversation.FindMessagesAsync%28uint%20count%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.FlagState.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.HasAttachment.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Importance.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.LastEmailResponseKind.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.LatestSender.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MailboxId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MessageCount.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MostRecentMessageId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.MostRecentMessageTime.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Preview.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.Subject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.UnreadMessageCount.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailConversation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

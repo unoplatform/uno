@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class StackLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
 	{
-		// Skipping already declared property Spacing
-		// Skipping already declared property Orientation
 		// Skipping already declared property OrientationProperty
 		// Skipping already declared property SpacingProperty
+		// Skipping already declared property Orientation
+		// Skipping already declared property Spacing
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StackLayout.StackLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.StackLayout()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.OrientationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.SpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.StackLayout(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.operator ==(Microsoft.UI.Xaml.Controls.StackLayout, Microsoft.UI.Xaml.Controls.StackLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.operator !=(Microsoft.UI.Xaml.Controls.StackLayout, Microsoft.UI.Xaml.Controls.StackLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Equals(Microsoft.UI.Xaml.Controls.StackLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.StackLayout(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Spacing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Spacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.SpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

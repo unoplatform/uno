@@ -23,6 +23,17 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2File, Microsoft.Web.WebView2.Core.CoreWebView2File)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2File, Microsoft.Web.WebView2.Core.CoreWebView2File)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.Equals(Microsoft.Web.WebView2.Core.CoreWebView2File)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.Path.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2File.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

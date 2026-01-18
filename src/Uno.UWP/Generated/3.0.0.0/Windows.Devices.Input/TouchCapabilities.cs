@@ -36,7 +36,18 @@ namespace Windows.Devices.Input
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchCapabilities()
-		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchPresent.get
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.operator ==(Windows.Devices.Input.TouchCapabilities, Windows.Devices.Input.TouchCapabilities)
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.operator !=(Windows.Devices.Input.TouchCapabilities, Windows.Devices.Input.TouchCapabilities)
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.Equals(Windows.Devices.Input.TouchCapabilities)
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.Contacts.get
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchPresent.get
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

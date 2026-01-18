@@ -16,6 +16,17 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.EmailStoreNotificationTrigger()
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.operator ==(Windows.ApplicationModel.Background.EmailStoreNotificationTrigger, Windows.ApplicationModel.Background.EmailStoreNotificationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.operator !=(Windows.ApplicationModel.Background.EmailStoreNotificationTrigger, Windows.ApplicationModel.Background.EmailStoreNotificationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.Equals(Windows.ApplicationModel.Background.EmailStoreNotificationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

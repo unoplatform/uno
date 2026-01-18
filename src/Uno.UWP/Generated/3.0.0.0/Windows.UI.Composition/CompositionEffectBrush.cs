@@ -13,6 +13,14 @@ namespace Windows.UI.Composition
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.operator ==(Windows.UI.Composition.CompositionEffectBrush, Windows.UI.Composition.CompositionEffectBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.operator !=(Windows.UI.Composition.CompositionEffectBrush, Windows.UI.Composition.CompositionEffectBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.Equals(Windows.UI.Composition.CompositionEffectBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionBrush GetSourceParameter(string name)
@@ -27,5 +35,7 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionEffectBrush", "void CompositionEffectBrush.SetSourceParameter(string name, CompositionBrush source)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionEffectBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

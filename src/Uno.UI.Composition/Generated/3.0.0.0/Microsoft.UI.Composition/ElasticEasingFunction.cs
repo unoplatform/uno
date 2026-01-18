@@ -11,8 +11,18 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Mode
 		// Skipping already declared property Oscillations
 		// Skipping already declared property Springiness
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.operator ==(Microsoft.UI.Composition.ElasticEasingFunction, Microsoft.UI.Composition.ElasticEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.operator !=(Microsoft.UI.Composition.ElasticEasingFunction, Microsoft.UI.Composition.ElasticEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Equals(Microsoft.UI.Composition.ElasticEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Mode.get
 		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Oscillations.get
 		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Springiness.get
-		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Mode.get
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

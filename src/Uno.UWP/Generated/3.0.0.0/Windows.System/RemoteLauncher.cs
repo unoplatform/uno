@@ -8,6 +8,7 @@ namespace Windows.System
 #endif
 	public static partial class RemoteLauncher
 	{
+		// Forced skipping of method Windows.System.RemoteLauncher.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteLaunchUriStatus> LaunchUriAsync(global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest remoteSystemConnectionRequest, global::System.Uri uri)

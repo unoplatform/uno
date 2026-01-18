@@ -73,11 +73,22 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.operator ==(Windows.Storage.SystemMediaProperties, Windows.Storage.SystemMediaProperties)
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.operator !=(Windows.Storage.SystemMediaProperties, Windows.Storage.SystemMediaProperties)
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.Equals(Windows.Storage.SystemMediaProperties)
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.Equals(object)
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.GetHashCode()
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.SystemMediaProperties.Duration.get
 		// Forced skipping of method Windows.Storage.SystemMediaProperties.Producer.get
 		// Forced skipping of method Windows.Storage.SystemMediaProperties.Publisher.get
 		// Forced skipping of method Windows.Storage.SystemMediaProperties.SubTitle.get
 		// Forced skipping of method Windows.Storage.SystemMediaProperties.Writer.get
 		// Forced skipping of method Windows.Storage.SystemMediaProperties.Year.get
+		// Forced skipping of method Windows.Storage.SystemMediaProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

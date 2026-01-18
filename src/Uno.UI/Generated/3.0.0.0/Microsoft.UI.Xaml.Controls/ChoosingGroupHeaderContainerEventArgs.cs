@@ -10,6 +10,16 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object Group
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ChoosingGroupHeaderContainerEventArgs.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ChoosingGroupHeaderContainerEventArgs.Group");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.ListViewBaseHeaderItem GroupHeaderContainer
 		{
 			get
@@ -19,16 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "ListViewBaseHeaderItem ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Group
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object ChoosingGroupHeaderContainerEventArgs.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ChoosingGroupHeaderContainerEventArgs.Group");
 			}
 		}
 #endif
@@ -50,9 +50,20 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.ChoosingGroupHeaderContainerEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.Equals(Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.Group.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.GroupIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.Group.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

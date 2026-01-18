@@ -15,43 +15,15 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCheckDigitValidationEnabled
+		public uint DecodeLength1
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologyAttributes.DecodeLength1");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCheckDigitTransmissionEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.BarcodeSymbologyDecodeLengthKind DecodeLengthKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarcodeSymbologyDecodeLengthKind%20BarcodeSymbologyAttributes.DecodeLengthKind");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "uint BarcodeSymbologyAttributes.DecodeLength1");
 			}
 		}
 #endif
@@ -71,15 +43,29 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint DecodeLength1
+		public global::Windows.Devices.PointOfService.BarcodeSymbologyDecodeLengthKind DecodeLengthKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologyAttributes.DecodeLength1");
+				throw new global::System.NotImplementedException("The member BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarcodeSymbologyDecodeLengthKind%20BarcodeSymbologyAttributes.DecodeLengthKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "uint BarcodeSymbologyAttributes.DecodeLength1");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCheckDigitTransmissionEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled");
 			}
 		}
 #endif
@@ -90,6 +76,20 @@ namespace Windows.Devices.PointOfService
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCheckDigitValidationEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled");
 			}
 		}
 #endif
@@ -113,18 +113,29 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled.set
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled.set
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.operator ==(Windows.Devices.PointOfService.BarcodeSymbologyAttributes, Windows.Devices.PointOfService.BarcodeSymbologyAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.operator !=(Windows.Devices.PointOfService.BarcodeSymbologyAttributes, Windows.Devices.PointOfService.BarcodeSymbologyAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.Equals(Windows.Devices.PointOfService.BarcodeSymbologyAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLength1.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLength1.set
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLength2.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLength2.set
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLengthKind.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLengthKind.set
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled.set
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled.set
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsDecodeLengthSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -66,10 +66,21 @@ namespace Windows.Devices.Input
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.MouseCapabilities()
-		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.MousePresent.get
-		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.VerticalWheelPresent.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.operator ==(Windows.Devices.Input.MouseCapabilities, Windows.Devices.Input.MouseCapabilities)
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.operator !=(Windows.Devices.Input.MouseCapabilities, Windows.Devices.Input.MouseCapabilities)
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.Equals(Windows.Devices.Input.MouseCapabilities)
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.HorizontalWheelPresent.get
-		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.SwapButtons.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.MousePresent.get
 		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.NumberOfButtons.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.SwapButtons.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.VerticalWheelPresent.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

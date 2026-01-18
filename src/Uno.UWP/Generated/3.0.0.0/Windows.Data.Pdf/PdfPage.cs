@@ -63,6 +63,16 @@ namespace Windows.Data.Pdf
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.operator ==(Windows.Data.Pdf.PdfPage, Windows.Data.Pdf.PdfPage)
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.operator !=(Windows.Data.Pdf.PdfPage, Windows.Data.Pdf.PdfPage)
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.Equals(Windows.Data.Pdf.PdfPage)
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.Equals(object)
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.GetHashCode()
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream outputStream)
@@ -84,11 +94,6 @@ namespace Windows.Data.Pdf
 			throw new global::System.NotImplementedException("The member IAsyncAction PdfPage.PreparePageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PdfPage.PreparePageAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.Index.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.Size.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.Dimensions.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.Rotation.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.PreferredZoom.get
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -96,6 +101,12 @@ namespace Windows.Data.Pdf
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPage", "void PdfPage.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.Dimensions.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.Index.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.PreferredZoom.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.Rotation.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.Size.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

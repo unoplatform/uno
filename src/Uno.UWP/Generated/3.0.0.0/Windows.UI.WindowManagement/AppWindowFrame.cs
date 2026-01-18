@@ -13,6 +13,16 @@ namespace Windows.UI.WindowManagement
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.operator ==(Windows.UI.WindowManagement.AppWindowFrame, Windows.UI.WindowManagement.AppWindowFrame)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.operator !=(Windows.UI.WindowManagement.AppWindowFrame, Windows.UI.WindowManagement.AppWindowFrame)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.Equals(Windows.UI.WindowManagement.AppWindowFrame)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WindowManagement.AppWindowFrameStyle GetFrameStyle()
@@ -28,5 +38,6 @@ namespace Windows.UI.WindowManagement
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.DragRegionVisuals.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

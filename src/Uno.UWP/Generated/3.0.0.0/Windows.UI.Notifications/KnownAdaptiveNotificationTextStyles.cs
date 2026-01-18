@@ -198,24 +198,25 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Caption.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Body.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.As<I>()
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Base.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Subtitle.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Title.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Subheader.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Header.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.TitleNumeral.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubheaderNumeral.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.HeaderNumeral.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.CaptionSubtle.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.BodySubtle.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.BaseSubtle.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubtitleSubtle.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.TitleSubtle.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubheaderSubtle.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubheaderNumeralSubtle.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.HeaderSubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Body.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.BodySubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Caption.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.CaptionSubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Header.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.HeaderNumeral.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.HeaderNumeralSubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.HeaderSubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Subheader.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubheaderNumeral.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubheaderNumeralSubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubheaderSubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Subtitle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.SubtitleSubtle.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Title.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.TitleNumeral.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.TitleSubtle.get
 	}
 }

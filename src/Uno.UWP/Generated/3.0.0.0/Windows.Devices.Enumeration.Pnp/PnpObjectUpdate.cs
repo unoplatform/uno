@@ -43,8 +43,19 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Type.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.operator ==(Windows.Devices.Enumeration.Pnp.PnpObjectUpdate, Windows.Devices.Enumeration.Pnp.PnpObjectUpdate)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.operator !=(Windows.Devices.Enumeration.Pnp.PnpObjectUpdate, Windows.Devices.Enumeration.Pnp.PnpObjectUpdate)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Equals(Windows.Devices.Enumeration.Pnp.PnpObjectUpdate)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Id.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Properties.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Type.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

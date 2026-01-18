@@ -23,6 +23,17 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.operator ==(Windows.UI.Input.InputActivationListenerActivationChangedEventArgs, Windows.UI.Input.InputActivationListenerActivationChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.operator !=(Windows.UI.Input.InputActivationListenerActivationChangedEventArgs, Windows.UI.Input.InputActivationListenerActivationChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.Equals(Windows.UI.Input.InputActivationListenerActivationChangedEventArgs)
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.State.get
+		// Forced skipping of method Windows.UI.Input.InputActivationListenerActivationChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

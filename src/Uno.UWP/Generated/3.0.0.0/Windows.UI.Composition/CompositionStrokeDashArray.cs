@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionStrokeDashArray : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<float>, global::System.Collections.Generic.IEnumerable<float>
+	public partial class CompositionStrokeDashArray : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<float>, global::System.Collections.Generic.ICollection<float>, global::System.Collections.Generic.IEnumerable<float>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CompositionStrokeDashArray()
@@ -15,114 +15,11 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint CompositionStrokeDashArray.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CompositionStrokeDashArray.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.GetAt(uint)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Size.get
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.GetView()
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.IndexOf(float, out uint)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.SetAt(uint, float)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.InsertAt(uint, float)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.RemoveAt(uint)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Append(float)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.RemoveAtEnd()
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Clear()
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.GetMany(uint, float[])
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.ReplaceAll(float[])
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.First()
-		// Processing: System.Collections.Generic.IList<float>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(float item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, float item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<float>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(float item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(float item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(float[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<float>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(float item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Count
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member int CompositionStrokeDashArray.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionStrokeDashArray.Count");
 			}
 		}
 #endif
@@ -132,19 +29,107 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member bool CompositionStrokeDashArray.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionStrokeDashArray.IsReadOnly");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<float>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<float>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionStrokeDashArray.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionStrokeDashArray.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionStrokeDashArray", "float CompositionStrokeDashArray.this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.operator ==(Windows.UI.Composition.CompositionStrokeDashArray, Windows.UI.Composition.CompositionStrokeDashArray)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.operator !=(Windows.UI.Composition.CompositionStrokeDashArray, Windows.UI.Composition.CompositionStrokeDashArray)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Equals(Windows.UI.Composition.CompositionStrokeDashArray)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Count.get
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.IsReadOnly.get
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.this[int].get
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(float item)
+		{
+			throw new global::System.NotImplementedException("The member int CompositionStrokeDashArray.IndexOf(float item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionStrokeDashArray.IndexOf%28float%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, float item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionStrokeDashArray", "void CompositionStrokeDashArray.Insert(int index, float item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionStrokeDashArray", "void CompositionStrokeDashArray.RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(float item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionStrokeDashArray", "void CompositionStrokeDashArray.Add(float item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionStrokeDashArray", "void CompositionStrokeDashArray.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(float item)
+		{
+			throw new global::System.NotImplementedException("The member bool CompositionStrokeDashArray.Contains(float item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionStrokeDashArray.Contains%28float%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(float[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionStrokeDashArray", "void CompositionStrokeDashArray.CopyTo(float[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(float item)
+		{
+			throw new global::System.NotImplementedException("The member bool CompositionStrokeDashArray.Remove(float item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionStrokeDashArray.Remove%28float%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<float> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<float> CompositionStrokeDashArray.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3Cfloat%3E%20CompositionStrokeDashArray.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.get_Item(int)
+		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.set_Item(int, float)
+		// Processing: System.Collections.Generic.IList<float>
+		// Processing: System.Collections.Generic.ICollection<float>
+		// Processing: System.Collections.Generic.IEnumerable<float>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

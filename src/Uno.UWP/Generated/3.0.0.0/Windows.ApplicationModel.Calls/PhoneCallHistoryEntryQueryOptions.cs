@@ -40,8 +40,19 @@ namespace Windows.ApplicationModel.Calls
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.PhoneCallHistoryEntryQueryOptions()
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.operator ==(Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.operator !=(Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.Equals(Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.DesiredMedia.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.DesiredMedia.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.SourceIds.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

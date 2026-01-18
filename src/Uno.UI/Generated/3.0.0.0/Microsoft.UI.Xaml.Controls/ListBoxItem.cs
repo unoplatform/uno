@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.ListBoxItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.ListBoxItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.operator ==(Microsoft.UI.Xaml.Controls.ListBoxItem, Microsoft.UI.Xaml.Controls.ListBoxItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.operator !=(Microsoft.UI.Xaml.Controls.ListBoxItem, Microsoft.UI.Xaml.Controls.ListBoxItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.Equals(Microsoft.UI.Xaml.Controls.ListBoxItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.ListBoxItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBoxItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

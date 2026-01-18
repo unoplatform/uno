@@ -33,7 +33,18 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppActivationResult.ExtendedError.get
+		// Forced skipping of method Windows.System.AppActivationResult.FromAbi(nint)
+		// Forced skipping of method Windows.System.AppActivationResult.operator ==(Windows.System.AppActivationResult, Windows.System.AppActivationResult)
+		// Forced skipping of method Windows.System.AppActivationResult.operator !=(Windows.System.AppActivationResult, Windows.System.AppActivationResult)
+		// Forced skipping of method Windows.System.AppActivationResult.Equals(Windows.System.AppActivationResult)
+		// Forced skipping of method Windows.System.AppActivationResult.Equals(object)
+		// Forced skipping of method Windows.System.AppActivationResult.GetHashCode()
+		// Forced skipping of method Windows.System.AppActivationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.AppActivationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.AppActivationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.AppActivationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.AppActivationResult.AppResourceGroupInfo.get
+		// Forced skipping of method Windows.System.AppActivationResult.ExtendedError.get
+		// Forced skipping of method Windows.System.AppActivationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

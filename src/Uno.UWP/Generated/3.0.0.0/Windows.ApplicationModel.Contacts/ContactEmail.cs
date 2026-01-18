@@ -8,16 +8,27 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 	public partial class ContactEmail
 	{
-		// Skipping already declared property Kind
-		// Skipping already declared property Description
 		// Skipping already declared property Address
+		// Skipping already declared property Description
+		// Skipping already declared property Kind
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.operator ==(Windows.ApplicationModel.Contacts.ContactEmail, Windows.ApplicationModel.Contacts.ContactEmail)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.operator !=(Windows.ApplicationModel.Contacts.ContactEmail, Windows.ApplicationModel.Contacts.ContactEmail)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Equals(Windows.ApplicationModel.Contacts.ContactEmail)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Address.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Description.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

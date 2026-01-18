@@ -10,29 +10,15 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme Theme
+		public global::Windows.UI.Color? HighContrastBackgroundColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemBackdropTheme SystemBackdropConfiguration.Theme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdropTheme%20SystemBackdropConfiguration.Theme");
+				throw new global::System.NotImplementedException("The member Color? SystemBackdropConfiguration.HighContrastBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20SystemBackdropConfiguration.HighContrastBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "SystemBackdropTheme SystemBackdropConfiguration.Theme");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInputActive
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemBackdropConfiguration.IsInputActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemBackdropConfiguration.IsInputActive");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "bool SystemBackdropConfiguration.IsInputActive");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "Color? SystemBackdropConfiguration.HighContrastBackgroundColor");
 			}
 		}
 #endif
@@ -52,26 +38,32 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color? HighContrastBackgroundColor
+		public bool IsInputActive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? SystemBackdropConfiguration.HighContrastBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20SystemBackdropConfiguration.HighContrastBackgroundColor");
+				throw new global::System.NotImplementedException("The member bool SystemBackdropConfiguration.IsInputActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemBackdropConfiguration.IsInputActive");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "Color? SystemBackdropConfiguration.HighContrastBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "bool SystemBackdropConfiguration.IsInputActive");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.HighContrastBackgroundColor.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsInputActive.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Theme.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsInputActive.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Theme.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsHighContrast.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.HighContrastBackgroundColor.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsHighContrast.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme Theme
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SystemBackdropTheme SystemBackdropConfiguration.Theme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdropTheme%20SystemBackdropConfiguration.Theme");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "SystemBackdropTheme SystemBackdropConfiguration.Theme");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SystemBackdropConfiguration()
@@ -80,5 +72,24 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.SystemBackdropConfiguration()
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.operator ==(Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration, Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration)
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.operator !=(Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration, Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration)
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Equals(Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration)
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.HighContrastBackgroundColor.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.HighContrastBackgroundColor.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsHighContrast.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsHighContrast.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsInputActive.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsInputActive.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Theme.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Theme.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

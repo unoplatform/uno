@@ -33,6 +33,14 @@ namespace Microsoft.UI.Xaml.Automation
 			typeof(global::Microsoft.UI.Xaml.Automation.AutomationProperties),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Automation.AutomationAnnotation>)));
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty AutomationControlTypeProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+			"AutomationControlType", typeof(global::Microsoft.UI.Xaml.Automation.Peers.AutomationControlType),
+			typeof(global::Microsoft.UI.Xaml.Automation.AutomationProperties),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Automation.Peers.AutomationControlType)));
+#endif
 		// Skipping already declared property AutomationIdProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -169,15 +177,262 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property NameProperty
 		// Skipping already declared property PositionInSetProperty
 		// Skipping already declared property SizeOfSetProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty AutomationControlTypeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"AutomationControlType", typeof(global::Microsoft.UI.Xaml.Automation.Peers.AutomationControlType),
-			typeof(global::Microsoft.UI.Xaml.Automation.AutomationProperties),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Automation.Peers.AutomationControlType)));
+		public static string GetAcceleratorKey(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (string)element.GetValue(AcceleratorKeyProperty);
+		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AutomationControlTypeProperty.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetAcceleratorKey(global::Microsoft.UI.Xaml.DependencyObject element, string value)
+		{
+			element.SetValue(AcceleratorKeyProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetAccessKey(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (string)element.GetValue(AccessKeyProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetAccessKey(global::Microsoft.UI.Xaml.DependencyObject element, string value)
+		{
+			element.SetValue(AccessKeyProperty, value);
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetAutomationId(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(Microsoft.UI.Xaml.DependencyObject, string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetHelpText(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (string)element.GetValue(HelpTextProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetHelpText(global::Microsoft.UI.Xaml.DependencyObject element, string value)
+		{
+			element.SetValue(HelpTextProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool GetIsRequiredForForm(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (bool)element.GetValue(IsRequiredForFormProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetIsRequiredForForm(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
+		{
+			element.SetValue(IsRequiredForFormProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetItemStatus(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (string)element.GetValue(ItemStatusProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetItemStatus(global::Microsoft.UI.Xaml.DependencyObject element, string value)
+		{
+			element.SetValue(ItemStatusProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetItemType(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (string)element.GetValue(ItemTypeProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetItemType(global::Microsoft.UI.Xaml.DependencyObject element, string value)
+		{
+			element.SetValue(ItemTypeProperty, value);
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetLabeledBy(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetLabeledBy(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetName(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(Microsoft.UI.Xaml.DependencyObject, string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting GetLiveSetting(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (global::Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting)element.GetValue(LiveSettingProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetLiveSetting(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting value)
+		{
+			element.SetValue(LiveSettingProperty, value);
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetAccessibilityView(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityView(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.UIElement> GetControlledPeers(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.UIElement>)element.GetValue(ControlledPeersProperty);
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetPositionInSet(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetPositionInSet(Microsoft.UI.Xaml.DependencyObject, int)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetSizeOfSet(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetSizeOfSet(Microsoft.UI.Xaml.DependencyObject, int)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static int GetLevel(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (int)element.GetValue(LevelProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetLevel(global::Microsoft.UI.Xaml.DependencyObject element, int value)
+		{
+			element.SetValue(LevelProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Automation.AutomationAnnotation> GetAnnotations(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Automation.AutomationAnnotation>)element.GetValue(AnnotationsProperty);
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetLandmarkType(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetLandmarkType(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Automation.Peers.AutomationLandmarkType)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetLocalizedLandmarkType(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (string)element.GetValue(LocalizedLandmarkTypeProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetLocalizedLandmarkType(global::Microsoft.UI.Xaml.DependencyObject element, string value)
+		{
+			element.SetValue(LocalizedLandmarkTypeProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool GetIsPeripheral(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (bool)element.GetValue(IsPeripheralProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetIsPeripheral(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
+		{
+			element.SetValue(IsPeripheralProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool GetIsDataValidForForm(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (bool)element.GetValue(IsDataValidForFormProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetIsDataValidForForm(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
+		{
+			element.SetValue(IsDataValidForFormProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetFullDescription(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (string)element.GetValue(FullDescriptionProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetFullDescription(global::Microsoft.UI.Xaml.DependencyObject element, string value)
+		{
+			element.SetValue(FullDescriptionProperty, value);
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetLocalizedControlType(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetLocalizedControlType(Microsoft.UI.Xaml.DependencyObject, string)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetDescribedBy(Microsoft.UI.Xaml.DependencyObject)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject> GetFlowsTo(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>)element.GetValue(FlowsToProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject> GetFlowsFrom(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>)element.GetValue(FlowsFromProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static int GetCulture(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (int)element.GetValue(CultureProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetCulture(global::Microsoft.UI.Xaml.DependencyObject element, int value)
+		{
+			element.SetValue(CultureProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.Automation.Peers.AutomationHeadingLevel GetHeadingLevel(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (global::Microsoft.UI.Xaml.Automation.Peers.AutomationHeadingLevel)element.GetValue(HeadingLevelProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetHeadingLevel(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.Automation.Peers.AutomationHeadingLevel value)
+		{
+			element.SetValue(HeadingLevelProperty, value);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool GetIsDialog(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (bool)element.GetValue(IsDialogProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetIsDialog(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
+		{
+			element.SetValue(IsDialogProperty, value);
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Automation.Peers.AutomationControlType GetAutomationControlType(global::Microsoft.UI.Xaml.UIElement element)
@@ -193,287 +448,44 @@ namespace Microsoft.UI.Xaml.Automation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AcceleratorKeyProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetAcceleratorKey(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(AcceleratorKeyProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetAcceleratorKey(global::Microsoft.UI.Xaml.DependencyObject element, string value)
-		{
-			element.SetValue(AcceleratorKeyProperty, value);
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AccessKeyProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetAccessKey(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(AccessKeyProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetAccessKey(global::Microsoft.UI.Xaml.DependencyObject element, string value)
-		{
-			element.SetValue(AccessKeyProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetAutomationId(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(Microsoft.UI.Xaml.DependencyObject, string)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.HelpTextProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetHelpText(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(HelpTextProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetHelpText(global::Microsoft.UI.Xaml.DependencyObject element, string value)
-		{
-			element.SetValue(HelpTextProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.IsRequiredForFormProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsRequiredForForm(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsRequiredForFormProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsRequiredForForm(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
-		{
-			element.SetValue(IsRequiredForFormProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.ItemStatusProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetItemStatus(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(ItemStatusProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetItemStatus(global::Microsoft.UI.Xaml.DependencyObject element, string value)
-		{
-			element.SetValue(ItemStatusProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.ItemTypeProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetItemType(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(ItemTypeProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetItemType(global::Microsoft.UI.Xaml.DependencyObject element, string value)
-		{
-			element.SetValue(ItemTypeProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LabeledByProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetLabeledBy(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetLabeledBy(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.NameProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetName(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(Microsoft.UI.Xaml.DependencyObject, string)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LiveSettingProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting GetLiveSetting(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (global::Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting)element.GetValue(LiveSettingProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetLiveSetting(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting value)
-		{
-			element.SetValue(LiveSettingProperty, value);
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AccessibilityViewProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetAccessibilityView(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityView(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.ControlledPeersProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.UIElement> GetControlledPeers(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.UIElement>)element.GetValue(ControlledPeersProperty);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.PositionInSetProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetPositionInSet(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetPositionInSet(Microsoft.UI.Xaml.DependencyObject, int)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.SizeOfSetProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetSizeOfSet(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetSizeOfSet(Microsoft.UI.Xaml.DependencyObject, int)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LevelProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static int GetLevel(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (int)element.GetValue(LevelProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetLevel(global::Microsoft.UI.Xaml.DependencyObject element, int value)
-		{
-			element.SetValue(LevelProperty, value);
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AnnotationsProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Automation.AutomationAnnotation> GetAnnotations(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Automation.AutomationAnnotation>)element.GetValue(AnnotationsProperty);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LandmarkTypeProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetLandmarkType(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetLandmarkType(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Automation.Peers.AutomationLandmarkType)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LocalizedLandmarkTypeProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetLocalizedLandmarkType(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(LocalizedLandmarkTypeProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetLocalizedLandmarkType(global::Microsoft.UI.Xaml.DependencyObject element, string value)
-		{
-			element.SetValue(LocalizedLandmarkTypeProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.IsPeripheralProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsPeripheral(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsPeripheralProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsPeripheral(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
-		{
-			element.SetValue(IsPeripheralProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.IsDataValidForFormProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsDataValidForForm(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsDataValidForFormProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsDataValidForForm(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
-		{
-			element.SetValue(IsDataValidForFormProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.FullDescriptionProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetFullDescription(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(FullDescriptionProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetFullDescription(global::Microsoft.UI.Xaml.DependencyObject element, string value)
-		{
-			element.SetValue(FullDescriptionProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LocalizedControlTypeProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetLocalizedControlType(Microsoft.UI.Xaml.DependencyObject)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetLocalizedControlType(Microsoft.UI.Xaml.DependencyObject, string)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.DescribedByProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetDescribedBy(Microsoft.UI.Xaml.DependencyObject)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.FlowsToProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject> GetFlowsTo(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>)element.GetValue(FlowsToProperty);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.FlowsFromProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject> GetFlowsFrom(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>)element.GetValue(FlowsFromProperty);
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AutomationControlTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.ControlledPeersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.CultureProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static int GetCulture(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (int)element.GetValue(CultureProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetCulture(global::Microsoft.UI.Xaml.DependencyObject element, int value)
-		{
-			element.SetValue(CultureProperty, value);
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.DescribedByProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.FlowsFromProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.FlowsToProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.FullDescriptionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.HeadingLevelProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.Automation.Peers.AutomationHeadingLevel GetHeadingLevel(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (global::Microsoft.UI.Xaml.Automation.Peers.AutomationHeadingLevel)element.GetValue(HeadingLevelProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetHeadingLevel(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.Automation.Peers.AutomationHeadingLevel value)
-		{
-			element.SetValue(HeadingLevelProperty, value);
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.HelpTextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.IsDataValidForFormProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.IsDialogProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsDialog(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsDialogProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsDialog(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
-		{
-			element.SetValue(IsDialogProperty, value);
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.IsPeripheralProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.IsRequiredForFormProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.ItemStatusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.ItemTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LabeledByProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LandmarkTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LevelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LiveSettingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LocalizedControlTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.LocalizedLandmarkTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.NameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.PositionInSetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.SizeOfSetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.operator ==(Microsoft.UI.Xaml.Automation.AutomationProperties, Microsoft.UI.Xaml.Automation.AutomationProperties)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.operator !=(Microsoft.UI.Xaml.Automation.AutomationProperties, Microsoft.UI.Xaml.Automation.AutomationProperties)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.Equals(Microsoft.UI.Xaml.Automation.AutomationProperties)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

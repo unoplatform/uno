@@ -16,5 +16,15 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.PivotItemAutomationPeer(Microsoft.UI.Xaml.Controls.PivotItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

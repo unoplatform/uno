@@ -8,6 +8,37 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 	public static partial class Clipboard
 	{
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.As<I>()
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.DataTransfer.DataPackageView GetContent()
+		{
+			throw new global::System.NotImplementedException("The member DataPackageView Clipboard.GetContent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageView%20Clipboard.GetContent%28%29");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public static void SetContent(global::Windows.ApplicationModel.DataTransfer.DataPackage content)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.SetContent(DataPackage content)");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || false
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS")]
+		public static void Flush()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.Flush()");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public static void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.Clear()");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult> GetHistoryItemsAsync()
@@ -59,40 +90,26 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryChanged.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.RoamingEnabledChanged.add
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.RoamingEnabledChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryEnabledChanged.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryEnabledChanged.remove
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.DataTransfer.DataPackageView GetContent()
-		{
-			throw new global::System.NotImplementedException("The member DataPackageView Clipboard.GetContent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageView%20Clipboard.GetContent%28%29");
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public static void SetContent(global::Windows.ApplicationModel.DataTransfer.DataPackage content)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.SetContent(DataPackage content)");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.RoamingEnabledChanged.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.RoamingEnabledChanged.remove
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS")]
-		public static void Flush()
+		public static event global::System.EventHandler<object> ContentChanged
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.Flush()");
+			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "event EventHandler<object> Clipboard.ContentChanged");
+			}
+			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "event EventHandler<object> Clipboard.ContentChanged");
+			}
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public static void Clear()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.Clear()");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged.add
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryChangedEventArgs> HistoryChanged
@@ -138,22 +155,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "event EventHandler<object> Clipboard.RoamingEnabledChanged");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS")]
-		public static event global::System.EventHandler<object> ContentChanged
-		{
-			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "event EventHandler<object> Clipboard.ContentChanged");
-			}
-			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "event EventHandler<object> Clipboard.ContentChanged");
 			}
 		}
 #endif

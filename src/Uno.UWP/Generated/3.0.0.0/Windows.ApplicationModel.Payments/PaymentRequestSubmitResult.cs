@@ -33,7 +33,18 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.operator ==(Windows.ApplicationModel.Payments.PaymentRequestSubmitResult, Windows.ApplicationModel.Payments.PaymentRequestSubmitResult)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.operator !=(Windows.ApplicationModel.Payments.PaymentRequestSubmitResult, Windows.ApplicationModel.Payments.PaymentRequestSubmitResult)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Equals(Windows.ApplicationModel.Payments.PaymentRequestSubmitResult)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Response.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,21 +10,21 @@ namespace Windows.Media.Audio
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Audio.EqualizerBand> Bands
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EqualizerBand> EqualizerEffectDefinition.Bands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEqualizerBand%3E%20EqualizerEffectDefinition.Bands");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ActivatableClassId
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string EqualizerEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EqualizerEffectDefinition.ActivatableClassId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Audio.EqualizerBand> Bands
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<EqualizerBand> EqualizerEffectDefinition.Bands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEqualizerBand%3E%20EqualizerEffectDefinition.Bands");
 			}
 		}
 #endif
@@ -46,9 +46,20 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.EqualizerEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Bands.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.operator ==(Windows.Media.Audio.EqualizerEffectDefinition, Windows.Media.Audio.EqualizerEffectDefinition)
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.operator !=(Windows.Media.Audio.EqualizerEffectDefinition, Windows.Media.Audio.EqualizerEffectDefinition)
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Equals(Windows.Media.Audio.EqualizerEffectDefinition)
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.ActivatableClassId.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Bands.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Properties.get
+		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IAudioEffectDefinition
 	}
 }

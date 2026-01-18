@@ -198,24 +198,25 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesCbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesEcb.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcb.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Cbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Ecb.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesEcb.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesGcm.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCcm.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCcm.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesEcb.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesEcbPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesGcm.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesCbc.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesCbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesEcb.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesEcbPkcs7.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbcPkcs7.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcbPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Cbc.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2CbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Ecb.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2EcbPkcs7.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc4.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbc.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcb.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcbPkcs7.get
 	}
 }

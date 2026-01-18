@@ -15,6 +15,26 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Collections.ValueSet ContinuationData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ValueSet WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -45,16 +65,6 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.ValueSet ContinuationData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ValueSet WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.Web.WebAuthenticationResult WebAuthenticationResult
 		{
 			get
@@ -63,22 +73,23 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WebAuthenticationResult.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.operator ==(Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs, Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.operator !=(Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs, Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.Equals(Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WebAuthenticationResult.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IWebAuthenticationBrokerContinuationEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContinuationActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

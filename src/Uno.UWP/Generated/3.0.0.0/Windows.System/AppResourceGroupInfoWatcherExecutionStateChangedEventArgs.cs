@@ -33,7 +33,18 @@ namespace Windows.System
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.operator ==(Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs, Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs)
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.operator !=(Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs, Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs)
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.Equals(Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs)
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppDiagnosticInfos.get
 		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppResourceGroupInfo.get
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

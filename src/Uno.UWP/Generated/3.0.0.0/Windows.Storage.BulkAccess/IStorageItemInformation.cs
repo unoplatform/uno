@@ -44,16 +44,16 @@ namespace Windows.Storage.BulkAccess
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.MusicProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.VideoProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.ImageProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.DocumentProperties.get
 		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.BasicProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.DocumentProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.ImageProperties.get
+		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.MusicProperties.get
 		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.Thumbnail.get
-		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.ThumbnailUpdated.add
-		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.ThumbnailUpdated.remove
+		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.VideoProperties.get
 		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.PropertiesUpdated.add
 		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.PropertiesUpdated.remove
+		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.ThumbnailUpdated.add
+		// Forced skipping of method Windows.Storage.BulkAccess.IStorageItemInformation.ThumbnailUpdated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.BulkAccess.IStorageItemInformation, object> PropertiesUpdated;
 #endif

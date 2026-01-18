@@ -11,6 +11,18 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.operator ==(Microsoft.UI.Xaml.Controls.GridViewItem, Microsoft.UI.Xaml.Controls.GridViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.operator !=(Microsoft.UI.Xaml.Controls.GridViewItem, Microsoft.UI.Xaml.Controls.GridViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.Equals(Microsoft.UI.Xaml.Controls.GridViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.TemplateSettings.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

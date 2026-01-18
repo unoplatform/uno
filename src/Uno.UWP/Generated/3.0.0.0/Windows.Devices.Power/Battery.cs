@@ -13,16 +13,6 @@ namespace Windows.Devices.Power
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Battery.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.DeviceId");
-			}
-		}
-#endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Power.Battery AggregateBattery
@@ -33,17 +23,17 @@ namespace Windows.Devices.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Power.Battery.DeviceId.get
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Power.BatteryReport GetReport()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport Battery.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20Battery.GetReport%28%29");
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Battery.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.DeviceId");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.add
-		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.remove
-		// Forced skipping of method Windows.Devices.Power.Battery.AggregateBattery.get
+		// Forced skipping of method Windows.Devices.Power.Battery.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Power.Battery> FromIdAsync(string deviceId)
@@ -58,6 +48,28 @@ namespace Windows.Devices.Power
 			throw new global::System.NotImplementedException("The member string Battery.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.GetDeviceSelector%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Power.Battery.AggregateBattery.get
+		// Forced skipping of method Windows.Devices.Power.Battery.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Power.Battery.operator ==(Windows.Devices.Power.Battery, Windows.Devices.Power.Battery)
+		// Forced skipping of method Windows.Devices.Power.Battery.operator !=(Windows.Devices.Power.Battery, Windows.Devices.Power.Battery)
+		// Forced skipping of method Windows.Devices.Power.Battery.Equals(Windows.Devices.Power.Battery)
+		// Forced skipping of method Windows.Devices.Power.Battery.Equals(object)
+		// Forced skipping of method Windows.Devices.Power.Battery.GetHashCode()
+		// Forced skipping of method Windows.Devices.Power.Battery.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Power.Battery.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Power.Battery.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Power.Battery.WinRT.IWinRTObject.AdditionalTypeData.get
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Power.BatteryReport GetReport()
+		{
+			throw new global::System.NotImplementedException("The member BatteryReport Battery.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20Battery.GetReport%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.add
+		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.remove
+		// Forced skipping of method Windows.Devices.Power.Battery.DeviceId.get
+		// Forced skipping of method Windows.Devices.Power.Battery.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Power.Battery, object> ReportUpdated

@@ -8,10 +8,6 @@ namespace Windows.Globalization.NumberFormatting
 #endif
 	public partial class PercentFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions, global::Windows.Globalization.NumberFormatting.INumberFormatter, global::Windows.Globalization.NumberFormatting.INumberFormatter2, global::Windows.Globalization.NumberFormatting.INumberParser, global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption, global::Windows.Globalization.NumberFormatting.INumberRounderOption, global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
-		// Skipping already declared property IsDecimalPointAlwaysDisplayed
-		// Skipping already declared property IntegerDigits
-		// Skipping already declared property IsGrouped
-		// Skipping already declared property NumeralSystem
 		// Skipping already declared property FractionDigits
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -23,7 +19,13 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 #endif
+		// Skipping already declared property IntegerDigits
+		// Skipping already declared property IsDecimalPointAlwaysDisplayed
+		// Skipping already declared property IsGrouped
+		// Skipping already declared property IsZeroSigned
 		// Skipping already declared property Languages
+		// Skipping already declared property NumberRounder
+		// Skipping already declared property NumeralSystem
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ResolvedGeographicRegion
@@ -35,9 +37,9 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared property ResolvedLanguage
-		// Skipping already declared property NumberRounder
-		// Skipping already declared property IsZeroSigned
 		// Skipping already declared property SignificantDigits
+		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.PercentFormatter()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.PercentFormatter()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PercentFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
@@ -46,22 +48,16 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.PercentFormatter(System.Collections.Generic.IEnumerable<string>, string)
-		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.PercentFormatter()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.PercentFormatter()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.Languages.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.GeographicRegion.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IntegerDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IntegerDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.FractionDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.FractionDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsGrouped.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsGrouped.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsDecimalPointAlwaysDisplayed.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsDecimalPointAlwaysDisplayed.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumeralSystem.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumeralSystem.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.ResolvedLanguage.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.ResolvedGeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.operator ==(Windows.Globalization.NumberFormatting.PercentFormatter, Windows.Globalization.NumberFormatting.PercentFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.operator !=(Windows.Globalization.NumberFormatting.PercentFormatter, Windows.Globalization.NumberFormatting.PercentFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.Equals(Windows.Globalization.NumberFormatting.PercentFormatter)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.Equals(object)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.GetHashCode()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
@@ -107,12 +103,27 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.ParseDouble(string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.SignificantDigits.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.SignificantDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumberRounder.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumberRounder.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.FractionDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.FractionDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.GeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IntegerDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IntegerDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsDecimalPointAlwaysDisplayed.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsDecimalPointAlwaysDisplayed.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsGrouped.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsGrouped.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsZeroSigned.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.IsZeroSigned.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.Languages.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumberRounder.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumberRounder.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumeralSystem.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.NumeralSystem.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.ResolvedGeographicRegion.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.ResolvedLanguage.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.SignificantDigits.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.SignificantDigits.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatterOptions
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter2

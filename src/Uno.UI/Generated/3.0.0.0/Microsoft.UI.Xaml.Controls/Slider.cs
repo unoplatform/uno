@@ -8,17 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Slider
 	{
-		// Skipping already declared property TickPlacement
-		// Skipping already declared property TickFrequency
-		// Skipping already declared property ThumbToolTipValueConverter
-		// Skipping already declared property StepFrequency
-		// Skipping already declared property SnapsTo
-		// Skipping already declared property Orientation
-		// Skipping already declared property IsThumbToolTipEnabled
-		// Skipping already declared property IsDirectionReversed
-		// Skipping already declared property IntermediateValue
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property Header
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared property IntermediateValueProperty
@@ -30,40 +19,64 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ThumbToolTipValueConverterProperty
 		// Skipping already declared property TickFrequencyProperty
 		// Skipping already declared property TickPlacementProperty
+		// Skipping already declared property Header
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property IntermediateValue
+		// Skipping already declared property IsDirectionReversed
+		// Skipping already declared property IsThumbToolTipEnabled
+		// Skipping already declared property Orientation
+		// Skipping already declared property SnapsTo
+		// Skipping already declared property StepFrequency
+		// Skipping already declared property ThumbToolTipValueConverter
+		// Skipping already declared property TickFrequency
+		// Skipping already declared property TickPlacement
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Slider.Slider()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Slider()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IntermediateValue.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IntermediateValue.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.StepFrequency.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.StepFrequency.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.SnapsTo.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.SnapsTo.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequency.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequency.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Orientation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Orientation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsDirectionReversed.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsDirectionReversed.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsThumbToolTipEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsThumbToolTipEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverter.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IntermediateValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsDirectionReversedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsThumbToolTipEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.OrientationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.SnapsToProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.StepFrequencyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequencyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Slider(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.operator ==(Microsoft.UI.Xaml.Controls.Slider, Microsoft.UI.Xaml.Controls.Slider)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.operator !=(Microsoft.UI.Xaml.Controls.Slider, Microsoft.UI.Xaml.Controls.Slider)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Equals(Microsoft.UI.Xaml.Controls.Slider)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Slider(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Header.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IntermediateValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.StepFrequencyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.SnapsToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequencyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsDirectionReversedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsThumbToolTipEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverterProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IntermediateValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IntermediateValue.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsDirectionReversed.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsDirectionReversed.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsThumbToolTipEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsThumbToolTipEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Orientation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Orientation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.SnapsTo.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.SnapsTo.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.StepFrequency.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.StepFrequency.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverter.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverter.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequency.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequency.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

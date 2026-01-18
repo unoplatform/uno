@@ -12,7 +12,20 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ChildrenCore
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.NonVirtualizingLayoutContext()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.NonVirtualizingLayoutContext()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.NonVirtualizingLayoutContext(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.operator ==(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext, Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.operator !=(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext, Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.Equals(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.NonVirtualizingLayoutContext(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.Microsoft.UI.Xaml.Controls.INonVirtualizingLayoutContextOverrides.ChildrenCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.ChildrenCore.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

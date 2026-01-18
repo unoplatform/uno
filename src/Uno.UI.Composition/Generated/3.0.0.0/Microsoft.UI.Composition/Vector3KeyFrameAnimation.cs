@@ -8,7 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class Vector3KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Skipping already declared method Microsoft.UI.Composition.Vector3KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector3, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.operator ==(Microsoft.UI.Composition.Vector3KeyFrameAnimation, Microsoft.UI.Composition.Vector3KeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.operator !=(Microsoft.UI.Composition.Vector3KeyFrameAnimation, Microsoft.UI.Composition.Vector3KeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.Equals(Microsoft.UI.Composition.Vector3KeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.Vector3KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector3)
+		// Skipping already declared method Microsoft.UI.Composition.Vector3KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector3, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Vector3KeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

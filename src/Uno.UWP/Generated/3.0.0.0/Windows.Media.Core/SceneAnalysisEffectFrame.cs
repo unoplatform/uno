@@ -15,73 +15,11 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.CapturedFrameControlValues FrameControlValues
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CapturedFrameControlValues SceneAnalysisEffectFrame.FrameControlValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrameControlValues%20SceneAnalysisEffectFrame.FrameControlValues");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.HighDynamicRangeOutput HighDynamicRange
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HighDynamicRangeOutput SceneAnalysisEffectFrame.HighDynamicRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HighDynamicRangeOutput%20SceneAnalysisEffectFrame.HighDynamicRange");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.SceneAnalysisRecommendation AnalysisRecommendation
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member SceneAnalysisRecommendation SceneAnalysisEffectFrame.AnalysisRecommendation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneAnalysisRecommendation%20SceneAnalysisEffectFrame.AnalysisRecommendation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? SystemRelativeTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20SceneAnalysisEffectFrame.SystemRelativeTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? RelativeTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? SceneAnalysisEffectFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20SceneAnalysisEffectFrame.RelativeTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.RelativeTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDiscontinuous
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SceneAnalysisEffectFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneAnalysisEffectFrame.IsDiscontinuous");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "bool SceneAnalysisEffectFrame.IsDiscontinuous");
 			}
 		}
 #endif
@@ -111,11 +49,73 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Capture.CapturedFrameControlValues FrameControlValues
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CapturedFrameControlValues SceneAnalysisEffectFrame.FrameControlValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrameControlValues%20SceneAnalysisEffectFrame.FrameControlValues");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.HighDynamicRangeOutput HighDynamicRange
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HighDynamicRangeOutput SceneAnalysisEffectFrame.HighDynamicRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HighDynamicRangeOutput%20SceneAnalysisEffectFrame.HighDynamicRange");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDiscontinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SceneAnalysisEffectFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneAnalysisEffectFrame.IsDiscontinuous");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "bool SceneAnalysisEffectFrame.IsDiscontinuous");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsReadOnly
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool SceneAnalysisEffectFrame.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneAnalysisEffectFrame.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? RelativeTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? SceneAnalysisEffectFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20SceneAnalysisEffectFrame.RelativeTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.RelativeTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? SystemRelativeTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20SceneAnalysisEffectFrame.SystemRelativeTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime");
 			}
 		}
 #endif
@@ -129,19 +129,16 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.FrameControlValues.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.HighDynamicRange.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Type.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.IsReadOnly.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.RelativeTime.set
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.RelativeTime.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.SystemRelativeTime.set
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.SystemRelativeTime.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Duration.set
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Duration.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.IsDiscontinuous.set
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.IsDiscontinuous.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.ExtendedProperties.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.operator ==(Windows.Media.Core.SceneAnalysisEffectFrame, Windows.Media.Core.SceneAnalysisEffectFrame)
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.operator !=(Windows.Media.Core.SceneAnalysisEffectFrame, Windows.Media.Core.SceneAnalysisEffectFrame)
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Equals(Windows.Media.Core.SceneAnalysisEffectFrame)
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Equals(object)
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -150,6 +147,20 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.AnalysisRecommendation.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Duration.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Duration.set
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.ExtendedProperties.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.FrameControlValues.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.HighDynamicRange.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.IsDiscontinuous.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.IsDiscontinuous.set
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.IsReadOnly.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.RelativeTime.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.RelativeTime.set
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.SystemRelativeTime.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.SystemRelativeTime.set
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Type.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.IMediaFrame
 		// Processing: System.IDisposable
 	}

@@ -10,155 +10,15 @@ namespace Windows.Management.Deployment
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Management.Deployment.PackageVolume TargetVolume
+		public bool AllowUnsigned
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVolume AddPackageOptions.TargetVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageVolume%20AddPackageOptions.TargetVolume");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.AllowUnsigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.AllowUnsigned");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "PackageVolume AddPackageOptions.TargetVolume");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Management.Deployment.StubPackageOption StubPackageOption
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StubPackageOption AddPackageOptions.StubPackageOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StubPackageOption%20AddPackageOptions.StubPackageOption");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "StubPackageOption AddPackageOptions.StubPackageOption");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool StageInPlace
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.StageInPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.StageInPlace");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.StageInPlace");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RetainFilesOnFailure
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RetainFilesOnFailure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.RetainFilesOnFailure");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RetainFilesOnFailure");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RequiredContentGroupOnly
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RequiredContentGroupOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.RequiredContentGroupOnly");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RequiredContentGroupOnly");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool InstallAllResources
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.InstallAllResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.InstallAllResources");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.InstallAllResources");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ForceUpdateFromAnyVersion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceUpdateFromAnyVersion");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceUpdateFromAnyVersion");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ForceTargetAppShutdown
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceTargetAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceTargetAppShutdown");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceTargetAppShutdown");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ForceAppShutdown
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceAppShutdown");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceAppShutdown");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri ExternalLocationUri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri AddPackageOptions.ExternalLocationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AddPackageOptions.ExternalLocationUri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "Uri AddPackageOptions.ExternalLocationUri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool DeveloperMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeveloperMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.DeveloperMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeveloperMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.AllowUnsigned");
 			}
 		}
 #endif
@@ -178,25 +38,95 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowUnsigned
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.AllowUnsigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.AllowUnsigned");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.AllowUnsigned");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::System.Uri> DependencyPackageUris
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.DependencyPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20AddPackageOptions.DependencyPackageUris");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool DeveloperMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeveloperMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.DeveloperMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeveloperMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri ExternalLocationUri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri AddPackageOptions.ExternalLocationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AddPackageOptions.ExternalLocationUri");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "Uri AddPackageOptions.ExternalLocationUri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ForceAppShutdown
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceAppShutdown");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceAppShutdown");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ForceTargetAppShutdown
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceTargetAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceTargetAppShutdown");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceTargetAppShutdown");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ForceUpdateFromAnyVersion
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceUpdateFromAnyVersion");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceUpdateFromAnyVersion");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool InstallAllResources
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.InstallAllResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.InstallAllResources");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.InstallAllResources");
 			}
 		}
 #endif
@@ -232,24 +162,101 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool RequiredContentGroupOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RequiredContentGroupOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.RequiredContentGroupOnly");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RequiredContentGroupOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool RetainFilesOnFailure
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RetainFilesOnFailure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.RetainFilesOnFailure");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RetainFilesOnFailure");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool StageInPlace
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.StageInPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.StageInPlace");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.StageInPlace");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Management.Deployment.StubPackageOption StubPackageOption
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StubPackageOption AddPackageOptions.StubPackageOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StubPackageOption%20AddPackageOptions.StubPackageOption");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "StubPackageOption AddPackageOptions.StubPackageOption");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Management.Deployment.PackageVolume TargetVolume
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PackageVolume AddPackageOptions.TargetVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageVolume%20AddPackageOptions.TargetVolume");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "PackageVolume AddPackageOptions.TargetVolume");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AddPackageOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "AddPackageOptions.AddPackageOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.AddPackageOptions()
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.operator ==(Windows.Management.Deployment.AddPackageOptions, Windows.Management.Deployment.AddPackageOptions)
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.operator !=(Windows.Management.Deployment.AddPackageOptions, Windows.Management.Deployment.AddPackageOptions)
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.Equals(Windows.Management.Deployment.AddPackageOptions)
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.Equals(object)
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.GetHashCode()
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.AllowUnsigned.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.AllowUnsigned.set
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeferRegistrationWhenPackagesAreInUse.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeferRegistrationWhenPackagesAreInUse.set
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DependencyPackageUris.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.TargetVolume.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.TargetVolume.set
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.OptionalPackageFamilyNames.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.OptionalPackageUris.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RelatedPackageUris.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ExternalLocationUri.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ExternalLocationUri.set
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.StubPackageOption.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.StubPackageOption.set
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeveloperMode.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeveloperMode.set
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ExternalLocationUri.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ExternalLocationUri.set
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ForceAppShutdown.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ForceAppShutdown.set
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ForceTargetAppShutdown.get
@@ -258,15 +265,19 @@ namespace Windows.Management.Deployment
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ForceUpdateFromAnyVersion.set
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.InstallAllResources.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.InstallAllResources.set
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.OptionalPackageFamilyNames.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.OptionalPackageUris.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RelatedPackageUris.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RequiredContentGroupOnly.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RequiredContentGroupOnly.set
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RetainFilesOnFailure.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RetainFilesOnFailure.set
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.StageInPlace.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.StageInPlace.set
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.AllowUnsigned.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.AllowUnsigned.set
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeferRegistrationWhenPackagesAreInUse.get
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeferRegistrationWhenPackagesAreInUse.set
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.StubPackageOption.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.StubPackageOption.set
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.TargetVolume.get
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.TargetVolume.set
+		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

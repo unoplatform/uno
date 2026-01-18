@@ -17,11 +17,6 @@ namespace Windows.Storage.Search
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperation<uint> GetItemCountAsync();
 #endif
-		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.Folder.get
-		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.ContentsChanged.add
-		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.ContentsChanged.remove
-		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.OptionsChanged.add
-		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.OptionsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync(object value);
 #endif
@@ -31,6 +26,11 @@ namespace Windows.Storage.Search
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void ApplyNewQueryOptions(global::Windows.Storage.Search.QueryOptions newQueryOptions);
 #endif
+		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.Folder.get
+		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.ContentsChanged.add
+		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.ContentsChanged.remove
+		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.OptionsChanged.add
+		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.OptionsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Search.IStorageQueryResultBase, object> ContentsChanged;
 #endif

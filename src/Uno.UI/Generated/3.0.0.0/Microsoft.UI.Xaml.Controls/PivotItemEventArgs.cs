@@ -11,7 +11,18 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Item
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.PivotItemEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.PivotItemEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.operator ==(Microsoft.UI.Xaml.Controls.PivotItemEventArgs, Microsoft.UI.Xaml.Controls.PivotItemEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.operator !=(Microsoft.UI.Xaml.Controls.PivotItemEventArgs, Microsoft.UI.Xaml.Controls.PivotItemEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.Equals(Microsoft.UI.Xaml.Controls.PivotItemEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.Item.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

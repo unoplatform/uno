@@ -23,6 +23,16 @@ namespace Windows.UI.Composition.Desktop
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.operator ==(Windows.UI.Composition.Desktop.DesktopWindowTarget, Windows.UI.Composition.Desktop.DesktopWindowTarget)
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.operator !=(Windows.UI.Composition.Desktop.DesktopWindowTarget, Windows.UI.Composition.Desktop.DesktopWindowTarget)
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.Equals(Windows.UI.Composition.Desktop.DesktopWindowTarget)
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.IsTopmost.get
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -18,13 +18,6 @@ namespace Windows.Storage.Streams
 #endif
 		// Skipping already declared property UnconsumedBufferLength
 		// Skipping already declared property UnicodeEncoding
-		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnconsumedBufferLength.get
-		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.get
-		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.set
-		// Forced skipping of method Windows.Storage.Streams.IDataReader.ByteOrder.get
-		// Forced skipping of method Windows.Storage.Streams.IDataReader.ByteOrder.set
-		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.get
-		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.set
 		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadByte()
 		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBytes(byte[])
 		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBuffer(uint)
@@ -48,5 +41,12 @@ namespace Windows.Storage.Streams
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Storage.Streams.IInputStream DetachStream();
 #endif
+		// Forced skipping of method Windows.Storage.Streams.IDataReader.ByteOrder.get
+		// Forced skipping of method Windows.Storage.Streams.IDataReader.ByteOrder.set
+		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.get
+		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.set
+		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnconsumedBufferLength.get
+		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.get
+		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.set
 	}
 }

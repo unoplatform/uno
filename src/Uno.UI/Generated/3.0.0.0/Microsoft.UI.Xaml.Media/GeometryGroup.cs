@@ -8,17 +8,28 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class GeometryGroup : global::Microsoft.UI.Xaml.Media.Geometry
 	{
-		// Skipping already declared property FillRule
-		// Skipping already declared property Children
 		// Skipping already declared property ChildrenProperty
 		// Skipping already declared property FillRuleProperty
+		// Skipping already declared property Children
+		// Skipping already declared property FillRule
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryGroup.GeometryGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.GeometryGroup()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.ChildrenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRuleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.operator ==(Microsoft.UI.Xaml.Media.GeometryGroup, Microsoft.UI.Xaml.Media.GeometryGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.operator !=(Microsoft.UI.Xaml.Media.GeometryGroup, Microsoft.UI.Xaml.Media.GeometryGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Equals(Microsoft.UI.Xaml.Media.GeometryGroup)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Children.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRuleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.ChildrenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

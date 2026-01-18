@@ -44,15 +44,7 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.HttpProductHeaderValue(string, string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.Name.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.Version.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpProductHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpProductHeaderValue.ToString%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpProductHeaderValue Parse(string input)
@@ -67,5 +59,25 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpProductHeaderValue.TryParse(string input, out HttpProductHeaderValue productHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpProductHeaderValue.TryParse%28string%20input%2C%20out%20HttpProductHeaderValue%20productHeaderValue%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.operator ==(Windows.Web.Http.Headers.HttpProductHeaderValue, Windows.Web.Http.Headers.HttpProductHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.operator !=(Windows.Web.Http.Headers.HttpProductHeaderValue, Windows.Web.Http.Headers.HttpProductHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.Equals(Windows.Web.Http.Headers.HttpProductHeaderValue)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public override string ToString()
+		{
+			throw new global::System.NotImplementedException("The member string HttpProductHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpProductHeaderValue.ToString%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.Name.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.Version.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpProductHeaderValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

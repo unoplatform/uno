@@ -8,8 +8,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 	public static partial class RcsManager
 	{
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsManager.TransportListChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsManager.TransportListChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Chat.RcsEndUserMessageManager GetEndUserMessageManager()
@@ -38,6 +37,8 @@ namespace Windows.ApplicationModel.Chat
 			throw new global::System.NotImplementedException("The member IAsyncAction RcsManager.LeaveConversationAsync(ChatConversation conversation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20RcsManager.LeaveConversationAsync%28ChatConversation%20conversation%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsManager.TransportListChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsManager.TransportListChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> TransportListChanged

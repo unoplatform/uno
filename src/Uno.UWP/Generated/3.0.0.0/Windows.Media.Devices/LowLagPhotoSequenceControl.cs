@@ -15,62 +15,6 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.MediaThumbnailFormat ThumbnailFormat
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaThumbnailFormat LowLagPhotoSequenceControl.ThumbnailFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaThumbnailFormat%20LowLagPhotoSequenceControl.ThumbnailFormat");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "MediaThumbnailFormat LowLagPhotoSequenceControl.ThumbnailFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ThumbnailEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool LowLagPhotoSequenceControl.ThumbnailEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LowLagPhotoSequenceControl.ThumbnailEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "bool LowLagPhotoSequenceControl.ThumbnailEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PhotosPerSecondLimit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float LowLagPhotoSequenceControl.PhotosPerSecondLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20LowLagPhotoSequenceControl.PhotosPerSecondLimit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "float LowLagPhotoSequenceControl.PhotosPerSecondLimit");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint PastPhotoLimit
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint LowLagPhotoSequenceControl.PastPhotoLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LowLagPhotoSequenceControl.PastPhotoLimit");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.PastPhotoLimit");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint DesiredThumbnailSize
 		{
 			get
@@ -115,6 +59,34 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint PastPhotoLimit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint LowLagPhotoSequenceControl.PastPhotoLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LowLagPhotoSequenceControl.PastPhotoLimit");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.PastPhotoLimit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float PhotosPerSecondLimit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float LowLagPhotoSequenceControl.PhotosPerSecondLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20LowLagPhotoSequenceControl.PhotosPerSecondLimit");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "float LowLagPhotoSequenceControl.PhotosPerSecondLimit");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Supported
 		{
 			get
@@ -123,13 +95,44 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.MaxPastPhotos.get
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.MaxPhotosPerSecond.get
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PastPhotoLimit.get
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PastPhotoLimit.set
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PhotosPerSecondLimit.get
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PhotosPerSecondLimit.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ThumbnailEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool LowLagPhotoSequenceControl.ThumbnailEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LowLagPhotoSequenceControl.ThumbnailEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "bool LowLagPhotoSequenceControl.ThumbnailEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.MediaThumbnailFormat ThumbnailFormat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaThumbnailFormat LowLagPhotoSequenceControl.ThumbnailFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaThumbnailFormat%20LowLagPhotoSequenceControl.ThumbnailFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "MediaThumbnailFormat LowLagPhotoSequenceControl.ThumbnailFormat");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.operator ==(Windows.Media.Devices.LowLagPhotoSequenceControl, Windows.Media.Devices.LowLagPhotoSequenceControl)
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.operator !=(Windows.Media.Devices.LowLagPhotoSequenceControl, Windows.Media.Devices.LowLagPhotoSequenceControl)
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.Equals(Windows.Media.Devices.LowLagPhotoSequenceControl)
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate(global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
@@ -144,12 +147,20 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member MediaRatio LowLagPhotoSequenceControl.GetCurrentFrameRate() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20LowLagPhotoSequenceControl.GetCurrentFrameRate%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.DesiredThumbnailSize.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.DesiredThumbnailSize.set
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.HardwareAcceleratedThumbnailSupported.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.MaxPastPhotos.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.MaxPhotosPerSecond.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PastPhotoLimit.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PastPhotoLimit.set
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PhotosPerSecondLimit.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PhotosPerSecondLimit.set
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.Supported.get
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.ThumbnailEnabled.get
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.ThumbnailEnabled.set
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.ThumbnailFormat.get
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.ThumbnailFormat.set
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.DesiredThumbnailSize.get
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.DesiredThumbnailSize.set
-		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.HardwareAcceleratedThumbnailSupported.get
+		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

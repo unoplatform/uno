@@ -10,15 +10,27 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SingleSelectionFollowsFocus
+		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionModeProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(SelectionMode), typeof(global::Microsoft.UI.Xaml.Controls.SelectionMode),
+			typeof(global::Microsoft.UI.Xaml.Controls.ListBox),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SelectionMode)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(SingleSelectionFollowsFocus), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Controls.ListBox),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<object> SelectedItems
 		{
 			get
 			{
-				return (bool)this.GetValue(SingleSelectionFollowsFocusProperty);
-			}
-			set
-			{
-				this.SetValue(SingleSelectionFollowsFocusProperty, value);
+				throw new global::System.NotImplementedException("The member IList<object> ListBox.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cobject%3E%20ListBox.SelectedItems");
 			}
 		}
 #endif
@@ -38,29 +50,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<object> SelectedItems
+		public bool SingleSelectionFollowsFocus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ListBox.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cobject%3E%20ListBox.SelectedItems");
+				return (bool)this.GetValue(SingleSelectionFollowsFocusProperty);
+			}
+			set
+			{
+				this.SetValue(SingleSelectionFollowsFocusProperty, value);
 			}
 		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionMode), typeof(global::Microsoft.UI.Xaml.Controls.SelectionMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ListBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SelectionMode)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SingleSelectionFollowsFocus), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ListBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -70,11 +70,19 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.ListBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectedItems.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocus.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocus.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.ListBox(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.operator ==(Microsoft.UI.Xaml.Controls.ListBox, Microsoft.UI.Xaml.Controls.ListBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.operator !=(Microsoft.UI.Xaml.Controls.ListBox, Microsoft.UI.Xaml.Controls.ListBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.Equals(Microsoft.UI.Xaml.Controls.ListBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.ListBox(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ScrollIntoView(object item)
@@ -89,7 +97,12 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListBox", "void ListBox.SelectAll()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectedItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocus.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocus.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

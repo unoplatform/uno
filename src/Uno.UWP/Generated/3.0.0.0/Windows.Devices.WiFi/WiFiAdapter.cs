@@ -33,59 +33,7 @@ namespace Windows.Devices.WiFi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.NetworkAdapter.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction ScanAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WiFiAdapter.ScanAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WiFiAdapter.ScanAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.NetworkReport.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.AvailableNetworksChanged.add
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.AvailableNetworksChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%2C%20PasswordCredential%20passwordCredential%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential, string ssid)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%2C%20PasswordCredential%20passwordCredential%2C%20string%20ssid%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Disconnect()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "void WiFiAdapter.Disconnect()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiWpsConfigurationResult> GetWpsConfigurationAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiWpsConfigurationResult> WiFiAdapter.GetWpsConfigurationAsync(WiFiAvailableNetwork availableNetwork) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiWpsConfigurationResult%3E%20WiFiAdapter.GetWpsConfigurationAsync%28WiFiAvailableNetwork%20availableNetwork%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential, string ssid, global::Windows.Devices.WiFi.WiFiConnectionMethod connectionMethod)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid, WiFiConnectionMethod connectionMethod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%2C%20PasswordCredential%20passwordCredential%2C%20string%20ssid%2C%20WiFiConnectionMethod%20connectionMethod%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.WiFi.WiFiAdapter>> FindAllAdaptersAsync()
@@ -114,6 +62,70 @@ namespace Windows.Devices.WiFi
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiAccessStatus> WiFiAdapter.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiAccessStatus%3E%20WiFiAdapter.RequestAccessAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.operator ==(Windows.Devices.WiFi.WiFiAdapter, Windows.Devices.WiFi.WiFiAdapter)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.operator !=(Windows.Devices.WiFi.WiFiAdapter, Windows.Devices.WiFi.WiFiAdapter)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.Equals(Windows.Devices.WiFi.WiFiAdapter)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.Equals(object)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.GetHashCode()
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction ScanAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WiFiAdapter.ScanAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WiFiAdapter.ScanAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%2C%20PasswordCredential%20passwordCredential%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential, string ssid)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%2C%20PasswordCredential%20passwordCredential%2C%20string%20ssid%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Disconnect()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "void WiFiAdapter.Disconnect()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.AvailableNetworksChanged.add
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.AvailableNetworksChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiWpsConfigurationResult> GetWpsConfigurationAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiWpsConfigurationResult> WiFiAdapter.GetWpsConfigurationAsync(WiFiAvailableNetwork availableNetwork) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiWpsConfigurationResult%3E%20WiFiAdapter.GetWpsConfigurationAsync%28WiFiAvailableNetwork%20availableNetwork%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential, string ssid, global::Windows.Devices.WiFi.WiFiConnectionMethod connectionMethod)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid, WiFiConnectionMethod connectionMethod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiConnectionResult%3E%20WiFiAdapter.ConnectAsync%28WiFiAvailableNetwork%20availableNetwork%2C%20WiFiReconnectionKind%20reconnectionKind%2C%20PasswordCredential%20passwordCredential%2C%20string%20ssid%2C%20WiFiConnectionMethod%20connectionMethod%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.NetworkAdapter.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.NetworkReport.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFi.WiFiAdapter, object> AvailableNetworksChanged

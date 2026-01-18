@@ -10,29 +10,15 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChapterCue.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChapterCue.Title");
+				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ChapterCue.Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ChapterCue", "string ChapterCue.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan StartTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ChapterCue.StartTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ChapterCue", "TimeSpan ChapterCue.StartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ChapterCue", "TimeSpan ChapterCue.Duration");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
+		public global::System.TimeSpan StartTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ChapterCue.Duration");
+				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ChapterCue.StartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ChapterCue", "TimeSpan ChapterCue.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ChapterCue", "TimeSpan ChapterCue.StartTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ChapterCue.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChapterCue.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ChapterCue", "string ChapterCue.Title");
 			}
 		}
 #endif
@@ -72,14 +72,25 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.ChapterCue.ChapterCue()
-		// Forced skipping of method Windows.Media.Core.ChapterCue.Title.set
-		// Forced skipping of method Windows.Media.Core.ChapterCue.Title.get
-		// Forced skipping of method Windows.Media.Core.ChapterCue.StartTime.set
-		// Forced skipping of method Windows.Media.Core.ChapterCue.StartTime.get
-		// Forced skipping of method Windows.Media.Core.ChapterCue.Duration.set
+		// Forced skipping of method Windows.Media.Core.ChapterCue.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.ChapterCue.operator ==(Windows.Media.Core.ChapterCue, Windows.Media.Core.ChapterCue)
+		// Forced skipping of method Windows.Media.Core.ChapterCue.operator !=(Windows.Media.Core.ChapterCue, Windows.Media.Core.ChapterCue)
+		// Forced skipping of method Windows.Media.Core.ChapterCue.Equals(Windows.Media.Core.ChapterCue)
+		// Forced skipping of method Windows.Media.Core.ChapterCue.Equals(object)
+		// Forced skipping of method Windows.Media.Core.ChapterCue.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.ChapterCue.Duration.get
-		// Forced skipping of method Windows.Media.Core.ChapterCue.Id.set
+		// Forced skipping of method Windows.Media.Core.ChapterCue.Duration.set
 		// Forced skipping of method Windows.Media.Core.ChapterCue.Id.get
+		// Forced skipping of method Windows.Media.Core.ChapterCue.Id.set
+		// Forced skipping of method Windows.Media.Core.ChapterCue.StartTime.get
+		// Forced skipping of method Windows.Media.Core.ChapterCue.StartTime.set
+		// Forced skipping of method Windows.Media.Core.ChapterCue.Title.get
+		// Forced skipping of method Windows.Media.Core.ChapterCue.Title.set
+		// Forced skipping of method Windows.Media.Core.ChapterCue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaCue
 	}
 }

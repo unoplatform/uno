@@ -36,8 +36,16 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Item.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemsControlAutomationPeer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Realize()
@@ -45,6 +53,10 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer", "void ItemAutomationPeer.Realize()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Item.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemsControlAutomationPeer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	}
 }

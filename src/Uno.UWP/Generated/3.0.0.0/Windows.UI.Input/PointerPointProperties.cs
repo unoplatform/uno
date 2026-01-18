@@ -67,28 +67,16 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Pressure.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInverted.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsEraser.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Orientation.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.XTilt.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.YTilt.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Twist.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRect.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRectRaw.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.TouchConfidence.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsLeftButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsRightButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsMiddleButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.MouseWheelDelta.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsHorizontalMouseWheel.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsPrimary.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInRange.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsCanceled.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsBarrelButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton1Pressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton2Pressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.PointerUpdateKind.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.operator ==(Windows.UI.Input.PointerPointProperties, Windows.UI.Input.PointerPointProperties)
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.operator !=(Windows.UI.Input.PointerPointProperties, Windows.UI.Input.PointerPointProperties)
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Equals(Windows.UI.Input.PointerPointProperties)
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Equals(object)
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool HasUsage(uint usagePage, uint usageId)
@@ -103,6 +91,29 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member int PointerPointProperties.GetUsageValue(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PointerPointProperties.GetUsageValue%28uint%20usagePage%2C%20uint%20usageId%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRect.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRectRaw.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsBarrelButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsCanceled.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsEraser.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsHorizontalMouseWheel.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInRange.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInverted.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsLeftButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsMiddleButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsPrimary.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsRightButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton1Pressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton2Pressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.MouseWheelDelta.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Orientation.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.PointerUpdateKind.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Pressure.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.TouchConfidence.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Twist.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.XTilt.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.YTilt.get
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ZDistance.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

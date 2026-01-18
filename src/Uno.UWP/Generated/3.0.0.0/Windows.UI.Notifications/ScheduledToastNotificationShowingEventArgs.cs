@@ -37,9 +37,16 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.Cancel.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.Cancel.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.ScheduledToastNotification.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.operator ==(Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs, Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.operator !=(Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs, Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.Equals(Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -47,5 +54,9 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member Deferral ScheduledToastNotificationShowingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20ScheduledToastNotificationShowingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.Cancel.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.Cancel.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.ScheduledToastNotification.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.ListViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.ListViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.ListViewItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.ListViewItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

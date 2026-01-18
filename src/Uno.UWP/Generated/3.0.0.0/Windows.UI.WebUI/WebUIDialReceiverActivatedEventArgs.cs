@@ -15,6 +15,46 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIDialReceiverActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIDialReceiverActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string AppName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIDialReceiverActivatedEventArgs.AppName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIDialReceiverActivatedEventArgs.AppName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Arguments
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIDialReceiverActivatedEventArgs.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIDialReceiverActivatedEventArgs.Arguments");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int CurrentlyShownApplicationViewId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int WebUIDialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIDialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -45,46 +85,6 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User WebUIDialReceiverActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIDialReceiverActivatedEventArgs.User");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int CurrentlyShownApplicationViewId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int WebUIDialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIDialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string AppName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebUIDialReceiverActivatedEventArgs.AppName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIDialReceiverActivatedEventArgs.AppName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Arguments
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebUIDialReceiverActivatedEventArgs.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIDialReceiverActivatedEventArgs.Arguments");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TileId
 		{
 			get
@@ -95,23 +95,34 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		public global::Windows.System.User User
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIDialReceiverActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIDialReceiverActivatedEventArgs.ActivatedOperation");
+				throw new global::System.NotImplementedException("The member User WebUIDialReceiverActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIDialReceiverActivatedEventArgs.User");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs, Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs, Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.AppName.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.Arguments.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.TileId.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.TileId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IDialReceiverActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

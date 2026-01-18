@@ -10,16 +10,6 @@ namespace Windows.Devices.PointOfService
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static uint Code11
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code11 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.Code11");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static uint AusPost
 		{
 			get
@@ -120,11 +110,11 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static uint DutchKix
+		public static uint Code11
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DutchKix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.DutchKix");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code11 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.Code11");
 			}
 		}
 #endif
@@ -230,11 +220,11 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static uint UsPostNet
+		public static uint DutchKix
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPostNet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.UsPostNet");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DutchKix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.DutchKix");
 			}
 		}
 #endif
@@ -385,6 +375,16 @@ namespace Windows.Devices.PointOfService
 			get
 			{
 				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128Coupon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.Gs1128Coupon");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static uint Gs1DWCode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DWCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.Gs1DWCode");
 			}
 		}
 #endif
@@ -940,108 +940,15 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static uint Gs1DWCode
+		public static uint UsPostNet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DWCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.Gs1DWCode");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPostNet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologies.UsPostNet");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DWCode.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Unknown.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean8.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean8Add2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean8Add5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Eanv.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.EanvAdd2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.EanvAdd5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean13.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean13Add2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean13Add5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Isbn.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IsbnAdd5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ismn.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IsmnAdd2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IsmnAdd5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Issn.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IssnAdd2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IssnAdd5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean99.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean99Add2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean99Add5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Upca.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpcaAdd2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpcaAdd5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Upce.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpceAdd2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpceAdd5.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpcCoupon.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfStd.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfDis.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfInt.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfInd.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfMat.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfIata.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DatabarType1.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DatabarType2.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DatabarType3.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code39.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code39Ex.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Trioptic39.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code32.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Pzn.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code93.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code93Ex.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code128.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1128.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1128Coupon.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UccEan128.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Sisac.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Isbt.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Codabar.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code11.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Msi.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Plessey.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Telepen.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code16k.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.CodablockA.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.CodablockF.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Codablock128.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code49.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Aztec.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.DataCode.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.DataMatrix.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.HanXin.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Maxicode.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.MicroPdf417.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.MicroQr.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Pdf417.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Qr.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.MsTag.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ccab.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ccc.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Tlc39.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.AusPost.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.CanPost.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ChinaPost.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.DutchKix.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.InfoMail.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ItalianPost25.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ItalianPost39.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.JapanPost.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.KoreanPost.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.SwedenPost.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UkPost.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsIntelligent.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsIntelligentPkg.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsPlanet.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsPostNet.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Us4StateFics.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.OcrA.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.OcrB.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Micr.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ExtendedBase.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetName(uint scanDataType)
@@ -1049,5 +956,99 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member string BarcodeSymbologies.GetName(uint scanDataType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BarcodeSymbologies.GetName%28uint%20scanDataType%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.AusPost.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Aztec.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.CanPost.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ccab.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ccc.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ChinaPost.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Codabar.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Codablock128.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.CodablockA.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.CodablockF.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code11.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code128.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code16k.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code32.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code39.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code39Ex.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code49.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code93.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Code93Ex.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.DataCode.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.DataMatrix.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.DutchKix.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean13.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean13Add2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean13Add5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean8.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean8Add2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean8Add5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean99.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean99Add2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ean99Add5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Eanv.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.EanvAdd2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.EanvAdd5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ExtendedBase.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1128.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1128Coupon.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DWCode.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DatabarType1.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DatabarType2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Gs1DatabarType3.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.HanXin.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.InfoMail.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Isbn.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IsbnAdd5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Isbt.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Ismn.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IsmnAdd2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IsmnAdd5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Issn.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IssnAdd2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.IssnAdd5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ItalianPost25.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ItalianPost39.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.JapanPost.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.KoreanPost.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Maxicode.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Micr.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.MicroPdf417.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.MicroQr.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.MsTag.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Msi.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.OcrA.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.OcrB.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Pdf417.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Plessey.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Pzn.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Qr.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Sisac.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.SwedenPost.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Telepen.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfDis.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfIata.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfInd.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfInt.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfMat.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.TfStd.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Tlc39.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Trioptic39.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UccEan128.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UkPost.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Unknown.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpcCoupon.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Upca.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpcaAdd2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpcaAdd5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Upce.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpceAdd2.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UpceAdd5.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Us4StateFics.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsIntelligent.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsIntelligentPkg.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsPlanet.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.UsPostNet.get
 	}
 }

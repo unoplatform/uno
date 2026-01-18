@@ -33,7 +33,18 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.VideoFormat.get
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.operator ==(Windows.Media.Capture.Frames.DepthMediaFrameFormat, Windows.Media.Capture.Frames.DepthMediaFrameFormat)
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.operator !=(Windows.Media.Capture.Frames.DepthMediaFrameFormat, Windows.Media.Capture.Frames.DepthMediaFrameFormat)
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.Equals(Windows.Media.Capture.Frames.DepthMediaFrameFormat)
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.DepthScaleInMeters.get
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.VideoFormat.get
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

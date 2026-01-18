@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskReader, Windows.ApplicationModel.UserDataTasks.UserDataTaskReader)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskReader, Windows.ApplicationModel.UserDataTasks.UserDataTaskReader)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskReader)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskBatch> ReadBatchAsync()
@@ -20,5 +30,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataTaskBatch> UserDataTaskReader.ReadBatchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataTaskBatch%3E%20UserDataTaskReader.ReadBatchAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

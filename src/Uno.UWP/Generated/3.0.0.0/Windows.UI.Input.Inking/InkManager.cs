@@ -10,6 +10,16 @@ namespace Windows.UI.Input.Inking
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Rect BoundingRect
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Rect InkManager.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20InkManager.BoundingRect");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.InkManipulationMode Mode
 		{
 			get
@@ -24,24 +34,22 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect BoundingRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect InkManager.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20InkManager.BoundingRect");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InkManager()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkManager", "InkManager.InkManager()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkManager.InkManager()
-		// Forced skipping of method Windows.UI.Input.Inking.InkManager.Mode.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkManager.Mode.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.operator ==(Windows.UI.Input.Inking.InkManager, Windows.UI.Input.Inking.InkManager)
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.operator !=(Windows.UI.Input.Inking.InkManager, Windows.UI.Input.Inking.InkManager)
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.Equals(Windows.UI.Input.Inking.InkManager)
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ProcessPointerDown(global::Windows.UI.Input.PointerPoint pointerPoint)
@@ -77,7 +85,27 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<InkRecognitionResult>> InkManager.RecognizeAsync(InkRecognitionTarget recognitionTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CInkRecognitionResult%3E%3E%20InkManager.RecognizeAsync%28InkRecognitionTarget%20recognitionTarget%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkManager.BoundingRect.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetDefaultRecognizer(global::Windows.UI.Input.Inking.InkRecognizer recognizer)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkManager", "void InkManager.SetDefaultRecognizer(InkRecognizer recognizer)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkRecognitionResult>> RecognizeAsync(global::Windows.UI.Input.Inking.InkStrokeContainer strokeCollection, global::Windows.UI.Input.Inking.InkRecognitionTarget recognitionTarget)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<InkRecognitionResult>> InkManager.RecognizeAsync(InkStrokeContainer strokeCollection, InkRecognitionTarget recognitionTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CInkRecognitionResult%3E%3E%20InkManager.RecognizeAsync%28InkStrokeContainer%20strokeCollection%2C%20InkRecognitionTarget%20recognitionTarget%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkRecognizer> GetRecognizers()
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<InkRecognizer> InkManager.GetRecognizers() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CInkRecognizer%3E%20InkManager.GetRecognizers%28%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddStroke(global::Windows.UI.Input.Inking.InkStroke stroke)
@@ -169,27 +197,10 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member IReadOnlyList<InkRecognitionResult> InkManager.GetRecognitionResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CInkRecognitionResult%3E%20InkManager.GetRecognitionResults%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetDefaultRecognizer(global::Windows.UI.Input.Inking.InkRecognizer recognizer)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkManager", "void InkManager.SetDefaultRecognizer(InkRecognizer recognizer)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkRecognitionResult>> RecognizeAsync(global::Windows.UI.Input.Inking.InkStrokeContainer strokeCollection, global::Windows.UI.Input.Inking.InkRecognitionTarget recognitionTarget)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<InkRecognitionResult>> InkManager.RecognizeAsync(InkStrokeContainer strokeCollection, InkRecognitionTarget recognitionTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CInkRecognitionResult%3E%3E%20InkManager.RecognizeAsync%28InkStrokeContainer%20strokeCollection%2C%20InkRecognitionTarget%20recognitionTarget%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkRecognizer> GetRecognizers()
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<InkRecognizer> InkManager.GetRecognizers() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CInkRecognizer%3E%20InkManager.GetRecognizers%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.Mode.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.Mode.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Input.Inking.IInkRecognizerContainer
 		// Processing: Windows.UI.Input.Inking.IInkStrokeContainer
 	}

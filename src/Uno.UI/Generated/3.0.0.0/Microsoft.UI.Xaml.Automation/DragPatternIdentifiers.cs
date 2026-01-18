@@ -12,9 +12,21 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property DropEffectsProperty
 		// Skipping already declared property GrabbedItemsProperty
 		// Skipping already declared property IsGrabbedProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.DropEffectProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.DropEffectsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.GrabbedItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.IsGrabbedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.DragPatternIdentifiers, Microsoft.UI.Xaml.Automation.DragPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.DragPatternIdentifiers, Microsoft.UI.Xaml.Automation.DragPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.DragPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

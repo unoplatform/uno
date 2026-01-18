@@ -16,6 +16,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.SoftwareBitmapSource()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.operator ==(Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource, Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.operator !=(Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource, Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.Equals(Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetBitmapAsync(global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
@@ -30,6 +38,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource", "void SoftwareBitmapSource.Dispose()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

@@ -36,7 +36,18 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.BitmapTypedValue(object, Windows.Foundation.PropertyType)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.Value.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.operator ==(Windows.Graphics.Imaging.BitmapTypedValue, Windows.Graphics.Imaging.BitmapTypedValue)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.operator !=(Windows.Graphics.Imaging.BitmapTypedValue, Windows.Graphics.Imaging.BitmapTypedValue)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.Equals(Windows.Graphics.Imaging.BitmapTypedValue)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.Type.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.Value.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

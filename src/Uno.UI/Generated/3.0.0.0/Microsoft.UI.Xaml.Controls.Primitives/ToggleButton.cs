@@ -8,25 +8,39 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ToggleButton : global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase
 	{
-		// Skipping already declared property IsThreeState
-		// Skipping already declared property IsChecked
 		// Skipping already declared property IsCheckedProperty
 		// Skipping already declared property IsThreeStateProperty
+		// Skipping already declared property IsChecked
+		// Skipping already declared property IsThreeState
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.ToggleButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.ToggleButton()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsCheckedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsThreeStateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.ToggleButton(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ToggleButton, Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ToggleButton, Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Equals(Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.ToggleButton(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Checked.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Checked.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Indeterminate.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Indeterminate.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Unchecked.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Unchecked.remove
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.OnToggle()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Microsoft.UI.Xaml.Controls.Primitives.IToggleButtonOverrides.OnToggle()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsChecked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsChecked.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsThreeState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsThreeState.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Checked.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Checked.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Unchecked.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Unchecked.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Indeterminate.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Indeterminate.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.OnToggle()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsCheckedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsThreeStateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Checked
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Indeterminate
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Unchecked

@@ -10,43 +10,15 @@ namespace Windows.ApplicationModel.Wallet
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Value
+		public bool AutoDetectLinks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItemCustomProperty.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItemCustomProperty.Value");
+				throw new global::System.NotImplementedException("The member bool WalletItemCustomProperty.AutoDetectLinks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItemCustomProperty.AutoDetectLinks");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Wallet.WalletSummaryViewPosition SummaryViewPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletSummaryViewPosition%20WalletItemCustomProperty.SummaryViewPosition");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WalletItemCustomProperty.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItemCustomProperty.Name");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "bool WalletItemCustomProperty.AutoDetectLinks");
 			}
 		}
 #endif
@@ -66,15 +38,43 @@ namespace Windows.ApplicationModel.Wallet
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutoDetectLinks
+		public string Name
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItemCustomProperty.AutoDetectLinks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItemCustomProperty.AutoDetectLinks");
+				throw new global::System.NotImplementedException("The member string WalletItemCustomProperty.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItemCustomProperty.Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "bool WalletItemCustomProperty.AutoDetectLinks");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Wallet.WalletSummaryViewPosition SummaryViewPosition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletSummaryViewPosition%20WalletItemCustomProperty.SummaryViewPosition");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WalletItemCustomProperty.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItemCustomProperty.Value");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Value");
 			}
 		}
 #endif
@@ -86,15 +86,26 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WalletItemCustomProperty(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Name.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Value.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Value.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.operator ==(Windows.ApplicationModel.Wallet.WalletItemCustomProperty, Windows.ApplicationModel.Wallet.WalletItemCustomProperty)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.operator !=(Windows.ApplicationModel.Wallet.WalletItemCustomProperty, Windows.ApplicationModel.Wallet.WalletItemCustomProperty)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Equals(Windows.ApplicationModel.Wallet.WalletItemCustomProperty)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.AutoDetectLinks.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.AutoDetectLinks.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.DetailViewPosition.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.DetailViewPosition.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Name.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.SummaryViewPosition.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.SummaryViewPosition.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Value.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Value.set
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

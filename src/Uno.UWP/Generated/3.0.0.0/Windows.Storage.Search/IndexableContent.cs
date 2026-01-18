@@ -10,34 +10,6 @@ namespace Windows.Storage.Search
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string StreamContentType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string IndexableContent.StreamContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20IndexableContent.StreamContentType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "string IndexableContent.StreamContentType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStream Stream
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream IndexableContent.Stream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20IndexableContent.Stream");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IRandomAccessStream IndexableContent.Stream");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
@@ -62,12 +34,50 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStream Stream
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IRandomAccessStream IndexableContent.Stream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20IndexableContent.Stream");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IRandomAccessStream IndexableContent.Stream");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string StreamContentType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string IndexableContent.StreamContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20IndexableContent.StreamContentType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "string IndexableContent.StreamContentType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public IndexableContent()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IndexableContent.IndexableContent()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.IndexableContent()
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.operator ==(Windows.Storage.Search.IndexableContent, Windows.Storage.Search.IndexableContent)
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.operator !=(Windows.Storage.Search.IndexableContent, Windows.Storage.Search.IndexableContent)
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.Equals(Windows.Storage.Search.IndexableContent)
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Id.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Id.set
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Properties.get
@@ -75,6 +85,7 @@ namespace Windows.Storage.Search
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Stream.set
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.StreamContentType.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.StreamContentType.set
+		// Forced skipping of method Windows.Storage.Search.IndexableContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Search.IIndexableContent
 	}
 }

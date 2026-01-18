@@ -46,8 +46,19 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccountCommand(Windows.Security.Credentials.WebAccount, Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler, Windows.UI.ApplicationSettings.SupportedWebAccountActions)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccount.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Invoked.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.operator ==(Windows.UI.ApplicationSettings.WebAccountCommand, Windows.UI.ApplicationSettings.WebAccountCommand)
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.operator !=(Windows.UI.ApplicationSettings.WebAccountCommand, Windows.UI.ApplicationSettings.WebAccountCommand)
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Equals(Windows.UI.ApplicationSettings.WebAccountCommand)
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Equals(object)
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.GetHashCode()
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Actions.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Invoked.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccount.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

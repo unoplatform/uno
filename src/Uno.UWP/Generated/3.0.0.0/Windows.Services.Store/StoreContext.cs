@@ -10,16 +10,6 @@ namespace Windows.Services.Store
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User StoreContext.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20StoreContext.User");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanSilentlyDownloadStorePackageUpdates
 		{
 			get
@@ -28,9 +18,35 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreContext.User.get
-		// Forced skipping of method Windows.Services.Store.StoreContext.OfflineLicensesChanged.add
-		// Forced skipping of method Windows.Services.Store.StoreContext.OfflineLicensesChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User StoreContext.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20StoreContext.User");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Services.Store.StoreContext.As<I>()
+		// Skipping already declared method Windows.Services.Store.StoreContext.GetDefault()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Services.Store.StoreContext GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member StoreContext StoreContext.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreContext%20StoreContext.GetForUser%28User%20user%29");
+		}
+#endif
+		// Forced skipping of method Windows.Services.Store.StoreContext.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreContext.operator ==(Windows.Services.Store.StoreContext, Windows.Services.Store.StoreContext)
+		// Forced skipping of method Windows.Services.Store.StoreContext.operator !=(Windows.Services.Store.StoreContext, Windows.Services.Store.StoreContext)
+		// Forced skipping of method Windows.Services.Store.StoreContext.Equals(Windows.Services.Store.StoreContext)
+		// Forced skipping of method Windows.Services.Store.StoreContext.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreContext.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> GetCustomerPurchaseIdAsync(string serviceTicket, string publisherUserId)
@@ -157,6 +173,8 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<StorePackageUpdateResult, StorePackageUpdateStatus> StoreContext.RequestDownloadAndInstallStorePackagesAsync(IEnumerable<string> storeIds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CStorePackageUpdateResult%2C%20StorePackageUpdateStatus%3E%20StoreContext.RequestDownloadAndInstallStorePackagesAsync%28IEnumerable%3Cstring%3E%20storeIds%29");
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StoreContext.OfflineLicensesChanged.add
+		// Forced skipping of method Windows.Services.Store.StoreContext.OfflineLicensesChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreProductResult> FindStoreProductForPackageAsync(global::System.Collections.Generic.IEnumerable<string> productKinds, global::Windows.ApplicationModel.Package package)
@@ -164,7 +182,6 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreProductResult> StoreContext.FindStoreProductForPackageAsync(IEnumerable<string> productKinds, Package package) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoreProductResult%3E%20StoreContext.FindStoreProductForPackageAsync%28IEnumerable%3Cstring%3E%20productKinds%2C%20Package%20package%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreContext.CanSilentlyDownloadStorePackageUpdates.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Services.Store.StorePackageUpdateResult, global::Windows.Services.Store.StorePackageUpdateStatus> TrySilentDownloadStorePackageUpdatesAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Store.StorePackageUpdate> storePackageUpdates)
@@ -270,14 +287,9 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StoreQueueItem>> StoreContext.SetInstallOrderForAssociatedStoreQueueItemsAsync(IEnumerable<StoreQueueItem> items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStoreQueueItem%3E%3E%20StoreContext.SetInstallOrderForAssociatedStoreQueueItemsAsync%28IEnumerable%3CStoreQueueItem%3E%20items%29");
 		}
 #endif
-		// Skipping already declared method Windows.Services.Store.StoreContext.GetDefault()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Services.Store.StoreContext GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member StoreContext StoreContext.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreContext%20StoreContext.GetForUser%28User%20user%29");
-		}
-#endif
+		// Forced skipping of method Windows.Services.Store.StoreContext.CanSilentlyDownloadStorePackageUpdates.get
+		// Forced skipping of method Windows.Services.Store.StoreContext.User.get
+		// Forced skipping of method Windows.Services.Store.StoreContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Services.Store.StoreContext, object> OfflineLicensesChanged

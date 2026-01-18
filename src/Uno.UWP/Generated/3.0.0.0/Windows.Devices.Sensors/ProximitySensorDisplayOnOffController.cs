@@ -13,6 +13,16 @@ namespace Windows.Devices.Sensors
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.operator ==(Windows.Devices.Sensors.ProximitySensorDisplayOnOffController, Windows.Devices.Sensors.ProximitySensorDisplayOnOffController)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.operator !=(Windows.Devices.Sensors.ProximitySensorDisplayOnOffController, Windows.Devices.Sensors.ProximitySensorDisplayOnOffController)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.Equals(Windows.Devices.Sensors.ProximitySensorDisplayOnOffController)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -20,6 +30,7 @@ namespace Windows.Devices.Sensors
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.ProximitySensorDisplayOnOffController", "void ProximitySensorDisplayOnOffController.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

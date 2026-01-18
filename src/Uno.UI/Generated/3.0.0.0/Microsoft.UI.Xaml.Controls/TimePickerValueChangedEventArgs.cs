@@ -10,7 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewTime
 		// Skipping already declared property OldTime
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.OldTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs, Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs, Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.NewTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.OldTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

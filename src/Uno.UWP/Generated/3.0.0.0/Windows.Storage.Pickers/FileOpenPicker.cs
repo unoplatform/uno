@@ -8,11 +8,7 @@ namespace Windows.Storage.Pickers
 #endif
 	public partial class FileOpenPicker
 	{
-		// Skipping already declared property ViewMode
-		// Skipping already declared property SuggestedStartLocation
-		// Skipping already declared property SettingsIdentifier
 		// Skipping already declared property CommitButtonText
-		// Skipping already declared property FileTypeFilter
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.ValueSet ContinuationData
@@ -23,6 +19,9 @@ namespace Windows.Storage.Pickers
 			}
 		}
 #endif
+		// Skipping already declared property FileTypeFilter
+		// Skipping already declared property SettingsIdentifier
+		// Skipping already declared property SuggestedStartLocation
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.User User
@@ -33,9 +32,34 @@ namespace Windows.Storage.Pickers
 			}
 		}
 #endif
+		// Skipping already declared property ViewMode
 		// Skipping already declared method Windows.Storage.Pickers.FileOpenPicker.FileOpenPicker()
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.FileOpenPicker()
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ContinuationData.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ResumePickSingleFileAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.ResumePickSingleFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20FileOpenPicker.ResumePickSingleFileAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.Pickers.FileOpenPicker CreateForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member FileOpenPicker FileOpenPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPicker%20FileOpenPicker.CreateForUser%28User%20user%29");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.operator ==(Windows.Storage.Pickers.FileOpenPicker, Windows.Storage.Pickers.FileOpenPicker)
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.operator !=(Windows.Storage.Pickers.FileOpenPicker, Windows.Storage.Pickers.FileOpenPicker)
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.Equals(Windows.Storage.Pickers.FileOpenPicker)
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PickSingleFileAndContinue()
@@ -57,15 +81,6 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync(string pickerOperationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20FileOpenPicker.PickSingleFileAsync%28string%20pickerOperationId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.get
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.set
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SettingsIdentifier.get
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SettingsIdentifier.set
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SuggestedStartLocation.get
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SuggestedStartLocation.set
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.CommitButtonText.get
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.CommitButtonText.set
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.FileTypeFilter.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync()
@@ -80,20 +95,17 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFile>> FileOpenPicker.PickMultipleFilesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStorageFile%3E%3E%20FileOpenPicker.PickMultipleFilesAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.CommitButtonText.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.CommitButtonText.set
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ContinuationData.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.FileTypeFilter.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SettingsIdentifier.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SettingsIdentifier.set
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SuggestedStartLocation.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SuggestedStartLocation.set
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.User.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.Pickers.FileOpenPicker CreateForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member FileOpenPicker FileOpenPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPicker%20FileOpenPicker.CreateForUser%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ResumePickSingleFileAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.ResumePickSingleFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20FileOpenPicker.ResumePickSingleFileAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.get
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.set
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

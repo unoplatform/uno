@@ -26,7 +26,18 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.RemoteSystemAuthorizationKindFilter(Windows.System.RemoteSystems.RemoteSystemAuthorizationKind)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.operator ==(Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter, Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.operator !=(Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter, Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.Equals(Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.RemoteSystemAuthorizationKind.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.System.RemoteSystems.IRemoteSystemFilter
 	}
 }

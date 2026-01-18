@@ -12,9 +12,19 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.RightTappedRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.RightTappedRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.Handled.set
-		// Skipping already declared method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

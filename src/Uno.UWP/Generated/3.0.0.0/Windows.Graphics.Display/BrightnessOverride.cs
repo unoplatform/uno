@@ -20,9 +20,32 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsSupported.get
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActive.get
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevel.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Graphics.Display.BrightnessOverride GetDefaultForSystem()
+		{
+			throw new global::System.NotImplementedException("The member BrightnessOverride BrightnessOverride.GetDefaultForSystem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverride%20BrightnessOverride.GetDefaultForSystem%28%29");
+		}
+#endif
+		// Skipping already declared method Windows.Graphics.Display.BrightnessOverride.GetForCurrentView()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> SaveForSystemAsync(global::Windows.Graphics.Display.BrightnessOverride value)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> BrightnessOverride.SaveForSystemAsync(BrightnessOverride value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20BrightnessOverride.SaveForSystemAsync%28BrightnessOverride%20value%29");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.operator ==(Windows.Graphics.Display.BrightnessOverride, Windows.Graphics.Display.BrightnessOverride)
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.operator !=(Windows.Graphics.Display.BrightnessOverride, Windows.Graphics.Display.BrightnessOverride)
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.Equals(Windows.Graphics.Display.BrightnessOverride)
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.Equals(object)
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetBrightnessLevel(double brightnessLevel, global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
@@ -58,27 +81,16 @@ namespace Windows.Graphics.Display
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.StopOverride()");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsSupportedChanged.add
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsSupportedChanged.remove
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActiveChanged.add
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActiveChanged.remove
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevelChanged.add
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevelChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Graphics.Display.BrightnessOverride GetDefaultForSystem()
-		{
-			throw new global::System.NotImplementedException("The member BrightnessOverride BrightnessOverride.GetDefaultForSystem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverride%20BrightnessOverride.GetDefaultForSystem%28%29");
-		}
-#endif
-		// Skipping already declared method Windows.Graphics.Display.BrightnessOverride.GetForCurrentView()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> SaveForSystemAsync(global::Windows.Graphics.Display.BrightnessOverride value)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> BrightnessOverride.SaveForSystemAsync(BrightnessOverride value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20BrightnessOverride.SaveForSystemAsync%28BrightnessOverride%20value%29");
-		}
-#endif
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActiveChanged.add
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActiveChanged.remove
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsSupportedChanged.add
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsSupportedChanged.remove
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevel.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActive.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsSupported.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> BrightnessLevelChanged

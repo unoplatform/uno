@@ -33,7 +33,18 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.operator ==(Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs, Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs)
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.operator !=(Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs, Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs)
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.Equals(Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs)
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.ErrorStatus.get
 		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.Message.get
+		// Forced skipping of method Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,57 +15,15 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Square150x150Logo
+		public global::Windows.UI.Color BackgroundColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square150x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square150x150Logo");
+				throw new global::System.NotImplementedException("The member Color SecondaryTileVisualElements.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20SecondaryTileVisualElements.BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square150x150Logo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShowNameOnWide310x150Logo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTileVisualElements.ShowNameOnWide310x150Logo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShowNameOnSquare310x310Logo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTileVisualElements.ShowNameOnSquare310x310Logo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShowNameOnSquare150x150Logo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTileVisualElements.ShowNameOnSquare150x150Logo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Color SecondaryTileVisualElements.BackgroundColor");
 			}
 		}
 #endif
@@ -85,57 +43,67 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color BackgroundColor
+		public global::Windows.UI.StartScreen.TileMixedRealityModel MixedRealityModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color SecondaryTileVisualElements.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20SecondaryTileVisualElements.BackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Color SecondaryTileVisualElements.BackgroundColor");
+				throw new global::System.NotImplementedException("The member TileMixedRealityModel SecondaryTileVisualElements.MixedRealityModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileMixedRealityModel%20SecondaryTileVisualElements.MixedRealityModel");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Wide310x150Logo
+		public bool ShowNameOnSquare150x150Logo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Wide310x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Wide310x150Logo");
+				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTileVisualElements.ShowNameOnSquare150x150Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Wide310x150Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Square70x70Logo
+		public bool ShowNameOnSquare310x310Logo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square70x70Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square70x70Logo");
+				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTileVisualElements.ShowNameOnSquare310x310Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square70x70Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Square310x310Logo
+		public bool ShowNameOnWide310x150Logo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square310x310Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square310x310Logo");
+				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTileVisualElements.ShowNameOnWide310x150Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square310x310Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Square150x150Logo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square150x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square150x150Logo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square150x150Logo");
 			}
 		}
 #endif
@@ -155,15 +123,15 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Square71x71Logo
+		public global::System.Uri Square310x310Logo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square71x71Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square71x71Logo");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square310x310Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square310x310Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square71x71Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square310x310Logo");
 			}
 		}
 #endif
@@ -183,38 +151,81 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.StartScreen.TileMixedRealityModel MixedRealityModel
+		public global::System.Uri Square70x70Logo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileMixedRealityModel SecondaryTileVisualElements.MixedRealityModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileMixedRealityModel%20SecondaryTileVisualElements.MixedRealityModel");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square70x70Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square70x70Logo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square70x70Logo");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square30x30Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square30x30Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square70x70Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square70x70Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square150x150Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square150x150Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Wide310x150Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Wide310x150Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square310x310Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square310x310Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ForegroundText.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ForegroundText.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.BackgroundColor.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Square71x71Logo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square71x71Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Square71x71Logo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square71x71Logo");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Wide310x150Logo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Wide310x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SecondaryTileVisualElements.Wide310x150Logo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Wide310x150Logo");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.FromAbi(nint)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.operator ==(Windows.UI.StartScreen.SecondaryTileVisualElements, Windows.UI.StartScreen.SecondaryTileVisualElements)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.operator !=(Windows.UI.StartScreen.SecondaryTileVisualElements, Windows.UI.StartScreen.SecondaryTileVisualElements)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Equals(Windows.UI.StartScreen.SecondaryTileVisualElements)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Equals(object)
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.GetHashCode()
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.BackgroundColor.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare150x150Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare150x150Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnWide310x150Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnWide310x150Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare310x310Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare310x310Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square71x71Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square71x71Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square44x44Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square44x44Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.BackgroundColor.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ForegroundText.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ForegroundText.set
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.MixedRealityModel.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare150x150Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare150x150Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare310x310Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnSquare310x310Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnWide310x150Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ShowNameOnWide310x150Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square150x150Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square150x150Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square30x30Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square30x30Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square310x310Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square310x310Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square44x44Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square44x44Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square70x70Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square70x70Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square71x71Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square71x71Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Wide310x150Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Wide310x150Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
