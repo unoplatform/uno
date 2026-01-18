@@ -193,8 +193,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
 		}
 
+#pragma warning disable MSTEST0045 // Cooperating cancellation
 		[TestMethod]
-		[Timeout(60000)]
+		[Timeout(60000, CooperativeCancellation = false)]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task Check_FontFallback_Shaping2()
 		{
@@ -238,6 +239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForRender();
 			await UITestHelper.WaitFor(() => matched, 60000);
 		}
+#pragma warning restore MSTEST0045
 #endif
 
 		[TestMethod]
