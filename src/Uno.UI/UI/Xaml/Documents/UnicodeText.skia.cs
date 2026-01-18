@@ -107,13 +107,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 
-	private static readonly WordList _wordList = ((Func<WordList>)(() =>
-	{
-		var assembly = Assembly.GetAssembly(typeof(UnicodeText))!;
-		var aff = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.aff"));
-		var dic = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.dic"));
-		return WordList.CreateFromStreams(assembly.GetManifestResourceStream(dic), assembly.GetManifestResourceStream(aff));
-	})).Invoke();
+	private static List<WordList>? _wordLists;
 
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
@@ -1489,9 +1483,11 @@ internal readonly partial struct UnicodeText : IParsedText
 			var startTrimmedWord = word.TrimStart();
 			var trimmedWord = startTrimmedWord.TrimEnd();
 
+			_wordLists ??= GetWordLists();
+
 			if (trimmedWord.Length > 0 && !trimmedWord.Any(c => char.IsPunctuation(c) || char.IsNumber(c) || char.IsSeparator(c) || char.IsWhiteSpace(c) || char.IsSymbol(c)))
 			{
-				if (_wordList.Check(trimmedWord))
+				if (_wordLists.Any(wordList => wordList.Check(trimmedWord)))
 				{
 					ret.Add(null);
 				}
@@ -1513,12 +1509,46 @@ internal readonly partial struct UnicodeText : IParsedText
 		return ret;
 	}
 
+	private static List<WordList> GetWordLists()
+	{
+		var wordLists = new List<WordList>();
+		var assembly = Assembly.GetAssembly(typeof(UnicodeText))!;
+		var enAff = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.aff"));
+		var enDic = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.dic"));
+		wordLists.Add(WordList.CreateFromStreams(assembly.GetManifestResourceStream(enDic), assembly.GetManifestResourceStream(enAff)));
+
+		if (FeatureConfiguration.TextBox.CustomSpellCheckDictionaries is { } dictionaries)
+		{
+			foreach (var (dic, aff) in dictionaries)
+			{
+				if (aff != null)
+				{
+					try
+					{
+						wordLists.Add(WordList.CreateFromStreams(dic, aff));
+					}
+					catch (Exception e)
+					{
+						if (typeof(UnicodeText).Log().IsEnabled(LogLevel.Error))
+						{
+							typeof(UnicodeText).Log().Error($"Failed to load dictionary", e);
+						}
+					}
+				}
+			}
+		}
+
+		return wordLists;
+	}
+
 	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions) GetSpellCheckSuggestions(int correctionStart, int correctionEnd)
 	{
 		var wordBoundaries = _wordBoundaries;
 		var text = _text;
 		var index = wordBoundaries.BinarySearch(correctionStart);
 		var i = index >= 0 ? index + 1 : ~index;
+
+		_wordLists ??= GetWordLists();
 
 		if (i < wordBoundaries.Count)
 		{
@@ -1530,9 +1560,57 @@ internal readonly partial struct UnicodeText : IParsedText
 				var word = text.Substring(start, boundary - start);
 				var startTrimmedWord = word.TrimStart();
 				var trimmedWord = startTrimmedWord.TrimEnd();
-				return (start + word.Length - startTrimmedWord.Length, start + word.Length - startTrimmedWord.Length + trimmedWord.Length, _wordList.Suggest(trimmedWord).ToList());
+				var suggestions = _wordLists.SelectMany(wordList => wordList.Suggest(trimmedWord)).Distinct().OrderBy(w => LevenshteinDistance(w, trimmedWord)).ToList();
+				return (start + word.Length - startTrimmedWord.Length, start + word.Length - startTrimmedWord.Length + trimmedWord.Length, suggestions);
 			}
 		}
 		return (correctionStart, correctionEnd, new List<string>(0));
+	}
+
+	private static int LevenshteinDistance(string s, string t)
+	{
+		if (string.IsNullOrEmpty(s))
+		{
+			return string.IsNullOrEmpty(t) ? 0 : t.Length;
+		}
+
+		if (string.IsNullOrEmpty(t))
+		{
+			return s.Length;
+		}
+
+		var n = s.Length;
+		var m = t.Length;
+
+		var prev = new int[m + 1];
+		var curr = new int[m + 1];
+
+		// Initialize first row
+		for (var j = 0; j <= m; j++)
+		{
+			prev[j] = j;
+		}
+
+		for (var i = 1; i <= n; i++)
+		{
+			curr[0] = i;
+			for (var j = 1; j <= m; j++)
+			{
+				var cost = s[i - 1] == t[j - 1] ? 0 : 1;
+
+				curr[j] = Math.Min(
+					Math.Min(
+						prev[j] + 1,        // deletion
+						curr[j - 1] + 1     // insertion
+					),
+					prev[j - 1] + cost      // substitution
+				);
+			}
+
+			// Swap rows
+			(prev, curr) = (curr, prev);
+		}
+
+		return prev[m];
 	}
 }
