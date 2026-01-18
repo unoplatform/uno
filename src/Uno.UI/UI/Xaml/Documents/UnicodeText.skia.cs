@@ -5,8 +5,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
@@ -15,10 +15,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.Xaml.Media;
 using WeCantSpell.Hunspell;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
@@ -104,11 +102,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static readonly WordList _wordList = ((Func<WordList>)(() =>
 	{
-		var baseDir = @"C:\Users\RamezRagaa\Downloads\hunspell-en_US-2020.12.07";
-		var dictionaryPath = Path.Combine(baseDir, "en_US.dic");
-		var affixPath = Path.Combine(baseDir, "en_US.aff");
-
-		return WordList.CreateFromFiles(dictionaryPath, affixPath);
+		var assembly = Assembly.GetAssembly(typeof(UnicodeText))!;
+		var aff = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.aff"));
+		var dic = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.dic"));
+		return WordList.CreateFromStreams(assembly.GetManifestResourceStream(dic), assembly.GetManifestResourceStream(aff));
 	})).Invoke();
 
 	private readonly Size _size;
