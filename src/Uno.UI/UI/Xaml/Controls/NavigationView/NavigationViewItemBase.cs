@@ -1,22 +1,20 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemBase.cpp, commit 574e5ed 
+// MUX reference NavigationViewItemBase.cpp, commit 65718e2813 
 
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationViewItemBase : ContentControl
 {
-	protected override void OnApplyTemplate()
-	{
-		base.OnApplyTemplate();
+	internal CompositeDisposable EventRevokers { get; set; }
 
-		// TODO Uno specific - unsubscribe Loaded event handler to avoid multiple subscriptions
-		// as OnApplyTemplate will be called repeatedly.
-		Loaded -= OnLoaded;
+	public NavigationViewItemBase()
+	{
 		Loaded += OnLoaded;
 	}
 
