@@ -15,14 +15,6 @@ stages:
     steps:
     - checkout: self
       clean: true
-      sparseCheckoutPatterns: |
-        src/FontFallbackPreprocessor/**
-        src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs
-        global.json
-        Directory.Build.props
-        Directory.Build.targets
-        src/Directory.Build.props
-        src/Directory.Build.targets
 
     - bash: |
         set -euo pipefail
