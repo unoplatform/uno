@@ -519,8 +519,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			finally
 			{
-				_telemetry.Flush();
-				_telemetry.Dispose();
+				_telemetry?.Flush();
+				_telemetry?.Dispose();
 			}
 
 			return outputFiles;
