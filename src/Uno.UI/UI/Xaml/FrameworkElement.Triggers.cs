@@ -7,7 +7,6 @@ public partial class FrameworkElement
 {
 	private TriggerCollection _triggers;
 	private bool _triggersInitialized;
-	private bool _loadedTriggersFired;
 
 	/// <summary>
 	/// Gets the collection of triggers for animations that are defined for a FrameworkElement.
@@ -23,6 +22,7 @@ public partial class FrameworkElement
 			if (_triggers == null)
 			{
 				_triggers = new TriggerCollection();
+				_triggers.SetOwner(this);
 				InitializeTriggers();
 			}
 			return _triggers;
@@ -38,14 +38,10 @@ public partial class FrameworkElement
 
 		_triggersInitialized = true;
 
-		// If already loaded, fire triggers immediately
-		if (IsLoaded)
+		// Only subscribe to Loaded if not yet loaded
+		// Triggers added after loading fire via TriggerCollection.OnTriggerAdded
+		if (!IsLoaded)
 		{
-			FireLoadedTriggers();
-		}
-		else
-		{
-			// Hook into the Loaded event to process triggers
 			this.Loaded += OnLoadedForTriggers;
 		}
 	}
@@ -60,12 +56,10 @@ public partial class FrameworkElement
 
 	private void FireLoadedTriggers()
 	{
-		if (_loadedTriggersFired || _triggers == null || _triggers.Count == 0)
+		if (_triggers == null || _triggers.Count == 0)
 		{
 			return;
 		}
-
-		_loadedTriggersFired = true;
 
 		// EventTrigger only supports Loaded event, so we fire all EventTrigger actions when Loaded fires
 		// Use .ToArray() to avoid collection modification during enumeration

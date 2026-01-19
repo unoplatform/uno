@@ -9,6 +9,12 @@ namespace Microsoft.UI.Xaml;
 public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<TriggerBase>
 {
 	private readonly List<TriggerBase> _triggers = new List<TriggerBase>();
+	private FrameworkElement _owner;
+
+	internal void SetOwner(FrameworkElement owner)
+	{
+		_owner = owner;
+	}
 
 	/// <summary>
 	/// Gets the number of elements contained in the collection.
@@ -32,6 +38,7 @@ public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<Trigger
 	public void Add(TriggerBase item)
 	{
 		_triggers.Add(item);
+		OnTriggerAdded(item);
 	}
 
 	/// <inheritdoc />
@@ -68,6 +75,7 @@ public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<Trigger
 	public void Insert(int index, TriggerBase item)
 	{
 		_triggers.Insert(index, item);
+		OnTriggerAdded(item);
 	}
 
 	/// <inheritdoc />
@@ -86,5 +94,14 @@ public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<Trigger
 	IEnumerator IEnumerable.GetEnumerator()
 	{
 		return _triggers.GetEnumerator();
+	}
+
+	private void OnTriggerAdded(TriggerBase trigger)
+	{
+		// Match WinUI: when a trigger is added to an already-loaded element, fire immediately
+		if (_owner?.IsLoaded == true && trigger is EventTrigger eventTrigger)
+		{
+			eventTrigger.FireActions();
+		}
 	}
 }
