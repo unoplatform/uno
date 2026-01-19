@@ -9,7 +9,7 @@ jobs:
 - job: Dotnet_Template_Tests_NetCoreMobile_windows
   displayName: 'Windows Tests'
   timeoutInMinutes: 120
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool: ${{ parameters.poolName }}
 
@@ -69,7 +69,7 @@ jobs:
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
   displayName: 'macOS Tests'
   timeoutInMinutes: 120
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.macOSImageName }}
@@ -244,7 +244,7 @@ jobs:
 - job: Dotnet_Tests_Validate_DevServerCli
   displayName: 'DevServer CLI Tests'
   timeoutInMinutes: 25
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     name: $(poolName)

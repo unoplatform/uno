@@ -11,7 +11,7 @@ jobs:
 - job: Android_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 45
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_Tests_Build
   pool: ${{ parameters.vmLinuxPool }}
 

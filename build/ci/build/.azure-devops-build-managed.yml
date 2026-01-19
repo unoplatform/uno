@@ -7,7 +7,7 @@ jobs:
 - job: binaries_win_build
   displayName: 'Build'
   timeoutInMinutes: 90
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool: ${{ parameters.poolName }}
 

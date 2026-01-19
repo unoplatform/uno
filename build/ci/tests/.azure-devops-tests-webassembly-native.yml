@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: Wasm_UITests_Build
   displayName: 'Build Samples App'
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
   container: nv-bionic-wasm
 
   pool: ${{ parameters.poolName }}
@@ -60,7 +60,7 @@ jobs:
 
 - job: Wasm_UITests_Snap
   displayName: 'WebAssembly Snapshot Tests'
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
   dependsOn:
   - Wasm_UITests_Build
   condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.RequireNativeWasm'], 'true'))
@@ -125,7 +125,7 @@ jobs:
 
 - job: Wasm_UITests_Automated
   displayName: ' ' ## Name is concatenated with the matrix group name
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
   dependsOn:
   - Wasm_UITests_Build
 
