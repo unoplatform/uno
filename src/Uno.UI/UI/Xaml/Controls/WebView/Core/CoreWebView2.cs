@@ -212,7 +212,7 @@ public partial class CoreWebView2
 		}
 
 		// Store the current navigation ID for use in NavigationCompleted
-		_navigationId = (long)navigationId;
+		Interlocked.Exchange(ref _navigationId, (long)navigationId);
 		var args = new CoreWebView2NavigationStartingEventArgs(navigationId, uriString);
 		NavigationStarting?.Invoke(this, args);
 
