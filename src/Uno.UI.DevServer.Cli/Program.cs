@@ -126,7 +126,7 @@ internal class Program
 
 	private static void WriteOption(string option, string description)
 	{
-		const int optionWidth = 28;
+		const int optionWidth = 32;
 		Console.WriteLine($"  {option,-optionWidth} {description}");
 	}
 

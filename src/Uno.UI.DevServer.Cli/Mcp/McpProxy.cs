@@ -167,19 +167,19 @@ internal class McpProxy
 			return localPath;
 		}
 
-		// Windows file URIs (file:///c:/...) arrive with a leading slash in LocalPath ("/c:/...")
-		// which later causes Path.GetFullPath to produce invalid "c:\c:\" style paths.
-		var path = localPath.Replace('/', Path.DirectorySeparatorChar);
-
-		if (path.Length >= 3
-			&& path[0] == Path.DirectorySeparatorChar
-			&& char.IsLetter(path[1])
-			&& path[2] == ':')
+		// Windows file URIs (file:///c:/...) can include a leading slash in LocalPath ("/c:/...")
+		// which later causes Path.GetFullPath to produce invalid "c:\c:\" style paths. Only strip
+		// the leading slash when it matches the drive letter pattern `/X:/` to avoid altering other
+		// path formats unnecessarily.
+		if (localPath.Length >= 3
+			&& localPath[0] == '/'
+			&& char.IsLetter(localPath[1])
+			&& localPath[2] == ':')
 		{
-			return path[1..];
+			return localPath[1..];
 		}
 
-		return path;
+		return localPath;
 	}
 
 	private void EnsureDevServerStartedFromSolutionDirectory()
@@ -203,12 +203,21 @@ internal class McpProxy
 		if (string.IsNullOrWhiteSpace(normalized))
 		{
 			_logger.LogWarning("Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
+			FailToolCachePriming();
 			return;
 		}
 
 		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
-		_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
-		_devServerStarted = true;
+		try
+		{
+			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
+			_devServerStarted = true;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'", normalized);
+			FailToolCachePriming(ex);
+		}
 	}
 
 	private string? NormalizeSolutionDirectory(string? directory)
@@ -244,6 +253,23 @@ internal class McpProxy
 
 		_toolCachePrimedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 		_cachePrimedWatcher = null;
+	}
+
+	private void FailToolCachePriming(Exception? ex = null)
+	{
+		if (_toolCachePrimedTcs is null)
+		{
+			return;
+		}
+
+		if (ex is not null)
+		{
+			_toolCachePrimedTcs.TrySetException(ex);
+		}
+		else
+		{
+			_toolCachePrimedTcs.TrySetResult(false);
+		}
 	}
 
 	private async Task<bool> EnsureCachePrimingCompletedAsync()
@@ -282,30 +308,48 @@ internal class McpProxy
 			return;
 		}
 
-		_cachePrimedWatcher = _toolCachePrimedTcs.Task.ContinueWith(async task =>
+		_cachePrimedWatcher = CachePrimingWatcherAsync(host);
+	}
+
+	private async Task CachePrimingWatcherAsync(IHost host)
+	{
+		try
 		{
 			try
 			{
-				if (task.Status == TaskStatus.RanToCompletion && task.Result)
+				var result = await _toolCachePrimedTcs!.Task.ConfigureAwait(false);
+
+				if (result)
 				{
 					_logger.LogInformation("Tool cache primed successfully; stopping MCP proxy");
 				}
-				else if (task.Status == TaskStatus.RanToCompletion)
+				else
 				{
 					_logger.LogWarning("Tool cache priming failed; stopping MCP proxy");
 				}
-				else if (task.IsFaulted)
-				{
-					_logger.LogError(task.Exception, "Tool cache priming failed with an exception; stopping MCP proxy");
-				}
+			}
+			catch (OperationCanceledException)
+			{
+				_logger.LogInformation("Tool cache priming was canceled; stopping MCP proxy");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping MCP proxy");
+			}
 
-				await host.StopAsync();
+			try
+			{
+				await host.StopAsync().ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogWarning(ex, "Error while stopping MCP proxy after tool cache priming");
 			}
-		}, TaskScheduler.Default).Unwrap();
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unexpected error in cache priming watcher");
+		}
 	}
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
@@ -422,8 +466,18 @@ internal class McpProxy
 		_devServerMonitor.ServerFailed += () =>
 		{
 			_logger.LogError("DevServer failed to start, stopping MCP proxy");
-			_toolCachePrimedTcs?.TrySetResult(false);
-			host.StopAsync();
+			FailToolCachePriming();
+			_ = Task.Run(async () =>
+			{
+				try
+				{
+					await host.StopAsync().ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, "Error while stopping MCP proxy host after DevServer failure.");
+				}
+			});
 		};
 
 		try
@@ -610,7 +664,7 @@ internal class McpProxy
 			catch (Exception ex)
 			{
 				_logger.LogWarning(ex, "Unable to persist tool cache to {Path}", _toolCachePath);
-				_toolCachePrimedTcs?.TrySetException(ex);
+				FailToolCachePriming(ex);
 			}
 		}
 	}
