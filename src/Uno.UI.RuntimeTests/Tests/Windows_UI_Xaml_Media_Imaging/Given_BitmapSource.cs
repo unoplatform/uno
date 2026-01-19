@@ -215,7 +215,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			}
 			finally
 			{
-				try { File.Delete(filePath); } catch { }
+				try
+				{
+					File.Delete(filePath);
+				}
+				catch (Exception deleteEx)
+				{
+					// Best-effort cleanup: log and ignore failures when deleting the temporary test file.
+					Debug.WriteLine($"Failed to delete temporary test file '{filePath}': {deleteEx}");
+				}
 			}
 		}
 
