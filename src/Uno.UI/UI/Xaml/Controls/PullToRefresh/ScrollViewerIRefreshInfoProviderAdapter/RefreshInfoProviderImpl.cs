@@ -101,6 +101,10 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider, IInteract
 	public void IdleStateEntered(InteractionTracker sender, InteractionTrackerIdleStateEnteredArgs args)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, args.RequestId());
+
+#if HAS_UNO
+		IdleEntered?.Invoke(this, sender);
+#endif
 	}
 
 	public void CustomAnimationStateEntered(InteractionTracker sender, InteractionTrackerCustomAnimationStateEnteredArgs args)

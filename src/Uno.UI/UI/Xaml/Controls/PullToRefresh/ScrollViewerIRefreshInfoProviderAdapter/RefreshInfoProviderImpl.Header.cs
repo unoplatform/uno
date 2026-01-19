@@ -4,9 +4,10 @@
 
 #nullable enable
 
+using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
 using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 
 namespace Microsoft.UI.Private.Controls;
@@ -25,11 +26,12 @@ internal partial class RefreshInfoProviderImpl
 	private bool m_peeking = false;
 
 	public event TypedEventHandler<IRefreshInfoProvider, object> IsInteractingForRefreshChanged;
-
 #pragma warning disable CS0067 // The event 'RefreshInfoProviderImpl.InteractionRatioChanged' is never used
 	public event TypedEventHandler<IRefreshInfoProvider, RefreshInteractionRatioChangedEventArgs> InteractionRatioChanged;
 #pragma warning restore CS0067 // The event 'RefreshInfoProviderImpl.InteractionRatioChanged' is never used
-
 	public event TypedEventHandler<IRefreshInfoProvider, object> RefreshStarted;
 	public event TypedEventHandler<IRefreshInfoProvider, object> RefreshCompleted;
+#if HAS_UNO
+	internal event TypedEventHandler<IRefreshInfoProvider, InteractionTracker> IdleEntered;
+#endif
 }
