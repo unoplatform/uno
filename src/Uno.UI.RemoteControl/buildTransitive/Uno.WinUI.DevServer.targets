@@ -4,6 +4,8 @@
 	<Target Name="ValidateDevServerConfiguration"
 		BeforeTargets="CoreCompile">
 		<Error Condition="$(Optimize) == 'true'"
+			Code="UNOB0019"
+			HelpLink="https://aka.platform.uno/UNOB0019"
 			Text="The DevServer package is intended for development builds only and should not be used with optimized/release builds. Please remove the reference to Uno.WinUI.DevServer or set 'Optimize' to 'false'." />
 	</Target>
 
