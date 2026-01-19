@@ -2,6 +2,7 @@ jobs:
 - deployment: 'Nuget_Prod_Nuget_Org'
   displayName: 'Nuget Publish Prod NuGet.org'
   environment: 'Uno UI Production'
+  cancelTimeoutInMinutes: 1
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -23,6 +24,7 @@ jobs:
 - job: Tag_Release
   displayName: 'Set git tag'
   dependsOn: 'Nuget_Prod_Nuget_Org'
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmImage }}
