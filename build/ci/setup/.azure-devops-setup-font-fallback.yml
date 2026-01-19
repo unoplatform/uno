@@ -22,7 +22,7 @@ stages:
         echo "Regenerating FontFallbackMaps.skia.cs..."
         dotnet run --project src/FontFallbackPreprocessor/FontFallbackPreprocessor.csproj -c Release -- --summary-only > src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new
         
-        if ! diff -u src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new > diff.txt; then
+        if ! diff -u -a src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new > diff.txt; then
           echo "Error: FontFallbackMaps.skia.cs is not up to date."
           cat diff.txt
           echo "Please run the following command locally and commit the changes:"
