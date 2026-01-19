@@ -361,20 +361,42 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 - ![The icon indicating that the user is not signed in](../Assets/features/hotreload/status-connection-not-signed-in.png) **Not Signed In**  
   _User needs to sign in to enable Hot Reload._
 
+- ![The icon indicating initialization](../Assets/features/hotreload/status-connection-connecting.png) **Initializing**  
+  _Hot Reload is starting up and preparing to connect to the IDE._
+
 - ![The icon indicating an ongoing connection attempt](../Assets/features/hotreload/status-connection-connecting.png) **Connecting**  
-  _Establishing a connection._
+  _Attempting to establish a connection to the IDE._
 
 - ![The icon indicating a successful connection](../Assets/features/hotreload/status-connection-connected.png) **Connected**  
-  _Connection established._
+  _Connection to the IDE established successfully._
+
+- ![The icon indicating reconnection in progress](../Assets/features/hotreload/status-connection-connecting.png) **Reconnecting**  
+  _Connection to the IDE was lost and is being restored._
 
 - ![The icon indicating a connection issue](../Assets/features/hotreload/status-connection-warning.png) **Warning**  
-  _Usually indicates an issue that can be resolved by restarting your IDE._
+  _Connection established but with issues. Common causes include:_
+  - _Version mismatch between the app and IDE extension_
+  - _Missing required processors in the IDE_
+  - _Keep-alive messages taking longer than expected or being lost_
+  - _Invalid frames received from the IDE_
 
 - ![The icon indicating a failed connection](../Assets/features/hotreload/status-connection-failed.png) **Connection Failed**  
-  _A connection error occurred. Refer to the [troubleshooting documentation](#troubleshooting) for possible solutions._
+  _Failed to establish a connection to the IDE. Possible causes:_
+  - _Connection timeout: The IDE did not respond within the expected time_
+  - _Connection error: An error occurred during connection attempt_
+  - _Refer to the [troubleshooting documentation](#troubleshooting) for solutions._
 
-- ![The icon indicating the server is unreachable](../Assets/features/hotreload/status-connection-server-unreachable.png) **Server Unreachable**  
-  _Hot Reload could not connect to the server. Check the [troubleshooting documentation](#troubleshooting) for guidance._
+- ![The icon indicating disconnection](../Assets/features/hotreload/status-connection-failed.png) **Disconnected**  
+  _Previously established connection to the IDE has been lost and cannot be restored immediately. The system will retry later._
+
+- ![The icon indicating the server is unreachable](../Assets/features/hotreload/status-connection-server-unreachable.png) **Server Unreachable / Extension Not Installed**  
+  _Hot Reload could not find or connect to the dev server. Common causes:_
+  - _**Uno Platform extension not installed in the IDE** - Install the extension for your IDE ([Visual Studio](https://aka.platform.uno/vs-extension-marketplace), [VS Code](https://aka.platform.uno/vscode-extension-marketplace), or [Rider](https://aka.platform.uno/rider-extension-marketplace))_
+  - _Application built without dev server configuration (Release mode)_
+  - _Extension not loaded yet - Wait a moment and rebuild the application_
+  - _Extension needs updating - Update to the latest version_
+  - _Dev server port not configured - Try rebuilding the application_
+  - _Check the [troubleshooting documentation](#troubleshooting) for additional guidance._
 
 #### Operation
 
