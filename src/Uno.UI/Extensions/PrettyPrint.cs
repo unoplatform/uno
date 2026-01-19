@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
-
 using Colors = Microsoft.UI.Colors;
 
 namespace Uno.UI.Extensions;
