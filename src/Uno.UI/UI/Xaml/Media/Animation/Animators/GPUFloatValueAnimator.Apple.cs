@@ -242,8 +242,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					if (_weakActiveInstanceCache[i].TryGetTarget<GPUFloatValueAnimator>(out var pInstance) &&
 						pInstance == this)
 					{
-						_weakActiveInstanceCache.RemoveAt(i);
 						WeakReferencePool.ReturnWeakReference(this, _weakActiveInstanceCache[i]);
+						_weakActiveInstanceCache.RemoveAt(i);
 					}
 				}
 			}
