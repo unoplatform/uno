@@ -1,0 +1,31 @@
+<Project>
+	<PropertyGroup>
+		<XamlMergeOutputFile>mergedstyles.xaml</XamlMergeOutputFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Page Include="NormalPage1.xaml" />
+		<Page Include="PriorityPage1.xaml" Priority="1" />
+		<Page Include="PriorityPage2.xaml" Priority="1" />
+		<Page Include="NormalPage2.xaml" />
+	</ItemGroup>
+
+	<!-- Copy of the target we're testing from Directory.Build.targets -->
+	<Target Name="PrepareXamlMergeInput" Condition="'$(XamlMergeOutputFile)'!=''">
+		<ItemGroup>
+			<OrderedMergedXamlResources Include="@(Page)" Condition="'%(Page.Priority)' == '1'" />
+			<OrderedMergedXamlResources Include="@(Page)" Condition="'%(Page.Priority)' == ''" />
+
+			<XamlMergeInput Include="@(OrderedMergedXamlResources)" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Target to expose the OrderedMergedXamlResources for testing -->
+	<Target Name="TestPrepareXamlMergeInput" DependsOnTargets="PrepareXamlMergeInput">
+		<Message Text="OrderedResource: %(OrderedMergedXamlResources.Identity)" Importance="High" />
+		<WriteLinesToFile 
+			File="$(MSBuildProjectDirectory)/test-output.txt" 
+			Lines="@(OrderedMergedXamlResources)" 
+			Overwrite="true" />
+	</Target>
+</Project>
