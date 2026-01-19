@@ -9,7 +9,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.ContextMenu;
 /// <summary>
 /// Sample for manually testing ContextRequested and ContextCanceled events.
 /// </summary>
-[SampleControlInfo("Input", "ContextRequested", description: "Manual testing sample for ContextRequested and ContextCanceled events")]
+[Sample("Input", Name = "ContextRequested", Description = "Manual testing sample for ContextRequested and ContextCanceled events", IsManualTest = true)]
 public sealed partial class ContextRequested_Sample : Page
 {
 	private int _eventCounter;
