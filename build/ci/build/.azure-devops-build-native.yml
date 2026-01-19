@@ -6,6 +6,7 @@ parameters:
 
 jobs:
 - job: skia_package_macos_native_build
+  cancelTimeoutInMinutes: 1
   displayName: 'macOS Build'
   pool:
     vmImage: ${{ parameters.macOSImageName }}
