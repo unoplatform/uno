@@ -1,10 +1,12 @@
-// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System.Text;
 using Windows.Foundation;
 using Uno;
 
+#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
+#else
+namespace Windows.UI.Input
+#endif
 {
 	public partial class PointerPointProperties
 	{
@@ -74,7 +76,7 @@ namespace Microsoft.UI.Input
 			MouseWheelDelta = properties.MouseWheelDelta;
 		}
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+#if IS_UNO_UI_PROJECT
 		public static explicit operator global::Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
 		{
 			var props = new global::Windows.UI.Input.PointerPointProperties();
@@ -277,4 +279,3 @@ namespace Microsoft.UI.Input
 		}
 	}
 }
-#endif
