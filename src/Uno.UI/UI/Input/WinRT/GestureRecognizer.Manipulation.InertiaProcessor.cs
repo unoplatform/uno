@@ -327,7 +327,7 @@ public partial class GestureRecognizer
 			public void Stop() => _timer.Stop();
 		}
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+#if IS_UNO_UI_PROJECT
 		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
 		{
 			private EventHandler<object>? _handler;

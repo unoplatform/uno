@@ -1,5 +1,3 @@
-// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +13,11 @@ using Uno;
 using Windows.Devices.Haptics;
 using Uno.UI.Input;
 
+#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
+#else
+namespace Windows.UI.Input
+#endif
 {
 	public partial class GestureRecognizer
 	{
@@ -304,4 +306,3 @@ namespace Microsoft.UI.Input
 		}
 	}
 }
-#endif

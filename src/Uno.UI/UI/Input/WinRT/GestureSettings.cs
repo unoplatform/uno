@@ -1,5 +1,3 @@
-// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -7,7 +5,11 @@ using Windows.Foundation.Metadata;
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 
+#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
+#else
+namespace Windows.UI.Input
+#endif
 {
 	[ContractVersion(typeof(UniversalApiContract), 65536U)]
 	[Flags]
@@ -106,4 +108,3 @@ namespace Microsoft.UI.Input
 			| GestureSettings.ManipulationRotateInertia;
 	}
 }
-#endif
