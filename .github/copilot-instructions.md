@@ -390,19 +390,19 @@ if (condition)
 
 ## Platform-Specific Patterns
 
-### Android
+### Android native
 - **UIElement inherits from**: `ViewGroup` → `UnoViewGroup` (Java) → `BindableView` → `UIElement`
 - **Performance-critical code**: Written in Java (`Uno.UI.BindingHelper.Android` project)
 - **Layout cycle**: Triggered from native Android layout via `onMeasure`/`onLayout`
 - **Mixins**: Located in `src/Uno.UI/Mixins/Android/`
 
-### iOS/macOS
-- **UIElement inherits from**: `UIView` (iOS) or `NSView` (macOS) → `BindableUIView` → `UIElement`
+### iOS/tvOS native
+- **UIElement inherits from**: `UIView` → `BindableUIView` → `UIElement`
 - **Layout cycle**: Triggered from native layout via `LayoutSubviews` (iOS) or `Layout` (macOS)
 - **Mixins**: Located in `src/Uno.UI/Mixins/AppleUIKit/`
-- **Shared code**: Use `.iOSmacOS.cs` or `.Apple.cs` suffix
+- **Shared code**: Use `.UIKit.cs` suffix
 
-### WebAssembly
+### WebAssembly native
 - **UIElements**: Map 1:1 to DOM elements (default tag: "div")
 - **TypeScript layer**: `WindowManager.ts` handles DOM manipulation
 - **JavaScript interop**: Via `WebAssemblyRuntime.InvokeJS()`
