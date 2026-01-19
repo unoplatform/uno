@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<Target Name="ValidateDevServerConfiguration"
-		BeforeTargets="CoreCompile">
+			BeforeTargets="CoreCompile">
 		<Error Condition="$(Optimize) == 'true'"
 			Code="UNOB0019"
 			HelpLink="https://aka.platform.uno/UNOB0019"
