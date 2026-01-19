@@ -10,7 +10,7 @@ echo "Running XamlMerge priority test..."
 echo "Test project directory: $TEST_PROJECT_DIR"
 
 # Run the MSBuild target
-msbuild "$TEST_PROJECT_DIR/TestProject.csproj" /t:TestPrepareXamlMergeInput /v:minimal
+dotnet msbuild "$TEST_PROJECT_DIR/TestProject.csproj" /t:TestPrepareXamlMergeInput /v:minimal
 
 # Check if the output file exists
 if [ ! -f "$TEST_PROJECT_DIR/test-output.txt" ]; then

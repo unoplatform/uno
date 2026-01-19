@@ -72,7 +72,7 @@ The tests use a simplified copy of the `PrepareXamlMergeInput` target:
 <Target Name="PrepareXamlMergeInput" Condition="'$(XamlMergeOutputFile)'!=''">
 	<ItemGroup>
 		<OrderedMergedXamlResources Include="@(Page)" Condition="'%(Page.Priority)' == '1'" />
-		<OrderedMergedXamlResources Include="@(Page)" Exclude="@(_NonMergedXamlResources)" Condition="'%(Page.Priority)' == ''" />
+		<OrderedMergedXamlResources Include="@(Page)" Condition="'%(Page.Priority)' == ''" />
 		
 		<XamlMergeInput Include="@(OrderedMergedXamlResources)" />
 	</ItemGroup>
@@ -81,10 +81,10 @@ The tests use a simplified copy of the `PrepareXamlMergeInput` target:
 
 This target:
 1. First adds all `Page` items with `Priority='1'` to `OrderedMergedXamlResources`
-2. Then adds all `Page` items without priority (empty or not set) to `OrderedMergedXamlResources`, excluding any items in `_NonMergedXamlResources`
+2. Then adds all `Page` items without priority (empty or not set) to `OrderedMergedXamlResources`
 3. Finally copies `OrderedMergedXamlResources` to `XamlMergeInput` for the merge task
 
-**Note:** The test implementations use a simplified version without the `_NonMergedXamlResources` exclusion since we don't need to test that functionality in these basic ordering tests.
+**Note:** The actual implementation in `src/Directory.Build.targets` also excludes items in `_NonMergedXamlResources` when adding pages without priority. The test implementations use a simplified version without this exclusion since we don't need to test that functionality in these basic ordering tests.
 
 ## Related Files
 
