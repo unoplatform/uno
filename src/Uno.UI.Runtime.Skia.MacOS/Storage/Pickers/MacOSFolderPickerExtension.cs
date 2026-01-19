@@ -40,6 +40,7 @@ internal class MacOSFolderPickerExtension : IFolderPickerExtension
 
 	public async Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
 	{
+		await Task.Yield();
 		var folder = NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation);
 		return folder is null ? null : await StorageFolder.GetFolderFromPathAsync(folder);
 	}

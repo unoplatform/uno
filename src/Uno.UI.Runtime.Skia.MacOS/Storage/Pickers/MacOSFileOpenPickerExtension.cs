@@ -46,6 +46,7 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 
 	public async Task<IReadOnlyList<StorageFile>> PickMultipleFilesAsync(CancellationToken token)
 	{
+		await Task.Yield();
 		var array = NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
 		var files = new List<StorageFile>();
 		var ptr = Marshal.ReadIntPtr(array);
@@ -64,6 +65,7 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 
 	public async Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
 	{
+		await Task.Yield();
 		var file = NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
 		return file is null ? null : await StorageFile.GetFileFromPathAsync(file);
 	}
