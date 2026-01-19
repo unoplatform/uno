@@ -301,6 +301,15 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 	{
 		if (m_infoProvider is not null && m_infoProvider.IsInteractingForRefresh)
 		{
+#if HAS_UNO
+			// During overpan, any scroll back will trigger UpdateIsInteractingForRefresh which causes premature Refresh or Idle to occur.
+			// We should prevent that while the user still had the touch held down (read: in InteractionTrackerInteractingState).
+			if (m_interactionTracker?.State is InteractionTrackerInteractingState)
+			{
+				return;
+			}
+#endif
+
 			//PTR_TRACE_INFO(null, TRACE_MSG_METH_DBL_DBL, METH_NAME, this, args.FinalView().HorizontalOffset(), args.FinalView().VerticalOffset());
 			if (!IsWithinOffsetThreshold())
 			{
@@ -426,5 +435,16 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 	}
 
 	public void Dispose() { }
+
+#if HAS_UNO
+	internal void SetupVisualizer(RefreshVisualizer visualizer)
+	{
+		if (visualizer is { })
+		{
+			visualizer.ScrollViewer = m_scrollViewer;
+			visualizer.InteractionTracker = m_interactionTracker;
+		}
+	}
+#endif
 }
 #endif
