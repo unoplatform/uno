@@ -17,7 +17,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
 
-		private Telemetry _telemetry;
+		private Telemetry _telemetry = null!;
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
@@ -45,12 +45,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			_telemetry = new Telemetry(
-				InstrumentationKey,
-				"uno/generation",
-				enabledProvider: isTelemetryOptout,
-				currentDirectoryProvider: getCurrentDirectory,
-				versionAssembly: GetType().Assembly);
+			if (isTelemetryOptout() is true)
+			{
+				_telemetry = new Telemetry(
+					InstrumentationKey,
+					"uno/generation",
+					enabledProvider: isTelemetryOptout,
+					currentDirectoryProvider: getCurrentDirectory,
+					versionAssembly: GetType().Assembly);
+			}
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
@@ -62,7 +65,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				try
 				{
-					_telemetry.TrackEvent(
+					_telemetry?.TrackEvent(
 						"generate-xaml-done",
 						[],
 						new[] { ("Duration", elapsed.TotalSeconds) }
@@ -86,7 +89,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				try
 				{
-					_telemetry.TrackEvent(
+					_telemetry?.TrackEvent(
 						"generate-xaml-failed",
 						new[] {
 							("ExceptionType", exception.GetType().ToString())
@@ -115,7 +118,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// Determine if the Uno.UI solution is built
 					var isBuildingUno = _generatorContext.GetMSBuildPropertyValue("MSBuildProjectName") == "Uno.UI";
 
-					_telemetry.TrackEvent(
+					_telemetry?.TrackEvent(
 						"generate-xaml",
 						new[] {
 							("IsWasm", _isWasm.ToString()),
