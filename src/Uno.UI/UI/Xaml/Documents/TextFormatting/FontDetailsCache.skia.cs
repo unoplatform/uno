@@ -211,9 +211,9 @@ internal static class FontDetailsCache
 				{
 					await task;
 				}
-				catch
+				catch (Exception e)
 				{
-					// Ignore
+					typeof(FontDetailsCache).LogError()?.Error($"Error loading font {name} asynchronously", e);
 				}
 
 				onFontLoaded();
