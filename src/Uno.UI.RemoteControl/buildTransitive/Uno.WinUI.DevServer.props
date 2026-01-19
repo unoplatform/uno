@@ -10,4 +10,10 @@
 		<TargetFramework Condition="'$(UnoHotReloadTargetFramework)' != ''">$(UnoHotReloadTargetFramework)</TargetFramework>
 	</PropertyGroup>
 
+	<Target Name="ValidateDevServerConfiguration"
+		BeforeTargets="CoreCompile">
+		<Error Condition="$(Optimize) == 'true'"
+			Text="The DevServer package is intended for development builds only and should not be used with optimized/release builds. Please remove the reference to Uno.WinUI.DevServer or set 'Optimize' to 'false'." />
+	</Target>
+
 </Project>

@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<Target Name="ValidateDevServerConfiguration"
+		BeforeTargets="CoreCompile">
+		<Error Condition="$(Optimize) == 'true'"
+			Text="The DevServer package is intended for development builds only and should not be used with optimized/release builds. Please remove the reference to Uno.WinUI.DevServer or set 'Optimize' to 'false'." />
+	</Target>
+
 	<ItemGroup>
 		<UnoRuntimeEnabledPackage Include="Uno.UI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.devserver.targets'" />
 		<UnoRuntimeEnabledPackage Include="Uno.WinUI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.devserver.targets'" />
