@@ -28,6 +28,9 @@ internal class CliManager
 		try
 		{
 			var solutionDirParseResult = ExtractSolutionDirectory(originalArgs);
+			// --solution-dir is applied uniformly so automation and CI environments can run any
+			// command (start, stop, list, login, MCP) against a target solution even when the
+			// current working directory differs from the solution root.
 			if (!solutionDirParseResult.Success)
 			{
 				return 1;
