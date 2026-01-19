@@ -109,7 +109,8 @@ internal class McpProxy
 	{
 		if (Uri.TryCreate(rootUri, UriKind.Absolute, out var absoluteUri) && absoluteUri.IsFile)
 		{
-			return absoluteUri.LocalPath;
+			var normalizedPath = NormalizeLocalFilePath(absoluteUri.LocalPath);
+			return Path.GetFullPath(normalizedPath);
 		}
 
 		if (Path.IsPathRooted(rootUri))
@@ -125,6 +126,28 @@ internal class McpProxy
 
 		_logger.LogWarning("Unable to resolve MCP root path from '{RootUri}'", rootUri);
 		return null;
+	}
+
+	private static string NormalizeLocalFilePath(string localPath)
+	{
+		if (!OperatingSystem.IsWindows())
+		{
+			return localPath;
+		}
+
+		// Windows file URIs (file:///c:/...) arrive with a leading slash in LocalPath ("/c:/...")
+		// which later causes Path.GetFullPath to produce invalid "c:\c:\" style paths.
+		var path = localPath.Replace('/', Path.DirectorySeparatorChar);
+
+		if (path.Length >= 3
+			&& path[0] == Path.DirectorySeparatorChar
+			&& char.IsLetter(path[1])
+			&& path[2] == ':')
+		{
+			return path[1..];
+		}
+
+		return path;
 	}
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
