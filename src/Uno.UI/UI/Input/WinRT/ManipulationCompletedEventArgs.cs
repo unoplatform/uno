@@ -5,7 +5,11 @@ using Windows.Foundation;
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 
+#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input;
+#else
+namespace Windows.UI.Input;
+#endif
 
 public partial class ManipulationCompletedEventArgs
 {
