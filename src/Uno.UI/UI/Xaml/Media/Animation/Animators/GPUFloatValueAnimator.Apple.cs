@@ -527,7 +527,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					else // purge collected instance
 					{
 						var weak = _weakActiveInstanceCache[i];
-						var owner = weak.Owner;						
+						var owner = weak.Owner;
 						WeakReferencePool.ReturnWeakReference(owner, weak);
 						_weakActiveInstanceCache.RemoveAt(i);
 					}
