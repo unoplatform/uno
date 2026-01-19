@@ -23,7 +23,7 @@ jobs:
 
 - job: Android_Build_NetCoreMobile_For_Tests
   displayName: 'Build Samples App'
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -81,7 +81,7 @@ jobs:
   - Android_Build_NetCoreMobile_For_Tests
 
   timeoutInMinutes: 45
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   variables:
     CI_Build: true

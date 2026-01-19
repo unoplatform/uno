@@ -3,7 +3,7 @@ stages:
   displayName: Setup
   jobs:
   - job: Validations
-    cancelTimeoutInMinutes: 1
+    cancelTimeoutInMinutes: 0
   
     pool:
       vmImage: $(linuxVMImage)
@@ -24,7 +24,7 @@ stages:
     - template: setup/.azure-devops-setup-doc-validations.yml
 
   - job: DetermineScope
-    cancelTimeoutInMinutes: 1
+    cancelTimeoutInMinutes: 0
     displayName: Determine Native Test Scope
 
     pool:

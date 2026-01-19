@@ -11,7 +11,7 @@ stages:
   jobs:
   - job: MasterHealth
     displayName: Check Master Build Status
-    cancelTimeoutInMinutes: 1
+    cancelTimeoutInMinutes: 0
 
     pool:
       vmImage: ${{ parameters.vmImage }}

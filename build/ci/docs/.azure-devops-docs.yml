@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Documentation
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
   displayName: 'Build Documentation WebSite'
 
   pool: ${{ parameters.poolName }}

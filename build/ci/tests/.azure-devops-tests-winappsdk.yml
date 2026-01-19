@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: WASDK_Build
   displayName: 'Build Samples App'
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.poolName }}

@@ -4,7 +4,7 @@ stages:
   displayName: Setup
   jobs:
   - job: Validations
-    cancelTimeoutInMinutes: 1
+    cancelTimeoutInMinutes: 0
   
     pool:
       vmImage: $(linuxVMImage)
