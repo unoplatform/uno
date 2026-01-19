@@ -31,7 +31,11 @@ public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<Trigger
 	public TriggerBase this[int index]
 	{
 		get => _triggers[index];
-		set => _triggers[index] = value;
+		set
+		{
+			_triggers[index] = value;
+			OnTriggerAdded(value);
+		}
 	}
 
 	/// <inheritdoc />
