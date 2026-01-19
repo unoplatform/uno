@@ -8,13 +8,11 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSFolderPickerExtension : IFolderPickerExtension
 {
-	private static readonly MacOSFolderPickerExtension _instance = new();
-
-	private MacOSFolderPickerExtension()
+	public MacOSFolderPickerExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), _ => _instance);
+	public static void Register() => ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), _ => new MacOSFolderPickerExtension());
 
 	// Mapping
 	// WinUI                            AppKit (NSOpenPanel)

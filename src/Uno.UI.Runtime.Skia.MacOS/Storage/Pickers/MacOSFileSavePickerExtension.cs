@@ -8,14 +8,12 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSFileSavePickerExtension : IFileSavePickerExtension
 {
-	private static readonly MacOSFileSavePickerExtension _instance = new();
-
-	private MacOSFileSavePickerExtension()
+	public MacOSFileSavePickerExtension()
 	{
 		_filters = Array.Empty<string>();
 	}
 
-	public static void Register() => ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), _ => _instance);
+	public static void Register() => ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), _ => new MacOSFileSavePickerExtension());
 
 	// Mapping
 	// WinUI                            AppKit (NSSavePanel)

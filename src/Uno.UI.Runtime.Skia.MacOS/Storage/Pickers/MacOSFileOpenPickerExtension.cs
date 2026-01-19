@@ -10,16 +10,14 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 {
-	private static readonly MacOSFileOpenPickerExtension _instance = new();
-
 	private static readonly string[] _asteriskArray = new string[] { "*" };
 
-	private MacOSFileOpenPickerExtension()
+	public MacOSFileOpenPickerExtension()
 	{
 		_filters = Array.Empty<string>();
 	}
 
-	public static void Register() => ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), _ => _instance);
+	public static void Register() => ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), _ => new MacOSFileOpenPickerExtension());
 
 	// Mapping
 	// WinUI                            AppKit (NSOpenPanel)
