@@ -392,10 +392,9 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 - ![The icon indicating the server is unreachable](../Assets/features/hotreload/status-connection-server-unreachable.png) **Server Unreachable / Extension Not Installed**  
   _Hot Reload could not find or connect to the dev server. Common causes:_
   - _**Uno Platform extension not installed in the IDE** - Install the extension for your IDE ([Visual Studio](https://aka.platform.uno/vs-extension-marketplace), [VS Code](https://aka.platform.uno/vscode-extension-marketplace), or [Rider](https://aka.platform.uno/rider-extension-marketplace))_
-  - _Application built without dev server configuration (Release mode)_
+  - _Application built without dev server configuration (Release mode) or with a missing dev server port - Rebuild the app with the correct Hot Reload/dev server configuration_
   - _Extension not loaded yet - Wait a moment and rebuild the application_
   - _Extension needs updating - Update to the latest version_
-  - _Dev server port not configured - Try rebuilding the application_
   - _Check the [troubleshooting documentation](#troubleshooting) for additional guidance._
 
 #### Operation
