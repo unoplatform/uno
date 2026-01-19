@@ -5,7 +5,7 @@ jobs:
 - job: Unit_Tests
   displayName: 'Run'
   timeoutInMinutes: 90
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
   
   pool: ${{ parameters.poolName }}
 
