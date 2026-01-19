@@ -639,7 +639,7 @@ public static class GithubFontFetcher
 	{
 		return Task.Run(() =>
 		{
-			var repoPath = PrepareCache(source.Repo, source.Branch);
+			var repoPath = PrepareCache(source.Repo, source.Branch, source.RootPath);
 			var sanitizedPath = (source.RootPath).Trim('/', '\\');
 			var targetRoot = string.IsNullOrEmpty(sanitizedPath)
 				? repoPath
@@ -679,7 +679,7 @@ public static class GithubFontFetcher
 		return $"https://raw.githubusercontent.com/{repo}/{branch}/{relativePath}";
 	}
 
-	private static string PrepareCache(string repo, string branch)
+	private static string PrepareCache(string repo, string branch, string sparsePath)
 	{
 		var cacheDir = Path.Combine(Path.GetTempPath(), CacheFolderName, repo.Replace('/', '_'));
 		Directory.CreateDirectory(cacheDir);
@@ -688,7 +688,7 @@ public static class GithubFontFetcher
 
 		if (!Directory.Exists(Path.Combine(repoPath, ".git")))
 		{
-			CloneRepo(repo, branch, repoPath);
+			CloneRepo(repo, branch, repoPath, sparsePath);
 		}
 		else
 		{
@@ -699,10 +699,18 @@ public static class GithubFontFetcher
 		return repoPath;
 	}
 
-	private static void CloneRepo(string repo, string branch, string destination)
+	private static void CloneRepo(string repo, string branch, string destination, string sparsePath)
 	{
 		Console.Error.WriteLine($"Cloning {repo} ({branch})...");
-		RunGit($"clone --depth=1 --branch {branch} https://github.com/{repo}.git \"{destination}\"");
+		if (!string.IsNullOrEmpty(sparsePath))
+		{
+			RunGit($"clone --filter=blob:none --sparse --depth=1 --branch {branch} https://github.com/{repo}.git \"{destination}\"");
+			RunGit($"-C \"{destination}\" sparse-checkout set \"{sparsePath}\"");
+		}
+		else
+		{
+			RunGit($"clone --depth=1 --branch {branch} https://github.com/{repo}.git \"{destination}\"");
+		}
 	}
 
 	private static void FetchRepo(string branch, string repoPath)
