@@ -3,6 +3,8 @@
 
 using System.CommandLine;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 return await AppHost.RunAsync(args);
 
@@ -31,146 +33,190 @@ static class AppHost
 		var summaryOption = new Option<bool>("--summary-only", "Skip per-font logging and show only merged results.");
 		summaryOption.AddAlias("-s");
 
+		var outputOption = new Option<FileInfo?>("--output", () => null, "Write the generated C# file to the specified path; defaults to stdout.");
+		outputOption.AddAlias("-o");
+
 		var rootCommand = new RootCommand("Inspects notofonts GitHub fonts to determine supported Unicode ranges.")
 		{
-			summaryOption
+			summaryOption,
+			outputOption
 		};
 
-		rootCommand.SetHandler(async summaryOnly =>
+		rootCommand.SetHandler(async (summaryOnly, outputFile) =>
 		{
-			var exitCode = await RunApplicationAsync(summaryOnly);
+			var exitCode = await RunApplicationAsync(summaryOnly, outputFile);
 			Environment.ExitCode = exitCode;
-		}, summaryOption);
+		}, summaryOption, outputOption);
 
 		return await rootCommand.InvokeAsync(args);
 	}
 
-	private static async Task<int> RunApplicationAsync(bool summaryOnly)
+	private static async Task<int> RunApplicationAsync(bool summaryOnly, FileInfo? outputFile)
 	{
-		var fontRangeMap = new Dictionary<string, List<(int start, int end)>>();
-		var fontWeightMap = new Dictionary<string, List<FontVariant>>(StringComparer.Ordinal);
-
-		foreach (var source in (FontSource[])[DefaultFontSource, CJKFontSource])
+		var writer = CreateOutputWriter(outputFile, out var fileWriter);
+		try
 		{
-			List<FontFamilyDownload> downloadResult;
-			try
+			var fontRangeMap = new Dictionary<string, List<(int start, int end)>>();
+			var fontWeightMap = new Dictionary<string, List<FontVariant>>(StringComparer.Ordinal);
+
+			foreach (var source in (FontSource[])[DefaultFontSource, CJKFontSource])
 			{
-				downloadResult = await GithubFontFetcher.DownloadFontsAsync(source);
-			}
-			catch (Exception ex)
-			{
-				Console.Error.WriteLine($"Failed to download fonts from {source.DisplayName}: {ex.Message}");
-				return 1;
-			}
-
-			foreach (var family in downloadResult)
-			{
-				if (!FontWhitelist.AllowedFamilies.TryGetValue(family.FamilyName.ToLowerInvariant().Replace(" ", ""), out var displayName))
-				{
-					Console.Error.WriteLine($"Skipping '{family.FamilyName}' because it is not in the allowed whitelist.");
-					continue;
-				}
-
-				fontWeightMap[displayName] = family.Variants.ToList();
-
-				if (FontWhitelist.CjkFonts.Contains(family.FamilyName) && fontRangeMap.ContainsKey(FontWhitelist.CjkUnifiedDisplayName))
-				{
-					Console.Error.WriteLine($"Skipping font coverage analysis for {displayName} since another CJK font has already been processed.");
-					continue;
-				}
-
-				var fontPath = family.RepresentativePath;
-				if (!summaryOnly)
-					Console.Error.WriteLine($"Processing family: {displayName} ({Path.GetFileName(fontPath)})");
-
+				List<FontFamilyDownload> downloadResult;
 				try
 				{
-					var codepoints = TtfReader.GetSupportedCodepoints(fontPath);
-					if (!summaryOnly)
-						Console.Error.WriteLine($"Total supported codepoints: {codepoints.Count}");
-
-					var ranges = TtfReader.GetCodepointRanges(codepoints);
-					if (!summaryOnly)
-					{
-						Console.Error.WriteLine($"Total ranges: {ranges.Count}");
-						Console.Error.WriteLine("Ranges:");
-						foreach (var range in ranges)
-						{
-							if (range.Start == range.End)
-								Console.Error.WriteLine($"U+{range.Start:X4}");
-							else
-								Console.Error.WriteLine($"U+{range.Start:X4} - U+{range.End:X4}");
-						}
-					}
-
-					fontRangeMap[FontWhitelist.CjkFonts.Contains(family.FamilyName) ? FontWhitelist.CjkUnifiedDisplayName : displayName] = ranges;
+					downloadResult = await GithubFontFetcher.DownloadFontsAsync(source);
 				}
 				catch (Exception ex)
 				{
-					Console.Error.WriteLine($"Error reading font {displayName}: {ex.Message}");
+					Console.Error.WriteLine($"Failed to download fonts from {source.DisplayName}: {ex.Message}");
+					return 1;
 				}
 
-				if (!summaryOnly)
-					Console.Error.WriteLine(new string('-', 20));
-			}
-		}
-
-		if (fontRangeMap.Count == 0)
-		{
-			Console.Error.WriteLine("No usable font ranges detected across the inspected fonts.");
-			return 1;
-		}
-
-		var mergedRanges = FontRangeMerger.Merge(fontRangeMap);
-		if (mergedRanges.Count == 0)
-		{
-			Console.Error.WriteLine("No combined coverage ranges to report.");
-		}
-		else
-		{
-			Console.WriteLine("using System.Collections.Generic;");
-			Console.WriteLine();
-			Console.WriteLine("namespace Microsoft.UI.Xaml.Documents.TextFormatting;");
-			Console.WriteLine();
-			Console.WriteLine("public static class FallbackFontMaps");
-			Console.WriteLine("{");
-			Console.WriteLine("\tpublic static readonly IReadOnlyList<(int start, int end, List<string> fonts)> CodepointsToFontFamilies = new List<(int, int, List<string>)>");
-			Console.WriteLine("\t{");
-			foreach (var span in mergedRanges)
-			{
-				var startLiteral = $"0x{span.Start:X4}";
-				var endLiteral = $"0x{span.End:X4}";
-				var fontsLiteral = string.Join(", ", span.Fonts.Select(font => $"\"{font}\""));
-				Console.WriteLine($"\t\t({startLiteral}, {endLiteral}, [{fontsLiteral}]),");
-			}
-			Console.WriteLine("\t};");
-			Console.WriteLine();
-			Console.WriteLine("\tpublic static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> FontWeightsToRawUrls = new Dictionary<string, IReadOnlyDictionary<string, string>>");
-			Console.WriteLine("\t{");
-			foreach (var (family, variants) in fontWeightMap.OrderBy(kvp => kvp.Key, StringComparer.Ordinal))
-			{
-				Console.WriteLine($"\t\t[\"{family}\"] = new Dictionary<string, string>");
-				Console.WriteLine("\t\t{");
-				var seenWeights = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-				var orderedVariants = variants
-					.OrderBy(v => v.Weight, StringComparer.OrdinalIgnoreCase)
-					.ThenBy(v => Path.GetFileName(v.LocalPath), StringComparer.OrdinalIgnoreCase);
-				foreach (var variant in orderedVariants)
+				foreach (var family in downloadResult)
 				{
-					if (!seenWeights.Add(variant.Weight))
+					if (!FontWhitelist.AllowedFamilies.TryGetValue(family.FamilyName.ToLowerInvariant().Replace(" ", ""), out var displayName))
 					{
-						Console.Error.WriteLine($"Skipping duplicate weight '{variant.Weight}' for '{family}' ({Path.GetFileName(variant.LocalPath)})");
+						Console.Error.WriteLine($"Skipping '{family.FamilyName}' because it is not in the allowed whitelist.");
 						continue;
 					}
-					Console.WriteLine($"\t\t\t[\"{variant.Weight}\"] = \"{variant.RawUrl}\",");
+
+					fontWeightMap[displayName] = family.Variants.ToList();
+
+					if (FontWhitelist.CjkFonts.Contains(family.FamilyName) && fontRangeMap.ContainsKey(FontWhitelist.CjkUnifiedDisplayName))
+					{
+						Console.Error.WriteLine($"Skipping font coverage analysis for {displayName} since another CJK font has already been processed.");
+						continue;
+					}
+
+					var fontPath = family.RepresentativePath;
+					if (!summaryOnly)
+						Console.Error.WriteLine($"Processing family: {displayName} ({Path.GetFileName(fontPath)})");
+
+					try
+					{
+						var codepoints = TtfReader.GetSupportedCodepoints(fontPath);
+						if (!summaryOnly)
+							Console.Error.WriteLine($"Total supported codepoints: {codepoints.Count}");
+
+						var ranges = TtfReader.GetCodepointRanges(codepoints);
+						if (!summaryOnly)
+						{
+							Console.Error.WriteLine($"Total ranges: {ranges.Count}");
+							Console.Error.WriteLine("Ranges:");
+							foreach (var range in ranges)
+							{
+								if (range.Start == range.End)
+									Console.Error.WriteLine($"U+{range.Start:X4}");
+								else
+									Console.Error.WriteLine($"U+{range.Start:X4} - U+{range.End:X4}");
+							}
+						}
+
+						fontRangeMap[FontWhitelist.CjkFonts.Contains(family.FamilyName) ? FontWhitelist.CjkUnifiedDisplayName : displayName] = ranges;
+					}
+					catch (Exception ex)
+					{
+						Console.Error.WriteLine($"Error reading font {displayName}: {ex.Message}");
+					}
+
+					if (!summaryOnly)
+						Console.Error.WriteLine(new string('-', 20));
 				}
-				Console.WriteLine("\t\t},");
 			}
-			Console.WriteLine("\t};\n}");
+
+			if (fontRangeMap.Count == 0)
+			{
+				Console.Error.WriteLine("No usable font ranges detected across the inspected fonts.");
+				return 1;
+			}
+
+			var mergedRanges = FontRangeMerger.Merge(fontRangeMap);
+			if (mergedRanges.Count == 0)
+			{
+				Console.Error.WriteLine("No combined coverage ranges to report.");
+			}
+			else
+			{
+				WriteGeneratedSource(writer, mergedRanges, fontWeightMap);
+			}
+
+			return 0;
+		}
+		finally
+		{
+			if (fileWriter is not null)
+			{
+				await fileWriter.FlushAsync();
+				await fileWriter.DisposeAsync();
+			}
+		}
+	}
+
+	private static TextWriter CreateOutputWriter(FileInfo? outputFile, out StreamWriter? fileWriter)
+	{
+		if (outputFile is null)
+		{
+			Console.OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+			fileWriter = null;
+			return Console.Out;
 		}
 
-		return 0;
+		outputFile.Directory?.Create();
+		var stream = File.Open(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read);
+		fileWriter = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false))
+		{
+			NewLine = "\n"
+		};
+		return fileWriter;
 	}
+
+	private static void WriteGeneratedSource(TextWriter writer, List<(int Start, int End, List<string> Fonts)> mergedRanges, Dictionary<string, List<FontVariant>> fontWeightMap)
+	{
+		writer.WriteLine("using System.Collections.Generic;");
+		writer.WriteLine();
+		writer.WriteLine("namespace Microsoft.UI.Xaml.Documents.TextFormatting;");
+		writer.WriteLine();
+		writer.WriteLine("public static class FallbackFontMaps");
+		writer.WriteLine("{");
+		writer.WriteLine("\tpublic static readonly IReadOnlyList<(int start, int end, List<string> fonts)> CodepointsToFontFamilies = new List<(int, int, List<string>)>");
+		writer.WriteLine("\t{");
+		foreach (var span in mergedRanges)
+		{
+			var startLiteral = $"0x{span.Start:X4}";
+			var endLiteral = $"0x{span.End:X4}";
+			var fontsLiteral = string.Join(", ", span.Fonts.Select(font => $"\"{EscapeString(font)}\""));
+			writer.WriteLine($"\t\t({startLiteral}, {endLiteral}, [{fontsLiteral}]),");
+		}
+		writer.WriteLine("\t};");
+		writer.WriteLine();
+		writer.WriteLine("\tpublic static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> FontWeightsToRawUrls = new Dictionary<string, IReadOnlyDictionary<string, string>>");
+		writer.WriteLine("\t{");
+		foreach (var (family, variants) in fontWeightMap.OrderBy(kvp => kvp.Key, StringComparer.Ordinal))
+		{
+			writer.WriteLine($"\t\t[\"{EscapeString(family)}\"] = new Dictionary<string, string>");
+			writer.WriteLine("\t\t{");
+			var seenWeights = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			var orderedVariants = variants
+				.OrderBy(v => v.Weight, StringComparer.OrdinalIgnoreCase)
+				.ThenBy(v => Path.GetFileName(v.LocalPath), StringComparer.OrdinalIgnoreCase);
+			foreach (var variant in orderedVariants)
+			{
+				if (!seenWeights.Add(variant.Weight))
+				{
+					Console.Error.WriteLine($"Skipping duplicate weight '{variant.Weight}' for '{family}' ({Path.GetFileName(variant.LocalPath)})");
+					continue;
+				}
+				writer.WriteLine($"\t\t\t[\"{EscapeString(variant.Weight)}\"] = \"{EscapeString(variant.RawUrl)}\",");
+			}
+			writer.WriteLine("\t\t},");
+		}
+		writer.WriteLine("\t};");
+		writer.WriteLine("}");
+	}
+
+	private static string EscapeString(string value) => value
+		.Replace("\\", "\\\\")
+		.Replace("\"", "\\\"");
 }
 
 public static class TtfReader

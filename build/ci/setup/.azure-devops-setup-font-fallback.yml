@@ -20,13 +20,13 @@ stages:
         set -euo pipefail
         
         echo "Regenerating FontFallbackMaps.skia.cs..."
-        dotnet run --project src/FontFallbackPreprocessor/FontFallbackPreprocessor.csproj -c Release -- --summary-only > src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new
+        dotnet run --project src/FontFallbackPreprocessor -c Release -- --summary-only -o src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new
         
         if ! diff -u -a src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs.new > diff.txt; then
           echo "Error: FontFallbackMaps.skia.cs is not up to date."
           cat diff.txt
           echo "Please run the following command locally and commit the changes:"
-          echo "dotnet run --project src/FontFallbackPreprocessor/FontFallbackPreprocessor.csproj -- --summary-only > src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs"
+          echo "dotnet run --project src/FontFallbackPreprocessor -- --summary-only -o src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs"
           exit 1
         else
           echo "FontFallbackMaps.skia.cs is up to date."
