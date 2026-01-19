@@ -151,8 +151,17 @@ static class AppHost
 			{
 				Console.WriteLine($"\t\t[\"{family}\"] = new Dictionary<string, string>");
 				Console.WriteLine("\t\t{");
-				foreach (var variant in variants.OrderBy(v => v.Weight, StringComparer.OrdinalIgnoreCase))
+				var seenWeights = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+				var orderedVariants = variants
+					.OrderBy(v => v.Weight, StringComparer.OrdinalIgnoreCase)
+					.ThenBy(v => Path.GetFileName(v.LocalPath), StringComparer.OrdinalIgnoreCase);
+				foreach (var variant in orderedVariants)
 				{
+					if (!seenWeights.Add(variant.Weight))
+					{
+						Console.Error.WriteLine($"Skipping duplicate weight '{variant.Weight}' for '{family}' ({Path.GetFileName(variant.LocalPath)})");
+						continue;
+					}
 					Console.WriteLine($"\t\t\t[\"{variant.Weight}\"] = \"{variant.RawUrl}\",");
 				}
 				Console.WriteLine("\t\t},");
