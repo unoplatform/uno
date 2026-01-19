@@ -15,6 +15,7 @@ jobs:
 - job: Skia_macos_Runtime_Tests_Build
   displayName: 'Runtime Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmMacImage }}

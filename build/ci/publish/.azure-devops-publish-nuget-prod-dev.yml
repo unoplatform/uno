@@ -2,6 +2,7 @@ jobs:
 - deployment: 'Nuget_Prod_Dev'
   displayName: 'Nuget Publish Prod Dev'
   environment: 'Uno UI Production'
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmImage }}
