@@ -1,5 +1,7 @@
 ﻿using System;
 using Uno;
+using Uno.UI.DataBinding;
+
 
 #if HAS_UNO_WINUI
 using DispatcherQueueTimer = Microsoft.UI.Dispatching.DispatcherQueueTimer;
@@ -55,4 +57,6 @@ public partial class DispatcherTimer : IDispatcherTimer
 	public void Stop() => _timer.Stop();
 
 	private void OnTick(DispatcherQueueTimer sender, object args) => Tick?.Invoke(this, null);
+
+	internal DependencyObject TargetObject { get; set; }
 }

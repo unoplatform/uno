@@ -191,7 +191,7 @@ internal partial class PopupRoot : Canvas
 	{
 		if (args.Key == VirtualKey.Escape)
 		{
-			CloseTopmostPopup(FocusState.Keyboard, PopupFilter.LightDismissOrFlyout, out var didCloseAPopup);
+			var didCloseAPopup = CloseTopmostPopup(FocusState.Keyboard, PopupFilter.LightDismissOrFlyout);
 			args.Handled = didCloseAPopup;
 		}
 	}
