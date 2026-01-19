@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference CustomProperty.cpp, commit d883cf3
+// MUX Reference CustomProperty.cpp, commit ffa9bdad1
 
 #nullable enable
 
