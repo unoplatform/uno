@@ -18,17 +18,19 @@ internal class Program
 			Console.WriteLine("Usage: dnx -y uno.devserver [options] [command]");
 			Console.WriteLine();
 			Console.WriteLine("Options:");
-			Console.WriteLine("  --help, -h                 Show this help message and exit");
-			Console.WriteLine("  --log-level, -l <level>    Set the log level (Trace, Debug, Information, Warning, Error, Critical, None). Default is Information.");
-			Console.WriteLine("  --file-log, -fl <path>     Enable file logging to the provided file path (supports {Date} token). Required path argument.");
-			Console.WriteLine("  --mcp-app                  Start in App MCP STDIO mode");
-			Console.WriteLine("  --mcp-wait-tools-list      Wait for upstream server tools before responding to list_tools (MCP mode only)");
-			Console.WriteLine("  --force-roots-fallback     This mode can be used when the MCP client does not support the roots feature");
+			WriteOption("--help, -h", "Show this help message and exit");
+			WriteOption("--log-level, -l <level>", "Set the log level (Trace, Debug, Information, Warning, Error, Critical, None). Default is Information.");
+			WriteOption("--file-log, -fl <path>", "Enable file logging to the provided file path (supports {Date} token). Required path argument.");
+			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
+			WriteOption("--mcp-wait-tools-list", "Wait for upstream server tools before responding to list_tools (MCP mode only)");
+			WriteOption("--force-roots-fallback", "This mode can be used when the MCP client does not support the roots feature");
+			WriteOption("--force-generate-tool-cache", "Force tool discovery and persist the cache immediately (MCP mode only)");
+			WriteOption("--solution-dir <path>", "Explicit solution root when priming tools without client-provided roots");
 			Console.WriteLine();
 			Console.WriteLine("Commands:");
-			Console.WriteLine("  start                      Start the DevServer for the current folder");
-			Console.WriteLine("  stop                       Stop the DevServer for the current folder");
-			Console.WriteLine("  list                       List active DevServer instances");
+			WriteCommand("start", "Start the DevServer for the current folder");
+			WriteCommand("stop", "Stop the DevServer for the current folder");
+			WriteCommand("list", "List active DevServer instances");
 			Console.WriteLine();
 			return 0;
 		}
@@ -120,5 +122,17 @@ internal class Program
 			}
 		}
 		return null;
+	}
+
+	private static void WriteOption(string option, string description)
+	{
+		const int optionWidth = 28;
+		Console.WriteLine($"  {option,-optionWidth} {description}");
+	}
+
+	private static void WriteCommand(string command, string description)
+	{
+		const int commandWidth = 10;
+		Console.WriteLine($"  {command,-commandWidth} {description}");
 	}
 }

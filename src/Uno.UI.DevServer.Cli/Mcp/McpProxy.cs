@@ -24,12 +24,18 @@ internal class McpProxy
 	private readonly object _toolCacheLock = new();
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
+	private bool _forceGenerateToolCache;
+	private string? _solutionDirectory;
+	private bool _devServerStarted;
 	private string? _currentDirectory;
 	private int _devServerPort;
 	private List<string> _forwardedArgs = [];
 	private string[] _roots = [];
+	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
+	private Task? _cachePrimedWatcher;
 
 	private const string ToolCacheFileName = "tools-cache.json";
+	private bool IsToolCacheEnabled => _forceRootsFallback || _forceGenerateToolCache;
 
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client"];
@@ -44,17 +50,37 @@ internal class McpProxy
 		_toolCachePath = InitializeToolCachePath();
 	}
 
-	public async Task<int> RunAsync(string currentDirectory, int port, List<string> forwardedArgs, bool waitForTools, bool forceRootsFallback, CancellationToken ct)
+	public async Task<int> RunAsync(
+		string currentDirectory,
+		int port,
+		List<string> forwardedArgs,
+		bool waitForTools,
+		bool forceRootsFallback,
+		bool forceGenerateToolCache,
+		string? solutionDirectory,
+		CancellationToken ct)
 	{
 		_waitForTools = waitForTools;
 		_forceRootsFallback = forceRootsFallback;
+		_forceGenerateToolCache = forceGenerateToolCache;
 		_currentDirectory = currentDirectory;
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
+		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
+		InitializeToolCachePrimingTracker();
+
+		EnsureDevServerStartedFromSolutionDirectory();
 
 		try
 		{
-			return await StartMcpStdIoProxyAsync(ct);
+			var exitCode = await StartMcpStdIoProxyAsync(ct);
+
+			if (!await EnsureCachePrimingCompletedAsync())
+			{
+				return 1;
+			}
+
+			return exitCode;
 		}
 		catch (Exception ex)
 		{
@@ -66,7 +92,7 @@ internal class McpProxy
 	[Description("This tool MUST be called before other uno app tools to initialize properly")]
 	private async Task SetRoots([Description("Fully qualified root folder path for the workspace")] string[] roots)
 	{
-		if (!_forceRootsFallback)
+		if (!IsToolCacheEnabled)
 		{
 			return;
 		}
@@ -91,12 +117,18 @@ internal class McpProxy
 	{
 		_logger.LogTrace("MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
+		if (_devServerStarted)
+		{
+			_logger.LogTrace("DevServer monitor already running; skipping additional root processing");
+			return;
+		}
+
 		if (_roots.FirstOrDefault() is { } rootUri)
 		{
 			var rootPath = GetRootPath(rootUri);
 			if (!string.IsNullOrWhiteSpace(rootPath))
 			{
-				_devServerMonitor.StartMonitoring(rootPath, _devServerPort, _forwardedArgs);
+				StartDevServerMonitor(rootPath);
 			}
 		}
 		else if (!_forceRootsFallback)
@@ -148,6 +180,132 @@ internal class McpProxy
 		}
 
 		return path;
+	}
+
+	private void EnsureDevServerStartedFromSolutionDirectory()
+	{
+		if (!_forceGenerateToolCache || string.IsNullOrWhiteSpace(_solutionDirectory))
+		{
+			return;
+		}
+
+		StartDevServerMonitor(_solutionDirectory);
+	}
+
+	private void StartDevServerMonitor(string? directory)
+	{
+		if (_devServerStarted)
+		{
+			return;
+		}
+
+		var normalized = NormalizeSolutionDirectory(directory);
+		if (string.IsNullOrWhiteSpace(normalized))
+		{
+			_logger.LogWarning("Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
+			return;
+		}
+
+		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
+		_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
+		_devServerStarted = true;
+	}
+
+	private string? NormalizeSolutionDirectory(string? directory)
+	{
+		if (string.IsNullOrWhiteSpace(directory))
+		{
+			return null;
+		}
+
+		try
+		{
+			var basePath = _currentDirectory ?? Environment.CurrentDirectory;
+			var combined = Path.IsPathRooted(directory)
+				? directory
+				: Path.Combine(basePath, directory);
+			return Path.GetFullPath(combined);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unable to normalize solution directory '{Directory}'", directory);
+			return null;
+		}
+	}
+
+	private void InitializeToolCachePrimingTracker()
+	{
+		if (!_forceGenerateToolCache)
+		{
+			_toolCachePrimedTcs = null;
+			_cachePrimedWatcher = null;
+			return;
+		}
+
+		_toolCachePrimedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		_cachePrimedWatcher = null;
+	}
+
+	private async Task<bool> EnsureCachePrimingCompletedAsync()
+	{
+		if (!_forceGenerateToolCache)
+		{
+			return true;
+		}
+
+		if (_toolCachePrimedTcs is null)
+		{
+			_logger.LogError("Tool cache priming tracker was not initialized");
+			return false;
+		}
+
+		try
+		{
+			var result = await _toolCachePrimedTcs.Task;
+			if (!result)
+			{
+				_logger.LogError("Tool cache priming failed");
+			}
+			return result;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Tool cache priming failed with an exception");
+			return false;
+		}
+	}
+
+	private void StartCachePrimingWatcher(IHost host)
+	{
+		if (!_forceGenerateToolCache || _toolCachePrimedTcs is null)
+		{
+			return;
+		}
+
+		_cachePrimedWatcher = _toolCachePrimedTcs.Task.ContinueWith(async task =>
+		{
+			try
+			{
+				if (task.Status == TaskStatus.RanToCompletion && task.Result)
+				{
+					_logger.LogInformation("Tool cache primed successfully; stopping MCP proxy");
+				}
+				else if (task.Status == TaskStatus.RanToCompletion)
+				{
+					_logger.LogWarning("Tool cache priming failed; stopping MCP proxy");
+				}
+				else if (task.IsFaulted)
+				{
+					_logger.LogError(task.Exception, "Tool cache priming failed with an exception; stopping MCP proxy");
+				}
+
+				await host.StopAsync();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Error while stopping MCP proxy after tool cache priming");
+			}
+		}, TaskScheduler.Default).Unwrap();
 	}
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
@@ -240,6 +398,8 @@ internal class McpProxy
 
 		var host = builder.Build();
 
+		StartCachePrimingWatcher(host);
+
 		_mcpClientProxy.RegisterToolListChangedCallback(async () =>
 		{
 			_logger.LogTrace("Upstream tool list changed");
@@ -262,6 +422,7 @@ internal class McpProxy
 		_devServerMonitor.ServerFailed += () =>
 		{
 			_logger.LogError("DevServer failed to start, stopping MCP proxy");
+			_toolCachePrimedTcs?.TrySetResult(false);
 			host.StopAsync();
 		};
 
@@ -334,7 +495,7 @@ internal class McpProxy
 
 	private async Task RefreshCachedToolsFromUpstreamAsync()
 	{
-		if (!_forceRootsFallback)
+		if (!IsToolCacheEnabled)
 		{
 			return;
 		}
@@ -369,7 +530,7 @@ internal class McpProxy
 
 			_toolCacheLoaded = true;
 
-			if (!_forceRootsFallback)
+			if (!IsToolCacheEnabled)
 			{
 				return _toolCache;
 			}
@@ -407,7 +568,7 @@ internal class McpProxy
 
 	private void PersistToolCacheIfNeeded(Tool[] tools)
 	{
-		if (!_forceRootsFallback || tools.Length == 0)
+		if (!IsToolCacheEnabled || tools.Length == 0)
 		{
 			return;
 		}
@@ -444,10 +605,12 @@ internal class McpProxy
 				_shouldRefreshToolCache = false;
 
 				_logger.LogTrace("Cached {Count} tools at {Path}", tools.Length, _toolCachePath);
+				_toolCachePrimedTcs?.TrySetResult(true);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogWarning(ex, "Unable to persist tool cache to {Path}", _toolCachePath);
+				_toolCachePrimedTcs?.TrySetException(ex);
 			}
 		}
 	}
