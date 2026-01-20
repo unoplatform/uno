@@ -38,6 +38,8 @@ using Uno.UI.Samples.UITests.Helpers;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using UITests.Playground;
+using SamplesApp.Samples.Help;
 
 namespace SampleControl.Presentation
 {
@@ -69,7 +71,8 @@ namespace SampleControl.Presentation
 		private Window _window;
 
 		private List<SampleChooserCategory> _categories;
-		private List<SampleChooserCategory> _unfilteredCategories;
+		private List<SampleChooserCategory> _allCategories;
+		private List<SampleChooserCategory> _visibleCategories;
 		private List<SampleChooserCategory> _manualTestsCategories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
@@ -126,7 +129,7 @@ namespace SampleControl.Presentation
 			InitializeCommands();
 			ObserveChanges();
 
-			RefreshSamples();
+			InitializeCategories();
 
 			if (_log.IsEnabled(LogLevel.Information))
 			{
@@ -458,21 +461,19 @@ namespace SampleControl.Presentation
 
 		internal void OpenPlayground()
 		{
-			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+			_ = SetSelectedSample(CancellationToken.None, typeof(Playground).FullName);
 		}
 
 		internal async Task OpenHelp(CancellationToken ct)
 		{
 			IsSplitVisible = false;
 
-			var helpPage = GetContent(typeof(SamplesApp.Samples.Help.HelpPage).GetTypeInfo());
+			_ = SetSelectedSample(CancellationToken.None, typeof(HelpPage).FullName);
+		}
 
-			if (helpPage == null)
-			{
-				throw new InvalidOperationException($"Unable to find HelpPage");
-			}
-
-			await UpdateContent(ct, helpPage);
+		private async Task OpenHiddenSample(CancellationToken ct, Type sampleType)
+		{
+			await SetSelectedSample(ct, sampleType.FullName);
 		}
 
 		internal async Task OpenSample(CancellationToken ct, SampleChooserContent content)
@@ -657,7 +658,7 @@ namespace SampleControl.Presentation
 						return;
 					}
 
-					var results = await SearchAsync(search, _unfilteredCategories, currentSearch.Token);
+					var results = await SearchAsync(search, _allCategories, currentSearch.Token);
 
 					if (results is null || currentSearch.IsCancellationRequested)
 					{
@@ -766,21 +767,15 @@ namespace SampleControl.Presentation
 #endif
 		}
 
-		private void RefreshSamples()
+		private void UpdateCategoryList()
 		{
-			if (_unfilteredCategories is null)
-			{
-				_unfilteredCategories = GetSamples(false);
-				_manualTestsCategories = GetSamples(true);
-			}
-
 			if (_manualTestsOnly)
 			{
 				Categories = _manualTestsCategories;
 			}
 			else
 			{
-				Categories = _unfilteredCategories;
+				Categories = _visibleCategories;
 			}
 		}
 
@@ -801,21 +796,31 @@ namespace SampleControl.Presentation
 		/// This method retreives all the categories and sample contents associated with them throughout the app.
 		/// </summary>
 		/// <returns></returns>
-		private List<SampleChooserCategory> GetSamples(bool manualTestsOnly)
+		private void InitializeCategories()
 		{
-			var categories =
+			// Get all samples and their SampleAttribute.
+			var samples =
 				from type in _allSamples
 				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
-				where sampleAttribute != null
-					&& (!manualTestsOnly || sampleAttribute.IsManualTest)
-					&& !sampleAttribute.HideFromBrowser
-				let content = GetContent(type.GetTypeInfo(), sampleAttribute)
+				select (type, sampleAttribute);
+
+			// Group samples into categories.
+			var categories =
+				from sample in samples
+				let content = GetContent(sample.type.GetTypeInfo(), sample.sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
 				orderby contentByCategory.Key.ToLower(CultureInfo.CurrentUICulture)
 				select new SampleChooserCategory(contentByCategory);
 
-			return categories.ToList();
+			_allCategories = categories.ToList();
+			_visibleCategories = _allCategories.Where(c => !c.Category.StartsWith('_')).ToList();
+			_manualTestsCategories = _allCategories
+				.Select(cat => new SampleChooserCategory(cat.Category, cat.SamplesContent.Where(s => s.IsManualTest)))
+				.Where(cat => cat.Count > 0)
+				.ToList();
+
+			UpdateCategoryList();
 		}
 
 		private static SampleChooserContent GetContent(TypeInfo type)
@@ -834,8 +839,7 @@ namespace SampleControl.Presentation
 				IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
 				IsManualTest = attribute.IsManualTest,
 				UsesFrame = attribute.UsesFrame,
-				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts,
-				HideFromBrowser = attribute.HideFromBrowser
+				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts
 			};
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
@@ -885,7 +889,7 @@ namespace SampleControl.Presentation
 		{
 			// If true, load all samples and not just those of a selected category
 			var samples = getAllSamples
-				? _unfilteredCategories.SelectMany(cat => cat.SamplesContent).ToList()
+				? _allCategories.SelectMany(cat => cat.SamplesContent).ToList()
 				: SampleContents;
 
 			var favorites = (favoriteSamples != null)
@@ -1088,7 +1092,7 @@ namespace SampleControl.Presentation
 
 		private SampleChooserCategory GetCategory(SampleChooserContent content)
 		{
-			return _unfilteredCategories.FirstOrDefault(cat =>
+			return _allCategories.FirstOrDefault(cat =>
 						cat.SamplesContent.Any(
 							sample => sample.Equals(content)));
 		}
@@ -1105,7 +1109,7 @@ namespace SampleControl.Presentation
 		public string GetAllSamplesNames()
 		{
 			// TODO: This might not be returning samples without a category (i.e, attributed just with [Sample] without any arguments)
-			var q = from category in _unfilteredCategories
+			var q = from category in _allCategories
 					from test in category.SamplesContent
 					where !test.IgnoreInSnapshotTests && !test.IsManualTest
 					select test.ControlType.FullName;
@@ -1115,7 +1119,7 @@ namespace SampleControl.Presentation
 
 		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
 		{
-			var category = _unfilteredCategories.FirstOrDefault(
+			var category = _allCategories.FirstOrDefault(
 				c => c.Category != null &&
 				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
 
@@ -1143,7 +1147,7 @@ namespace SampleControl.Presentation
 
 			try
 			{
-				var q = from category in _unfilteredCategories
+				var q = from category in _allCategories
 						from test in category.SamplesContent
 						where test.ControlType.FullName == metadataName
 						select test;
