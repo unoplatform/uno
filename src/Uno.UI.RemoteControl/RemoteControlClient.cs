@@ -64,9 +64,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </remarks>
 	public static void OnRemoteControlClientAvailable(Action<RemoteControlClient> action)
 	{
-		if (Instance is { })
+		if (Instance is { } i1)
 		{
-			action(Instance);
+			action(i1);
 		}
 		else
 		{
@@ -78,9 +78,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					? [action]
 					: [.. waitingList, action];
 
-				if (Instance is { } i) // Last chance to avoid the waiting list
+				if (Instance is { } i2) // Last chance to avoid the waiting list
 				{
-					action(i);
+					action(i2);
 					break;
 				}
 
@@ -148,6 +148,29 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// Application type used to initialize this client.
 	/// </summary>
 	public Type AppType { get; }
+
+	/// <summary>
+	/// Override the connection transport used by the client.
+	/// </summary>
+	/// <remarks>
+	/// This is a very advanced feature and should be used only when a custom transport is available.
+	/// Mostly for unit testing or very special scenarios.
+	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public void OverrideConnectionTransport(IFrameTransport transport)
+	{
+		var connection =
+			Task.FromResult<Connection?>(new Connection(this, new Uri("local://rc"), Stopwatch.StartNew(), transport));
+
+		if (Interlocked.CompareExchange(ref _connection, connection, null) is { } oldConnection)
+		{
+			throw new InvalidOperationException("Connection transport has already been set.");
+		}
+	}
+
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static void OverrideConnectionTransportWhenClientAvailable(IFrameTransport transport)
+		=> OnRemoteControlClientAvailable(client => client.OverrideConnectionTransport(transport));
 
 	/// <summary>
 	/// Gets the minimum interval between re-connection attempts.

@@ -29,26 +29,6 @@ public sealed class RemoteControlServerHost : IAsyncDisposable
 	}
 
 	/// <summary>
-	/// Starts the devserver instance.
-	/// </summary>
-	/// <param name="ct">Cancellation token used to observe cancellation.</param>
-	public ValueTask StartAsync(CancellationToken ct = default)
-	{
-		ThrowIfDisposed();
-		return ValueTask.CompletedTask;
-	}
-
-	/// <summary>
-	/// Stops the devserver instance.
-	/// </summary>
-	/// <param name="ct">Cancellation token used to observe cancellation.</param>
-	public ValueTask StopAsync(CancellationToken ct = default)
-	{
-		ThrowIfDisposed();
-		return ValueTask.CompletedTask;
-	}
-
-	/// <summary>
 	/// Handles a single connection by creating a scoped server instance and running it on the provided transport.
 	/// </summary>
 	/// <param name="transportFactory">Factory creating the transport tied to the scoped service provider.</param>

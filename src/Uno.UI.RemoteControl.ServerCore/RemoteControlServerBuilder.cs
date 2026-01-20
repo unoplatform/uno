@@ -20,11 +20,6 @@ public sealed class RemoteControlServerBuilder
 	}
 
 	/// <summary>
-	/// Gets the service collection used to configure the devserver host.
-	/// </summary>
-	public IServiceCollection Services => _services;
-
-	/// <summary>
 	/// Builds the devserver host from a service provider controlled by the caller.
 	/// </summary>
 	/// <param name="serviceProvider">Fully configured provider that will own the server lifetime.</param>
