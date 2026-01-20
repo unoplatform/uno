@@ -38,7 +38,7 @@ document.addEventListener(
         }
         
         // Fetch and update SDK version dynamically from NuGet
-        fetch('https://api.nuget.org/v3-flatcontainer/uno.templates/index.json')
+        fetch('https://api.nuget.org/v3-flatcontainer/uno.sdk/index.json')
             .then(r => r.json())
             .then(data => {
                 if (data.versions) {
@@ -185,7 +185,7 @@ document.addEventListener(
                     
                     // Stable version section
                     const stableCommand = latestStableVersion
-                        ? 'dotnet new install Uno.Templates::' + latestStableVersion
+                        ? 'dotnet new install Uno.SDK::' + latestStableVersion
                         : null;
                     body.appendChild(createVersionSection(
                         '📦',
@@ -197,7 +197,7 @@ document.addEventListener(
                     
                     // Dev version section
                     const devCommand = latestDevVersion
-                        ? 'dotnet new install Uno.Templates::' + latestDevVersion
+                        ? 'dotnet new install Uno.SDK::' + latestDevVersion
                         : null;
                     const devSection = createVersionSection(
                         '🚀',
@@ -214,10 +214,10 @@ document.addEventListener(
                     devNote.appendChild(noteStrong);
                     devNote.appendChild(document.createTextNode(' '));
                     const nugetLink = document.createElement('a');
-                    nugetLink.href = 'https://www.nuget.org/packages/Uno.Templates';
+                    nugetLink.href = 'https://www.nuget.org/packages/Uno.SDK';
                     nugetLink.target = '_blank';
                     nugetLink.rel = 'noopener';
-                    nugetLink.textContent = 'Uno.Templates on NuGet.org';
+                    nugetLink.textContent = 'Uno.SDK on NuGet.org';
                     devNote.appendChild(nugetLink);
                     devSection.appendChild(devNote);
                     body.appendChild(devSection);
@@ -228,7 +228,7 @@ document.addEventListener(
                         'Check Installed Version',
                         null,
                         null,
-                        'dotnet new details Uno.Templates'
+                        'dotnet new details Uno.SDK'
                     ));
                     
                     // Tip note
@@ -242,7 +242,7 @@ document.addEventListener(
                     const br = document.createElement('br');
                     tipNote.appendChild(br);
                     const tipCode = document.createElement('code');
-                    tipCode.textContent = 'dotnet new uninstall Uno.Templates';
+                    tipCode.textContent = 'dotnet new uninstall Uno.SDK';
                     tipNote.appendChild(tipCode);
                     body.appendChild(tipNote);
                     
