@@ -11,6 +11,8 @@ using Microsoft.UI.Xaml.Input;
 using System.Threading;
 using SampleControl.Entities;
 using Windows.System;
+using System.Threading.Tasks;
+
 
 #if WINAPPSDK
 using Windows.Foundation.Collections;
@@ -38,7 +40,7 @@ namespace Uno.UI.Samples.Controls
 
 		private SampleChooserViewModel ViewModel => (SampleChooserViewModel)DataContext;
 
-		private void FocusSearchAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		private async void FocusSearchAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
 		{
 			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
 			{
@@ -49,6 +51,7 @@ namespace Uno.UI.Samples.Controls
 			if (!SplitView.IsPaneOpen)
 			{
 				SplitView.IsPaneOpen = true;
+				await Task.Yield();
 			}
 
 			SearchBox.Focus(FocusState.Keyboard);
@@ -116,6 +119,48 @@ namespace Uno.UI.Samples.Controls
 			}
 
 			ViewModel.ShowNewSectionCommand.Execute("Recents");
+			args.Handled = true;
+		}
+
+		private void PlaygroundAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.OpenPlaygroundCommand.CanExecute(null))
+			{
+				ViewModel.OpenPlaygroundCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void RuntimeTestsAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.OpenRuntimeTestsCommand.CanExecute(null))
+			{
+				ViewModel.OpenRuntimeTestsCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void HelpAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.OpenHelpCommand.CanExecute(null))
+			{
+				ViewModel.OpenHelpCommand.Execute(null);
+			}
 			args.Handled = true;
 		}
 
