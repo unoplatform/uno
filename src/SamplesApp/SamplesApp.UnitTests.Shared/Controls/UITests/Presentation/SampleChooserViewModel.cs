@@ -788,9 +788,8 @@ namespace SampleControl.Presentation
 		}
 
 		/// <summary>
-		/// This method retreives all the categories and sample contents associated with them throughout the app.
+		/// This method retrieves all the categories and sample contents associated with them throughout the app.
 		/// </summary>
-		/// <returns></returns>
 		private void InitializeCategories()
 		{
 			// Get all samples and their SampleAttribute.
