@@ -14,6 +14,7 @@ namespace UITests.Windows_UI_Xaml_Controls.WebView;
 
 [Sample("WebView", Name = "WebView_Input_Keyboard_Insets",
 	IsManualTest = true,
+	IgnoreInSnapshotTests = true,
 	Description = "Android Only. Other platform you will see an empty page. \n" +
 	"When focusing inputs, inset will be properly added preventing keyboard from covering the focused input.")]
 public sealed partial class WebView_Input_Keyboard_Insets : Page

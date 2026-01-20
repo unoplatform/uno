@@ -18,6 +18,7 @@ namespace UITests.Windows_UI_Xaml_Controls.WebView;
 
 [Sample("WebView",
 	IsManualTest = true,
+	IgnoreInSnapshotTests = true,
 	Description = "Shows a Webview between two rectangles and when scrolling it should have the right clipping")]
 public sealed partial class WebView2_Clipping : Page
 {
