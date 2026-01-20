@@ -144,7 +144,7 @@ namespace SampleControl.Presentation
 			{
 				_manualTestsOnly = value;
 				RaisePropertyChanged();
-				RefreshSamples();
+				UpdateCategoryList();
 			}
 		}
 

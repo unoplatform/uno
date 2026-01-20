@@ -7,13 +7,12 @@ using Microsoft.UI.Xaml.Controls;
 namespace SamplesApp.Samples.UnitTests
 {
 	[Sample(
-		"Unit Tests",
+		"_None",
 		Name = "Unit Tests Runner",
 		Description = "Test bench to run UI tests that does not require interaction (a.k.a. runtime tests)",
 		UsesFrame = false,
 		IgnoreInSnapshotTests = true,
-		DisableKeyboardShortcuts = true,
-		HideFromBrowser = true)]
+		DisableKeyboardShortcuts = true)]
 	public sealed partial class UnitTestsPage : Page
 	{
 		public UnitTestsPage()
