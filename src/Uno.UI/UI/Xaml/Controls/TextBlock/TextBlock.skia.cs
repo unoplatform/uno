@@ -180,11 +180,25 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Canvas.Save();
 			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
-			var selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), DefaultBrushes.SelectedTextForegroundColor);
+			var selectionHighlighter = new TextHighlighter()
+			{
+				Background = SelectionHighlightColor,
+				Foreground = DefaultBrushes.SelectedTextForegroundColor,
+				Ranges =
+				{
+					new TextRange
+					{
+						StartIndex = Math.Min(Selection.start, Selection.end),
+						Length = Math.Abs(Selection.start - Selection.end)
+					}
+				}
+			};
+			TextHighlighters.Add(selectionHighlighter);
 			ParsedText.Draw(
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
-				_renderSelection ? selection : null);
+				TextHighlighters);
+			TextHighlighters.Remove(selectionHighlighter);
 			session.Canvas.Restore();
 			DrawingFinished?.Invoke();
 		}
