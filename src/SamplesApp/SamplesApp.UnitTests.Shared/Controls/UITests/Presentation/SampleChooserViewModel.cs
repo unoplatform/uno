@@ -471,11 +471,6 @@ namespace SampleControl.Presentation
 			_ = SetSelectedSample(CancellationToken.None, typeof(HelpPage).FullName);
 		}
 
-		private async Task OpenHiddenSample(CancellationToken ct, Type sampleType)
-		{
-			await SetSelectedSample(ct, sampleType.FullName);
-		}
-
 		internal async Task OpenSample(CancellationToken ct, SampleChooserContent content)
 		{
 			await SetSelectedSample(ct, content.ControlType.FullName);
