@@ -218,6 +218,34 @@ document.addEventListener(
                     sdkSection.appendChild(sdkNote);
                     body.appendChild(sdkSection);
                     
+                    // Uno.Sdk Dev version section (for existing projects - preview)
+                    const sdkDevCommand = latestDevVersion
+                        ? `{\n  "msbuild-sdks": {\n    "Uno.Sdk": "${latestDevVersion}"\n  }\n}`
+                        : null;
+                    const sdkDevSection = createVersionSection(
+                        '🚀',
+                        'Update Uno.Sdk Dev (For Existing Projects - Preview)',
+                        latestDevVersion,
+                        'Preview features & fixes',
+                        sdkDevCommand,
+                        'Edit the global.json file at your solution root:'
+                    );
+                    const sdkDevNote = document.createElement('p');
+                    sdkDevNote.className = 'sdk-note';
+                    sdkDevNote.textContent = '📍 ';
+                    const sdkDevNoteStrong = document.createElement('strong');
+                    sdkDevNoteStrong.textContent = 'NuGet Package:';
+                    sdkDevNote.appendChild(sdkDevNoteStrong);
+                    sdkDevNote.appendChild(document.createTextNode(' '));
+                    const sdkDevNugetLink = document.createElement('a');
+                    sdkDevNugetLink.href = 'https://www.nuget.org/packages/Uno.Sdk';
+                    sdkDevNugetLink.target = '_blank';
+                    sdkDevNugetLink.rel = 'noopener';
+                    sdkDevNugetLink.textContent = 'Uno.Sdk on NuGet.org';
+                    sdkDevNote.appendChild(sdkDevNugetLink);
+                    sdkDevSection.appendChild(sdkDevNote);
+                    body.appendChild(sdkDevSection);
+                    
                     // Uno.Templates section (for creating new projects)
                     const templatesCommand = latestStableVersion
                         ? 'dotnet new install Uno.Templates'
