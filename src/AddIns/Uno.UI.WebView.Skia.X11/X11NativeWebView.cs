@@ -140,6 +140,7 @@ public class X11NativeWebView : INativeWebView
 		{
 			var window = new Window(Gtk.WindowType.Toplevel);
 			window.Title = _title;
+			window.Decorated = false;
 			var webview = new WebKit.WebView();
 			webview.Settings.EnableSmoothScrolling = true;
 			webview.Settings.EnableJavascript = true;
