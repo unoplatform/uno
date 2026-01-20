@@ -6,30 +6,6 @@ using System.Text;
 namespace Uno.UI.Samples.Controls
 {
 
-	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-	public sealed class SampleControlInfoAttribute : SampleAttribute
-	{
-		public SampleControlInfoAttribute(
-			string category = null,
-			string controlName = null,
-			Type viewModelType = null,
-			bool ignoreInSnapshotTests = false,
-			string description = null,
-			bool isManualTest = false,
-			bool usesFrame = true
-		)
-			: base(category)
-		{
-			Name = controlName;
-			ViewModelType = viewModelType;
-			IgnoreInSnapshotTests = ignoreInSnapshotTests;
-			IsManualTest = isManualTest;
-			Description = description;
-			UsesFrame = usesFrame;
-		}
-
-	}
-
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class SampleAttribute : Attribute
 	{

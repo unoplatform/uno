@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System;
 using DisplayInfo = Windows.Graphics.Display.DisplayInformation;
@@ -11,7 +11,7 @@ using Windows.Graphics.Display;
 
 namespace UITests.Shared.Windows_Graphics_Display
 {
-	[SampleControlInfo("Windows.Graphics.Display", "DisplayInformation", description: "Shows the values and events from DisplayInformation class properties. N/A for not implemented.", viewModelType: typeof(DisplayInformationTestsViewModel))]
+	[Sample("Windows.Graphics.Display", Name = "DisplayInformation", Description = "Shows the values and events from DisplayInformation class properties. N/A for not implemented.", ViewModelType = typeof(DisplayInformationTestsViewModel))]
 	public sealed partial class DisplayInformationTests : Page
 	{
 		public DisplayInformationTests()

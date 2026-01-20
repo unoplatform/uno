@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
@@ -26,19 +27,34 @@ internal class CliManager
 	{
 		try
 		{
+			var solutionDirParseResult = ExtractSolutionDirectory(originalArgs);
+			// --solution-dir is applied uniformly so automation and CI environments can run any
+			// command (start, stop, list, login, MCP) against a target solution even when the
+			// current working directory differs from the solution root.
+			if (!solutionDirParseResult.Success)
+			{
+				return 1;
+			}
+
+			originalArgs = solutionDirParseResult.FilteredArgs;
+			var workingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+
 			if (originalArgs.Contains("--mcp-app"))
 			{
-				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp-app").ToArray());
+				return await RunMcpProxyAsync(
+					originalArgs.Where(a => a != "--mcp-app").ToArray(),
+					workingDirectory,
+					solutionDirParseResult.SolutionDirectory);
 			}
 
 			ShowBanner();
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
-				return await OpenSettings(originalArgs);
+				return await OpenSettings(originalArgs, workingDirectory);
 			}
 
-			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(Environment.CurrentDirectory);
+			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
 
 			if (hostPath is null)
 			{
@@ -50,7 +66,7 @@ internal class CliManager
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			var startInfo = BuildHostArgs(hostPath, originalArgs, Environment.CurrentDirectory, redirectOutput: !isDirectOutputCommand);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: !isDirectOutputCommand);
 
 			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
 			return result.ExitCode;
@@ -80,16 +96,16 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> OpenSettings(string[] originalArgs)
+	private async Task<int> OpenSettings(string[] originalArgs, string workingDirectory)
 	{
-		var studioExecutable = await _unoToolsLocator.ResolveSettingsExecutableAsync(Environment.CurrentDirectory);
+		var studioExecutable = await _unoToolsLocator.ResolveSettingsExecutableAsync(workingDirectory);
 
 		if (studioExecutable is null)
 		{
 			return 1; // errors already logged
 		}
 
-		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, Environment.CurrentDirectory, redirectOutput: true);
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, workingDirectory, redirectOutput: true);
 
 		var (exitCode, stdOut, stdErr) = await DevServerProcessHelper.RunGuiProcessAsync(startInfo, _logger, TimeSpan.FromSeconds(3));
 
@@ -116,7 +132,7 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunMcpProxyAsync(string[] args)
+	private async Task<int> RunMcpProxyAsync(string[] args, string workingDirectory, string? solutionDirectory)
 	{
 		try
 		{
@@ -125,6 +141,7 @@ internal class CliManager
 			int requestedPort = 0;
 			bool mcpWaitToolsList = false;
 			bool forceRootsFallback = false;
+			bool forceGenerateToolCache = false;
 			var forwardedArgs = new List<string>();
 
 			for (int i = 0; i < args.Length; i++)
@@ -155,17 +172,73 @@ internal class CliManager
 					forceRootsFallback = true;
 					continue; // do not forward mcp-specific arguments to controller
 				}
+				else if (a == "--force-generate-tool-cache")
+				{
+					forceGenerateToolCache = true;
+					continue; // do not forward mcp-specific arguments to controller
+				}
 				forwardedArgs.Add(a);
 			}
 
+			var normalizedSolutionDirectory = solutionDirectory ?? (forceGenerateToolCache ? workingDirectory : null);
+
 			var waitForTools = mcpWaitToolsList;
-			return await _services.GetRequiredService<McpProxy>().RunAsync(Environment.CurrentDirectory, requestedPort, forwardedArgs, waitForTools, forceRootsFallback, CancellationToken.None);
+			return await _services.GetRequiredService<McpProxy>().RunAsync(
+				workingDirectory,
+				requestedPort,
+				forwardedArgs,
+				waitForTools,
+				forceRootsFallback,
+				forceGenerateToolCache,
+				normalizedSolutionDirectory,
+				CancellationToken.None);
 		}
 		catch (Exception ex)
 		{
 			_logger.LogError($"MCP proxy error: {ex.Message}");
 			return 1;
 		}
+	}
+
+	private (bool Success, string[] FilteredArgs, string? SolutionDirectory) ExtractSolutionDirectory(string[] args)
+	{
+		string? rawSolutionDirectory = null;
+		var filteredArgs = new List<string>(args.Length);
+
+		for (int i = 0; i < args.Length; i++)
+		{
+			var arg = args[i];
+			if (arg == "--solution-dir")
+			{
+				if (i + 1 >= args.Length)
+				{
+					_logger.LogError("Missing value for --solution-dir");
+					return (false, Array.Empty<string>(), null);
+				}
+
+				rawSolutionDirectory = args[i + 1];
+				i++; // skip value
+				continue;
+			}
+
+			filteredArgs.Add(arg);
+		}
+
+		string? normalizedSolutionDirectory = null;
+		if (!string.IsNullOrWhiteSpace(rawSolutionDirectory))
+		{
+			try
+			{
+				normalizedSolutionDirectory = Path.GetFullPath(rawSolutionDirectory);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Invalid solution directory '{Directory}'", rawSolutionDirectory);
+				return (false, Array.Empty<string>(), null);
+			}
+		}
+
+		return (true, filteredArgs.ToArray(), normalizedSolutionDirectory);
 	}
 
 	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true)

@@ -8,6 +8,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Internal;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
 
@@ -15,14 +16,20 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager : IInputInjectorTarget
 {
+	private readonly ContextMenuProcessor _contextMenuProcessor;
+
 	public InputManager(ContentRoot contentRoot)
 	{
+		_contextMenuProcessor = new ContextMenuProcessor(contentRoot);
+
 		ContentRoot = contentRoot;
 
 		ConstructKeyboardManager();
 
 		ConstructPointerManager();
 	}
+
+	internal ContextMenuProcessor ContextMenuProcessor => _contextMenuProcessor;
 
 	partial void ConstructKeyboardManager();
 

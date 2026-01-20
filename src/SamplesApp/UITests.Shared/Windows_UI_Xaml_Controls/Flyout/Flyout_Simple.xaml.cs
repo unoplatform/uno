@@ -1,9 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Flyout
 {
-	[SampleControlInfo("Flyouts", "Flyout_Simple")]
+	[Sample("Flyouts", Name = "Flyout_Simple")]
 	public sealed partial class Flyout_Simple : UserControl
 	{
 		public Flyout_Simple()

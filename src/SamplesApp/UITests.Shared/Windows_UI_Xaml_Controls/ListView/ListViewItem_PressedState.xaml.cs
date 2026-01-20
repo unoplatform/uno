@@ -1,9 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewItem_PressedState")]
+	[Sample("ListView", Name = "ListViewItem_PressedState")]
 	public sealed partial class ListViewItem_PressedState : UserControl
 	{
 		public ListViewItem_PressedState()

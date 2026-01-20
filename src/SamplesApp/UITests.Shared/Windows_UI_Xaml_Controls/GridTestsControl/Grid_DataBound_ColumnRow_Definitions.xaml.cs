@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Helper;
@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Grid_DataBound_ColumnRow_Definitions")]
+	[Sample("Grid", Name = "Grid_DataBound_ColumnRow_Definitions")]
 	public sealed partial class Grid_DataBound_ColumnRow_Definitions : UserControl
 	{
 		private Grid_DataBound_ColumnRow_Definitions_Context _context;

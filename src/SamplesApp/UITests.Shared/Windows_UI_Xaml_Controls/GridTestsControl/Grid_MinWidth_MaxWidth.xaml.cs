@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Grid_MinWidth_MaxWidth", description: "Grids with MinWidth and/or MaxWidth set on columns. Grid widths can be adjusted with slider.")]
+	[Sample("Grid", Name = "Grid_MinWidth_MaxWidth", Description = "Grids with MinWidth and/or MaxWidth set on columns. Grid widths can be adjusted with slider.")]
 	public sealed partial class Grid_MinWidth_MaxWidth : UserControl
 	{
 		public Grid_MinWidth_MaxWidth()

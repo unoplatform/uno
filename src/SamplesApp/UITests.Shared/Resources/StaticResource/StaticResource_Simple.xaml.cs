@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Resources.StaticResource
 {
-	[SampleControlInfo("Resources", "StaticResource_Simple")]
+	[Sample("Resources", Name = "StaticResource_Simple")]
 	public sealed partial class StaticResource_Simple : UserControl
 	{
 		public StaticResource_Simple()

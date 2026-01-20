@@ -17,6 +17,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 #if __APPLE_UIKIT__
@@ -173,6 +174,16 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public static RoutedEvent BringIntoViewRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.BringIntoViewRequested);
 
+		/// <summary>
+		/// Gets the identifier for the ContextRequested routed event.
+		/// </summary>
+		public static RoutedEvent ContextRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.ContextRequested);
+
+		/// <summary>
+		/// Gets the identifier for the ContextCanceled routed event.
+		/// </summary>
+		internal static RoutedEvent ContextCanceledEvent { get; } = new RoutedEvent(RoutedEventFlag.ContextCanceled);
+
 		private struct RoutedEventHandlerInfo
 		{
 			internal RoutedEventHandlerInfo(object handler, bool handledEventsToo)
@@ -274,6 +285,24 @@ namespace Microsoft.UI.Xaml
 		{
 			add => AddHandler(BringIntoViewRequestedEvent, value, false);
 			remove => RemoveHandler(BringIntoViewRequestedEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when the user has completed a context input gesture, such as a right-click.
+		/// </summary>
+		public event TypedEventHandler<UIElement, ContextRequestedEventArgs> ContextRequested
+		{
+			add => AddHandler(ContextRequestedEvent, value, false);
+			remove => RemoveHandler(ContextRequestedEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when the user has completed a context input gesture and the context flyout should not open.
+		/// </summary>
+		public event TypedEventHandler<UIElement, RoutedEventArgs> ContextCanceled
+		{
+			add => AddHandler(ContextCanceledEvent, value, false);
+			remove => RemoveHandler(ContextCanceledEvent, value);
 		}
 
 		public event PointerEventHandler PointerCanceled
@@ -499,6 +528,10 @@ namespace Microsoft.UI.Xaml
 			{
 				AddDragAndDropHandler(routedEvent, handlersCount, handler, handledEventsToo);
 			}
+			else if (routedEvent.IsContextEvent)
+			{
+				AddContextMenuHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
 		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
@@ -507,6 +540,7 @@ namespace Microsoft.UI.Xaml
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 		partial void AddDragAndDropHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddContextMenuHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 
 		public void RemoveHandler(RoutedEvent routedEvent, object handler)
 		{
@@ -553,6 +587,10 @@ namespace Microsoft.UI.Xaml
 			{
 				RemoveDragAndDropHandler(routedEvent, remainingHandlersCount, handler);
 			}
+			else if (routedEvent.IsContextEvent)
+			{
+				RemoveContextMenuHandler(routedEvent, remainingHandlersCount, handler);
+			}
 		}
 
 		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
@@ -561,6 +599,7 @@ namespace Microsoft.UI.Xaml
 		partial void RemoveManipulationHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 		partial void RemoveDragAndDropHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveContextMenuHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 
 		private int CountHandler(RoutedEvent routedEvent)
 			=> _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
@@ -626,7 +665,16 @@ namespace Microsoft.UI.Xaml
 				TrackKeyState(routedEvent, args);
 			}
 
-			// [3] Any local handlers?
+			// [3a] Invoke class handler FIRST (WinUI's FireEvent/Delegates equivalent)
+			// Class handlers run before instance handlers at each element during bubbling.
+			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
+				&& !ctx.IsInternal
+				&& !ctx.IsCleanup)
+			{
+				InvokeClassHandler(routedEvent, args);
+			}
+
+			// [3b] Any local handlers?
 			var isHandled = IsHandled(args);
 			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
@@ -1029,6 +1077,12 @@ namespace Microsoft.UI.Xaml
 				case TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> bringIntoViewRequestedHandler:
 					bringIntoViewRequestedHandler(this, (BringIntoViewRequestedEventArgs)args);
 					break;
+				case TypedEventHandler<UIElement, ContextRequestedEventArgs> contextRequestedHandler:
+					contextRequestedHandler(this, (ContextRequestedEventArgs)args);
+					break;
+				case TypedEventHandler<UIElement, RoutedEventArgs> typedRoutedEventHandler:
+					typedRoutedEventHandler(this, args);
+					break;
 				default:
 					this.Log().Error($"The handler type {handler.GetType()} has not been registered for RoutedEvent");
 					break;
@@ -1038,5 +1092,34 @@ namespace Microsoft.UI.Xaml
 		// Those methods are part of the internal UWP API
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool ShouldRaiseEvent(Delegate eventHandler) => eventHandler != null;
+
+		/// <summary>
+		/// Invokes class handlers for the specified routed event.
+		/// This is equivalent to WinUI's CControl::Delegates table + FireEvent mechanism.
+		/// Class handlers run before instance handlers at each element during bubbling.
+		/// </summary>
+		/// <remarks>
+		/// In WinUI:
+		/// - For Controls: Control::FireEvent calls OnContextRequestedImpl (virtual, can be overridden)
+		/// - For UIElements: CUIElement::OnContextRequested static delegate calls OnContextRequestedCore directly
+		/// </remarks>
+		private void InvokeClassHandler(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if (routedEvent == ContextRequestedEvent)
+			{
+				// WinUI: Class handler shows ContextFlyout if present
+				if (this is Control control)
+				{
+					// Controls go through virtual OnContextRequestedImpl (can be overridden by subclasses like SelectorItem)
+					control.InvokeOnContextRequestedImpl((ContextRequestedEventArgs)args);
+				}
+				else
+				{
+					// Non-Controls go directly to OnContextRequestedCore
+					OnContextRequestedCore(this, this, (ContextRequestedEventArgs)args);
+				}
+			}
+			// Future: Add other class handlers here (ContextCanceled, etc.)
+		}
 	}
 }

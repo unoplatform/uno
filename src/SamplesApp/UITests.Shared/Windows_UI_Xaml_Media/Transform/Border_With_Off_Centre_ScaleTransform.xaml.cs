@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 
 using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "Border_With_Off_Centre_ScaleTransform")]
+	[Sample("Transform", Name = "Border_With_Off_Centre_ScaleTransform")]
 	public sealed partial class Border_With_Off_Centre_ScaleTransform : UserControl
 	{
 		public Border_With_Off_Centre_ScaleTransform()

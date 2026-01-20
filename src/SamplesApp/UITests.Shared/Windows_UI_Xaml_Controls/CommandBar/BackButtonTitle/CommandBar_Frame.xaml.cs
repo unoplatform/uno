@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle
 {
-	[SampleControlInfo("CommandBar", "CommandBar_BackButtonTitle")]
+	[Sample("CommandBar", Name = "CommandBar_BackButtonTitle")]
 	public sealed partial class CommandBar_Frame : UserControl
 	{
 		public CommandBar_Frame()

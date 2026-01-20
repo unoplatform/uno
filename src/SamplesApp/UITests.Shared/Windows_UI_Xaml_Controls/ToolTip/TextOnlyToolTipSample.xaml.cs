@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ToolTip
 {
-	[SampleControlInfo("ToolTip", "TextOnlyToolTipSample")]
+	[Sample("ToolTip", Name = "TextOnlyToolTipSample")]
 	public sealed partial class TextOnlyToolTipSample : Page
 	{
 		public TextOnlyToolTipSample()
