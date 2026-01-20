@@ -45,6 +45,9 @@
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
 					<TextBlock
@@ -115,14 +118,53 @@
 					<TextBlock
 						Grid.Row="5"
 						Grid.Column="0"
-						Margin="0,0,24,0"
+						Margin="0,0,24,8"
 						FontFamily="Consolas"
 						FontWeight="SemiBold"
 						Text="Ctrl+H" />
 					<TextBlock
 						Grid.Row="5"
 						Grid.Column="1"
+						Margin="0,0,0,8"
 						Text="Open the History view" />
+
+					<TextBlock
+						Grid.Row="6"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Ctrl+P" />
+					<TextBlock
+						Grid.Row="6"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Open the Playground" />
+
+					<TextBlock
+						Grid.Row="7"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Ctrl+T" />
+					<TextBlock
+						Grid.Row="7"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Open the Runtime Tests" />
+
+					<TextBlock
+						Grid.Row="8"
+						Grid.Column="0"
+						Margin="0,0,24,0"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="F1" />
+					<TextBlock
+						Grid.Row="8"
+						Grid.Column="1"
+						Text="Open this Help page" />
 				</Grid>
 			</StackPanel>
 

@@ -4,13 +4,11 @@ using Uno.UI.Samples.Controls;
 namespace SamplesApp.Samples.Help
 {
 	[Sample(
-		"Help",
+		"_None",
 		Name = "Help",
 		Description = "Help and keyboard shortcuts for the Samples app",
 		UsesFrame = false,
-		IgnoreInSnapshotTests = true,
-		DisableKeyboardShortcuts = true,
-		HideFromBrowser = true)]
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class HelpPage : Page
 	{
 		public HelpPage()
