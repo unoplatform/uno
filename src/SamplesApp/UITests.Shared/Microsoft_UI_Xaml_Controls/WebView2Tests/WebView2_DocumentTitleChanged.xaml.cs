@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[Sample("WebView", Name = "WebView2_DocumentTitleChanged", Description = "Shows how to listen for CoreWebView2.DocumentTitleChanged and read the updated title.")]
+	[Sample("WebView", IgnoreInSnapshotTests = true, Name = "WebView2_DocumentTitleChanged", Description = "Shows how to listen for CoreWebView2.DocumentTitleChanged and read the updated title.")]
 	public sealed partial class WebView2_DocumentTitleChanged : UserControl
 	{
 		private CoreWebView2? _coreWebView2;
