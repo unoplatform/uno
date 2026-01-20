@@ -38,7 +38,7 @@ document.addEventListener(
         }
         
         // Fetch and update SDK version dynamically from NuGet
-        fetch('https://api.nuget.org/v3-flatcontainer/uno.templates/index.json')
+        fetch('https://api.nuget.org/v3-flatcontainer/uno.sdk/index.json')
             .then(r => r.json())
             .then(data => {
                 if (data.versions) {
@@ -128,7 +128,7 @@ document.addEventListener(
                     const header = document.createElement('div');
                     header.className = 'sdk-modal-header';
                     const headerTitle = document.createElement('h3');
-                    headerTitle.textContent = 'Update Uno SDK';
+                    headerTitle.textContent = 'Update Uno Platform';
                     const closeBtn = document.createElement('button');
                     closeBtn.className = 'sdk-modal-close';
                     closeBtn.type = 'button';
@@ -142,7 +142,7 @@ document.addEventListener(
                     body.className = 'sdk-modal-body';
                     
                     // Helper function to create version section with safe text content
-                    function createVersionSection(icon, title, version, description, command) {
+                    function createVersionSection(icon, title, version, description, command, additionalNote) {
                         const section = document.createElement('div');
                         section.className = 'sdk-version-section';
                         
@@ -165,6 +165,13 @@ document.addEventListener(
                             section.appendChild(versionLabel);
                         }
                         
+                        // Add additional note if provided (before command block)
+                        if (additionalNote) {
+                            const note = document.createElement('p');
+                            note.textContent = additionalNote;
+                            section.appendChild(note);
+                        }
+                        
                         // Only add command block if a valid command string is provided
                         if (command) {
                             const codeBlock = document.createElement('div');
@@ -183,68 +190,77 @@ document.addEventListener(
                         return section;
                     }
                     
-                    // Stable version section
-                    const stableCommand = latestStableVersion
-                        ? 'dotnet new install Uno.Templates::' + latestStableVersion
+                    // Uno.Sdk section (for existing projects)
+                    const sdkCommand = latestStableVersion
+                        ? `{\n  "msbuild-sdks": {\n    "Uno.Sdk": "${latestStableVersion}"\n  }\n}`
                         : null;
-                    body.appendChild(createVersionSection(
+                    const sdkSection = createVersionSection(
                         '📦',
-                        'Latest Stable Version',
+                        'Update Uno.Sdk (For Existing Projects)',
                         latestStableVersion,
                         'Recommended for production',
-                        stableCommand
-                    ));
-                    
-                    // Dev version section
-                    const devCommand = latestDevVersion
-                        ? 'dotnet new install Uno.Templates::' + latestDevVersion
-                        : null;
-                    const devSection = createVersionSection(
-                        '🚀',
-                        'Latest Dev Version',
-                        latestDevVersion,
-                        'Preview features & fixes',
-                        devCommand
+                        sdkCommand,
+                        'Edit the global.json file at your solution root:'
                     );
-                    const devNote = document.createElement('p');
-                    devNote.className = 'sdk-note';
-                    devNote.textContent = '📍 ';
-                    const noteStrong = document.createElement('strong');
-                    noteStrong.textContent = 'NuGet Package:';
-                    devNote.appendChild(noteStrong);
-                    devNote.appendChild(document.createTextNode(' '));
-                    const nugetLink = document.createElement('a');
-                    nugetLink.href = 'https://www.nuget.org/packages/Uno.Templates';
-                    nugetLink.target = '_blank';
-                    nugetLink.rel = 'noopener';
-                    nugetLink.textContent = 'Uno.Templates on NuGet.org';
-                    devNote.appendChild(nugetLink);
-                    devSection.appendChild(devNote);
-                    body.appendChild(devSection);
+                    const sdkNote = document.createElement('p');
+                    sdkNote.className = 'sdk-note';
+                    sdkNote.textContent = '📍 ';
+                    const sdkNoteStrong = document.createElement('strong');
+                    sdkNoteStrong.textContent = 'NuGet Package:';
+                    sdkNote.appendChild(sdkNoteStrong);
+                    sdkNote.appendChild(document.createTextNode(' '));
+                    const sdkNugetLink = document.createElement('a');
+                    sdkNugetLink.href = 'https://www.nuget.org/packages/Uno.Sdk';
+                    sdkNugetLink.target = '_blank';
+                    sdkNugetLink.rel = 'noopener';
+                    sdkNugetLink.textContent = 'Uno.Sdk on NuGet.org';
+                    sdkNote.appendChild(sdkNugetLink);
+                    sdkSection.appendChild(sdkNote);
+                    body.appendChild(sdkSection);
                     
-                    // Check version section
-                    body.appendChild(createVersionSection(
-                        'ℹ️',
-                        'Check Installed Version',
+                    // Uno.Templates section (for creating new projects)
+                    const templatesCommand = latestStableVersion
+                        ? 'dotnet new install Uno.Templates'
+                        : null;
+                    const templatesSection = createVersionSection(
+                        '🚀',
+                        'Update Uno.Templates (For Creating New Projects)',
                         null,
                         null,
-                        'dotnet new details Uno.Templates'
-                    ));
+                        templatesCommand,
+                        'This installs project templates, not the SDK used by existing projects.'
+                    );
+                    const templatesNote = document.createElement('p');
+                    templatesNote.className = 'sdk-note';
+                    templatesNote.textContent = '📍 ';
+                    const templatesNoteStrong = document.createElement('strong');
+                    templatesNoteStrong.textContent = 'NuGet Package:';
+                    templatesNote.appendChild(templatesNoteStrong);
+                    templatesNote.appendChild(document.createTextNode(' '));
+                    const templatesNugetLink = document.createElement('a');
+                    templatesNugetLink.href = 'https://www.nuget.org/packages/Uno.Templates';
+                    templatesNugetLink.target = '_blank';
+                    templatesNugetLink.rel = 'noopener';
+                    templatesNugetLink.textContent = 'Uno.Templates on NuGet.org';
+                    templatesNote.appendChild(templatesNugetLink);
+                    templatesSection.appendChild(templatesNote);
+                    body.appendChild(templatesSection);
                     
-                    // Tip note
-                    const tipNote = document.createElement('p');
-                    tipNote.className = 'sdk-note';
-                    tipNote.textContent = '💡 ';
-                    const tipStrong = document.createElement('strong');
-                    tipStrong.textContent = 'Tip:';
-                    tipNote.appendChild(tipStrong);
-                    tipNote.appendChild(document.createTextNode(' If you have an older version installed, uninstall it first using:'));
-                    const br = document.createElement('br');
-                    tipNote.appendChild(br);
-                    const tipCode = document.createElement('code');
-                    tipCode.textContent = 'dotnet new uninstall Uno.Templates';
-                    tipNote.appendChild(tipCode);
-                    body.appendChild(tipNote);
+                    // Add link to upgrade documentation
+                    const upgradeNote = document.createElement('p');
+                    upgradeNote.className = 'sdk-note';
+                    upgradeNote.textContent = 'ℹ️ ';
+                    const upgradeNoteStrong = document.createElement('strong');
+                    upgradeNoteStrong.textContent = 'More Information:';
+                    upgradeNote.appendChild(upgradeNoteStrong);
+                    upgradeNote.appendChild(document.createTextNode(' '));
+                    const upgradeLink = document.createElement('a');
+                    upgradeLink.href = 'https://platform.uno/docs/articles/upgrading-nuget-packages.html';
+                    upgradeLink.target = '_blank';
+                    upgradeLink.rel = 'noopener';
+                    upgradeLink.textContent = 'How to upgrade Uno Platform NuGet Packages';
+                    upgradeNote.appendChild(upgradeLink);
+                    body.appendChild(upgradeNote);
                     
                     // Assemble modal
                     content.appendChild(header);
