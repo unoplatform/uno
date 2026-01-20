@@ -90,9 +90,9 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
    ![Uno Platform Studio Window Main](Assets/uno-studio-main.png)
 
-### Uno Platform Studio Pro 30-Day Trial
+### Uno Platform Studio Pro 15-Day Trial
 
-The Community edition of **Uno Platform Studio** includes a 30-day trial of **Uno Platform Studio Pro**, which includes **Hot Design<sup>®</sup>**, **Hot Design<sup>®</sup> Agent**, and **Uno MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
+The Community edition of **Uno Platform Studio** includes a 15-day trial of **Uno Platform Studio Pro**, which includes **Hot Design<sup>®</sup>**, **Hot Design<sup>®</sup> Agent**, and **Uno MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
 
 ## Getting a Uno Platform Studio Pro License
 
@@ -191,7 +191,7 @@ If you encounter issues during the subscription or licensing process:
    - Sign out and sign in again to your IDE
 
 1. **Uno Platform Studio Pro Trial Expired**:
-   - The 30-day trial is automatically included with Community accounts
+   - The 15-day trial is automatically included with Community accounts
    - After expiration, upgrade to Pro to continue using Uno Platform Studio Pro features
    - Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to upgrade
 
