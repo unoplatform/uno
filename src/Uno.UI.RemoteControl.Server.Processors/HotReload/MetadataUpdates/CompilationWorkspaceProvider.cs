@@ -14,6 +14,21 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
+
+namespace Uno.Roslyn.MSBuild
+{
+	public static class CompilationWorkspaceProvider
+	{
+		public static async Task<Workspace> CreateWorkspaceAsync(
+			string projectPath,
+			IReporter reporter,
+			string[] metadataUpdateCapabilities,
+			Dictionary<string, string> properties,
+			CancellationToken ct)
+			=> (await Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates.CompilationWorkspaceProvider.CreateWorkspaceAsync(projectPath, reporter, metadataUpdateCapabilities, properties, ct)).Item1;
+	}
+}
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -21,7 +36,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath = "";
 
-		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
+		internal static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
