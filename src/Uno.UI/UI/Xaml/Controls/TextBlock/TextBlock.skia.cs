@@ -6,7 +6,6 @@ using System.Linq;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using System.Numerics;
-using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Microsoft.UI.Xaml.Documents;
@@ -17,7 +16,6 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
-using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
 
@@ -31,9 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal const float CaretThickness = 1;
 
 		private Action? _selectionHighlightColorChanged;
-		private MenuFlyout? _contextMenu;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
-		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 		private Size _lastInlinesArrangeWithPadding;
 		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
@@ -56,7 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Tapped += static (s, e) => ((TextBlock)s).OnTapped(e);
 			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
-			RightTapped += static (s, e) => ((TextBlock)s).OnRightTapped(e);
 			KeyDown += static (s, e) => ((TextBlock)s).OnKeyDown(e);
 
 			GotFocus += (_, _) => UpdateSelectionRendering();
@@ -134,13 +129,22 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
+
+			// Enable context menu gestures when text selection is enabled.
+			// This ensures ContextRequested is raised for the default TextCommandBarFlyout.
+			// We need to call this explicitly because TextBlock's default ContextFlyout is set via
+			// GetDefaultValue (not via SetValue), which doesn't trigger OnContextFlyoutChanged.
+			if (IsTextSelectionEnabled)
+			{
+				EnsureContextMenuGesturesEnabled();
+			}
 		}
 
 		private void UpdateSelectionRendering()
 		{
 			if (OwningTextBox is null) // TextBox manages RenderSelection itself
 			{
-				RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
+				RenderSelection = IsTextSelectionEnabled && (IsFocused || (ContextFlyout?.IsOpen ?? false));
 			}
 		}
 
@@ -344,35 +348,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO: remove this context menu when TextCommandBarFlyout is implemented
-		private void OnRightTapped(RightTappedRoutedEventArgs e)
-		{
-			if (IsTextSelectionEnabled)
-			{
-				e.Handled = true;
-
-				Focus(FocusState.Pointer);
-
-				if (_contextMenu is null)
-				{
-					_contextMenu = new MenuFlyout();
-
-					_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
-					_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
-				}
-
-				_contextMenu.Items.Clear();
-
-				if (Selection.start != Selection.end)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-
-				_contextMenu.ShowAt(this, e.GetPosition(this));
-			}
-		}
-
 		public void CopySelectionToClipboard()
 		{
 			if (Selection.start != Selection.end)
@@ -435,17 +410,6 @@ namespace Microsoft.UI.Xaml.Controls
 				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
 				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);
-		}
-
-		private sealed class TextBlockCommand(Action action) : ICommand
-		{
-			public bool CanExecute(object? parameter) => true;
-
-			public void Execute(object? parameter) => action();
-
-#pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
-			public event EventHandler? CanExecuteChanged;
-#pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 		}
 	}
 }

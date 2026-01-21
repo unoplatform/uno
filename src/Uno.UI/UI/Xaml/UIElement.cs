@@ -802,6 +802,17 @@ namespace Microsoft.UI.Xaml
 
 		partial void EnableContextMenuGestures();
 
+		/// <summary>
+		/// Enables gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
+		/// This ensures the GestureRecognizer is created and configured to detect these gestures,
+		/// which then raise ContextRequested via ContextMenuProcessor.
+		/// </summary>
+		/// <remarks>
+		/// This method is useful for text controls like TextBlock that get their default ContextFlyout
+		/// via GetDefaultValue (which doesn't trigger OnContextFlyoutChanged).
+		/// </remarks>
+		private protected void EnsureContextMenuGesturesEnabled() => EnableContextMenuGestures();
+
 		internal bool IsRenderingSuspended { get; set; }
 
 		[ThreadStatic]
