@@ -10,3 +10,4 @@
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <Speech/Speech.h>
+#import <Quartz/Quartz.h>
