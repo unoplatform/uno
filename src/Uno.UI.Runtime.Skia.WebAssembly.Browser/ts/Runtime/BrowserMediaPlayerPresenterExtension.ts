@@ -3,10 +3,7 @@ namespace Uno.UI.Runtime.Skia {
 		static unoExports: any;
 
 		public static buildImports() {
-			(<any>window.Module).getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser")
-				.then((e: any) => {
-					BrowserMediaPlayerPresenterExtension.unoExports = e.Uno.UI.Runtime.Skia.BrowserMediaPlayerPresenterExtension;
-				});
+			BrowserMediaPlayerPresenterExtension.unoExports = WebAssemblyWindowWrapper.getAssemblyExports().Uno.UI.Runtime.Skia.BrowserMediaPlayerPresenterExtension;
 		}
 		
 		public static getVideoNaturalHeight(elementId: string): number {
