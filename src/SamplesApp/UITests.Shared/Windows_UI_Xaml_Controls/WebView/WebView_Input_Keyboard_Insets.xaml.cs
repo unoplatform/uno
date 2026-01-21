@@ -12,16 +12,10 @@ using Android.App;
 
 namespace UITests.Windows_UI_Xaml_Controls.WebView;
 
-<<<<<<< HEAD
 [SampleControlInfo("WebView", "WebView_Input_Keyboard_Insets",
 	isManualTest: true,
+  ignoreInSnapshotTests: true,
 	description: "Android Only. Other platform you will see an empty page. \n" +
-=======
-[Sample("WebView", Name = "WebView_Input_Keyboard_Insets",
-	IsManualTest = true,
-	IgnoreInSnapshotTests = true,
-	Description = "Android Only. Other platform you will see an empty page. \n" +
->>>>>>> 61b1c795de (chore: ignore webview samples in snapshot tests)
 	"When focusing inputs, inset will be properly added preventing keyboard from covering the focused input.")]
 public sealed partial class WebView_Input_Keyboard_Insets : Page
 {
