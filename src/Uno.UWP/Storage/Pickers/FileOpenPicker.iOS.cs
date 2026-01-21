@@ -99,10 +99,31 @@ namespace Windows.Storage.Pickers
 					return controller;
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
+					var hasImages = FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*") ||
+					                FilterHasImage(FileTypeFilter);
+					var hasVideos = FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*") ||
+					                FilterHasVideo(FileTypeFilter);
+
+					PHPickerFilter? pickerFilter = null;
+					if (hasImages && hasVideos)
+					{
+						// Support both images and videos
+						pickerFilter = PHPickerFilter.GetAnyFilterMatchingSubfilters([
+							PHPickerFilter.ImagesFilter, PHPickerFilter.VideosFilter
+						]);
+					}
+					else if (hasImages)
+					{
+						pickerFilter = PHPickerFilter.ImagesFilter;
+					}
+					else if (hasVideos)
+					{
+						pickerFilter = PHPickerFilter.VideosFilter;
+					}
+
 					var imageConfiguration = new PHPickerConfiguration
 					{
-						Filter = PHPickerFilter.ImagesFilter,
-						SelectionLimit = limit
+						Filter = pickerFilter, SelectionLimit = limit
 					};
 					return new PHPickerViewController(imageConfiguration)
 					{
@@ -177,8 +198,20 @@ namespace Windows.Storage.Pickers
 
 			public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
 			{
+				NSUrl? nSUrl = null;
 
-				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
+				//Video URL
+				if (info.ValueForKey(new NSString("UIImagePickerControllerMediaURL")) is NSUrl videoUrl)
+				{
+					nSUrl = videoUrl;
+				}
+				//Image URL
+				else if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl imageUrl)
+				{
+					nSUrl = imageUrl;
+				}
+
+				if (nSUrl != null)
 				{
 					var file = StorageFile.GetFromSecurityScopedUrl(nSUrl, null);
 					_taskCompletionSource.SetResult([file]);
