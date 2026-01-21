@@ -1,12 +1,19 @@
-# Uno Platform Development Instructions
+# AGENTS.md
 
-Uno Platform is a cross-platform .NET UI framework using WinUI/XAML. It targets Windows, macOS, Linux, iOS, Android, and WebAssembly from a single C# codebase.
+This file provides guidance to AI Agents when working with code in this repository.
+
+## Project Overview
+
+Uno Platform is an open-source .NET UI cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), and Mobile (iOS, tvOS, Android).
 
 **Reference these instructions first**. Use specialized agents for deep dives:
-- **DependencyProperty**: `.github/agents/dependency-property-agent.md`
-- **Source Generators**: `.github/agents/source-generators-agent.md`
-- **Runtime Tests**: `.github/agents/runtime-tests-agent.md`
-- **WinUI C++ Porting**: `.github/agents/winui-porting-agent.md`
+
+| Agent | File | Use For |
+|-------|------|---------|
+| DependencyProperty | `.github/agents/dependency-property-agent.md` | Adding/modifying DependencyProperties |
+| Source Generators | `.github/agents/source-generators-agent.md` | XAML/DependencyObject generator work |
+| Runtime Tests | `.github/agents/runtime-tests-agent.md` | Creating and running runtime tests |
+| WinUI Porting | `.github/agents/winui-porting-agent.md` | Porting WinUI C++ code to C# |
 
 ---
 
