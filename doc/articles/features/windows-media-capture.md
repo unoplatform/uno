@@ -11,7 +11,7 @@ The `Windows.Media.Capture` namespace provides classes for capturing photos, aud
 
 ## `CameraCaptureUI`
 
-`CameraCaptureUI` is currently only supported on Android, iOS, and WinUI. On other platforms, `CaptureFileAsync` will return `null`.
+`CameraCaptureUI` is currently supported on Android, iOS, macOS (Skia Desktop), and WinUI. On other platforms, `CaptureFileAsync` will return `null`.
 
 > [!IMPORTANT]
 > `CaptureFileAsync` should only be called from the UI thread. Calling them from a background thread will throw an `InvalidOperationException`.
@@ -50,6 +50,13 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 > [!IMPORTANT]
 > iOS simulators do not have access to a camera. To test the camera functionality, you need to run the app on a physical device. When using a simulator, your app will open the Photo Library instead of the camera, but the functionality will work as expected once the app is deployed to a physical device.
 
+#### macOS
+
+On macOS (Skia Desktop), `CameraCaptureUI` uses the native `IKPictureTaker` API to capture photos from the built-in FaceTime camera or external USB cameras. No special permissions are required in the app manifest, but the system will automatically prompt the user for camera access the first time the app attempts to use the camera.
+
+> [!NOTE]
+> Video capture is not yet supported on macOS. Calling `CaptureFileAsync` with `CameraCaptureUIMode.Video` will return `null`.
+
 #### WinUI
 
 On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos and videos, fully leveraging the platform's APIs. WinUI support is coming with v1.7+.
@@ -57,13 +64,13 @@ On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos an
 ### Example
 
 ```csharp
-#if __ANDROID__ || __IOS__ || __WINDOWS__
+#if __ANDROID__ || __IOS__ || __WINDOWS__ || __SKIA__
 using Windows.Media.Capture;
 #endif
 
 public async Task CapturePhotoAsync()
 {
-#if __ANDROID__ || __IOS__ || __WINDOWS__
+#if __ANDROID__ || __IOS__ || __WINDOWS__ || __SKIA__
     var captureUI = new CameraCaptureUI();
     captureUI.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
     

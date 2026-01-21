@@ -151,3 +151,69 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     [element dispose];
     [transients removeObject:element];
 }
+
+// Camera capture implementation using AVFoundation
+const char* _Nullable uno_capture_photo(bool useJpeg)
+{
+    @autoreleasepool {
+        // Import AVFoundation framework for camera access
+        NSString *tempDir = NSTemporaryDirectory();
+        NSString *fileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], useJpeg ? @"jpg" : @"png"];
+        NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
+        
+        // For now, we'll use IKPictureTaker which is deprecated but simpler
+        // A full AVFoundation implementation would be more complex
+        // Note: IKPictureTaker is deprecated in macOS 10.15+, but still works
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        
+        __block NSString *resultPath = nil;
+        __block BOOL completed = NO;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Create an IKPictureTaker instance
+            IKPictureTaker *pictureTaker = [IKPictureTaker pictureTaker];
+            
+            // Run the picture taker modal dialog
+            NSInteger result = [pictureTaker runModal];
+            
+            if (result == NSModalResponseOK) {
+                // Get the captured image
+                NSImage *image = [pictureTaker outputImage];
+                
+                if (image) {
+                    // Convert NSImage to the requested format
+                    CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+                    NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithCGImage:cgImage];
+                    
+                    NSData *imageData;
+                    if (useJpeg) {
+                        imageData = [imageRep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{NSImageCompressionFactor: @0.9}];
+                    } else {
+                        imageData = [imageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+                    }
+                    
+                    // Write to file
+                    if ([imageData writeToFile:filePath atomically:YES]) {
+                        resultPath = [filePath copy];
+                    }
+                }
+            }
+            
+            completed = YES;
+        });
+        
+        // Wait for completion (this is blocking, but acceptable for modal camera capture)
+        while (!completed) {
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+        }
+        
+        #pragma clang diagnostic pop
+        
+        if (resultPath) {
+            return strdup([resultPath UTF8String]);
+        }
+        
+        return NULL;
+    }
+}

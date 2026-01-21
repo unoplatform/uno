@@ -498,4 +498,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial string? /* const char* _Nullable */ uno_capture_photo([MarshalAs(UnmanagedType.I1)] bool useJpeg);
 }
