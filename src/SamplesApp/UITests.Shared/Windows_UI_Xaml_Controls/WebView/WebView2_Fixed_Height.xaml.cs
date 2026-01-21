@@ -19,7 +19,7 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml_Controls.WebView;
 
 
-[Sample("WebView", IsManualTest = true, Description = "Shows a WebView with a fixed height of 400")]
+[Sample("WebView", IsManualTest = true, IgnoreInSnapshotTests = true, Description = "Shows a WebView with a fixed height of 400")]
 public sealed partial class WebView2_Fixed_Height : Page
 {
 	public WebView2_Fixed_Height()
