@@ -48,7 +48,8 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 		}
 
 		// Copy the captured image to a temporary file
-		var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + (imagePath.EndsWith(".jpg") ? ".jpg" : ".png"));
+		var extension = imagePath.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ? ".jpg" : ".png";
+		var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + extension);
 		File.Copy(imagePath, tempPath);
 
 		// Delete the original captured image
