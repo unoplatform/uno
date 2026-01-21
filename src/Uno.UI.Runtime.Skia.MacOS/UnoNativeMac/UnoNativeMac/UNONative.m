@@ -152,23 +152,21 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     [transients removeObject:element];
 }
 
-// Camera capture implementation using AVFoundation
+// Camera capture implementation using IKPictureTaker from Quartz framework
+// Note: IKPictureTaker is deprecated in macOS 10.15+, but still functional.
+// A future enhancement could use AVFoundation for modern camera APIs.
 const char* _Nullable uno_capture_photo(bool useJpeg)
 {
     @autoreleasepool {
-        // Import AVFoundation framework for camera access
         NSString *tempDir = NSTemporaryDirectory();
         NSString *fileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], useJpeg ? @"jpg" : @"png"];
         NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
         
-        // For now, we'll use IKPictureTaker which is deprecated but simpler
-        // A full AVFoundation implementation would be more complex
-        // Note: IKPictureTaker is deprecated in macOS 10.15+, but still works
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         
         __block NSString *resultPath = nil;
-        __block BOOL completed = NO;
+        __block dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             // Create an IKPictureTaker instance
@@ -200,17 +198,16 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
                 }
             }
             
-            completed = YES;
+            dispatch_semaphore_signal(semaphore);
         });
         
-        // Wait for completion (this is blocking, but acceptable for modal camera capture)
-        while (!completed) {
-            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-        }
+        // Wait for completion (caller is responsible for calling from appropriate thread)
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         
         #pragma clang diagnostic pop
         
         if (resultPath) {
+            // Note: Caller is responsible for freeing the returned string using free()
             return strdup([resultPath UTF8String]);
         }
         
