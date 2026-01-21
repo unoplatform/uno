@@ -144,7 +144,7 @@ Run these after making changes:
 
 1. **Build**: `dotnet build Uno.UI-UnitTests-only.slnf --no-restore`
 2. **Unit tests**: `dotnet test Uno.UI/Uno.UI.Tests.csproj --no-build`
-3. **Runtime tests** (UI changes): See runtime-tests-agent.md
+3. **Runtime tests** (UI changes): See [runtime tests agent](.github/agents/runtime-tests-agent.md)
 4. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
 
 ### Runtime Tests (Preferred for UI)
