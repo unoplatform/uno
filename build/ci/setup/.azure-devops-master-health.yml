@@ -6,7 +6,7 @@ stages:
   displayName: Validate Master Health
   dependsOn:
     - Setup
-  condition: and(eq(variables['Build.Reason'], 'PullRequest'), not(startsWith(variables['System.PullRequest.TargetBranch'], 'refs/heads/release/stable')))
+  condition: and(eq(variables['Build.Reason'], 'PullRequest'), not(startsWith(variables['System.PullRequest.TargetBranch'], 'refs/heads/release/stable/')))
 
   jobs:
   - job: MasterHealth
