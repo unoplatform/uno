@@ -183,16 +183,19 @@ internal class McpProxy
 	}
 
 	private void EnsureDevServerStartedFromSolutionDirectory()
+		=> EnsureDevServerStartedFromSolutionDirectory(_forceGenerateToolCache, _solutionDirectory);
+
+	internal void EnsureDevServerStartedFromSolutionDirectory(bool forceGenerateToolCache, string? solutionDirectory)
 	{
-		if (!_forceGenerateToolCache || string.IsNullOrWhiteSpace(_solutionDirectory))
+		if (!forceGenerateToolCache || string.IsNullOrWhiteSpace(solutionDirectory))
 		{
 			return;
 		}
 
-		StartDevServerMonitor(_solutionDirectory);
+		StartDevServerMonitor(solutionDirectory);
 	}
 
-	private void StartDevServerMonitor(string? directory)
+	protected virtual void StartDevServerMonitor(string? directory)
 	{
 		if (_devServerStarted)
 		{
@@ -504,6 +507,8 @@ internal class McpProxy
 
 		if (!_forceRootsFallback)
 		{
+			var fallbackRoot = BuildFallbackRoot();
+
 			if (clientSupportsRoots)
 			{
 				var roots = await ctx.Server.RequestRootsAsync(new(), ct);
@@ -516,18 +521,14 @@ internal class McpProxy
 				}
 				else
 				{
-					// convert _currentDirectory to a file uri
-					if (Uri.TryCreate(_currentDirectory ?? Environment.CurrentDirectory, UriKind.RelativeOrAbsolute, out var root))
-					{
-						_roots = [root.ToString() ?? Environment.CurrentDirectory];
-					}
+					_logger.LogTrace("MCP client returned no roots; defaulting to {FallbackRoot}", fallbackRoot);
+					_roots = [fallbackRoot];
 				}
 			}
 			else
 			{
-				_logger.LogTrace("MCP Client does not support roots");
-
-				_roots = [Environment.CurrentDirectory];
+				_logger.LogTrace("MCP Client does not support roots; defaulting to {FallbackRoot}", fallbackRoot);
+				_roots = [fallbackRoot];
 			}
 
 			await ProcessRoots();
@@ -544,6 +545,27 @@ internal class McpProxy
 			_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
 
 			await tcs.Task;
+		}
+	}
+
+	private string BuildFallbackRoot()
+	{
+		var directory = _solutionDirectory ?? _currentDirectory ?? Environment.CurrentDirectory;
+
+		try
+		{
+			var fullPath = Path.GetFullPath(directory);
+			if (Uri.TryCreate(fullPath, UriKind.Absolute, out var uri) && uri.IsAbsoluteUri)
+			{
+				return uri.ToString();
+			}
+
+			return fullPath;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogDebug(ex, "Unable to normalize fallback root '{Directory}'", directory);
+			return directory;
 		}
 	}
 
