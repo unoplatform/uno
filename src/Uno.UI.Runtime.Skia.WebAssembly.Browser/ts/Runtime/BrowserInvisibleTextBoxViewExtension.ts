@@ -11,11 +11,9 @@
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
 
-		public static async initialize(): Promise<any> {
-			const module = <any>window.Module;
-			if (BrowserInvisibleTextBoxViewExtension._exports == undefined
-				&& module.getAssemblyExports !== undefined) {
-				const browserExports = (await module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser"));
+		public static initialize() {
+			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
+				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
 

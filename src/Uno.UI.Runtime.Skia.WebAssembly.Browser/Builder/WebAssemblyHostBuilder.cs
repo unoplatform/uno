@@ -4,14 +4,25 @@ using Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
 namespace Uno.UI.Hosting;
 
-internal partial class WebAssemblyHostBuilder : IPlatformHostBuilder
+public class WebAssemblyHostBuilder : IPlatformHostBuilder
 {
-	public WebAssemblyHostBuilder()
+	private bool _forceSoftwareRendering;
+
+	internal WebAssemblyHostBuilder()
 	{
 	}
 
-	public bool IsSupported => true;
+	/// <summary>
+	/// Force the use of software rendering instead of attempting to use WebGL.
+	/// </summary>
+	public WebAssemblyHostBuilder ForceSoftwareRendering()
+	{
+		_forceSoftwareRendering = true;
+		return this;
+	}
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
-		=> new WebAssemblyBrowserHost(appBuilder);
+	bool IPlatformHostBuilder.IsSupported => true;
+
+	UnoPlatformHost IPlatformHostBuilder.Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
+		=> new WebAssemblyBrowserHost(appBuilder, _forceSoftwareRendering);
 }

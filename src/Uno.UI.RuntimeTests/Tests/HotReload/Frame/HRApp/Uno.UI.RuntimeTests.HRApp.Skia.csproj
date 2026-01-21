@@ -4,6 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
+		<IsUnoHead>true</IsUnoHead>
 
 		<!-- in-solution build -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
@@ -44,7 +45,7 @@
 		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
-		<PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
+		<PackageReference Include="Uno.icu-win" Version="77.1.2" />
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
