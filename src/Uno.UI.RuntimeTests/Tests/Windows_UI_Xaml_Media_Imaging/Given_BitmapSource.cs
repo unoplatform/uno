@@ -106,6 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
 		public async Task When_BundleImages_Loaded_StreamsAreDisposed()
 		{
 			var panel = new StackPanel { Orientation = Orientation.Horizontal };
