@@ -14,9 +14,13 @@ namespace SampleControl.Entities
 			SamplesContent = new SortedSet<SampleChooserContent>(comparer: this);
 		}
 
-		public SampleChooserCategory(IGrouping<string, SampleChooserContent> contents)
+		public SampleChooserCategory(IGrouping<string, SampleChooserContent> contents) : this(contents.Key, contents)
 		{
-			Category = contents.Key;
+		}
+
+		public SampleChooserCategory(string category, IEnumerable<SampleChooserContent> contents)
+		{
+			Category = category;
 			SamplesContent = new SortedSet<SampleChooserContent>(contents, comparer: this);
 		}
 
