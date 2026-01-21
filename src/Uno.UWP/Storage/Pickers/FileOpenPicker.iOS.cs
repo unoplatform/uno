@@ -100,9 +100,9 @@ namespace Windows.Storage.Pickers
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
 					var hasImages = FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*") ||
-					                FilterHasImage(FileTypeFilter);
+					FilterHasImage(FileTypeFilter);
 					var hasVideos = FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*") ||
-					                FilterHasVideo(FileTypeFilter);
+					FilterHasVideo(FileTypeFilter);
 
 					PHPickerFilter? pickerFilter = null;
 					if (hasImages && hasVideos)
@@ -123,7 +123,8 @@ namespace Windows.Storage.Pickers
 
 					var imageConfiguration = new PHPickerConfiguration
 					{
-						Filter = pickerFilter, SelectionLimit = limit
+						Filter = pickerFilter,
+						SelectionLimit = limit
 					};
 					return new PHPickerViewController(imageConfiguration)
 					{
@@ -200,12 +201,12 @@ namespace Windows.Storage.Pickers
 			{
 				NSUrl? nSUrl = null;
 
-				//Video URL
+				// Video URL
 				if (info.ValueForKey(new NSString("UIImagePickerControllerMediaURL")) is NSUrl videoUrl)
 				{
 					nSUrl = videoUrl;
 				}
-				//Image URL
+				// Image URL
 				else if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl imageUrl)
 				{
 					nSUrl = imageUrl;
