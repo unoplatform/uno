@@ -32,6 +32,7 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 {
 	private static int _vlcInitialized;
 	private static LibVLC _vlc = null!;
+	private static readonly object _vlcInitLock = new();
 
 	// LibVLC initialization arguments used across the class. Keep these in one place
 	// so the options and the explanatory comment are not duplicated.
@@ -155,13 +156,17 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 					EventHandler<MediaParsedChangedEventArgs>? mediaOnParsedChanged = default;
 					mediaOnParsedChanged = (_, a) =>
 					{
-						if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
+						lock (_vlcInitLock)
 						{
-							_vlc = vlc;
-						}
-						else
-						{
-							vlc.Dispose();
+							if (Volatile.Read(ref _vlcInitialized) == 0)
+							{
+								_vlc = vlc;
+								Volatile.Write(ref _vlcInitialized, 1);
+							}
+							else
+							{
+								vlc.Dispose();
+							}
 						}
 						media.ParsedChanged -= mediaOnParsedChanged;
 					};
@@ -172,19 +177,42 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 				catch (Exception e)
 				{
 					typeof(SharedMediaPlayerExtension).Log().Error(e.Message);
-					_vlc = vlc;
+					lock (_vlcInitLock)
+					{
+						if (Volatile.Read(ref _vlcInitialized) == 0)
+						{
+							_vlc = vlc;
+							Volatile.Write(ref _vlcInitialized, 1);
+						}
+					}
 				}
 			}
 		});
 	}
 
+	/// <summary>
+	/// Ensures the shared LibVLC instance is initialized using double-checked locking.
+	/// This is thread-safe and guarantees _vlc is fully assigned before returning.
+	/// </summary>
+	private static void EnsureVlcInitialized()
+	{
+		if (Volatile.Read(ref _vlcInitialized) == 0)
+		{
+			lock (_vlcInitLock)
+			{
+				if (Volatile.Read(ref _vlcInitialized) == 0)
+				{
+					// Initialize shared LibVLC instance using the centralized argument list above.
+					_vlc = new LibVLC(VlcInitArgs);
+					Volatile.Write(ref _vlcInitialized, 1);
+				}
+			}
+		}
+	}
+
 	public SharedMediaPlayerExtension(Windows.Media.Playback.MediaPlayer player)
 	{
-		if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
-		{
-			// Initialize shared LibVLC instance using the centralized argument list above.
-			_vlc = new LibVLC(VlcInitArgs);
-		}
+		EnsureVlcInitialized();
 
 		VlcPlayer = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
 		Player = player;
