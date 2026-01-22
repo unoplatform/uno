@@ -212,11 +212,11 @@ public class Given_Matrix3D
 	}
 
 	[TestMethod]
-	[ExpectedException(typeof(InvalidOperationException))]
 	public void When_Invert_Singular_Throws()
 	{
 		var singular = new Matrix3D();
-		singular.Invert();
+		var act = () => singular.Invert();
+		act.Should().ThrowExactly<InvalidOperationException>();
 	}
 
 	[TestMethod]
@@ -229,6 +229,7 @@ public class Given_Matrix3D
 		Assert.IsTrue(str.Contains("1"));
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public void When_ToMatrix4x4_And_Back()
 	{
@@ -247,4 +248,5 @@ public class Given_Matrix3D
 		Assert.AreEqual(original.M33, roundTripped.M33, 1e-5);
 		Assert.AreEqual(original.M44, roundTripped.M44, 1e-5);
 	}
+#endif
 }
