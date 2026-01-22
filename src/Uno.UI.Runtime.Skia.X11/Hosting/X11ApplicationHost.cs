@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
@@ -34,6 +35,27 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	static X11ApplicationHost()
 	{
+		NativeLibrary.SetDllImportResolver(typeof(HarfBuzzSharp.Direction).Assembly, HarfBuzzResolver);
+		// libHarfBuzzSharp is, at the time of writing, practically identical to libharfbuzz.so.0 that ships with
+		// most Linux environments and, unlike libSkiaSharp, does not have any extra helper functions to help with marshalling, etc.
+		// Therefore, we prefer to use the system-wide libharfbuzz.so.0 if it exists over libHarfBuzzSharp.so. This avoids
+		// symbol clashes when other dependencies also depend on harfbuzz. Concretely, when a WebView is loaded,
+		// it loads libgtk-3 which in turn depends on libharfbuzz.so.0. Afterward, we can get crashes when SkiaSharp
+		// makes a HarfBuzz call to symbols that were first resolved by libgtk-3 to be in libharfbuzz.so.0. In this scenario,
+		// the call starts in libHarfBuzzSharp.so but then jumps to symbols in libharfbuzz.so.0 (the symbols are also in
+		// libHarfBuzzSharp.so, but libharfbuzz.so.0 resolved them first).
+		static IntPtr HarfBuzzResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+		{
+			if (libraryName == "libHarfBuzzSharp" && NativeLibrary.TryLoad("libharfbuzz.so.0", assembly, searchPath, out var lib))
+			{
+				return lib;
+			}
+			else
+			{
+				return IntPtr.Zero;
+			}
+		}
+
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
 		_ = X11Helper.XInitThreads();
