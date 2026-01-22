@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Barometer", description: "Demonstrates use of Windows.Devices.Sensors.Barometer", viewModelType: typeof(BarometerTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "Barometer", Description = "Demonstrates use of Windows.Devices.Sensors.Barometer", ViewModelType = typeof(BarometerTestsViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class BarometerTests : UserControl
 	{
 		public BarometerTests()

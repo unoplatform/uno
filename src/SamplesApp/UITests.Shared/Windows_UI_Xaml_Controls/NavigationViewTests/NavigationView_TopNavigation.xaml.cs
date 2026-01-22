@@ -1,4 +1,4 @@
-﻿using SamplesApp.Samples.NavigationViewSample;
+using SamplesApp.Samples.NavigationViewSample;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.NavigationViewTests
 {
-	[SampleControlInfo("NavigationView", nameof(NavigationView_TopNavigation))]
+	[Sample("NavigationView", Name = nameof(NavigationView_TopNavigation))]
 	public sealed partial class NavigationView_TopNavigation : UserControl
 	{
 		public NavigationView_TopNavigation()

@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Helper;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
@@ -8,7 +8,7 @@ using Windows.UI;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Grid_DataBound_RowColumn", ignoreInSnapshotTests: true)]
+	[Sample("Grid", Name = "Grid_DataBound_RowColumn", IgnoreInSnapshotTests = true)]
 	public sealed partial class Grid_DataBound_RowColumn : UserControl
 	{
 		public Grid_DataBound_RowColumn()

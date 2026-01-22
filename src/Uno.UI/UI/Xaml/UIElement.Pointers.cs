@@ -14,6 +14,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno;
@@ -25,12 +26,8 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-
-#if HAS_UNO_WINUI
+using MuxPointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -143,6 +140,41 @@ namespace Microsoft.UI.Xaml
 			get => (bool)GetValue(AllowDropProperty);
 			set => SetValue(AllowDropProperty, value);
 		}
+		#endregion
+
+		#region IsDraggableOrPannable
+		/// <summary>
+		/// Determines whether the specified element or any of its ancestors is draggable or pannable.
+		/// Used to delay context menu on touch for draggable/scrollable elements.
+		/// </summary>
+		/// <param name="element">The element to check.</param>
+		/// <returns>True if the element or any ancestor is draggable or pannable.</returns>
+		internal static bool IsDraggableOrPannable(UIElement element)
+		{
+			if (element == null)
+			{
+				return false;
+			}
+
+			DependencyObject current = element;
+			while (current != null)
+			{
+				if (current is UIElement uiElement && uiElement.IsDraggableOrPannable())
+				{
+					return true;
+				}
+				current = (current as FrameworkElement)?.Parent ?? Media.VisualTreeHelper.GetParent(current);
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Determines whether this element itself is draggable or pannable.
+		/// Override in derived classes like ScrollViewer and ListViewBase.
+		/// </summary>
+		/// <returns>True if this element is draggable or pannable.</returns>
+		internal virtual bool IsDraggableOrPannable() => CanDrag;
+
 		#endregion
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
@@ -386,7 +418,48 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args, that));
+			var rightTappedArgs = new RightTappedRoutedEventArgs(src, args, that);
+			that.SafeRaiseEvent(RightTappedEvent, rightTappedArgs);
+
+			// After RightTapped, if not handled, invoke OnRightTappedUnhandled on each Control in the tree.
+			// This matches WinUI behavior where controls can implement fallback behavior.
+			if (!rightTappedArgs.Handled)
+			{
+				DependencyObject current = src;
+				while (current != null)
+				{
+					if (current is Controls.Control control)
+					{
+						control.InvokeRightTappedUnhandled(rightTappedArgs);
+						if (rightTappedArgs.Handled)
+						{
+							break;
+						}
+					}
+					current = (current as FrameworkElement)?.Parent ?? Media.VisualTreeHelper.GetParent(current);
+				}
+			}
+
+			// Raise ContextRequested for mouse/pen input after RightTapped.
+			// For touch input, ContextRequested is raised via Holding gesture instead.
+			// This matches WinUI behavior where right-click triggers context menu.
+			var deviceType = args.PointerDeviceType;
+			if (deviceType == MuxPointerDeviceType.Mouse ||
+				deviceType == MuxPointerDeviceType.Pen)
+			{
+				var contentRoot = VisualTree.GetContentRootForElement(src);
+				if (contentRoot != null)
+				{
+					// Convert element-relative position to global (app window) coordinates.
+					// args.Position is relative to 'that' (the element with the GestureRecognizer),
+					// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
+					var globalPosition = that.TransformToVisual(null).TransformPoint(args.Position);
+					contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
+						src,
+						globalPosition,
+						isTouchInput: false);
+				}
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
@@ -395,6 +468,52 @@ namespace Microsoft.UI.Xaml
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(src, args, that));
+
+			// Handle ContextRequested/ContextCanceled for touch input.
+			// This matches WinUI behavior where touch-and-hold triggers context menu.
+			if (args.PointerDeviceType == MuxPointerDeviceType.Touch)
+			{
+				var contentRoot = VisualTree.GetContentRootForElement(src);
+				if (contentRoot != null)
+				{
+					if (args.HoldingState == HoldingState.Started)
+					{
+						// Convert element-relative position to global (app window) coordinates.
+						// args.Position is relative to 'that' (the element with the GestureRecognizer),
+						// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
+						var globalPosition = that.TransformToVisual(null).TransformPoint(args.Position);
+						contentRoot.InputManager.ContextMenuProcessor.SetContextMenuOnHoldingTouchPoint(globalPosition);
+						contentRoot.InputManager.ContextMenuProcessor.ProcessContextRequestOnHoldingGesture(src);
+					}
+					else if (args.HoldingState == HoldingState.Canceled)
+					{
+						// Cancel context menu if holding was canceled (e.g., user moved finger)
+						// Ported from WinUI PointerInputProcessor.cpp:494-509
+						if (contentRoot.InputManager.ContextMenuProcessor.IsContextMenuOnHolding)
+						{
+							// Check if we're in a flyout/popup layer
+							if (src.GetRootOfPopupSubTree() != null)
+							{
+								// In flyout layer - close the topmost light-dismiss popup
+								var popupRoot = VisualTree.GetPopupRootForElement(src);
+								popupRoot?.CloseTopmostPopup(FocusState.Programmatic, PopupRoot.PopupFilter.LightDismissOnly);
+							}
+							else
+							{
+								// Not in flyout - raise ContextCanceled event
+								var cancelArgs = new RoutedEventArgs { OriginalSource = src };
+								src.RaiseEvent(ContextCanceledEvent, cancelArgs);
+							}
+							contentRoot.InputManager.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
+						}
+					}
+					else if (args.HoldingState == HoldingState.Completed)
+					{
+						// Reset the context menu on holding state when holding completes
+						contentRoot.InputManager.ContextMenuProcessor.SetIsContextMenuOnHolding(false);
+					}
+				}
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>
@@ -579,6 +698,33 @@ namespace Microsoft.UI.Xaml
 			{
 				GestureRecognizer.GestureSettings |= GestureSettings.Hold; // Note: We do not set GestureSettings.HoldWithMouse as WinUI never raises Holding for mouse pointers
 			}
+		}
+
+		partial void AddContextMenuHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
+		{
+			if (handlersCount == 1 && routedEvent == ContextRequestedEvent)
+			{
+				// When subscribing to ContextRequested, enable both RightTap (for mouse/pen)
+				// and Hold (for touch) gesture settings so the GestureRecognizer can detect
+				// the gestures that trigger the context menu.
+				GestureRecognizer.GestureSettings |= GestureSettings.RightTap | GestureSettings.Hold;
+			}
+		}
+
+		partial void RemoveContextMenuHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		{
+			// Note: We don't remove the gesture settings when unsubscribing because:
+			// 1. Other handlers might still need them (e.g., ContextFlyout)
+			// 2. The GestureRecognizer doesn't support removing individual settings easily
+			// 3. It's not harmful to keep them enabled
+		}
+
+		partial void EnableContextMenuGestures()
+		{
+			// Enable both RightTap (for mouse/pen) and Hold (for touch) gesture settings.
+			// Accessing GestureRecognizer creates it if needed, and the settings enable
+			// the gesture detection that triggers ContextRequested via ContextMenuProcessor.
+			GestureRecognizer.GestureSettings |= GestureSettings.RightTap | GestureSettings.Hold;
 		}
 
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)

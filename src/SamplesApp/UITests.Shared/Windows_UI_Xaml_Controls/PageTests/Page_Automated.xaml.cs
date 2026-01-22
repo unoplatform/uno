@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.PageTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("Page")]
+	[Sample("Page")]
 	public sealed partial class Page_Automated : Page
 	{
 		public Page_Automated()

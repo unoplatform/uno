@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml;
@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.VisualStatesTests
 {
-	[SampleControlInfo("Gesture Recognizer", "VisualStates ListViewItem")]
+	[Sample("Gesture Recognizer", Name = "VisualStates ListViewItem")]
 	public sealed partial class ListViewItem : Page
 	{
 		public ListViewItem()

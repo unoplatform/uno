@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Canvas
 {
-	[SampleControlInfo(description: "The top blue Rectangle should be clipped by the Clip on the outer Border. The bottom one shouldn't be clipped.")]
+	[Sample(Description = "The top blue Rectangle should be clipped by the Clip on the outer Border. The bottom one shouldn't be clipped.")]
 	public sealed partial class Canvas_With_Outer_Clip : UserControl
 	{
 		public Canvas_With_Outer_Clip()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
@@ -11,7 +11,7 @@ using Uno.Extensions;
 namespace UITests.Shared.Wasm
 {
 #if __WASM__
-	[SampleControlInfo("Wasm", nameof(Wasm_CustomEvent))]
+	[Sample("Wasm", Name = nameof(Wasm_CustomEvent))]
 #endif
 	public sealed partial class Wasm_CustomEvent : Page
 	{

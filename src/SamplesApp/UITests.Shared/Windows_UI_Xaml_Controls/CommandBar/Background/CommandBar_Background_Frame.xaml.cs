@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.Background
 {
-	[SampleControlInfo("CommandBar", "CommandBar_Background")]
+	[Sample("CommandBar", Name = "CommandBar_Background")]
 	public sealed partial class CommandBar_Background_Frame : UserControl
 	{
 		public CommandBar_Background_Frame()

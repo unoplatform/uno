@@ -39,7 +39,7 @@ By default, SamplesApp starts in debugging mode on localhost, making it inaccess
 
 Samples are located in the [`UITests.Shared` project](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature.
 
-Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute` (or `SampleControlInfoAttribute`, for older samples), and the SamplesApp automatically picks up all samples using the attribute.
+Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute`, and the SamplesApp automatically picks up all samples using the attribute.
 
 ### SampleAttribute
 

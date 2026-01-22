@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox
 {
-	[SampleControlInfo(nameof(TextBox), nameof(TextBox_WithPadding_Focus))]
+	[Sample(nameof(TextBox), nameof(TextBox_WithPadding_Focus))]
 	public sealed partial class TextBox_WithPadding_Focus : UserControl
 	{
 		public TextBox_WithPadding_Focus()

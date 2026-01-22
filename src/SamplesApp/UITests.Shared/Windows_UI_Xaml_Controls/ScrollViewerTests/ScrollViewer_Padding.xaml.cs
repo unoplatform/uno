@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 #if __APPLE_UIKIT__
@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo(category: "ScrollViewer")]
+	[Sample("ScrollViewer")]
 	public sealed partial class ScrollViewer_Padding : Page
 	{
 		public ScrollViewer_Padding()

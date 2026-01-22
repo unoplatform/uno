@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+	x:Class="SamplesApp.Samples.Help.HelpPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	mc:Ignorable="d">
+
+	<ScrollViewer Padding="24">
+		<StackPanel MaxWidth="600" Spacing="24">
+
+			<!--  Header  -->
+			<StackPanel Spacing="8">
+				<TextBlock
+					FontSize="28"
+					FontWeight="SemiBold"
+					Text="Samples App Help" />
+				<TextBlock
+					Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+					Text="A guide to using the Uno Platform Samples application"
+					TextWrapping="Wrap" />
+			</StackPanel>
+
+			<!--  Keyboard Shortcuts  -->
+			<StackPanel Spacing="12">
+				<TextBlock
+					FontSize="20"
+					FontWeight="SemiBold"
+					Text="Keyboard Shortcuts" />
+
+				<Grid
+					Padding="16"
+					Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					CornerRadius="8">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<TextBlock
+						Grid.Row="0"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Ctrl+F" />
+					<TextBlock
+						Grid.Row="0"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Focus the search box" />
+
+					<TextBlock
+						Grid.Row="1"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="F5" />
+					<TextBlock
+						Grid.Row="1"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Reload the current sample" />
+
+					<TextBlock
+						Grid.Row="2"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Alt+Left" />
+					<TextBlock
+						Grid.Row="2"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Navigate to the previous sample" />
+
+					<TextBlock
+						Grid.Row="3"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Alt+Right" />
+					<TextBlock
+						Grid.Row="3"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Navigate to the next sample" />
+
+					<TextBlock
+						Grid.Row="4"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Ctrl+Shift+F" />
+					<TextBlock
+						Grid.Row="4"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Open the Favorites view" />
+
+					<TextBlock
+						Grid.Row="5"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Ctrl+H" />
+					<TextBlock
+						Grid.Row="5"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Open the History view" />
+
+					<TextBlock
+						Grid.Row="6"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Ctrl+P" />
+					<TextBlock
+						Grid.Row="6"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Open the Playground" />
+
+					<TextBlock
+						Grid.Row="7"
+						Grid.Column="0"
+						Margin="0,0,24,8"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="Ctrl+T" />
+					<TextBlock
+						Grid.Row="7"
+						Grid.Column="1"
+						Margin="0,0,0,8"
+						Text="Open the Runtime Tests" />
+
+					<TextBlock
+						Grid.Row="8"
+						Grid.Column="0"
+						Margin="0,0,24,0"
+						FontFamily="Consolas"
+						FontWeight="SemiBold"
+						Text="F1" />
+					<TextBlock
+						Grid.Row="8"
+						Grid.Column="1"
+						Text="Open this Help page" />
+				</Grid>
+			</StackPanel>
+
+			<!--  Navigation Tips  -->
+			<StackPanel Spacing="12">
+				<TextBlock
+					FontSize="20"
+					FontWeight="SemiBold"
+					Text="Navigation" />
+
+				<StackPanel Spacing="8">
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">Library:</Run>
+						<Run>Browse samples organized by category. Select a category, then select a sample to view it.</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">Search:</Run>
+						<Run>Use the search box to quickly find samples by name. Press Enter to open a single result.</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">Favorites:</Run>
+						<Run>Click the heart icon to add samples to your favorites for quick access.</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">History:</Run>
+						<Run>Recently viewed samples are saved for easy navigation back.</Run>
+					</TextBlock>
+				</StackPanel>
+			</StackPanel>
+
+			<!--  Toolbar Options  -->
+			<StackPanel Spacing="12">
+				<TextBlock
+					FontSize="20"
+					FontWeight="SemiBold"
+					Text="Toolbar Options" />
+
+				<StackPanel Spacing="8">
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">Theme:</Run>
+						<Run>Switch between Light, Dark, or System theme.</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">Fluent Styles:</Run>
+						<Run>Toggle WinUI Fluent design styling.</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">RTL:</Run>
+						<Run>Test right-to-left text flow.</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">FPS Indicator:</Run>
+						<Run>Show frame rate counter for performance monitoring.</Run>
+					</TextBlock>
+				</StackPanel>
+			</StackPanel>
+
+			<!--  Quick Access  -->
+			<StackPanel Spacing="12">
+				<TextBlock
+					FontSize="20"
+					FontWeight="SemiBold"
+					Text="Quick Access" />
+
+				<StackPanel Spacing="8">
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">Runtime Tests:</Run>
+						<Run>Access the unit test runner from the toolbar button (beaker icon).</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">Playground:</Run>
+						<Run>Open the playground sample for experimentation.</Run>
+					</TextBlock>
+					<TextBlock TextWrapping="Wrap">
+						<Run FontWeight="SemiBold">New Window:</Run>
+						<Run>Open the samples app in a new window for side-by-side comparison.</Run>
+					</TextBlock>
+				</StackPanel>
+			</StackPanel>
+
+		</StackPanel>
+	</ScrollViewer>
+</Page>

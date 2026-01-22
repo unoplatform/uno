@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "RotatedListView_WithRotatedItems", typeof(RotatedListViewViewModel), ignoreInSnapshotTests: true)]
+	[Sample("ListView", Name = "RotatedListView_WithRotatedItems", ViewModelType = typeof(RotatedListViewViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class RotatedListView_WithRotatedItems : UserControl
 	{
 		public RotatedListView_WithRotatedItems()
