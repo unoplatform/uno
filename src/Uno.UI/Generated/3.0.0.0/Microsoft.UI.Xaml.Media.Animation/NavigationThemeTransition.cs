@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class NavigationThemeTransition : global::Microsoft.UI.Xaml.Media.Animation.Transition
 	{
-#if __SKIA__
+#if false // Implemented in NavigationThemeTransition.mux.cs
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DefaultNavigationTransitionInfoProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)));
 #endif
-#if __SKIA__
+#if false // Implemented in NavigationThemeTransition.mux.cs
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo DefaultNavigationTransitionInfo
 		{
