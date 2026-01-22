@@ -157,7 +157,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 				if (!success)
 				{
-					throw new FileNotFoundException("Could not find libHarfBuzzSharp.so in NATIVE_DLL_SEARCH_DIRECTORIES.");
+					throw new FileNotFoundException($"Could not find libHarfBuzzSharp.so in NATIVE_DLL_SEARCH_DIRECTORIES. Searched directories: {search}");
 				}
 			}
 			catch (Exception ex)
