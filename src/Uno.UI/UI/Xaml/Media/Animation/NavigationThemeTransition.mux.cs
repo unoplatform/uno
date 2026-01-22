@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ThemeTransitions.cpp, tag winui3/release/1.7-stable
 
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
@@ -37,20 +35,26 @@ public partial class NavigationThemeTransition
 	/// <summary>
 	/// Attaches the transition to a Page element.
 	/// </summary>
-	internal new void AttachToElement(IFrameworkElement element)
+	internal override void AttachToElement(IFrameworkElement element)
 	{
 		// NavigationThemeTransition only works with Page elements
 		if (element is Page page)
 		{
 			page.Loaded += OnPageLoaded;
 			page.Unloaded += OnPageUnloaded;
+
+			// If the page is already loaded, run the enter animation immediately
+			if (page.IsLoaded)
+			{
+				RunNavigationAnimation(page, isEntering: true);
+			}
 		}
 	}
 
 	/// <summary>
 	/// Detaches the transition from a Page element.
 	/// </summary>
-	internal new void DetachFromElement(IFrameworkElement element)
+	internal override void DetachFromElement(IFrameworkElement element)
 	{
 		if (element is Page page)
 		{
