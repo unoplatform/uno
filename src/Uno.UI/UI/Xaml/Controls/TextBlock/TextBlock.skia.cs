@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using System.Numerics;
@@ -11,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
@@ -32,6 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 		private Size _lastInlinesArrangeWithPadding;
+		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
@@ -47,6 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateLastUsedTheme();
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
+			((ObservableCollection<TextHighlighter>)TextHighlighters).CollectionChanged += OnTextHighlightersChanged;
 
 			Tapped += static (s, e) => ((TextBlock)s).OnTapped(e);
 			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
@@ -193,12 +199,10 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			};
-			TextHighlighters.Add(selectionHighlighter);
 			ParsedText.Draw(
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
-				TextHighlighters);
-			TextHighlighters.Remove(selectionHighlighter);
+				TextHighlighters.Append(selectionHighlighter));
 			session.Canvas.Restore();
 			DrawingFinished?.Invoke();
 		}
@@ -243,6 +247,49 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnLineHeightChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnLineStackingStrategyChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => InvalidateInlineAndRequireRepaint();
+
+		private void OnTextHighlightersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.OldItems is not null)
+			{
+				foreach (var item in e.OldItems)
+				{
+					if (item is TextHighlighter highlighter)
+					{
+						if (_textHighlighterDisposables.Remove(highlighter, out var disposable))
+						{
+							disposable.Dispose();
+						}
+					}
+				}
+			}
+			if (e.NewItems is not null)
+			{
+				foreach (var item in e.NewItems)
+				{
+					if (item is TextHighlighter highlighter)
+					{
+						var backgroundDisposable = highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.BackgroundProperty, OnTextHighlighterPropertyChanged);
+						var foregroundDisposable = highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.ForegroundProperty, OnTextHighlighterPropertyChanged);
+						NotifyCollectionChangedEventHandler onCollectionChanged = (_, _) => InvalidateInlineAndRequireRepaint();
+						var rangesDisposable = Disposable.Create(() => ((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged -= onCollectionChanged);
+						((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged += onCollectionChanged;
+						var disposable = new CompositeDisposable();
+						disposable.Add(backgroundDisposable);
+						disposable.Add(foregroundDisposable);
+						disposable.Add(rangesDisposable);
+						_textHighlighterDisposables.Add(highlighter, disposable);
+					}
+				}
+			}
+
+			InvalidateInlineAndRequireRepaint();
+		}
+
+		private void OnTextHighlighterPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			InvalidateInlineAndRequireRepaint();
+		}
 
 		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateInlineAndRequireRepaint();
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();

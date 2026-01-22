@@ -754,6 +754,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region TextHighlighters
+
+		public IList<TextHighlighter> TextHighlighters { get; } = new ObservableCollection<TextHighlighter>();
+
+		#endregion
+
 		#region DependencyProperty: IsTextTrimmed
 		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
 
