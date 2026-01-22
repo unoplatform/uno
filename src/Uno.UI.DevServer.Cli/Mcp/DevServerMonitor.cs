@@ -30,6 +30,13 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
 
+		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
+		_logger.LogTrace(
+			"DevServerMonitor starting for directory {Directory} (port: {Port}, forwardedArgs: {Args})",
+			_currentDirectory,
+			_originalPort,
+			forwardedArgsDisplay);
+
 		_cts = new CancellationTokenSource();
 		_monitor = Task.Run(() => RunMonitor(_cts.Token), _cts.Token);
 	}
@@ -48,12 +55,26 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 					.EnumerateFiles(_currentDirectory, "*.sln")
 					.Concat(Directory.EnumerateFiles(_currentDirectory, "*.slnx")).ToArray();
 
+				_logger.LogTrace(
+					"DevServerMonitor scan found {Count} solution files in {Directory}",
+					solutionFiles.Length,
+					_currentDirectory);
+
 				if (solutionFiles.Length != 0)
 				{
 					// If we don't have a dev server host, we can't start a DevServer yet.
 					var hostPath = await _services
 						.GetRequiredService<UnoToolsLocator>()
 						.ResolveHostExecutableAsync(_currentDirectory);
+
+					if (hostPath is null)
+					{
+						_logger.LogTrace("DevServerMonitor could not resolve a host executable in {Directory}", _currentDirectory);
+					}
+					else
+					{
+						_logger.LogTrace("DevServerMonitor resolved host executable {HostPath}", hostPath);
+					}
 
 					if (hostPath is not null)
 					{
@@ -68,7 +89,11 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 						{
 							_logger.LogDebug($"Using user-specified port {port}");
 						}
-
+						_logger.LogTrace(
+							"DevServerMonitor launching controller from {HostPath} in {WorkingDirectory} on port {Port}",
+							hostPath,
+							_currentDirectory,
+							port);
 						var (success, exitCode) = await StartProcess(hostPath, port, _currentDirectory, ct);
 						if (!success)
 						{
@@ -104,6 +129,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 							return;
 						}
 
+						_logger.LogTrace("DevServerMonitor detected ready server at {Endpoint}; raising ServerStarted", remoteEndpoint);
 						ServerStarted?.Invoke(remoteEndpoint);
 
 						break;
