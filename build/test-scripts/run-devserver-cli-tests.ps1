@@ -457,7 +457,7 @@ function Test-DevserverStartStop {
 
     Write-Log "Devserver HTTP port $port is open at $DevServerBaseUrl"
 
-    Invoke-DevserverCli -Arguments @('stop', '-l', 'trace')
+    Stop-DevserverInDirectory -Directory $SlnDir
 
     return $port
 }
@@ -479,8 +479,10 @@ function Test-DevserverSolutionDirSupport {
     }
 
     Push-Location $outerDirectory
+    $solutionDirStarted = $false
     try {
         Invoke-DevserverCli -Arguments @('start', '--solution-dir', $SlnDir, '--httpPort', $solutionDirTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+        $solutionDirStarted = $true
 
         $solutionDirSuccess = Wait-ForHttpPortOpen -Port $solutionDirTestPort -Path '/' -MaxAttempts $MaxAttempts -ConnectTimeoutMs 2000
         if (-not $solutionDirSuccess) {
@@ -488,10 +490,12 @@ function Test-DevserverSolutionDirSupport {
         }
 
         Write-Log "Devserver started successfully using --solution-dir at $DevServerBaseUrl"
-
-        Invoke-DevserverCli -Arguments @('stop', '--solution-dir', $SlnDir, '-l', 'trace')
     }
     finally {
+        if ($solutionDirStarted) {
+            Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
         Pop-Location
         Set-Location $SlnDir
     }
@@ -637,9 +641,11 @@ function Test-McpModeWithoutSolutionDir {
     $mcpTestPort = if ($maxAllocatedPort -ge 65534) { $DefaultPort + 2 } else { $maxAllocatedPort + 1 }
 
     $processContext = $null
+    $devserverStarted = $false
 
     $mcpArguments = Get-DevserverCliArguments -Arguments @("--mcp-app", "--port", $mcpTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), "-l", "trace")
     $processContext = Start-DevserverProcessCapture -WorkingDirectory $SlnDir -Executable $script:DevServerHostExecutable -Arguments $mcpArguments
+    $devserverStarted = $true
 
     try {
         $mcpStarted = Wait-ForDevserverListEntry -Port $mcpTestPort -SolutionDirectory $SlnDir -MaxAttempts $MaxAttempts -DelaySeconds 2
@@ -652,6 +658,10 @@ function Test-McpModeWithoutSolutionDir {
         Write-Log "Devserver MCP mode without --solution-dir registered successfully in 'uno-devserver list'"
     }
     finally {
+        if ($devserverStarted) {
+            Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
         Stop-DevserverProcessCapture -Context $processContext
 
         if ($processContext) {
@@ -661,6 +671,26 @@ function Test-McpModeWithoutSolutionDir {
                 }
             }
         }
+    }
+}
+
+function Stop-DevserverInDirectory {
+    param([string]$Directory)
+
+    if ([string]::IsNullOrWhiteSpace($Directory) -or -not (Test-Path $Directory)) {
+        return
+    }
+
+    Push-Location $Directory
+    try {
+        Write-Log "Ensuring no lingering devserver instances remain in $Directory"
+        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace')
+    }
+    catch {
+        Write-Log "Cleanup devserver stop failed: $($_.Exception.Message)"
+    }
+    finally {
+        Pop-Location
     }
 }
 
@@ -689,6 +719,9 @@ function Test-CodexIntegration {
     }
 }
 
+$finalExitCode = 1
+$devserverCleanupDirectory = $null
+
 try {
     cd $env:BUILD_SOURCESDIRECTORY/src/SolutionTemplate
     & $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
@@ -708,6 +741,7 @@ try {
     $csprojDir = Split-Path $csprojPath -Parent
     $slnDir = Split-Path $csprojDir -Parent
     $workDir = $slnDir
+    $devserverCleanupDirectory = $slnDir
 
     if (-not (Test-Path $csprojDir)) {
         throw "Project directory not found: $csprojDir"
@@ -728,10 +762,15 @@ try {
     Test-McpModeWithoutSolutionDir -SlnDir $slnDir -DefaultPort $defaultPort -PrimaryPort $primaryPort -SolutionDirPort $solutionDirTestPort -MaxAttempts $maxAttempts
     Test-CodexIntegration -SlnDir $slnDir
 
-    exit 0
+    $finalExitCode = 0
 }
 catch {
     Write-Log "ERROR: $($_.Exception.Message)"
     try { Pop-Location -ErrorAction SilentlyContinue; Pop-Location -ErrorAction SilentlyContinue } catch {}
-    exit 1
+    $finalExitCode = 1
 }
+finally {
+    Stop-DevserverInDirectory -Directory $devserverCleanupDirectory
+}
+
+exit $finalExitCode
