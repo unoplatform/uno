@@ -365,8 +365,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Projection Projection
 		{
 			get
@@ -657,8 +657,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ProjectionProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Projection), typeof(global::Microsoft.UI.Xaml.Media.Projection),
