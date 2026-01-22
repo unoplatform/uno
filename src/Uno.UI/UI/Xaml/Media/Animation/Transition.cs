@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// Attaches to the Loaded event
 		/// </summary>
 		/// <param name="element">Framework element to apply the transition to</param>
-		internal void AttachToElement(IFrameworkElement element)
+		internal virtual void AttachToElement(IFrameworkElement element)
 		{
 			element.Loaded += OnElementLoaded;
 		}
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// Called from the Transitions Property of IFrameworkElement
 		/// </summary>
 		/// <param name="element">Framework element to stop applying the transition to</param>
-		internal void DetachFromElement(IFrameworkElement element)
+		internal virtual void DetachFromElement(IFrameworkElement element)
 		{
 			element.Loaded -= OnElementLoaded;
 		}
