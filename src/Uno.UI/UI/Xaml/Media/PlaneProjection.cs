@@ -335,7 +335,8 @@ public partial class PlaneProjection : Projection
 		// WinUI uses degrees and specific rotation direction conventions
 		if (RotationX != 0)
 		{
-			float rotX = (float)(RotationX * Math.PI / 180.0);
+			// Negate to match WinUI direction (positive rotates top away from viewer)
+			float rotX = (float)(-RotationX * Math.PI / 180.0);
 			result = result * Matrix4x4.CreateRotationX(rotX);
 		}
 		if (RotationY != 0)
