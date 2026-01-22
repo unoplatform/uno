@@ -39,7 +39,7 @@ public sealed partial class NavigationTransitionSample : Page
 
 	private void OnFrameNavigated(object sender, NavigationEventArgs e)
 	{
-		BackButton.IsEnabled = ContentFrame.CanGoBack;
+		BackButtonOuter.IsEnabled = ContentFrame.CanGoBack;
 	}
 
 	private NavigationTransitionInfo GetSelectedTransitionInfo()
