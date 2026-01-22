@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <param name="element">The element to animate.</param>
 		/// <param name="trigger">The navigation trigger indicating the type of navigation.</param>
 		/// <returns>A list of storyboards to run for the transition.</returns>
-		protected virtual IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
+		private protected virtual IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 			=> new List<Storyboard>();
 	}
 }
