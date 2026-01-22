@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,7 +15,7 @@ using TextBlock = Microsoft.UI.Xaml.Controls.TextBlock;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", "TransformToVisual_Transform")]
+	[Sample("UIElement", Name = "TransformToVisual_Transform")]
 	public sealed partial class TransformToVisual_Transform : UserControl
 	{
 		private readonly TestRunner _tests;

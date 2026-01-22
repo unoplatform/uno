@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 {
-	[SampleControlInfo("Windows.UI.Core", "HardwareBackButton_Modes")]
+	[Sample("Windows.UI.Core", Name = "HardwareBackButton_Modes")]
 	public sealed partial class HardwareBackButton_Modes : Page
 	{
 		private bool _isSubscribed;

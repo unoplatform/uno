@@ -10,6 +10,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Input;
 using System.Threading;
 using SampleControl.Entities;
+using Windows.System;
+using System.Threading.Tasks;
 
 
 #if WINAPPSDK
@@ -34,6 +36,132 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
+		}
+
+		private SampleChooserViewModel ViewModel => (SampleChooserViewModel)DataContext;
+
+		private async void FocusSearchAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			// Ensure the pane is open before focusing the search box
+			if (!SplitView.IsPaneOpen)
+			{
+				SplitView.IsPaneOpen = true;
+				await Task.Yield();
+			}
+
+			SearchBox.Focus(FocusState.Keyboard);
+			args.Handled = true;
+		}
+
+		private void ReloadSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.ReloadCurrentTestCommand.CanExecute(null))
+			{
+				ViewModel.ReloadCurrentTestCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void PreviousSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.LoadPreviousTestCommand.CanExecute(null))
+			{
+				ViewModel.LoadPreviousTestCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void NextSampleAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.LoadNextTestCommand.CanExecute(null))
+			{
+				ViewModel.LoadNextTestCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void FavoritesViewAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			ViewModel.ShowNewSectionCommand.Execute("Favorites");
+			args.Handled = true;
+		}
+
+		private void HistoryViewAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			ViewModel.ShowNewSectionCommand.Execute("Recents");
+			args.Handled = true;
+		}
+
+		private void PlaygroundAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.OpenPlaygroundCommand.CanExecute(null))
+			{
+				ViewModel.OpenPlaygroundCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void RuntimeTestsAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.OpenRuntimeTestsCommand.CanExecute(null))
+			{
+				ViewModel.OpenRuntimeTestsCommand.Execute(null);
+			}
+			args.Handled = true;
+		}
+
+		private void HelpAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			if (ViewModel is null || !ViewModel.KeyboardShortcutsEnabled)
+			{
+				return;
+			}
+
+			if (ViewModel.OpenHelpCommand.CanExecute(null))
+			{
+				ViewModel.OpenHelpCommand.Execute(null);
+			}
+			args.Handled = true;
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

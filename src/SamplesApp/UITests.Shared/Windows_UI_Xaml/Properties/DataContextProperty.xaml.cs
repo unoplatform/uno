@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.Properties
 {
-	[SampleControlInfo("XAML", "DataContextProperty")]
+	[Sample("XAML", Name = "DataContextProperty")]
 	public sealed partial class DataContextProperty : Page
 	{
 		public DataContextProperty()

@@ -330,23 +330,21 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 #if !__NETSTD_REFERENCE__
-		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToPostKeyDown()
 		{
-			if (GetIsEventOverrideImplemented(GetType(), nameof(OnPostKeyDown), _keyArgsType))
+			if (GetIsEventOverrideImplemented(OnPostKeyDown))
 			{
 				PostKeyDown += OnPostKeyDownHandler;
 			}
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
+			var implementedEvents = GetImplementedRoutedEvents();
 
 			if (HasFlag(implementedEvents, RoutedEventFlag.PointerPressed))
 			{
@@ -1029,9 +1027,51 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnTapped(TappedRoutedEventArgs e) { }
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
 		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
-		[NotImplemented] // For WinUI code compatibility, not implemented yet
+		/// <summary>
+		/// Called when a RightTapped event is not handled by any event handler.
+		/// This allows controls to implement fallback behavior for right-tap gestures.
+		/// </summary>
+		/// <param name="e">The event args from the RightTapped event.</param>
 		private protected virtual void OnRightTappedUnhandled(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
+
+		/// <summary>
+		/// Internal method to invoke OnRightTappedUnhandled from UIElement.
+		/// </summary>
+		internal void InvokeRightTappedUnhandled(RightTappedRoutedEventArgs e) => OnRightTappedUnhandled(e);
+
+		/// <summary>
+		/// Called when a ContextRequested event is not handled by any user event handler.
+		/// Override to customize context flyout display behavior.
+		/// </summary>
+		/// <param name="args">The event args from the ContextRequested event.</param>
+		/// <remarks>
+		/// Ported from WinUI Control_Partial.cpp:1321-1324
+		/// </remarks>
+		private protected virtual void OnContextRequestedImpl(ContextRequestedEventArgs args)
+		{
+			// Default: show flyout on this control
+			ShowContextFlyout(args, this);
+		}
+
+		/// <summary>
+		/// Shows the context flyout for the specified control.
+		/// </summary>
+		/// <param name="args">The event args from the ContextRequested event.</param>
+		/// <param name="contextFlyoutControl">The control whose ContextFlyout should be shown.</param>
+		/// <remarks>
+		/// Ported from WinUI Control_Partial.cpp:1326-1339
+		/// </remarks>
+		private protected void ShowContextFlyout(ContextRequestedEventArgs args, Control contextFlyoutControl)
+		{
+			UIElement.OnContextRequestedCore(this, contextFlyoutControl, args);
+		}
+
+		/// <summary>
+		/// Internal method to invoke OnContextRequestedImpl from ContextMenuProcessor.
+		/// </summary>
+		internal void InvokeOnContextRequestedImpl(ContextRequestedEventArgs args) => OnContextRequestedImpl(args);
+
 		protected virtual void OnDragEnter(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
@@ -1140,157 +1180,141 @@ namespace Microsoft.UI.Xaml.Controls
 		private static readonly RoutedEventHandler OnLostFocusHandler =
 			(object sender, RoutedEventArgs args) => ((Control)sender).OnLostFocus(args);
 
-		private static readonly Type[] _pointerArgsType = new[] { typeof(PointerRoutedEventArgs) };
-		private static readonly Type[] _tappedArgsType = new[] { typeof(TappedRoutedEventArgs) };
-		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
-		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
-		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
-		private static readonly Type[] _dragArgsType = new[] { typeof(global::Microsoft.UI.Xaml.DragEventArgs) };
-		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
-		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
-		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };
-		private static readonly Type[] _manipStartedArgsType = new[] { typeof(ManipulationStartedRoutedEventArgs) };
-		private static readonly Type[] _manipDeltaArgsType = new[] { typeof(ManipulationDeltaRoutedEventArgs) };
-		private static readonly Type[] _manipInertiaArgsType = new[] { typeof(ManipulationInertiaStartingRoutedEventArgs) };
-		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
-
-		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-			Type type)
+		internal RoutedEventFlag EvaluateImplementedControlRoutedEvents()
 		{
 			var result = RoutedEventFlag.None;
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerPressed), _pointerArgsType))
+			if (GetIsEventOverrideImplemented(OnPointerPressed))
 			{
 				result |= RoutedEventFlag.PointerPressed;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerReleased), _pointerArgsType))
+			if (GetIsEventOverrideImplemented(OnPointerReleased))
 			{
 				result |= RoutedEventFlag.PointerReleased;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerEntered), _pointerArgsType))
+			if (GetIsEventOverrideImplemented(OnPointerEntered))
 			{
 				result |= RoutedEventFlag.PointerEntered;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerExited), _pointerArgsType))
+			if (GetIsEventOverrideImplemented<PointerRoutedEventArgs>(OnPointerExited))
 			{
 				result |= RoutedEventFlag.PointerExited;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerMoved), _pointerArgsType))
+			if (GetIsEventOverrideImplemented(OnPointerMoved))
 			{
 				result |= RoutedEventFlag.PointerMoved;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerCanceled), _pointerArgsType))
+			if (GetIsEventOverrideImplemented(OnPointerCanceled))
 			{
 				result |= RoutedEventFlag.PointerCanceled;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerCaptureLost), _pointerArgsType))
+			if (GetIsEventOverrideImplemented(OnPointerCaptureLost))
 			{
 				result |= RoutedEventFlag.PointerCaptureLost;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPointerWheelChanged), _pointerArgsType))
+			if (GetIsEventOverrideImplemented(OnPointerWheelChanged))
 			{
 				result |= RoutedEventFlag.PointerWheelChanged;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnManipulationStarting), _manipStartingArgsType))
+			if (GetIsEventOverrideImplemented(OnManipulationStarting))
 			{
 				result |= RoutedEventFlag.ManipulationStarting;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnManipulationStarted), _manipStartedArgsType))
+			if (GetIsEventOverrideImplemented(OnManipulationStarted))
 			{
 				result |= RoutedEventFlag.ManipulationStarted;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnManipulationDelta), _manipDeltaArgsType))
+			if (GetIsEventOverrideImplemented(OnManipulationDelta))
 			{
 				result |= RoutedEventFlag.ManipulationDelta;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnManipulationInertiaStarting), _manipInertiaArgsType))
+			if (GetIsEventOverrideImplemented(OnManipulationInertiaStarting))
 			{
 				result |= RoutedEventFlag.ManipulationInertiaStarting;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnManipulationCompleted), _manipCompletedArgsType))
+			if (GetIsEventOverrideImplemented(OnManipulationCompleted))
 			{
 				result |= RoutedEventFlag.ManipulationCompleted;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnTapped), _tappedArgsType))
+			if (GetIsEventOverrideImplemented(OnTapped))
 			{
 				result |= RoutedEventFlag.Tapped;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnDoubleTapped), _doubleTappedArgsType))
+			if (GetIsEventOverrideImplemented(OnDoubleTapped))
 			{
 				result |= RoutedEventFlag.DoubleTapped;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnRightTapped), _rightTappedArgsType))
+			if (GetIsEventOverrideImplemented(OnRightTapped))
 			{
 				result |= RoutedEventFlag.RightTapped;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnHolding), _holdingArgsType))
+			if (GetIsEventOverrideImplemented(OnHolding))
 			{
 				result |= RoutedEventFlag.Holding;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnDragEnter), _dragArgsType))
+			if (GetIsEventOverrideImplemented(OnDragEnter))
 			{
 				result |= RoutedEventFlag.DragEnter;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnDragOver), _dragArgsType))
+			if (GetIsEventOverrideImplemented(OnDragOver))
 			{
 				result |= RoutedEventFlag.DragOver;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnDragLeave), _dragArgsType))
+			if (GetIsEventOverrideImplemented(OnDragLeave))
 			{
 				result |= RoutedEventFlag.DragLeave;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnDrop), _dragArgsType))
+			if (GetIsEventOverrideImplemented(OnDrop))
 			{
 				result |= RoutedEventFlag.Drop;
 			}
 #if __WASM__ || __SKIA__
-			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyDown), _keyArgsType))
+			if (GetIsEventOverrideImplemented(OnPreviewKeyDown))
 			{
 				result |= RoutedEventFlag.PreviewKeyDown;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyUp), _keyArgsType))
+			if (GetIsEventOverrideImplemented(OnPreviewKeyUp))
 			{
 				result |= RoutedEventFlag.PreviewKeyUp;
 			}
 #endif
-			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
+			if (GetIsEventOverrideImplemented<KeyRoutedEventArgs>(OnKeyDown))
 			{
 				result |= RoutedEventFlag.KeyDown;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnKeyUp), _keyArgsType))
+			if (GetIsEventOverrideImplemented<KeyRoutedEventArgs>(OnKeyUp))
 			{
 				result |= RoutedEventFlag.KeyUp;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnLostFocus), _routedArgsType))
+			if (GetIsEventOverrideImplemented(OnLostFocus))
 			{
 				result |= RoutedEventFlag.LostFocus;
 			}
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnGotFocus), _routedArgsType))
+			if (GetIsEventOverrideImplemented(OnGotFocus))
 			{
 				result |= RoutedEventFlag.GotFocus;
 			}

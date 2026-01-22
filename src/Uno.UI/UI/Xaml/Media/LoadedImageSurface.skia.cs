@@ -77,33 +77,35 @@ namespace Microsoft.UI.Xaml.Media
 						{
 							stream = File.OpenRead(uri.PathAndQuery);
 						}
+
+						if (stream is not null)
+						{
+							var surface = new SkiaCompositionSurface();
+							var (success, _) = surface.LoadFromStream(width, height, stream);
+
+							if (success)
+							{
+								imgSurf.InternalSurface = surface;
+
+								imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
+								imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
+								imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
+							}
+
+							imgSurf.RaiseLoadCompleted(success ? LoadedImageSourceLoadStatus.Success : LoadedImageSourceLoadStatus.InvalidFormat);
+						}
+						else
+						{
+							imgSurf.RaiseLoadCompleted(LoadedImageSourceLoadStatus.Other);
+						}
 					}
 					catch
 					{
 						imgSurf.RaiseLoadCompleted(LoadedImageSourceLoadStatus.NetworkError);
 					}
-
-					if (stream is not null)
+					finally
 					{
-						var surface = new SkiaCompositionSurface();
-						var result = surface.LoadFromStream(width, height, stream);
-
-						if (result.success)
-						{
-							imgSurf.InternalSurface = surface;
-
-							imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
-							imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
-							imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
-						}
-
-						imgSurf.RaiseLoadCompleted(result.success ? LoadedImageSourceLoadStatus.Success : LoadedImageSourceLoadStatus.InvalidFormat);
-
-						stream.Dispose();
-					}
-					else
-					{
-						imgSurf.RaiseLoadCompleted(LoadedImageSourceLoadStatus.Other);
+						stream?.Dispose();
 					}
 				}
 				else

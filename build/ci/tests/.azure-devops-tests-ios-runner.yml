@@ -18,7 +18,7 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
   dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
   pool:

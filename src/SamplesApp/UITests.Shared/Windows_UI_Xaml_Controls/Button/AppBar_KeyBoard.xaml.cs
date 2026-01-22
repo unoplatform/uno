@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "AppBar_KeyBoard")]
+	[Sample("Buttons", Name = "AppBar_KeyBoard")]
 	public sealed partial class AppBar_KeyBoard : UserControl
 	{
 		public AppBar_KeyBoard()

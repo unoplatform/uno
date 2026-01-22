@@ -6,11 +6,12 @@ stages:
   displayName: Validate Master Health
   dependsOn:
     - Setup
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: and(eq(variables['Build.Reason'], 'PullRequest'), not(startsWith(variables['System.PullRequest.TargetBranch'], 'refs/heads/release/stable/')))
 
   jobs:
   - job: MasterHealth
     displayName: Check Master Build Status
+    cancelTimeoutInMinutes: 0
 
     pool:
       vmImage: ${{ parameters.vmImage }}

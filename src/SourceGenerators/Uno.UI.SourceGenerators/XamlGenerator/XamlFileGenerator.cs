@@ -5925,7 +5925,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						m.Member.Name != "_UnknownContent"
 
 						&& m.Member.Name != "Resources"
-						&& m.Member.Name != "Key"
+						&& !(m.Member.Name == "Key" && m.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 					)
 					||
 					(

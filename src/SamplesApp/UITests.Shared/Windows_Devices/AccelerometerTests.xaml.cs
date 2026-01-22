@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,7 +22,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Accelerometer", description: "Demonstrates use of Windows.Devices.Sensors.Accelerometer", viewModelType: typeof(AccelerometerTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "Accelerometer", Description = "Demonstrates use of Windows.Devices.Sensors.Accelerometer", ViewModelType = typeof(AccelerometerTestsViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class AccelerometerTests : UserControl
 	{
 

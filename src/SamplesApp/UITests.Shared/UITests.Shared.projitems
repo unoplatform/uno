@@ -517,6 +517,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_WebResourceRequested.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_WebResourceRequested_Multiple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_OuterSelection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -525,6 +533,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_WebResourceRequested.xaml.cs">
+      <DependentUpon>WebView2_WebResourceRequested.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_WebResourceRequested_Multiple.xaml.cs">
+      <DependentUpon>WebView2_WebResourceRequested_Multiple.xaml</DependentUpon>
+    </Compile>
     <Page Include="$(MSBuildThisFileDirectory)Msal\MsalLoginAndGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2111,6 +2125,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridView\GridViewGroupPadding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridView\GridView_ItemContainerStyle_Selection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4479,6 +4497,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\RoutedEvents\RoutedEventsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\ContextMenu\ContextRequested_Sample.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -7191,6 +7213,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridView\GridViewGroupPadding.xaml.cs">
       <DependentUpon>GridViewGroupPadding.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridView\GridView_ItemContainerStyle_Selection.xaml.cs">
+      <DependentUpon>GridView_ItemContainerStyle_Selection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridView\GridViewItemWidthItemHeight.xaml.cs">
       <DependentUpon>GridViewItemWidthItemHeight.xaml</DependentUpon>
     </Compile>
@@ -8596,6 +8621,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\RoutedEvents\RoutedEvent_TappedControl.xaml.cs">
       <DependentUpon>RoutedEvent_TappedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\ContextMenu\ContextRequested_Sample.xaml.cs">
+      <DependentUpon>ContextRequested_Sample.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\AcrylicBrushTests\BasicAcrylicBrushTest.xaml.cs">
       <DependentUpon>BasicAcrylicBrushTest.xaml</DependentUpon>

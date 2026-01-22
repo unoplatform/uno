@@ -39,7 +39,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.13"
+			"net10.0": "10.0.15"
 		}
 	},
 	{
@@ -94,7 +94,7 @@
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.17.224",
+		"version": "1.17.415",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -128,7 +128,7 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.6901",
+		"version": "10.0.26100.7175",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
@@ -304,7 +304,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.4.17",
+		"version": "6.4.22",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -312,7 +312,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.0.4",
+		"version": "7.0.17",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -378,7 +378,7 @@
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.0.8",
+		"version": "1.0.11",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]

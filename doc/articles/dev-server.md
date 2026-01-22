@@ -43,6 +43,8 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `--port | -p <int>`: Optional port value for MCP proxy mode
 - `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tool_list_changed` (for example, Codex or Claude Code).
 - `--force-roots-fallback`: Skip the MCP `roots` handshake and expose the `uno_app_set_roots` tool so agents that cannot send workspace roots can still initialize (required for Google Antigravity).
+- `--force-generate-tool-cache`: Immediately request the Uno App tool list once the Dev Server is online and persist it to the local cache. Use this to prime CI environments or agents that expect a tools cache before they can call `list_tools`.
+- `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents) or when priming tools via `--force-generate-tool-cache`. Defaults to the current working directory when omitted.
 
 ## Hot Reload
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "ZeroThickness")]
+	[Sample("Border", Name = "ZeroThickness")]
 	public sealed partial class ZeroThickness : UserControl
 	{
 		public ZeroThickness()
