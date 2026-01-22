@@ -41,7 +41,7 @@ internal class RangeSlicer<TValue>
 		public static bool operator ==(Segment left, Segment right) => left.Equals(right);
 		public static bool operator !=(Segment left, Segment right) => !left.Equals(right);
 
-		public override string ToString() => $"[{Start}, {End}] = {(HasValue ? Value?.ToString() : "Unset")}";
+		public override string ToString() => $"[{Start}, {End}) = {(HasValue ? Value?.ToString() : "Unset")}";
 	}
 
 	private List<Segment> _segments = new();
@@ -63,6 +63,11 @@ internal class RangeSlicer<TValue>
 	{
 		if (start > end) throw new ArgumentOutOfRangeException(nameof(start), "Start must be less than or equal to End.");
 
+		if (start == end)
+		{
+			return;
+		}
+
 		if (end > _initialEnd)
 		{
 			end = _initialEnd;
@@ -79,14 +84,14 @@ internal class RangeSlicer<TValue>
 		foreach (var existing in _segments)
 		{
 			// Case 1: Existing is completely before new range
-			if (existing.End < start)
+			if (existing.End <= start)
 			{
 				newSegments.Add(existing);
 				continue;
 			}
 
 			// Case 2: Existing is completely after new range
-			if (existing.Start > end)
+			if (existing.Start >= end)
 			{
 				if (!inserted)
 				{
@@ -102,7 +107,7 @@ internal class RangeSlicer<TValue>
 			// Left part of existing?
 			if (existing.Start < start)
 			{
-				newSegments.Add(new Segment(existing.Start, start - 1, existing.Value, existing.HasValue));
+				newSegments.Add(new Segment(existing.Start, start, existing.Value, existing.HasValue));
 			}
 
 			// Insert new segment if not already inserted
@@ -116,7 +121,7 @@ internal class RangeSlicer<TValue>
 			// Right part of existing?
 			if (existing.End > end)
 			{
-				newSegments.Add(new Segment(end + 1, existing.End, existing.Value, existing.HasValue));
+				newSegments.Add(new Segment(end, existing.End, existing.Value, existing.HasValue));
 			}
 		}
 
@@ -141,7 +146,7 @@ internal class RangeSlicer<TValue>
 			var next = segments[i];
 
 			// If adjacent and same value/state, merge
-			if (current.End + 1 == next.Start &&
+			if (current.End == next.Start &&
 				current.HasValue == next.HasValue &&
 				EqualityComparer<TValue?>.Default.Equals(current.Value, next.Value))
 			{
@@ -157,8 +162,8 @@ internal class RangeSlicer<TValue>
 		return merged;
 	}
 
-	public IEnumerable<Segment> GetSegments()
+	public List<Segment> GetSegments()
 	{
-		return _segments.AsReadOnly();
+		return _segments;
 	}
 }

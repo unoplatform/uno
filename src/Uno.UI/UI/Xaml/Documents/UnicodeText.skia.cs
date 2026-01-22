@@ -929,7 +929,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
-		IList<TextHighlighter> highlighters)
+		IEnumerable<TextHighlighter> highlighters)
 	{
 		var wholeTextSlicer = new RangeSlicer<(Cluster selectionClusterStart, Cluster? selectionClusterEnd, CompositionBrush background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
@@ -964,23 +964,6 @@ internal readonly partial struct UnicodeText : IParsedText
 			var currentLineX = line.xAlignmentOffset;
 			foreach (var run in line.runs)
 			{
-				// Ideally, we would want to get the path of the glyphs and then draw them using CompositionBrush.Paint, but this
-				// does not work for Emojis which don't have a path and instead must be drawn directly with SKCanvas.DrawText
-				// var path = new SKPath();
-				// for (var i = 0; i < run.glyphs.Length; i++)
-				// {
-				// 	var glyph = run.glyphs[i];
-				// 	var p = run.fontDetails.SKFont.GetGlyphPath((ushort)glyph.info.Codepoint);
-				// 	p.Transform(SKMatrix.CreateTranslation(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY), p);
-				// 	path.AddPath(p);
-				// }
-				// path.Transform(SKMatrix.CreateTranslation(currentLineX, line.y + line.baselineOffset), path);
-				//
-				// session.Canvas.Save();
-				// session.Canvas.ClipPath(path, antialias: true);
-				// run.inline.Foreground.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()).Paint(session.Canvas, session.Opacity, path.Bounds);
-				// session.Canvas.Restore();
-
 				var glyphs = new ushort[run.glyphs.Length];
 				var positions = new SKPoint[run.glyphs.Length];
 				for (var i = 0; i < run.glyphs.Length; i++)
@@ -1027,7 +1010,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						if (correction is not null)
 						{
 							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
-							var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordStart + correction.Value.correctionEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
+							var correctionClusterEnd = wordStart + correction.Value.correctionEnd < runEndIndex ? _textIndexToGlyph[wordStart + correction.Value.correctionEnd] : null;
 							var (correctionLeft, correctionRight) = ClusterRangeToRunGlyphRange(run, correctionClusterStart, correctionClusterEnd);
 
 							var leftX = positions[correctionLeft].X;
@@ -1072,7 +1055,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			foreach (var (path, strokeThickness) in spellCheckUnderlines)
 			{
-				_spareDrawPaint.StrokeWidth = strokeThickness;
+				_spareSpellCheckPaint.StrokeWidth = strokeThickness;
 				session.Canvas.DrawPath(path, _spareDrawPaint);
 			}
 		}
@@ -1088,6 +1071,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static void DrawText(SKFont skFont, SKTextBlobBuilder blobBuilder, float x, float y, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<SKPoint> positions, Visual.PaintingSession session, Brush brush)
 	{
+		// Ideally, we would want to get the path of the glyphs and then draw them using CompositionBrush.Paint, but this
+		// does not work for Emojis which don't have a path and instead must be drawn directly with SKCanvas.DrawText
 		blobBuilder.AddPositionedRun(glyphs, skFont, positions);
 		var blob1 = blobBuilder.Build(); // Build resets the blob builder
 		var paint = SetupPaint(brush, session.Opacity);
