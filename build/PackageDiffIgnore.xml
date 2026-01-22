@@ -2135,6 +2135,21 @@
 			<!-- END ListViewBase selection changes -->
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="6.4">
+		<Types>
+			<Member fullName="Uno.UI.Markup.FromJsonExtension" reason="introduced in 6.4, but we are on 6.3 backport branch" />
+			<Member fullName="Uno.UI.ISamplesAppMainActivity" reason="introduced in 6.4, but we are on 6.3 backport branch" />
+			<Member fullName="Uno.UI.IUIElement" reason="introduced in 6.4, but we are on 6.3 backport branch" />
+		</Types>
+		<Events></Events>
+		<Fields>
+			<Member fullName="Microsoft.UI.Input.PointerDeviceType Microsoft.UI.Input.PointerDeviceType::Touchpad" reason="introduced in 6.4, but we are on 6.3 backport branch" />
+		</Fields>
+		<Properties></Properties>
+		<Methods>
+			<Member fullName="System.Void Uno.Xaml.XamlParseException..ctor(System.String message, System.Exception innerException, System.Int32 lineNumber, System.Int32 linePosition)" reason="introduced in 6.4, but we are on 6.3 backport branch" />
+		</Methods>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
