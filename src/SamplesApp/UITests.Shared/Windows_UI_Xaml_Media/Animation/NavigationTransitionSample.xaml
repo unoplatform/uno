@@ -1,0 +1,51 @@
+<Page
+	x:Class="UITests.Windows_UI_Xaml_Media.Animation.NavigationTransitionSample"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- Transition Type Selection -->
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Padding="8">
+			<TextBlock Text="Transition:" VerticalAlignment="Center" />
+			<ComboBox x:Name="TransitionSelector" Width="220" SelectedIndex="0">
+				<ComboBoxItem Content="DrillIn" Tag="DrillIn" />
+				<ComboBoxItem Content="Slide (FromBottom)" Tag="SlideFromBottom" />
+				<ComboBoxItem Content="Slide (FromLeft)" Tag="SlideFromLeft" />
+				<ComboBoxItem Content="Slide (FromRight)" Tag="SlideFromRight" />
+				<ComboBoxItem Content="Entrance" Tag="Entrance" />
+				<ComboBoxItem Content="Common" Tag="Common" />
+				<ComboBoxItem Content="Continuum" Tag="Continuum" />
+				<ComboBoxItem Content="Suppress (None)" Tag="Suppress" />
+			</ComboBox>
+		</StackPanel>
+
+		<!-- Navigation Buttons -->
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Padding="8">
+			<Button x:Name="BackButton" Content="Go Back" Click="OnGoBackClick" IsEnabled="False" />
+			<Button x:Name="NavPage1Button" Content="Navigate to Blue Page" Click="OnNavigateToPage1Click" />
+			<Button x:Name="NavPage2Button" Content="Navigate to Green Page" Click="OnNavigateToPage2Click" />
+			<Button x:Name="NavPage3Button" Content="Navigate to Orange Page" Click="OnNavigateToPage3Click" />
+		</StackPanel>
+
+		<!-- Navigation Frame -->
+		<Border Grid.Row="2" BorderBrush="Gray" BorderThickness="1" Margin="8">
+			<Frame x:Name="ContentFrame" Navigated="OnFrameNavigated">
+				<Frame.ContentTransitions>
+					<TransitionCollection>
+						<NavigationThemeTransition />
+					</TransitionCollection>
+				</Frame.ContentTransitions>
+			</Frame>
+		</Border>
+	</Grid>
+</Page>
