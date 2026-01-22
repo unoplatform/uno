@@ -2,12 +2,12 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation;
 
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 [global::Uno.NotImplemented]
 #endif
 public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo
 {
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementContainerProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -15,7 +15,7 @@ public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xa
 		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -23,7 +23,7 @@ public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xa
 		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty IsEntranceElementProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -31,7 +31,7 @@ public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xa
 		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty IsExitElementProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -39,7 +39,7 @@ public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xa
 		typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.UIElement ExitElement
 	{
@@ -53,7 +53,7 @@ public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xa
 		}
 	}
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public ContinuumNavigationTransitionInfo() : base()
 	{
@@ -61,42 +61,42 @@ public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xa
 	}
 #endif
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static bool GetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element)
 	{
 		return (bool)element.GetValue(IsEntranceElementProperty);
 	}
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static void SetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
 	{
 		element.SetValue(IsEntranceElementProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 	}
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static bool GetIsExitElement(global::Microsoft.UI.Xaml.UIElement element)
 	{
 		return (bool)element.GetValue(IsExitElementProperty);
 	}
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static void SetIsExitElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
 	{
 		element.SetValue(IsExitElementProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 	}
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static bool GetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element)
 	{
 		return (bool)element.GetValue(ExitElementContainerProperty);
 	}
 #endif
-#if __SKIA__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static void SetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element, bool value)
 	{
