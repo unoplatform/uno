@@ -140,8 +140,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		foreach (var hwnd in _hwndToWrapper.Keys.ToList())
 		{
-			var wrapper = _hwndToWrapper[hwnd];
-			wrapper.CloseCore();
+			if (_hwndToWrapper.TryGetValue(hwnd, out var wrapper))
+			{
+				wrapper.CloseCore();
+			}
 		}
 	}
 
