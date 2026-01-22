@@ -426,38 +426,60 @@ function Test-DevserverStartStop {
 
     $port = $DefaultPort
 
-    Invoke-DevserverCli -Arguments @('start', '--httpPort', $port.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+    $startProcessContext = $null
+    $devserverStarted = $false
 
-    $csprojUserPath = Join-Path $CsprojDir ((Split-Path $CsprojPath -Leaf) + '.user')
+    try {
+        $startArguments = Get-DevserverCliArguments -Arguments @('start', '--httpPort', $port.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+        $startProcessContext = Start-DevserverProcessCapture -WorkingDirectory $SlnDir -Executable $script:DevServerHostExecutable -Arguments $startArguments
+        $devserverStarted = $true
 
-    $userPort = Get-PortFromCsprojUser -UserFilePath $csprojUserPath
-    if ($userPort) {
-        Write-Log "Port extracted from .csproj.user (UnoRemoteControlPort): $userPort"
+        $csprojUserPath = Join-Path $CsprojDir ((Split-Path $CsprojPath -Leaf) + '.user')
 
-        if ($userPort -lt 1 -or $userPort -gt 65535) {
-            throw "Port number in $csprojUserPath is out of range: $userPort"
-        }
+        $userPort = Get-PortFromCsprojUser -UserFilePath $csprojUserPath
+        if ($userPort) {
+            Write-Log "Port extracted from .csproj.user (UnoRemoteControlPort): $userPort"
 
-        $port = $userPort
-    }
-    else {
-        if (Test-Path $csprojUserPath) {
-            throw "Could not find a valid UnoRemoteControlPort in $csprojUserPath"
+            if ($userPort -lt 1 -or $userPort -gt 65535) {
+                throw "Port number in $csprojUserPath is out of range: $userPort"
+            }
+
+            $port = $userPort
         }
         else {
-            Write-Log "No .csproj.user file found. Using default port $DefaultPort"
+            if (Test-Path $csprojUserPath) {
+                throw "Could not find a valid UnoRemoteControlPort in $csprojUserPath"
+            }
+            else {
+                Write-Log "No .csproj.user file found. Using default port $DefaultPort"
+            }
+        }
+
+        $success = Wait-ForHttpPortOpen -Port $port -Path '/' -MaxAttempts $MaxAttempts -ConnectTimeoutMs 2000
+
+        if (-not $success) {
+            $stdoutLog = if ($startProcessContext -and (Test-Path $startProcessContext.StdoutLogPath)) { Get-Content $startProcessContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if ($startProcessContext -and (Test-Path $startProcessContext.StderrLogPath)) { Get-Content $startProcessContext.StderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver did not open HTTP port $port after $MaxAttempts attempts.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Devserver HTTP port $port is open at $DevServerBaseUrl"
+    }
+    finally {
+        if ($devserverStarted) {
+            Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
+        Stop-DevserverProcessCapture -Context $startProcessContext
+
+        if ($startProcessContext) {
+            foreach ($logPath in @($startProcessContext.StdoutLogPath, $startProcessContext.StderrLogPath)) {
+                if ($logPath -and (Test-Path $logPath)) {
+                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                }
+            }
         }
     }
-
-    $success = Wait-ForHttpPortOpen -Port $port -Path '/' -MaxAttempts $MaxAttempts -ConnectTimeoutMs 2000
-
-    if (-not $success) {
-        throw "Devserver did not open HTTP port $port after $MaxAttempts attempts."
-    }
-
-    Write-Log "Devserver HTTP port $port is open at $DevServerBaseUrl"
-
-    Stop-DevserverInDirectory -Directory $SlnDir
 
     return $port
 }
@@ -480,13 +502,17 @@ function Test-DevserverSolutionDirSupport {
 
     Push-Location $outerDirectory
     $solutionDirStarted = $false
+    $solutionDirProcessContext = $null
     try {
-        Invoke-DevserverCli -Arguments @('start', '--solution-dir', $SlnDir, '--httpPort', $solutionDirTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+        $startArguments = Get-DevserverCliArguments -Arguments @('start', '--solution-dir', $SlnDir, '--httpPort', $solutionDirTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+        $solutionDirProcessContext = Start-DevserverProcessCapture -WorkingDirectory $outerDirectory -Executable $script:DevServerHostExecutable -Arguments $startArguments
         $solutionDirStarted = $true
 
         $solutionDirSuccess = Wait-ForHttpPortOpen -Port $solutionDirTestPort -Path '/' -MaxAttempts $MaxAttempts -ConnectTimeoutMs 2000
         if (-not $solutionDirSuccess) {
-            throw "Devserver did not open HTTP port $solutionDirTestPort via --solution-dir after $MaxAttempts attempts."
+            $stdoutLog = if ($solutionDirProcessContext -and (Test-Path $solutionDirProcessContext.StdoutLogPath)) { Get-Content $solutionDirProcessContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if ($solutionDirProcessContext -and (Test-Path $solutionDirProcessContext.StderrLogPath)) { Get-Content $solutionDirProcessContext.StderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver did not open HTTP port $solutionDirTestPort via --solution-dir after $MaxAttempts attempts.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
         }
 
         Write-Log "Devserver started successfully using --solution-dir at $DevServerBaseUrl"
@@ -494,6 +520,16 @@ function Test-DevserverSolutionDirSupport {
     finally {
         if ($solutionDirStarted) {
             Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
+        Stop-DevserverProcessCapture -Context $solutionDirProcessContext
+
+        if ($solutionDirProcessContext) {
+            foreach ($logPath in @($solutionDirProcessContext.StdoutLogPath, $solutionDirProcessContext.StderrLogPath)) {
+                if ($logPath -and (Test-Path $logPath)) {
+                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                }
+            }
         }
 
         Pop-Location
