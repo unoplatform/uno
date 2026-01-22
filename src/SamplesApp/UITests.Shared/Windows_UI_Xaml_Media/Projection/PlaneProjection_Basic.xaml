@@ -1,0 +1,219 @@
+<Page
+	x:Class="UITests.Shared.Windows_UI_Xaml_Media.Projection.PlaneProjection_Basic"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<ScrollViewer>
+		<StackPanel Spacing="20" Padding="20">
+			<TextBlock Text="PlaneProjection - 3D Perspective Transforms" FontSize="24" FontWeight="Bold" />
+
+			<!-- Rotation X -->
+			<Border Background="#FFE0E0" Padding="10" CornerRadius="8">
+				<StackPanel>
+					<TextBlock Text="Rotation X (Tilt Forward/Back)" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0" Spacing="5">
+							<Slider x:Name="RotationXSlider" Header="RotationX" Minimum="-90" Maximum="90" Value="0" />
+							<TextBlock Text="{Binding ElementName=RotationXSlider, Path=Value, StringFormat='RotationX: {0:F1}°'}" />
+						</StackPanel>
+
+						<Border Grid.Column="1" Background="White" CornerRadius="4" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Rectangle Fill="#FF6B6B" Width="80" Height="80">
+								<Rectangle.Projection>
+									<PlaneProjection RotationX="{Binding ElementName=RotationXSlider, Path=Value}" />
+								</Rectangle.Projection>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Rotation Y -->
+			<Border Background="#E0FFE0" Padding="10" CornerRadius="8">
+				<StackPanel>
+					<TextBlock Text="Rotation Y (Turn Left/Right)" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0" Spacing="5">
+							<Slider x:Name="RotationYSlider" Header="RotationY" Minimum="-90" Maximum="90" Value="0" />
+							<TextBlock Text="{Binding ElementName=RotationYSlider, Path=Value, StringFormat='RotationY: {0:F1}°'}" />
+						</StackPanel>
+
+						<Border Grid.Column="1" Background="White" CornerRadius="4" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Rectangle Fill="#4ECDC4" Width="80" Height="80">
+								<Rectangle.Projection>
+									<PlaneProjection RotationY="{Binding ElementName=RotationYSlider, Path=Value}" />
+								</Rectangle.Projection>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Rotation Z -->
+			<Border Background="#E0E0FF" Padding="10" CornerRadius="8">
+				<StackPanel>
+					<TextBlock Text="Rotation Z (Spin)" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0" Spacing="5">
+							<Slider x:Name="RotationZSlider" Header="RotationZ" Minimum="-180" Maximum="180" Value="0" />
+							<TextBlock Text="{Binding ElementName=RotationZSlider, Path=Value, StringFormat='RotationZ: {0:F1}°'}" />
+						</StackPanel>
+
+						<Border Grid.Column="1" Background="White" CornerRadius="4" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Rectangle Fill="#9B59B6" Width="80" Height="80">
+								<Rectangle.Projection>
+									<PlaneProjection RotationZ="{Binding ElementName=RotationZSlider, Path=Value}" />
+								</Rectangle.Projection>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Combined Rotations -->
+			<Border Background="#FFFFE0" Padding="10" CornerRadius="8">
+				<StackPanel>
+					<TextBlock Text="Combined 3D Rotations" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0" Spacing="5">
+							<Slider x:Name="CombinedRotationX" Header="RotationX" Minimum="-60" Maximum="60" Value="30" />
+							<Slider x:Name="CombinedRotationY" Header="RotationY" Minimum="-60" Maximum="60" Value="30" />
+							<Slider x:Name="CombinedRotationZ" Header="RotationZ" Minimum="-60" Maximum="60" Value="15" />
+						</StackPanel>
+
+						<Border Grid.Column="1" Background="White" CornerRadius="4" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Rectangle Fill="#F39C12" Width="80" Height="80">
+								<Rectangle.Projection>
+									<PlaneProjection
+										RotationX="{Binding ElementName=CombinedRotationX, Path=Value}"
+										RotationY="{Binding ElementName=CombinedRotationY, Path=Value}"
+										RotationZ="{Binding ElementName=CombinedRotationZ, Path=Value}" />
+								</Rectangle.Projection>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Center of Rotation -->
+			<Border Background="#FFE0FF" Padding="10" CornerRadius="8">
+				<StackPanel>
+					<TextBlock Text="Center of Rotation (0-1 relative)" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0" Spacing="5">
+							<Slider x:Name="CenterRotationX" Header="CenterOfRotationX" Minimum="0" Maximum="1" Value="0.5" StepFrequency="0.1" />
+							<Slider x:Name="CenterRotationY" Header="CenterOfRotationY" Minimum="0" Maximum="1" Value="0.5" StepFrequency="0.1" />
+							<Slider x:Name="CenterRotationAngle" Header="RotationY" Minimum="-60" Maximum="60" Value="45" />
+							<TextBlock Text="{Binding ElementName=CenterRotationX, Path=Value, StringFormat='CenterX: {0:F1}'}" />
+							<TextBlock Text="{Binding ElementName=CenterRotationY, Path=Value, StringFormat='CenterY: {0:F1}'}" />
+						</StackPanel>
+
+						<Border Grid.Column="1" Background="White" CornerRadius="4" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Rectangle Fill="#E74C3C" Width="80" Height="80">
+								<Rectangle.Projection>
+									<PlaneProjection
+										CenterOfRotationX="{Binding ElementName=CenterRotationX, Path=Value}"
+										CenterOfRotationY="{Binding ElementName=CenterRotationY, Path=Value}"
+										RotationY="{Binding ElementName=CenterRotationAngle, Path=Value}" />
+								</Rectangle.Projection>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Local Offset -->
+			<Border Background="#E0FFFF" Padding="10" CornerRadius="8">
+				<StackPanel>
+					<TextBlock Text="Local Offset (in object space)" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0" Spacing="5">
+							<Slider x:Name="LocalOffsetX" Header="LocalOffsetX" Minimum="-50" Maximum="50" Value="0" />
+							<Slider x:Name="LocalOffsetY" Header="LocalOffsetY" Minimum="-50" Maximum="50" Value="0" />
+							<Slider x:Name="LocalOffsetZ" Header="LocalOffsetZ" Minimum="-200" Maximum="200" Value="0" />
+							<Slider x:Name="LocalOffsetRotationY" Header="RotationY" Minimum="-60" Maximum="60" Value="30" />
+						</StackPanel>
+
+						<Border Grid.Column="1" Background="White" CornerRadius="4" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Rectangle Fill="#1ABC9C" Width="80" Height="80">
+								<Rectangle.Projection>
+									<PlaneProjection
+										LocalOffsetX="{Binding ElementName=LocalOffsetX, Path=Value}"
+										LocalOffsetY="{Binding ElementName=LocalOffsetY, Path=Value}"
+										LocalOffsetZ="{Binding ElementName=LocalOffsetZ, Path=Value}"
+										RotationY="{Binding ElementName=LocalOffsetRotationY, Path=Value}" />
+								</Rectangle.Projection>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Global Offset -->
+			<Border Background="#FFF0E0" Padding="10" CornerRadius="8">
+				<StackPanel>
+					<TextBlock Text="Global Offset (in screen space)" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0" Spacing="5">
+							<Slider x:Name="GlobalOffsetX" Header="GlobalOffsetX" Minimum="-50" Maximum="50" Value="0" />
+							<Slider x:Name="GlobalOffsetY" Header="GlobalOffsetY" Minimum="-50" Maximum="50" Value="0" />
+							<Slider x:Name="GlobalOffsetZ" Header="GlobalOffsetZ" Minimum="-200" Maximum="200" Value="0" />
+							<Slider x:Name="GlobalOffsetRotationY" Header="RotationY" Minimum="-60" Maximum="60" Value="30" />
+						</StackPanel>
+
+						<Border Grid.Column="1" Background="White" CornerRadius="4" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Rectangle Fill="#3498DB" Width="80" Height="80">
+								<Rectangle.Projection>
+									<PlaneProjection
+										GlobalOffsetX="{Binding ElementName=GlobalOffsetX, Path=Value}"
+										GlobalOffsetY="{Binding ElementName=GlobalOffsetY, Path=Value}"
+										GlobalOffsetZ="{Binding ElementName=GlobalOffsetZ, Path=Value}"
+										RotationY="{Binding ElementName=GlobalOffsetRotationY, Path=Value}" />
+								</Rectangle.Projection>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</Page>
