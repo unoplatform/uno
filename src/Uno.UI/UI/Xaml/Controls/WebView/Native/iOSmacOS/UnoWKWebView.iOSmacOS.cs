@@ -88,6 +88,18 @@ public
 
 		Configuration.UserContentController.AddScriptMessageHandler(this, WebMessageHandlerName);
 
+		// Enable file access from file URLs to support relative paths in local HTML content
+		if (Uno.UI.FeatureConfiguration.WebView2.AllowFileAccessFromFileURLs)
+		{
+			Configuration.Preferences.SetValueForKey(NSObject.FromObject(true), (NSString)"allowFileAccessFromFileURLs");
+		}
+
+		// Enable universal access from file URLs if configured
+		if (Uno.UI.FeatureConfiguration.WebView2.AllowUniversalAccessFromFileURLs)
+		{
+			Configuration.Preferences.SetValueForKey(NSObject.FromObject(true), (NSString)"allowUniversalAccessFromFileURLs");
+		}
+
 		// Set strings with fallback to default English
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 		CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
