@@ -119,7 +119,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
-	private readonly List<(int correctionStart, int correctionEnd)?> _corrections;
+	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
@@ -199,7 +199,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_textIndexToGlyph = [];
 			_inlines = [];
 			_wordBoundaries = new();
-			_corrections = new();
+			_corrections = null;
 			_textAlignment = textAlignment.Value;
 			_text = "";
 			return;
@@ -222,9 +222,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			var arr = new (int correctionStart, int correctionEnd)?[_wordBoundaries.Count];
-			Array.Fill(arr, null);
-			_corrections = arr.ToList();
+			_corrections = null;
 		}
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
@@ -1010,56 +1008,59 @@ internal readonly partial struct UnicodeText : IParsedText
 					var runStartIndex = run.startInInline + run.inline.StartIndex;
 					var runEndIndex = run.endInInline + run.inline.StartIndex;
 
-					while (lastCorrectionIndex < _corrections.Count && _wordBoundaries[lastCorrectionIndex] <= runStartIndex)
+					if (_corrections is not null)
 					{
-						lastCorrectionIndex++;
-					}
-
-					while (lastCorrectionIndex < _corrections.Count && (lastCorrectionIndex == 0 ? 0 : _wordBoundaries[lastCorrectionIndex - 1]) is var wordStart && wordStart < runEndIndex)
-					{
-						var correction = _corrections[lastCorrectionIndex];
-
-						if (correction is not null)
+						while (lastCorrectionIndex < _corrections.Count && _wordBoundaries[lastCorrectionIndex] <= runStartIndex)
 						{
-							int correctionLeft;
-							int correctionRight;
-							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
-							var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordStart + correction.Value.correctionEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
-
-							if (run.rtl)
-							{
-								correctionLeft = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : 0;
-								correctionRight = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
-							}
-							else
-							{
-								correctionLeft = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart : 0;
-								correctionRight = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : run.glyphs.Length; // +1 to include the last char
-							}
-
-							var leftX = positions[correctionLeft].X;
-							var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
-
-							var fontSize = (float)run.inline.FontSize;
-							var scale = fontSize / 12.0f;
-							var step = 4 * scale;
-							var amplitude = 2 * scale;
-							var yOffset = 2 * scale;
-
-							using var p = new SKPath();
-							var y = line.y + line.baselineOffset + yOffset;
-							p.MoveTo(currentLineX + leftX, y);
-							for (float x = currentLineX + leftX; x < currentLineX + rightX; x += step)
-							{
-								p.LineTo(x + step / 2, y + amplitude);
-								p.LineTo(x + step, y);
-							}
-
-							_spareSpellCheckPaint.StrokeWidth = scale;
-							session.Canvas.DrawPath(p, _spareSpellCheckPaint);
+							lastCorrectionIndex++;
 						}
 
-						lastCorrectionIndex++;
+						while (lastCorrectionIndex < _corrections.Count && (lastCorrectionIndex == 0 ? 0 : _wordBoundaries[lastCorrectionIndex - 1]) is var wordStart && wordStart < runEndIndex)
+						{
+							var correction = _corrections[lastCorrectionIndex];
+
+							if (correction is not null)
+							{
+								int correctionLeft;
+								int correctionRight;
+								var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
+								var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordStart + correction.Value.correctionEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
+
+								if (run.rtl)
+								{
+									correctionLeft = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : 0;
+									correctionRight = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
+								}
+								else
+								{
+									correctionLeft = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart : 0;
+									correctionRight = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : run.glyphs.Length; // +1 to include the last char
+								}
+
+								var leftX = positions[correctionLeft].X;
+								var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
+
+								var fontSize = (float)run.inline.FontSize;
+								var scale = fontSize / 12.0f;
+								var step = 4 * scale;
+								var amplitude = 2 * scale;
+								var yOffset = 2 * scale;
+
+								using var p = new SKPath();
+								var y = line.y + line.baselineOffset + yOffset;
+								p.MoveTo(currentLineX + leftX, y);
+								for (float x = currentLineX + leftX; x < currentLineX + rightX; x += step)
+								{
+									p.LineTo(x + step / 2, y + amplitude);
+									p.LineTo(x + step, y);
+								}
+
+								_spareSpellCheckPaint.StrokeWidth = scale;
+								session.Canvas.DrawPath(p, _spareSpellCheckPaint);
+							}
+
+							lastCorrectionIndex++;
+						}
 					}
 
 					currentLineX += run.width;
