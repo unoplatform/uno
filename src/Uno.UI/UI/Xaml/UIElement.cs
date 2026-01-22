@@ -481,6 +481,74 @@ namespace Microsoft.UI.Xaml
 			=> _renderTransform?.UpdateOrigin(origin);
 		#endregion
 
+#if __SKIA__
+		#region Projection Dependency Property
+
+		private Media.Projection _projection;
+
+		/// <summary>
+		/// Gets or sets the perspective projection (3-D effect) to apply when rendering this element.
+		/// </summary>
+		public Media.Projection Projection
+		{
+			get => GetProjectionValue();
+			set => SetProjectionValue(value);
+		}
+
+		/// <summary>
+		/// Backing dependency property for <see cref="Projection"/>
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty ProjectionProperty { get; } = CreateProjectionProperty();
+
+		private void OnProjectionChanged(Media.Projection oldValue, Media.Projection newValue)
+		{
+			if (oldValue is not null)
+			{
+				oldValue.Changed -= OnProjectionPropertyChanged;
+				oldValue.Owner = null;
+			}
+
+			_projection = newValue;
+
+			if (newValue is not null)
+			{
+				newValue.Owner = this;
+				newValue.Changed += OnProjectionPropertyChanged;
+			}
+
+			// Update the visual transform
+			UpdateProjection();
+		}
+
+		private void OnProjectionPropertyChanged(object sender, EventArgs e)
+		{
+			UpdateProjection();
+		}
+
+		private void UpdateProjection()
+		{
+			// Trigger a transform update through the render transform adapter
+			// The adapter will combine RenderTransform with Projection
+			if (_renderTransform is not null)
+			{
+				_renderTransform.UpdateSize(_renderTransform.CurrentSize);
+			}
+			else if (_projection is not null)
+			{
+				// Create a minimal adapter to apply the projection
+				_renderTransform = new Uno.UI.Media.NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
+			}
+		}
+
+		/// <summary>
+		/// Gets the current projection for internal use.
+		/// </summary>
+		internal Media.Projection GetProjection() => _projection;
+
+		#endregion
+#endif
+
 		/// <summary>
 		/// Attempts to set the focus on the UIElement.
 		/// </summary>
