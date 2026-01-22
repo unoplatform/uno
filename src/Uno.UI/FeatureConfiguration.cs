@@ -574,7 +574,7 @@ namespace Uno.UI
 			/// By default, an english dictionary is provided.
 			/// This is currently a skia-only feature.
 			/// </summary>
-			public static List<(Stream dictionary, Stream affinities)> CustomSpellCheckDictionaries { get; set; }
+			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
 
 #if __ANDROID__
 			/// <summary>
