@@ -11,12 +11,8 @@ namespace Microsoft.UI.Xaml.Media;
 /// </summary>
 public partial class PlaneProjection : Projection
 {
-	// Constants from WinUI PlaneProjection.h
-	private const bool RightHanded = true;
-	private const float NearPlane = 1.0f;
-	private const float FarPlane = 1001.0f;
-	private const float FieldOfView = 57.0f; // degrees
-	private const float ZOffset = -999.0f;   // for right-handed coordinate system
+	// Perspective depth constant from WinUI PlaneProjection.h (|ZOffset| = 999)
+	private const float PerspectiveDepth = 999.0f;
 
 	/// <summary>
 	/// Initializes a new instance of the PlaneProjection class.
@@ -289,13 +285,27 @@ public partial class PlaneProjection : Projection
 	/// </summary>
 	/// <remarks>
 	/// Matrix composition order (ported from WinUI PlaneProjection.cpp):
-	/// [Centering] × [LocalOffset] × [RotateCenter] × [RotateX] × [RotateY] × [RotateZ] ×
-	/// [UndoRotateCenter] × [GlobalOffset] × [ZOffset] × [Perspective] × [UndoCentering]
+	/// Point × [LocalOffset] × [ToCenter] × [RotateX] × [RotateY] × [RotateZ] ×
+	/// [FromCenter] × [GlobalOffset] × [Perspective]
+	///
+	/// System.Numerics uses row-vector convention: transformedPoint = point × matrix
+	/// When composing: point × (A × B) = (point × A) × B, so A is applied first.
 	/// </remarks>
 	internal override Matrix4x4 GetProjectionMatrix(Size elementSize)
 	{
 		float width = (float)elementSize.Width;
 		float height = (float)elementSize.Height;
+
+		if (width == 0 || height == 0)
+		{
+			return Matrix4x4.Identity;
+		}
+
+		// Check if we have any 3D effect at all - if not, return identity
+		if (Is2DAligned())
+		{
+			return Matrix4x4.Identity;
+		}
 
 		// Calculate the absolute center of rotation from the relative values
 		// CenterOfRotationX/Y are relative (0.0 to 1.0), CenterOfRotationZ is absolute
@@ -303,71 +313,93 @@ public partial class PlaneProjection : Projection
 		float centerY = (float)(CenterOfRotationY * height);
 		float centerZ = (float)CenterOfRotationZ;
 
-		// Convert degrees to radians
-		float rotX = (float)(RotationX * Math.PI / 180.0);
-		float rotY = (float)(RotationY * Math.PI / 180.0);
-		float rotZ = (float)(RotationZ * Math.PI / 180.0);
+		// Build the transformation matrix step by step
+		// Using post-multiplication: result = result * newTransform
+		// This applies transforms in the order they are added
 
-		// For right-handed coordinate system, invert Y rotation
-		if (RightHanded)
+		var result = Matrix4x4.Identity;
+
+		// 1. Apply local offset (in object space, before rotation)
+		if (LocalOffsetX != 0 || LocalOffsetY != 0 || LocalOffsetZ != 0)
 		{
-			rotY = -rotY;
+			result = result * Matrix4x4.CreateTranslation(
+				(float)LocalOffsetX,
+				(float)LocalOffsetY,
+				(float)LocalOffsetZ);
 		}
 
-		// 1. Move element center to origin
-		var centering = Matrix4x4.CreateTranslation(-width / 2, -height / 2, 0);
+		// 2. Translate so that the center of rotation is at the origin
+		result = result * Matrix4x4.CreateTranslation(-centerX, -centerY, -centerZ);
 
-		// 2. Apply local offset (in object space, before rotation)
-		var localOffset = Matrix4x4.CreateTranslation(
-			(float)LocalOffsetX,
-			(float)-LocalOffsetY, // Y is inverted in the visual coordinate system
-			(float)LocalOffsetZ);
+		// 3. Apply rotations
+		// WinUI uses degrees and specific rotation direction conventions
+		if (RotationX != 0)
+		{
+			float rotX = (float)(RotationX * Math.PI / 180.0);
+			result = result * Matrix4x4.CreateRotationX(rotX);
+		}
+		if (RotationY != 0)
+		{
+			// WinUI inverts Y rotation for the visual effect
+			float rotY = (float)(-RotationY * Math.PI / 180.0);
+			result = result * Matrix4x4.CreateRotationY(rotY);
+		}
+		if (RotationZ != 0)
+		{
+			// WinUI inverts Z rotation
+			float rotZ = (float)(-RotationZ * Math.PI / 180.0);
+			result = result * Matrix4x4.CreateRotationZ(rotZ);
+		}
 
-		// 3. Move to rotation center
-		var rotateCenter = Matrix4x4.CreateTranslation(-centerX + width / 2, -centerY + height / 2, -centerZ);
+		// 4. Translate back from center of rotation
+		result = result * Matrix4x4.CreateTranslation(centerX, centerY, centerZ);
 
-		// 4. Apply rotations (X, then Y, then Z)
-		var rotationX = Matrix4x4.CreateRotationX(rotX);
-		var rotationY = Matrix4x4.CreateRotationY(rotY);
-		var rotationZ = Matrix4x4.CreateRotationZ(rotZ);
+		// 5. Apply global offset (in screen space, after rotation)
+		if (GlobalOffsetX != 0 || GlobalOffsetY != 0 || GlobalOffsetZ != 0)
+		{
+			result = result * Matrix4x4.CreateTranslation(
+				(float)GlobalOffsetX,
+				(float)GlobalOffsetY,
+				(float)GlobalOffsetZ);
+		}
 
-		// 5. Undo rotation center translation
-		var undoRotateCenter = Matrix4x4.CreateTranslation(centerX - width / 2, centerY - height / 2, centerZ);
+		// 6. Apply perspective projection centered on the element
+		// The perspective is applied at the element's center (width/2, height/2)
+		// Using the WinUI perspective depth constant
+		float halfWidth = width / 2;
+		float halfHeight = height / 2;
 
-		// 6. Apply global offset (in screen space, after rotation)
-		var globalOffset = Matrix4x4.CreateTranslation(
-			(float)GlobalOffsetX,
-			(float)-GlobalOffsetY, // Y is inverted in the visual coordinate system
-			(float)GlobalOffsetZ);
+		// Create the centered perspective matrix
+		// This is: Translate(-halfW, -halfH) × Perspective × Translate(halfW, halfH)
+		// Combined into a single matrix for efficiency
+		var perspective = Matrix4x4.Identity;
+		perspective.M34 = -1.0f / PerspectiveDepth;
 
-		// 7. Apply Z offset for perspective (moves away from camera)
-		var zOffset = Matrix4x4.CreateTranslation(0, 0, ZOffset);
-
-		// 8. Apply perspective projection
-		// Based on WinUI's field of view calculation
-		float fovRadians = FieldOfView * (float)Math.PI / 180.0f;
-		float cotFov = 1.0f / (float)Math.Tan(fovRadians / 2.0f);
-
-		var perspective = new Matrix4x4(
-			cotFov, 0, 0, 0,
-			0, cotFov, 0, 0,
-			0, 0, FarPlane / (FarPlane - NearPlane), 1,
-			0, 0, -NearPlane * FarPlane / (FarPlane - NearPlane), 0);
-
-		// 9. Undo Z offset and centering
-		var undoZOffset = Matrix4x4.CreateTranslation(0, 0, -ZOffset);
-		var undoCentering = Matrix4x4.CreateTranslation(width / 2, height / 2, 0);
-
-		// Compose all matrices
-		var result = centering * localOffset * rotateCenter *
-					 rotationX * rotationY * rotationZ *
-					 undoRotateCenter * globalOffset *
-					 zOffset * perspective * undoZOffset * undoCentering;
+		// Apply perspective centered on element
+		result = result * Matrix4x4.CreateTranslation(-halfWidth, -halfHeight, 0);
+		result = result * perspective;
+		result = result * Matrix4x4.CreateTranslation(halfWidth, halfHeight, 0);
 
 		// Update the ProjectionMatrix property
 		ProjectionMatrix = Matrix3D.FromMatrix4x4(result);
 
 		return result;
+	}
+
+	/// <summary>
+	/// Checks if the projection is effectively 2D aligned (no 3D effect).
+	/// </summary>
+	private bool Is2DAligned()
+	{
+		return RotationX == 0 &&
+			   RotationY == 0 &&
+			   RotationZ == 0 &&
+			   LocalOffsetX == 0 &&
+			   LocalOffsetY == 0 &&
+			   LocalOffsetZ == 0 &&
+			   GlobalOffsetX == 0 &&
+			   GlobalOffsetY == 0 &&
+			   GlobalOffsetZ == 0;
 	}
 }
 #endif
