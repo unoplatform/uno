@@ -390,6 +390,7 @@ namespace Uno.Xaml
 		static readonly int clr_ns_len = "clr-namespace:".Length;
 		static readonly int clr_ass_len = "assembly=".Length;
 
+		[UnconditionalSuppressMessage("Trimming", "IL3050", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
 		Type ResolveXamlTypeName (string xmlNamespace, string xmlLocalName, IList<XamlType> typeArguments)
 		{
 			string ns = xmlNamespace;

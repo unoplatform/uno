@@ -3,6 +3,7 @@ stages:
   displayName: Setup
   jobs:
   - job: Validations
+    cancelTimeoutInMinutes: 0
   
     pool:
       vmImage: $(linuxVMImage)
@@ -23,6 +24,7 @@ stages:
     - template: setup/.azure-devops-setup-doc-validations.yml
 
   - job: DetermineScope
+    cancelTimeoutInMinutes: 0
     displayName: Determine Native Test Scope
 
     pool:
@@ -71,7 +73,7 @@ stages:
 
 - stage: packages_tests
   displayName: Tests - Templates
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TemplateTestsRequired'], 'true'))
+  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TemplateTestsRequired'], 'true')))
   dependsOn:
     - Setup
     - binaries_build_winui
@@ -98,7 +100,7 @@ stages:
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true'))
+  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
   dependsOn:
     - Setup
 
@@ -123,7 +125,7 @@ stages:
 
 - stage: android_tests
   displayName: Tests - Android Native
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeAndroid'], 'true'))
+  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeAndroid'], 'true')))
   dependsOn:
     - Setup
 
@@ -138,7 +140,7 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true'))
+  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
   dependsOn:
     - Setup
 
@@ -163,7 +165,7 @@ stages:
 - stage: test_finalization
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true'))
+  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true')))
   dependsOn:
     - Setup
     - wasm_tests
