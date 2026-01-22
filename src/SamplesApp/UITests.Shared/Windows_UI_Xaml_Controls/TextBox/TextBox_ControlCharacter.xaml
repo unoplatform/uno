@@ -1,0 +1,56 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_ControlCharacter"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+	<StackPanel Spacing="12" Padding="20">
+		<TextBlock Text="Control Character Filtering Test" FontSize="20" FontWeight="Bold" />
+
+		<TextBlock TextWrapping="Wrap">
+			This test validates that pressing Ctrl + letter keys does not insert control characters into the TextBox.
+			Control characters (ASCII 0x00-0x1F) should be filtered out and not appear as text.
+		</TextBlock>
+
+		<TextBlock Text="Test Instructions:" FontWeight="SemiBold" Margin="0,12,0,0" />
+
+		<TextBlock TextWrapping="Wrap">
+			1. Click on the TextBox below to focus it
+		</TextBlock>
+		<TextBlock TextWrapping="Wrap">
+			2. Press Ctrl+F, Ctrl+G, Ctrl+H, Ctrl+B, or any other Ctrl+letter combination
+		</TextBlock>
+		<TextBlock TextWrapping="Wrap">
+			3. Verify that NO characters appear in the TextBox (no squares/rectangles)
+		</TextBlock>
+
+		<TextBlock Text="Expected Exceptions (these SHOULD insert text):" FontWeight="SemiBold" Margin="0,12,0,0" />
+
+		<TextBlock TextWrapping="Wrap">
+			• Ctrl+V - Should paste clipboard content
+		</TextBlock>
+
+		<TextBlock Text="Single-line TextBox:" FontWeight="SemiBold" Margin="0,16,0,4" />
+		<TextBox x:Name="SingleLineTextBox" PlaceholderText="Type here or press Ctrl+letter..." />
+
+		<TextBlock Text="Multi-line TextBox (AcceptsReturn=True):" FontWeight="SemiBold" Margin="0,16,0,4" />
+		<TextBox x:Name="MultiLineTextBox"
+				 AcceptsReturn="True"
+				 Height="100"
+				 TextWrapping="Wrap"
+				 PlaceholderText="Type here - Enter should insert newline..." />
+
+		<TextBlock Text="Pass Criteria:" FontWeight="SemiBold" Foreground="Green" Margin="0,16,0,0" />
+		<TextBlock TextWrapping="Wrap" Foreground="Green">
+			✓ Ctrl+F, Ctrl+G, Ctrl+B, etc. do NOT insert any characters (no squares/rectangles)
+		</TextBlock>
+		<TextBlock TextWrapping="Wrap" Foreground="Green">
+			✓ Ctrl+V pastes normally
+		</TextBlock>
+
+		<TextBlock Text="Fail Criteria:" FontWeight="SemiBold" Foreground="Red" Margin="0,12,0,0" />
+		<TextBlock TextWrapping="Wrap" Foreground="Red">
+			✗ Pressing Ctrl+letter inserts visible squares/rectangles (invalid characters)
+		</TextBlock>
+	</StackPanel>
+</UserControl>
