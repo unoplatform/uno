@@ -52,7 +52,7 @@ public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 
 	public SlideNavigationTransitionInfo() : base() { }
 
-	protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
+	private protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 	{
 		var storyboard = new Storyboard();
 

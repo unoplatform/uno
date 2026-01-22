@@ -80,7 +80,7 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 
 	#endregion
 
-	protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
+	private protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 	{
 		var storyboard = new Storyboard();
 

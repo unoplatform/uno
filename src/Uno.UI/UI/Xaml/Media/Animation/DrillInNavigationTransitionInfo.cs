@@ -25,7 +25,7 @@ public partial class DrillInNavigationTransitionInfo : NavigationTransitionInfo
 
 	public DrillInNavigationTransitionInfo() : base() { }
 
-	protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
+	private protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 	{
 		var storyboard = new Storyboard();
 		var transformOrigin = new Point(0.5, 0.5);

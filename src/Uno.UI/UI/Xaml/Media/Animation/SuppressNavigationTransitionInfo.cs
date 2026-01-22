@@ -17,7 +17,7 @@ public partial class SuppressNavigationTransitionInfo : NavigationTransitionInfo
 	/// The SuppressNavigationTransitionInfo uses an empty storyboard list,
 	/// effectively suppressing any navigation animation.
 	/// </summary>
-	protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
+	private protected override IList<Storyboard> CreateStoryboardsCore(UIElement element, NavigationTrigger trigger)
 		=> new List<Storyboard>();
 }
 
