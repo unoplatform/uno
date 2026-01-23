@@ -93,6 +93,23 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		public float width { get; set; } = width;
 		public LayoutedLine line { get; set; } = line;
+
+		public int CompareTo(LayoutedLineBrokenBidiRun other)
+		{
+			return inline.StartIndex + startInInline - (other.inline.StartIndex + other.startInInline);
+		}
+
+		public static bool operator <(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) < 0;
+
+		public static bool operator >(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) > 0;
+
+		public static bool operator <=(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) <= 0;
+
+		public static bool operator >=(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) >= 0;
 	}
 	// runs are always sorted LTR even in RTL text
 	// Each line must have at least one run except the very last line.
@@ -942,7 +959,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var selectionClusterEnd = range.StartIndex + range.Length < _text.Length ? _textIndexToGlyph[range.StartIndex + range.Length] : null;
 					wholeTextSlicer.Mark(
 						selectionClusterStart.sourceTextStart,
-						selectionClusterEnd?.sourceTextEnd ?? _text.Length,
+						selectionClusterEnd?.sourceTextStart ?? _text.Length,
 						(selectionClusterStart,
 							selectionClusterEnd,
 							highlighter.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
@@ -1013,14 +1030,16 @@ internal readonly partial struct UnicodeText : IParsedText
 							var correctionClusterEnd = wordStart + correction.Value.correctionEnd < runEndIndex ? _textIndexToGlyph[wordStart + correction.Value.correctionEnd] : null;
 							var (correctionLeft, correctionRight) = ClusterRangeToRunGlyphRange(run, correctionClusterStart, correctionClusterEnd);
 
-							var leftX = positions[correctionLeft].X;
-							var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
+							if (correctionLeft < correctionRight)
+							{
+								var leftX = positions[correctionLeft].X;
+								var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
 
-							var fontSize = (float)run.inline.FontSize;
-							var scale = fontSize / 12.0f;
-							var step = 4 * scale;
-							var amplitude = 2 * scale;
-							var yOffset = 2 * scale;
+								var fontSize = (float)run.inline.FontSize;
+								var scale = fontSize / 12.0f;
+								var step = 4 * scale;
+								var amplitude = 2 * scale;
+								var yOffset = 2 * scale;
 
 								var p = new SKPath();
 								var y = line.y + line.baselineOffset + yOffset;
@@ -1031,7 +1050,8 @@ internal readonly partial struct UnicodeText : IParsedText
 									p.LineTo(x + step, y);
 								}
 
-							spellCheckUnderlines.Add((p, scale));
+								spellCheckUnderlines.Add((p, scale));
+							}
 						}
 
 						lastCorrectionIndex++;
@@ -1084,17 +1104,38 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		int selectionLeft;
 		int selectionRight;
+
 		if (run.rtl)
 		{
-			selectionLeft = selectionClusterEnd?.layoutedRun == run ? selectionClusterEnd.glyphInRunIndexEnd : 0;
-			selectionRight = selectionClusterStart.layoutedRun == run ? selectionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
+			selectionLeft = selectionClusterEnd?.layoutedRun == run
+				? selectionClusterEnd.glyphInRunIndexEnd
+				: selectionClusterEnd is not null && selectionClusterEnd.layoutedRun < run
+					? run.glyphs.Length
+					: 0;
+			selectionRight = selectionClusterStart.layoutedRun == run
+				? selectionClusterStart.glyphInRunIndexStart + 1
+				: selectionClusterStart.layoutedRun < run
+					? run.glyphs.Length
+					: 0;
 		}
 		else
 		{
-			selectionLeft = selectionClusterStart.layoutedRun == run ? selectionClusterStart.glyphInRunIndexStart : 0;
-			selectionRight = selectionClusterEnd?.layoutedRun == run ? selectionClusterEnd.glyphInRunIndexStart : run.glyphs.Length;
+			selectionLeft = selectionClusterStart.layoutedRun == run
+				? selectionClusterStart.glyphInRunIndexStart
+				: selectionClusterStart.layoutedRun < run
+					? 0
+					: run.glyphs.Length;
+			selectionRight = selectionClusterEnd?.layoutedRun == run
+				? selectionClusterEnd.glyphInRunIndexStart
+				: selectionClusterEnd is not null && selectionClusterEnd.layoutedRun < run
+					? 0
+					: run.glyphs.Length;
 		}
 
+		if (selectionRight < selectionLeft)
+		{
+			selectionRight = selectionLeft;
+		}
 		return (selectionLeft, selectionRight);
 	}
 
