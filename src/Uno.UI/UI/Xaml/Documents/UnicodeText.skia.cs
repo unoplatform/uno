@@ -686,7 +686,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			var boundary = boundaries[index];
 
-			if (Enumerable.Range(ret[^1], boundary - ret[^1]).All(c => text[c] == ' ') && !char.IsWhiteSpace(text[boundary - 1]))
+			if (boundary - ret[^1] == 1 && (char.IsPunctuation(text[boundary - 1]) || char.IsSymbol(text[boundary - 1])) && (char.IsPunctuation(text[ret[^1] - 1]) || char.IsSymbol(text[ret[^1] - 1])))
+			{
+				ret.RemoveAt(ret.Count - 1);
+			}
+			else if (Enumerable.Range(ret[^1], boundary - ret[^1]).All(c => text[c] == ' ') && !char.IsWhiteSpace(text[ret[^1] - 1]))
 			{
 				ret.RemoveAt(ret.Count - 1);
 			}
