@@ -20,14 +20,7 @@ public static class CompilationWorkspaceProvider
 	{
 		if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
 		{
-			// Sets Roslyn's environment variable for troubleshooting HR, see:
-			// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
-			Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", logPath);
-
-			// Unconditionally enable binlog generation in msbuild. See https://github.com/dotnet/project-system/blob/4210ce79cfd35154dbd858f056bfb9101f290e69/docs/design-time-builds.md?L61
-			Environment.SetEnvironmentVariable("MSBUILDDEBUGENGINE", "1");
-			Environment.SetEnvironmentVariable("MSBuildDebugEngine", "1"); // For case-sensitive environments like macOS
-			Environment.SetEnvironmentVariable("MSBUILDDEBUGPATH", logPath);
+			HotReloadEnvironment.EnableLogging(logPath);
 		}
 
 		static bool IsValidProperty(string property)
