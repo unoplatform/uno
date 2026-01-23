@@ -15,7 +15,7 @@
 	d:DesignWidth="400">
 
 	<ScrollViewer>
-        <StackPanel Spacing="10" Padding="20" HorizontalAlignment="Left">
+        <StackPanel Spacing="10" Padding="20">
             <TextBlock Text="TextBlock.TextHighlighters Sample" Style="{ThemeResource TitleTextBlockStyle}" />
 
             <TextBlock x:Name="TargetTextBlock"
