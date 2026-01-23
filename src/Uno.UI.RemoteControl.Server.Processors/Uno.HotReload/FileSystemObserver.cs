@@ -7,13 +7,22 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Disposables;
+using Uno.HotReload.Utils;
+using Uno.UI.RemoteControl.Host.HotReload;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
-using Uno.UI.RemoteControl.Server.Processors.Helpers;
 using Uno.UI.Tasks.HotReloadInfo;
 
-namespace Uno.UI.RemoteControl.Host.HotReload;
+namespace Uno.HotReload;
 
-internal class FileSystemObserver : IDisposable
+/// <summary>
+/// Observes file system changes in project directories and notifies the hot reload manager of relevant updates.
+/// </summary>
+/// <remarks>FileSystemObserver monitors changes to source and metadata files within the solution's project
+/// directories, excluding certain files and directories such as build output folders and Visual Studio cache
+/// directories. It is intended for use with hot reload scenarios, where timely detection of file changes is required.
+/// This class is not thread-safe and should be disposed when no longer needed to release file system watcher
+/// resources.</remarks>
+internal sealed class FileSystemObserver : IDisposable
 {
 	private readonly HotReloadManager _manager;
 	private readonly IReporter _reporter;
@@ -26,10 +35,10 @@ internal class FileSystemObserver : IDisposable
 		_reporter = reporter;
 		_solutionWatchersGate = solutionWatchersGate;
 
-		_subscription = ObserveSolutionPaths();
+		_subscription = Enable();
 	}
 
-	private IDisposable ObserveSolutionPaths()
+	private IDisposable Enable()
 	{
 		var solution = _manager.CurrentSolution;
 		var excludedDirPattern = _manager.OutputPaths;

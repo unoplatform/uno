@@ -5,15 +5,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
+using Uno.HotReload;
+using Uno.HotReload.Microsoft;
+using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
-namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
+namespace Uno.Roslyn.MSBuild;
 
 public static class CompilationWorkspaceProvider
 {
-	public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
+	public static async Task<Workspace> CreateWorkspaceAsync(
 		string projectPath,
 		IReporter reporter,
-		string[] metadataUpdateCapabilities,
 		Dictionary<string, string> properties,
 		CancellationToken ct)
 	{
@@ -78,20 +80,7 @@ public static class CompilationWorkspaceProvider
 				await Task.Delay(5_000, ct);
 			}
 		}
-		var currentSolution = workspace.CurrentSolution;
-		var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
-		await hotReloadService.StartSessionAsync(currentSolution, ct);
 
-		// Read the documents to memory
-		await Task.WhenAll(currentSolution.Projects.SelectMany(p => p.Documents.Concat(p.AdditionalDocuments)).Select(d => d.GetTextAsync(ct)));
-
-		// Warm up the compilation. This would help make the deltas for first edit appear much more quickly
-		foreach (var project in currentSolution.Projects)
-		{
-			var c = await project.GetCompilationAsync(ct);
-			c?.ToString();
-		}
-
-		return (workspace, hotReloadService);
+		return workspace;
 	}
 }

@@ -3,31 +3,24 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Reactive.Disposables;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Build.Evaluation;
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
-using Newtonsoft.Json.Converters;
+using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.UI.RemoteControl.Helpers;
+using Uno.HotReload;
+using Uno.HotReload.Microsoft;
+using Uno.HotReload.Diffing;
+using Uno.HotReload.Utils;
+using Uno.Roslyn.MSBuild;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
-using Uno.UI.RemoteControl.Server.Processors.Helpers;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
-	public static class PathComparer
-	{
-		public static readonly StringComparer Comparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
-		public static readonly StringComparison Comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-	}
-
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private readonly BufferGate _solutionWatchersGate = new();
@@ -89,7 +82,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					await Notify(HotReloadEvent.Initializing);
 
-					var manager = await CreateCompilation(configureServer, ct);
+					var properties = GetWorkspaceProperties(configureServer, out var outputPaths);
+					async ValueTask<Workspace> CreateMsBuildWorkspace(CancellationToken ct2)
+						=> await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, ct2);
+
+					var manager = await HotReloadManager.CreateAsync(CreateMsBuildWorkspace, configureServer.MetadataUpdateCapabilities, SendUpdates, this);
 					ct.Register(() => manager.Dispose());
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
@@ -112,54 +109,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task<HotReloadManager> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
+		private async ValueTask<HotReloadManager?> GetWorkspaceAsync()
 		{
-			var properties = GetWorkspaceProperties(configureServer, out var outputPaths);
-			var (workspace, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
-				configureServer.ProjectPath,
-				_reporter,
-				configureServer.MetadataUpdateCapabilities,
-				properties,
-				ct);
-			var detector = new ChangesDetector(
-				async ct =>
-				{
-					var (ws, _) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath,
-						_reporter,
-						configureServer.MetadataUpdateCapabilities,
-						properties,
-						ct);
-					return ws;
-				},
-				_reporter);
+			if (_workspace is null)
+			{
+				return null;
+			}
 
-			return new HotReloadManager(workspace, watch, outputPaths, SendUpdates, _reporter, this, detector);
+			try
+			{
+				return await _workspace.Value.GetAsync;
+			}
+			catch (Exception ex)
+			{
+				_reporter.Warn(ex.Message);
+				return null;
+			}
 		}
-
-		//private async Task<HotReloadManager> CreateAdHoc(ConfigureServer configureServer, WorkspaceData data, CancellationToken ct)
-		//{
-		//	var properties = GetWorkspaceProperties(configureServer, out var outputPaths);
-		//	var (workspace, watch) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
-		//		data,
-		//		_reporter,
-		//		configureServer.MetadataUpdateCapabilities,
-		//		properties,
-		//		ct);
-		//	var detector = new ChangesDetector(
-		//		async ct =>
-		//		{
-		//			var (ws, _) = await AdHocWorkspaceProvider.CreateWorkspaceAsync(
-		//				data,
-		//				_reporter,
-		//				configureServer.MetadataUpdateCapabilities,
-		//				properties,
-		//				ct);
-		//			return ws;
-		//		},
-		//		_reporter);
-
-		//	return new HotReloadManager(workspace, watch, outputPaths, SendUpdates, _reporter, this, detector);
-		//}
 
 		private static Dictionary<string, string> GetWorkspaceProperties(ConfigureServer configureServer, out string?[] outputPaths)
 		{
@@ -232,7 +198,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask SendUpdates(ImmutableHashSet<string> files, ImmutableArray<WatchHotReloadService.Update> updates, CancellationToken ct)
+		private async ValueTask SendUpdates(ImmutableHashSet<string> files, ImmutableArray<Update> updates, CancellationToken ct)
 		{
 #if DEBUG
 			_reporter.Output($"Sending {updates.Length} metadata updates for {string.Join(",", files.Select(Path.GetFileName))}");
@@ -286,24 +252,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			foreach (var value in values)
 			{
 				binaryWriter.Write(value);
-			}
-		}
-
-		private async ValueTask<HotReloadManager?> GetWorkspaceAsync()
-		{
-			if (_workspace is null)
-			{
-				return null;
-			}
-
-			try
-			{
-				return await _workspace.Value.GetAsync;
-			}
-			catch (Exception ex)
-			{
-				_reporter.Warn(ex.Message);
-				return null;
 			}
 		}
 	}

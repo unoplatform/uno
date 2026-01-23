@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
+﻿namespace Uno.HotReload
 {
 	/// <summary>
 	/// This API supports infrastructure and is not intended to be used

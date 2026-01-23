@@ -20,6 +20,8 @@ using Microsoft.CodeAnalysis.Host;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.HotReload;
+using Uno.HotReload.Utils;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload;
@@ -29,7 +31,7 @@ using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.Tasks.HotReloadInfo;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using static Uno.UI.RemoteControl.Helpers.RoslynExtensions;
+using static Uno.HotReload.Utils.RoslynExtensions;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessor<Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor>]
 
@@ -926,12 +928,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 		#endregion
-	}
 
-	internal interface IHotReloadTracker
-	{
-		ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? files = null);
+		/// <inheritdoc />
+		void IReporter.Verbose(string message)
+			=> _reporter.Verbose(message);
 
-		ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? files);
+		/// <inheritdoc />
+		void IReporter.Output(string message)
+			=> _reporter.Output(message);
+
+		/// <inheritdoc />
+		void IReporter.Warn(string message)
+			=> _reporter.Warn(message);
+
+		/// <inheritdoc />
+		void IReporter.Error(string message)
+			=> _reporter.Error(message);
 	}
 }

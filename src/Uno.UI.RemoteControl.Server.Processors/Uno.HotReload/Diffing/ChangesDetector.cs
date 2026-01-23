@@ -6,28 +6,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Uno.UI.RemoteControl.Helpers;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
+using Uno.HotReload.Utils;
 
-namespace Uno.UI.RemoteControl.Host.HotReload;
-
-internal record ChangeSet(
-	ImmutableArray<Document> EditedDocuments,
-	ImmutableArray<TextDocument> EditedAdditionalDocuments,
-	ImmutableArray<AddedDocumentInfo> AddedDocuments,
-	ImmutableArray<AddedDocumentInfo> AddedAdditionalDocuments,
-	ImmutableArray<DocumentId> RemovedDocuments,
-	ImmutableArray<DocumentId> RemovedAdditionalDocuments,
-	ImmutableHashSet<string> IgnoredFiles
-)
-{
-	public bool HasAddOrRemove => !AddedDocuments.IsEmpty || !AddedAdditionalDocuments.IsEmpty || !RemovedDocuments.IsEmpty || !RemovedAdditionalDocuments.IsEmpty;
-
-	public static ChangeSet IgnoreAll(ImmutableHashSet<string> ignoredFiles)
-		=> new([], [], [], [], [], [], ignoredFiles);
-}
-
-internal record struct AddedDocumentInfo(ProjectInfo Project, DocumentInfo Document);
+namespace Uno.HotReload.Diffing;
 
 internal class ChangesDetector(Func<CancellationToken, ValueTask<Workspace>> CreateWorkspace, IReporter reporter)
 {

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.Roslyn.MSBuild;
 using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;

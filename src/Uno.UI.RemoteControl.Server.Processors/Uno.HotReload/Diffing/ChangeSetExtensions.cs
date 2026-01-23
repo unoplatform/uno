@@ -7,8 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Uno.UI.RemoteControl.Host.HotReload;
 
-namespace Uno.UI.RemoteControl.Host.HotReload;
+namespace Uno.HotReload.Diffing;
 
 internal static class ChangeSetExtensions
 {

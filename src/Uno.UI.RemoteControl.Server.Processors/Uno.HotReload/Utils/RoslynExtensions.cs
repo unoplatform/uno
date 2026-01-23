@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Uno.UI.RemoteControl.Helpers;
+namespace Uno.HotReload.Utils;
 
 public static partial class RoslynExtensions
 {

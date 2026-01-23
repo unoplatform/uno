@@ -1,4 +1,5 @@
 ﻿using Microsoft.Build.Tasks;
+using Uno.HotReload;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {

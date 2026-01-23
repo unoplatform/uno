@@ -8,41 +8,76 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Uno.HotReload;
+using Uno.HotReload.Microsoft;
+using Uno.HotReload.Diffing;
 using Uno.Threading;
+using Uno.UI.RemoteControl.Host.HotReload;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.UI.RemoteControl.Host.HotReload;
+namespace Uno.HotReload;
 
-internal class HotReloadManager(
-	Workspace innerWorkspace,
-	WatchHotReloadService watchService, // TODO: Create instance here
-	string?[] outputPaths, // TODO: Remove
-	Func<ImmutableHashSet<string>, ImmutableArray<WatchHotReloadService.Update>, CancellationToken, ValueTask> sendUpdates,
-	IReporter reporter,
-	IHotReloadTracker tracker,
-	ChangesDetector changesDetector) : IDisposable
+public delegate ValueTask SendUpdatesAsync(ImmutableHashSet<string> files, ImmutableArray<Update> updates, CancellationToken ct);
+
+internal sealed class HotReloadManager : IDisposable
 {
-	private readonly FastAsyncLock _solutionUpdateGate = new();
+	public static async ValueTask<HotReloadManager> CreateAsync(
+		Func<CancellationToken, ValueTask<Workspace>> workspaceProvider,
+		string[] metadataUpdateCapabilities,
+		SendUpdatesAsync sendUpdates,
+		IHotReloadTracker tracker)
+	{
+		var ct = new CancellationTokenSource();
+		var initialWorkspace = await workspaceProvider(ct.Token);
+		var watch = await WatchHotReloadService.CreateAsync(initialWorkspace, metadataUpdateCapabilities, ct.Token);
+		var detector = new ChangesDetector(workspaceProvider, tracker);
 
-	public Solution CurrentSolution { get; private set; } = innerWorkspace.CurrentSolution;
-	public string?[] OutputPaths { get; init; } = outputPaths;
+		return new HotReloadManager(initialWorkspace, watch, [] /* TODO */, sendUpdates, tracker, detector);
+	}
+
+	private readonly FastAsyncLock _solutionUpdateGate = new();
+	private readonly Workspace _innerWorkspace;
+	private readonly WatchHotReloadService _watchService;
+	private readonly SendUpdatesAsync _sendUpdates;
+	private readonly IHotReloadTracker _tracker;
+	private readonly ChangesDetector _changesDetector;
+
+	private HotReloadManager(
+		Workspace innerWorkspace,
+		WatchHotReloadService watchService,
+		string?[] outputPaths, // TODO: Remove
+		SendUpdatesAsync sendUpdates,
+		IHotReloadTracker tracker,
+		ChangesDetector changesDetector)
+	{
+		_innerWorkspace = innerWorkspace;
+		_watchService = watchService;
+		_sendUpdates = sendUpdates;
+		_tracker = tracker;
+		_changesDetector = changesDetector;
+		CurrentSolution = innerWorkspace.CurrentSolution;
+		OutputPaths = outputPaths;
+	}
+
+	public Solution CurrentSolution { get; private set; }
+	public string?[] OutputPaths { get; init; }
 
 	/// <inheritdoc />
 	public void Dispose()
 	{
-		watchService.EndSession();
-		innerWorkspace.Dispose();
+		_watchService.EndSession();
+		_innerWorkspace.Dispose();
 	}
 
 	public async Task ProcessFileChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
 	{
 		// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
-		var hotReload = await tracker.StartOrContinueHotReload();
+		var hotReload = await _tracker.StartOrContinueHotReload();
 		var files = await filesAsync;
 		if (!hotReload.TryMerge(files))
 		{
-			hotReload = await tracker.StartHotReload(files);
+			hotReload = await _tracker.StartHotReload(files);
 		}
 
 		// Process the batch of files (sequentially!)
@@ -53,8 +88,8 @@ internal class HotReloadManager(
 		}
 		catch (Exception e)
 		{
-			reporter.Warn($"Internal error while processing hot-reload ({e.Message}).");
-			reporter.Verbose(e.ToString());
+			_tracker.Warn($"Internal error while processing hot-reload ({e.Message}).");
+			_tracker.Verbose(e.ToString());
 
 			await hotReload.Complete(HotReloadServerResult.InternalError, e);
 		}
@@ -63,22 +98,16 @@ internal class HotReloadManager(
 	private async ValueTask ProcessSolutionChanged(ServerHotReloadProcessor.HotReloadServerOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
 	{
 		var workspace = this;
-		//if (await GetWorkspaceAsync() is not { } workspace)
-		//{
-		//	await hotReload.Complete(HotReloadServerResult.Failed); // Failed to init the workspace
-		//	return;
-		//}
-
 		var sw = Stopwatch.StartNew();
 
 		// Detects the changes and try to update the solution
 		var originalSolution = workspace.CurrentSolution;
-		var changeSet = await changesDetector.DiscoverChangesAsync(originalSolution, files, ct);
+		var changeSet = await _changesDetector.DiscoverChangesAsync(originalSolution, files, ct);
 		var solution = await originalSolution.ApplyAsync(changeSet, hotReload, ct);
 
 		if (solution == originalSolution)
 		{
-			reporter.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
+			_tracker.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
 
 			await hotReload.Complete(HotReloadServerResult.NoChanges);
 			return;
@@ -89,12 +118,12 @@ internal class HotReloadManager(
 		workspace.CurrentSolution = solution;
 
 		// Compile the solution and get deltas
-		var (updates, hotReloadDiagnostics) = await watchService.EmitSolutionUpdateAsync(solution, ct);
+		var (updates, hotReloadDiagnostics) = await _watchService.EmitSolutionUpdateAsync(solution, ct);
 		// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 		// of unrecoverable errors that a user cannot fix and requires an app rebuild.
 		var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
 
-		reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
+		_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 		sw.Stop();
 
 		if (rudeEdits.IsEmpty && updates.IsEmpty)
@@ -102,7 +131,7 @@ internal class HotReloadManager(
 			var compilationErrors = GetCompilationErrors(solution, ct);
 			if (compilationErrors.IsEmpty)
 			{
-				reporter.Output("No hot reload changes to apply.");
+				_tracker.Output("No hot reload changes to apply.");
 				await hotReload.Complete(HotReloadServerResult.NoChanges);
 			}
 			else
@@ -116,17 +145,17 @@ internal class HotReloadManager(
 		if (!rudeEdits.IsEmpty)
 		{
 			// Rude edit.
-			reporter.Output("Unable to apply hot reload because of a rude edit.");
+			_tracker.Output("Unable to apply hot reload because of a rude edit.");
 			foreach (var diagnostic in hotReloadDiagnostics)
 			{
-				reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
+				_tracker.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
 			}
 
 			await hotReload.Complete(HotReloadServerResult.RudeEdit, diagnostics: hotReloadDiagnostics);
 			return;
 		}
 
-		await sendUpdates(files, updates, ct);
+		await _sendUpdates(files, updates, ct);
 
 		await hotReload.Complete(HotReloadServerResult.Success);
 	}
@@ -155,7 +184,7 @@ internal class HotReloadManager(
 					if (item.Severity == DiagnosticSeverity.Error)
 					{
 						var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
-						reporter.Output("\x1B[40m\x1B[31m" + diagnostic);
+						_tracker.Output("\x1B[40m\x1B[31m" + diagnostic);
 						projectDiagnostics = projectDiagnostics.Add(diagnostic);
 					}
 				}

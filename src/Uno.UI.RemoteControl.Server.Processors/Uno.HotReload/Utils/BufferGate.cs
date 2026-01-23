@@ -2,8 +2,15 @@
 using System.Collections.Immutable;
 using System.Threading;
 
-namespace Uno.UI.RemoteControl.Server.Processors.Helpers;
+namespace Uno.HotReload.Utils;
 
+/// <summary>
+/// Provides a gate mechanism that buffers actions while held and executes them when all holders are released.
+/// </summary>
+/// <remarks>BufferGate is intended for scenarios where actions should be deferred until a resource or state is no
+/// longer in use. While the gate is held, actions passed to RunOrPlan are queued and executed only after all holders
+/// have been disposed. This class is not thread-safe for concurrent acquisition and release by multiple threads unless
+/// external synchronization is used.</remarks>
 internal class BufferGate
 {
 	private int _holders;
@@ -15,7 +22,7 @@ internal class BufferGate
 		return new Holder(this);
 	}
 
-	public class Holder(BufferGate owner) : IDisposable
+	private class Holder(BufferGate owner) : IDisposable
 	{
 		private int _disposed;
 		public void Dispose()
