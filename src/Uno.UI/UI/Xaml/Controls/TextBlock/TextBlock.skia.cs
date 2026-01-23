@@ -357,7 +357,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(SelectedText), typeof(string),
 				typeof(TextBlock),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(string.Empty));
 
 		public string SelectedText
 		{
