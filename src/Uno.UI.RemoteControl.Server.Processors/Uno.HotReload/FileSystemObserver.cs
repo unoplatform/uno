@@ -8,8 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Disposables;
 using Uno.HotReload.Utils;
-using Uno.UI.RemoteControl.Host.HotReload;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.Tasks.HotReloadInfo;
 
 namespace Uno.HotReload;

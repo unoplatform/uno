@@ -37,17 +37,19 @@ using static Uno.HotReload.Utils.RoslynExtensions;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
-	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable, IHotReloadTracker
+	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly CancellationTokenSource _ct = new();
 		private readonly IRemoteControlServer _remoteControlServer;
 		private readonly ITelemetry _telemetry;
+		private HotReloadTracker _tracker;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{
 			_remoteControlServer = remoteControlServer;
 			_telemetry = telemetry;
+			_tracker = new(async (msg, ct) => await _remoteControlServer.SendFrame(msg), _reporter, ct => RequestHotReloadToIde());
 		}
 
 		public string Scope => WellKnownScopes.HotReload;
@@ -114,54 +116,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Hot-reload state
-		private HotReloadState _globalState; // This actually contains only the initializing stat (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
-		private HotReloadServerOperation? _current; // I.e. head of the operation chain list
-
 		public enum HotReloadEventSource
 		{
 			IDE,
 			DevServer
 		}
-
-		private async ValueTask EnsureHotReloadStarted()
-		{
-			if (_current is null)
-			{
-				await StartHotReload(null);
-			}
-		}
-
-		public async ValueTask<HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
-		{
-			var previous = _current;
-			HotReloadServerOperation? @new;
-			while (true)
-			{
-				@new = new ServerHotReloadProcessor.HotReloadServerOperation(this, previous, filesPaths);
-				var current = Interlocked.CompareExchange(ref _current, @new, previous);
-				if (current == previous)
-				{
-					break;
-				}
-				else
-				{
-					previous = current;
-				}
-			}
-
-			// Notify the start of new hot-reload operation
-			await SendUpdate();
-
-			return @new;
-		}
-
-		public async ValueTask<HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? filesPaths = null)
-			=> _current is { } current && (filesPaths is null || current.TryMerge(filesPaths))
-				? current
-				: await StartHotReload(filesPaths);
-
-		private ValueTask AbortHotReload()
-			=> _current?.Complete(HotReloadServerResult.Aborted) ?? SendUpdate();
 
 		private async ValueTask Notify(HotReloadEvent evt, HotReloadEventSource source = HotReloadEventSource.DevServer)
 		{
@@ -169,20 +128,20 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				["Event"] = evt.ToString(),
 				["Source"] = source.ToString(),
-				["PreviousState"] = _globalState.ToString()
+				["PreviousState"] = _tracker._globalState.ToString()
 			};
 
 
 			Dictionary<string, double>? measurements = null;
-			if (_current != null)
+			if (_tracker._current != null)
 			{
 				measurements = new Dictionary<string, double>
 				{
-					["FileCount"] = _current.ConsideredFilePaths.Count
+					["FileCount"] = _tracker._current.ConsideredFilePaths.Count
 				};
-				if (_current.CompletionTime != null)
+				if (_tracker._current.CompletionTime != null)
 				{
-					var duration = (_current.CompletionTime.Value - _current.StartTime).TotalMilliseconds;
+					var duration = (_tracker._current.CompletionTime.Value - _tracker._current.StartTime).TotalMilliseconds;
 					measurements["DurationMs"] = duration;
 				}
 			}
@@ -195,52 +154,52 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					// Global state events
 					case HotReloadEvent.Disabled:
-						_globalState = HotReloadState.Disabled;
-						await AbortHotReload();
+						_tracker._globalState = HotReloadState.Disabled;
+						await _tracker.AbortHotReload();
 						_telemetry.TrackEvent("notify-disabled", properties, measurements);
 						break;
 
 					case HotReloadEvent.Initializing:
-						_globalState = HotReloadState.Initializing;
-						await SendUpdate();
+						_tracker._globalState = HotReloadState.Initializing;
+						await _tracker.SendUpdate();
 						_telemetry.TrackEvent("notify-initializing", properties, measurements);
 						break;
 
 					case HotReloadEvent.Ready:
-						_globalState = HotReloadState.Ready;
-						await SendUpdate();
+						_tracker._globalState = HotReloadState.Ready;
+						await _tracker.SendUpdate();
 						_telemetry.TrackEvent("notify-ready", properties, measurements);
 						break;
 
 					// Pending hot-reload events
 					case HotReloadEvent.ProcessingFiles:
-						await EnsureHotReloadStarted();
+						await _tracker.EnsureHotReloadStarted();
 						_telemetry.TrackEvent("notify-processing-files", properties, measurements);
 						break;
 
 					case HotReloadEvent.Completed:
-						await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
+						await (await _tracker.StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
 						_telemetry.TrackEvent("notify-completed", properties, measurements);
 						break;
 
 					case HotReloadEvent.NoChanges:
-						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
+						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
 						_telemetry.TrackEvent("notify-no-changes", properties, measurements);
 						break;
 
 					case HotReloadEvent.Failed:
-						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
+						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
 						_telemetry.TrackEvent("notify-failed", properties, measurements);
 						break;
 
 					case HotReloadEvent.RudeEdit:
-						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
+						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
 						_telemetry.TrackEvent("notify-rude-edit", properties, measurements);
 						break;
 				}
 
-				properties["NewState"] = _globalState.ToString();
-				properties["HasCurrentOperation"] = (_current != null).ToString();
+				properties["NewState"] = _tracker._globalState.ToString();
+				properties["HasCurrentOperation"] = (_tracker._current != null).ToString();
 				_telemetry.TrackEvent("notify-complete", properties, measurements);
 			}
 			catch (Exception ex)
@@ -252,258 +211,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				};
 				_telemetry.TrackEvent("notify-error", errorProperties, measurements);
 				throw;
-			}
-		}
-
-		private async ValueTask SendUpdate(ServerHotReloadProcessor.HotReloadServerOperation? completing = null, string? serverError = null)
-		{
-			var state = _globalState;
-			var operations = ImmutableList<HotReloadServerOperationData>.Empty;
-
-			if (state is not HotReloadState.Disabled && (_current ?? completing) is { } current)
-			{
-				var infos = ImmutableList.CreateBuilder<HotReloadServerOperationData>();
-				var foundCompleting = completing is null;
-				LoadInfos(current);
-				if (!foundCompleting)
-				{
-					LoadInfos(completing);
-				}
-
-				operations = infos.ToImmutable();
-
-				void LoadInfos(ServerHotReloadProcessor.HotReloadServerOperation? operation)
-				{
-					while (operation is not null)
-					{
-						if (operation.Result is null)
-						{
-							state = HotReloadState.Processing;
-						}
-
-						var diagnosticsResult = operation.Diagnostics
-							?.Where(d => d.Severity >= DiagnosticSeverity.Warning)
-							.Select(d => CSharpDiagnosticFormatter.Instance.Format(d, CultureInfo.InvariantCulture))
-							.ToImmutableList() ?? ImmutableList<string>.Empty;
-						var files = operation.ConsideredFilePaths.Except(operation.IgnoredFilePaths);
-
-						foundCompleting |= operation == completing;
-						infos.Add(new(operation.Id, operation.StartTime, files, operation.IgnoredFilePaths, operation.CompletionTime, operation.Result, diagnosticsResult));
-						operation = operation.Previous!;
-					}
-				}
-			}
-
-			await _remoteControlServer.SendFrame(new HotReloadStatusMessage(state, operations, serverError));
-		}
-
-		/// <summary>
-		/// A hot-reload operation that is in progress.
-		/// </summary>
-		internal class HotReloadServerOperation
-		{
-			private static readonly int DefaultAutoRetryIfNoChangesAttempts = 3;
-
-			public static readonly TimeSpan DefaultAutoRetryIfNoChangesDelay = TimeSpan.FromMilliseconds(500);
-
-			// Delay to wait without any update to consider operation was aborted.
-			private static readonly TimeSpan _timeoutDelay = TimeSpan.FromSeconds(30);
-
-			private static readonly ImmutableHashSet<string> _empty = ImmutableHashSet<string>.Empty.WithComparer(PathComparer.Comparer);
-			private static long _count;
-
-			private readonly ServerHotReloadProcessor _owner;
-			private readonly HotReloadServerOperation? _previous;
-			private readonly Timer _timeout;
-
-			private ImmutableHashSet<string> _consideredFilePaths; // All files that have been considered for this operation.
-			private ImmutableHashSet<string> _ignoredFilePaths = _empty; // The files that have been ignored by the compilator for this operation (basically because they are not part of the solution).
-			private int /* HotReloadResult */ _result = -1;
-			private CancellationTokenSource? _deferredCompletion;
-			private ImmutableArray<Diagnostic>? _diagnostics;
-
-			// In VS we forcefully request to VS to hot-reload application, but in some cases the changes are not detected by VS and it returns a NoChanges result.
-			// In such cases we can retry the hot-reload request to VS to let it process the file updates.
-			private int _noChangesRetry;
-			private TimeSpan _noChangesRetryDelay = DefaultAutoRetryIfNoChangesDelay;
-
-			public long Id { get; } = Interlocked.Increment(ref _count);
-
-			public DateTimeOffset StartTime { get; } = DateTimeOffset.Now;
-
-			public DateTimeOffset? CompletionTime { get; private set; }
-
-			public ServerHotReloadProcessor.HotReloadServerOperation? Previous => _previous;
-
-			/// <summary>
-			/// List of all file paths that have been considered for this hot-reload operation.
-			/// </summary>
-			/// <remarks>This **includes** the <see cref="IgnoredFilePaths"/>.</remarks>
-			public ImmutableHashSet<string> ConsideredFilePaths => _consideredFilePaths;
-
-			/// <summary>
-			/// Gets the collection of file paths that are excluded from processing.
-			/// </summary>
-			/// <remarks>
-			/// Files are typically ignored when they do not yet exist in the current solution.
-			/// </remarks>
-			public ImmutableHashSet<string> IgnoredFilePaths => _ignoredFilePaths;
-
-			public ImmutableArray<Diagnostic>? Diagnostics => _diagnostics;
-
-			public HotReloadServerResult? Result => _result is -1 ? null : (HotReloadServerResult)_result;
-
-			/// <param name="previous">The previous hot-reload operation which has to be considered as aborted when this new one completes.</param>
-			public HotReloadServerOperation(ServerHotReloadProcessor owner, ServerHotReloadProcessor.HotReloadServerOperation? previous, ImmutableHashSet<string>? filePaths = null)
-			{
-				_owner = owner;
-				_previous = previous;
-				_consideredFilePaths = filePaths ?? _empty;
-
-				_timeout = new Timer(
-					static that => _ = ((ServerHotReloadProcessor.HotReloadServerOperation)that!).Complete(HotReloadServerResult.Aborted),
-					this,
-					_timeoutDelay,
-					Timeout.InfiniteTimeSpan);
-			}
-
-			/// <summary>
-			/// Attempts to update the <see cref="ConsideredFilePaths"/> if we determine that the provided paths are corresponding to this operation.
-			/// </summary>
-			/// <returns>
-			/// True if this operation should be considered as valid for the given file paths (and has been merged with original paths),
-			/// false if the given paths does not belong to this operation.
-			/// </returns>
-			public bool TryMerge(ImmutableHashSet<string> filePaths)
-			{
-				if (_result is not -1)
-				{
-					return false;
-				}
-
-				var original = _consideredFilePaths;
-				while (true)
-				{
-					ImmutableHashSet<string> updated;
-					if (original.IsEmpty)
-					{
-						updated = filePaths;
-					}
-					else if (original.Any(filePaths.Contains))
-					{
-						updated = original.Union(filePaths);
-					}
-					else
-					{
-						return false;
-					}
-
-					var current = Interlocked.CompareExchange(ref _consideredFilePaths, updated, original);
-					if (current == original)
-					{
-						_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
-						return true;
-					}
-					else
-					{
-						original = current;
-					}
-				}
-			}
-
-			/// <summary>
-			/// Configure a simple auto-retry strategy if no changes are detected.
-			/// </summary>
-			public void EnableAutoRetryIfNoChanges(int? attempts, TimeSpan? delay)
-			{
-				_noChangesRetry = attempts ?? DefaultAutoRetryIfNoChangesAttempts;
-				_noChangesRetryDelay = delay ?? DefaultAutoRetryIfNoChangesDelay;
-			}
-
-			/// <summary>
-			/// Notifies a file has been ignored for this hot-reload operation.
-			/// </summary>
-			/// <param name="file"></param>
-			public void NotifyIgnored(string file)
-				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, file) => files.Add(file), file);
-
-			/// <summary>
-			/// Notifies multiple files have been ignored for this hot-reload operation.
-			/// Use this overload to ignore several files at once, as opposed to the single-file overload.
-			/// </summary>
-			/// <param name="files">The collection of file paths to mark as ignored.</param>
-			public void NotifyIgnored(IEnumerable<string> files)
-				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, ignored) => files.Union(ignored), files);
-
-			/// <summary>
-			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
-			/// </summary>
-			public async ValueTask DeferComplete(HotReloadServerResult result, Exception? exception = null)
-			{
-				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
-
-				if (Interlocked.CompareExchange(ref _deferredCompletion, new CancellationTokenSource(), null) is null)
-				{
-					_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
-					await Task.Delay(TimeSpan.FromSeconds(1), _deferredCompletion.Token);
-					if (!_deferredCompletion.IsCancellationRequested)
-					{
-						await Complete(result, exception);
-					}
-				}
-			}
-
-			public ValueTask Complete(HotReloadServerResult result, Exception? exception = null, ImmutableArray<Diagnostic>? diagnostics = null)
-				=> Complete(result, exception, isFromNext: false, diagnostics: diagnostics);
-
-			private async ValueTask Complete(HotReloadServerResult result, Exception? exception, bool isFromNext, ImmutableArray<Diagnostic>? diagnostics)
-			{
-				if (_result is -1
-					&& result is HotReloadServerResult.NoChanges
-					&& Interlocked.Decrement(ref _noChangesRetry) >= 0)
-				{
-					if (_noChangesRetryDelay is { TotalMilliseconds: > 0 })
-					{
-						await Task.Delay(_noChangesRetryDelay);
-					}
-
-					if (await _owner.RequestHotReloadToIde())
-					{
-						return;
-					}
-				}
-
-				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
-
-				// Remove this from current
-				Interlocked.CompareExchange(ref _owner._current, null, this);
-				_deferredCompletion?.Cancel(false); // No matter if already completed
-
-				// Check if not already disposed
-				if (Interlocked.CompareExchange(ref _result, (int)result, -1) is not -1)
-				{
-					return; // Already completed
-				}
-
-				_diagnostics = diagnostics;
-
-				CompletionTime = DateTimeOffset.Now;
-				await _timeout.DisposeAsync();
-
-				// Consider previous hot-reload operation(s) as aborted (this is actually a chain list)
-				if (_previous is not null)
-				{
-					await _previous.Complete(
-						HotReloadServerResult.Aborted,
-						new TimeoutException("An more recent hot-reload operation has completed."),
-						isFromNext: true,
-						diagnostics: null);
-				}
-
-				if (!isFromNext) // Only the head of the list should request update
-				{
-					await _owner.SendUpdate(this);
-				}
 			}
 		}
 		#endregion
@@ -572,7 +279,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			try
 			{
 				// Send the error via HotReloadStatusMessage immediately
-				await SendUpdate(serverError: errorMessage);
+				await _tracker.SendUpdate(serverError: errorMessage);
 
 				// Then notify the disabled state
 				await Notify(HotReloadEvent.Disabled);
@@ -623,7 +330,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return new UpdateFileResponse(request.RequestId, "Detected multiple updates on the same file", []);
 			}
 
-			var hotReload = await StartHotReload([.. request.Edits.Select(edit => Path.GetFullPath(edit.FilePath))]);
+			var hotReload = await _tracker.StartHotReload([.. request.Edits.Select(edit => Path.GetFullPath(edit.FilePath))]);
 			var results = ImmutableArray<FileEditResult>.Empty;
 			try
 			{
@@ -637,7 +344,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// Forcefully request a hot-reload after the file edits have been applied (only if at least one edit succeed).
 				if (request.IsForceHotReloadDisabled is false && results.Any(result => (int)result.Result < 300))
 				{
-					if ((request.ForceHotReloadDelay ?? HotReloadServerOperation.DefaultAutoRetryIfNoChangesDelay) is { TotalMilliseconds: > 0 } delay)
+					if ((request.ForceHotReloadDelay ?? HotReloadTracker.HotReloadServerOperation.DefaultAutoRetryIfNoChangesDelay) is { TotalMilliseconds: > 0 } delay)
 					{
 						await Task.Delay(delay);
 					}
@@ -809,7 +516,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask WriteHotReloadInfo(IUpdateFileRequest request, ServerHotReloadProcessor.HotReloadServerOperation hotReload)
+		private async ValueTask WriteHotReloadInfo(IUpdateFileRequest request, HotReloadTracker.HotReloadServerOperation hotReload)
 		{
 			if (_config?.HotReloadInfoPath is not { Length: > 0 } path)
 			{
@@ -821,7 +528,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			await effectiveUpdate;
 		}
 
-		private async Task<bool> RequestHotReloadToIde()
+		private async ValueTask<bool> RequestHotReloadToIde()
 		{
 			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
 
@@ -928,21 +635,5 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 		#endregion
-
-		/// <inheritdoc />
-		void IReporter.Verbose(string message)
-			=> _reporter.Verbose(message);
-
-		/// <inheritdoc />
-		void IReporter.Output(string message)
-			=> _reporter.Output(message);
-
-		/// <inheritdoc />
-		void IReporter.Warn(string message)
-			=> _reporter.Warn(message);
-
-		/// <inheritdoc />
-		void IReporter.Error(string message)
-			=> _reporter.Error(message);
 	}
 }

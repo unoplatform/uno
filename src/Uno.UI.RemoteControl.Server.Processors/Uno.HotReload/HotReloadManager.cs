@@ -8,12 +8,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Uno.HotReload;
 using Uno.HotReload.Microsoft;
 using Uno.HotReload.Diffing;
 using Uno.Threading;
 using Uno.UI.RemoteControl.Host.HotReload;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.HotReload;
@@ -95,7 +93,7 @@ internal sealed class HotReloadManager : IDisposable
 		}
 	}
 
-	private async ValueTask ProcessSolutionChanged(ServerHotReloadProcessor.HotReloadServerOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
+	private async ValueTask ProcessSolutionChanged(HotReloadTracker.HotReloadServerOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
 	{
 		var workspace = this;
 		var sw = Stopwatch.StartNew();

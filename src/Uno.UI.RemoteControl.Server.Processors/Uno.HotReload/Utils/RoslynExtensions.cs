@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Uno.HotReload.Utils;
 
@@ -20,7 +18,7 @@ public static partial class RoslynExtensions
 			solution.Id,
 			solution.Version,
 			solution.FilePath,
-			[.. solution.Projects.Select(p => GetInfo(p, opts))],
+			[.. solution.Projects.Select(p => p.GetInfo(opts))],
 			solution.AnalyzerReferences);
 
 	public static ProjectInfo GetInfo(this Project project, RoslynInfoOptions opts = default)
@@ -35,15 +33,15 @@ public static partial class RoslynExtensions
 				project.OutputFilePath,
 				project.CompilationOptions,
 				project.ParseOptions,
-				[.. project.Documents.Select(d => GetInfo(d, opts))],
+				[.. project.Documents.Select(d => d.GetInfo(opts))],
 				project.ProjectReferences,
 				project.MetadataReferences,
 				project.AnalyzerReferences,
-				[.. project.AdditionalDocuments.Select(p => GetInfo(p, opts))],
+				[.. project.AdditionalDocuments.Select(p => p.GetInfo(opts))],
 				project.IsSubmission,
 				default)
 			.WithCompilationOutputInfo(project.CompilationOutputInfo)
-			.WithAnalyzerConfigDocuments(project.AnalyzerConfigDocuments.Select(doc => GetInfo(doc, opts)));
+			.WithAnalyzerConfigDocuments(project.AnalyzerConfigDocuments.Select(doc => doc.GetInfo(opts)));
 
 	public static DocumentInfo GetInfo(this Document document, RoslynInfoOptions opts = default)
 		=> DocumentInfo.Create(

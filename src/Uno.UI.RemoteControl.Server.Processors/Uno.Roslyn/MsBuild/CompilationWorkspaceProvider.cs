@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.HotReload;
-using Uno.HotReload.Microsoft;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
 namespace Uno.Roslyn.MSBuild;
 

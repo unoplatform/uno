@@ -13,7 +13,7 @@ namespace Uno.HotReload.Diffing;
 
 internal static class ChangeSetExtensions
 {
-	public static async ValueTask<Solution> ApplyAsync(this Solution solution, ChangeSet changeSet, ServerHotReloadProcessor.HotReloadServerOperation hotReload, CancellationToken ct)
+	public static async ValueTask<Solution> ApplyAsync(this Solution solution, ChangeSet changeSet, HotReloadTracker.HotReloadServerOperation hotReload, CancellationToken ct)
 	{
 		// Update existing documents
 		foreach (var document in changeSet.EditedDocuments)

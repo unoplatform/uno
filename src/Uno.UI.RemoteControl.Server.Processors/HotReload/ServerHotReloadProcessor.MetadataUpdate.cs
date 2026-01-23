@@ -26,7 +26,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private readonly BufferGate _solutionWatchersGate = new();
 
 		private (Task<HotReloadManager> GetAsync, CancellationTokenSource Ct)? _workspace;
-		private readonly IReporter _reporter = new Reporter();
+		private readonly IReporter _reporter = new ConsoleReporter();
 
 		private bool _useRoslynHotReload;
 		private bool _useHotReloadThruDebugger;
@@ -86,7 +86,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					async ValueTask<Workspace> CreateMsBuildWorkspace(CancellationToken ct2)
 						=> await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, ct2);
 
-					var manager = await HotReloadManager.CreateAsync(CreateMsBuildWorkspace, configureServer.MetadataUpdateCapabilities, SendUpdates, this);
+					var manager = await HotReloadManager.CreateAsync(CreateMsBuildWorkspace, configureServer.MetadataUpdateCapabilities, SendUpdates, _tracker);
 					ct.Register(() => manager.Dispose());
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });

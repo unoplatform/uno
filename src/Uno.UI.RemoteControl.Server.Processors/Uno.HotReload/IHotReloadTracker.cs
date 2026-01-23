@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Host.HotReload;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
 namespace Uno.HotReload;
 
@@ -10,7 +9,7 @@ namespace Uno.HotReload;
 /// </summary>
 internal interface IHotReloadTracker : IReporter
 {
-	ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? files = null);
+	ValueTask<HotReloadTracker.HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? files = null);
 
-	ValueTask<ServerHotReloadProcessor.HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? files);
+	ValueTask<HotReloadTracker.HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? files);
 }
