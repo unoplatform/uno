@@ -1,6 +1,6 @@
 ﻿using Microsoft.Build.Tasks;
 
-namespace Uno.HotReload.Utils;
+namespace Uno.HotReload.Tracking;
 
 /// <summary>
 /// Provides an implementation of the <see cref="IReporter"/> interface that writes messages to the console output.

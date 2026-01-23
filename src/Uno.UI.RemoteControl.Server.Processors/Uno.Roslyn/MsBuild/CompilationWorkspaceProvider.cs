@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.HotReload;
+using Uno.HotReload.Tracking;
 
 namespace Uno.Roslyn.MSBuild;
 

@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.HotReload;
+using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
@@ -43,13 +44,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private readonly CancellationTokenSource _ct = new();
 		private readonly IRemoteControlServer _remoteControlServer;
 		private readonly ITelemetry _telemetry;
-		private HotReloadTracker _tracker;
+		private readonly HotReloadTracker _tracker;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{
 			_remoteControlServer = remoteControlServer;
 			_telemetry = telemetry;
-			_tracker = new(async (msg, ct) => await _remoteControlServer.SendFrame(msg), _reporter, ct => RequestHotReloadToIde());
+			_tracker = new(async (status, ct) => await _remoteControlServer.SendFrame(new HotReloadStatusMessage(status)), ct => RequestHotReloadToIde(), _reporter);
 		}
 
 		public string Scope => WellKnownScopes.HotReload;
@@ -128,20 +129,20 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				["Event"] = evt.ToString(),
 				["Source"] = source.ToString(),
-				["PreviousState"] = _tracker._globalState.ToString()
+				["PreviousState"] = _tracker.State.ToString()
 			};
 
 
 			Dictionary<string, double>? measurements = null;
-			if (_tracker._current != null)
+			if (_tracker.Current != null)
 			{
 				measurements = new Dictionary<string, double>
 				{
-					["FileCount"] = _tracker._current.ConsideredFilePaths.Count
+					["FileCount"] = _tracker.Current.ConsideredFilePaths.Count
 				};
-				if (_tracker._current.CompletionTime != null)
+				if (_tracker.Current.CompletionTime != null)
 				{
-					var duration = (_tracker._current.CompletionTime.Value - _tracker._current.StartTime).TotalMilliseconds;
+					var duration = (_tracker.Current.CompletionTime.Value - _tracker.Current.StartTime).TotalMilliseconds;
 					measurements["DurationMs"] = duration;
 				}
 			}
@@ -154,20 +155,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					// Global state events
 					case HotReloadEvent.Disabled:
-						_tracker._globalState = HotReloadState.Disabled;
-						await _tracker.AbortHotReload();
+						await _tracker.SetStateAsync(Uno.HotReload.Tracking.HotReloadState.Disabled);
 						_telemetry.TrackEvent("notify-disabled", properties, measurements);
 						break;
 
 					case HotReloadEvent.Initializing:
-						_tracker._globalState = HotReloadState.Initializing;
-						await _tracker.SendUpdate();
+						await _tracker.SetStateAsync(Uno.HotReload.Tracking.HotReloadState.Initializing);
 						_telemetry.TrackEvent("notify-initializing", properties, measurements);
 						break;
 
 					case HotReloadEvent.Ready:
-						_tracker._globalState = HotReloadState.Ready;
-						await _tracker.SendUpdate();
+						await _tracker.SetStateAsync(Uno.HotReload.Tracking.HotReloadState.Ready);
 						_telemetry.TrackEvent("notify-ready", properties, measurements);
 						break;
 
@@ -178,28 +176,28 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						break;
 
 					case HotReloadEvent.Completed:
-						await (await _tracker.StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
+						await (await _tracker.StartOrContinueHotReload()).DeferComplete(HotReloadOperationResult.Success);
 						_telemetry.TrackEvent("notify-completed", properties, measurements);
 						break;
 
 					case HotReloadEvent.NoChanges:
-						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
+						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadOperationResult.NoChanges);
 						_telemetry.TrackEvent("notify-no-changes", properties, measurements);
 						break;
 
 					case HotReloadEvent.Failed:
-						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
+						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadOperationResult.Failed);
 						_telemetry.TrackEvent("notify-failed", properties, measurements);
 						break;
 
 					case HotReloadEvent.RudeEdit:
-						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
+						await (await _tracker.StartOrContinueHotReload()).Complete(HotReloadOperationResult.RudeEdit);
 						_telemetry.TrackEvent("notify-rude-edit", properties, measurements);
 						break;
 				}
 
-				properties["NewState"] = _tracker._globalState.ToString();
-				properties["HasCurrentOperation"] = (_tracker._current != null).ToString();
+				properties["NewState"] = _tracker.State.ToString();
+				properties["HasCurrentOperation"] = (_tracker.Current != null).ToString();
 				_telemetry.TrackEvent("notify-complete", properties, measurements);
 			}
 			catch (Exception ex)
@@ -344,7 +342,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// Forcefully request a hot-reload after the file edits have been applied (only if at least one edit succeed).
 				if (request.IsForceHotReloadDisabled is false && results.Any(result => (int)result.Result < 300))
 				{
-					if ((request.ForceHotReloadDelay ?? HotReloadTracker.HotReloadServerOperation.DefaultAutoRetryIfNoChangesDelay) is { TotalMilliseconds: > 0 } delay)
+					if ((request.ForceHotReloadDelay ?? HotReloadOperation.DefaultAutoRetryIfNoChangesDelay) is { TotalMilliseconds: > 0 } delay)
 					{
 						await Task.Delay(delay);
 					}
@@ -359,7 +357,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 			catch (Exception ex)
 			{
-				await hotReload.Complete(HotReloadServerResult.InternalError, ex);
+				await hotReload.Complete(HotReloadOperationResult.InternalError, ex);
 				return new UpdateFileResponse(request.RequestId, ex.Message, results, hotReload.Id);
 			}
 		}
@@ -516,7 +514,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask WriteHotReloadInfo(IUpdateFileRequest request, HotReloadTracker.HotReloadServerOperation hotReload)
+		private async ValueTask WriteHotReloadInfo(IUpdateFileRequest request, HotReloadOperation hotReload)
 		{
 			if (_config?.HotReloadInfoPath is not { Length: > 0 } path)
 			{

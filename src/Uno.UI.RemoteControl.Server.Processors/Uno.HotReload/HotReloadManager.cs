@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Uno.HotReload.Microsoft;
 using Uno.HotReload.Diffing;
+using Uno.HotReload.Tracking;
 using Uno.Threading;
 using Uno.UI.RemoteControl.Host.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
@@ -89,11 +90,11 @@ internal sealed class HotReloadManager : IDisposable
 			_tracker.Warn($"Internal error while processing hot-reload ({e.Message}).");
 			_tracker.Verbose(e.ToString());
 
-			await hotReload.Complete(HotReloadServerResult.InternalError, e);
+			await hotReload.Complete(HotReloadOperationResult.InternalError, e);
 		}
 	}
 
-	private async ValueTask ProcessSolutionChanged(HotReloadTracker.HotReloadServerOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
+	private async ValueTask ProcessSolutionChanged(HotReloadOperation hotReload, ImmutableHashSet<string> files, CancellationToken ct)
 	{
 		var workspace = this;
 		var sw = Stopwatch.StartNew();
@@ -107,7 +108,7 @@ internal sealed class HotReloadManager : IDisposable
 		{
 			_tracker.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
 
-			await hotReload.Complete(HotReloadServerResult.NoChanges);
+			await hotReload.Complete(HotReloadOperationResult.NoChanges);
 			return;
 		}
 
@@ -130,11 +131,11 @@ internal sealed class HotReloadManager : IDisposable
 			if (compilationErrors.IsEmpty)
 			{
 				_tracker.Output("No hot reload changes to apply.");
-				await hotReload.Complete(HotReloadServerResult.NoChanges);
+				await hotReload.Complete(HotReloadOperationResult.NoChanges);
 			}
 			else
 			{
-				await hotReload.Complete(HotReloadServerResult.Failed, diagnostics: hotReloadDiagnostics);
+				await hotReload.Complete(HotReloadOperationResult.Failed, diagnostics: hotReloadDiagnostics);
 			}
 
 			return;
@@ -149,13 +150,13 @@ internal sealed class HotReloadManager : IDisposable
 				_tracker.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
 			}
 
-			await hotReload.Complete(HotReloadServerResult.RudeEdit, diagnostics: hotReloadDiagnostics);
+			await hotReload.Complete(HotReloadOperationResult.RudeEdit, diagnostics: hotReloadDiagnostics);
 			return;
 		}
 
 		await _sendUpdates(files, updates, ct);
 
-		await hotReload.Complete(HotReloadServerResult.Success);
+		await hotReload.Complete(HotReloadOperationResult.Success);
 	}
 
 	private ImmutableArray<string> GetCompilationErrors(Solution solution, CancellationToken cancellationToken)

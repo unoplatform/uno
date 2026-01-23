@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.HotReload;
 using Uno.HotReload.Microsoft;
 using Uno.HotReload.Diffing;
+using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.Roslyn.MSBuild;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;

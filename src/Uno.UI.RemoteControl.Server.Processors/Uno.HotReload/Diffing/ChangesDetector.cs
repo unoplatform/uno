@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 
 namespace Uno.HotReload.Diffing;
