@@ -686,7 +686,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			var boundary = boundaries[index];
 
-			if (Enumerable.Range(ret[^1], boundary - ret[^1]).All(c => text[c] == ' '))
+			if (Enumerable.Range(ret[^1], boundary - ret[^1]).All(c => text[c] == ' ') && !char.IsWhiteSpace(text[boundary - 1]))
 			{
 				ret.RemoveAt(ret.Count - 1);
 			}
