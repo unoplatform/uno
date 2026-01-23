@@ -1056,7 +1056,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			foreach (var (path, strokeThickness) in spellCheckUnderlines)
 			{
 				_spareSpellCheckPaint.StrokeWidth = strokeThickness;
-				session.Canvas.DrawPath(path, _spareDrawPaint);
+				session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 			}
 		}
 
