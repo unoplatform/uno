@@ -16,15 +16,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload;
 internal class FileSystemObserver : IDisposable
 {
 	private readonly HotReloadManager _manager;
-	private readonly IReporter _reporter1;
-	private readonly BufferGate _solutionWatchersGate1;
+	private readonly IReporter _reporter;
+	private readonly BufferGate _solutionWatchersGate;
 	private readonly IDisposable _subscription;
 
 	public FileSystemObserver(HotReloadManager manager, IReporter reporter, BufferGate solutionWatchersGate)
 	{
 		_manager = manager;
-		_reporter1 = reporter;
-		_solutionWatchersGate1 = solutionWatchersGate;
+		_reporter = reporter;
+		_solutionWatchersGate = solutionWatchersGate;
 
 		_subscription = ObserveSolutionPaths();
 	}
@@ -52,7 +52,7 @@ internal class FileSystemObserver : IDisposable
 			.Distinct()
 			.Select(dir =>
 			{
-				_reporter1.Verbose($"Observing '{dir}' project directories for metadata changes.");
+				_reporter.Verbose($"Observing '{dir}' project directories for metadata changes.");
 
 				return new FileSystemWatcher
 				{
@@ -69,7 +69,7 @@ internal class FileSystemObserver : IDisposable
 			})
 			.ToArray();
 		var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
-		var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate1)
+		var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate)
 			.Subscribe(
 				filePaths => _ = _manager.ProcessFileChanges(filePaths, processing.Token),
 				e => Console.WriteLine($"Error {e}"));
