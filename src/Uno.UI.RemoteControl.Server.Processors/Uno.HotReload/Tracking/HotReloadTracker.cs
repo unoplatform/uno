@@ -10,6 +10,20 @@ using Uno.HotReload.Utils;
 
 namespace Uno.HotReload.Tracking;
 
+/// <summary>
+/// Tracks the global state and current operation of hot reload functionality for an application, and coordinates
+/// reporting and state updates.
+/// </summary>
+/// <remarks>HotReloadTracker manages the lifecycle of hot reload operations, including starting, aborting, and
+/// reporting status changes. It is thread-safe and intended for use in environments where hot reload support and
+/// diagnostics are required. The tracker delegates reporting to the specified reporter and communicates state changes
+/// via the provided sendState callback.</remarks>
+/// <param name="sendState">A delegate that asynchronously receives hot reload status updates. Called whenever the global state or operation
+/// list changes.</param>
+/// <param name="tryRequestHotReload">An optional delegate that attempts to initiate a hot reload operation. Returns <see langword="true"/> if a hot
+/// reload was successfully requested; otherwise, <see langword="false"/>.</param>
+/// <param name="reporter">An optional reporter used to output diagnostic, warning, and error messages related to hot reload operations. If not
+/// specified, a default console reporter is used.</param>
 public sealed class HotReloadTracker(
 	Func<HotReloadStatusInfo, CancellationToken, ValueTask> sendState,
 	Func<CancellationToken, ValueTask<bool>>? tryRequestHotReload = null,

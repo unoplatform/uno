@@ -19,7 +19,7 @@ namespace Uno.HotReload;
 
 public delegate ValueTask SendUpdatesAsync(ImmutableHashSet<string> files, ImmutableArray<Update> updates, CancellationToken ct);
 
-internal sealed class HotReloadManager : IDisposable
+public sealed class HotReloadManager : IDisposable
 {
 	public static async ValueTask<HotReloadManager> CreateAsync(
 		Func<CancellationToken, ValueTask<Workspace>> workspaceProvider,
@@ -32,7 +32,7 @@ internal sealed class HotReloadManager : IDisposable
 		var watch = await WatchHotReloadService.CreateAsync(initialWorkspace, metadataUpdateCapabilities, ct.Token);
 		var detector = new ChangesDetector(workspaceProvider, tracker);
 
-		return new HotReloadManager(initialWorkspace, watch, [] /* TODO */, sendUpdates, tracker, detector);
+		return new HotReloadManager(initialWorkspace, watch, sendUpdates, detector, tracker);
 	}
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
@@ -45,29 +45,20 @@ internal sealed class HotReloadManager : IDisposable
 	private HotReloadManager(
 		Workspace innerWorkspace,
 		WatchHotReloadService watchService,
-		string?[] outputPaths, // TODO: Remove
 		SendUpdatesAsync sendUpdates,
-		IHotReloadTracker tracker,
-		ChangesDetector changesDetector)
+		ChangesDetector changesDetector,
+		IHotReloadTracker tracker)
 	{
 		_innerWorkspace = innerWorkspace;
 		_watchService = watchService;
 		_sendUpdates = sendUpdates;
 		_tracker = tracker;
 		_changesDetector = changesDetector;
+
 		CurrentSolution = innerWorkspace.CurrentSolution;
-		OutputPaths = outputPaths;
 	}
 
 	public Solution CurrentSolution { get; private set; }
-	public string?[] OutputPaths { get; init; }
-
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		_watchService.EndSession();
-		_innerWorkspace.Dispose();
-	}
 
 	public async Task ProcessFileChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
 	{
@@ -195,5 +186,12 @@ internal sealed class HotReloadManager : IDisposable
 			});
 
 		return builder;
+	}
+
+	/// <inheritdoc />
+	public void Dispose()
+	{
+		_watchService.EndSession();
+		_innerWorkspace.Dispose();
 	}
 }

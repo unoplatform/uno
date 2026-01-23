@@ -6,7 +6,7 @@ namespace Uno.HotReload.Tracking;
 /// <summary>
 /// Tracks and report hot-reload operations.
 /// </summary>
-internal interface IHotReloadTracker : IReporter
+public interface IHotReloadTracker : IReporter
 {
 	ValueTask<HotReloadOperation> StartOrContinueHotReload(ImmutableHashSet<string>? files = null);
 

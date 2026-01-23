@@ -40,7 +40,7 @@ internal sealed class FileSystemObserver : IDisposable
 	private IDisposable Enable()
 	{
 		var solution = _manager.CurrentSolution;
-		var excludedDirPattern = _manager.OutputPaths;
+		var excludedDirPattern = new[]{"bin", "obj"};
 
 		// TODO: Resolve the bin and obj folders from the project (instead of assuming same config for all projects)
 		// e.g.: projectDir.First().AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.intermediateoutputpath", out string value)
