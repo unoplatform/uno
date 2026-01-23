@@ -25,6 +25,9 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
+	// Overriden connection to server
+	private static IFrameTransport? _connectionTransportOverride;
+
 	private readonly string? _additionalServerProcessorsDiscoveryPath;
 	private readonly bool _autoRegisterAppIdentity;
 
@@ -157,20 +160,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// Mostly for unit testing or very special scenarios.
 	/// </remarks>
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public void OverrideConnectionTransport(IFrameTransport transport)
-	{
-		var connection =
-			Task.FromResult<Connection?>(new Connection(this, new Uri("local://rc"), Stopwatch.StartNew(), transport));
-
-		if (Interlocked.CompareExchange(ref _connection, connection, null) is { } oldConnection)
-		{
-			throw new InvalidOperationException("Connection transport has already been set.");
-		}
-	}
-
-	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void OverrideConnectionTransportWhenClientAvailable(IFrameTransport transport)
-		=> OnRemoteControlClientAvailable(client => client.OverrideConnectionTransport(transport));
+		=> _connectionTransportOverride = transport;
 
 	/// <summary>
 	/// Gets the minimum interval between re-connection attempts.
@@ -240,6 +231,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		string? additionalServerProcessorsDiscoveryPath = null,
 		bool autoRegisterAppIdentity = true)
 	{
+		Debugger.Break();
+
 		AppType = appType;
 		_additionalServerProcessorsDiscoveryPath = additionalServerProcessorsDiscoveryPath;
 		_autoRegisterAppIdentity = autoRegisterAppIdentity;
@@ -323,6 +316,16 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		// Note: We register the HR processor even if we _serverAddresses is empty. This is to make sure to create the HR indicator.
 		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
 		_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+
+		if (_connectionTransportOverride is not null)
+		{
+			var connection = new Connection(this, new Uri("local://rc"), Stopwatch.StartNew(), _connectionTransportOverride);
+			_connection = Task.FromResult<Connection?>(connection);
+
+			connection.EnsureActive();
+
+			return; // No need to start the connection, we already have it here
+		}
 
 		if (_serverAddresses is null or { Length: 0 })
 		{

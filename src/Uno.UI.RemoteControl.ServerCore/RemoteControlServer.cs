@@ -30,8 +30,8 @@ namespace Uno.UI.RemoteControl.Server;
 public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlServerConnection, IDisposable
 {
 	private readonly Dictionary<string, IServerProcessor> _processors = new();
-	private readonly List<DiscoveredProcessor> _discoveredProcessors = new();
-	private readonly List<IRemoteControlProcessorLease> _processorLeases = new();
+	private readonly List<DiscoveredProcessor> _discoveredProcessors = [];
+	private readonly List<IRemoteControlProcessorLease> _processorLeases = [];
 	private readonly CancellationTokenSource _ct = new();
 
 	private IFrameTransport? _transport;
@@ -306,7 +306,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 		IImmutableList<string> discoveryAssemblies = ImmutableList<string>.Empty;
 		var processorsLoaded = 0;
 		var processorsFailed = 0;
-		string[] failedProcessors = Array.Empty<string>();
+		string[] failedProcessors = [];
 
 		try
 		{
