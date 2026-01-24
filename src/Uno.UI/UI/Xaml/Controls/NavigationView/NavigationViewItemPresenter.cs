@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemPresenter.cpp, commit d3fef08
+// MUX Reference NavigationViewItemPresenter.cpp, commit 65718e2813
 
 using System;
-using Uno.Disposables;
-using Uno.UI.Helpers.WinUI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -28,7 +28,31 @@ public partial class NavigationViewItemPresenter : ContentControl
 	public NavigationViewItemPresenter()
 	{
 		SetValue(TemplateSettingsProperty, new NavigationViewItemPresenterTemplateSettings());
-		this.SetDefaultStyleKey();
+		DefaultStyleKey = typeof(NavigationViewItemPresenter);
+	}
+
+#if HAS_UNO // In WinUI this is directly in UnhookEventsAndClearFields, but we need to call this part separately.
+	private void UnhookEvents()
+	{
+		m_expandCollapseChevronPointerPressedRevoker.Disposable = null;
+		m_expandCollapseChevronPointerReleasedRevoker.Disposable = null;
+		m_expandCollapseChevronPointerExitedRevoker.Disposable = null;
+		m_expandCollapseChevronPointerCanceledRevoker.Disposable = null;
+		m_expandCollapseChevronPointerCaptureLostRevoker.Disposable = null;
+	}
+#endif
+
+	private void UnhookEventsAndClearFields()
+	{
+		UnhookEvents();
+
+		m_contentGrid = null;
+		m_infoBadgePresenter = null;
+		m_expandCollapseChevron = null;
+		m_chevronExpandedStoryboard = null;
+		m_chevronCollapsedStoryboard = null;
+
+		m_isChevronPressed = false;
 	}
 
 	protected override void OnApplyTemplate()
@@ -38,6 +62,8 @@ public partial class NavigationViewItemPresenter : ContentControl
 		// Retrieve pointers to stable controls
 		m_helper = new NavigationViewItemHelper<NavigationViewItemPresenter>(this);
 		m_helper.Init(this);
+
+		UnhookEventsAndClearFields();
 
 		var contentGrid = GetTemplateChild(c_contentGrid) as Grid;
 		if (contentGrid != null)
@@ -56,7 +82,7 @@ public partial class NavigationViewItemPresenter : ContentControl
 			// Can be removed when #4689.
 			if (m_expandCollapseChevron != null)
 			{
-				m_expandCollapseChevronTappedToken.Disposable = null;
+				UnhookEvents();
 			}
 #endif
 			if (navigationViewItem.HasPotentialChildren())
@@ -92,13 +118,140 @@ public partial class NavigationViewItemPresenter : ContentControl
 			{
 				if (GetTemplateChild<Grid>(c_expandCollapseChevron) is { } expandCollapseChevron)
 				{
-					m_expandCollapseChevronTappedToken.Disposable = null;
 					m_expandCollapseChevron = expandCollapseChevron;
-					expandCollapseChevron.Tapped += navigationViewItem.OnExpandCollapseChevronTapped;
-					m_expandCollapseChevronTappedToken.Disposable = Disposable.Create(() => expandCollapseChevron.Tapped -= navigationViewItem.OnExpandCollapseChevronTapped);
+
+					expandCollapseChevron.PointerPressed += OnExpandCollapseChevronPointerPressed;
+					m_expandCollapseChevronPointerPressedRevoker.Disposable = Disposable.Create(() =>
+					{
+						expandCollapseChevron.PointerPressed -= OnExpandCollapseChevronPointerPressed;
+					});
+
+					expandCollapseChevron.PointerReleased += OnExpandCollapseChevronPointerReleased;
+					m_expandCollapseChevronPointerReleasedRevoker.Disposable = Disposable.Create(() =>
+					{
+						expandCollapseChevron.PointerReleased -= OnExpandCollapseChevronPointerReleased;
+					});
+
+					var pointerCanceledHandler = new PointerEventHandler(OnExpandCollapseChevronPointerCanceled);
+					this.AddHandler(PointerCanceledEvent, pointerCanceledHandler, handledEventsToo: true);
+					m_expandCollapseChevronPointerCanceledRevoker.Disposable = Disposable.Create(() =>
+					{
+						this.RemoveHandler(PointerCanceledEvent, pointerCanceledHandler);
+					});
+
+					var pointerExitedHandler = new PointerEventHandler(OnExpandCollapseChevronPointerExited);
+					this.AddHandler(PointerExitedEvent, pointerExitedHandler, handledEventsToo: true);
+					m_expandCollapseChevronPointerExitedRevoker.Disposable = Disposable.Create(() =>
+					{
+						this.RemoveHandler(PointerExitedEvent, pointerExitedHandler);
+					});
+
+					var pointerCaptureLostHandler = new PointerEventHandler(OnExpandCollapseChevronPointerCaptureLost);
+					this.AddHandler(PointerCaptureLostEvent, pointerCaptureLostHandler, handledEventsToo: true);
+					m_expandCollapseChevronPointerCaptureLostRevoker.Disposable = Disposable.Create(() =>
+					{
+						this.RemoveHandler(PointerCaptureLostEvent, pointerCaptureLostHandler);
+					});
 				}
 			}
 		}
+	}
+
+
+	private void ResetTrackedPointerId()
+	{
+		m_trackedPointerId = 0;
+	}
+
+	// Returns False when the provided pointer Id matches the currently tracked Id.
+	// When there is no currently tracked Id, sets the tracked Id to the provided Id and returns False.
+	// Returns True when the provided pointer Id does not match the currently tracked Id.
+	private bool IgnorePointerId(PointerRoutedEventArgs args)
+	{
+		uint pointerId = args.Pointer.PointerId;
+
+		if (m_trackedPointerId == 0)
+		{
+			m_trackedPointerId = pointerId;
+		}
+		else if (m_trackedPointerId != pointerId)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private void OnExpandCollapseChevronPointerPressed(object sender, PointerRoutedEventArgs args)
+	{
+		bool ignorePointerId = IgnorePointerId(args);
+		var pointerProperties = args.GetCurrentPoint(this).Properties;
+		if (ignorePointerId ||
+			!pointerProperties.IsLeftButtonPressed ||
+			args.Handled)
+		{
+			// We are only interested in the primary action of the pointer device 
+			// (e.g. left click of a mouse)
+			// Despite the name, IsLeftButtonPressed covers the primary action regardless of device.
+			return;
+		}
+
+		m_isChevronPressed = true;
+		args.Handled = true;
+	}
+
+	private void OnExpandCollapseChevronPointerReleased(object sender, PointerRoutedEventArgs args)
+	{
+		if (IgnorePointerId(args))
+		{
+			return;
+		}
+
+		var navigationViewItem = GetNavigationViewItem();
+		var pointerProperties = args.GetCurrentPoint(this).Properties;
+		if (!args.Handled &&
+			m_isChevronPressed &&
+			pointerProperties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased &&
+			navigationViewItem is not null)
+		{
+			navigationViewItem.OnExpandCollapseChevronPointerReleased();
+			args.Handled = true;
+		}
+
+		m_isChevronPressed = false;
+		ResetTrackedPointerId();
+	}
+
+	private void OnExpandCollapseChevronPointerCanceled(object sender, PointerRoutedEventArgs args)
+	{
+		if (IgnorePointerId(args))
+		{
+			return;
+		}
+
+		m_isChevronPressed = false;
+		ResetTrackedPointerId();
+	}
+
+	private void OnExpandCollapseChevronPointerExited(object sender, PointerRoutedEventArgs args)
+	{
+		if (IgnorePointerId(args))
+		{
+			return;
+		}
+
+		m_isChevronPressed = false;
+		ResetTrackedPointerId();
+	}
+
+	private void OnExpandCollapseChevronPointerCaptureLost(object sender, PointerRoutedEventArgs args)
+	{
+		if (IgnorePointerId(args))
+		{
+			return;
+		}
+
+		m_isChevronPressed = false;
+		ResetTrackedPointerId();
 	}
 
 	internal void RotateExpandCollapseChevron(bool isExpanded)

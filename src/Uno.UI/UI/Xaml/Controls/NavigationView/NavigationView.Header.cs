@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationView.h, commit 9f7c129
+// MUX reference NavigationView.h, commit 65718e2813
 
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -190,7 +190,7 @@ public partial class NavigationView
 
 	private TopNavigationViewLayoutState m_topNavigationMode = TopNavigationViewLayoutState.Uninitialized;
 
-	private readonly List<NavigationViewItem> m_itemsWithRevokerObjects = new List<NavigationViewItem>();
+	private readonly List<NavigationViewItemBase> m_itemsWithRevokerObjects = new();
 
 	// A threshold to stop recovery from overflow to normal happens immediately on resize.
 	private float m_topNavigationRecoveryGracePeriodWidth = 5.0f;

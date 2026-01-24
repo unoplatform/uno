@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-
-namespace Microsoft.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls
 {
 	partial class StackLayout
 	{
@@ -32,15 +27,19 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		#region DisableVirtualization
-		public static DependencyProperty DisableVirtualizationProperty { get; } = DependencyProperty.Register(
-			"DisableVirtualization ", typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(default(bool), OnDependencyPropertyChanged));
-
 		public bool DisableVirtualization
 		{
-			get { return (bool)GetValue(DisableVirtualizationProperty); }
-			set { SetValue(DisableVirtualizationProperty, value); }
+			get => !IsVirtualizationEnabled;
+			set => IsVirtualizationEnabled = !value;
 		}
-		#endregion
+
+		internal bool IsVirtualizationEnabled
+		{
+			get => (bool)GetValue(IsVirtualizationEnabledProperty);
+			set => SetValue(IsVirtualizationEnabledProperty, value);
+		}
+
+		internal static DependencyProperty IsVirtualizationEnabledProperty { get; } =
+			DependencyProperty.Register(nameof(IsVirtualizationEnabled), typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(true, OnDependencyPropertyChanged));
 	}
 }
