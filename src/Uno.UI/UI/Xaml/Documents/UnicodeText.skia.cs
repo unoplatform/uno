@@ -970,8 +970,6 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		using var textBlobBuilder = new SKTextBlobBuilder();
 
-		int lastCorrectionIndex = 0;
-
 		for (var index = 0; index < _lines.Count; index++)
 		{
 			List<(SKFont skFont, SKTextBlobBuilder blobBuilder, float x, float y, ushort[] glyphs, SKPoint[] positions, Range glyphsAndPositionsRange, Brush brush)> drawCommands = new();
@@ -1015,14 +1013,15 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (_corrections is not null)
 				{
-					while (lastCorrectionIndex < _corrections.Count && _wordBoundaries[lastCorrectionIndex] <= runStartIndex)
+					var correctionIndex = 0;
+					while (correctionIndex < _corrections.Count && _wordBoundaries[correctionIndex] <= runStartIndex)
 					{
-						lastCorrectionIndex++;
+						correctionIndex++;
 					}
 
-					while (lastCorrectionIndex < _corrections.Count && (lastCorrectionIndex == 0 ? 0 : _wordBoundaries[lastCorrectionIndex - 1]) is var wordStart && wordStart < runEndIndex)
+					while (correctionIndex < _corrections.Count && (correctionIndex == 0 ? 0 : _wordBoundaries[correctionIndex - 1]) is var wordStart && wordStart < runEndIndex)
 					{
-						var correction = _corrections[lastCorrectionIndex];
+						var correction = _corrections[correctionIndex];
 
 						if (correction is not null)
 						{
@@ -1054,7 +1053,7 @@ internal readonly partial struct UnicodeText : IParsedText
 							}
 						}
 
-						lastCorrectionIndex++;
+						correctionIndex++;
 					}
 				}
 
