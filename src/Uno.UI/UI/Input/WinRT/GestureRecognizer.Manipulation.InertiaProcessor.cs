@@ -11,11 +11,9 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using static System.Double;
 
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
-
 #if IS_UNO_UI_PROJECT
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Input;
 #else
