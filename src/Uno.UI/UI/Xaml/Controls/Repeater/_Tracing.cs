@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -53,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			=> Console.WriteLine(text);
 
 		[Conditional("DEBUG")]
-		public static void MUX_ASSERT(bool assertion, string message = null)
+		public static void MUX_ASSERT([DoesNotReturnIf(false)] bool assertion, string message = null)
 			=> global::System.Diagnostics.Debug.Assert(assertion, message);
 	}
 }
