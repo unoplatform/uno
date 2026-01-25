@@ -15,12 +15,8 @@ using View = UIKit.UIView;
 using Android.Views;
 #endif
 
-#if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using XamlWindow = Microsoft.UI.Xaml.Window;
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 

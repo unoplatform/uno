@@ -11,12 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {

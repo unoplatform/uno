@@ -13,12 +13,8 @@ using Uno.UI.Extensions;
 using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 using static Microsoft.UI.Xaml.UIElement;
 
-#if HAS_UNO_WINUI
 using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Uno.UI.Xaml.Core;
 

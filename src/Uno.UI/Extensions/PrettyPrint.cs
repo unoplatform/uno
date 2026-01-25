@@ -10,12 +10,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
-
-#if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
-#else
-using Colors = Windows.UI.Colors;
-#endif
 
 namespace Uno.UI.Extensions;
 

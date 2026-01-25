@@ -12,18 +12,9 @@ using Uno.UI.Core;
 using Microsoft.UI.Windowing;
 using Uno.Disposables;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
-
-#if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 using Microsoft.UI.Input;
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
-#endif
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -180,17 +171,10 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		XamlRoot?.InvalidateMeasure(); //TODO:MZ: Should notify before or after?
 #endif
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
-#if HAS_UNO_WINUI
 		// There are two "versions" of WindowSizeChangedEventArgs in Uno currently
 		// when using WinUI, we need to use "legacy" version to work with CoreWindow
 		// (which will eventually be removed as a legacy API as well.
 		var coreWindowSizeChangedEventArgs = new Windows.UI.Core.WindowSizeChangedEventArgs(size);
-#else
-		var coreWindowSizeChangedEventArgs = windowSizeChanged;
-#endif
-#if !HAS_UNO_WINUI // CoreWindow has a different WindowSizeChangedEventArgs type, let's skip raising it completely.
-		CoreWindow?.OnSizeChanged(coreWindowSizeChangedEventArgs);
-#endif
 		SizeChanged?.Invoke(Window, windowSizeChanged);
 
 		XamlRoot?.RaiseChangedEvent();
@@ -248,14 +232,10 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 		_lastActivationState = state;
 		var activatedEventArgs = new WindowActivatedEventArgs(state);
-#if HAS_UNO_WINUI
 		// There are two "versions" of WindowActivatedEventArgs in Uno currently
 		// when using WinUI, we need to use "legacy" version to work with CoreWindow
 		// (which will eventually be removed as a legacy API as well.
 		var coreWindowActivatedEventArgs = new Windows.UI.Core.WindowActivatedEventArgs(state);
-#else
-		var coreWindowActivatedEventArgs = activatedEventArgs;
-#endif
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 		Activated?.Invoke(Window, activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
