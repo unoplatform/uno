@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ItemsControlAutomationPeer_Partial.cpp, tag winui3/release/1.8.2
+// MUX reference ItemsControlAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -69,76 +72,6 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		}
 	}
 
-	public IRawElementProviderSimple FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value)
-	{
-		if (Owner is not ItemsControl itemsControl)
-		{
-			return null;
-		}
-
-		var items = itemsControl.Items;
-		var startPeer = startAfter?.AutomationPeer as ItemAutomationPeer;
-		var startIndex = startPeer != null ? items.IndexOf(startPeer.Item) : -1;
-
-		var property = AutomationHelper.ConvertPropertyToEnum(automationProperty);
-		if (property == AutomationHelper.AutomationPropertyEnum.NotSupported)
-		{
-			return null;
-		}
-
-		for (var i = startIndex + 1; i < items.Count; i++)
-		{
-			var item = items[i];
-			if (property == AutomationHelper.AutomationPropertyEnum.EmptyProperty || DoesItemMatch(item, property, value))
-			{
-				var peer = CreateItemAutomationPeer(item);
-				if (peer != null)
-				{
-					return ProviderFromPeer(peer);
-				}
-			}
-		}
-
-		return null;
-	}
-
-	// Generate and set EventsSource for the given item container automation peer.
-	internal void GenerateEventsSourceForContainerItemPeer(FrameworkElementAutomationPeer itemContainerAP)
-	{
-		if (itemContainerAP == null || Owner is not ItemsControl itemsControl)
-		{
-			return;
-		}
-
-		// Get the owner UI element for the container peer and map it to the item
-		var containerOwner = itemContainerAP.Owner as UIElement;
-		if (containerOwner == null)
-		{
-			return;
-		}
-
-		var item = itemsControl.ItemFromContainer(containerOwner);
-		if (item == null)
-		{
-			return;
-		}
-
-		// If the container already has an EventsSource set to the correct ItemAutomationPeer, nothing to do
-		if (itemContainerAP.EventsSource is ItemAutomationPeer existing && ReferenceEquals(existing.Item, item))
-		{
-			return;
-		}
-
-		// Get or create the item peer
-		var itemPeer = CreateItemAutomationPeer(item);
-		if (itemPeer == null)
-		{
-			return;
-		}
-
-		// Set the EventsSource of the container peer to the item peer
-		itemContainerAP.EventsSource = itemPeer;
-	}
 
 	private bool DoesItemMatch(object item, AutomationHelper.AutomationPropertyEnum property, object value)
 	{
@@ -601,13 +534,13 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 	private List<ItemAutomationPeer> _itemPeerStorageForPattern;
 	private int _lastIndex = -1;
 
-	protected override ItemAutomationPeer OnCreateItemAutomationPeerProtected(object item)
+	private ItemAutomationPeer OnCreateItemAutomationPeerProtected(object? item)
 	{
 		ItemAutomationPeer spItemPeer = null;
 
 		// Call the generated/base implementation
 		// Note: In Uno, this is usually base.OnCreateItemAutomationPeerProtected(item)
-		spItemPeer = base.OnCreateItemAutomationPeerProtected(item);
+		spItemPeer = OnCreateItemAutomationPeer(item);
 
 		if (spItemPeer != null)
 		{
@@ -622,7 +555,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 				// not correct in case of grouping so we need to ensure, we set the correct parent while grouping.
 				if (isGrouping)
 				{
-					UIElement spItemsContainer = spItemPeer.GetContainer(); // Helper needed or cast to generic logic
+					UIElement? spItemsContainer = spItemPeer.GetContainer(); // Helper needed or cast to generic logic
 
 					// Note: Internal method access required here.
 					// Assuming get_ItemsPanelRoot equivalent exists in Uno
@@ -1302,15 +1235,5 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		}
 	}
 
-	// Helper to mimic C++ ProviderFromPeer
-	private IRawElementProviderSimple ProviderFromPeer(AutomationPeer peer)
-	{
-		return ProviderFromPeer(peer); // Native Uno method usually available
-	}
-
-	// Helper to mimic C++ PeerFromProvider
-	private AutomationPeer PeerFromProvider(IRawElementProviderSimple provider)
-	{
-		return PeerFromProvider(provider); // Native Uno method
-	}
+	// Note: ProviderFromPeer and PeerFromProvider are inherited from AutomationPeer base class
 }
