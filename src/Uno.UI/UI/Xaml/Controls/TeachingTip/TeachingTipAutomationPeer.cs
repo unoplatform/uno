@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TeachingTip\TeachingTipAutomationPeer.cpp, tag winui3/release/1.5.0, commit c8bd154c0
+// MUX Reference controls\dev\TeachingTip\TeachingTipAutomationPeer.cpp, tag winui3/release/1.8.4
 
 #nullable enable
 

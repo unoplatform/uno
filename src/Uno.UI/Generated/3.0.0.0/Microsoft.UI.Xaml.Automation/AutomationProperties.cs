@@ -468,7 +468,7 @@ namespace Microsoft.UI.Xaml.Automation
 			return (bool)element.GetValue(IsDialogProperty);
 		}
 #endif
-#if false\
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetIsDialog(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
 		{
