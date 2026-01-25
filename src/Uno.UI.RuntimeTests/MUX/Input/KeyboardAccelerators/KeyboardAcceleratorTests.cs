@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
@@ -1449,7 +1448,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached MenuFlyout.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyButtonFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuItem()
 	{
 		const string rootPanelXaml =
@@ -1513,7 +1511,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on button control.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnButton()
 	{
 		const string rootPanelXaml =
@@ -1559,8 +1556,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 			ButtonWithFlyout = (Button)rootPanel.FindName("ButtonWithFlyout");
 			MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("MenuItem")).KeyboardAccelerators[0];
-			Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_MenuItem_KA")).KeyboardAccelerators[0];
-			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_Sub_MenuItem_KA")).KeyboardAccelerators[0];
+			var menuFlyout = (ButtonWithFlyout.Flyout as MenuFlyout);
+			var rootSubItem = (MenuFlyoutSubItem)menuFlyout.Items[1];
+			Sub_MenuItem_KA = ((MenuFlyoutItem)rootSubItem.Items[1]).KeyboardAccelerators[0];
+			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)((MenuFlyoutSubItem)rootSubItem.Items[0]).Items[0]).KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1590,7 +1589,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on menubar control.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnMenuBar()
 	{
 		const string rootPanelXaml =
@@ -1636,8 +1634,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 			ButtonWithoutFlyout = (Button)rootPanel.FindName("ButtonWithoutFlyout");
 			MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("MenuItem")).KeyboardAccelerators[0];
-			Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_MenuItem_KA")).KeyboardAccelerators[0];
-			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_Sub_MenuItem_KA")).KeyboardAccelerators[0];
+			var menuBar = (MenuBar)rootPanel.Children[0];
+			var mainItem = menuBar.Items[0];
+			var rootSubItem = (MenuFlyoutSubItem)mainItem.Items[1];
+			Sub_MenuItem_KA = ((MenuFlyoutItem)rootSubItem.Items[1]).KeyboardAccelerators[0];
+			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)((MenuFlyoutSubItem)rootSubItem.Items[0]).Items[0]).KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1667,7 +1668,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is collapsed.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1727,7 +1727,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is opened up.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -1793,7 +1792,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works after menu item is opened up and closed again.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -1862,7 +1860,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands defined on MenuBar after setting window content, works when menu item is collapsed.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsAfterSettingWindowContent()
 	{
 		const string rootPanelXaml =
@@ -1913,7 +1910,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands on MenuBar works when menu item closed.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1961,7 +1957,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works when menu item is opened up.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -2015,7 +2010,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works after menu item opened up and closed again.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -2072,7 +2066,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
-	[Ignore("Requires Flyout support for Keyboard Accelerators #17134")]
 	public async Task VerifyButtonFlyoutCanInvokeAcceleratorsDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2158,7 +2151,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17134")]
 	public async Task VerifyButtonContextFlyoutWithFlyoutCanInvokeAcceleratorDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2214,9 +2206,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
-			ButtonFlyout = (Flyout)rootPanel.FindName("ButtonFlyout");
-			flyoutButton1 = (Button)rootPanel.FindName("flyoutButton1");
-			flyoutButton2 = (Button)rootPanel.FindName("flyoutButton2");
+			var button1 = (Button)rootPanel.FindName("focusButton1");
+			ButtonFlyout = (Flyout)button1.ContextFlyout;
+			var stackPanel = (StackPanel)ButtonFlyout.Content;
+			flyoutButton1 = (Button)stackPanel.Children[0];
+			flyoutButton2 = (Button)stackPanel.Children[1];
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrl1Accelerator = flyoutButton1.KeyboardAccelerators[0];
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
@@ -2301,7 +2295,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the global accelerators on its attached MenuFlyout.")]
-	[Ignore("Requires MenuFlyout and ContextFlyout support for Keyboard Accelerators #17133 and #17134")]
 	public async Task VerifyButtonContextFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuFlyout()
 	{
 		const string rootPanelXaml =
@@ -2848,7 +2841,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView fires the accelerators on its attached ContextFlyout.")]
-	[Ignore("Requires ContextFlyout support for Keyboard Accelerators #17134")]
 	public async Task VerifyListViewContextFlyoutCanInvokeHiddenAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3104,7 +3096,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView does not fire the accelerators on its attached ContextFlyout, as it is scoped to be local.")]
-	[Ignore("Requires ContextFlyout support for Keyboard Accelerators #17134")]
 	public async Task VerifyListViewContextFlyoutCanNotInvokeHiddenLocallyScopedAccelerator()
 	{
 		const string rootPanelXaml =
