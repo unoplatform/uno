@@ -23,8 +23,12 @@ partial class NativeApplicationSettings
 	private partial bool RemoveSettingPlatform(string key)
 	{
 		using var preferences = CreatePreferences();
-		preferences.Edit()?.Remove(key)?.Commit();
-		return true;
+		var exists = preferences.All?.ContainsKey(key) ?? false;
+		if (exists)
+		{
+			preferences.Edit()?.Remove(key)?.Commit();
+		}
+		return exists;
 	}
 
 	private partial IEnumerable<string> GetKeysPlatform()
