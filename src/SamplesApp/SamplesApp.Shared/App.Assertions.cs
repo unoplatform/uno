@@ -54,7 +54,7 @@ partial class App
 
 		Assert.IsFalse(string.IsNullOrEmpty(displayName), "DisplayName is empty.");
 
-		Assert.IsFalse(displayName.Contains("ms-resource:"), $"'{displayName}' wasn't found in resources.");
+		Assert.DoesNotContain("ms-resource:", displayName, $"'{displayName}' wasn't found in resources.");
 #endif
 	}
 
@@ -83,9 +83,9 @@ partial class App
 
 		Assert.IsFalse(string.IsNullOrEmpty(publisherName), "PublisherDisplayName isn't in manifest.");
 
-		Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");
+		Assert.DoesNotContain("ms-resource:", description, $"'{description}' wasn't found in resources.");
 
-		Assert.IsFalse(publisherName.Contains("ms-resource:"), $"'{publisherName}' wasn't found in resources.");
+		Assert.DoesNotContain("ms-resource:", publisherName, $"'{publisherName}' wasn't found in resources.");
 #endif
 	}
 
