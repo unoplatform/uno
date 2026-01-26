@@ -30,7 +30,7 @@ public partial class EventTrigger : TriggerBase
 		{
 			// EventTrigger only supports the Loaded event, matching WinUI behavior
 			// See: https://github.com/microsoft/microsoft-ui-xaml/blob/b1db15715bfead9fe8ad2e7f78b0172589225e69/src/dxaml/xcp/dxaml/lib/EventTrigger_Partial.cpp#L5
-			if (value != null && value != FrameworkElement.LoadedEvent)
+			if (value != null && value.Name != "Loaded")
 			{
 				throw new ArgumentException("EventTrigger only supports the Loaded event.", nameof(value));
 			}
