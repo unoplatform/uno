@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.Hosting
 			var host = new TestHost_ThrowsInInitialize();
 
 			// Act & Assert
-			var exception = Assert.ThrowsException<InvalidOperationException>(() => host.Run());
+			var exception = Assert.ThrowsExactly<InvalidOperationException>(() => host.Run());
 			Assert.AreEqual("Test exception in Initialize", exception.Message);
 		}
 
@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.Hosting
 			var host = new TestHost_ThrowsInInitializeAsync();
 
 			// Act & Assert
-			var exception = Assert.ThrowsException<InvalidOperationException>(() => host.Run());
+			var exception = Assert.ThrowsExactly<InvalidOperationException>(() => host.Run());
 			Assert.AreEqual("Test exception in InitializeAsync", exception.Message);
 		}
 
@@ -37,7 +37,7 @@ namespace Uno.UI.Tests.Hosting
 			var host = new TestHost_AsyncRunLoop();
 
 			// Act & Assert
-			var exception = Assert.ThrowsException<InvalidOperationException>(() => host.Run());
+			var exception = Assert.ThrowsExactly<InvalidOperationException>(() => host.Run());
 			Assert.IsTrue(exception.Message.Contains("requires calling 'await host.RunAsync()' instead of 'host.Run()'"));
 		}
 
@@ -59,8 +59,15 @@ namespace Uno.UI.Tests.Hosting
 			var host = new TestHost_ThrowsInInitialize();
 
 			// Act & Assert
-			var exception = await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => host.RunAsync());
-			Assert.AreEqual("Test exception in Initialize", exception.Message);
+			try
+			{
+				await host.RunAsync();
+				Assert.Fail("Expected InvalidOperationException to be thrown");
+			}
+			catch (InvalidOperationException ex)
+			{
+				Assert.AreEqual("Test exception in Initialize", ex.Message);
+			}
 		}
 
 		[TestMethod]
@@ -70,7 +77,7 @@ namespace Uno.UI.Tests.Hosting
 			var host = new TestHost_ThrowsInSynchronousRunLoop();
 
 			// Act & Assert
-			var exception = Assert.ThrowsException<InvalidOperationException>(() => host.Run());
+			var exception = Assert.ThrowsExactly<InvalidOperationException>(() => host.Run());
 			Assert.AreEqual("Test exception in synchronous RunLoop", exception.Message);
 		}
 
@@ -81,7 +88,7 @@ namespace Uno.UI.Tests.Hosting
 			var host = new TestHost_CanceledTask();
 
 			// Act & Assert
-			Assert.ThrowsException<TaskCanceledException>(() => host.Run());
+			Assert.ThrowsExactly<TaskCanceledException>(() => host.Run());
 		}
 
 		// Test host implementations
