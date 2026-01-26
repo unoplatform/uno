@@ -156,14 +156,14 @@ static class AppHost
 	{
 		if (outputFile is null)
 		{
-			Console.OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+			Console.OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: true);
 			fileWriter = null;
 			return Console.Out;
 		}
 
 		outputFile.Directory?.Create();
 		var stream = File.Open(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read);
-		fileWriter = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false))
+		fileWriter = new StreamWriter(stream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true))
 		{
 			NewLine = "\n"
 		};
@@ -702,12 +702,15 @@ public static class GithubFontFetcher
 
 			var families = new List<FontFamilyDownload>();
 
-			var familyDirectories = Directory.GetDirectories(targetRoot, "*", SearchOption.TopDirectoryOnly);
+			var familyDirectories = Directory.GetDirectories(targetRoot, "*", SearchOption.TopDirectoryOnly)
+				.OrderBy(d => d, StringComparer.Ordinal)
+				.ToArray();
 			foreach (var familyDir in familyDirectories)
 			{
 				var familyName = Path.GetFileName(familyDir);
 				var dir = source.FamilySubdirectorySegments.Prepend(familyDir).Aggregate("", Path.Combine);
 				var files = Directory.EnumerateFiles(dir, "*.*", SearchOption.TopDirectoryOnly)
+					.OrderBy(f => f, StringComparer.Ordinal)
 					.ToList();
 
 				var variants = files
