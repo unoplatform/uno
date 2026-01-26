@@ -295,6 +295,7 @@ internal partial class Win32DragDropExtension
 		for (int i = 0; i < fileCount; i++)
 		{
 			ref readonly var fileDescriptor = ref fileDescriptors[i];
+			var isDirectory = (fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0;
 
 			// Get the file name from the descriptor using fixed statement
 			string fileName;
@@ -309,52 +310,68 @@ internal partial class Win32DragDropExtension
 				continue;
 			}
 
-			var fileContentsFormatEtc = new FORMATETC
-			{
-				cfFormat = (ushort)CFSTR_FILECONTENTS,
-				ptd = null,
-				dwAspect = (uint)DVASPECT.DVASPECT_CONTENT,
-				lindex = i, // Index of the file in the file group descriptor
-				tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL
-			};
-
-			var getFileContentResult = dataObject->GetData(fileContentsFormatEtc, out STGMEDIUM fileContentMedium);
-			if (getFileContentResult.Failed)
-			{
-				this.LogError()?.Error($"Failed to get file contents for '{fileName}' at index {i}: {Win32Helper.GetErrorMessage(getFileContentResult)}");
-				continue;
-			}
-
-			using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
-
 			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop");
 			if (!Directory.Exists(tempDir))
 			{
 				Directory.CreateDirectory(tempDir);
 			}
 			var tempPath = Path.Combine(tempDir, fileName);
-			using var fileStream = File.Create(tempPath);
 
-			var success = false;
-			if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
+			if (isDirectory)
 			{
-				ReadFromIStream(fileContentMedium.u.pstm, fileStream);
-				success = true;
-			}
-			else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
-			{
-				success = ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream);
+				if (!Directory.Exists(tempPath))
+				{
+					Directory.CreateDirectory(tempPath);
+				}
+				storageItems.Add(new StorageFolder(tempPath));
 			}
 			else
 			{
-				this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
-			}
+				var parentDir = Path.GetDirectoryName(tempPath);
+				if (parentDir != null && !Directory.Exists(parentDir))
+				{
+					Directory.CreateDirectory(parentDir);
+				}
 
-			if (success)
-			{
-				storageItems.Add((fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0
-					? new StorageFolder(tempPath)
-					: StorageFile.GetFileFromPath(tempPath));
+				var fileContentsFormatEtc = new FORMATETC
+				{
+					cfFormat = (ushort)CFSTR_FILECONTENTS,
+					ptd = null,
+					dwAspect = (uint)DVASPECT.DVASPECT_CONTENT,
+					lindex = i, // Index of the file in the file group descriptor
+					tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL
+				};
+
+				var getFileContentResult = dataObject->GetData(fileContentsFormatEtc, out STGMEDIUM fileContentMedium);
+				if (getFileContentResult.Failed)
+				{
+					this.LogError()?.Error($"Failed to get file contents for '{fileName}' at index {i}: {Win32Helper.GetErrorMessage(getFileContentResult)}");
+					continue;
+				}
+
+				using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
+
+				using var fileStream = File.Create(tempPath);
+
+				var success = false;
+				if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
+				{
+					ReadFromIStream(fileContentMedium.u.pstm, fileStream);
+					success = true;
+				}
+				else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
+				{
+					success = ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream);
+				}
+				else
+				{
+					this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
+				}
+
+				if (success)
+				{
+					storageItems.Add(StorageFile.GetFileFromPath(tempPath));
+				}
 			}
 		}
 
@@ -435,9 +452,9 @@ internal partial class Win32DragDropExtension
 		public int x;
 		public int y;
 		public uint dwFileAttributes;
-		public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
-		public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
-		public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
+		public FILETIME ftCreationTime;
+		public FILETIME ftLastAccessTime;
+		public FILETIME ftLastWriteTime;
 		public uint nFileSizeHigh;
 		public uint nFileSizeLow;
 		public fixed char cFileName[260]; // MAX_PATH
