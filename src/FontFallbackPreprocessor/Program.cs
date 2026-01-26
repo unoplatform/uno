@@ -3,7 +3,6 @@
 
 using System.CommandLine;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 
 return await AppHost.RunAsync(args);
@@ -224,7 +223,7 @@ public static class TtfReader
 	public static List<(int Start, int End)> GetCodepointRanges(List<int> codepoints)
 	{
 		var ranges = new List<(int Start, int End)>();
-		if (codepoints == null || codepoints.Count == 0)
+		if (codepoints.Count == 0)
 			return ranges;
 
 		codepoints.Sort();
