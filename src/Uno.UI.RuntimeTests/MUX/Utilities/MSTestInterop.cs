@@ -93,42 +93,42 @@ namespace Common
 
 		public static void IsLessThan(double expectedLess, double expectedGreater, string message = null)
 		{
-			Assert.IsLessThan(expectedLess, expectedGreater, message);
+			Assert.IsLessThan(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsLessThan(int expectedLess, int expectedGreater, string message = null)
 		{
-			Assert.IsLessThan(expectedLess, expectedGreater, message);
+			Assert.IsLessThan(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsLessThanOrEqual(int expectedLess, int expectedGreater, string message = null)
 		{
-			Assert.IsLessThanOrEqualTo(expectedLess, expectedGreater, message);
+			Assert.IsLessThanOrEqualTo(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsLessThanOrEqual(double expectedLess, double expectedGreater, string message = null)
 		{
-			Assert.IsLessThanOrEqualTo(expectedLess, expectedGreater, message);
+			Assert.IsLessThanOrEqualTo(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsGreaterThan(int expectedGreater, int expectedLess, string message = null)
 		{
-			Assert.IsGreaterThan(expectedGreater, expectedLess, message);
+			Assert.IsGreaterThan(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsGreaterThan(double expectedGreater, double expectedLess, string message = null)
 		{
-			Assert.IsGreaterThan(expectedGreater, expectedLess, message);
+			Assert.IsGreaterThan(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsGreaterThanOrEqual(double expectedGreater, double expectedLess, string message = null)
 		{
-			Assert.IsGreaterThanOrEqualTo(expectedGreater, expectedLess, message);
+			Assert.IsGreaterThanOrEqualTo(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsGreaterThanOrEqual(int expectedGreater, int expectedLess, string message = null)
 		{
-			Assert.IsGreaterThanOrEqualTo(expectedGreater, expectedLess, message);
+			Assert.IsGreaterThanOrEqualTo(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsNull(object value, string message = null)
