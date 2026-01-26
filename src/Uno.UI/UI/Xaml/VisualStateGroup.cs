@@ -30,6 +30,12 @@ namespace Microsoft.UI.Xaml
 
 		private (VisualState state, VisualTransition transition) _current;
 
+		/// <summary>
+		/// Tracks whether this is the initial evaluation of state triggers.
+		/// WinUI skips transitions on initial evaluation (control first loads) but uses them on subsequent evaluations.
+		/// </summary>
+		private bool _isInitialEvaluation = true;
+
 		public event VisualStateChangedEventHandler CurrentStateChanging;
 
 		public event VisualStateChangedEventHandler CurrentStateChanged;
@@ -560,7 +566,14 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var parent = this.GetParent() as IFrameworkElement;
-			GoToState(parent, newState, false, OnStateChanged);
+
+			// Use transitions only on subsequent evaluations, not on initial load or forced refresh.
+			// This matches WinUI behavior where !isInitialEvaluation is passed to GoToStateOptimized.
+			var useTransitions = !_isInitialEvaluation && !force;
+			GoToState(parent, newState, useTransitions, OnStateChanged);
+
+			// Mark that initial evaluation is complete after first successful state change
+			_isInitialEvaluation = false;
 		}
 
 		private bool HasStateTriggers()
