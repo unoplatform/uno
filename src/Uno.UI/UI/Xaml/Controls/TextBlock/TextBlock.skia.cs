@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Canvas.Save();
 			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
-			var selectionHighlighter = new TextHighlighter()
+			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
 			{
 				Background = SelectionHighlightColor,
 				Foreground = DefaultBrushes.SelectedTextForegroundColor,
@@ -198,11 +198,11 @@ namespace Microsoft.UI.Xaml.Controls
 						Length = Math.Abs(Selection.start - Selection.end)
 					}
 				}
-			};
+			}) : TextHighlighters;
 			ParsedText.Draw(
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
-				TextHighlighters.Append(selectionHighlighter));
+				highligherters);
 			session.Canvas.Restore();
 			DrawingFinished?.Invoke();
 		}
