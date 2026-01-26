@@ -116,6 +116,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
+	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new();
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 
@@ -948,7 +949,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters)
 	{
-		var wholeTextSlicer = new RangeSlicer<(Cluster selectionClusterStart, Cluster? selectionClusterEnd, CompositionBrush background, Brush foreground)>(0, _text.Length);
+		var wholeTextSlicer = new RangeSlicer<(Cluster selectionClusterStart, Cluster? selectionClusterEnd, CompositionBrush? background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
 		{
 			foreach (var range in highlighter.Ranges)
@@ -962,8 +963,8 @@ internal readonly partial struct UnicodeText : IParsedText
 						selectionClusterEnd?.sourceTextStart ?? _text.Length,
 						(selectionClusterStart,
 							selectionClusterEnd,
-							highlighter.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
-							highlighter.Foreground));
+							highlighter.Background?.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+							highlighter.Foreground ?? _blackBrush));
 				}
 			}
 		}
@@ -988,7 +989,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.GlyphPosition.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.GlyphPosition.YOffset * run.fontDetails.TextScale.textScaleY);
 				}
 
-				var runSlicer = new RangeSlicer<(CompositionBrush background, Brush foreground)>(0, run.glyphs.Length);
+				var runSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, run.glyphs.Length);
 				foreach (var highlighter in wholeTextSlicer.GetSegments())
 				{
 					if (highlighter.HasValue)

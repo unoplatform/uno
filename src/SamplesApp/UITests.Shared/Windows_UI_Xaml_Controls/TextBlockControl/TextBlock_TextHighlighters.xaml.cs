@@ -35,14 +35,16 @@ public sealed partial class TextBlock_TextHighlighters : UserControl
 
 		var range = new TextRange { StartIndex = start, Length = length };
 
-		var bgColorName = (ColorSelect.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Yellow";
-		var fgColorName = (ForegroundSelect.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Black";
+		var bgColorName = ((ComboBoxItem)ColorSelect.SelectedItem).Tag.ToString();
+		var fgColorName = ((ComboBoxItem)ForegroundSelect.SelectedItem).Tag.ToString();
 
-		var bgColor = GetColorFromString(bgColorName);
-		var fgColor = GetColorFromString(fgColorName);
+		var bgBrush = bgColorName == "Null"
+			? null
+			: new SolidColorBrush(GetColorFromString(bgColorName));
 
-		var bgBrush = new SolidColorBrush(bgColor);
-		var fgBrush = new SolidColorBrush(fgColor);
+		var fgBrush = fgColorName == "Null"
+			? null
+			: new SolidColorBrush(GetColorFromString(fgColorName));
 
 		var highlighter = new TextHighlighter
 		{
