@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -464,8 +465,8 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		public void When_Nested_Container_Create_Existing_NotFound()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
-			var container = SUT.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
-			Assert.IsNull(container);
+			var act = () => SUT.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
+			act.Should().Throw<Exception>();
 			Assert.HasCount(0, SUT.Containers);
 		}
 
@@ -493,8 +494,8 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container);
 
-			var nestedContainer = container.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
-			Assert.IsNull(nestedContainer);
+			var act = () => container.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
+			act.Should().Throw<Exception>();
 			Assert.HasCount(0, container.Containers);
 		}
 
