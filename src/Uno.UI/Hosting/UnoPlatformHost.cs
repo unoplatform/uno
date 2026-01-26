@@ -20,11 +20,11 @@ public abstract class UnoPlatformHost
 	public void Run()
 	{
 		var task = RunCore();
-		if (task.IsFaulted)
+		if (task.IsCompleted)
 		{
 			task.GetAwaiter().GetResult();
 		}
-		else if (!task.IsCompleted)
+		else
 		{
 			throw new InvalidOperationException($"Running host {this} requires calling 'await host.RunAsync()' instead of 'host.Run()'.");
 		}
