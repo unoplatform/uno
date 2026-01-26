@@ -27,13 +27,13 @@ namespace Uno.UI.Tests.CollectionViewTests
 			};
 
 			var view = source.View;
-			Assert.AreEqual(initialCount, view.Count);
+			Assert.HasCount(initialCount, view);
 
 			list.Add(27);
-			Assert.AreEqual(initialCount + 1, view.Count);
+			Assert.HasCount(initialCount + 1, view);
 
 			view.Add(32);
-			Assert.AreEqual(initialCount + 2, list.Count);
+			Assert.HasCount(initialCount + 2, list);
 			Assert.AreEqual(32, list[initialCount + 1]);
 		}
 
@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.CollectionViewTests
 
 			var view = source.View;
 
-			Assert.AreEqual(0, view.Count);
+			Assert.IsEmpty(view);
 			Assert.IsNull(view.CurrentItem);
 			Assert.AreEqual(0, view.CurrentPosition); //Not -1
 		}
@@ -98,7 +98,7 @@ namespace Uno.UI.Tests.CollectionViewTests
 			};
 			var view = source.View;
 
-			Assert.AreEqual(ungrouped.Length, view.Count);
+			Assert.HasCount(ungrouped.Length, view);
 			Assert.AreEqual(ungrouped[0], view.CurrentItem);
 			Assert.AreEqual(ungrouped[3], view[3]);
 		}

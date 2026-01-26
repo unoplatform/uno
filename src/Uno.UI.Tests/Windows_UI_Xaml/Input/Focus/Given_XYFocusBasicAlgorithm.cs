@@ -47,7 +47,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double distanceA = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateA);
 			double distanceB = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateB);
-			Assert.IsTrue(distanceA < distanceB);
+			Assert.IsLessThan(distanceA, distanceB);
 		}
 
 		/*
@@ -78,12 +78,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double distanceA = CalculateSecondaryAxisDistance(FocusNavigationDirection.Right, current, candidateA);
 			double distanceB = CalculateSecondaryAxisDistance(FocusNavigationDirection.Right, current, candidateB);
-			Assert.IsTrue(distanceA < distanceB);
+			Assert.IsLessThan(distanceA, distanceB);
 
 			// We can have situations where the secondary distance is shorter although the primary distance is longer
 			distanceA = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateA);
 			distanceB = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateB);
-			Assert.IsTrue(distanceA > distanceB);
+			Assert.IsGreaterThan(distanceA, distanceB);
 		}
 
 		/*
@@ -131,10 +131,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			potentialHorizontal.first = candidateA.Top;
 			potentialHorizontal.second = candidateA.Bottom;
 
-			Assert.IsTrue(CalculatePercentInShadow(potentialVertical, referenceVertical) > 0);
-			Assert.IsTrue(CalculatePercentInShadow(referenceVertical, potentialVertical) > 0);
-			Assert.IsTrue(CalculatePercentInShadow(referenceHorizontal, potentialHorizontal) > 0);
-			Assert.IsTrue(CalculatePercentInShadow(potentialHorizontal, referenceHorizontal) > 0);
+			Assert.IsGreaterThan(CalculatePercentInShadow(potentialVertical, referenceVertical), 0);
+			Assert.IsGreaterThan(CalculatePercentInShadow(referenceVertical, potentialVertical), 0);
+			Assert.IsGreaterThan(CalculatePercentInShadow(referenceHorizontal, potentialHorizontal), 0);
+			Assert.IsGreaterThan(CalculatePercentInShadow(potentialHorizontal, referenceHorizontal), 0);
 		}
 
 		/*

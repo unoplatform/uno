@@ -185,14 +185,14 @@ namespace UnitTests
 		public void Contains_ItemPresent_ReturnsTrue()
 		{
 			var deque = new Deque<int>(new[] { 1, 2 }) as ICollection<int>;
-			Assert.IsTrue(deque.Contains(2));
+			Assert.Contains(2, deque);
 		}
 
 		[TestMethod]
 		public void Contains_ItemNotPresent_ReturnsFalse()
 		{
 			var deque = new Deque<int>(new[] { 1, 2 }) as ICollection<int>;
-			Assert.IsFalse(deque.Contains(3));
+			Assert.DoesNotContain(3, deque);
 		}
 
 		[TestMethod]
@@ -202,10 +202,10 @@ namespace UnitTests
 			deque.RemoveFromBack();
 			deque.AddToFront(0);
 			var deq = deque as ICollection<int>;
-			Assert.IsTrue(deq.Contains(0));
-			Assert.IsTrue(deq.Contains(1));
-			Assert.IsTrue(deq.Contains(2));
-			Assert.IsFalse(deq.Contains(3));
+			Assert.Contains(0, deq);
+			Assert.Contains(1, deq);
+			Assert.Contains(2, deq);
+			Assert.DoesNotContain(3, deq);
 		}
 
 		[TestMethod]
@@ -684,24 +684,24 @@ namespace UnitTests
 		public void NongenericContains_WrongItemType_ReturnsFalse()
 		{
 			var list = new List<int>(new[] { 1, 2 }) as IList;
-			Assert.IsFalse(list.Contains(this));
+			Assert.DoesNotContain(this, list);
 
 			var deque = new Deque<int>(new[] { 1, 2 }) as IList;
-			Assert.IsFalse(deque.Contains(this));
+			Assert.DoesNotContain(this, deque);
 		}
 
 		[TestMethod]
 		public void NongenericContains_ItemPresent_ReturnsTrue()
 		{
 			var deque = new Deque<int>(new[] { 1, 2 }) as IList;
-			Assert.IsTrue(deque.Contains(2));
+			Assert.Contains(2, deque);
 		}
 
 		[TestMethod]
 		public void NongenericContains_ItemNotPresent_ReturnsFalse()
 		{
 			var deque = new Deque<int>(new[] { 1, 2 }) as IList;
-			Assert.IsFalse(deque.Contains(3));
+			Assert.DoesNotContain(3, deque);
 		}
 
 		[TestMethod]
@@ -711,10 +711,10 @@ namespace UnitTests
 			deque_.RemoveFromBack();
 			deque_.AddToFront(0);
 			var deque = deque_ as IList;
-			Assert.IsTrue(deque.Contains(0));
-			Assert.IsTrue(deque.Contains(1));
-			Assert.IsTrue(deque.Contains(2));
-			Assert.IsFalse(deque.Contains(3));
+			Assert.Contains(0, deque);
+			Assert.Contains(1, deque);
+			Assert.Contains(2, deque);
+			Assert.DoesNotContain(3, deque);
 		}
 
 		[TestMethod]
@@ -911,12 +911,12 @@ namespace UnitTests
 			var list = new List<int>(new[] { 13 }) as IList;
 			list.Remove(this);
 			list.Remove(null);
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 
 			var deque = new Deque<int>(new[] { 13 }) as IList;
 			deque.Remove(this);
 			deque.Remove(null);
-			Assert.AreEqual(1, deque.Count);
+			Assert.HasCount(1, deque);
 		}
 
 		[TestMethod]
