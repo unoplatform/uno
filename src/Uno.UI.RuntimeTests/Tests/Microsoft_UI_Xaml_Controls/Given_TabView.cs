@@ -118,7 +118,7 @@ public class Given_TabView
 		new ButtonAutomationPeer(closeButton).Invoke();
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(1, SUT.TabItems.Count);
+		Assert.HasCount(1, SUT.TabItems);
 		Assert.AreEqual(0, SUT.SelectedIndex);
 		Assert.AreEqual("Tab 2", ((TabViewItem)SUT.TabItems[0]).Header);
 	}
@@ -159,7 +159,7 @@ public class Given_TabView
 
 		await UITestHelper.Load(SUT);
 
-		Assert.AreEqual(2, SUT.TabItems.Count);
+		Assert.HasCount(2, SUT.TabItems);
 		Assert.AreEqual(-1, SUT.SelectedIndex);
 	}
 
@@ -180,8 +180,8 @@ public class Given_TabView
 
 		var tabviewItem1 = SUT.ContainerFromIndex(0) as TabViewItem;
 		var headerPresenter1 = (ContentPresenter)tabviewItem1.GetTemplateChild("ContentPresenter");
-		Assert.IsTrue(headerPresenter1.ActualWidth > 0, "TabViewItem header for index  0 should have a non-zero width.");
-		Assert.IsTrue(headerPresenter1.ActualHeight > 0, "TabViewItem header for index  0 should have a non-zero height.");
+		Assert.IsGreaterThan(headerPresenter1.ActualWidth, 0, "TabViewItem header for index  0 should have a non-zero width.");
+		Assert.IsGreaterThan(headerPresenter1.ActualHeight, 0, "TabViewItem header for index  0 should have a non-zero height.");
 
 		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
 
@@ -192,13 +192,13 @@ public class Given_TabView
 		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
 #endif
 
-		Assert.IsTrue(buttonLabel1.ActualWidth > 0, "TabViewItem Button for index 0 should have a non-zero width.");
-		Assert.IsTrue(buttonLabel1.ActualHeight > 0, "TabViewItem Button  for index 0 should have a non-zero height.");
+		Assert.IsGreaterThan(buttonLabel1.ActualWidth, 0, "TabViewItem Button for index 0 should have a non-zero width.");
+		Assert.IsGreaterThan(buttonLabel1.ActualHeight, 0, "TabViewItem Button  for index 0 should have a non-zero height.");
 
 		var tabviewItem2 = SUT.ContainerFromIndex(1) as TabViewItem;
 		var headerPresenter2 = (ContentPresenter)tabviewItem2.GetTemplateChild("ContentPresenter");
-		Assert.IsTrue(headerPresenter2.ActualWidth > 0, "TabViewItem header for index  1  should have a non-zero width.");
-		Assert.IsTrue(headerPresenter2.ActualHeight > 0, "TabViewItem header for index  1  should have a non-zero height.");
+		Assert.IsGreaterThan(headerPresenter2.ActualWidth, 0, "TabViewItem header for index  1  should have a non-zero width.");
+		Assert.IsGreaterThan(headerPresenter2.ActualHeight, 0, "TabViewItem header for index  1  should have a non-zero height.");
 	}
 #endif
 
@@ -236,8 +236,8 @@ public class Given_TabView
 		Assert.AreEqual(2, SUT.SelectedIndex);
 
 		var tabviewItem = SUT.ContainerFromItem(SUT.SelectedItem) as TabViewItem;
-		Assert.IsTrue(tabviewItem.ActualWidth > 0, "TabViewItem should have a non-zero width.");
-		Assert.IsTrue(tabviewItem.ActualHeight > 0, "TabViewItem should have a non-zero height.");
+		Assert.IsGreaterThan(tabviewItem.ActualWidth, 0, "TabViewItem should have a non-zero width.");
+		Assert.IsGreaterThan(tabviewItem.ActualHeight, 0, "TabViewItem should have a non-zero height.");
 	}
 }
 

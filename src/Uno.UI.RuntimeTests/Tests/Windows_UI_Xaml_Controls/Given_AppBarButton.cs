@@ -35,8 +35,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(tb);
 				Assert.IsNotNull(icon);
 				Assert.AreEqual("Archaeopteryx", tb.Text);
-				Assert.IsTrue(tb.ActualWidth > 0);
-				Assert.IsTrue(tb.ActualHeight > 0);
+				Assert.IsGreaterThan(tb.ActualWidth, 0);
+				Assert.IsGreaterThan(tb.ActualHeight, 0);
 			}
 		}
 

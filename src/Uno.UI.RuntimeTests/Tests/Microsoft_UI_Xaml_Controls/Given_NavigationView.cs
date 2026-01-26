@@ -169,12 +169,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var fullyCollapsedHeight = nvis["B"].ActualHeight;
 
 			// sanity check
-			Assert.IsTrue(initialHeight < partiallyExpandedHeight, $"Expanding 'B' should increase item 'B' height: {initialHeight} -> {partiallyExpandedHeight}");
-			Assert.IsTrue(partiallyExpandedHeight < fullyExpandedHeight, $"Expanding 'BB' should increase item 'B' height: {partiallyExpandedHeight} -> {fullyExpandedHeight}");
+			Assert.IsLessThan(initialHeight, partiallyExpandedHeight, $"Expanding 'B' should increase item 'B' height: {initialHeight} -> {partiallyExpandedHeight}");
+			Assert.IsLessThan(partiallyExpandedHeight, fullyExpandedHeight, $"Expanding 'BB' should increase item 'B' height: {partiallyExpandedHeight} -> {fullyExpandedHeight}");
 
 			// verifying fix
-			Assert.IsTrue(fullyExpandedHeight > partiallyCollapsedHeight, $"Collapsing 'BB' should reduce item 'B' height: {fullyExpandedHeight} -> {partiallyCollapsedHeight}");
-			Assert.IsTrue(partiallyCollapsedHeight > fullyCollapsedHeight, $"Collapsing 'B' should reduce item 'B' height: {partiallyCollapsedHeight} -> {fullyCollapsedHeight}");
+			Assert.IsGreaterThan(fullyExpandedHeight, partiallyCollapsedHeight, $"Collapsing 'BB' should reduce item 'B' height: {fullyExpandedHeight} -> {partiallyCollapsedHeight}");
+			Assert.IsGreaterThan(partiallyCollapsedHeight, fullyCollapsedHeight, $"Collapsing 'B' should reduce item 'B' height: {partiallyCollapsedHeight} -> {fullyCollapsedHeight}");
 		}
 
 		[TestMethod]

@@ -339,11 +339,11 @@ public class Given_StandardUICommand
 		}
 		if (virtualKey == VirtualKey.None)
 		{
-			Assert.AreEqual(0, command.KeyboardAccelerators.Count);
+			Assert.IsEmpty(command.KeyboardAccelerators);
 		}
 		else
 		{
-			Assert.AreEqual(1, command.KeyboardAccelerators.Count);
+			Assert.HasCount(1, command.KeyboardAccelerators);
 			var keyboardAccelerator = command.KeyboardAccelerators[0];
 			Assert.AreEqual(virtualKey, keyboardAccelerator.Key);
 			Assert.AreEqual(modifiers, keyboardAccelerator.Modifiers);

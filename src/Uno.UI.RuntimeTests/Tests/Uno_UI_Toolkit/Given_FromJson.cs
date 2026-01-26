@@ -74,7 +74,7 @@ public partial class Given_FromJson
 			return;
 		}
 
-		Assert.AreEqual(3, numbers.Count);
+		Assert.HasCount(3, numbers);
 		Assert.AreEqual(1, numbers[0]);
 		Assert.AreEqual(2, numbers[1]);
 		Assert.AreEqual(3, numbers[2]);

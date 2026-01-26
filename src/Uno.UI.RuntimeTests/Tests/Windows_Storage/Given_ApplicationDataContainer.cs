@@ -169,22 +169,22 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var SUT = ApplicationData.Current.LocalSettings;
 			var originalCount = SUT.Values.Count;
 
-			Assert.IsFalse(SUT.Values.Keys.Contains("test"));
-			Assert.IsFalse(SUT.Values.Keys.Contains("test2"));
-			Assert.IsFalse(SUT.Values.Values.Contains("42"));
-			Assert.IsFalse(SUT.Values.Values.Contains("43"));
+			Assert.DoesNotContain(SUT.Values.Keys, "test");
+			Assert.DoesNotContain(SUT.Values.Keys, "test2");
+			Assert.DoesNotContain(SUT.Values.Values, "42");
+			Assert.DoesNotContain(SUT.Values.Values, "43");
 
 			SUT.Values.Add("test", "42");
 			SUT.Values.Add("test2", "43");
 
-			Assert.AreEqual(originalCount + 2, SUT.Values.Count);
-			Assert.AreEqual(originalCount + 2, SUT.Values.Keys.Count);
-			Assert.IsTrue(SUT.Values.Keys.Contains("test"));
-			Assert.IsTrue(SUT.Values.Keys.Contains("test2"));
+			Assert.HasCount(originalCount + 2, SUT.Values);
+			Assert.HasCount(originalCount + 2, SUT.Values.Keys);
+			Assert.Contains(SUT.Values.Keys, "test");
+			Assert.Contains(SUT.Values.Keys, "test2");
 
-			Assert.AreEqual(originalCount + 2, SUT.Values.Values.Count);
-			Assert.IsTrue(SUT.Values.Values.Contains("42"));
-			Assert.IsTrue(SUT.Values.Values.Contains("43"));
+			Assert.HasCount(originalCount + 2, SUT.Values.Values);
+			Assert.Contains(SUT.Values.Values, "42");
+			Assert.Contains(SUT.Values.Values, "43");
 		}
 
 		[TestMethod]
@@ -203,7 +203,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 				keysPresent.Remove(value.Key);
 			}
 
-			Assert.AreEqual(0, keysPresent.Count);
+			Assert.IsEmpty(keysPresent);
 		}
 
 		[TestMethod]
