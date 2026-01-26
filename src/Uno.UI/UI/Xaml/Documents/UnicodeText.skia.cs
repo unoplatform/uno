@@ -983,11 +983,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 								var p = new SKPath();
 								var y = line.y + line.baselineOffset + yOffset;
+								var width = rightX - leftX;
+
 								p.MoveTo(currentLineX + leftX, y);
-								for (float x = currentLineX + leftX; x < currentLineX + rightX; x += step)
+
+								var cycles = (int)(width / step);
+								for (var i = 0; i < cycles; i++)
 								{
-									p.LineTo(x + step / 2, y + amplitude);
-									p.LineTo(x + step, y);
+									p.RQuadTo(step / 2, amplitude * 2, step, 0);
 								}
 
 								spellCheckUnderlines.Add((p, scale));
