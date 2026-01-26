@@ -86,7 +86,7 @@ public class Given_Storyboard
 
 		var stopwatch = Stopwatch.StartNew();
 		storyboard.Begin();
-		await TestServices.WindowHelper.WaitFor(() => completed, timeout: 5000);
+		await TestServices.WindowHelper.WaitFor(() => completed, 5000);
 		stopwatch.Stop();
 
 		// Completed should fire at ~2s (Storyboard's Duration), not ~1s (child's default).
@@ -126,7 +126,7 @@ public class Given_Storyboard
 
 		var stopwatch = Stopwatch.StartNew();
 		storyboard.Begin();
-		await TestServices.WindowHelper.WaitFor(() => completed, timeout: 2000);
+		await TestServices.WindowHelper.WaitFor(() => completed, 2000);
 		stopwatch.Stop();
 
 		// Completed should fire at ~500ms (Storyboard's Duration), not ~1s (child default).
@@ -170,14 +170,14 @@ public class Given_Storyboard
 
 		var stopwatch = Stopwatch.StartNew();
 		storyboard.Begin();
-		await TestServices.WindowHelper.WaitFor(() => completed, timeout: 5000);
+		await TestServices.WindowHelper.WaitFor(() => completed, 5000);
 		stopwatch.Stop();
 
 		// Two 500ms cycles → ~1000ms total.
-		Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 700,
-			$"Storyboard completed too early at {stopwatch.ElapsedMilliseconds}ms, expected ~1000ms (2x500ms)");
-		Assert.IsTrue(stopwatch.ElapsedMilliseconds < 2000,
-			$"Storyboard completed too late at {stopwatch.ElapsedMilliseconds}ms, expected ~1000ms (2x500ms)");
+		Assert.IsGreaterThanOrEqualTo(700,
+stopwatch.ElapsedMilliseconds, $"Storyboard completed too early at {stopwatch.ElapsedMilliseconds}ms, expected ~1000ms (2x500ms)");
+		Assert.IsLessThan(2000,
+stopwatch.ElapsedMilliseconds, $"Storyboard completed too late at {stopwatch.ElapsedMilliseconds}ms, expected ~1000ms (2x500ms)");
 	}
 
 	[TestMethod]
@@ -207,7 +207,7 @@ public class Given_Storyboard
 
 		var stopwatch = Stopwatch.StartNew();
 		storyboard.Begin();
-		await TestServices.WindowHelper.WaitFor(() => completed, timeout: 2000);
+		await TestServices.WindowHelper.WaitFor(() => completed, 2000);
 		stopwatch.Stop();
 
 		// The animation should complete in approximately 1000ms (the default).
@@ -243,11 +243,11 @@ public class Given_Storyboard
 
 		var stopwatch = Stopwatch.StartNew();
 		storyboard.Begin();
-		await TestServices.WindowHelper.WaitFor(() => completed, timeout: 2000);
+		await TestServices.WindowHelper.WaitFor(() => completed, 2000);
 		stopwatch.Stop();
 
 		// Completed at ~500ms (child's duration), not 1s (default).
-		Assert.IsTrue(stopwatch.ElapsedMilliseconds < 800,
-			$"Animation took {stopwatch.ElapsedMilliseconds}ms, expected ~500ms (child's explicit Duration)");
+		Assert.IsLessThan(800,
+stopwatch.ElapsedMilliseconds, $"Animation took {stopwatch.ElapsedMilliseconds}ms, expected ~500ms (child's explicit Duration)");
 	}
 }
