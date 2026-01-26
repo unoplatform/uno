@@ -38,6 +38,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private int _runningChildren;
 		private bool _hasFillingChildren;
 		private bool _hasScheduledCompletion;
+		private DispatcherTimer _durationTimer;
+		private bool _isDurationExpired;
 
 		public Storyboard()
 		{
@@ -134,6 +136,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private void Play()
 		{
 			_runningChildren = Children?.Count ?? 0;
+			_isDurationExpired = false;
+
+			// Start storyboard duration timer if explicit Duration is set
+			StartDurationTimer();
+
 			if (_runningChildren > 0)
 			{
 				for (int i = 0; i < Children.Count; i++)
@@ -147,8 +154,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					child.Begin();
 				}
 			}
-			else
+			else if (_durationTimer == null)
 			{
+				// No children AND no duration timer → complete immediately (existing behavior)
 				_hasScheduledCompletion = true;
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
@@ -165,6 +173,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					OnCompleted();
 				});
 			}
+			// else: empty storyboard with duration timer → wait for timer
 		}
 
 		public void Stop()
@@ -178,6 +187,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					payload: new object[] { Target?.GetType().ToString(), PropertyInfo?.Path }
 				);
 			}
+
+			StopDurationTimer();
+			_isDurationExpired = false;
 
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
@@ -212,6 +224,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
+			// Restart duration timer with remaining time
+			if (_durationTimer != null && Duration.HasTimeSpan)
+			{
+				var remaining = Duration.TimeSpan - _activeDuration.Elapsed;
+				if (remaining > TimeSpan.Zero)
+				{
+					_durationTimer.Interval = remaining;
+					_durationTimer.Start();
+				}
+				else
+				{
+					// Duration already elapsed during pause — expire now
+					OnDurationTimerTick(null, null);
+					return;
+				}
+			}
+
 			if (Children != null && Children.Count > 0)
 			{
 				State = TimelineState.Active;
@@ -241,6 +270,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				return;
 			}
+
+			_durationTimer?.Stop();
 
 			State = TimelineState.Paused;
 
@@ -295,6 +326,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		internal void Deactivate()
 		{
+			StopDurationTimer();
+			_isDurationExpired = false;
+
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
 
@@ -374,22 +408,81 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (_runningChildren == 0)
 			{
-				if (NeedsRepeat(_activeDuration, _replayCount))
+				// If storyboard has explicit Duration and it hasn't elapsed yet, wait for the timer
+				if (!_isDurationExpired && (Duration.Type == DurationType.TimeSpan || Duration.Type == DurationType.Forever))
 				{
-					Replay(); // replay the animation
 					return;
 				}
-				if (State == TimelineState.Active)
-				{
-					State = _hasFillingChildren ? TimelineState.Filling : TimelineState.Stopped;
-				}
 
-				OnCompleted();
+				HandleCompletion();
 			}
+		}
+
+		private void HandleCompletion()
+		{
+			if (NeedsRepeat(_activeDuration, _replayCount))
+			{
+				Replay();
+				return;
+			}
+
+			if (State == TimelineState.Active)
+			{
+				State = _hasFillingChildren ? TimelineState.Filling : TimelineState.Stopped;
+			}
+
+			OnCompleted();
+		}
+
+		private void StartDurationTimer()
+		{
+			StopDurationTimer();
+
+			if (Duration.Type == DurationType.TimeSpan && Duration.TimeSpan > TimeSpan.Zero)
+			{
+				_durationTimer = new DispatcherTimer { Interval = Duration.TimeSpan };
+				_durationTimer.Tick += OnDurationTimerTick;
+				_durationTimer.Start();
+			}
+		}
+
+		private void StopDurationTimer()
+		{
+			if (_durationTimer != null)
+			{
+				_durationTimer.Stop();
+				_durationTimer.Tick -= OnDurationTimerTick;
+				_durationTimer = null;
+			}
+		}
+
+		private void OnDurationTimerTick(object sender, object e)
+		{
+			StopDurationTimer();
+			_isDurationExpired = true;
+
+			// Deactivate any still-running children (holds their current animated value)
+			if (Children != null && _runningChildren > 0)
+			{
+				for (int i = 0; i < Children.Count; i++)
+				{
+					var child = Children[i];
+					if (child.State == TimelineState.Active || child.State == TimelineState.Paused)
+					{
+						((ITimeline)child).Deactivate();
+						DisposeChildRegistrations(child);
+						_hasFillingChildren = true; // deactivated children hold values
+					}
+				}
+				_runningChildren = 0;
+			}
+
+			HandleCompletion();
 		}
 
 		private protected override void Dispose(bool disposing)
 		{
+			StopDurationTimer();
 			base.Dispose(disposing);
 
 			if (Children != null)

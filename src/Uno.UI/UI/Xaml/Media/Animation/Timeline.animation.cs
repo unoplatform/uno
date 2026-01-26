@@ -313,9 +313,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			/// </summary>
 			private void SetAnimatorDuration()
 			{
-				var effectiveDuration = _owner.GetEffectiveDuration();
-
-				switch (effectiveDuration.Type)
+				switch (Duration.Type)
 				{
 					case DurationType.Automatic:
 						_animator.SetDuration(1000);
@@ -327,7 +325,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 						break;
 					case DurationType.TimeSpan:
 						//If the duration is a timespan use it
-						_animator.SetDuration((long)effectiveDuration.TimeSpan.TotalMilliseconds);
+						_animator.SetDuration((long)Duration.TimeSpan.TotalMilliseconds);
 						break;
 				}
 			}
