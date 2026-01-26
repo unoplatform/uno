@@ -231,8 +231,6 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		string? additionalServerProcessorsDiscoveryPath = null,
 		bool autoRegisterAppIdentity = true)
 	{
-		Debugger.Break();
-
 		AppType = appType;
 		_additionalServerProcessorsDiscoveryPath = additionalServerProcessorsDiscoveryPath;
 		_autoRegisterAppIdentity = autoRegisterAppIdentity;

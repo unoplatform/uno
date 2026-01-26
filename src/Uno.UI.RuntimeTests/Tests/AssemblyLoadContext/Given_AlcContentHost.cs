@@ -48,12 +48,6 @@ public class Given_AlcContentHost
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
 
-		// Act
-		var contentHost = new AlcContentHost
-		{
-			SourceApplicationOverride = testApp
-		};
-
 		Assert.IsTrue(contentHost.Resources.ContainsKey("TestAccentBrush"), "ContentHost should project resources from the secondary Application");
 		var accentBrush = contentHost.Resources["TestAccentBrush"] as SolidColorBrush;
 		Assert.IsNotNull(accentBrush, "TestAccentBrush should be a SolidColorBrush");
@@ -72,12 +66,6 @@ public class Given_AlcContentHost
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
 		Assert.IsTrue(contentHost.Resources.MergedDictionaries.Count > 0, "ContentHost should surface merged dictionaries from the secondary Application");
-
-		// Act
-		var contentHost = new AlcContentHost
-		{
-			SourceApplicationOverride = testApp
-		};
 
 		var mergedDictionary = contentHost.Resources.MergedDictionaries
 			.FirstOrDefault(dict => dict.ContainsKey("TestTextBlockStyle"));
