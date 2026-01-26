@@ -27,7 +27,16 @@ partial class Program
 
 			if (string.IsNullOrWhiteSpace(solution))
 			{
-				solution = SolutionDiscovery.DiscoverFirstSolution(workingDir);
+				// Prefer the solution specified in .unoplatform/devserverconfig.json
+				if (DevServerConfig.TryGetSolutionPath(workingDir, out var configuredSolution))
+				{
+					solution = configuredSolution;
+					await Console.Out.WriteLineAsync($"Using solution from .unoplatform/devserverconfig.json: {solution}");
+				}
+				else
+				{
+					solution = SolutionDiscovery.DiscoverFirstSolution(workingDir);
+				}
 			}
 
 			var ambientLogger = NullLogger.Instance;
