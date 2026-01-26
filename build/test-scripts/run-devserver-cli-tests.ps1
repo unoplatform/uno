@@ -402,6 +402,32 @@ try {
 
     & dotnet uno-devserver stop -l trace
 
+    Write-Log "Validating --solution-dir support from outside the solution root"
+
+    $solutionDirTestPort = if ($port -ge 65535) { $defaultPort + 1 } else { $port + 1 }
+    $outerDirectory = Split-Path $slnDir -Parent
+    if ([string]::IsNullOrWhiteSpace($outerDirectory)) {
+        $outerDirectory = [System.IO.Path]::GetTempPath()
+    }
+
+    Push-Location $outerDirectory
+    try {
+        & dotnet uno-devserver start --solution-dir $slnDir --httpPort $solutionDirTestPort -l trace
+
+        $solutionDirSuccess = Wait-ForHttpPortOpen -Port $solutionDirTestPort -Path '/' -MaxAttempts $maxAttempts -ConnectTimeoutMs 2000
+        if (-not $solutionDirSuccess) {
+            throw "Devserver did not open HTTP port $solutionDirTestPort via --solution-dir after $maxAttempts attempts."
+        }
+
+        Write-Log "Devserver started successfully using --solution-dir at $DevServerBaseUrl"
+
+        & dotnet uno-devserver stop --solution-dir $slnDir -l trace
+    }
+    finally {
+        Pop-Location
+        Set-Location $slnDir
+    }
+
     $CodexAPIKey = $env:CODEX_API_KEY
     $isForkPr = $env:SYSTEM_PULLREQUEST_ISFORK -eq 'True'
 
