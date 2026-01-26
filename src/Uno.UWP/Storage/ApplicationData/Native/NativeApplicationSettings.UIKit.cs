@@ -17,9 +17,13 @@ partial class NativeApplicationSettings
 
 	private partial bool RemoveSettingPlatform(string key)
 	{
-		NSUserDefaults.StandardUserDefaults.RemoveObject((NSString)key);
-		NSUserDefaults.StandardUserDefaults.Synchronize();
-		return true;
+		var exists = ContainsSettingPlatform(key);
+		if (exists)
+		{
+			NSUserDefaults.StandardUserDefaults.RemoveObject((NSString)key);
+			NSUserDefaults.StandardUserDefaults.Synchronize();
+		}
+		return exists;
 	}
 
 	private partial IEnumerable<string> GetKeysPlatform()
