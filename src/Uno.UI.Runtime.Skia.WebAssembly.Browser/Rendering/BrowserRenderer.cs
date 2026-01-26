@@ -60,6 +60,11 @@ internal partial class BrowserRenderer
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
+		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget compositionTarget)
+		{
+			return;
+		}
+
 		_renderer.MakeCurrent();
 
 		if (_renderer.NeedsForceResize())
@@ -68,7 +73,7 @@ internal partial class BrowserRenderer
 			_canvas = null;
 		}
 
-		var currentClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_canvas, size =>
+		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
 		{
 			return _canvas = _renderer.Resize((int)size.Width, (int)size.Height);
 		});
