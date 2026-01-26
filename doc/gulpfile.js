@@ -51,7 +51,63 @@ function docfx(done) {
             // This will stop the execution of the task on error
             // At the moment there is an error on every build
             // This a workaround
-            done(err);
+            if (err) {
+                done(err);
+                return;
+            }
+        }
+
+        // Copy our custom files to override default template
+        const fs = require('fs');
+        const filesToCopy = [
+            {
+                source: `${assets}/styles/docfx.js`,
+                destination: '_site/styles/docfx.js',
+                critical: true
+            },
+            {
+                source: `${assets}/styles/docfx.js.map`,
+                destination: '_site/styles/docfx.js.map',
+                critical: false
+            },
+            {
+                source: `${assets}/styles/main.css`,
+                destination: '_site/styles/main.css',
+                critical: true
+            },
+            {
+                source: `${assets}/styles/main.css.map`,
+                destination: '_site/styles/main.css.map',
+                critical: false
+            },
+            {
+                source: `${assets}/styles/main.js`,
+                destination: '_site/styles/main.js`,
+                critical: true
+            }
+        ];
+
+        let criticalCopyError = null;
+
+        filesToCopy.forEach(file => {
+            try {
+                fs.copyFileSync(file.source, file.destination);
+            } catch (copyErr) {
+                const message = `Failed to copy "${file.source}" to "${file.destination}": ${copyErr.message}`;
+                if (file.critical) {
+                    console.error('Error:', message);
+                    if (!criticalCopyError) {
+                        criticalCopyError = copyErr;
+                    }
+                } else {
+                    console.warn('Warning:', message);
+                }
+            }
+        });
+
+        if (criticalCopyError) {
+            done(criticalCopyError);
+            return;
         }
         done();
     });
