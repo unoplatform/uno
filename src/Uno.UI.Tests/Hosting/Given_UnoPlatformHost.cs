@@ -63,6 +63,27 @@ namespace Uno.UI.Tests.Hosting
 			Assert.AreEqual("Test exception in Initialize", exception.Message);
 		}
 
+		[TestMethod]
+		public void When_Exception_In_Synchronous_RunLoop_Should_Throw_Actual_Exception()
+		{
+			// Arrange
+			var host = new TestHost_ThrowsInSynchronousRunLoop();
+
+			// Act & Assert
+			var exception = Assert.ThrowsException<InvalidOperationException>(() => host.Run());
+			Assert.AreEqual("Test exception in synchronous RunLoop", exception.Message);
+		}
+
+		[TestMethod]
+		public void When_Task_Is_Canceled_Should_Throw_TaskCanceledException()
+		{
+			// Arrange
+			var host = new TestHost_CanceledTask();
+
+			// Act & Assert
+			Assert.ThrowsException<TaskCanceledException>(() => host.Run());
+		}
+
 		// Test host implementations
 		private class TestHost_ThrowsInInitialize : UnoPlatformHost
 		{
@@ -120,6 +141,32 @@ namespace Uno.UI.Tests.Hosting
 			protected override Task RunLoop()
 			{
 				return Task.CompletedTask;
+			}
+		}
+
+		private class TestHost_ThrowsInSynchronousRunLoop : UnoPlatformHost
+		{
+			protected override void Initialize()
+			{
+				// No-op
+			}
+
+			protected override Task RunLoop()
+			{
+				throw new InvalidOperationException("Test exception in synchronous RunLoop");
+			}
+		}
+
+		private class TestHost_CanceledTask : UnoPlatformHost
+		{
+			protected override void Initialize()
+			{
+				// No-op
+			}
+
+			protected override Task RunLoop()
+			{
+				return Task.FromCanceled(new System.Threading.CancellationToken(true));
 			}
 		}
 	}
