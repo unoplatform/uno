@@ -59,15 +59,8 @@ namespace Uno.UI.Tests.Hosting
 			var host = new TestHost_ThrowsInInitialize();
 
 			// Act & Assert
-			try
-			{
-				await host.RunAsync();
-				Assert.Fail("Expected InvalidOperationException to be thrown");
-			}
-			catch (InvalidOperationException ex)
-			{
-				Assert.AreEqual("Test exception in Initialize", ex.Message);
-			}
+			var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(() => host.RunAsync());
+			Assert.AreEqual("Test exception in Initialize", exception.Message);
 		}
 
 		[TestMethod]
