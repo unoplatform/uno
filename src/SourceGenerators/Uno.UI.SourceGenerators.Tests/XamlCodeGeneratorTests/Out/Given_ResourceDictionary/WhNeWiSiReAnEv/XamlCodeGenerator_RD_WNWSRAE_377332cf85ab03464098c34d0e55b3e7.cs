@@ -34,12 +34,12 @@ using _View = Microsoft.UI.Xaml.UIElement;
 
 namespace Uno.UI.Tests.Given_ResourceDictionary
 {
-	partial class When_Nested_With_Sibling_Ref_And_Event : global::Microsoft.UI.Xaml.Controls.Page
+	partial class RD_WNWSRAE : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
+		private const string __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7 = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -57,21 +57,21 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			}
 			)
 			;
-			// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 1:2)
+			// Source 0\RD_WNWSRAE.xaml (Line 1:2)
 			;
 			
 			this
-			.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+			.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-			// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 1:2)
+			// Source 0\RD_WNWSRAE.xaml (Line 1:2)
 			
-			// [WARNING] C:/Project/0/ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+			// [WARNING] C:/Project/0/RD_WNWSRAE.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+			.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-			// Class Uno.UI.Tests.Given_ResourceDictionary.When_Nested_With_Sibling_Ref_And_Event
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20);
+			// Class Uno.UI.Tests.Given_ResourceDictionary.RD_WNWSRAE
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7);
 			__p1.CreationComplete();
 			}
 			))
@@ -83,12 +83,12 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			
-			return new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
+			return new __RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
 		}
 
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20
+		private class __RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7
 		{
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -97,9 +97,9 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			public class __Pag_ResΞ0_DatTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_prefix_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
+				private const string __baseUri_prefix_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7 = "ms-appx:///TestProject/";
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
+				private const string __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7 = "ms-appx:///TestProject/";
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
@@ -115,7 +115,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 						["SiblingResource"] = 
 						new global::Microsoft.UI.Xaml.Controls.FontIconSource
 						{
-							// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 14:7)
+							// Source 0\RD_WNWSRAE.xaml (Line 14:22)
 						}
 						,
 						["FailingResource"] = 
@@ -124,22 +124,22 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 							return 
 								new global::Microsoft.UI.Xaml.Controls.SwipeItems
 								{
-									// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 15:7)
+									// Source 0\RD_WNWSRAE.xaml (Line 15:22)
 								}
-								.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+								.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 								{
 								__p1.Add(
 									new global::Microsoft.UI.Xaml.Controls.SwipeItem
 									{
-										// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 16:8)
+										// Source 0\RD_WNWSRAE.xaml (Line 16:26)
 									}
-									.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+									.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 									{
 									/* _isTopLevelDictionary:False */
 									__that._component_0 = __p1;
 									global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
 									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-									var Invoked_Handler = new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20.__Pag_ResΞ0_DatTemΞ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Inv_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+									var Invoked_Handler = new __RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7.__Pag_ResΞ0_DatTemΞ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Inv_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
 									/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
 									}
 									))
@@ -151,13 +151,13 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 						)
 						,
 						},
-						// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 12:5)
+						// Source 0\RD_WNWSRAE.xaml (Line 12:14)
 					}
-					.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+					.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 					{
 					/* _isTopLevelDictionary:False */
 					__that._component_1 = __p1;
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20);
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7);
 					__p1.CreationComplete();
 					}
 					))
@@ -204,7 +204,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				{
 					public void Invoke(global::Microsoft.UI.Xaml.Controls.SwipeItem sender, global::Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
 					{
-						(target.Target as global::Uno.UI.Tests.Given_ResourceDictionary.When_Nested_With_Sibling_Ref_And_Event)?.AnEventHandler(sender, args);
+						(target.Target as global::Uno.UI.Tests.Given_ResourceDictionary.RD_WNWSRAE)?.AnEventHandler(sender, args);
 					}
 				}
 
@@ -213,32 +213,32 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 }
 namespace MyProject
 {
-	static class ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions
+	static class RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.SwipeItems instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.SwipeItems ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.SwipeItems instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.SwipeItems RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply(this global::Microsoft.UI.Xaml.Controls.SwipeItems instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.SwipeItem instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.SwipeItem ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.SwipeItem instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.SwipeItem RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply(this global::Microsoft.UI.Xaml.Controls.SwipeItem instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Border instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Border ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler3 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Border RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;
