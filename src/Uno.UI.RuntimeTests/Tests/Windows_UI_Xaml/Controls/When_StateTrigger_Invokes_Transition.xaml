@@ -1,0 +1,63 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.When_StateTrigger_Invokes_Transition"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
+
+	<Grid x:Name="RootGrid">
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="SizeStates">
+				<VisualStateGroup.Transitions>
+					<VisualTransition From="Narrow" To="Wide">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="TestBorder"
+								Storyboard.TargetProperty="Width"
+								From="100"
+								To="300"
+								Duration="0:0:0.5" />
+						</Storyboard>
+					</VisualTransition>
+					<VisualTransition From="Wide" To="Narrow">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="TestBorder"
+								Storyboard.TargetProperty="Width"
+								From="300"
+								To="100"
+								Duration="0:0:0.5" />
+						</Storyboard>
+					</VisualTransition>
+				</VisualStateGroup.Transitions>
+
+				<VisualState x:Name="Narrow">
+					<VisualState.StateTriggers>
+						<!-- This trigger activates when window width is less than WideTrigger's threshold -->
+						<AdaptiveTrigger x:Name="NarrowTrigger" MinWindowWidth="0" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="TestBorder.Width" Value="100" />
+					</VisualState.Setters>
+				</VisualState>
+
+				<VisualState x:Name="Wide">
+					<VisualState.StateTriggers>
+						<!-- This trigger activates when window width is >= 500 -->
+						<AdaptiveTrigger x:Name="WideTrigger" MinWindowWidth="500" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="TestBorder.Width" Value="300" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+
+		<Border
+			x:Name="TestBorder"
+			Width="100"
+			Height="100"
+			Background="Blue" />
+	</Grid>
+</UserControl>
