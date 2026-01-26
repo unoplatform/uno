@@ -60,7 +60,7 @@ internal partial class BrowserRenderer
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
-		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget compositionTarget)
+		if (_host.RootElement?.Visual?.CompositionTarget is not CompositionTarget compositionTarget)
 		{
 			return;
 		}
