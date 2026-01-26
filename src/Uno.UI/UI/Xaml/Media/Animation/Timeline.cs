@@ -142,35 +142,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Gets the effective duration for this timeline, considering the parent Storyboard's Duration
-		/// if this timeline's Duration is Automatic.
-		/// </summary>
-		internal Duration GetEffectiveDuration()
-		{
-			// If this timeline has an explicit Duration set, use it
-			if (Duration.Type != DurationType.Automatic)
-			{
-				return Duration;
-			}
-
-			// Check if parent is a Storyboard with explicit Duration
-			// Parent chain: Timeline -> TimelineCollection -> Storyboard
-			var parent = this.GetParent();
-			if (parent is TimelineCollection collection)
-			{
-				parent = collection.GetParent();
-			}
-
-			if (parent is Storyboard storyboard && storyboard.Duration.Type != DurationType.Automatic)
-			{
-				return storyboard.Duration;
-			}
-
-			// No parent Duration found, return Automatic
-			return Duration.Automatic;
-		}
-
-		/// <summary>
 		/// The target on which the animated property exists, if set directly by <see cref="Storyboard.SetTarget(Timeline, DependencyObject)"/>. 
 		/// </summary>
 		internal DependencyObject Target
