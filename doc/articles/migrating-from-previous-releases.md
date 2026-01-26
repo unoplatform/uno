@@ -6,6 +6,10 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 6.5
+
+Uno Platform 6.5 does not contain breaking changes that require attention when upgrading
+
 ## Uno Platform 6.4
 
 Uno Platform 6.4 contains an Uno.Extensions breaking changes that require attention when upgrading:
