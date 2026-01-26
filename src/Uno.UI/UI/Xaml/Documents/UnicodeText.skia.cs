@@ -1013,8 +1013,12 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (_corrections is not null)
 				{
-					var correctionIndex = 0;
-					while (correctionIndex < _corrections.Count && _wordBoundaries[correctionIndex] <= runStartIndex)
+					var correctionIndex = _wordBoundaries.BinarySearch(0, _corrections.Count, runStartIndex, null);
+					if (correctionIndex < 0)
+					{
+						correctionIndex = ~correctionIndex;
+					}
+					else
 					{
 						correctionIndex++;
 					}
