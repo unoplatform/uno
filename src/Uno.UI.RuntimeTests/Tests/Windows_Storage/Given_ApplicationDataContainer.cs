@@ -441,7 +441,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container);
 			Assert.AreEqual("nested", container.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 		}
 
 		[TestMethod]
@@ -452,11 +452,11 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			container.Values["test"] = "42";
 			Assert.IsNotNull(container);
 			Assert.AreEqual("nested", container.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 			var container2 = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container2);
 			Assert.AreEqual("nested", container2.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 			Assert.AreEqual("42", container2.Values["test"]);
 		}
 
@@ -466,7 +466,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var SUT = ApplicationData.Current.LocalSettings;
 			var container = SUT.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
 			Assert.IsNull(container);
-			Assert.AreEqual(0, SUT.Containers.Count);
+			Assert.HasCount(0, SUT.Containers);
 		}
 
 		[TestMethod]
@@ -477,12 +477,12 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			container.Values["test"] = "42";
 			Assert.IsNotNull(container);
 			Assert.AreEqual("nested", container.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 
 			var container2 = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Existing);
 			Assert.IsNotNull(container2);
 			Assert.AreEqual("nested", container2.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 			Assert.AreEqual("42", container2.Values["test"]);
 		}
 
@@ -495,7 +495,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 
 			var nestedContainer = container.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
 			Assert.IsNull(nestedContainer);
-			Assert.AreEqual(0, container.Containers.Count);
+			Assert.HasCount(0, container.Containers);
 		}
 
 		[TestMethod]
@@ -519,23 +519,23 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container);
 			Assert.AreEqual("nested", container.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 			var container2 = container.CreateContainer("nested2", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container2);
 			Assert.AreEqual("nested2", container2.Name);
-			Assert.AreEqual(1, container.Containers.Count);
+			Assert.HasCount(1, container.Containers);
 
 			var container3 = container.CreateContainer("nested3", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container3);
 			Assert.AreEqual("nested3", container3.Name);
-			Assert.AreEqual(2, container.Containers.Count);
+			Assert.HasCount(2, container.Containers);
 
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 
 			var containerRoot2 = SUT.CreateContainer("nestedRoot2", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(containerRoot2);
 			Assert.AreEqual("nestedRoot2", containerRoot2.Name);
-			Assert.AreEqual(2, SUT.Containers.Count);
+			Assert.HasCount(2, SUT.Containers);
 		}
 
 		[TestMethod]
@@ -545,9 +545,9 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container);
 			Assert.AreEqual("nested", container.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 			SUT.DeleteContainer("nested");
-			Assert.AreEqual(0, SUT.Containers.Count);
+			Assert.HasCount(0, SUT.Containers);
 		}
 
 		[TestMethod]
@@ -557,7 +557,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container);
 			Assert.AreEqual("nested", container.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 			container.Values["test"] = "42";
 			Assert.AreEqual("42", container.Values["test"]);
 			Assert.IsFalse(SUT.Values.ContainsKey("test"));
@@ -574,10 +574,10 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
 			Assert.IsNotNull(container);
 			Assert.AreEqual("nested", container.Name);
-			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.HasCount(1, SUT.Containers);
 			container.Values["test"] = "42";
-			Assert.AreEqual(1, SUT.Containers.Count);
-			Assert.AreEqual(0, SUT.Values.Count);
+			Assert.HasCount(1, SUT.Containers);
+			Assert.HasCount(0, SUT.Values);
 		}
 
 		// Note: WinUI does not raise MapChanged events for ApplicationDataContainerSettings,
