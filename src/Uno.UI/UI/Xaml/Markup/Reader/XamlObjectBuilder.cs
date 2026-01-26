@@ -1537,34 +1537,16 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								null, member.LineNumber, member.LinePosition);
 						}
 
-						// Look for a static RoutedEvent property/field named "{eventName}Event"
-						var routedEventPropertyName = eventName + "Event";
-						var routedEventMember = type.GetMember(routedEventPropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-							.FirstOrDefault(m => m is PropertyInfo || m is FieldInfo);
-
-						if (routedEventMember == null)
+						// Validate that this is the Loaded event on a FrameworkElement-derived type,
+						// which is the only event EventTrigger supports.
+						if (eventName != "Loaded" || !typeof(FrameworkElement).IsAssignableFrom(type))
 						{
 							throw new XamlParseException(
-								$"Could not find RoutedEvent '{routedEventPropertyName}' on type '{type.FullName}'.",
+								$"EventTrigger only supports the FrameworkElement.Loaded event, but got '{normalizedValue}'.",
 								null, member.LineNumber, member.LinePosition);
 						}
 
-						// Get the value of the static property/field
-						object? routedEventValue = routedEventMember switch
-						{
-							PropertyInfo pi => pi.GetValue(null),
-							FieldInfo fi => fi.GetValue(null),
-							_ => null
-						};
-
-						if (routedEventValue is not RoutedEvent)
-						{
-							throw new XamlParseException(
-								$"The member '{routedEventPropertyName}' on type '{type.FullName}' is not a RoutedEvent.",
-								null, member.LineNumber, member.LinePosition);
-						}
-
-						return routedEventValue;
+						return new RoutedEvent(Uno.UI.Xaml.RoutedEventFlag.None, "Loaded");
 					}
 					else
 					{

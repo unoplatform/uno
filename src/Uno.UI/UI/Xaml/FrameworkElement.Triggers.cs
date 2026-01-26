@@ -69,12 +69,4 @@ public partial class FrameworkElement
 		}
 	}
 
-	private static readonly RoutedEvent _loadedEvent = new RoutedEvent(
-		Uno.UI.Xaml.RoutedEventFlag.None,
-		nameof(Loaded));
-
-	/// <summary>
-	/// Identifies the Loaded routed event.
-	/// </summary>
-	internal static RoutedEvent LoadedEvent => _loadedEvent;
 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 
@@ -24,6 +25,13 @@ namespace Microsoft.UI.Xaml
 
 			IsTunnelingEvent = flag.IsTunnelingEvent();
 		}
+
+		/// <summary>
+		/// Creates a RoutedEvent with the specified name. This constructor is for
+		/// infrastructure use by the XAML code generator.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public RoutedEvent(string name) : this(RoutedEventFlag.None, name) { }
 
 		internal string Name { get; }
 
@@ -52,8 +60,5 @@ namespace Microsoft.UI.Xaml
 		internal bool IsDragAndDropEvent { get; }
 		internal bool IsContextEvent { get; }
 
-		/// <inheritdoc />
-		public override string ToString()
-			=> Name;
 	}
 }
