@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -31,3 +32,4 @@ partial class NativeApplicationSettings
 
 	private partial IEnumerable<string> GetKeysPlatform() => throw new NotImplementedException();
 }
+#endif
