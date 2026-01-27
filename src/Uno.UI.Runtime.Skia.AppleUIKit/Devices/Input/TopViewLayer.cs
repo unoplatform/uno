@@ -24,8 +24,6 @@ internal partial class TopViewLayer : UIView
 
 	private void SetupScrollGestureRecognizer()
 	{
-		// For iOS, we need to use gesture recognizers to handle mouse/trackpad scrolling
-		// since ScrollWheel method is only available on Mac Catalyst
 		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
 		{
 			var scrollGesture = new UIPanGestureRecognizer(HandleScrollGesture)
@@ -41,7 +39,6 @@ internal partial class TopViewLayer : UIView
 
 	private void HandleScrollGesture(UIPanGestureRecognizer gesture)
 	{
-		// Convert pan gesture to scroll wheel event for iOS
 		var translation = gesture.TranslationInView(this);
 		var location = gesture.LocationInView(this);
 		var gestureState = gesture.State;
