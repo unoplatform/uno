@@ -16,7 +16,6 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 /// </summary>
 internal partial class TopViewLayer : UIView
 {
-#if __IOS__
 	public TopViewLayer()
 	{
 		MultipleTouchEnabled = true;
@@ -53,7 +52,6 @@ internal partial class TopViewLayer : UIView
 
 		gesture.SetTranslation(CGPoint.Empty, this);
 	}
-#endif
 
 	public override void TouchesBegan(NSSet touches, UIEvent? evt)
 	{

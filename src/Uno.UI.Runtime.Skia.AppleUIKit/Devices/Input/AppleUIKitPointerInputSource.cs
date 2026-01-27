@@ -23,7 +23,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSource
 {
 	private const int ScrollWheelDeltaMultiplier = -120;
-
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
 
 	private AppleUIKitCorePointerInputSource()
@@ -164,7 +163,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
-#if __IOS__ && !__MACCATALYST__
 	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location)
 	{
 		try
@@ -240,7 +238,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 		return new PointerEventArgs(point, VirtualKeyModifiers.None);
 	}
-#endif
 
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
 	{
