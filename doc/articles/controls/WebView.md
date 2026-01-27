@@ -168,7 +168,7 @@ public App()
 >
 > This feature will only work for security reasons when the application runs in Debug mode.
 
-## X11 specifics
+## Linux specifics
 
 In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `libgtk3-0`:
 
@@ -185,6 +185,15 @@ In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `l
   ```
 
 It's overall preferable to use libwebkit2gtk 4.1 whenever possible in order to get http headers support, if your environment allows for it.
+
+### Wayland support
+
+When running on a Wayland environment, the `WebView` control requires the environment variable `GDK_BACKEND` to be set to `x11` to function correctly.
+
+```bash
+export GDK_BACKEND=x11
+dotnet run
+```
 
 ## WebResourceRequested
 
