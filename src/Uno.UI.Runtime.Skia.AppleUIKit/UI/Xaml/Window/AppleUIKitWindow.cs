@@ -47,7 +47,10 @@ internal partial class AppleUIKitWindow : UIWindow
 #if __MACCATALYST__
 	public override void ScrollWheel(UIEvent evt)
 	{
-		AppleUIKitCorePointerInputSource.Instance.ScrollWheelChanged(this, evt);
+		if (evt != null && evt.Type == UIEventType.Scroll)
+		{
+			AppleUIKitCorePointerInputSource.Instance.ScrollWheelChanged(this, evt);
+		}
 		base.ScrollWheel(evt);
 	}
 

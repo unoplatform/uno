@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -9,6 +10,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
@@ -165,7 +167,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	{
 		try
 		{
-			if (evt.Type != UIEventType.Scroll)
+			if (evt == null || evt.Type != UIEventType.Scroll)
 			{
 				return;
 			}
@@ -186,7 +188,87 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
+#endif
 
+#if __IOS__ && !__MACCATALYST__
+	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location)
+	{
+		try
+		{
+			if (!UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
+			{
+				return;
+			}
+
+			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()}>");
+
+			var args = CreateScrollGestureEventArgs(translation, location);
+
+			_trace?.Invoke($"ScrollGesture: {args}>");
+
+			_trace?.Invoke($"iOS HandleScrollFromGesture: Delta={args.CurrentPoint.Properties.MouseWheelDelta}, IsHorizontal={args.CurrentPoint.Properties.IsHorizontalMouseWheel}, Position=({args.CurrentPoint.Position.X}, {args.CurrentPoint.Position.Y}), Translation=({translation.X:F2}, {translation.Y:F2})");
+
+			PointerWheelChanged?.Invoke(this, args);
+
+			_trace?.Invoke("</ScrollGesture>");
+		}
+		catch (Exception e)
+		{
+			_trace?.Invoke($"</ScrollGesture error=true>\r\n" + e);
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location)
+	{
+		var scrollDeltaX = (int)(translation.X * -120);
+		var scrollDeltaY = (int)(translation.Y * -120);
+
+		var position = location;
+
+		var pointerDevice = PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse);
+		var id = 1u;
+
+		var isHorizontal = scrollDeltaY == 0 && scrollDeltaX != 0;
+		var wheelDelta = isHorizontal ? scrollDeltaX : scrollDeltaY;
+
+		var properties = new PointerPointProperties()
+		{
+			IsLeftButtonPressed = false,
+			IsRightButtonPressed = false,
+			IsMiddleButtonPressed = false,
+			IsXButton1Pressed = false,
+			IsXButton2Pressed = false,
+			PointerUpdateKind = PointerUpdateKind.Other,
+			IsBarrelButtonPressed = false,
+			IsEraser = false,
+			IsHorizontalMouseWheel = isHorizontal,
+			MouseWheelDelta = wheelDelta,
+			IsPrimary = true,
+			IsInRange = true,
+			Orientation = 0,
+			Pressure = 0,
+			TouchConfidence = false,
+		};
+
+		var timestamp = PointerHelpers.ToTimestamp(DateTimeOffset.Now.Ticks);
+
+		var point = new PointerPoint(
+			frameId: PointerHelpers.ToFrameId(timestamp),
+			timestamp: timestamp,
+			device: pointerDevice,
+			pointerId: id,
+			rawPosition: new Point(position.X, position.Y),
+			position: new Point(position.X, position.Y),
+			isInContact: false,
+			properties: properties
+		);
+
+		return new PointerEventArgs(point, VirtualKeyModifiers.None);
+	}
+#endif
+
+#if __MACCATALYST__
 	private PointerEventArgs CreateScrollWheelEventArgs(UIView source, UIEvent evt)
 	{
 		var scrollDeltaX = (int)(evt.ScrollingDeltaX * 120);
@@ -195,7 +277,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		var position = evt.LocationInWindow(source.Window) ?? new CGPoint(source.Bounds.GetMidX(), source.Bounds.GetMidY());
 		var positionInView = source.ConvertPointFromView(position, null);
 
-		var pointerDevice = PointerDevice.For(PointerDeviceType.Mouse);
+		var pointerDevice = PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse);
 		var id = 1u; // Use a fixed ID for mouse pointer
 
 		var isHorizontal = scrollDeltaY == 0 && scrollDeltaX != 0;
