@@ -22,6 +22,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSource
 {
+	private const int ScrollWheelDeltaMultiplier = -120;
+
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
 
 	private AppleUIKitCorePointerInputSource()
@@ -193,8 +195,8 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location)
 	{
-		var scrollDeltaX = (int)(translation.X * -120);
-		var scrollDeltaY = (int)(translation.Y * -120);
+		var scrollDeltaX = (int)(translation.X * ScrollWheelDeltaMultiplier);
+		var scrollDeltaY = (int)(translation.Y * ScrollWheelDeltaMultiplier);
 
 		var position = location;
 
@@ -223,7 +225,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			TouchConfidence = false,
 		};
 
-		var timestamp = PointerHelpers.ToTimestamp(DateTimeOffset.Now.Ticks);
+		var timestamp = PointerHelpers.ToTimestamp(CoreAnimation.CAAnimation.CurrentMediaTime());
 
 		var point = new PointerPoint(
 			frameId: PointerHelpers.ToFrameId(timestamp),
