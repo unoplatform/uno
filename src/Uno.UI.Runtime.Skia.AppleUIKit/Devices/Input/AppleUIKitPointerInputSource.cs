@@ -191,7 +191,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 				Math.Sign(translation.Y) * Math.Min(Math.Abs(translation.Y), MaxTranslationThreshold)
 			);
 
-			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");;
+			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");
 
 			var args = CreateScrollGestureEventArgs(translation, location);
 
