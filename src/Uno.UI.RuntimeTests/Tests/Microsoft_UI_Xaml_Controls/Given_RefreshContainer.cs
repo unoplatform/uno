@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
 using static Private.Infrastructure.TestServices;
 
@@ -356,6 +357,118 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle();
 
 			Assert.AreNotEqual(-1, lv.SelectedIndex);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !__SKIA__
+		[Ignore("native implementations are not covered.")]
+#endif
+		public async Task When_Revert_During_Overpan()
+		{
+			// Test validates that:
+			// 1. State remains in InteractionTrackerInteractingState while touch is held
+			// 2. State transitions only after user releases touch
+			// 3. Scroll position are correctly reset
+
+			var setup = new RefreshContainer
+			{
+				Width = 100,
+				Height = 300,
+				Content = new ListView
+				{
+					ItemsSource = Enumerable.Range(0, 50).Select(i => new Border
+					{
+						Height = 50,
+						Width = 100,
+						Background = new SolidColorBrush(i % 2 is 0 ? Colors.SkyBlue : Colors.Pink)
+					})
+				}
+			};
+			var rect = await UITestHelper.Load(setup);
+
+			var refreshRequested = 0;
+			setup.RefreshRequested += (snd, e) =>
+			{
+				refreshRequested++;
+				e.GetDeferral().Complete();
+			};
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			var rv = setup.Visualizer ?? throw new InvalidOperationException("RefreshVisualizer");
+			var it = rv.InteractionTracker ?? throw new InvalidOperationException("InteractionTracker");
+
+			var lv = setup.Content as ListView ?? throw new InvalidOperationException("ListView");
+			var sv = lv.FindFirstChild<ScrollViewer>() ?? throw new InvalidOperationException("ScrollViewer");
+			var presenter = sv.Content as ItemsPresenter ?? throw new InvalidOperationException("ItemsPresenter");
+
+			// Make sure to abort any pending direct manip
+			finger.Tap(rect.Location.Offset(-1, -1));
+			await UITestHelper.WaitForIdle();
+
+			// Perform a pull gesture with overpan (pull down beyond threshold)
+			var pullDistanceThreshold = rv.ActualHeight * 1.5; // with 50% margin, so we have some to scroll back while still over the threshold
+			var coords = rect.GetCenter();
+
+			// [BEGIN DRAG] Start the drag gesture
+			finger.Press(coords);
+			await Task.Delay(50); // Small delay to ensure press is registered
+
+			// [DRAG DOWN] Drag down with overpan
+			var steps = 10;
+			for (int i = 1; i <= 10; i++)
+			{
+				coords = coords with { Y = coords.Y + (pullDistanceThreshold / steps) };
+				finger.MoveTo(coords);
+				await Task.Delay(10); // Small delay between steps to simulate realistic gesture
+			}
+			await Task.Delay(100);
+
+			// Verify content position has changed (overpan occurred)
+			var currentVerticalOffset = setup.TransformToVisual(presenter).TransformPoint(default).Y;
+			Assert.IsTrue(currentVerticalOffset < 0, "content position should have changed due to overpan gesture");
+
+			// At this point, touch is still held and we should be in InteractionTrackerInteractingState & in Pending state
+			Assert.IsInstanceOfType<InteractionTrackerInteractingState>(it.State, "InteractionTracker should be in InteractingState while touch is held");
+			Assert.AreEqual(RefreshVisualizerState.Pending, rv.State, "RefreshVisualizer should be in the Pending state after overpan pull gesture");
+
+			// [DRAG UP] Revert the drag slightly but remain over the threshold
+			for (int i = 1; i <= 5; i++)
+			{
+				coords = coords with { Y = coords.Y - 2 };
+				finger.MoveTo(coords);
+				await Task.Delay(10); // Small delay between steps to simulate realistic gesture
+			}
+			await Task.Delay(100);
+
+			// At this point, touch is still held and we should STILL be in InteractionTrackerInteractingState & in Pending state (same as before)
+			Assert.IsInstanceOfType<InteractionTrackerInteractingState>(it.State, "InteractionTracker should be in InteractingState while touch is held");
+			Assert.AreEqual(RefreshVisualizerState.Pending, rv.State, "RefreshVisualizer should still be in the Pending state after overpan pull gesture");
+
+			// [END DRAG] Release the touch
+			finger.Release(coords);
+
+			// Wait until InteractionTracker transitions away from InteractingState
+			await UITestHelper.WaitFor(
+				() => it.State is not InteractionTrackerInteractingState,
+				timeoutMS: 5000, // particularly for ios
+				message: "InteractionTracker should have transitioned away from InteractingState after touch release"
+			);
+
+			// Then wait for SV to animate back to valid position
+			await UITestHelper.WaitFor(
+				() => setup.TransformToVisual(presenter).TransformPoint(default).Y >= 0,
+				message: "Scroll position should be recovered to valid position (>= 0)"
+			);
+
+			// Check if refresh was requested and the state is back to Idle
+			Assert.AreEqual(1, refreshRequested, "Refresh should have been requested exactly once");
+			Assert.AreEqual(RefreshVisualizerState.Idle, rv.State, "RefreshVisualizer should be back to Idle state after refresh completion");
 		}
 #endif
 

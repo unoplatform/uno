@@ -44,6 +44,10 @@ public partial class InteractionTracker : CompositionObject
 
 	public int CurrentRequestId => _currentRequestId;
 
+#if HAS_UNO
+	internal InteractionTrackerState State => _state;
+#endif
+
 	public static InteractionTracker Create(Compositor compositor) => new InteractionTracker(compositor);
 
 	public static InteractionTracker CreateWithOwner(Compositor compositor, IInteractionTrackerOwner owner) => new InteractionTracker(compositor, owner);
