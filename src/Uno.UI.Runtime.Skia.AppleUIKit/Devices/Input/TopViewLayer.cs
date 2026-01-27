@@ -1,4 +1,5 @@
-﻿using CoreAnimation;
+﻿using System;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using UIKit;
@@ -19,6 +20,38 @@ internal partial class TopViewLayer : UIView
 	public TopViewLayer()
 	{
 		MultipleTouchEnabled = true;
+		SetupScrollGestureRecognizer();
+	}
+
+	private void SetupScrollGestureRecognizer()
+	{
+		// For iOS, we need to use gesture recognizers to handle mouse/trackpad scrolling
+		// since ScrollWheel method is only available on Mac Catalyst
+		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
+		{
+			var scrollGesture = new UIPanGestureRecognizer(HandleScrollGesture)
+			{
+				AllowedScrollTypesMask = UIScrollTypeMask.All,
+				MaximumNumberOfTouches = 0 // Only mouse/trackpad
+			};
+			AddGestureRecognizer(scrollGesture);
+		}
+	}
+
+	private void HandleScrollGesture(UIPanGestureRecognizer gesture)
+	{
+		// Convert pan gesture to scroll wheel event for iOS
+		var translation = gesture.TranslationInView(this);
+		var location = gesture.LocationInView(this);
+
+		if (Math.Abs(translation.X) < 0.1 && Math.Abs(translation.Y) < 0.1)
+		{
+			return;
+		}
+
+		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location);
+
+		gesture.SetTranslation(CGPoint.Empty, this);
 	}
 #endif
 
@@ -49,7 +82,10 @@ internal partial class TopViewLayer : UIView
 #if __MACCATALYST__
 	public override void ScrollWheel(UIEvent evt)
 	{
-		AppleUIKitCorePointerInputSource.Instance.ScrollWheelChanged(this, evt);
+		if (evt != null && evt.Type == UIEventType.Scroll)
+		{
+			AppleUIKitCorePointerInputSource.Instance.ScrollWheelChanged(this, evt);
+		}
 		base.ScrollWheel(evt);
 	}
 #endif
