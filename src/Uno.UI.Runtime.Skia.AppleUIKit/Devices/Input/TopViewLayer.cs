@@ -31,7 +31,9 @@ internal partial class TopViewLayer : UIView
 			var scrollGesture = new UIPanGestureRecognizer(HandleScrollGesture)
 			{
 				AllowedScrollTypesMask = UIScrollTypeMask.All,
-				MaximumNumberOfTouches = 0 // Only mouse/trackpad
+				MaximumNumberOfTouches = 0,
+				MinimumNumberOfTouches = 0,
+				ShouldRecognizeSimultaneously = (recognizer, otherRecognizer) => true // Allow simultaneous with other gestures
 			};
 			AddGestureRecognizer(scrollGesture);
 		}
@@ -42,15 +44,14 @@ internal partial class TopViewLayer : UIView
 		// Convert pan gesture to scroll wheel event for iOS
 		var translation = gesture.TranslationInView(this);
 		var location = gesture.LocationInView(this);
+		var gestureState = gesture.State;
 
-		if (Math.Abs(translation.X) < 0.1 && Math.Abs(translation.Y) < 0.1)
+		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location, gestureState);
+
+		if (gestureState == UIGestureRecognizerState.Changed)
 		{
-			return;
+			gesture.SetTranslation(CGPoint.Empty, this);
 		}
-
-		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location);
-
-		gesture.SetTranslation(CGPoint.Empty, this);
 	}
 
 	public override void TouchesBegan(NSSet touches, UIEvent? evt)

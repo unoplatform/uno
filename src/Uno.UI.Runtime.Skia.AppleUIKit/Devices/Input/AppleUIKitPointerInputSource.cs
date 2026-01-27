@@ -22,7 +22,11 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSource
 {
-	private const int ScrollWheelDeltaMultiplier = -120;
+	private const int ScrollWheelDeltaMultiplier = -45;
+	private const int MaxScrollDelta = 120;
+	private const double MinTranslationThreshold = 1.0;
+	private const double MaxTranslationThreshold = 4.0;
+
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
 
 	private AppleUIKitCorePointerInputSource()
@@ -163,7 +167,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
-	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location)
+	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState)
 	{
 		try
 		{
@@ -172,13 +176,28 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 				return;
 			}
 
-			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()}>");
+			if (gestureState != UIGestureRecognizerState.Changed)
+			{
+				return;
+			}
+
+			if (Math.Abs(translation.X) < MinTranslationThreshold && Math.Abs(translation.Y) < MinTranslationThreshold)
+			{
+				return;
+			}
+
+			translation = new CGPoint(
+				Math.Sign(translation.X) * Math.Min(Math.Abs(translation.X), MaxTranslationThreshold),
+				Math.Sign(translation.Y) * Math.Min(Math.Abs(translation.Y), MaxTranslationThreshold)
+			);
+
+			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");;
 
 			var args = CreateScrollGestureEventArgs(translation, location);
 
 			_trace?.Invoke($"ScrollGesture: {args}>");
 
-			_trace?.Invoke($"iOS HandleScrollFromGesture: Delta={args.CurrentPoint.Properties.MouseWheelDelta}, IsHorizontal={args.CurrentPoint.Properties.IsHorizontalMouseWheel}, Position=({args.CurrentPoint.Position.X}, {args.CurrentPoint.Position.Y}), Translation=({translation.X:F2}, {translation.Y:F2})");
+			_trace?.Invoke($"iOS HandleScrollFromGesture: Delta={args.CurrentPoint.Properties.MouseWheelDelta}, IsHorizontal={args.CurrentPoint.Properties.IsHorizontalMouseWheel}, Position=({args.CurrentPoint.Position.X}, {args.CurrentPoint.Position.Y}), Translation=({translation.X:F2}, {translation.Y:F2}), State={gestureState}");
 
 			PointerWheelChanged?.Invoke(this, args);
 
@@ -196,12 +215,17 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		var scrollDeltaX = (int)(translation.X * ScrollWheelDeltaMultiplier);
 		var scrollDeltaY = (int)(translation.Y * ScrollWheelDeltaMultiplier);
 
+		scrollDeltaX = Math.Sign(scrollDeltaX) * Math.Min(Math.Abs(scrollDeltaX), MaxScrollDelta);
+		scrollDeltaY = Math.Sign(scrollDeltaY) * Math.Min(Math.Abs(scrollDeltaY), MaxScrollDelta);
+
 		var position = location;
 
 		var pointerDevice = PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse);
 		var id = 1u;
 
-		var isHorizontal = scrollDeltaY == 0 && scrollDeltaX != 0;
+		var absX = Math.Abs(scrollDeltaX);
+		var absY = Math.Abs(scrollDeltaY);
+		var isHorizontal = absX > absY * 1.5;
 		var wheelDelta = isHorizontal ? scrollDeltaX : scrollDeltaY;
 
 		var properties = new PointerPointProperties()
