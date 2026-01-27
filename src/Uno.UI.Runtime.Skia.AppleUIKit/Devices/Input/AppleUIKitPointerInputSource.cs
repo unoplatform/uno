@@ -160,6 +160,83 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
+#if __MACCATALYST__
+	internal void ScrollWheelChanged(UIView source, UIEvent evt)
+	{
+		try
+		{
+			if (evt.Type != UIEventType.Scroll)
+			{
+				return;
+			}
+
+			_trace?.Invoke($"<ScrollWheel src={source.GetDebugName()}>");
+
+			var args = CreateScrollWheelEventArgs(source, evt);
+
+			_trace?.Invoke($"ScrollWheel: {args}>");
+
+			PointerWheelChanged?.Invoke(this, args);
+
+			_trace?.Invoke("</ScrollWheel>");
+		}
+		catch (Exception e)
+		{
+			_trace?.Invoke($"</ScrollWheel error=true>\r\n" + e);
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	private PointerEventArgs CreateScrollWheelEventArgs(UIView source, UIEvent evt)
+	{
+		var scrollDeltaX = (int)(evt.ScrollingDeltaX * 120);
+		var scrollDeltaY = (int)(evt.ScrollingDeltaY * 120);
+
+		var position = evt.LocationInWindow(source.Window) ?? new CGPoint(source.Bounds.GetMidX(), source.Bounds.GetMidY());
+		var positionInView = source.ConvertPointFromView(position, null);
+
+		var pointerDevice = PointerDevice.For(PointerDeviceType.Mouse);
+		var id = 1u; // Use a fixed ID for mouse pointer
+
+		var isHorizontal = scrollDeltaY == 0 && scrollDeltaX != 0;
+		var wheelDelta = isHorizontal ? scrollDeltaX : scrollDeltaY;
+
+		var properties = new PointerPointProperties
+		{
+			IsLeftButtonPressed = false,
+			IsRightButtonPressed = false,
+			IsMiddleButtonPressed = false,
+			IsXButton1Pressed = false,
+			IsXButton2Pressed = false,
+			PointerUpdateKind = PointerUpdateKind.Other,
+			IsBarrelButtonPressed = false,
+			IsEraser = false,
+			IsHorizontalMouseWheel = isHorizontal,
+			MouseWheelDelta = wheelDelta,
+			IsPrimary = true,
+			IsInRange = true,
+			Orientation = 0,
+			Pressure = 0,
+			TouchConfidence = false,
+		};
+
+		var frameId = PointerHelpers.ToFrameId(evt.Timestamp);
+		var timestamp = PointerHelpers.ToTimestamp(evt.Timestamp);
+		var pointerPoint = new PointerPoint(
+			frameId,
+			timestamp,
+			pointerDevice,
+			id,
+			new Point(positionInView.X, positionInView.Y),
+			new Point(positionInView.X, positionInView.Y),
+			false,
+			properties);
+
+		 // TODO: Key modifiers
+		return new PointerEventArgs(pointerPoint, Windows.System.VirtualKeyModifiers.None);
+	}
+#endif
+
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
 	{
 #if __TVOS__
