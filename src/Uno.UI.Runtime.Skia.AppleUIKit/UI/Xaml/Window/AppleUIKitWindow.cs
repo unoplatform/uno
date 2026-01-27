@@ -45,15 +45,6 @@ internal partial class AppleUIKitWindow : UIWindow
 	}
 
 #if __MACCATALYST__
-	public override void ScrollWheel(UIEvent evt)
-	{
-		if (evt != null && evt.Type == UIEventType.Scroll)
-		{
-			AppleUIKitCorePointerInputSource.Instance.ScrollWheelChanged(this, evt);
-		}
-		base.ScrollWheel(evt);
-	}
-
 	internal void SetOwner(CoreWindow? owner) => OwnerEvents = owner;
 #endif
 }
