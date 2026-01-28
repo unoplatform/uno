@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 			LostFocus += (_, _) => UpdateSelectionRendering();
 		}
 
-		internal bool IsTextBoxDisplay { get; init; }
+		internal TextBox? OwningTextBox { private get; init; }
 
 #if DEBUG
 		private protected override void OnLoaded()
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 				(float)LineHeight,
 				LineStackingStrategy,
 				FlowDirection,
-				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
+				(OwningTextBox as IDependencyObjectStoreProvider)?.Store.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
 				out var desiredSize);
 
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateSelectionRendering()
 		{
-			if (!IsTextBoxDisplay) // TextBox managed RenderSelection itself
+			if (OwningTextBox is null) // TextBox manages RenderSelection itself
 			{
 				RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
 			}
@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml.Controls
 				(float)LineHeight,
 				LineStackingStrategy,
 				FlowDirection,
-				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
+				(OwningTextBox as IDependencyObjectStoreProvider)?.Store.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
 				out var arrangedSize);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);

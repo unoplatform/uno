@@ -33,10 +33,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
-				IsTextBoxDisplay = true,
+				OwningTextBox = textBox,
 			};
 
 			SetFlowDirection();
+			SetTextAlignment();
 
 			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
@@ -240,6 +241,14 @@ namespace Microsoft.UI.Xaml.Controls
 			if (TextBox is { } textBox)
 			{
 				UpdateDisplayBlockText(textBox.Text);
+			}
+		}
+
+		internal void SetTextAlignment()
+		{
+			if (TextBox is { } textBox)
+			{
+				DisplayBlock.TextAlignment = textBox.TextAlignment;
 			}
 		}
 	}
