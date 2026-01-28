@@ -167,6 +167,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
+#if __IOS__
 	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState)
 	{
 		try
@@ -262,6 +263,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 		return new PointerEventArgs(point, VirtualKeyModifiers.None);
 	}
+#endif
 
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
 	{
