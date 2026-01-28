@@ -22,10 +22,12 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSource
 {
+#if __IOS__
 	private const int ScrollWheelDeltaMultiplier = -45;
 	private const int MaxScrollDelta = 120;
 	private const double MinTranslationThreshold = 1.0;
 	private const double MaxTranslationThreshold = 4.0;
+#endif
 
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
 
