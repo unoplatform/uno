@@ -58,6 +58,12 @@ public sealed partial class DateTimeFormatter
 
 		_firstCulture = new CultureInfo(Languages[0]);
 
+		// Initialize Calendar and Clock early so BuildPattern() can use Clock for transformation
+		var calendarInstance = new Calendar(Languages);
+		Calendar = calendarInstance.GetCalendarSystem();
+		Clock = calendarInstance.GetClock();
+		GeographicRegion = GetGeographicRegionFromLanguage(Languages[0]);
+
 		try
 		{
 			// Template example:
@@ -103,13 +109,6 @@ public sealed partial class DateTimeFormatter
 				throw new AggregateException(ex, ex2);
 			}
 		}
-
-		var calendar = new Calendar(Languages);
-		Calendar = calendar.GetCalendarSystem();
-		Clock = calendar.GetClock();
-
-		// TODO:MZ:
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
@@ -118,11 +117,53 @@ public sealed partial class DateTimeFormatter
 		string geographicRegion,
 		string calendar,
 		string clock)
-		: this(formatTemplate, languages)
 	{
+		ArgumentNullException.ThrowIfNull(formatTemplate);
+
+		Languages = languages.Distinct().ToArray();
+		_firstCulture = new CultureInfo(Languages[0]);
+
+		// Set explicit overrides before BuildPattern()
 		GeographicRegion = geographicRegion;
 		Calendar = calendar;
 		Clock = clock;
+
+		try
+		{
+			var templateParser = new TemplateParser(formatTemplate);
+			templateParser.Parse();
+			IncludeYear = templateParser.Info.IncludeYear;
+			IncludeMonth = templateParser.Info.IncludeMonth;
+			IncludeDay = templateParser.Info.IncludeDay;
+			IncludeDayOfWeek = templateParser.Info.IncludeDayOfWeek;
+			IncludeHour = templateParser.Info.IncludeHour;
+			IncludeMinute = templateParser.Info.IncludeMinute;
+			IncludeSecond = templateParser.Info.IncludeSecond;
+			IncludeTimeZone = templateParser.Info.IncludeTimeZone;
+			IsShortDate = templateParser.Info.IsShortDate;
+			IsLongDate = templateParser.Info.IsLongDate;
+			IsShortTime = templateParser.Info.IsShortTime;
+			IsShortDate = templateParser.Info.IsShortDate;
+
+			Template = BuildTemplate();
+
+			string patternBuiltFromTemplate = BuildPattern();
+			Patterns = [patternBuiltFromTemplate];
+			_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
+		}
+		catch (Exception ex)
+		{
+			try
+			{
+				_patternRootNode = new PatternParser(formatTemplate).Parse();
+				Template = formatTemplate;
+				Patterns = [formatTemplate];
+			}
+			catch (Exception ex2)
+			{
+				throw new AggregateException(ex, ex2);
+			}
+		}
 	}
 
 	public DateTimeFormatter(
@@ -131,6 +172,14 @@ public sealed partial class DateTimeFormatter
 		DayFormat dayFormat,
 		DayOfWeekFormat dayOfWeekFormat)
 	{
+		_firstCulture = new CultureInfo(Languages[0]);
+
+		// Initialize Calendar and Clock first so BuildPattern() can use them
+		var calendarInstance = new Calendar(Languages);
+		Calendar = calendarInstance.GetCalendarSystem();
+		Clock = calendarInstance.GetClock();
+		GeographicRegion = GetGeographicRegionFromLanguage(Languages[0]);
+
 		IncludeYear = yearFormat;
 		IncludeMonth = monthFormat;
 		IncludeDay = dayFormat;
@@ -139,12 +188,6 @@ public sealed partial class DateTimeFormatter
 		string patternBuiltFromTemplate = BuildPattern();
 		Patterns = [patternBuiltFromTemplate];
 		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
-
-		// TODO:MZ:
-		Calendar = CalendarIdentifiers.Gregorian;
-		Clock = ClockIdentifiers.TwentyFourHour;
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
@@ -152,6 +195,14 @@ public sealed partial class DateTimeFormatter
 		MinuteFormat minuteFormat,
 		SecondFormat secondFormat)
 	{
+		_firstCulture = new CultureInfo(Languages[0]);
+
+		// Initialize Calendar and Clock first so BuildPattern() can use them
+		var calendarInstance = new Calendar(Languages);
+		Calendar = calendarInstance.GetCalendarSystem();
+		Clock = calendarInstance.GetClock();
+		GeographicRegion = GetGeographicRegionFromLanguage(Languages[0]);
+
 		IncludeHour = hourFormat;
 		IncludeMinute = minuteFormat;
 		IncludeSecond = secondFormat;
@@ -159,12 +210,6 @@ public sealed partial class DateTimeFormatter
 		string patternBuiltFromTemplate = BuildPattern();
 		Patterns = [patternBuiltFromTemplate];
 		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
-
-		// TODO:MZ:
-		Calendar = CalendarIdentifiers.Gregorian;
-		Clock = ClockIdentifiers.TwentyFourHour;
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
@@ -177,6 +222,15 @@ public sealed partial class DateTimeFormatter
 		SecondFormat secondFormat,
 		IEnumerable<string> languages)
 	{
+		Languages = languages.ToArray();
+		_firstCulture = new CultureInfo(Languages[0]);
+
+		// Initialize Calendar and Clock first so BuildPattern() can use them
+		var calendarInstance = new Calendar(Languages);
+		Calendar = calendarInstance.GetCalendarSystem();
+		Clock = calendarInstance.GetClock();
+		GeographicRegion = GetGeographicRegionFromLanguage(Languages[0]);
+
 		IncludeYear = yearFormat;
 		IncludeMonth = monthFormat;
 		IncludeDay = dayFormat;
@@ -184,17 +238,10 @@ public sealed partial class DateTimeFormatter
 		IncludeHour = hourFormat;
 		IncludeMinute = minuteFormat;
 		IncludeSecond = secondFormat;
-		Languages = languages.ToArray();
 		Template = BuildTemplate();
 		string patternBuiltFromTemplate = BuildPattern();
 		Patterns = [patternBuiltFromTemplate];
 		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
-
-		// TODO:MZ:
-		Calendar = CalendarIdentifiers.Gregorian;
-		Clock = ClockIdentifiers.TwentyFourHour;
-		GeographicRegion = "ZZ";
 	}
 
 	public DateTimeFormatter(
@@ -210,6 +257,14 @@ public sealed partial class DateTimeFormatter
 		string calendar,
 		string clock)
 	{
+		Languages = languages.ToArray();
+		_firstCulture = new CultureInfo(Languages[0]);
+
+		// Set explicit overrides first so BuildPattern() can use them
+		GeographicRegion = geographicRegion;
+		Calendar = calendar;
+		Clock = clock;
+
 		IncludeYear = yearFormat;
 		IncludeMonth = monthFormat;
 		IncludeDay = dayFormat;
@@ -217,31 +272,26 @@ public sealed partial class DateTimeFormatter
 		IncludeHour = hourFormat;
 		IncludeMinute = minuteFormat;
 		IncludeSecond = secondFormat;
-		Languages = languages.ToArray();
-		GeographicRegion = geographicRegion;
-		Calendar = calendar;
-		Clock = clock;
 		Template = BuildTemplate();
 		string patternBuiltFromTemplate = BuildPattern();
 		Patterns = [patternBuiltFromTemplate];
 		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		_firstCulture = new CultureInfo(Languages[0]);
 	}
 
 	/// <summary>
 	/// Gets the calendar that is used when formatting dates.
 	/// </summary>
-	public string Calendar { get; }
+	public string Calendar { get; private set; }
 
 	/// <summary>
 	/// Gets the clock that is used when formatting times.
 	/// </summary>
-	public string Clock { get; }
+	public string Clock { get; private set; }
 
 	/// <summary>
 	/// Gets the region that is used when formatting dates and times.
 	/// </summary>
-	public string GeographicRegion { get; }
+	public string GeographicRegion { get; private set; }
 
 	/// <summary>
 	/// Gets the DayFormat in the template.
@@ -350,10 +400,44 @@ public sealed partial class DateTimeFormatter
 		}
 	}
 
-	[NotImplemented]
 	public string Format(DateTimeOffset datetime, string timeZoneId)
 	{
-		throw new NotSupportedException();
+		try
+		{
+			// Convert the datetime to the specified timezone
+			var targetTimeZone = FindTimeZoneById(timeZoneId);
+			var convertedDateTime = TimeZoneInfo.ConvertTime(datetime, targetTimeZone);
+
+			return _patternRootNode.Format(convertedDateTime, _firstCulture, isTwentyFourHours: Clock == ClockIdentifiers.TwentyFourHour);
+		}
+		catch (Exception e)
+		{
+			return Template + " : " + e.Message;
+		}
+	}
+
+	/// <summary>
+	/// Finds a TimeZoneInfo by its ID, supporting both IANA and Windows timezone IDs.
+	/// </summary>
+	private static TimeZoneInfo FindTimeZoneById(string timeZoneId)
+	{
+		try
+		{
+			return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+		}
+		catch (TimeZoneNotFoundException)
+		{
+			// Try to convert between IANA and Windows IDs
+			if (TimeZoneInfo.TryConvertIanaIdToWindowsId(timeZoneId, out var windowsId))
+			{
+				return TimeZoneInfo.FindSystemTimeZoneById(windowsId);
+			}
+			if (TimeZoneInfo.TryConvertWindowsIdToIanaId(timeZoneId, out var ianaId))
+			{
+				return TimeZoneInfo.FindSystemTimeZoneById(ianaId);
+			}
+			throw;
+		}
 	}
 
 	private static string ToTemplateString(YearFormat yearFormat)
@@ -580,6 +664,14 @@ public sealed partial class DateTimeFormatter
 					timePattern = $"{timePattern} zzz";
 				}
 			}
+		}
+
+		// Apply clock override transformation to time pattern
+		// This ensures that if a 12-hour clock is explicitly specified but the culture uses 24-hour format,
+		// we transform the pattern to include the period designator (AM/PM).
+		if (!string.IsNullOrEmpty(timePattern))
+		{
+			timePattern = PatternBuilder.TransformPatternForClock(timePattern, Clock, _firstCulture);
 		}
 
 		string finalSystemFormat;
@@ -838,4 +930,46 @@ public sealed partial class DateTimeFormatter
 
 	[GeneratedRegex(@"(.)(\1+)?")]
 	private static partial Regex RepeatedCharactersRegex();
+
+	/// <summary>
+	/// Extracts the geographic region code from a language tag.
+	/// For example, "en-US" returns "US", "en-GB" returns "GB".
+	/// Returns "ZZ" if no region is found.
+	/// </summary>
+	private static string GetGeographicRegionFromLanguage(string languageTag)
+	{
+		if (string.IsNullOrEmpty(languageTag))
+		{
+			return "ZZ";
+		}
+
+		// Try to parse as CultureInfo to get the region
+		try
+		{
+			var culture = new CultureInfo(languageTag);
+			if (!culture.IsNeutralCulture)
+			{
+				var region = new RegionInfo(culture.Name);
+				return region.TwoLetterISORegionName;
+			}
+		}
+		catch
+		{
+			// Fall through to manual parsing
+		}
+
+		// Manual parsing: look for region code after hyphen
+		var parts = languageTag.Split('-');
+		if (parts.Length >= 2)
+		{
+			var lastPart = parts[^1];
+			// Region codes are typically 2 letters (like US, GB) or 3 digits (like 001)
+			if (lastPart.Length == 2 && char.IsLetter(lastPart[0]) && char.IsLetter(lastPart[1]))
+			{
+				return lastPart.ToUpperInvariant();
+			}
+		}
+
+		return "ZZ";
+	}
 }

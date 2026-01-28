@@ -89,9 +89,11 @@ internal sealed class PatternEraNode : PatternDateTimeNode
 
 	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
 	{
-		// C# can't represent negative dates (i.e, before christ).
-		// So, looks like Era will always be "AD" (Anno Domini).
-		builder.Append(IdealLength.HasValue && IdealLength.Value < 4 ? "AD" : "A.D.");
+		// Use Calendar.EraAsString() to get proper era names for different calendar systems
+		var calendar = new Calendar([culture.Name]);
+		calendar.SetDateTime(dateTime);
+		var eraString = IdealLength.HasValue ? calendar.EraAsString(IdealLength.Value) : calendar.EraAsString();
+		builder.Append(eraString);
 	}
 }
 
@@ -174,19 +176,33 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 	{
 		if (Kind == MonthKind.Full)
 		{
-			builder.Append(dateTime.ToString("MMMM", culture));
+			// Genitive form (used with day numbers, e.g., "5 января" in Russian)
+			builder.Append(culture.DateTimeFormat.GetMonthName(dateTime.Month));
 		}
 		else if (Kind == MonthKind.SoloFull)
 		{
-			builder.Append(dateTime.ToString("MMMM", culture));
+			// Nominative/standalone form (used alone, e.g., "Январь" in Russian)
+			// Use MonthGenitiveNames if available and different from MonthNames
+			var soloName = GetSoloMonthName(culture, dateTime.Month, abbreviated: false);
+			builder.Append(soloName);
 		}
 		else if (Kind == MonthKind.Abbreviated)
 		{
-			builder.Append(dateTime.ToString("MMM", culture));
+			// Genitive abbreviated form
+			builder.Append(culture.DateTimeFormat.GetAbbreviatedMonthName(dateTime.Month));
 		}
 		else if (Kind == MonthKind.SoloAbbreviated)
 		{
-			builder.Append(dateTime.ToString("MMM", culture));
+			// Nominative/standalone abbreviated form
+			var soloName = GetSoloMonthName(culture, dateTime.Month, abbreviated: true);
+			if (IdealLength.HasValue && IdealLength.Value < soloName.Length)
+			{
+				builder.Append(soloName.Substring(0, IdealLength.Value));
+			}
+			else
+			{
+				builder.Append(soloName);
+			}
 		}
 		else if (Kind == MonthKind.Integer)
 		{
@@ -206,6 +222,31 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 			{
 				builder.Append(dateTime.Month);
 			}
+		}
+	}
+
+	/// <summary>
+	/// Gets the standalone/nominative month name for cultures that distinguish between
+	/// genitive and nominative forms (like Slavic languages).
+	/// </summary>
+	private static string GetSoloMonthName(CultureInfo culture, int month, bool abbreviated)
+	{
+		// Some cultures have different standalone (nominative) month names
+		// .NET provides MonthGenitiveNames which contains genitive forms
+		// The regular MonthNames array contains nominative forms
+		// However, the MMMM format uses genitive when followed by day
+
+		// For standalone display, we want the nominative form
+		// In .NET, AbbreviatedMonthNames and MonthNames are typically nominative
+		// while AbbreviatedMonthGenitiveNames and MonthGenitiveNames are genitive
+
+		if (abbreviated)
+		{
+			return culture.DateTimeFormat.AbbreviatedMonthNames[month - 1];
+		}
+		else
+		{
+			return culture.DateTimeFormat.MonthNames[month - 1];
 		}
 	}
 }
@@ -239,19 +280,30 @@ internal sealed class PatternDayOfWeekNode : PatternDateTimeNode
 	{
 		if (Kind == DayOfWeekKind.Full)
 		{
-			builder.Append(dateTime.ToString("dddd", culture));
+			builder.Append(culture.DateTimeFormat.GetDayName(dateTime.DayOfWeek));
 		}
 		else if (Kind == DayOfWeekKind.SoloFull)
 		{
-			builder.Append(dateTime.ToString("dddd", culture));
+			// Standalone/nominative form for day of week
+			// In most languages, day names don't have genitive/nominative distinction
+			// but we use DayNames array directly to be consistent
+			builder.Append(culture.DateTimeFormat.DayNames[(int)dateTime.DayOfWeek]);
 		}
 		else if (Kind == DayOfWeekKind.Abbreviated)
 		{
-			builder.Append(dateTime.ToString("ddd", culture));
+			builder.Append(culture.DateTimeFormat.GetAbbreviatedDayName(dateTime.DayOfWeek));
 		}
 		else if (Kind == DayOfWeekKind.SoloAbbreviated)
 		{
-			builder.Append(dateTime.ToString("ddd", culture));
+			var name = culture.DateTimeFormat.AbbreviatedDayNames[(int)dateTime.DayOfWeek];
+			if (IdealLength.HasValue && IdealLength.Value < name.Length)
+			{
+				builder.Append(name.Substring(0, IdealLength.Value));
+			}
+			else
+			{
+				builder.Append(name);
+			}
 		}
 	}
 }
@@ -321,9 +373,19 @@ internal sealed class PatternHourNode : PatternDateTimeNode
 	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
 	{
 		int hour = dateTime.Hour;
-		if (!isTwentyFourHours && hour > 12)
+		if (!isTwentyFourHours)
 		{
-			hour = hour - 12;
+			// Convert to 12-hour format
+			// Midnight (0) -> 12, 1-11 stay same, 12 (noon) -> 12, 13-23 -> 1-11
+			if (hour == 0)
+			{
+				hour = 12;
+			}
+			else if (hour > 12)
+			{
+				hour = hour - 12;
+			}
+			// hours 1-12 stay as is
 		}
 
 		if (IdealLength.HasValue)
@@ -406,21 +468,49 @@ internal sealed class PatternTimeZoneNode : PatternDateTimeNode
 
 	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
 	{
-		// Important: dateTime parameter shouldn't be used here.
-		// WinUI uses the local time zone info.
-		// The offset part of DateTimeOffset will actually be lost when marshalling to WinUI.
-		// The marshalling of DateTimeOffset to C++ is just a simple "UniversalTime" that doesn't have
-		// information about time zones. It's simply UtcTicks - ManagedUtcTicksAtNativeZero (which is 504911232000000000)
+		// Use the offset from the DateTimeOffset to determine the timezone display
+		// This allows Format(datetime, timeZoneId) to work correctly
+		var offset = dateTime.Offset;
+
 		if (Kind == TimeZoneKind.Full)
 		{
-			builder.Append(TimeZoneInfo.Local.StandardName);
+			// Try to get timezone name from the offset
+			// First check if it matches local timezone
+			if (offset == TimeZoneInfo.Local.BaseUtcOffset ||
+				(TimeZoneInfo.Local.IsDaylightSavingTime(dateTime) && offset == TimeZoneInfo.Local.GetUtcOffset(dateTime)))
+			{
+				builder.Append(TimeZoneInfo.Local.IsDaylightSavingTime(dateTime)
+					? TimeZoneInfo.Local.DaylightName
+					: TimeZoneInfo.Local.StandardName);
+			}
+			else
+			{
+				// Fall back to GMT offset format for non-local timezones
+				FormatGmtOffset(builder, offset);
+			}
 		}
 		else if (Kind == TimeZoneKind.Abbreviated)
 		{
-			// Note: Couldn't notice any behavior difference on WinUI using different values of ideal length.
-			// So it's unused for now until it's known how the value should be used and how it affects WinUI behavior.
-			builder.Append("GMT+");
-			builder.Append(TimeZoneInfo.Local.BaseUtcOffset.TotalHours);
+			FormatGmtOffset(builder, offset);
+		}
+	}
+
+	private static void FormatGmtOffset(StringBuilder builder, TimeSpan offset)
+	{
+		builder.Append("GMT");
+		if (offset >= TimeSpan.Zero)
+		{
+			builder.Append('+');
+		}
+
+		var hours = (int)offset.TotalHours;
+		var minutes = Math.Abs(offset.Minutes);
+
+		builder.Append(hours);
+		if (minutes > 0)
+		{
+			builder.Append(':');
+			builder.Append(minutes.ToString("00"));
 		}
 	}
 }

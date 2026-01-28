@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Uno;
+using Uno.Globalization.NumberFormatting;
 using _Calendar = global::System.Globalization.Calendar;
 
 namespace Windows.Globalization
@@ -77,6 +78,53 @@ namespace Windows.Globalization
 				default: throw new ArgumentException(nameof(clock));
 			}
 		}
+
+		/// <summary>
+		/// Finds a TimeZoneInfo by its ID, supporting both IANA and Windows timezone IDs.
+		/// </summary>
+		private static TimeZoneInfo FindTimeZoneById(string timeZoneId)
+		{
+			// .NET 6+ supports both IANA and Windows timezone IDs through TimeZoneInfo.FindSystemTimeZoneById
+			// It will automatically convert between the two formats as needed
+			try
+			{
+				return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+			}
+			catch (TimeZoneNotFoundException)
+			{
+				// Try to convert between IANA and Windows IDs
+				if (TimeZoneInfo.TryConvertIanaIdToWindowsId(timeZoneId, out var windowsId))
+				{
+					return TimeZoneInfo.FindSystemTimeZoneById(windowsId);
+				}
+				if (TimeZoneInfo.TryConvertWindowsIdToIanaId(timeZoneId, out var ianaId))
+				{
+					return TimeZoneInfo.FindSystemTimeZoneById(ianaId);
+				}
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Gets the IANA timezone ID from a TimeZoneInfo if available, otherwise returns the Windows ID.
+		/// </summary>
+		private static string GetTimeZoneId(TimeZoneInfo timeZone)
+		{
+			// Prefer IANA IDs as they are more portable across platforms
+			if (timeZone.HasIanaId)
+			{
+				return timeZone.Id;
+			}
+
+			// Try to convert Windows ID to IANA ID
+			if (TimeZoneInfo.TryConvertWindowsIdToIanaId(timeZone.Id, out var ianaId))
+			{
+				return ianaId;
+			}
+
+			// Fall back to the Windows ID
+			return timeZone.Id;
+		}
 		#endregion
 
 		private IReadOnlyList<string> _languages;
@@ -84,6 +132,7 @@ namespace Windows.Globalization
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
+		private string _numeralSystem;
 
 		// This is needed to be WindowsFoundationDateTime rather than System.DateTimeOffset.
 		// It's done this way to ensure that setting _time = someSystemDateTimeOffset will go through
@@ -100,6 +149,7 @@ namespace Windows.Globalization
 			_calendar = CultureInfo.CurrentCulture.Calendar;
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock();
+			_numeralSystem = NumeralSystemTranslatorHelper.GetNumeralSystem(_languages[0]);
 			_time = DateTimeOffset.Now;
 		}
 
@@ -110,6 +160,7 @@ namespace Windows.Globalization
 			_resolvedCulture = CultureInfo.CurrentCulture;
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock();
+			_numeralSystem = NumeralSystemTranslatorHelper.GetNumeralSystem(_languages[0]);
 			_time = DateTimeOffset.Now;
 		}
 
@@ -120,30 +171,29 @@ namespace Windows.Globalization
 			_calendar = GetCalendar(calendar);
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetClock(clock);
+			_numeralSystem = NumeralSystemTranslatorHelper.GetNumeralSystem(_languages[0]);
 			_time = DateTimeOffset.Now;
 		}
 
-		[NotImplemented]
-		public Calendar(IEnumerable<string> languages, string calendar, string clock, string timeZoneId) : this()
+		public Calendar(IEnumerable<string> languages, string calendar, string clock, string timeZoneId)
 		{
-			// timeZoneId are expected to follow the Olson code which is not easily accessible
-
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "Calendar.Calendar(IEnumerable<string> languages, string calendar, string clock, string timeZoneId)");
-
-			// _languages = languages.ToList();
-			//_calendar = GetCalendar(calendar);
-			//_timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId); // <== this is not valid, as it expect the windows timezone id
-			//_clock = GetClock(clock);
-			//_time = new DateTimeOffset(DateTime.UtcNow, _timeZone.BaseUtcOffset);
+			_languages = languages.ToList();
+			_resolvedCulture = CultureInfo.CurrentCulture;
+			_calendar = GetCalendar(calendar);
+			_timeZone = FindTimeZoneById(timeZoneId);
+			_clock = GetClock(clock);
+			_numeralSystem = NumeralSystemTranslatorHelper.GetNumeralSystem(_languages[0]);
+			_time = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZone);
 		}
 
-		private Calendar(IReadOnlyList<string> languages, _Calendar calendar, TimeZoneInfo timeZone, string clock, DateTimeOffset time)
+		private Calendar(IReadOnlyList<string> languages, _Calendar calendar, TimeZoneInfo timeZone, string clock, string numeralSystem, DateTimeOffset time)
 		{
 			_languages = languages;
 			_resolvedCulture = CultureInfo.CurrentCulture;
 			_calendar = calendar;
 			_timeZone = timeZone;
 			_clock = clock;
+			_numeralSystem = numeralSystem;
 			_time = time;
 		}
 
@@ -153,19 +203,27 @@ namespace Windows.Globalization
 			other._calendar = _calendar;
 			other._timeZone = _timeZone;
 			other._clock = _clock;
+			other._numeralSystem = _numeralSystem;
 			other._time = _time;
 		}
 
 		public Calendar Clone()
-			=> new Calendar(_languages, _calendar, _timeZone, _clock, _time);
+			=> new Calendar(_languages, _calendar, _timeZone, _clock, _numeralSystem, _time);
 
 		#region Read / Write settings (_languages, _calendar, _clock, _timeZone)
 		public string NumeralSystem
 		{
-			[NotImplemented]
-			get => throw new global::System.NotImplementedException("The member string Calendar.NumeralSystem is not implemented in Uno.");
-			[NotImplemented]
-			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "string Calendar.NumeralSystem");
+			get => _numeralSystem;
+			set
+			{
+				// Validate that the numeral system is supported
+				var digits = NumeralSystemTranslatorHelper.GetDigitsSource(value);
+				if (digits == NumeralSystemTranslatorHelper.EmptyDigits && value != "Latn")
+				{
+					throw new ArgumentException($"The numeral system '{value}' is not supported.", nameof(value));
+				}
+				_numeralSystem = value;
+			}
 		}
 
 		public IReadOnlyList<string> Languages => _languages;
@@ -184,21 +242,30 @@ namespace Windows.Globalization
 		public void ChangeClock(string value)
 			=> _clock = GetClock(value);
 
-		[NotImplemented]
 		public string GetTimeZone()
-			=> throw new global::System.NotImplementedException("The member string Calendar.GetTimeZone() is not implemented in Uno.");
+			=> GetTimeZoneId(_timeZone);
 
-		[NotImplemented]
 		public void ChangeTimeZone(string timeZoneId)
-			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "void Calendar.ChangeTimeZone(string timeZoneId)");
+		{
+			var newTimeZone = FindTimeZoneById(timeZoneId);
+			// Convert the current time to the new time zone
+			_time = TimeZoneInfo.ConvertTime((DateTimeOffset)_time, newTimeZone);
+			_timeZone = newTimeZone;
+		}
 		#endregion
 
 		#region Read / Write _time
 		public int Era
 		{
 			get => _calendar.GetEra(DateTime);
-			[NotImplemented]
-			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "int Calendar.Era");
+			set
+			{
+				var currentEra = _calendar.GetEra(DateTime);
+				if (value != currentEra)
+				{
+					AddEras(value - currentEra);
+				}
+			}
 		}
 
 		public int Year
@@ -371,9 +438,57 @@ namespace Windows.Globalization
 		public DateTimeOffset GetDateTime()
 			=> _time;
 
-		[NotImplemented]
 		public void AddEras(int eras)
-			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "void Calendar.AddEras(int eras)");
+		{
+			if (eras == 0)
+			{
+				return;
+			}
+
+			// For most calendars, eras are just historical markers and don't have a consistent
+			// duration that can be added. However, for calendars like Japanese calendar where
+			// eras have actual meaning, we need to handle this specially.
+			var currentEra = _calendar.GetEra(DateTime);
+			var targetEra = currentEra + eras;
+
+			// Validate the target era is within bounds
+			if (targetEra < FirstEra || targetEra > LastEra)
+			{
+				throw new ArgumentOutOfRangeException(nameof(eras), $"The resulting era {targetEra} is out of range.");
+			}
+
+			// For calendars with multiple eras (like Japanese), we need to find a date in the target era
+			// We do this by moving year by year until we reach the target era
+			var step = eras > 0 ? 1 : -1;
+			while (_calendar.GetEra(DateTime) != targetEra)
+			{
+				AddYears(step);
+
+				// Safety check to avoid infinite loops
+				if (_calendar.GetEra(DateTime) == targetEra)
+				{
+					break;
+				}
+
+				// Check if we've gone too far (past the target)
+				var newEra = _calendar.GetEra(DateTime);
+				if ((step > 0 && newEra > targetEra) || (step < 0 && newEra < targetEra))
+				{
+					// Back up and try moving by months instead
+					AddYears(-step);
+					while (_calendar.GetEra(DateTime) != targetEra)
+					{
+						AddMonths(step);
+						newEra = _calendar.GetEra(DateTime);
+						if (newEra == targetEra || (step > 0 && newEra > targetEra) || (step < 0 && newEra < targetEra))
+						{
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
 
 		public void AddYears(int years)
 			=> _time = _calendar.AddYears(DateTime, years);
@@ -441,13 +556,71 @@ namespace Windows.Globalization
 		public int LastMinuteInThisHour => 59;
 		public int LastSecondInThisMinute => 59;
 
-		[NotImplemented]
 		public string EraAsString()
-			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString() is not implemented in Uno.");
+			=> GetEraName(_calendar, Era, _resolvedCulture, idealLength: 0);
 
-		[NotImplemented]
 		public string EraAsString(int idealLength)
-			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString(int idealLength) is not implemented in Uno.");
+			=> GetEraName(_calendar, Era, _resolvedCulture, idealLength);
+
+		private static string GetEraName(_Calendar calendar, int era, CultureInfo culture, int idealLength)
+		{
+			// Try to get era name from DateTimeFormatInfo
+			var eraNames = culture.DateTimeFormat.GetEraName(era);
+			if (!string.IsNullOrEmpty(eraNames))
+			{
+				// If idealLength is specified and shorter than the full name, try abbreviated
+				if (idealLength > 0 && idealLength < eraNames.Length)
+				{
+					var abbreviated = culture.DateTimeFormat.GetAbbreviatedEraName(era);
+					if (!string.IsNullOrEmpty(abbreviated))
+					{
+						return abbreviated;
+					}
+				}
+				return eraNames;
+			}
+
+			// Fallback for calendars where .NET doesn't provide era names
+			return calendar switch
+			{
+				global::System.Globalization.JapaneseCalendar => GetJapaneseEraName(era, idealLength),
+				global::System.Globalization.HebrewCalendar => idealLength > 0 && idealLength < 3 ? "AM" : "A.M.",
+				global::System.Globalization.HijriCalendar => idealLength > 0 && idealLength < 3 ? "AH" : "A.H.",
+				global::System.Globalization.ThaiBuddhistCalendar => idealLength > 0 && idealLength < 3 ? "BE" : "B.E.",
+				global::System.Globalization.KoreanCalendar => idealLength > 0 && idealLength < 4 ? "단기" : "단기",
+				global::System.Globalization.TaiwanCalendar => idealLength > 0 && idealLength < 4 ? "民國" : "民國",
+				_ => idealLength > 0 && idealLength < 4 ? "AD" : "A.D."
+			};
+		}
+
+		private static string GetJapaneseEraName(int era, int idealLength)
+		{
+			// Japanese era names (most recent first in era numbering)
+			// Era numbers are in reverse chronological order in .NET
+			// Era 1 is Meiji, Era 2 is Taisho, Era 3 is Showa, Era 4 is Heisei, Era 5 is Reiwa
+			var (fullName, abbreviation) = era switch
+			{
+				5 => ("令和", "R"),
+				4 => ("平成", "H"),
+				3 => ("昭和", "S"),
+				2 => ("大正", "T"),
+				1 => ("明治", "M"),
+				_ => ("", "")
+			};
+
+			if (string.IsNullOrEmpty(fullName))
+			{
+				return string.Empty;
+			}
+
+			// Return abbreviated if idealLength suggests it
+			if (idealLength > 0 && idealLength == 1)
+			{
+				return abbreviation;
+			}
+
+			return fullName;
+		}
 
 		public string YearAsString()
 			=> _time.Year.ToString(_resolvedCulture);
