@@ -73,6 +73,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 			await TestServices.WindowHelper.WaitForIdle();
 
+			var hourTextBlockField = typeof(TimePicker).GetField("m_tpHourTextBlock",
+				System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			Assert.IsNotNull(hourTextBlockField, "m_tpHourTextBlock field should exist");
+
+			var hourTextBlock = hourTextBlockField.GetValue(timePicker) as TextBlock;
+			Assert.IsNotNull(hourTextBlock, "HourTextBlock should be created");
+
+			Assert.AreEqual("12", hourTextBlock.Text, "Hour should display as 12 for midnight in 12-hour clock");
+
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
 			var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
 			Assert.IsNotNull(timePickerFlyoutPresenter);
