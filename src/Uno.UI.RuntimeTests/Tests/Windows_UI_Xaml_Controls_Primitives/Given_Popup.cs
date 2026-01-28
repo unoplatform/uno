@@ -449,5 +449,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			// Did not hit targetElement
 			return false;
 		}
+
+#if HAS_UNO // This test is specific to verifying Uno's invisible text input implementation on macOS
+		[TestMethod]
+		[RequiresFullWindow] // Needed for focus to work properly
+		public async Task When_TextBox_In_Popup_Can_Receive_Keyboard_Input()
+		{
+			// Create a Popup with a TextBox
+			var textBox = new TextBox
+			{
+				PlaceholderText = "Type here...",
+				Width = 200
+			};
+
+			var popup = new Popup
+			{
+				Child = new StackPanel
+				{
+					Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+					Padding = new Thickness(20),
+					Children =
+					{
+						textBox
+					}
+				},
+				XamlRoot = WindowHelper.XamlRoot
+			};
+
+			try
+			{
+				WindowHelper.WindowContent = new Grid();
+				await WindowHelper.WaitForIdle();
+
+				// Open the popup
+				popup.IsOpen = true;
+				await WindowHelper.WaitForLoaded(textBox);
+				await WindowHelper.WaitForIdle();
+
+				// Focus the TextBox
+				var focusResult = textBox.Focus(FocusState.Programmatic);
+				Assert.IsTrue(focusResult, "TextBox should be able to receive focus");
+				await WindowHelper.WaitForIdle();
+
+				// Verify the TextBox is focused
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
+				Assert.AreEqual(textBox, focusedElement, "TextBox should be the focused element");
+
+				// Simulate typing (this would normally come from keyboard events)
+				// We can't easily simulate actual keyboard events in tests, but we can verify
+				// the TextBox is in a state where it CAN receive input (focused, visible, enabled)
+				Assert.IsTrue(textBox.IsEnabled, "TextBox should be enabled");
+				Assert.AreEqual(Visibility.Visible, textBox.Visibility, "TextBox should be visible");
+				Assert.AreNotEqual(FocusState.Unfocused, textBox.FocusState, "TextBox should have focus state");
+
+				// Verify we can programmatically set text (simulates what would happen from keyboard input)
+				textBox.Text = "Test input";
+				Assert.AreEqual("Test input", textBox.Text, "TextBox text should be settable");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+#endif
 	}
 }

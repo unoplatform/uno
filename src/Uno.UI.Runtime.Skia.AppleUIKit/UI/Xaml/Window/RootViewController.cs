@@ -63,9 +63,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		var view = View!;
 
-		_textInputLayer = new UIView();
-		view.AddSubview(_textInputLayer);
-
 		_skCanvasView = new SkiaCanvas();
 		_skCanvasView.SetOwner(this);
 		_skCanvasView.Frame = view.Bounds;
@@ -82,6 +79,16 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_nativeOverlayLayer = nativeOverlayLayer;
 		_topViewLayer.AddSubview(_nativeOverlayLayer);
 		view.AddSubview(_topViewLayer);
+
+		// The text input layer must be on top of all other views to ensure the invisible
+		// UITextField views it contains can become first responders and receive keyboard input,
+		// even when a Popup or overlay is displayed on macOS/iOS.
+		_textInputLayer = new UIView
+		{
+			Frame = view.Bounds,
+			AutoresizingMask = UIViewAutoresizing.All
+		};
+		view.AddSubview(_textInputLayer);
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
