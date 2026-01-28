@@ -889,6 +889,166 @@ public class Given_CurrencyFormatter
 		return stringBuilder.ToString();
 	}
 
+	[TestMethod]
+	public void When_ConstructorWithLanguagesAndRegion()
+	{
+		var sut = new CurrencyFormatter(USDCurrencyCode, new[] { "en-us" }, "US");
+
+		Assert.AreEqual(USDCurrencyCode, sut.Currency);
+		Assert.AreEqual("US", sut.GeographicRegion);
+		Assert.AreEqual("US", sut.ResolvedGeographicRegion);
+		Assert.AreEqual("en-US", sut.ResolvedLanguage);
+	}
+
+	[TestMethod]
+	public void When_ConstructorWithNullLanguagesAndRegion()
+	{
+		var sut = new CurrencyFormatter(USDCurrencyCode, null, null);
+
+		Assert.AreEqual(USDCurrencyCode, sut.Currency);
+		Assert.AreEqual(string.Empty, sut.GeographicRegion);
+		Assert.AreEqual(string.Empty, sut.ResolvedGeographicRegion);
+	}
+
+	[TestMethod]
+	public void When_CurrencyProperty()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		Assert.AreEqual(USDCurrencyCode, sut.Currency);
+
+		var eurSut = MakeFormatter("EUR");
+		Assert.AreEqual("EUR", eurSut.Currency);
+	}
+
+	[TestMethod]
+	[DataRow(100L, "100.00")]
+	[DataRow(-50L, "50.00")]
+	[DataRow(0L, "0.00")]
+	[DataRow(1234567890L, "1234567890.00")]
+	public void When_FormatLong(long value, string expectedNumber)
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var actual = sut.Format(value);
+
+		string expected;
+		if (value < 0)
+		{
+			expected = FormatSymbolModeNegativeNumber(expectedNumber, USDSymbol);
+		}
+		else
+		{
+			expected = FormatSymbolModePositiveNumber(expectedNumber, USDSymbol);
+		}
+
+		Assert.AreEqual(expected, actual);
+	}
+
+	[TestMethod]
+	[DataRow(100UL, "100.00")]
+	[DataRow(0UL, "0.00")]
+	[DataRow(1234567890UL, "1234567890.00")]
+	public void When_FormatULong(ulong value, string expectedNumber)
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var actual = sut.Format(value);
+		var expected = FormatSymbolModePositiveNumber(expectedNumber, USDSymbol);
+
+		Assert.AreEqual(expected, actual);
+	}
+
+	[TestMethod]
+	[DataRow(100L, "100.00")]
+	[DataRow(-50L, "50.00")]
+	public void When_FormatInt(long value, string expectedNumber)
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var actual = sut.FormatInt(value);
+
+		string expected;
+		if (value < 0)
+		{
+			expected = FormatSymbolModeNegativeNumber(expectedNumber, USDSymbol);
+		}
+		else
+		{
+			expected = FormatSymbolModePositiveNumber(expectedNumber, USDSymbol);
+		}
+
+		Assert.AreEqual(expected, actual);
+	}
+
+	[TestMethod]
+	[DataRow(100UL, "100.00")]
+	[DataRow(0UL, "0.00")]
+	public void When_FormatUInt(ulong value, string expectedNumber)
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var actual = sut.FormatUInt(value);
+		var expected = FormatSymbolModePositiveNumber(expectedNumber, USDSymbol);
+
+		Assert.AreEqual(expected, actual);
+	}
+
+	[TestMethod]
+	public void When_ParseInt()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var text = FormatSymbolModePositiveNumber("123.00", USDSymbol);
+		var value = sut.ParseInt(text);
+
+		Assert.AreEqual(123L, value);
+	}
+
+	[TestMethod]
+	public void When_ParseIntWithFraction()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var text = FormatSymbolModePositiveNumber("123.45", USDSymbol);
+		var value = sut.ParseInt(text);
+
+		// Should truncate the fractional part
+		Assert.AreEqual(123L, value);
+	}
+
+	[TestMethod]
+	public void When_ParseIntNotValid()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var value = sut.ParseInt("123.00");
+
+		Assert.IsNull(value);
+	}
+
+	[TestMethod]
+	public void When_ParseUInt()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var text = FormatSymbolModePositiveNumber("123.00", USDSymbol);
+		var value = sut.ParseUInt(text);
+
+		Assert.AreEqual(123UL, value);
+	}
+
+	[TestMethod]
+	public void When_ParseUIntWithFraction()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var text = FormatSymbolModePositiveNumber("123.99", USDSymbol);
+		var value = sut.ParseUInt(text);
+
+		// Should truncate the fractional part
+		Assert.AreEqual(123UL, value);
+	}
+
+	[TestMethod]
+	public void When_ParseUIntNotValid()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		var value = sut.ParseUInt("123.00");
+
+		Assert.IsNull(value);
+	}
+
 	// In UWP CurrencyFormatter(string currencyCode) ignore PrimaryLanguageOverride
 	// and use the localization settings of the OS;
 	// to avoid this you need to use the constructor

@@ -1,8 +1,9 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Uno;
 using Uno.Globalization.NumberFormatting;
@@ -11,7 +12,7 @@ namespace Windows.Globalization.NumberFormatting;
 
 public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumberFormatter, INumberFormatterOptions, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
 {
-	private const char NoBreakSpaceChar = ' ';
+	private const char NoBreakSpaceChar = '\u00A0';
 	private const char OpenPatternSymbol = '(';
 	private const char ClosePatternSymbol = ')';
 	private const string EscapedOpenPatternSymbol = @"\(";
@@ -21,6 +22,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private readonly FormatterHelper _formatterHelper;
 	private readonly NumeralSystemTranslator _translator;
 	private readonly CurrencyData _currencyData = CurrencyData.Empty;
+	private readonly string _geographicRegion;
 
 	private CurrencyFormatterMode _mode;
 	private int _positivePattern = -1;
@@ -30,10 +32,12 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private Regex _negativeRegex;
 
 	public CurrencyFormatter(string currencyCode)
+		: this(currencyCode, null, null)
 	{
-		_formatterHelper = new FormatterHelper();
-		_translator = new NumeralSystemTranslator();
+	}
 
+	public CurrencyFormatter(string currencyCode, IEnumerable<string>? languages, string? geographicRegion)
+	{
 		var currencyData = CurrencyData.GetCurrencyData(currencyCode);
 
 		if (currencyData == CurrencyData.Empty)
@@ -42,12 +46,30 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		}
 
 		_currencyData = currencyData;
+
+		if (languages != null && languages.Any())
+		{
+			_translator = new NumeralSystemTranslator(languages);
+		}
+		else
+		{
+			_translator = new NumeralSystemTranslator();
+		}
+
+		_formatterHelper = new FormatterHelper();
+		_geographicRegion = geographicRegion ?? string.Empty;
 		FractionDigits = currencyData.DefaultFractionDigits;
 
 		_negativeRegex = CreateNegativeNumberRegex();
 		_positiveRegex = CreatePositiveNumberRegex();
 		_escapedCurrencySymbol = GetEscapedCurrencySymbol();
 	}
+
+	public string Currency => _currencyData.CurrencyCode;
+
+	public string GeographicRegion => _geographicRegion;
+
+	public string ResolvedGeographicRegion => _geographicRegion;
 
 	public CurrencyFormatterMode Mode
 	{
@@ -90,7 +112,15 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 	public int SignificantDigits { get => _formatterHelper.SignificantDigits; set => _formatterHelper.SignificantDigits = value; }
 
+	public string Format(long value) => FormatInt(value);
+
+	public string Format(ulong value) => FormatUInt(value);
+
 	public string Format(double value) => FormatDouble(value);
+
+	public string FormatInt(long value) => FormatDouble(value);
+
+	public string FormatUInt(ulong value) => FormatDouble(value);
 
 	public string FormatDouble(double value)
 	{
@@ -393,6 +423,34 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		}
 
 		return StringBuilderCache.GetStringAndRelease(stringBuilder);
+	}
+
+	public long? ParseInt(string text)
+	{
+		var result = ParseDouble(text);
+		if (result.HasValue)
+		{
+			var truncated = Math.Truncate(result.Value);
+			if (truncated >= long.MinValue && truncated <= long.MaxValue)
+			{
+				return (long)truncated;
+			}
+		}
+		return null;
+	}
+
+	public ulong? ParseUInt(string text)
+	{
+		var result = ParseDouble(text);
+		if (result.HasValue)
+		{
+			var truncated = Math.Truncate(result.Value);
+			if (truncated >= 0 && truncated <= ulong.MaxValue)
+			{
+				return (ulong)truncated;
+			}
+		}
+		return null;
 	}
 
 	public double? ParseDouble(string text)
