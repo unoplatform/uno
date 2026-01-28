@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
 using static Private.Infrastructure.TestServices;
@@ -404,7 +405,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var it = rv.InteractionTracker ?? throw new InvalidOperationException("InteractionTracker");
 
 			var lv = setup.Content as ListView ?? throw new InvalidOperationException("ListView");
-			var sv = lv.FindFirstChild<ScrollViewer>() ?? throw new InvalidOperationException("ScrollViewer");
+			var sv = lv.FindFirstDescendant<ScrollViewer>() ?? throw new InvalidOperationException("ScrollViewer");
 			var presenter = sv.Content as ItemsPresenter ?? throw new InvalidOperationException("ItemsPresenter");
 
 			// Make sure to abort any pending direct manip
