@@ -40,7 +40,6 @@ internal partial class TopViewLayer : UIView
 			AddGestureRecognizer(scrollGesture);
 		}
 	}
-#endif
 
 	private void HandleScrollGesture(UIPanGestureRecognizer gesture)
 	{
@@ -55,6 +54,7 @@ internal partial class TopViewLayer : UIView
 			gesture.SetTranslation(CGPoint.Empty, this);
 		}
 	}
+#endif
 
 	public override void TouchesBegan(NSSet touches, UIEvent? evt)
 	{
