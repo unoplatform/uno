@@ -13,6 +13,11 @@ namespace Uno.UI.Runtime.Skia.X11.Devices.Geolocation;
 /// </summary>
 internal class X11GeolocatorExtension : IGeolocatorExtension
 {
+	public static void Register()
+	{
+		ApiExtensibility.Register(typeof(Geolocator), o => new X11GeolocatorExtension());
+	}
+
 	public Task<GeolocationAccessStatus> RequestAccessAsync()
 	{
 		// TODO: Implement GeoClue2 D-Bus API integration
@@ -42,14 +47,5 @@ internal class X11GeolocatorExtension : IGeolocatorExtension
 	{
 		// TODO: Implement GeoClue2 D-Bus API integration
 		// For now, this is a no-op
-	}
-}
-
-internal static class X11GeolocatorExtensionRegistrar
-{
-	[Uno.Foundation.Extensibility.ModuleInitializer]
-	internal static void RegisterExtension()
-	{
-		ApiExtensibility.Register(typeof(Geolocator), o => new X11GeolocatorExtension());
 	}
 }

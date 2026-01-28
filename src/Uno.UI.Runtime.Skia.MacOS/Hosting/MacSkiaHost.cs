@@ -36,6 +36,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();
 		MacOSMediaPlayerPresenterExtension.Register();
+		MacOS.Devices.Geolocation.MacOSGeolocatorExtension.Register();
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

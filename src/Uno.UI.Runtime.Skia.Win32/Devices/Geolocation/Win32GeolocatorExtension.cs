@@ -14,6 +14,11 @@ namespace Uno.UI.Runtime.Skia.Win32.Devices.Geolocation;
 /// </summary>
 internal class Win32GeolocatorExtension : IGeolocatorExtension
 {
+	public static void Register()
+	{
+		ApiExtensibility.Register(typeof(Geolocator), o => new Win32GeolocatorExtension());
+	}
+
 	public Task<GeolocationAccessStatus> RequestAccessAsync()
 	{
 		// TODO: Implement Windows Geolocation API integration
@@ -46,14 +51,5 @@ internal class Win32GeolocatorExtension : IGeolocatorExtension
 	{
 		// TODO: Implement Windows Geolocation API integration
 		// For now, this is a no-op
-	}
-}
-
-internal static class Win32GeolocatorExtensionRegistrar
-{
-	[Uno.Foundation.Extensibility.ModuleInitializer]
-	internal static void RegisterExtension()
-	{
-		ApiExtensibility.Register(typeof(Geolocator), o => new Win32GeolocatorExtension());
 	}
 }

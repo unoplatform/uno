@@ -14,6 +14,11 @@ namespace Uno.UI.Runtime.Skia.MacOS.Devices.Geolocation;
 /// </summary>
 internal class MacOSGeolocatorExtension : IGeolocatorExtension
 {
+	public static void Register()
+	{
+		ApiExtensibility.Register(typeof(Geolocator), o => new MacOSGeolocatorExtension());
+	}
+
 	public Task<GeolocationAccessStatus> RequestAccessAsync()
 	{
 		// TODO: Implement CoreLocation integration via UnoNativeMac native library
@@ -46,14 +51,5 @@ internal class MacOSGeolocatorExtension : IGeolocatorExtension
 	{
 		// TODO: Implement CoreLocation integration via UnoNativeMac native library
 		// For now, this is a no-op
-	}
-}
-
-internal static class MacOSGeolocatorExtensionRegistrar
-{
-	[Uno.Foundation.Extensibility.ModuleInitializer]
-	internal static void RegisterExtension()
-	{
-		ApiExtensibility.Register(typeof(Geolocator), o => new MacOSGeolocatorExtension());
 	}
 }
