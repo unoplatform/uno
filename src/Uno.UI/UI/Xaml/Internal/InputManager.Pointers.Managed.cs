@@ -297,6 +297,12 @@ internal partial class InputManager
 				return;
 			}
 
+			if (originalSource is null)
+			{
+				TraceIgnoredAsNoTree(args);
+				return;
+			}
+
 			TraceHandling(originalSource);
 
 #if __SKIA__ // Currently, only Skia supports interaction tracker.
@@ -321,7 +327,6 @@ internal partial class InputManager
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
 			var result = RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
-
 			// Scrolling can change the element underneath the pointer, so we need to update over state
 			HitTestOrRoot(args, _isOver, out originalSource, out var staleBranch, reason: "after_wheel");
 			result += RaiseLeaveEnter(routedArgs, staleBranch, ref originalSource!, needsNonStaleOriginalSource: false);
