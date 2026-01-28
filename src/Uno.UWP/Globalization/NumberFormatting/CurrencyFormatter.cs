@@ -162,8 +162,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		if (isNegative)
 		{
-			if (_currencyData.AlwaysUseCurrencyCode ||
-				Mode == CurrencyFormatterMode.UseCurrencyCode)
+			if (Mode == CurrencyFormatterMode.UseCurrencyCode)
 			{
 				formatted = FormatCurrencyCodeModeNegativeNumber(formatted);
 			}
@@ -174,8 +173,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		}
 		else
 		{
-			if (_currencyData.AlwaysUseCurrencyCode ||
-				Mode == CurrencyFormatterMode.UseCurrencyCode)
+			if (Mode == CurrencyFormatterMode.UseCurrencyCode)
 			{
 				formatted = FormatCurrencyCodeModePositiveNumber(formatted);
 			}
@@ -538,8 +536,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	{
 		string pattern;
 
-		if (_currencyData.AlwaysUseCurrencyCode ||
-			Mode == CurrencyFormatterMode.UseCurrencyCode)
+		if (Mode == CurrencyFormatterMode.UseCurrencyCode)
 		{
 			pattern = GetCurrencyCodeModeNegativeNumberPattern();
 		}
@@ -635,8 +632,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	{
 		string pattern;
 
-		if (_currencyData.AlwaysUseCurrencyCode ||
-			Mode == CurrencyFormatterMode.UseCurrencyCode)
+		if (Mode == CurrencyFormatterMode.UseCurrencyCode)
 		{
 			pattern = GetCurrencyCodeModePositiveNumberPattern();
 		}
