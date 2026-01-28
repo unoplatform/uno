@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Uno;
 using Uno.Globalization.NumberFormatting;
 using _Calendar = global::System.Globalization.Calendar;
@@ -11,6 +12,41 @@ namespace Windows.Globalization
 {
 	public partial class Calendar
 	{
+		#region Numeral System Translation
+
+		/// <summary>
+		/// Translates Latin digits in a string to the configured numeral system.
+		/// </summary>
+		private string TranslateNumerals(string input)
+		{
+			if (string.IsNullOrEmpty(input) || _numeralSystem == "Latn")
+			{
+				return input;
+			}
+
+			var digits = NumeralSystemTranslatorHelper.GetDigitsSource(_numeralSystem);
+			if (digits == NumeralSystemTranslatorHelper.EmptyDigits)
+			{
+				return input;
+			}
+
+			var sb = new StringBuilder(input.Length);
+			foreach (var c in input)
+			{
+				if (c >= '0' && c <= '9')
+				{
+					sb.Append(digits[c - '0']);
+				}
+				else
+				{
+					sb.Append(c);
+				}
+			}
+			return sb.ToString();
+		}
+
+		#endregion
+
 		#region Static id parsing helpers
 		private static _Calendar GetCalendar(string calendar)
 		{
@@ -623,39 +659,108 @@ namespace Windows.Globalization
 		}
 
 		public string YearAsString()
-			=> _time.Year.ToString(_resolvedCulture);
+		{
+			var year = _calendar.GetYear(DateTime);
+			return TranslateNumerals(year.ToString(_resolvedCulture));
+		}
 
 		public string YearAsTruncatedString(int remainingDigits)
-			=> _time.ToString("yy", _resolvedCulture);
+		{
+			var year = _calendar.GetYear(DateTime);
+			var divisor = (int)Math.Pow(10, remainingDigits);
+			var truncatedYear = year % divisor;
+			return TranslateNumerals(truncatedYear.ToString(new string('0', remainingDigits), _resolvedCulture));
+		}
 
 		public string YearAsPaddedString(int minDigits)
-			=> _time.Year.ToString(new string('0', minDigits), _resolvedCulture);
+		{
+			var year = _calendar.GetYear(DateTime);
+			return TranslateNumerals(year.ToString(new string('0', minDigits), _resolvedCulture));
+		}
 
 		internal string MonthAsFullString()
 			=> MonthAsString();
 
 		public string MonthAsString()
-			=> _time.ToString("MMM", _resolvedCulture);
+		{
+			var month = _calendar.GetMonth(DateTime);
+			// Return the full month name (genitive form when used with day)
+			return _resolvedCulture.DateTimeFormat.GetMonthName(month);
+		}
 
 		public string MonthAsString(int idealLength)
-			=> _time.ToString("MMM", _resolvedCulture);
+		{
+			var month = _calendar.GetMonth(DateTime);
+			// If idealLength suggests abbreviated, use abbreviated form
+			var fullName = _resolvedCulture.DateTimeFormat.GetMonthName(month);
+			if (idealLength > 0 && idealLength < fullName.Length)
+			{
+				var abbrev = _resolvedCulture.DateTimeFormat.GetAbbreviatedMonthName(month);
+				if (!string.IsNullOrEmpty(abbrev) && abbrev.Length <= idealLength)
+				{
+					return abbrev;
+				}
+				// If abbreviated is still too long, truncate
+				if (idealLength < abbrev.Length)
+				{
+					return abbrev.Substring(0, idealLength);
+				}
+				return abbrev;
+			}
+			return fullName;
+		}
 
 		public string MonthAsSoloString()
-			=> _time.ToString("MMM", _resolvedCulture);
+		{
+			var month = _calendar.GetMonth(DateTime);
+			// Standalone/nominative form - use MonthNames array directly
+			return _resolvedCulture.DateTimeFormat.MonthNames[month - 1];
+		}
+
 		public string MonthAsSoloString(int idealLength)
-			=> _time.ToString("MMM", _resolvedCulture);
+		{
+			var month = _calendar.GetMonth(DateTime);
+			var fullName = _resolvedCulture.DateTimeFormat.MonthNames[month - 1];
+			if (idealLength > 0 && idealLength < fullName.Length)
+			{
+				var abbrev = _resolvedCulture.DateTimeFormat.AbbreviatedMonthNames[month - 1];
+				if (!string.IsNullOrEmpty(abbrev) && abbrev.Length <= idealLength)
+				{
+					return abbrev;
+				}
+				// If abbreviated is still too long, truncate
+				if (idealLength < abbrev.Length)
+				{
+					return abbrev.Substring(0, idealLength);
+				}
+				return abbrev;
+			}
+			return fullName;
+		}
 
 		public string MonthAsNumericString()
-			=> _time.Month.ToString(_resolvedCulture);
+		{
+			var month = _calendar.GetMonth(DateTime);
+			return TranslateNumerals(month.ToString(_resolvedCulture));
+		}
 
 		public string MonthAsPaddedNumericString(int minDigits)
-			=> _time.Month.ToString(new string('0', minDigits), _resolvedCulture);
+		{
+			var month = _calendar.GetMonth(DateTime);
+			return TranslateNumerals(month.ToString(new string('0', minDigits), _resolvedCulture));
+		}
 
 		public string DayAsString()
-			=> Day.ToString(_resolvedCulture);
+		{
+			var day = _calendar.GetDayOfMonth(DateTime);
+			return TranslateNumerals(day.ToString(_resolvedCulture));
+		}
 
 		public string DayAsPaddedString(int minDigits)
-			=> Day.ToString(new string('0', minDigits), _resolvedCulture);
+		{
+			var day = _calendar.GetDayOfMonth(DateTime);
+			return TranslateNumerals(day.ToString(new string('0', minDigits), _resolvedCulture));
+		}
 
 		public string DayOfWeekAsString()
 			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
@@ -664,53 +769,144 @@ namespace Windows.Globalization
 			=> DayOfWeekAsString();
 
 		public string DayOfWeekAsString(int idealLength)
-			=> _resolvedCulture.DateTimeFormat.GetAbbreviatedDayName(_calendar.GetDayOfWeek(DateTime));
+		{
+			var dayOfWeek = _calendar.GetDayOfWeek(DateTime);
+			var fullName = _resolvedCulture.DateTimeFormat.GetDayName(dayOfWeek);
+			if (idealLength > 0 && idealLength < fullName.Length)
+			{
+				var abbrev = _resolvedCulture.DateTimeFormat.GetAbbreviatedDayName(dayOfWeek);
+				if (idealLength < abbrev.Length)
+				{
+					return abbrev.Substring(0, idealLength);
+				}
+				return abbrev;
+			}
+			return fullName;
+		}
 
 		public string DayOfWeekAsSoloString()
-			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
+			=> _resolvedCulture.DateTimeFormat.DayNames[(int)_calendar.GetDayOfWeek(DateTime)];
 
 		public string DayOfWeekAsSoloString(int idealLength)
-			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
+		{
+			var dayOfWeek = _calendar.GetDayOfWeek(DateTime);
+			var fullName = _resolvedCulture.DateTimeFormat.DayNames[(int)dayOfWeek];
+			if (idealLength > 0 && idealLength < fullName.Length)
+			{
+				var abbrev = _resolvedCulture.DateTimeFormat.AbbreviatedDayNames[(int)dayOfWeek];
+				if (idealLength < abbrev.Length)
+				{
+					return abbrev.Substring(0, idealLength);
+				}
+				return abbrev;
+			}
+			return fullName;
+		}
 
 		public string PeriodAsString()
-			=> _time.ToString("tt", _resolvedCulture);
+		{
+			// For 24-hour clock, period is not typically shown, but return empty string
+			// Some cultures/applications might still want it
+			var rawHour = _calendar.GetHour(DateTime);
+			return rawHour < 12
+				? _resolvedCulture.DateTimeFormat.AMDesignator
+				: _resolvedCulture.DateTimeFormat.PMDesignator;
+		}
 
 		public string PeriodAsString(int idealLength)
-			=> _time.ToString("tt", _resolvedCulture);
+		{
+			var period = PeriodAsString();
+			if (idealLength > 0 && idealLength < period.Length)
+			{
+				return period.Substring(0, idealLength);
+			}
+			return period;
+		}
 
-		public string HourAsString() =>
-			_time
-				.ToString(_clock == ClockIdentifiers.TwentyFourHour ? "HH" : "hh", _resolvedCulture)
-				.TrimStart('0');
+		public string HourAsString()
+		{
+			// Use the Hour property which already respects the clock setting
+			var hour = Hour;
+			return TranslateNumerals(hour.ToString(_resolvedCulture));
+		}
 
-		public string HourAsPaddedString(int minDigits) =>
-			_clock == ClockIdentifiers.TwentyFourHour
-				? _time.ToString(minDigits < 2 ? "H" : "HH", _resolvedCulture)
-				: _time.ToString(minDigits < 2 ? "h" : "hh", _resolvedCulture);
+		public string HourAsPaddedString(int minDigits)
+		{
+			// Use the Hour property which already respects the clock setting
+			var hour = Hour;
+			return TranslateNumerals(hour.ToString(new string('0', minDigits), _resolvedCulture));
+		}
 
 		public string MinuteAsString()
-			=> _time.Minute.ToString(_resolvedCulture);
+		{
+			var minute = _calendar.GetMinute(DateTime);
+			return TranslateNumerals(minute.ToString(_resolvedCulture));
+		}
 
 		public string MinuteAsPaddedString(int minDigits)
-			=> _time.Minute.ToString(new string('0', minDigits), _resolvedCulture);
+		{
+			var minute = _calendar.GetMinute(DateTime);
+			return TranslateNumerals(minute.ToString(new string('0', minDigits), _resolvedCulture));
+		}
 
 		public string SecondAsString()
-			=> _time.Second.ToString(_resolvedCulture);
+		{
+			var second = _calendar.GetSecond(DateTime);
+			return TranslateNumerals(second.ToString(_resolvedCulture));
+		}
 
 		public string SecondAsPaddedString(int minDigits)
-			=> _time.Second.ToString(new string('0', minDigits), _resolvedCulture);
+		{
+			var second = _calendar.GetSecond(DateTime);
+			return TranslateNumerals(second.ToString(new string('0', minDigits), _resolvedCulture));
+		}
 
 		public string NanosecondAsString()
-			=> (_time.Millisecond * 1000).ToString(_resolvedCulture);
+		{
+			var nanosecond = (int)(_calendar.GetMilliseconds(DateTime) * 1000000);
+			return TranslateNumerals(nanosecond.ToString(_resolvedCulture));
+		}
 
 		public string NanosecondAsPaddedString(int minDigits)
-			=> (_time.Millisecond * 1000).ToString(new string('0', minDigits), _resolvedCulture);
+		{
+			var nanosecond = (int)(_calendar.GetMilliseconds(DateTime) * 1000000);
+			return TranslateNumerals(nanosecond.ToString(new string('0', minDigits), _resolvedCulture));
+		}
 
 		public string TimeZoneAsString()
-			=> _time.ToString("z", _resolvedCulture);
+		{
+			// Return full timezone name at the current instant
+			var isDst = _timeZone.IsDaylightSavingTime((DateTimeOffset)_time);
+			return isDst ? _timeZone.DaylightName : _timeZone.StandardName;
+		}
 
 		public string TimeZoneAsString(int idealLength)
-			=> _time.ToString("zz", _resolvedCulture);
+		{
+			// Return abbreviated timezone info (UTC offset)
+			var offset = _timeZone.GetUtcOffset((DateTimeOffset)_time);
+			var sign = offset >= TimeSpan.Zero ? "+" : "";
+			var hours = (int)offset.TotalHours;
+			var minutes = Math.Abs(offset.Minutes);
+
+			string result;
+			if (idealLength <= 2)
+			{
+				// Just hours: +9 or -5
+				result = $"{sign}{hours}";
+			}
+			else if (minutes > 0)
+			{
+				// Hours and minutes: +5:30 or -9:30
+				result = $"{sign}{hours}:{minutes:00}";
+			}
+			else
+			{
+				// Just hours with more room: +09 or -05
+				result = idealLength >= 3 ? $"{sign}{hours:00}" : $"{sign}{hours}";
+			}
+
+			return TranslateNumerals(result);
+		}
 
 		public static implicit operator DateTimeOffset(Calendar c)
 		{

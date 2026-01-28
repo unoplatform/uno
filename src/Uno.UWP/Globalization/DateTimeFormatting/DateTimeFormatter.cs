@@ -392,7 +392,11 @@ public sealed partial class DateTimeFormatter
 	{
 		try
 		{
-			return _patternRootNode.Format(value, _firstCulture, isTwentyFourHours: Clock == ClockIdentifiers.TwentyFourHour);
+			var context = new DateTimeFormattingContext(
+				_firstCulture,
+				Calendar,
+				Clock);
+			return _patternRootNode.Format(value, context);
 		}
 		catch (Exception e)
 		{
@@ -408,7 +412,12 @@ public sealed partial class DateTimeFormatter
 			var targetTimeZone = FindTimeZoneById(timeZoneId);
 			var convertedDateTime = TimeZoneInfo.ConvertTime(datetime, targetTimeZone);
 
-			return _patternRootNode.Format(convertedDateTime, _firstCulture, isTwentyFourHours: Clock == ClockIdentifiers.TwentyFourHour);
+			var context = new DateTimeFormattingContext(
+				_firstCulture,
+				Calendar,
+				Clock,
+				timeZoneId);
+			return _patternRootNode.Format(convertedDateTime, context);
 		}
 		catch (Exception e)
 		{

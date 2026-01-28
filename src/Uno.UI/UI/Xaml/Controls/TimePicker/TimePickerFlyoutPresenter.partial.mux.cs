@@ -642,13 +642,8 @@ partial class TimePickerFlyoutPresenter
 			var dateTime = _tpCalendar.GetDateTime();
 			var strHour = spFormatter.Format(dateTime);
 
-#if HAS_UNO // Because DateTimeFormatter does not match WinAppSDK it is returning 0 for 12-hour clock hour 12. #22207
-			// In 12-hour clock, hour 0 should display as 12.
-			if (_is12HourClock && strHour == $"{TIMEPICKER_COERCION_INDEX}")
-			{
-				strHour = $"{_periodCoercionOffset}";
-			}
-#endif
+			// DateTimeFormatter now properly returns 12 for 12-hour clock at midnight/noon
+			// The workaround for issue #22207 is no longer needed after the fix in Calendar.cs
 			spItem.PrimaryText = strHour;
 
 			_tpHourSource.Add(spItem);
