@@ -24,6 +24,7 @@ internal partial class TopViewLayer : UIView
 
 	private void SetupScrollGestureRecognizer()
 	{
+#if __IOS__
 		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
 		{
 			var scrollGesture = new UIPanGestureRecognizer(HandleScrollGesture)
@@ -31,10 +32,11 @@ internal partial class TopViewLayer : UIView
 				AllowedScrollTypesMask = UIScrollTypeMask.All,
 				MaximumNumberOfTouches = 0,
 				MinimumNumberOfTouches = 0,
-				ShouldRecognizeSimultaneously = (recognizer, otherRecognizer) => true // Allow simultaneous with other gestures
+				ShouldRecognizeSimultaneously = (recognizer, otherRecognizer) => true
 			};
 			AddGestureRecognizer(scrollGesture);
 		}
+#endif
 	}
 
 	private void HandleScrollGesture(UIPanGestureRecognizer gesture)
