@@ -99,44 +99,14 @@ namespace Windows.Storage.Pickers
 					return controller;
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
-					var hasImages = FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*") ||
-					FilterHasImage(FileTypeFilter);
-					var hasVideos = FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*") ||
-					FilterHasVideo(FileTypeFilter);
-
-					PHPickerFilter? pickerFilter = null;
-					if (hasImages && hasVideos)
-					{
-						// Support both images and videos
-						pickerFilter = PHPickerFilter.GetAnyFilterMatchingSubfilters([
-							PHPickerFilter.ImagesFilter, PHPickerFilter.VideosFilter
-						]);
-					}
-					else if (hasImages)
-					{
-						pickerFilter = PHPickerFilter.ImagesFilter;
-					}
-					else if (hasVideos)
-					{
-						pickerFilter = PHPickerFilter.VideosFilter;
-					}
-
-					var imageConfiguration = new PHPickerConfiguration
+				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
+					var pickerFilter = GetPhotoPickerFilter(FileTypeFilter);
+					var pickerConfiguration = new PHPickerConfiguration
 					{
 						Filter = pickerFilter,
 						SelectionLimit = limit
 					};
-					return new PHPickerViewController(imageConfiguration)
-					{
-						Delegate = new PhotoPickerDelegate(completionSource)
-					};
-				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
-					var videoConfiguration = new PHPickerConfiguration
-					{
-						Filter = PHPickerFilter.VideosFilter,
-						SelectionLimit = limit
-					};
-					return new PHPickerViewController(videoConfiguration)
+					return new PHPickerViewController(pickerConfiguration)
 					{
 						Delegate = new PhotoPickerDelegate(completionSource)
 					};
@@ -330,6 +300,21 @@ namespace Windows.Storage.Pickers
 
 			public override void DidDismiss(UIPresentationController controller) =>
 				_taskCompletionSource.SetResult(Array.Empty<StorageFile?>());
+		}
+
+		private static PHPickerFilter? GetPhotoPickerFilter(IList<string> fileTypeFilter)
+		{
+			var acceptsAll = fileTypeFilter.Count == 0 || fileTypeFilter.Contains("*");
+			var hasImages = acceptsAll || FilterHasImage(fileTypeFilter);
+			var hasVideos = acceptsAll || FilterHasVideo(fileTypeFilter);
+
+			return (hasImages, hasVideos) switch
+			{
+				(true, true) => PHPickerFilter.GetAnyFilterMatchingSubfilters([PHPickerFilter.ImagesFilter, PHPickerFilter.VideosFilter]),
+				(true, false) => PHPickerFilter.ImagesFilter,
+				(false, true) => PHPickerFilter.VideosFilter,
+				_ => null
+			};
 		}
 
 		private static bool FilterHasVideo(IList<string> filters)
