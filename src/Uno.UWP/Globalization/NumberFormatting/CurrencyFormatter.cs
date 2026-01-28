@@ -32,12 +32,18 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private Regex _negativeRegex;
 
 	public CurrencyFormatter(string currencyCode)
-		: this(currencyCode, null, null)
+		: this(currencyCode, Array.Empty<string>(), null)
 	{
 	}
 
 	public CurrencyFormatter(string currencyCode, IEnumerable<string>? languages, string? geographicRegion)
 	{
+		// WinUI throws NullReferenceException when languages is explicitly null
+		if (languages is null)
+		{
+			throw new NullReferenceException();
+		}
+
 		var currencyData = CurrencyData.GetCurrencyData(currencyCode);
 
 		if (currencyData == CurrencyData.Empty)
@@ -429,6 +435,11 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		if (result.HasValue)
 		{
 			var truncated = Math.Truncate(result.Value);
+			// WinUI returns null if value has fractional part
+			if (truncated != result.Value)
+			{
+				return null;
+			}
 			if (truncated >= long.MinValue && truncated <= long.MaxValue)
 			{
 				return (long)truncated;
@@ -443,6 +454,11 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		if (result.HasValue)
 		{
 			var truncated = Math.Truncate(result.Value);
+			// WinUI returns null if value has fractional part
+			if (truncated != result.Value)
+			{
+				return null;
+			}
 			if (truncated >= 0 && truncated <= ulong.MaxValue)
 			{
 				return (ulong)truncated;
