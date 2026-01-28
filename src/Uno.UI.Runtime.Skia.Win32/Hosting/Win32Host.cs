@@ -97,8 +97,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 		}
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
-		
-		Win32.Devices.Geolocation.Win32GeolocatorExtension.Register();
+
+		Uno.UI.Runtime.Skia.Win32.Devices.Geolocation.Win32GeolocatorExtension.Register();
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)
