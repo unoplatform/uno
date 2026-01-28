@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.HotReload.Microsoft;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
 namespace Uno.HotReload.Microsoft;
 

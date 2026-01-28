@@ -8,12 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Uno.HotReload.Microsoft;
 using Uno.HotReload.Diffing;
+using Uno.HotReload.Microsoft;
 using Uno.HotReload.Tracking;
+using Uno.HotReload.Utils;
 using Uno.Threading;
-using Uno.UI.RemoteControl.Host.HotReload;
-using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.HotReload;
 
@@ -25,11 +24,18 @@ public sealed class HotReloadManager : IDisposable
 		Func<CancellationToken, ValueTask<Workspace>> workspaceProvider,
 		string[] metadataUpdateCapabilities,
 		SendUpdatesAsync sendUpdates,
-		IHotReloadTracker tracker)
+		IHotReloadTracker tracker,
+		CancellationToken ct,
+		bool forceEmitCompilationOutput = false)
 	{
-		var ct = new CancellationTokenSource();
-		var initialWorkspace = await workspaceProvider(ct.Token);
-		var watch = await WatchHotReloadService.CreateAsync(initialWorkspace, metadataUpdateCapabilities, ct.Token);
+		var initialWorkspace = await workspaceProvider(ct);
+		if (forceEmitCompilationOutput
+			|| initialWorkspace.CurrentSolution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
+		{
+			await initialWorkspace.EmitCompilationOutputAsync(ct);
+		}
+
+		var watch = await WatchHotReloadService.CreateAsync(initialWorkspace, metadataUpdateCapabilities, ct);
 		var detector = new ChangesDetector(workspaceProvider, tracker);
 
 		return new HotReloadManager(initialWorkspace, watch, sendUpdates, detector, tracker);

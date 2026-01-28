@@ -87,7 +87,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					async ValueTask<Workspace> CreateMsBuildWorkspace(CancellationToken ct2)
 						=> await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, ct2);
 
-					var manager = await HotReloadManager.CreateAsync(CreateMsBuildWorkspace, configureServer.MetadataUpdateCapabilities, SendUpdates, _tracker);
+					var manager = await HotReloadManager.CreateAsync(CreateMsBuildWorkspace, configureServer.MetadataUpdateCapabilities, SendUpdates, _tracker, ct);
 					ct.Register(() => manager.Dispose());
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });

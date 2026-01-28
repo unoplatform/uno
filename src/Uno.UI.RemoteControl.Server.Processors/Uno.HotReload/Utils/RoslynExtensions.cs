@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace Uno.HotReload.Utils;
 

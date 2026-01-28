@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Uno.HotReload.Tracking;
-using Uno.UI.RemoteControl.Host.HotReload;
 
 namespace Uno.HotReload.Diffing;
 

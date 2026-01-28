@@ -22,6 +22,9 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 	{
 		public const string Name = nameof(HotReloadStatusMessage);
 
+		public HotReloadStatusMessage(Uno.HotReload.Tracking.HotReloadStatusInfo status)
+			: this((HotReloadState)status.State, [..status.Operations.Select(op => new HotReloadServerOperationData(op))], status.ServerError) { }
+
 		/// <inheritdoc />
 		[JsonProperty]
 		public string Scope => WellKnownScopes.HotReload;
@@ -38,5 +41,9 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		ImmutableHashSet<string>? IgnoredFilePaths,
 		DateTimeOffset? EndTime,
 		HotReloadServerResult? Result,
-		IImmutableList<string>? Diagnostics);
+		IImmutableList<string>? Diagnostics)
+	{
+		public HotReloadServerOperationData(Uno.HotReload.Tracking.HotReloadOperationInfo op)
+			: this(op.Id, op.StartTime, op.FilePaths, op.IgnoredFilePaths, op.EndTime, (HotReloadServerResult?)op.Result, op.Diagnostics) { }
+	}
 }
