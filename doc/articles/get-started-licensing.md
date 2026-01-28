@@ -112,7 +112,8 @@ The Community edition of **Uno Platform Studio** includes a 15-day trial of **Un
 
 Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see what you gain by upgrading.
 
-> [!IMPORTANT] Uno Platform itself remains open-source and free under Apache 2.0. The Pro subscription is specifically for Uno Platform Studio features.
+> [!IMPORTANT] 
+> Uno Platform itself remains open-source and free under Apache 2.0. The Pro subscription is specifically for Uno Platform Studio features.
 
 ![Uno Platform Studio compare](Assets/uno-studio-plans-compare.png)
 
