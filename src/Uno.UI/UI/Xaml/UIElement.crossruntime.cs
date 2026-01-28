@@ -102,6 +102,7 @@ namespace Microsoft.UI.Xaml
 		private void OnChildRemoved(UIElement child)
 		{
 			child.Shutdown();
+			(child as IDependencyObjectStoreProvider)?.Store.ClearInheritedDataContext();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
