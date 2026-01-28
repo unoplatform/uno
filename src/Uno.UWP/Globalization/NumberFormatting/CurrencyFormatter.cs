@@ -17,8 +17,8 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private const char ClosePatternSymbol = ')';
 	private const string EscapedOpenPatternSymbol = @"\(";
 	private const string EscapedClosePatternSymbol = @"\)";
-	private const string NumberPattern = $"(?<{ValueCaptureingGroupName}>[0-9.]*)";
-	private const string ValueCaptureingGroupName = "value";
+	private const string NumberPattern = $"(?<{ValueCapturingGroupName}>[0-9.]*)";
+	private const string ValueCapturingGroupName = "value";
 	private readonly FormatterHelper _formatterHelper;
 	private readonly NumeralSystemTranslator _translator;
 	private readonly CurrencyData _currencyData = CurrencyData.Empty;
@@ -515,7 +515,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		if (match.Success)
 		{
-			value = match.Groups[ValueCaptureingGroupName].Value;
+			value = match.Groups[ValueCapturingGroupName].Value;
 		}
 		else
 		{
@@ -538,7 +538,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		if (match.Success)
 		{
-			value = match.Groups[ValueCaptureingGroupName].Value;
+			value = match.Groups[ValueCapturingGroupName].Value;
 		}
 		else
 		{
