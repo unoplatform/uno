@@ -8,14 +8,12 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSFileSavePickerExtension : IFileSavePickerExtension
 {
-	private static readonly MacOSFileSavePickerExtension _instance = new();
-
-	private MacOSFileSavePickerExtension()
+	public MacOSFileSavePickerExtension()
 	{
 		_filters = Array.Empty<string>();
 	}
 
-	public static void Register() => ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), _ => _instance);
+	public static void Register() => ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), _ => new MacOSFileSavePickerExtension());
 
 	// Mapping
 	// WinUI                            AppKit (NSSavePanel)
@@ -60,6 +58,7 @@ internal class MacOSFileSavePickerExtension : IFileSavePickerExtension
 
 	public async Task<StorageFile?> PickSaveFileAsync(CancellationToken token)
 	{
+		await Task.Yield();
 		var file = NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length);
 		return file is null ? null : await StorageFile.GetFileFromPathAsync(file);
 	}
