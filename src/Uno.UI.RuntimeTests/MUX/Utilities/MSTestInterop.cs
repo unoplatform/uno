@@ -103,12 +103,12 @@ namespace Common
 
 		public static void IsLessThanOrEqual(int expectedLess, int expectedGreater, string message = null)
 		{
-			Assert.IsLessThanOrEqual(expectedGreater, expectedLess, message);
+			Assert.IsLessThanOrEqualTo(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsLessThanOrEqual(double expectedLess, double expectedGreater, string message = null)
 		{
-			Assert.IsLessThanOrEqual(expectedGreater, expectedLess, message);
+			Assert.IsLessThanOrEqualTo(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsGreaterThan(int expectedGreater, int expectedLess, string message = null)
@@ -123,12 +123,12 @@ namespace Common
 
 		public static void IsGreaterThanOrEqual(double expectedGreater, double expectedLess, string message = null)
 		{
-			Assert.IsGreaterThanOrEqual(expectedLess, expectedGreater, message);
+			Assert.IsGreaterThanOrEqualTo(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsGreaterThanOrEqual(int expectedGreater, int expectedLess, string message = null)
 		{
-			Assert.IsGreaterThanOrEqual(expectedLess, expectedGreater, message);
+			Assert.IsGreaterThanOrEqualTo(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsNull(object value, string message = null)

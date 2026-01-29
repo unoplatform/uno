@@ -190,7 +190,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				// This 500ms animation is expected to climb from 0 to 50, reset to 0 instantly, and repeat forever.
 				// Given that we are taking 5measurements per cycle, we can expect the followings:
 				Assert.AreEqual(10d, averageIncrement, 2.5, $"Expected an rough average of increment (excluding the drop) of 10 (+-25% error margin).\n" + context);
-				Assert.IsGreaterThanOrEqual(8, incrementSizes.Count(x => x >= 3), $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
+				Assert.IsGreaterThanOrEqualTo(8, incrementSizes.Count(x => x >= 3), $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
 
 				double NanToZero(double value) => double.IsNaN(value) ? 0 : value;
 

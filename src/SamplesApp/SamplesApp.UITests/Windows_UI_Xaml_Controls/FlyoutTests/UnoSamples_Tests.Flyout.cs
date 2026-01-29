@@ -81,7 +81,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target1").First();
 
-				Assert.IsLessThanOrEqual(innerContentResult.Rect.X, target1Result.Rect.X);
+				Assert.IsLessThanOrEqualTo(innerContentResult.Rect.X, target1Result.Rect.X);
 				Assert.IsGreaterThan(innerContentResult.Rect.Width, target1Result.Rect.Width);
 
 				_app.TapCoordinates(50, 100);
@@ -94,7 +94,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target2").First();
 
-				Assert.IsLessThanOrEqual(innerContentResult.Rect.X, target2Result.Rect.X);
+				Assert.IsLessThanOrEqualTo(innerContentResult.Rect.X, target2Result.Rect.X);
 				Assert.IsGreaterThan(innerContentResult.Rect.Width, target2Result.Rect.Width);
 
 				_app.TapCoordinates(50, 100);

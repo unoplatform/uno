@@ -160,7 +160,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			TakeScreenshot("Default");
 
 			var innerTextBoxResult = _app.Query(innerTextBox).First();
-			Assert.IsLessThanOrEqual(myCommandBarResult.Rect.Width / 2, innerTextBoxResult.Rect.Width, "TextBox Width is too large");
+			Assert.IsLessThanOrEqualTo(myCommandBarResult.Rect.Width / 2, innerTextBoxResult.Rect.Width, "TextBox Width is too large");
 
 			horizontalValue.SetDependencyPropertyValue("SelectedItem", "Stretch");
 
@@ -172,7 +172,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			horizontalValue.SetDependencyPropertyValue("SelectedItem", "Left");
 
 			innerTextBoxResult = _app.Query(innerTextBox).First();
-			Assert.IsLessThanOrEqual(myCommandBarResult.Rect.Width / 2, innerTextBoxResult.Rect.Width, "TextBox Width is too large");
+			Assert.IsLessThanOrEqualTo(myCommandBarResult.Rect.Width / 2, innerTextBoxResult.Rect.Width, "TextBox Width is too large");
 
 			TakeScreenshot("Left");
 		}
