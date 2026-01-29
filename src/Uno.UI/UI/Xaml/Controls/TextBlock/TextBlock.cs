@@ -311,7 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 #if __SKIA__
-			if (!IsTextBoxDisplay)
+			if (OwningTextBox is null)
 #endif
 			{
 				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
