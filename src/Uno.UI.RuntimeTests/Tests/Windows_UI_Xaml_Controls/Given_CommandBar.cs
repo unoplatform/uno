@@ -86,7 +86,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 		}
 
 		[TestMethod]
@@ -215,7 +215,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(sb.Bottom + 10, (sb.Left + sb.Right) / 2);
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 
 			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();

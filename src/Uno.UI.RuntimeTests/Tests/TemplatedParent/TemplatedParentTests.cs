@@ -383,7 +383,7 @@ public partial class TemplatedParentTests // helper methods
 		Func<object, IEnumerable<string>> debugVT = checkVSG ? DebugVT_TPTV : DebugVT_TP;
 
 
-		Assert.AreEqual(expectations.Length, descendants.Length, "Mismatched descendant size");
+		Assert.HasCount(expectations.Length, descendants, "Mismatched descendant size");
 		for (int i = 0; i < expectations.Length; i++)
 		{
 			var line = expectations[i].TrimStart("\t 0123456789.".ToArray());

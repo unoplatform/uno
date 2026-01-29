@@ -183,7 +183,7 @@ namespace Private.Infrastructure
 		internal static void VERIFY_ARE_VERY_CLOSE(double actual, double expected, double tolerance = 0.1d, string message = null)
 		{
 			var difference = Math.Abs(actual - expected);
-			Assert.IsTrue(difference <= tolerance, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance}) {message}");
+			Assert.IsLessThanOrEqualTo(tolerance, difference, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance}) {message}");
 		}
 
 		internal static void VERIFY_DATES_ARE_EQUAL(DateTimeOffset actual, DateTimeOffset expected, string message = null)

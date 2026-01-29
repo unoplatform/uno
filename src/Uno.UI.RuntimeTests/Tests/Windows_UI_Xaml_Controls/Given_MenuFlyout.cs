@@ -420,7 +420,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
 
 				var difference = subItemBounds.X - subSubItemBounds.Right;
-				Assert.IsTrue(Math.Abs(difference) <= 3);
+				Assert.IsLessThanOrEqualTo(3d, Math.Abs(difference));
 
 			}
 			finally

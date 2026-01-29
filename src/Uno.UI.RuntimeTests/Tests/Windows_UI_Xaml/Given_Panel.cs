@@ -72,8 +72,8 @@ public class Given_Panel
 		await WindowHelper.WaitForIdle();
 
 		var parent = (UIElement)VisualTreeHelper.GetParent(lv);
-		Assert.IsTrue(Math.Abs(parent.ActualSize.X - lv.ActualSize.X) < 1);
-		Assert.IsTrue(Math.Abs(parent.ActualSize.Y - lv.ActualSize.Y) < 1);
+		Assert.IsLessThan(1d, Math.Abs(parent.ActualSize.X - lv.ActualSize.X));
+		Assert.IsLessThan(1d, Math.Abs(parent.ActualSize.Y - lv.ActualSize.Y));
 
 		// MeasureOverride should be returning the default Size(0,0)
 		Assert.AreEqual(0, lv.DesiredSize.Width);
@@ -91,11 +91,11 @@ public class Given_Panel
 			var imageRatio = (double)imageSource.PixelWidth / imageSource.PixelHeight;
 			if (imageRatio < givenRatio)
 			{
-				Assert.IsTrue(Math.Abs(child.DesiredSize.Height - child.ActualSize.Y) < 1);
+				Assert.IsLessThan(1d, Math.Abs(child.DesiredSize.Height - child.ActualSize.Y));
 			}
 			else
 			{
-				Assert.IsTrue(Math.Abs(child.DesiredSize.Width - child.ActualSize.X) < 1);
+				Assert.IsLessThan(1d, Math.Abs(child.DesiredSize.Width - child.ActualSize.X));
 			}
 		}
 	}
