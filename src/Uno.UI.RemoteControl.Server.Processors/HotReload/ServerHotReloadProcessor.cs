@@ -88,12 +88,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				case UpdateFileRequest.Name:
 					await ProcessUpdateFile(frame.GetContent<UpdateFileRequest>());
 					break;
-				//case PackWorkspaceRequest.Name:
-				//	await ProcessPackWorkspaceAsync(frame.GetContent<PackWorkspaceRequest>(), _ct.Token);
-				//	break;
-				//case LoadWorkspaceRequest.Name:
-				//	await ProcessLoadWorkspaceAsync(frame.GetContent<LoadWorkspaceRequest>(), _ct.Token);
-				//	break;
 			}
 		}
 

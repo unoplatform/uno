@@ -110,24 +110,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask<HotReloadManager?> GetWorkspaceAsync()
-		{
-			if (_workspace is null)
-			{
-				return null;
-			}
-
-			try
-			{
-				return await _workspace.Value.GetAsync;
-			}
-			catch (Exception ex)
-			{
-				_reporter.Warn(ex.Message);
-				return null;
-			}
-		}
-
 		private static Dictionary<string, string> GetWorkspaceProperties(ConfigureServer configureServer, out string?[] outputPaths)
 		{
 			// Clone the properties from the ConfigureServer

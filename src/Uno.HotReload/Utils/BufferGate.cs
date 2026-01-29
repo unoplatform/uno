@@ -11,7 +11,7 @@ namespace Uno.HotReload.Utils;
 /// longer in use. While the gate is held, actions passed to RunOrPlan are queued and executed only after all holders
 /// have been disposed. This class is not thread-safe for concurrent acquisition and release by multiple threads unless
 /// external synchronization is used.</remarks>
-internal class BufferGate
+public class BufferGate
 {
 	private int _holders;
 	private ImmutableHashSet<Action> _onRelease = ImmutableHashSet<Action>.Empty;

@@ -1,25 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
-		
-		<!-- We need all the intermediate assemblies to be located in the processors -->
-		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfoHelper.cs" />
+	</ItemGroup>
+
 	<Import Project="..\Uno.DevServer.Processors.Override.targets" />
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
-		<PackageReference Include="Newtonsoft.Json" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Threading" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
@@ -29,8 +25,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.13.0" />
@@ -42,8 +36,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
@@ -53,12 +45,5 @@
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" />
-		<ProjectReference Include="..\Uno.HotReload\Uno.HotReload.csproj" />
-	</ItemGroup>
-
-	<Target Name="GetTargetPath" />
 
 </Project>

@@ -21,7 +21,7 @@ namespace Uno.HotReload;
 /// directories. It is intended for use with hot reload scenarios, where timely detection of file changes is required.
 /// This class is not thread-safe and should be disposed when no longer needed to release file system watcher
 /// resources.</remarks>
-internal sealed class FileSystemObserver : IDisposable
+public sealed class FileSystemObserver : IDisposable
 {
 	private readonly HotReloadManager _manager;
 	private readonly IReporter _reporter;
@@ -40,7 +40,7 @@ internal sealed class FileSystemObserver : IDisposable
 	private IDisposable Enable()
 	{
 		var solution = _manager.CurrentSolution;
-		var excludedDirPattern = new[]{"bin", "obj"};
+		var excludedDirPattern = new[] { "bin", "obj" };
 
 		// TODO: Resolve the bin and obj folders from the project (instead of assuming same config for all projects)
 		// e.g.: projectDir.First().AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.intermediateoutputpath", out string value)

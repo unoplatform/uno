@@ -145,7 +145,7 @@ public sealed class HotReloadTracker(
 			}
 		}
 
-		await sendState(new (state, operations, serverError), default);
+		await sendState(new(state, operations, serverError), default);
 	}
 
 	/// <inheritdoc />

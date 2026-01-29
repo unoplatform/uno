@@ -23,7 +23,12 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public const string Name = nameof(HotReloadStatusMessage);
 
 		public HotReloadStatusMessage(Uno.HotReload.Tracking.HotReloadStatusInfo status)
-			: this((HotReloadState)status.State, [..status.Operations.Select(op => new HotReloadServerOperationData(op))], status.ServerError) { }
+			: this(
+				(HotReloadState)status.State,
+				[.. status.Operations.Select(op => new HotReloadServerOperationData(op))],
+				status.ServerError)
+		{
+		}
 
 		/// <inheritdoc />
 		[JsonProperty]
