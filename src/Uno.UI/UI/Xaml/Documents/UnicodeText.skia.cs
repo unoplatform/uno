@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Windows.Foundation;
 using Windows.UI.Text;
@@ -14,10 +15,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.Xaml.Media;
+using WeCantSpell.Hunspell;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -98,6 +98,9 @@ internal readonly partial struct UnicodeText : IParsedText
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
 	private static readonly SKPaint _spareDrawPaint = new();
+	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
+
+	private static List<WordList>? _wordLists;
 
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
@@ -109,6 +112,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
+	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
@@ -122,6 +126,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		FlowDirection flowDirection,
 		TextAlignment? textAlignment, // null to determine from text. This will also infer the directionality of the text from the content
 		TextWrapping textWrapping,
+		bool isSpellCheckEnabled,
 		out Size desiredSize)
 	{
 		CI.Assert(maxLines >= 0);
@@ -181,6 +186,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_textIndexToGlyph = [];
 			_inlines = [];
 			_wordBoundaries = new();
+			_corrections = null;
 			_textAlignment = textAlignment.Value;
 			_text = "";
 			return;
@@ -196,7 +202,15 @@ internal readonly partial struct UnicodeText : IParsedText
 		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
-		_wordBoundaries = GetWordBreakingOpportunities(text);
+		_wordBoundaries = GetWords(text);
+		if (isSpellCheckEnabled)
+		{
+			_corrections = GetSpellCheckSuggestions(_wordBoundaries, text);
+		}
+		else
+		{
+			_corrections = null;
+		}
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
@@ -552,11 +566,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		return lines;
 	}
 
-	private static unsafe IEnumerable<int> GetLineBreakingOpportunities(string text)
+	private static IEnumerable<int> GetLineBreakingOpportunities(string text)
 	{
-		var ret = new List<int>();
 		if (OperatingSystem.IsBrowser())
 		{
+			var ret = new List<int>();
 			var breaker = ICU.BrowserICUSymbols.init_line_breaker(text);
 			if (breaker == IntPtr.Zero)
 			{
@@ -584,82 +598,54 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				ret.Add(next);
 			}
+			return ret;
 		}
 		else
 		{
-			fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+			return GetBoundaries( /* Line */ 2, text);
+		}
+	}
+
+	private static unsafe List<int> GetBoundaries(int boundaryType, string text)
+	{
+		var ret = new List<int>();
+		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		{
+			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				fixed (char* textPtr = &text.GetPinnableReference())
+				var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(boundaryType, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
+				ICU.CheckErrorCode<ICU.ubrk_open>(status);
+				ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
+				while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
 				{
-					var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(/* Line */ 2, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
-					ICU.CheckErrorCode<ICU.ubrk_open>(status);
-					ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
-					while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
-					{
-						ret.Add(next);
-					}
-					ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
+					ret.Add(next);
 				}
+				ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
 			}
 		}
 		return ret;
 	}
 
-	private static List<int> GetWordBreakingOpportunities(string text)
+	private static List<int> GetWords(string text)
 	{
-		// libICU's BreakIterator does not return what we want here. It only returns what it considers proper words
-		// like sequences of latin characters, but e.g. a sequence of symbols is ignored.
-		var chunks = new List<int>();
+		var boundaries = GetBoundaries(/* Word */ 1, text);
+		var ret = new List<int> { boundaries[0] };
+		for (var index = 1; index < boundaries.Count; index++)
 		{
-			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-			// \r\n, \r, \n and \t are always their own chunks
-			var length = text.Length;
-			for (var i = 0; i < length;)
-			{
-				var start = i;
-				var c = text[i];
-				if (c is '\r' && i < (length - 1) && text[i + 1] == '\n')
-				{
-					i += 2;
-				}
-				else if (c is '\r' or '\t' or '\n')
-				{
-					i++;
-				}
-				else if (c == ' ')
-				{
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else if (char.IsLetterOrDigit(text[i]))
-				{
-					while (i < length && char.IsLetterOrDigit(text[i]))
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else
-				{
-					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
+			var boundary = boundaries[index];
 
-				chunks.Add(i);
+			if (boundary - ret[^1] == 1 && (char.IsPunctuation(text[boundary - 1]) || char.IsSymbol(text[boundary - 1])) && (char.IsPunctuation(text[ret[^1] - 1]) || char.IsSymbol(text[ret[^1] - 1])))
+			{
+				ret.RemoveAt(ret.Count - 1);
 			}
+			else if (Enumerable.Range(ret[^1], boundary - ret[^1]).All(c => text[c] == ' ') && !char.IsWhiteSpace(text[ret[^1] - 1]))
+			{
+				ret.RemoveAt(ret.Count - 1);
+			}
+			ret.Add(boundary);
 		}
-		return chunks;
+
+		return ret;
 	}
 
 	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline)
@@ -890,6 +876,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			selectionDetails = (s.selectionStart, s.selectionEnd, _textIndexToGlyph[s.selectionStart], _textIndexToGlyph[Math.Min(_textIndexToGlyph.Length - 1, s.selectionEnd)], s.selectedTextBackgroundBrush, s.selectedTextForegroundBrush);
 		}
 
+		int lastCorrectionIndex = 0;
+
 		for (var index = 0; index < _lines.Count; index++)
 		{
 			var line = _lines[index];
@@ -967,6 +955,64 @@ internal readonly partial struct UnicodeText : IParsedText
 					else
 					{
 						DrawText(glyphs, positions, session, run.inline.Foreground);
+					}
+
+					var runStartIndex = run.startInInline + run.inline.StartIndex;
+					var runEndIndex = run.endInInline + run.inline.StartIndex;
+
+					if (_corrections is not null)
+					{
+						while (lastCorrectionIndex < _corrections.Count && _wordBoundaries[lastCorrectionIndex] <= runStartIndex)
+						{
+							lastCorrectionIndex++;
+						}
+
+						while (lastCorrectionIndex < _corrections.Count && (lastCorrectionIndex == 0 ? 0 : _wordBoundaries[lastCorrectionIndex - 1]) is var wordStart && wordStart < runEndIndex)
+						{
+							var correction = _corrections[lastCorrectionIndex];
+
+							if (correction is not null)
+							{
+								int correctionLeft;
+								int correctionRight;
+								var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
+								var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordStart + correction.Value.correctionEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
+
+								if (run.rtl)
+								{
+									correctionLeft = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : 0;
+									correctionRight = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
+								}
+								else
+								{
+									correctionLeft = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart : 0;
+									correctionRight = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : run.glyphs.Length; // +1 to include the last char
+								}
+
+								var leftX = positions[correctionLeft].X;
+								var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
+
+								var fontSize = (float)run.inline.FontSize;
+								var scale = fontSize / 12.0f;
+								var step = 4 * scale;
+								var amplitude = 2 * scale;
+								var yOffset = 2 * scale;
+
+								using var p = new SKPath();
+								var y = line.y + line.baselineOffset + yOffset;
+								p.MoveTo(currentLineX + leftX, y);
+								for (float x = currentLineX + leftX; x < currentLineX + rightX; x += step)
+								{
+									p.LineTo(x + step / 2, y + amplitude);
+									p.LineTo(x + step, y);
+								}
+
+								_spareSpellCheckPaint.StrokeWidth = scale;
+								session.Canvas.DrawPath(p, _spareSpellCheckPaint);
+							}
+
+							lastCorrectionIndex++;
+						}
 					}
 
 					currentLineX += run.width;
@@ -1161,7 +1207,6 @@ internal readonly partial struct UnicodeText : IParsedText
 				CI.Assert(line == _lines[^1]);
 				return extendedSelection ? (0, _lines[^2].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)) : (-1, null);
 			}
-
 			{
 				if (line.runs[0] is var firstRun && firstRun.xPosInLine + firstRun.line.xAlignmentOffset > p.X)
 				{
@@ -1379,5 +1424,146 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			throw new ArgumentOutOfRangeException(nameof(lineStackingStrategy));
 		}
+	}
+
+	private static List<(int correctionStart, int correctionEnd)?> GetSpellCheckSuggestions(List<int> wordBoundaries, string text)
+	{
+		var ret = new List<(int correctionStart, int correctionEnd)?>();
+		var start = 0;
+		foreach (var end in wordBoundaries)
+		{
+			var word = text.Substring(start, end - start);
+			var startTrimmedWord = word.TrimStart();
+			var trimmedWord = startTrimmedWord.TrimEnd();
+
+			_wordLists ??= GetWordLists();
+
+			if (trimmedWord.Length > 0 && !trimmedWord.Any(c => char.IsPunctuation(c) || char.IsNumber(c) || char.IsSeparator(c) || char.IsWhiteSpace(c) || char.IsSymbol(c)))
+			{
+				if (_wordLists.Any(wordList => wordList.Check(trimmedWord)))
+				{
+					ret.Add(null);
+				}
+				else
+				{
+					var correctionStart = word.Length - startTrimmedWord.Length;
+					var correctionEnd = word.Length - startTrimmedWord.Length + trimmedWord.Length;
+					ret.Add((correctionStart, correctionEnd));
+				}
+			}
+			else
+			{
+				ret.Add(null);
+			}
+
+			start = end;
+		}
+
+		return ret;
+	}
+
+	private static List<WordList> GetWordLists()
+	{
+		var wordLists = new List<WordList>();
+		var assembly = Assembly.GetAssembly(typeof(UnicodeText))!;
+		var enAff = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.aff"));
+		var enDic = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.dic"));
+		wordLists.Add(WordList.CreateFromStreams(assembly.GetManifestResourceStream(enDic), assembly.GetManifestResourceStream(enAff)));
+
+		if (FeatureConfiguration.TextBox.CustomSpellCheckDictionaries is { } dictionaries)
+		{
+			foreach (var (dic, aff) in dictionaries)
+			{
+				if (aff != null)
+				{
+					try
+					{
+						wordLists.Add(WordList.CreateFromStreams(dic, aff));
+					}
+					catch (Exception e)
+					{
+						if (typeof(UnicodeText).Log().IsEnabled(LogLevel.Error))
+						{
+							typeof(UnicodeText).Log().Error($"Failed to load dictionary", e);
+						}
+					}
+				}
+			}
+		}
+
+		return wordLists;
+	}
+
+	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions) GetSpellCheckSuggestions(int correctionStart, int correctionEnd)
+	{
+		var wordBoundaries = _wordBoundaries;
+		var text = _text;
+		var index = wordBoundaries.BinarySearch(correctionStart);
+		var i = index >= 0 ? index + 1 : ~index;
+
+		_wordLists ??= GetWordLists();
+
+		if (i < wordBoundaries.Count)
+		{
+			var boundary = wordBoundaries[i];
+			var start = i == 0 ? 0 : wordBoundaries[i - 1];
+
+			if (start <= correctionStart && boundary >= correctionEnd)
+			{
+				var word = text.Substring(start, boundary - start);
+				var startTrimmedWord = word.TrimStart();
+				var trimmedWord = startTrimmedWord.TrimEnd();
+				var suggestions = _wordLists.SelectMany(wordList => wordList.Suggest(trimmedWord)).Distinct().OrderBy(w => LevenshteinDistance(w, trimmedWord)).ToList();
+				return (start + word.Length - startTrimmedWord.Length, start + word.Length - startTrimmedWord.Length + trimmedWord.Length, suggestions);
+			}
+		}
+		return (correctionStart, correctionEnd, new List<string>(0));
+	}
+
+	private static int LevenshteinDistance(string s, string t)
+	{
+		if (string.IsNullOrEmpty(s))
+		{
+			return string.IsNullOrEmpty(t) ? 0 : t.Length;
+		}
+
+		if (string.IsNullOrEmpty(t))
+		{
+			return s.Length;
+		}
+
+		var n = s.Length;
+		var m = t.Length;
+
+		var prev = new int[m + 1];
+		var curr = new int[m + 1];
+
+		// Initialize first row
+		for (var j = 0; j <= m; j++)
+		{
+			prev[j] = j;
+		}
+
+		for (var i = 1; i <= n; i++)
+		{
+			curr[0] = i;
+			for (var j = 1; j <= m; j++)
+			{
+				var cost = s[i - 1] == t[j - 1] ? 0 : 1;
+
+				curr[j] = Math.Min(
+					Math.Min(
+						prev[j] + 1,        // deletion
+						curr[j - 1] + 1     // insertion
+					),
+					prev[j - 1] + cost      // substitution
+				);
+			}
+
+			// Swap rows
+			(prev, curr) = (curr, prev);
+		}
+
+		return prev[m];
 	}
 }
