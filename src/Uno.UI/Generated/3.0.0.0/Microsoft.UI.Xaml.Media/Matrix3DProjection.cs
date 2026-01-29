@@ -3,14 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
+#if !__SKIA__
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "ProjectionMatrix")]
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Matrix3DProjection : global::Microsoft.UI.Xaml.Media.Projection
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
 		{
 			get
@@ -23,16 +25,16 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ProjectionMatrix), typeof(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D),
 			typeof(global::Microsoft.UI.Xaml.Media.Matrix3DProjection),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public Matrix3DProjection() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Matrix3DProjection", "Matrix3DProjection.Matrix3DProjection()");
