@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
+using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.RemoteControl.Host.Helpers;
 
 namespace Uno.UI.RemoteControl.Host;
@@ -26,8 +27,16 @@ partial class Program
 
 			if (string.IsNullOrWhiteSpace(solution))
 			{
-				var solutionFiles = Directory.EnumerateFiles(workingDir, "*.sln").Concat(Directory.EnumerateFiles(workingDir, "*.slnx")).ToArray();
-				solution = solutionFiles.FirstOrDefault();
+				// Prefer the solution specified in .unoplatform/devserverconfig.json
+				if (DevServerConfig.TryGetSolutionPath(workingDir, out var configuredSolution))
+				{
+					solution = configuredSolution;
+					await Console.Out.WriteLineAsync($"Using solution from .unoplatform/devserverconfig.json: {solution}");
+				}
+				else
+				{
+					solution = SolutionDiscovery.DiscoverFirstSolution(workingDir);
+				}
 			}
 
 			var ambientLogger = NullLogger.Instance;
