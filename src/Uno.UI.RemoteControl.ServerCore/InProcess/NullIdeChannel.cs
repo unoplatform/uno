@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
@@ -7,10 +7,16 @@ using Uno.UI.RemoteControl.Services;
 namespace DevServerCore;
 
 /// <summary>
-/// Minimal IDE channel that immediately reports readiness and keeps communications in-process.
+/// Minimal IDE channel that immediately reports readiness and does not forward outgoing messages.
 /// </summary>
-public sealed class LoopbackIdeChannel : IIdeChannel
+internal sealed class NullIdeChannel : IIdeChannel
 {
+	public static NullIdeChannel Instance { get; } = new();
+
+	private NullIdeChannel()
+	{
+	}
+
 	public event EventHandler<IdeMessage>? MessageFromIde;
 
 	public Task SendToIdeAsync(IdeMessage message, CancellationToken ct)

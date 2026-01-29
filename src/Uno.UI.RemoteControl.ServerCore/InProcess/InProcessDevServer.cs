@@ -71,7 +71,7 @@ public sealed class InProcessDevServer : IAsyncDisposable
 		services.AddSingleton<IIdeChannel>(sp =>
 			options.IdeChannelFactory?.Invoke(sp)
 			?? options.IdeChannel
-			?? new LoopbackIdeChannel());
+			?? NullIdeChannel.Instance);
 
 		services.AddSingleton<IApplicationLaunchMonitor>(sp =>
 			options.ApplicationLaunchMonitorFactory?.Invoke(sp)
