@@ -3137,6 +3137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(true, TextAlignment.Left, true)]
 		[DataRow(false, TextAlignment.Right, false)]
 		[DataRow(true, TextAlignment.Right, false)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // no arabic font support until https://github.com/unoplatform/uno/pull/22240
 		public async Task When_TextAlignment(bool rtlText, TextAlignment? alignment, bool textShouldEndUpOnTheLeft)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
