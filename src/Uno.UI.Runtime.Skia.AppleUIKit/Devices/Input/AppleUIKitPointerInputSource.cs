@@ -27,6 +27,33 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	private const int MaxScrollDelta = 120;
 	private const double MinTranslationThreshold = 1.0;
 	private const double MaxTranslationThreshold = 4.0;
+
+	private static bool IsRunningOnMac()
+	{
+		if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+		{
+			return NSProcessInfo.ProcessInfo.IsiOSApplicationOnMac;
+		}
+		return false;
+	}
+
+	private static bool IsNaturalScrollingEnabled()
+	{
+		if (!IsRunningOnMac())
+		{
+			return false;
+		}
+
+		var defaults = NSUserDefaults.StandardUserDefaults;
+		var key = "com.apple.swipescrolldirection";
+
+		if (defaults[key] == null)
+		{
+			return true;
+		}
+
+		return defaults.BoolForKey(key);
+	}
 #endif
 
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
@@ -215,8 +242,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location)
 	{
-		var scrollDeltaX = (int)(translation.X * ScrollWheelDeltaMultiplier);
-		var scrollDeltaY = (int)(translation.Y * ScrollWheelDeltaMultiplier);
+		var isNaturalScrolling = IsNaturalScrollingEnabled();
+		var multiplier = isNaturalScrolling ? -ScrollWheelDeltaMultiplier : ScrollWheelDeltaMultiplier;
+
+		var scrollDeltaX = (int)(translation.X * multiplier);
+		var scrollDeltaY = (int)(translation.Y * multiplier);
 
 		scrollDeltaX = Math.Sign(scrollDeltaX) * Math.Min(Math.Abs(scrollDeltaX), MaxScrollDelta);
 		scrollDeltaY = Math.Sign(scrollDeltaY) * Math.Min(Math.Abs(scrollDeltaY), MaxScrollDelta);
