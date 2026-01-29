@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _overlayTextBoxViewExtension;
 
-		public TextBox? TextBox => !_textBox.IsDisposed ? _textBox.Target as TextBox : null;
+		public TextBox? TextBox => _textBox.TryGetTarget<TextBox>(out var textBox) ? textBox : null;
 
 		internal int GetSelectionStart() => _overlayTextBoxViewExtension?.GetSelectionStart() ?? 0;
 

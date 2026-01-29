@@ -115,15 +115,7 @@ namespace Microsoft.UI.Xaml
 
 		private bool TryGetTarget(ManagedWeakReference weakReference, out UIElement target)
 		{
-			target = null;
-
-			if (weakReference.IsAlive && weakReference.Target is UIElement weakTarget)
-			{
-				target = weakTarget;
-				return true;
-			}
-
-			return false;
+			return weakReference.TryGetTarget(out target);
 		}
 	}
 }
