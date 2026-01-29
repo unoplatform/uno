@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ItemsRepeater.cpp, commit 1cf9f1c
+// ViewportManager.h, tag winui3/release/1.8.4
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -40,6 +40,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public abstract void OnMakeAnchor(UIElement anchor, bool isAnchorOutsideRealizedRange);
 
 		public abstract void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs args);
+
+		public abstract void ResetLayoutRealizationWindowCacheBuffer();
 
 		public abstract void ResetScrollers();
 	}
