@@ -58,7 +58,7 @@ variables:
   linuxScaledPool: 'Ubuntu2404-20251016'
   macOSVMImage: 'macOS-15'
   macOSVMImage_UITests: 'macOS-14'
-  xCodeRoot: '/Applications/Xcode_26.0.1.app'
+  xCodeRoot: '/Applications/Xcode_26.2.app'
   xCodeRoot_iOS_UITests: '/Applications/Xcode_15.3.app'
 
   # Offline validation to improve build performance
