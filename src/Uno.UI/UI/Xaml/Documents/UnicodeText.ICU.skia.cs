@@ -219,7 +219,7 @@ internal readonly partial struct UnicodeText
 		public delegate IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate IntPtr ubrk_close(IntPtr bi);
+		public delegate void ubrk_close(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubrk_first(IntPtr bi);
@@ -282,6 +282,18 @@ internal readonly partial struct UnicodeText
 			static extern int uno_ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
 
 			[DllImport("unoicu")]
+			static extern IntPtr uno_ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
+
+			[DllImport("unoicu")]
+			static extern void uno_ubrk_close(IntPtr bi);
+
+			[DllImport("unoicu")]
+			static extern int uno_ubrk_first(IntPtr bi);
+
+			[DllImport("unoicu")]
+			static extern int uno_ubrk_next(IntPtr bi);
+
+			[DllImport("unoicu")]
 			static extern void uno_u_getVersion(out UVersionInfo versionInfo);
 
 			[DllImport("unoicu")]
@@ -318,7 +330,7 @@ internal readonly partial struct UnicodeText
 			static extern IntPtr ubrk_open_77(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 			[DllImport("__Internal")]
-			static extern IntPtr ubrk_close_77(IntPtr bi);
+			static extern void ubrk_close_77(IntPtr bi);
 
 			[DllImport("__Internal")]
 			static extern int ubrk_first_77(IntPtr bi);
