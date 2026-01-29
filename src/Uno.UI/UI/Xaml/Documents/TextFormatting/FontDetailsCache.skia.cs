@@ -12,6 +12,7 @@ using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
+using Uno.Foundation.Extensibility;
 using Uno.Helpers;
 using SKFontStyleWidth = SkiaSharp.SKFontStyleWidth;
 
@@ -33,6 +34,7 @@ internal static class FontDetailsCache
 
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
+	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(UnicodeText), out var service) ? service : null;
 
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
@@ -72,7 +74,7 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static Task<SKTypeface?> GetFontInternal(
+	private static async Task<SKTypeface?> GetFontInternal(
 		string name,
 		FontWeight weight,
 		FontStretch stretch,
@@ -90,12 +92,16 @@ internal static class FontDetailsCache
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
-			return LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
 		else
 		{
+			if (_fontFallbackService is not null && await _fontFallbackService.GetTypefaceForFontName(name, weight, stretch, style) is { } typeface)
+			{
+				return typeface;
+			}
 			// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-			return Task.FromResult<SKTypeface?>(SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant));
+			return SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
 		}
 	}
 
@@ -147,16 +153,28 @@ internal static class FontDetailsCache
 		}
 
 		var details = FontDetails.Create(typeface, fontSize);
+		var detailsTask = AwaitDetails(typefaceTask);
+		return (details, detailsTask);
 
-		var detailsTask = typefaceTask.ContinueWith(t =>
+		async Task<FontDetails> AwaitDetails(Task<SKTypeface?> t)
 		{
-			var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
+			SKTypeface? loadedTypeface = null;
+			Exception? exception = null;
+
+			try
+			{
+				loadedTypeface = await t;
+			}
+			catch (Exception e)
+			{
+				exception = e;
+			}
 
 			if (loadedTypeface is null)
 			{
 				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
+					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", exception);
 				}
 
 				return details;
@@ -165,8 +183,7 @@ internal static class FontDetailsCache
 			{
 				return FontDetails.Create(loadedTypeface, details.SKFontSize);
 			}
-		});
-		return (details, detailsTask);
+		}
 	});
 
 	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
@@ -175,4 +192,38 @@ internal static class FontDetailsCache
 		FontWeight weight,
 		FontStretch stretch,
 		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
+
+	public static bool GetFontOrDefault(
+		string? name,
+		float fontSize,
+		FontWeight weight,
+		FontStretch stretch,
+		FontStyle style,
+		Action onFontLoaded,
+		out FontDetails fontDetails)
+	{
+		var (tempFont, task) = GetFont(name, fontSize, weight, stretch, style);
+		if (!task.IsCompleted)
+		{
+			async void Wait()
+			{
+				try
+				{
+					await task;
+				}
+				catch (Exception e)
+				{
+					typeof(FontDetailsCache).LogError()?.Error($"Error loading font {name} asynchronously", e);
+				}
+
+				onFontLoaded();
+			}
+
+			Wait();
+		}
+
+		var completedSuccessfully = task.IsCompletedSuccessfully;
+		fontDetails = completedSuccessfully ? task.Result : tempFont;
+		return completedSuccessfully;
+	}
 }
