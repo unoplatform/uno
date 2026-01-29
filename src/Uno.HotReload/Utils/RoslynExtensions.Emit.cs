@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace Uno.HotReload.Utils;
 
@@ -61,5 +63,19 @@ public static partial class RoslynExtensions
 		}
 
 		return results.ToImmutable();
+	}
+
+	public static void EnsureSuccess(this ImmutableDictionary<Project, EmitResult> emitResult)
+	{
+		var failures = emitResult
+			.Where(p => p.Value.Success is false)
+			.Select(p => new CompilationErrorException($"Compilation of {p.Key.FilePath} filed.", p.Value.Diagnostics) as Exception)
+			.ToArray();
+
+		switch (failures.Length)
+		{
+			case 1: throw failures[0];
+			case > 1: throw new AggregateException("Multiple compilation failures.", failures);
+		}
 	}
 }

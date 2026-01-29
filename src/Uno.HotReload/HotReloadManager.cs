@@ -32,7 +32,8 @@ public sealed class HotReloadManager : IDisposable
 		if (forceEmitCompilationOutput
 			|| initialWorkspace.CurrentSolution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
 		{
-			await initialWorkspace.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
+			var result = await initialWorkspace.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
+			result.EnsureSuccess();
 		}
 
 		var watch = await WatchHotReloadService.CreateAsync(initialWorkspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
