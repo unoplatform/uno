@@ -70,13 +70,13 @@ public sealed class HotReloadTracker(
 	internal ValueTask<bool> TryRequestHotReload(CancellationToken ct)
 		=> _tryRequestHotReload(ct);
 
-	public async ValueTask<HotReloadOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
+	public async ValueTask<HotReloadOperation> StartHotReload(ImmutableHashSet<string>? files)
 	{
 		var previous = Current;
 		HotReloadOperation? @new;
 		while (true)
 		{
-			@new = new HotReloadOperation(this, previous, filesPaths);
+			@new = new HotReloadOperation(this, previous, files);
 			var current = Interlocked.CompareExchange(ref _current, @new, previous);
 			if (current == previous)
 			{
@@ -94,10 +94,10 @@ public sealed class HotReloadTracker(
 		return @new;
 	}
 
-	public async ValueTask<HotReloadOperation> StartOrContinueHotReload(ImmutableHashSet<string>? filesPaths = null)
-		=> Current is { } current && (filesPaths is null || current.TryMerge(filesPaths))
+	public async ValueTask<HotReloadOperation> StartOrContinueHotReload(ImmutableHashSet<string>? files = null)
+		=> Current is { } current && (files is null || current.TryMerge(files))
 			? current
-			: await StartHotReload(filesPaths).ConfigureAwait(false);
+			: await StartHotReload(files).ConfigureAwait(false);
 
 	public ValueTask AbortHotReload()
 		=> Current?.Complete(HotReloadOperationResult.Aborted) ?? SendUpdate();

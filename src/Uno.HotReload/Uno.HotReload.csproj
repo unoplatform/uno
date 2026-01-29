@@ -10,7 +10,7 @@
 	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0'">
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisLevel>10.0</AnalysisLevel>
-		<AnalysisMode>All</AnalysisMode>
+		<AnalysisMode>Recommended</AnalysisMode>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 

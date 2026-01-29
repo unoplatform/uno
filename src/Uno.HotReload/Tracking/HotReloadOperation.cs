@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1001 // Type 'HotReloadOperation' owns disposable field(s) '_timeout' but is not disposable ==> _timer is disposed in Complete.
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -76,7 +78,7 @@ public class HotReloadOperation
 		_consideredFilePaths = filePaths ?? _empty;
 
 		_timeout = new Timer(
-			static that => _ = ((HotReloadOperation)that!).Complete(HotReloadOperationResult.Aborted),
+			static that => _ = ((HotReloadOperation)that!).Complete(HotReloadOperationResult.Aborted).AsTask(),
 			this,
 			_timeoutDelay,
 			Timeout.InfiniteTimeSpan);
