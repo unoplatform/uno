@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Disposables;
@@ -21,8 +22,14 @@ namespace Uno.HotReload;
 /// directories. It is intended for use with hot reload scenarios, where timely detection of file changes is required.
 /// This class is not thread-safe and should be disposed when no longer needed to release file system watcher
 /// resources.</remarks>
-public sealed class FileSystemObserver : IDisposable
+public sealed partial class FileSystemObserver : IDisposable
 {
+	[GeneratedRegex("net\\d+(?:\\.\\d+)*(?:-[A-Za-z][A-Za-z0-9]*)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+	private static partial Regex TfmRegex();
+
+	[GeneratedRegex("(debug|release)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+	private static partial Regex ConfigRegex();
+	
 	private readonly HotReloadManager _manager;
 	private readonly IReporter _reporter;
 	private readonly BufferGate _solutionWatchersGate;
@@ -40,18 +47,15 @@ public sealed class FileSystemObserver : IDisposable
 	private IDisposable Enable()
 	{
 		var solution = _manager.CurrentSolution;
-		var excludedDirPattern = new[] { "bin", "obj" };
 
-		// TODO: Resolve the bin and obj folders from the project (instead of assuming same config for all projects)
-		// e.g.: projectDir.First().AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.intermediateoutputpath", out string value)
-		// Not implemented yet: for a netstd2.0 project, we don't have properties such intermediateoutputpath available!
 		ImmutableArray<string> excludedDir =
 		[
-			.. from pattern in excludedDirPattern
-			where pattern is not null
-			from project in solution.Projects
-			let projectDir = Path.GetDirectoryName(project.FilePath)!
-			select Path.Combine(projectDir, pattern).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+			.. from project in solution.Projects
+			let projectDir = Path.GetDirectoryName(project.FilePath)
+			from outputPath in new[] { project.OutputFilePath, project.CompilationOutputInfo.AssemblyPath }
+			let excludedRoot = GetExcludedRoot(projectDir, outputPath)
+			where excludedRoot is not null
+			select excludedRoot
 		];
 
 		var watchers = solution
@@ -114,6 +118,68 @@ public sealed class FileSystemObserver : IDisposable
 
 			return true;
 		}
+
+		static string? GetExcludedRoot(string? projectDir, string? outputFilePath)
+		{
+			if (string.IsNullOrWhiteSpace(projectDir) || string.IsNullOrWhiteSpace(outputFilePath))
+			{
+				return null;
+			}
+
+			var directory = Path.GetDirectoryName(outputFilePath);
+			if (string.IsNullOrWhiteSpace(directory))
+			{
+				return null;
+			}
+
+			projectDir = projectDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			directory = directory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+			// Strategy 1: If the output is under the project directory, exclude the first sub-level
+			// (e.g. projectDir\bin\... -> exclude projectDir\bin, same for any custom first-level folder).
+			if (directory.StartsWith(projectDir, PathComparer.Comparison)
+				&& directory.Length > projectDir.Length
+				&& (directory[projectDir.Length] == Path.DirectorySeparatorChar || directory[projectDir.Length] == Path.AltDirectorySeparatorChar))
+			{
+				var relative = directory.Substring(projectDir.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+				var separatorIndex = relative.IndexOfAny(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+				var firstSubLevel = separatorIndex >= 0 ? relative[..separatorIndex] : relative;
+				if (!string.IsNullOrWhiteSpace(firstSubLevel))
+				{
+					return Path.Combine(projectDir, firstSubLevel).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+				}
+			}
+
+			// Strategy 2: If output is outside the project directory, trim trailing TFM/config segments
+			// (e.g. ...\Debug\net10.0-desktop -> ...).
+			var outputDir = directory;
+			while (true)
+			{
+				var updated = outputDir;
+				var leaf = Path.GetFileName(updated);
+				if (!string.IsNullOrWhiteSpace(leaf))
+				{
+					if (TfmRegex().IsMatch(leaf) || ConfigRegex().IsMatch(leaf))
+					{
+						var parent = Path.GetDirectoryName(updated);
+						if (!string.IsNullOrWhiteSpace(parent))
+						{
+							updated = parent.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+						}
+					}
+				}
+
+				if (string.Equals(updated, outputDir, StringComparison.Ordinal))
+				{
+					break;
+				}
+
+				outputDir = updated;
+			}
+
+			return outputDir;
+		}
+
 	}
 
 	private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter, BufferGate bufferGate)
