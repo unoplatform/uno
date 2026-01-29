@@ -250,17 +250,11 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				if (telemetry is not null)
 				{
-					// Track devserver startup failure
+					// Track devserver startup failure using TrackException
 					var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
-					var errorProperties = new Dictionary<string, string>
-					{
-						["StartupErrorMessage"] = ex.Message,
-						["StartupErrorType"] = ex.GetType().Name,
-						["StartupStackTrace"] = ex.StackTrace ?? "",
-					};
 					var errorMeasurements = new Dictionary<string, double> { ["UptimeSeconds"] = uptime.TotalSeconds, };
 
-					telemetry.TrackEvent("startup-failure", errorProperties, errorMeasurements);
+					telemetry.TrackException(ex, properties: null, errorMeasurements);
 					await telemetry.FlushAsync(CancellationToken.None);
 					throw;
 				}

@@ -86,11 +86,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				try
 				{
-					_telemetry.TrackEvent(
-						"generate-xaml-failed",
-						new[] {
-							("ExceptionType", exception.GetType().ToString())
-						},
+					_telemetry.TrackException(
+						exception,
+						properties: null,
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}

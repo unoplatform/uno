@@ -110,17 +110,12 @@ public class AddIns
 		}
 		catch (Exception ex)
 		{
-			var errorProperties = new Dictionary<string, string>
-			{
-				["DiscoveryErrorMessage"] = ex.Message,
-				["DiscoveryErrorType"] = ex.GetType().Name,
-			};
 			var errorMeasurements = new Dictionary<string, double>
 			{
 				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 			};
 
-			telemetry?.TrackEvent("addin-discovery-error", errorProperties, errorMeasurements);
+			telemetry?.TrackException(ex, properties: null, errorMeasurements);
 			throw;
 		}
 	}

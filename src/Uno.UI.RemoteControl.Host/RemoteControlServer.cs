@@ -599,13 +599,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				this.Log().LogError("Failed to process discovery frame: {Exc}", exc);
 			}
 
-			// Track processor discovery error
-			var errorProperties = new Dictionary<string, string>
-			{
-				["DiscoveryErrorMessage"] = exc.Message,
-				["DiscoveryErrorType"] = exc.GetType().Name,
-			};
-
+			// Track processor discovery error using TrackException
 			var errorMeasurements = new Dictionary<string, double>
 			{
 				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
@@ -614,7 +608,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				["DiscoveryProcessorsFailedCount"] = processorsFailed,
 			};
 
-			_telemetry?.TrackEvent("processor-discovery-error", errorProperties, errorMeasurements);
+			_telemetry?.TrackException(exc, properties: null, errorMeasurements);
 		}
 		finally
 		{

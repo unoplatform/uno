@@ -68,19 +68,13 @@ public class AssemblyHelper
 		}
 		catch (Exception ex)
 		{
-			var errorProperties = new Dictionary<string, string>
-			{
-				["AssemblyLoadErrorMessage"] = ex.Message,
-				["AssemblyLoadErrorType"] = ex.GetType().Name,
-			};
-
 			var errorMeasurements = new Dictionary<string, double>
 			{
 				["AssemblyLoadDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 				["AssemblyLoadFailedAssembliesCount"] = failedCount,
 			};
 
-			telemetry?.TrackEvent("addin-loading-error", errorProperties, errorMeasurements);
+			telemetry?.TrackException(ex, properties: null, errorMeasurements);
 			throw;
 		}
 	}

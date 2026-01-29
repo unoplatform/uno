@@ -2,6 +2,8 @@
 
 This document summarizes all Hot Reload telemetry events emitted by the server (`ServerHotReloadProcessor.Notify`).
 
+**Note:** Starting with Uno.DevTools.Telemetry v1.3.0, exceptions are tracked using the `TrackException` API instead of encoding exception details (ErrorMessage, ErrorType) as properties in `TrackEvent` calls. This provides better grouping, analytics, and diagnostics in Application Insights and other telemetry backends.
+
 Event name prefix: uno/dev-server/hot-reload
 
 | Event Name              | Main Properties  (with hotreload/ prefix)             | Measurements (with hotreload/ prefix) |
@@ -16,7 +18,7 @@ Event name prefix: uno/dev-server/hot-reload
 | **notify-failed** [[src]](HotReload/ServerHotReloadProcessor.cs#L201)           | Event, Source, PreviousState                          | FileCount, DurationMs (optional)      |
 | **notify-rude-edit** [[src]](HotReload/ServerHotReloadProcessor.cs#L206)        | Event, Source, PreviousState                          | FileCount, DurationMs (optional)      |
 | **notify-complete** [[src]](HotReload/ServerHotReloadProcessor.cs#L212)         | Event, Source, PreviousState, NewState, HasCurrentOperation  | FileCount, DurationMs (optional)      |
-| **notify-error** [[src]](HotReload/ServerHotReloadProcessor.cs#L221)            | Event, Source, PreviousState, NewState, HasCurrentOperation, ErrorMessage, ErrorType | FileCount, DurationMs (optional) |
+| **notify-error** [[src]](HotReload/ServerHotReloadProcessor.cs#L221)            | Event, Source, PreviousState, NewState, HasCurrentOperation, *(exception tracked via TrackException)* | FileCount, DurationMs (optional) |
 
 ## Property Value Examples
 
@@ -26,8 +28,6 @@ Event name prefix: uno/dev-server/hot-reload
 - **PreviousState**: `"Ready"`, `"Disabled"`, `"Initializing"`, `"Processing"`
 - **NewState**: `"Ready"`, `"Disabled"`, `"Initializing"`, `"Processing"`
 - **HasCurrentOperation**
-- **ErrorMessage**: `"Compilation failed"`, `"Syntax error"`
-- **ErrorType**: `"CompilationException"`, `"SyntaxException"`
 
 ## Property Details
 - **Event**: The type of event that triggered the notification
@@ -37,6 +37,6 @@ Event name prefix: uno/dev-server/hot-reload
 - **HasCurrentOperation**: Indicates if a Hot Reload operation is in progress (only present in notify-complete and notify-error)
 - **FileCount**: Number of files affected by the operation (only present if there is a current operation)
 - **DurationMs**: Duration of the operation in milliseconds (only present if the operation has completed)
-- **ErrorMessage**/**ErrorType**: Only present on notify-error events
+- For **notify-error** events, exception details are captured via the TrackException API (no longer as ErrorMessage/ErrorType properties)
 
 All events are tracked server-side in `Notify()`.
