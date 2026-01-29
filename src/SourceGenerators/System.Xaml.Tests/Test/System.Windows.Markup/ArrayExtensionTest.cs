@@ -128,7 +128,7 @@ namespace MonoTests.System.Windows.Markup
 				var x = new ArrayExtension(new int[] { 1, 3 });
 				x.AddChild(new object());
 				x.AddChild(null); // allowed
-				Assert.HasCount(4, x.Items);
+				Assert.AreEqual(4, x.Items.Count);
 				x.ProvideValue(null);
 			});
 		}
