@@ -25,7 +25,7 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
-	// Overriden connection to server
+	// Overridden connection to server
 	private static IFrameTransport? _connectionTransportOverride;
 
 	private readonly string? _additionalServerProcessorsDiscoveryPath;

@@ -83,12 +83,17 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 						}
 						else
 						{
+							if (instance is IDisposable disposable)
+							{
+								disposable.Dispose();
+							}
+
 							discoveredProcessors.Add(new(
 								asm.Path,
 								attribute.ProcessorType.FullName ?? attribute.ProcessorType.Name,
 								VersionHelper.GetVersion(attribute.ProcessorType),
 								IsLoaded: false));
-							_logger.LogWarning("ActivatorUtilities returned null for processor {Processor}", attribute.ProcessorType);
+							_logger.LogWarning("Created instance is not an IServerProcessor for {Processor}", attribute.ProcessorType);
 						}
 					}
 					catch (Exception ex)

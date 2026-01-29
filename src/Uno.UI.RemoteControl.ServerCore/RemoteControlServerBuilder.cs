@@ -8,15 +8,13 @@ namespace Uno.UI.RemoteControl.ServerCore;
 /// </summary>
 public sealed class RemoteControlServerBuilder
 {
-	private readonly IServiceCollection _services;
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RemoteControlServerBuilder"/> class.
 	/// </summary>
 	/// <param name="services">Service collection provided by the host environment.</param>
 	public RemoteControlServerBuilder(IServiceCollection services)
 	{
-		_services = services ?? throw new ArgumentNullException(nameof(services));
+		_ = services ?? throw new ArgumentNullException(nameof(services));
 	}
 
 	/// <summary>

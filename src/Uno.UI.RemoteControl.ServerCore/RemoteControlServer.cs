@@ -291,7 +291,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().LogWarning(
-					"Client ping frame (a.k.a. KeepAlive), but failed to deserialize it's content. "
+					"Client ping frame (a.k.a. KeepAlive), but failed to deserialize its content. "
 					+ $"This usually indicates a version mismatch between client and server (server: {pong.AssemblyVersion})."
 					+ "Some feature like hot-reload are most likely to fail. To fix this, you might have to restart Visual Studio.");
 			}

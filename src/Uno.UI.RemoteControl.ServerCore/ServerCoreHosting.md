@@ -23,7 +23,7 @@ ServerCore purposely owns only abstractions; the host must register concrete ser
 > Tip: `Uno.UI.RemoteControl.Server.Helpers.ServiceCollectionExtensions` already contains helpers such as `AddRemoteControlServerCore()`, `AddConnectionTelemetry()`, and `AddGlobalTelemetry()`. Reference `Uno.UI.RemoteControl.Server` if you want the default implementations instead of maintaining your own.
 
 ## Quick-start helper: `InProcessDevServer`
-When you do not want to assemble the dependency graph yourself, use [src/Uno.UI.RemoteControl.ServerCore/InProcess/InProcessDevServer.cs](src/Uno.UI.RemoteControl.ServerCore/InProcess/InProcessDevServer.cs). It lives in the `DevServerCore` namespace, creates all required services, and exposes a single method that hands an `IFrameTransport` to your runtime without touching Kestrel.
+When you do not want to assemble the dependency graph yourself, use [InProcess/InProcessDevServer.cs](InProcess/InProcessDevServer.cs). It lives in the `DevServerCore` namespace, creates all required services, and exposes a single method that hands an `IFrameTransport` to your runtime without touching Kestrel.
 
 ```csharp
 using System.Threading;

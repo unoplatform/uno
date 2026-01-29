@@ -56,7 +56,6 @@ public sealed class InProcessDevServer : IAsyncDisposable
 	/// Creates a new devserver helper using the provided configuration callback.
 	/// </summary>
 	/// <param name="configure">Optional callback used to customize dependency injection registrations.</param>
-	/// <param name="ct">Cancellation token observed while initializing the devserver.</param>
 	public static InProcessDevServer Create(Action<DevServerCoreHostOptions>? configure = null)
 	{
 		var options = new DevServerCoreHostOptions();
