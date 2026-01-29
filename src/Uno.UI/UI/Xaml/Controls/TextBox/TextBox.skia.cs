@@ -67,9 +67,6 @@ public partial class TextBox
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
-	private MenuFlyout _contextMenu;
-	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
-
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
 	internal TextBoxView TextBoxView => _textBoxView;
@@ -124,6 +121,9 @@ public partial class TextBox
 		get => GetCanRedoValue();
 		private set => SetCanRedoValue(value);
 	}
+
+	// Note: SelectionFlyout property is defined in generated code.
+	// Default value lookup is handled in DependencyProperty.GetDefaultValue().
 
 	private void UpdateCanUndoRedo()
 	{
@@ -382,7 +382,7 @@ public partial class TextBox
 		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
 		{
 			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
-			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			var isFocused = FocusState != FocusState.Unfocused || (ContextFlyout?.IsOpen ?? false);
 			displayBlock.RenderSelection = isFocused;
 			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
 				SelectionLength == 0 &&
@@ -430,6 +430,100 @@ public partial class TextBox
 
 		return point;
 	}
+
+	#region SelectionFlyout Support
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.h (lines 225-226)
+	// m_lastInputDeviceType, m_lastPointerPositionForFlyout
+	private PointerDeviceType _lastInputDeviceType;
+	private Point _lastPointerPosition;
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
+	// HasContextFlyout() and HasSelectionFlyout()
+	private bool HasContextFlyout() => ContextFlyout is not null;
+	private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/dxaml/lib/TextBoxBase_Partial.cpp
+	// Handle ContextFlyout/SelectionFlyout coordination - ContextFlyout takes priority
+	private protected override void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
+	{
+		base.OnContextFlyoutChanged(oldValue, newValue);
+
+		if (oldValue is not null)
+		{
+			oldValue.Opening -= OnContextFlyoutOpening;
+		}
+		if (newValue is not null)
+		{
+			newValue.Opening += OnContextFlyoutOpening;
+		}
+	}
+
+	private void OnContextFlyoutOpening(object sender, object e)
+	{
+		// Close SelectionFlyout when ContextFlyout opens (ContextFlyout takes priority)
+		SelectionFlyout?.Hide();
+	}
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5349-5377)
+	// QueueUpdateSelectionFlyoutVisibility - queues async visibility update
+	private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+	{
+		_lastInputDeviceType = deviceType;
+		_lastPointerPosition = position;
+
+		// Use dispatcher to queue the update
+		DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+	}
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5379-5452)
+	// UpdateSelectionFlyoutVisibility - shows/hides SelectionFlyout based on device type and selection
+	private void UpdateSelectionFlyoutVisibility()
+	{
+		// Line 5383: Only shows SelectionFlyout if ContextFlyout is NOT open
+		if (!HasSelectionFlyout() || (ContextFlyout?.IsOpen ?? false))
+		{
+			return;
+		}
+
+		var selectionLength = SelectionLength;
+		var showMode = FlyoutShowMode.Transient;
+		var shouldShow = false;
+
+		switch (_lastInputDeviceType)
+		{
+			case PointerDeviceType.Mouse:
+				// Line 5389-5401: Mouse input - only for RichEditBox, NOT TextBox
+				shouldShow = false;
+				break;
+
+			case PointerDeviceType.Pen:
+			case PointerDeviceType.Touch:
+				// Line 5403-5411: Pen/Touch - show if selection exists
+				if (selectionLength > 0)
+				{
+					shouldShow = true;
+					showMode = FlyoutShowMode.Transient;
+				}
+				break;
+
+			default:
+				// Line 5413-5415: Keyboard/other - never show SelectionFlyout
+				shouldShow = false;
+				break;
+		}
+
+		if (shouldShow)
+		{
+			SelectionFlyout?.ShowAt(this, new FlyoutShowOptions
+			{
+				Position = _lastPointerPosition,
+				ShowMode = showMode
+			});
+		}
+	}
+
+	#endregion
 
 	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
