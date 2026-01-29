@@ -86,10 +86,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				try
 				{
+					var measurements = new Dictionary<string, double>
+					{
+						["Duration"] = elapsed.TotalSeconds
+					};
+
 					_telemetry.TrackException(
 						exception,
 						properties: null,
-						new[] { ("Duration", elapsed.TotalSeconds) }
+						measurements
 					);
 				}
 #pragma warning disable CS0168 // unused parameter
