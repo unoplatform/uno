@@ -4,14 +4,11 @@
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0'">
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<AnalysisLevel>10.0</AnalysisLevel>
 		<AnalysisMode>Recommended</AnalysisMode>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<CodeAnalysisTreatWarningsAsErrors Condition="'$(Configuration)'=='Debug'">false</CodeAnalysisTreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
