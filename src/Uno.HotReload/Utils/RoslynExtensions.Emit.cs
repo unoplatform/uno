@@ -18,7 +18,7 @@ public static partial class RoslynExtensions
 		var results = ImmutableDictionary.CreateBuilder<Project, EmitResult>();
 		foreach (var project in solution.Projects)
 		{
-			var compilation = await project.GetCompilationAsync(ct);
+			var compilation = await project.GetCompilationAsync(ct).ConfigureAwait(false);
 
 			var dllPath = project.OutputFilePath ?? throw new InvalidOperationException("No OutputFilePath defined.");
 			if (Path.GetDirectoryName(dllPath) is { } binDir)
@@ -48,7 +48,7 @@ public static partial class RoslynExtensions
 		var results = ImmutableDictionary.CreateBuilder<Project, EmitResult>();
 		foreach (var project in solution.Projects)
 		{
-			var compilation = await project.GetCompilationAsync(ct);
+			var compilation = await project.GetCompilationAsync(ct).ConfigureAwait(false);
 
 			var dllPath = project.CompilationOutputInfo.AssemblyPath ?? throw new InvalidOperationException("No CompilationOutputInfo.AssemblyPath defined.");
 			if (Path.GetDirectoryName(dllPath) is { } objDir)

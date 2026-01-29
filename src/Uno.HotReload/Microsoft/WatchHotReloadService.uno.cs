@@ -12,15 +12,15 @@ partial class WatchHotReloadService
 	{
 		var currentSolution = workspace.CurrentSolution;
 		var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
-		await hotReloadService.StartSessionAsync(currentSolution, ct);
+		await hotReloadService.StartSessionAsync(currentSolution, ct).ConfigureAwait(false);
 
 		// Read the documents to memory
-		await Task.WhenAll(currentSolution.Projects.SelectMany(p => p.Documents.Concat(p.AdditionalDocuments)).Select(d => d.GetTextAsync(ct)));
+		await Task.WhenAll(currentSolution.Projects.SelectMany(p => p.Documents.Concat(p.AdditionalDocuments)).Select(d => d.GetTextAsync(ct))).ConfigureAwait(false);
 
 		// Warm up the compilation. This would help make the deltas for first edit appear much more quickly
 		foreach (var project in currentSolution.Projects)
 		{
-			var c = await project.GetCompilationAsync(ct);
+			var c = await project.GetCompilationAsync(ct).ConfigureAwait(false);
 		}
 
 		return hotReloadService;

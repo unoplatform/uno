@@ -18,13 +18,13 @@ internal static class ChangeSetExtensions
 		// Update existing documents
 		foreach (var document in changeSet.EditedDocuments)
 		{
-			solution = solution.WithDocumentText(document.Id, await GetSourceTextAsync(document.FilePath!, ct));
+			solution = solution.WithDocumentText(document.Id, await GetSourceTextAsync(document.FilePath!, ct).ConfigureAwait(false));
 		}
 
 		// Update existing additional documents
 		foreach (var additionalDocument in changeSet.EditedAdditionalDocuments)
 		{
-			solution = solution.WithAdditionalDocumentText(additionalDocument.Id, await GetSourceTextAsync(additionalDocument.FilePath!, ct));
+			solution = solution.WithAdditionalDocumentText(additionalDocument.Id, await GetSourceTextAsync(additionalDocument.FilePath!, ct).ConfigureAwait(false));
 		}
 
 		foreach (var projectWithEditedAdditionalDocument in changeSet.EditedAdditionalDocuments.Select(ad => ad.Project.Id).Distinct())
@@ -87,7 +87,7 @@ internal static class ChangeSetExtensions
 				.Where(config => config.FilePath is not null);
 			foreach (var analyzerConfig in analyzersConfigs)
 			{
-				solution = solution.WithAnalyzerConfigDocumentText(analyzerConfig.Id, await GetSourceTextAsync(analyzerConfig.FilePath!, ct));
+				solution = solution.WithAnalyzerConfigDocumentText(analyzerConfig.Id, await GetSourceTextAsync(analyzerConfig.FilePath!, ct).ConfigureAwait(false));
 			}
 		}
 
@@ -102,12 +102,12 @@ internal static class ChangeSetExtensions
 		{
 			try
 			{
-				await using var stream = File.OpenRead(filePath);
+				using var stream = File.OpenRead(filePath);
 				return SourceText.From(stream, Encoding.UTF8);
 			}
 			catch (IOException) when (attemptIndex < 5)
 			{
-				await Task.Delay(20 * (attemptIndex + 1), ct);
+				await Task.Delay(20 * (attemptIndex + 1), ct).ConfigureAwait(false);
 			}
 		}
 

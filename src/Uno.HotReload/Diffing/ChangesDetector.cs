@@ -75,7 +75,7 @@ internal class ChangesDetector(Func<CancellationToken, ValueTask<Workspace>> Cre
 			}
 		}
 
-		var added = await DiscoverNewFilesAsync(ImmutableHashSet.CreateRange(potentiallyAdded), ct);
+		var added = await DiscoverNewFilesAsync(ImmutableHashSet.CreateRange(potentiallyAdded), ct).ConfigureAwait(false);
 
 		return new(
 			[.. editedDocuments],
@@ -102,7 +102,7 @@ internal class ChangesDetector(Func<CancellationToken, ValueTask<Workspace>> Cre
 			reporter.Output($"Detected {newFiles.Count} potentially new file(s). Creating temporary workspace to discover them...");
 
 			// Create a temporary workspace to discover the new files
-			tempWorkspace = await CreateWorkspace(ct);
+			tempWorkspace = await CreateWorkspace(ct).ConfigureAwait(false);
 
 			var discoveredDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 			var discoveredAdditionalDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();

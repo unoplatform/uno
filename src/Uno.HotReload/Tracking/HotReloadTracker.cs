@@ -51,11 +51,11 @@ public sealed class HotReloadTracker(
 
 		if (state is HotReloadState.Disabled)
 		{
-			await AbortHotReload();
+			await AbortHotReload().ConfigureAwait(false);
 		}
 		else
 		{
-			await SendUpdate();
+			await SendUpdate().ConfigureAwait(false);
 		}
 	}
 
@@ -63,7 +63,7 @@ public sealed class HotReloadTracker(
 	{
 		if (Current is null)
 		{
-			await StartHotReload(null);
+			await StartHotReload(null).ConfigureAwait(false);
 		}
 	}
 
@@ -89,7 +89,7 @@ public sealed class HotReloadTracker(
 		}
 
 		// Notify the start of new hot-reload operation
-		await SendUpdate();
+		await SendUpdate().ConfigureAwait(false);
 
 		return @new;
 	}
@@ -97,7 +97,7 @@ public sealed class HotReloadTracker(
 	public async ValueTask<HotReloadOperation> StartOrContinueHotReload(ImmutableHashSet<string>? filesPaths = null)
 		=> Current is { } current && (filesPaths is null || current.TryMerge(filesPaths))
 			? current
-			: await StartHotReload(filesPaths);
+			: await StartHotReload(filesPaths).ConfigureAwait(false);
 
 	public ValueTask AbortHotReload()
 		=> Current?.Complete(HotReloadOperationResult.Aborted) ?? SendUpdate();
@@ -145,7 +145,7 @@ public sealed class HotReloadTracker(
 			}
 		}
 
-		await sendState(new(state, operations, serverError), default);
+		await sendState(new(state, operations, serverError), default).ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />

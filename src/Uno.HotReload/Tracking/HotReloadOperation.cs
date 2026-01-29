@@ -160,10 +160,10 @@ public class HotReloadOperation
 		if (Interlocked.CompareExchange(ref _deferredCompletion, new CancellationTokenSource(), null) is null)
 		{
 			_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
-			await Task.Delay(TimeSpan.FromSeconds(1), _deferredCompletion.Token);
+			await Task.Delay(TimeSpan.FromSeconds(1), _deferredCompletion.Token).ConfigureAwait(false);
 			if (!_deferredCompletion.IsCancellationRequested)
 			{
-				await Complete(result, exception);
+				await Complete(result, exception).ConfigureAwait(false);
 			}
 		}
 	}
@@ -179,10 +179,10 @@ public class HotReloadOperation
 		{
 			if (_noChangesRetryDelay is { TotalMilliseconds: > 0 })
 			{
-				await Task.Delay(_noChangesRetryDelay);
+				await Task.Delay(_noChangesRetryDelay).ConfigureAwait(false);
 			}
 
-			if (await _owner.TryRequestHotReload(default))
+			if (await _owner.TryRequestHotReload(default).ConfigureAwait(false))
 			{
 				return;
 			}
@@ -203,7 +203,7 @@ public class HotReloadOperation
 		_diagnostics = diagnostics;
 
 		CompletionTime = DateTimeOffset.Now;
-		await _timeout.DisposeAsync();
+		await _timeout.DisposeAsync().ConfigureAwait(false);
 
 		// Consider previous hot-reload operation(s) as aborted (this is actually a chain list)
 		if (_previous is not null)
@@ -212,12 +212,12 @@ public class HotReloadOperation
 				HotReloadOperationResult.Aborted,
 				new TimeoutException("An more recent hot-reload operation has completed."),
 				isFromNext: true,
-				diagnostics: null);
+				diagnostics: null).ConfigureAwait(false);
 		}
 
 		if (!isFromNext) // Only the head of the list should request update
 		{
-			await _owner.SendUpdate(this);
+			await _owner.SendUpdate(this).ConfigureAwait(false);
 		}
 	}
 }

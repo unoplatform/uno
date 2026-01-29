@@ -50,7 +50,7 @@ internal partial class WatchHotReloadService
 
 						if (r is Task t)
 						{
-							await t;
+							await t.ConfigureAwait(false);
 
 							var resultPropertyInfo = r.GetType().GetProperty("Result")
 								?? throw new InvalidOperationException($"Unable to find Result property on [{r}]");
@@ -102,7 +102,7 @@ internal partial class WatchHotReloadService
 			throw new InvalidOperationException($"_emitSolutionUpdateAsync cannot be null");
 		}
 
-		var ret = await _emitSolutionUpdateAsync(solution, cancellationToken);
+		var ret = await _emitSolutionUpdateAsync(solution, cancellationToken).ConfigureAwait(false);
 
 		var updatesSource = (IEnumerable)ret[0]!;
 		var diagnostics = (ImmutableArray<Diagnostic>)ret[1]!;
