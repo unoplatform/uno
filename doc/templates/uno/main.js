@@ -249,7 +249,9 @@ document.addEventListener(
                     infoNote.appendChild(nugetLink);
                     infoNote.appendChild(document.createTextNode(' • '));
                     const docLink = document.createElement('a');
-                    docLink.href = '/docs/articles/upgrading-nuget-packages.html';
+                    docLink.href = 'https://aka.platform.uno/upgrade-uno-packages';
+                    docLink.target = '_blank';
+                    docLink.rel = 'noopener';
                     docLink.textContent = 'Upgrade guide';
                     infoNote.appendChild(docLink);
                     body.appendChild(infoNote);
