@@ -9,9 +9,9 @@ document.addEventListener(
         // Move SDK badge into the .subnav container
         const sdkBadge = document.getElementById('sdk-version-info');
         const subnav = document.querySelector('.subnav');
-        //if (sdkBadge && subnav) {
-        //    subnav.appendChild(sdkBadge);
-        //}
+        if (sdkBadge && subnav) {
+            subnav.appendChild(sdkBadge);
+        }
         
         // Cache key and expiration (1 hour)
         const CACHE_KEY = 'uno_sdk_versions';
@@ -249,9 +249,7 @@ document.addEventListener(
                     infoNote.appendChild(nugetLink);
                     infoNote.appendChild(document.createTextNode(' • '));
                     const docLink = document.createElement('a');
-                    docLink.href = 'https://aka.platform.uno/upgrade-uno-packages';
-                    docLink.target = '_blank';
-                    docLink.rel = 'noopener';
+                    docLink.href = '/docs/articles/upgrading-nuget-packages.html';
                     docLink.textContent = 'Upgrade guide';
                     infoNote.appendChild(docLink);
                     body.appendChild(infoNote);
