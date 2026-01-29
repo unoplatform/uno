@@ -231,57 +231,6 @@ This will start a server with HTTPS and open the browser automatically.
 
 For more information about `dotnet-serve` usage and options, [please refer to the documentation](https://github.com/natemcmaster/dotnet-serve).
 
-## Testing Algolia DocSearch locally
-
-The documentation website uses Algolia DocSearch for search functionality. The search is configured in `doc/templates/uno/partials/scripts.tmpl.partial`.
-
-### DocSearch configuration
-
-The DocSearch implementation is already integrated into the documentation templates and will work automatically when you serve the documentation locally using `npm start` or after building with `npm run build`.
-
-The search configuration includes:
-
-- **App ID**: `PHB9D8WS99`
-- **Index Name**: `platform`
-- **Container**: `#docsearch` (located in the sidebar)
-
-### Testing search locally
-
-When running the documentation locally:
-
-1- Start the development server:
-
-```bash
-cd doc
-npm start
-```
-
-2- Open your browser to the local server URL (typically `http://localhost:3000`).
-
-3- The search box should appear in the left sidebar.
-
-4- Type a search query to test the search functionality.
-
-> [!NOTE]
-> The search uses the production Algolia index, so search results will reflect the content currently deployed to the live documentation site, not your local changes. To see your local content in search results, your changes need to be deployed to production and the Algolia index needs to be updated.
-
-### How DocSearch works locally
-
-The DocSearch initialization is handled by JavaScript in the `scripts.tmpl.partial` file:
-
-- A `MutationObserver` watches for the `#docsearch` element to be added to the DOM
-- When detected, it initializes the Algolia DocSearch widget
-- The search connects to the Algolia API to fetch results from the production index
-
-### Debugging DocSearch
-
-If the search isn't working as expected:
-
-1. Open your browser's Developer Tools Console
-2. Look for DocSearch initialization messages (e.g., "DocSearch initialized")
-3. Check for any errors related to Algolia or DocSearch
-4. Verify the `#docsearch` element exists in the DOM (it's in the sidebar's `.sidefilter` div)
-
 ## Run the documentation generation performance test
 
 If needed, you can also run a script that will give you a performance summary for the documentation generation.
