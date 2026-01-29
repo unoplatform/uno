@@ -268,7 +268,34 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
-					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					if (Scroller?.ZoomMode == ZoomMode.Enabled)
+					{
+						// Calculate zoom change (positive delta = zoom in, negative = zoom out)
+						// WinUI zooms toward viewport center for Ctrl+Wheel (not cursor position)
+						var zoomDelta = delta > 0 ? 1.1f : 0.9f; // 10% zoom per wheel tick
+						var newZoom = Math.Clamp(_zoomFactor * zoomDelta, _minZoomFactor, _maxZoomFactor);
+
+						if (Math.Abs(newZoom - _zoomFactor) > 0.001f)
+						{
+							// Zoom toward viewport center - adjust offsets to keep center point fixed
+							var zoomRatio = newZoom / _zoomFactor;
+							var viewportCenterX = ViewportWidth / 2;
+							var viewportCenterY = ViewportHeight / 2;
+
+							// Formula: newOffset = center + (oldOffset - center) * zoomRatio
+							// This keeps the content point at viewport center in the same position
+							var newHOffset = viewportCenterX + (HorizontalOffset - viewportCenterX) * zoomRatio;
+							var newVOffset = viewportCenterY + (VerticalOffset - viewportCenterY) * zoomRatio;
+
+							success = Set(
+								horizontalOffset: newHOffset,
+								verticalOffset: newVOffset,
+								zoomFactor: newZoom,
+								disableAnimation: false);
+						}
+					}
+#endif
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
