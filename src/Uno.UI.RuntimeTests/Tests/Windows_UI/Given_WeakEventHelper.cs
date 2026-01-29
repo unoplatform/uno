@@ -178,7 +178,7 @@ public partial class Given_WeakEventHelper
 
 		SUT.Invoke(this, null);
 
-		Assert.IsGreaterThanOrEqual(5150, invoked);
+		Assert.IsGreaterThanOrEqualTo(5150, invoked);
 
 		disposable.Clear();
 
@@ -188,7 +188,7 @@ public partial class Given_WeakEventHelper
 		// Ensure that everything has been collected.
 		SUT.Invoke(this, null);
 
-		Assert.IsGreaterThanOrEqual(5150, invoked);
+		Assert.IsGreaterThanOrEqualTo(5150, invoked);
 	}
 
 	[TestMethod]

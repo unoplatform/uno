@@ -1073,7 +1073,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var popupPoint = popup.Child.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
 				var suggestBoxPoint = SUT.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
-				Assert.IsGreaterThanOrEqual(suggestBoxPoint.Y + SUT.ActualHeight, popupPoint.Y + 1); // Added 1 to adjust for border on Windows
+				Assert.IsGreaterThanOrEqualTo(suggestBoxPoint.Y + SUT.ActualHeight, popupPoint.Y + 1); // Added 1 to adjust for border on Windows
 			});
 		}
 

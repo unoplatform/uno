@@ -330,15 +330,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				case ViewMode.LeftRight:
 				case ViewMode.RightLeft:
 					Assert.AreEqual(paneContent1BoundingRectangle.Y, paneContent2BoundingRectangle.Y, "Assert panes are horizontally aligned");
-					if (mode == ViewMode.LeftRight) Assert.IsGreaterThanOrEqual(paneContent1BoundingRectangle.Right, paneContent2BoundingRectangle.X, "Assert left/right pane placement");
-					else Assert.IsGreaterThanOrEqual(-paneContent2BoundingRectangle.Right, paneContent1BoundingRectangle.X, "Assert right/left pane placement");
+					if (mode == ViewMode.LeftRight) Assert.IsGreaterThanOrEqualTo(paneContent1BoundingRectangle.Right, paneContent2BoundingRectangle.X, "Assert left/right pane placement");
+					else Assert.IsGreaterThanOrEqualTo(-paneContent2BoundingRectangle.Right, paneContent1BoundingRectangle.X, "Assert right/left pane placement");
 					break;
 
 				case ViewMode.TopBottom:
 				case ViewMode.BottomTop:
 					Assert.AreEqual(paneContent1BoundingRectangle.X, paneContent2BoundingRectangle.X, "Assert panes are vertically aligned");
-					if (mode == ViewMode.TopBottom) Assert.IsGreaterThanOrEqual(paneContent1BoundingRectangle.Bottom, paneContent2BoundingRectangle.Y, "Assert top/bottom pane placement");
-					else Assert.IsGreaterThanOrEqual(paneContent2BoundingRectangle.Bottom, paneContent1BoundingRectangle.Y, "Assert bottom/top pane placement");
+					if (mode == ViewMode.TopBottom) Assert.IsGreaterThanOrEqualTo(paneContent1BoundingRectangle.Bottom, paneContent2BoundingRectangle.Y, "Assert top/bottom pane placement");
+					else Assert.IsGreaterThanOrEqualTo(paneContent2BoundingRectangle.Bottom, paneContent1BoundingRectangle.Y, "Assert bottom/top pane placement");
 					break;
 			}
 		}
