@@ -8,6 +8,7 @@
 	<Choose>
 		<!-- Some projects are platform-agnostic and should always be net10.0/net9.0 even if -->
 		<!-- we are building for android with net10.0-android/net9.0-android -->
+		<!-- This is used by Skia/Wasm/ServerCore and other non-platform assemblies to avoid pulling platform TFMs -->
 		<!-- Such projects will import this props file and the TargetFrameworks property will update appropriately -->
 		<When Condition="'$(UnoTargetFrameworkOverride)' != '' and $(UnoTargetFrameworkOverride.StartsWith('net10.0'))">
 			<PropertyGroup>
