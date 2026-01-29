@@ -237,7 +237,7 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 		}
 	}
 
-	private static Assembly? ResolveAssembly(string appInstanceId, AssemblyLoadContext context, AssemblyName assemblyName)
+	private Assembly? ResolveAssembly(string appInstanceId, AssemblyLoadContext context, AssemblyName assemblyName)
 	{
 		if (_resolveAssemblyLocations.TryGetValue(appInstanceId, out var location) && !string.IsNullOrWhiteSpace(location))
 		{
@@ -317,24 +317,39 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 		}
 	}
 
-	private static Assembly TryLoadAssemblyFromPath(AssemblyLoadContext context, string asmPath)
+	private Assembly TryLoadAssemblyFromPath(AssemblyLoadContext context, string asmPath)
 	{
 		var fullPath = Path.GetFullPath(asmPath);
-		var tries = 10;
-		do
+		const int maxAttempts = 11;
+
+		for (var attempt = 1; attempt <= maxAttempts; attempt++)
 		{
 			try
 			{
 				return context.LoadFromAssemblyPath(fullPath);
 			}
-			catch
+			catch (Exception ex)
 			{
+				if (_logger.IsEnabled(LogLevel.Trace))
+				{
+					_logger.LogTrace(ex, "Failed to load assembly {AssemblyPath} (attempt {Attempt}/{MaxAttempts})", fullPath, attempt, maxAttempts);
+				}
+
+				if (attempt == maxAttempts)
+				{
+					if (_logger.IsEnabled(LogLevel.Warning))
+					{
+						_logger.LogWarning(ex, "Failed to load assembly {AssemblyPath} on the final attempt", fullPath);
+					}
+
+					throw;
+				}
+
 				Thread.Sleep(100);
 			}
 		}
-		while (tries-- > 0);
 
-		return context.LoadFromAssemblyPath(fullPath);
+		throw new InvalidOperationException("Unreachable: assembly load retry loop exited unexpectedly.");
 	}
 
 	private readonly record struct LoadContextEntry(AssemblyLoadContext Context, int Count)
