@@ -130,6 +130,6 @@ In both cases, for the build system to include the assets files, the following p
 
 ## Considerations for the Skia Renderer
 
-When creating a library that is compatible with the Skia Renderer, it is generally best to only use the `net9.0` and `net9.0-windows10.xxx` targets frameworks.
+When creating a library that is compatible with the Skia Renderer, it is generally best to only use the `net10.0` and `net10.0-windows10.xxx` targets frameworks.
 
 For more information, see the [Skia renderer](xref:uno.features.renderer.skia) documentation.

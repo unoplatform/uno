@@ -97,7 +97,7 @@ The template will create a solution with a simple cross-platform project, named 
 - Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
 
 - Once the solution has been loaded, in the status bar at the bottom left of VS Code, `Counter.sln` is selected by default. Select `Counter.csproj` to load the project instead.
-  ![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-dotnet9.0.png)
+  ![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-dotnet10.0.png)
 
 ## [Command Line](#tab/cli)
 

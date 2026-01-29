@@ -110,8 +110,8 @@ On the Desktop target, the Visual Studio diagnostic session can be used to inves
 > If the "Memory Usage" is not listed under the Available Tools of the Performance Profile. Make sure "YourProjectName (Desktop)" is selected as the target. If that still doesn't work, open the `YourProjectName.csproj` and manually replace the following line temporarily:
 >
 > ```xml
-> <!--<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>-->
-> <TargetFrameworks>net9.0-desktop</TargetFrameworks>
+> <!--<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>-->
+> <TargetFrameworks>net10.0-desktop</TargetFrameworks>
 > ```
 >
 > You may need to close and re-open the solution after making the change.

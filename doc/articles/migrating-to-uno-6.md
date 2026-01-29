@@ -53,7 +53,7 @@ error CS1705: Assembly 'Assembly_Name' with identity 'Assembly_Name, Version=255
 
 This may be due to a mismatch in the Windows SDK version used by your project.
 
-To fix this issue, add the following to your `.csproj` file to ensure the correct Windows SDK is referenced for the `net9.0-windowsXX` target to build properly:
+To fix this issue, add the following to your `.csproj` file to ensure the correct Windows SDK is referenced for the `net10.0-windowsXX` target to build properly:
 
 ```xml
 <PropertyGroup>

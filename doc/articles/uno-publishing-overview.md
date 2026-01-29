@@ -57,7 +57,7 @@ Uno Platform simplifies all of this with a unified, automated approach:
 Example command for Android AAB:
 
 ```bash
-dotnet publish -f net9.0-android -p:AndroidPackageFormat=aab
+dotnet publish -f net10.0-android -p:AndroidPackageFormat=aab
 ```
 
 The same command pattern applies to Windows, macOS, Linux, iOS, and WebAssembly.
