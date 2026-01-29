@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -1418,7 +1418,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 #if WINAPPSDK // TODO: subscribe to changes to Source property
-			Assert.AreEqual(3, page.SubjectListView.Items.Count);
+			Assert.HasCount(3, page.SubjectListView.Items);
 #endif
 			ListViewItem lvi = null;
 			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
@@ -3199,7 +3199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Items.RemoveAt(0);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, SUT.Items.Count);
+			Assert.HasCount(1, SUT.Items);
 			Assert.AreEqual(0, SUT.SelectedIndex);
 			Assert.AreEqual("Item 2", ((ListViewItem)SUT.Items[0]).Content);
 		}
@@ -3608,7 +3608,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForLoaded(SUT);
 
-				Assert.AreEqual(1, SUT.Items.Count);
+				Assert.HasCount(1, SUT.Items);
 
 				var container = SUT.ContainerFromIndex(0) as ContentControl;
 
@@ -3672,7 +3672,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
 
-				Assert.AreEqual(5, SUT.Items.Count);
+				Assert.HasCount(5, SUT.Items);
 			}
 		}
 
@@ -4155,7 +4155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.SelectedIndex = 1;
 			Assert.AreEqual(1, sut.SelectedIndex);
 
-			Assert.AreEqual(3, list.Count);
+			Assert.HasCount(3, list);
 			var removed1 = list[0].RemovedItems;
 			var removed2 = list[1].RemovedItems;
 			var removed3 = list[2].RemovedItems;
@@ -4212,7 +4212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, sut.SelectedIndex);
 			Assert.AreSame(obj1, sut.SelectedItem);
 
-			Assert.AreEqual(2, list.Count);
+			Assert.HasCount(2, list);
 			var removed1 = list[0].RemovedItems;
 			var removed2 = list[1].RemovedItems;
 
@@ -4345,7 +4345,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Where(x => x.Name == "HeaderTemplateRoot")
 				.ToArray();
 
-			Assert.AreEqual(1, roots.Length);
+			Assert.HasCount(1, roots);
 			Assert.AreEqual((string)SUT.Header, roots[0].Text);
 		}
 
@@ -4921,7 +4921,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var tree = sut.TreeGraph();
 #if !__ANDROID__
 			var panel = sut.FindFirstDescendant<ItemsStackPanel>() ?? throw new Exception("Failed to find the ListView's Panel (ItemsStackPanel)");
-			Assert.AreEqual(3, panel.Children.Count);
+			Assert.HasCount(3, panel.Children);
 #else
 			var count = sut.MaterializedContainers.Count();
 			Assert.AreEqual(3, count);

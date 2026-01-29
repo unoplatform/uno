@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+#if !NETFX_CORE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,11 +52,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.OnItemClicked(0, VirtualKeyModifiers.None);
 
-			Assert.AreEqual(1, SUT.SelectedItems.Count);
+			Assert.HasCount(1, SUT.SelectedItems);
 
 			SUT.OnItemClicked(1, VirtualKeyModifiers.None);
 
-			Assert.AreEqual(2, SUT.SelectedItems.Count);
+			Assert.HasCount(2, SUT.SelectedItems);
 		}
 
 		[TestMethod]
@@ -113,7 +113,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			Assert.IsNotNull(SUT.SelectedItem);
 			Assert.AreEqual(1, selectionChanged);
-			Assert.AreEqual(1, SUT.SelectedItems.Count);
+			Assert.HasCount(1, SUT.SelectedItems);
 		}
 
 		[TestMethod]
@@ -270,7 +270,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			SUT.SelectedItem = source[1];
 
 			Assert.AreEqual(1, SUT.SelectedIndex);
-			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.HasCount(1, selectionChanged);
 
 			if (SUT.ContainerFromIndex(1) is ListViewItem s1)
 			{
@@ -319,7 +319,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			SUT.SelectedItem = source[0];
 
 			Assert.AreEqual(source[0], SUT.SelectedValue);
-			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.HasCount(1, selectionChanged);
 			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
 			Assert.IsEmpty(selectionChanged[0].RemovedItems);
 			Assert.IsTrue(source[0].IsSelected);
@@ -327,7 +327,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			source[1].IsSelected = true;
 
 			Assert.AreEqual(source[1], SUT.SelectedItem);
-			Assert.AreEqual(2, selectionChanged.Count);
+			Assert.HasCount(2, selectionChanged);
 			Assert.AreEqual(source[1], selectionChanged.Last().AddedItems[0]);
 			Assert.AreEqual(source[0], selectionChanged.Last().RemovedItems[0]);
 			Assert.IsFalse(source[0].IsSelected);
@@ -335,7 +335,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			source[2].IsSelected = true;
 
 			Assert.AreEqual(source[2], SUT.SelectedItem);
-			Assert.AreEqual(3, selectionChanged.Count);
+			Assert.HasCount(3, selectionChanged);
 			Assert.AreEqual(source[2], selectionChanged.Last().AddedItems[0]);
 			Assert.AreEqual(source[1], selectionChanged.Last().RemovedItems[0]);
 			Assert.IsTrue(source[2].IsSelected);
@@ -345,7 +345,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			source[2].IsSelected = false;
 
 			Assert.IsNull(SUT.SelectedItem);
-			Assert.AreEqual(4, selectionChanged.Count);
+			Assert.HasCount(4, selectionChanged);
 			Assert.AreEqual(source[2], selectionChanged.Last().RemovedItems[0]);
 			Assert.IsEmpty(selectionChanged.Last().AddedItems);
 			Assert.IsFalse(source[0].IsSelected);
@@ -391,7 +391,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			SUT.SelectedItem = source[0];
 
 			Assert.IsNull(SUT.SelectedValue);
-			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.HasCount(1, selectionChanged);
 			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
 			Assert.IsEmpty(selectionChanged[0].RemovedItems);
 			Assert.IsTrue(source[0].IsSelected);
@@ -399,7 +399,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			source[1].IsSelected = true;
 
 			Assert.AreEqual(source[0], SUT.SelectedItem);
-			Assert.AreEqual(2, selectionChanged.Count);
+			Assert.HasCount(2, selectionChanged);
 			Assert.AreEqual(source[1], selectionChanged.Last().AddedItems[0]);
 			Assert.IsEmpty(selectionChanged.Last().RemovedItems);
 			Assert.IsTrue(source[0].IsSelected);
@@ -408,7 +408,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			source[2].IsSelected = true;
 
 			Assert.AreEqual(source[0], SUT.SelectedItem);
-			Assert.AreEqual(3, selectionChanged.Count);
+			Assert.HasCount(3, selectionChanged);
 			Assert.AreEqual(source[2], selectionChanged.Last().AddedItems[0]);
 			Assert.IsEmpty(selectionChanged.Last().RemovedItems);
 			Assert.IsTrue(source[0].IsSelected);
@@ -417,7 +417,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			source[2].IsSelected = false;
 
-			Assert.AreEqual(4, selectionChanged.Count);
+			Assert.HasCount(4, selectionChanged);
 			Assert.AreEqual(source[2], selectionChanged.Last().RemovedItems[0]);
 			Assert.IsEmpty(selectionChanged.Last().AddedItems);
 			Assert.IsTrue(source[0].IsSelected);
@@ -453,7 +453,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.SelectedItem = "1";
 
-			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.HasCount(1, selectionChanged);
 
 			if (SUT.ContainerFromIndex(2) is ListViewItem s1)
 			{
@@ -464,9 +464,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				Assert.Fail("Container should be a ListViewItem");
 			}
 
-			Assert.AreEqual(1, SUT.SelectedItems.Count);
+			Assert.HasCount(1, SUT.SelectedItems);
 			Assert.AreEqual("2", SUT.SelectedItem);
-			Assert.AreEqual(2, selectionChanged.Count);
+			Assert.HasCount(2, selectionChanged);
 		}
 
 		[TestMethod]
@@ -496,7 +496,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.SelectedItem = "1";
 
-			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.HasCount(1, selectionChanged);
 
 			if (SUT.ContainerFromIndex(2) is ListViewItem s1)
 			{
@@ -507,9 +507,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				Assert.Fail("Container should be a ListViewItem");
 			}
 
-			Assert.AreEqual(2, SUT.SelectedItems.Count);
+			Assert.HasCount(2, SUT.SelectedItems);
 			Assert.AreEqual("1", SUT.SelectedItem);
-			Assert.AreEqual(2, selectionChanged.Count);
+			Assert.HasCount(2, selectionChanged);
 
 			if (SUT.ContainerFromIndex(3) is ListViewItem s2)
 			{
@@ -520,9 +520,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				Assert.Fail("Container should be a ListViewItem");
 			}
 
-			Assert.AreEqual(3, SUT.SelectedItems.Count);
+			Assert.HasCount(3, SUT.SelectedItems);
 			Assert.AreEqual("1", SUT.SelectedItem);
-			Assert.AreEqual(3, selectionChanged.Count);
+			Assert.HasCount(3, selectionChanged);
 
 			if (SUT.ContainerFromIndex(2) is ListViewItem s3)
 			{
@@ -533,7 +533,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				Assert.Fail("Container should be a ListViewItem");
 			}
 
-			Assert.AreEqual(2, SUT.SelectedItems.Count);
+			Assert.HasCount(2, SUT.SelectedItems);
 		}
 
 		[TestMethod]
@@ -572,7 +572,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				Assert.Fail("Container should be a ListViewItem");
 			}
 
-			Assert.AreEqual(2, SUT.SelectedItems.Count);
+			Assert.HasCount(2, SUT.SelectedItems);
 
 			SUT.SelectionMode = ListViewSelectionMode.None;
 
@@ -619,7 +619,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			}
 
 			Assert.AreEqual(source[1], SUT.SelectedValue);
-			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.HasCount(1, selectionChanged);
 			Assert.AreEqual(source[1], selectionChanged[0].AddedItems[0]);
 			Assert.IsEmpty(selectionChanged[0].RemovedItems);
 		}

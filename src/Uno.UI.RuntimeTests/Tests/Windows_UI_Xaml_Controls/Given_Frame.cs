@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -186,33 +186,33 @@ public class Given_Frame
 
 		SUT.Navigate(typeof(ThirdPage));
 
-		Assert.AreEqual(2, SUT.BackStack.Count);
+		Assert.HasCount(2, SUT.BackStack);
 
 		SUT.GoBack();
 
 		SUT.IsNavigationStackEnabled = false;
 
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.Navigate(typeof(MyPage));
 		SUT.Navigate(typeof(MyPage));
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(MyPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.GoBack();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.GoForward();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(ThirdPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 	}
 
 	[TestMethod]
@@ -236,15 +236,15 @@ public class Given_Frame
 		SUT.GoBack();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.IsNavigationStackEnabled = true;
 		SUT.GoBack();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
 		Assert.IsEmpty(SUT.BackStack);
-		Assert.AreEqual(2, SUT.ForwardStack.Count);
+		Assert.HasCount(2, SUT.ForwardStack);
 	}
 
 #if !__SKIA__ // This test only applies to legacy frame which keeps all pages in memory

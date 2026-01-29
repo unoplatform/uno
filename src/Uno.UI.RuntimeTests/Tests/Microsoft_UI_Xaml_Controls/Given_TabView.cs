@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -118,7 +118,7 @@ public class Given_TabView
 		new ButtonAutomationPeer(closeButton).Invoke();
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(1, SUT.TabItems.Count);
+		Assert.HasCount(1, SUT.TabItems);
 		Assert.AreEqual(0, SUT.SelectedIndex);
 		Assert.AreEqual("Tab 2", ((TabViewItem)SUT.TabItems[0]).Header);
 	}
@@ -159,7 +159,7 @@ public class Given_TabView
 
 		await UITestHelper.Load(SUT);
 
-		Assert.AreEqual(2, SUT.TabItems.Count);
+		Assert.HasCount(2, SUT.TabItems);
 		Assert.AreEqual(-1, SUT.SelectedIndex);
 	}
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +33,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
 
-			Assert.AreEqual(8, stubs.Count());
+			Assert.HasCount(8, stubs);
 		}
 
 		[TestMethod]
@@ -42,7 +42,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var SUT = new When_xLoad_LoadSingle();
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border1);
 
@@ -56,7 +56,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var SUT = new When_xLoad_Deferred_StaticCollapsed();
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border6);
 
@@ -71,7 +71,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.ForceLoaded();
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border7);
 
@@ -92,7 +92,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.Measure(new Size(42, 42));
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border8);
 
@@ -116,7 +116,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.DataContext = Visibility.Collapsed;
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border1);
 
@@ -135,7 +135,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.Measure(new Size(42, 42));
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border1);
 
@@ -151,7 +151,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.Measure(new Size(42, 42));
 
 			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			var borders = SUT.EnumerateAllChildren().OfType<Border>();
 			Assert.IsEmpty(borders);
@@ -165,7 +165,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.ForceLoaded();
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			var tb02 = SUT.FindName("tb02") as TextBlock;
 			Assert.IsNotNull(tb02);
@@ -174,7 +174,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.DataContext = model;
 
 			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(1, stubs.Count());
+			Assert.HasCount(1, stubs);
 
 			model.Visible = true;
 

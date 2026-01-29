@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -77,7 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
-			Assert.AreEqual(1, popups.Count);
+			Assert.HasCount(1, popups);
 
 			var secondaryButton = (AppBarButton)SUT.FindName("SecondaryButton");
 			var bounds = secondaryButton.GetAbsoluteBounds();
@@ -208,7 +208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 			await WindowHelper.WaitForIdle();
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
-			Assert.AreEqual(1, popups.Count);
+			Assert.HasCount(1, popups);
 
 			var secondary = (AppBarButton)SUT.FindName("SecondaryButton");
 			var sb = secondary.GetAbsoluteBounds();
@@ -231,7 +231,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 			popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
-			Assert.AreEqual(1, popups.Count);
+			Assert.HasCount(1, popups);
 		}
 	}
 

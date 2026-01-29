@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -150,7 +150,7 @@ namespace UnitTests
 		{
 			var deque = new Deque<int>(new int[] { 1, 2, 3 });
 			Assert.AreEqual(3, deque.Capacity);
-			Assert.AreEqual(3, deque.Count);
+			Assert.HasCount(3, deque);
 			Assert.IsTrue(new int[] { 1, 2, 3 }.SequenceEqual(deque));
 		}
 
@@ -911,12 +911,12 @@ namespace UnitTests
 			var list = new List<int>(new[] { 13 }) as IList;
 			list.Remove(this);
 			list.Remove(null);
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 
 			var deque = new Deque<int>(new[] { 13 }) as IList;
 			deque.Remove(this);
 			deque.Remove(null);
-			Assert.AreEqual(1, deque.Count);
+			Assert.HasCount(1, deque);
 		}
 
 		[TestMethod]

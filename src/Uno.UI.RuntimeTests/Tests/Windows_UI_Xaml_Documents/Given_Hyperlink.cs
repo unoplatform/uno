@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
@@ -180,7 +180,7 @@ public class Given_Hyperlink
 				WindowHelper.WindowContent = tb;
 				await WindowHelper.WaitForLoaded(tb);
 
-				Assert.AreEqual(2, tb.Inlines.Count);
+				Assert.HasCount(2, tb.Inlines);
 				var hyperlink = (Hyperlink)tb.Inlines[0];
 				var hyperlinkRun = (Run)hyperlink.Inlines.Single();
 				var redRun = (Run)tb.Inlines[1];
@@ -212,7 +212,7 @@ public class Given_Hyperlink
 			WindowHelper.WindowContent = tb;
 			await WindowHelper.WaitForLoaded(tb);
 
-			Assert.AreEqual(2, tb.Inlines.Count);
+			Assert.HasCount(2, tb.Inlines);
 			var hyperlink = (Hyperlink)tb.Inlines[0];
 			var hyperlinkRun = (Run)hyperlink.Inlines.Single();
 			var redRun = (Run)tb.Inlines[1];

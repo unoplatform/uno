@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -235,7 +235,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			void CheckIndexes()
 			{
-				panel.Children­.Should().HaveCount(source.Count);
+				panel.Children�.Should().HaveCount(source.Count);
 
 				for (var i = 0; i < panel.Children.Count; i++)
 				{
@@ -401,24 +401,24 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			SUT.ItemsSource = source;
 			Assert.AreEqual(3, count);
-			Assert.AreEqual(3, SUT.Items.Count);
-			Assert.AreEqual(3, SUT.ItemsPanelRoot.Children.Count);
+			Assert.HasCount(3, SUT.Items);
+			Assert.HasCount(3, SUT.ItemsPanelRoot.Children);
 
 			source.Add(4);
 			Assert.AreEqual(4, count);
-			Assert.AreEqual(4, SUT.Items.Count);
-			Assert.AreEqual(4, SUT.ItemsPanelRoot.Children.Count);
+			Assert.HasCount(4, SUT.Items);
+			Assert.HasCount(4, SUT.ItemsPanelRoot.Children);
 
 			source.Remove(1);
 			Assert.AreEqual(4, count);
-			Assert.AreEqual(3, SUT.Items.Count);
-			Assert.AreEqual(3, SUT.ItemsPanelRoot.Children.Count);
+			Assert.HasCount(3, SUT.Items);
+			Assert.HasCount(3, SUT.ItemsPanelRoot.Children);
 
 			source[0] = 5;
 			// Data template is not recreated because of pooling
 			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 5, count);
-			Assert.AreEqual(3, SUT.Items.Count);
-			Assert.AreEqual(3, SUT.ItemsPanelRoot.Children.Count);
+			Assert.HasCount(3, SUT.Items);
+			Assert.HasCount(3, SUT.ItemsPanelRoot.Children);
 		}
 
 		[TestMethod]
@@ -469,12 +469,12 @@ namespace Uno.UI.Tests.ItemsControlTests
 			listView.ItemsSource = new List<int>() { 1, 2 };
 
 			Assert.AreEqual(1, triggerCount);
-			Assert.AreEqual(2, listView.Items.Count);
+			Assert.HasCount(2, listView.Items);
 
 			listView.ItemsSource = new List<int>() { 3, 4 };
 
 			Assert.AreEqual(2, triggerCount);
-			Assert.AreEqual(2, listView.Items.Count);
+			Assert.HasCount(2, listView.Items);
 
 			listView.ItemsSource = null;
 
@@ -510,7 +510,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			SUT.ItemsSource = c;
 			Assert.AreEqual(3, count);
 
-			Assert.AreEqual(3, SUT.Items.Count);
+			Assert.HasCount(3, SUT.Items);
 
 			using (c.BatchUpdate())
 			{
@@ -518,7 +518,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				c.Add("Five");
 			}
 
-			Assert.AreEqual(5, SUT.Items.Count);
+			Assert.HasCount(5, SUT.Items);
 			Assert.AreEqual(count, FrameworkTemplatePool.IsPoolingEnabled ? 5 : 8);
 			Assert.IsNotNull(SUT.ContainerFromItem("One"));
 			Assert.IsNotNull(SUT.ContainerFromItem("Four"));
@@ -558,11 +558,11 @@ namespace Uno.UI.Tests.ItemsControlTests
 			c.Add("Three");
 			Assert.AreEqual(3, count);
 
-			Assert.AreEqual(3, SUT.Items.Count);
+			Assert.HasCount(3, SUT.Items);
 
 			c.Add("Four");
 
-			Assert.AreEqual(4, SUT.Items.Count);
+			Assert.HasCount(4, SUT.Items);
 			Assert.AreEqual(4, count);
 		}
 

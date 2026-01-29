@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -309,11 +309,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var SUT = new MyControl01();
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 			});
 #endif
 
@@ -331,7 +331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if WINAPPSDK // Those values only works on UWP, not on Uno
 		[DataRow("", "\n", double.NaN, double.NaN)]
 		[DataRow("abc", "0\n", double.NaN, 0d)]
-		[DataRow("∞", "-∞", double.NaN, double.NaN)]
+		[DataRow("8", "-8", double.NaN, double.NaN)]
 		[DataRow("21-----covfefe", "42 you're \"smart\"", 21d, 42d)]
 		[DataRow("		21\n", "\n42-", 21d, 42d)]
 #endif
@@ -502,13 +502,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var SUT = new MyControl01();
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
 
 				SUT.InvalidateMeasure();
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(2, SUT.MeasureOverrides.Count);
+				Assert.HasCount(2, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[1]);
 			});
 
@@ -682,13 +682,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				grid.Children.Add(SUT);
 
 				grid.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
 
 				grid.InvalidateMeasure();
 
 				grid.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 			});
 #endif
 
@@ -988,7 +988,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var tbNativeTyped = (_View)new TextBlock();
 			panel.Children.Add(tbNativeTyped);
 
-			Assert.AreEqual(1, panel.Children.Count);
+			Assert.HasCount(1, panel.Children);
 		}
 
 		[TestMethod]
@@ -1059,7 +1059,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = hostPanel;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, sut.Subviews.Length);
+			Assert.HasCount(1, sut.Subviews);
 
 			Assert.AreEqual(100, nativeView.Frame.Width);
 			Assert.AreEqual(100, nativeView.Frame.Height);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -697,7 +697,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 
 				using (c.BatchUpdate())
 				{
@@ -710,7 +710,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(5, SUT.Items.Count);
+				Assert.HasCount(5, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem("One"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Four"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Five"));
@@ -801,7 +801,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				SUT.DataContext = new { MySource = c, SelectedItem = "Two" };
 
-				Assert.AreEqual(12, SUT.Items.Count);
+				Assert.HasCount(12, SUT.Items);
 			}
 			finally
 			{
@@ -844,7 +844,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Not required on WinUI. Fixing this in Uno requires porting ComboBox.
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 
 				using (c.BatchUpdate())
 				{
@@ -859,7 +859,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -906,7 +906,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -925,7 +925,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
