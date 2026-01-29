@@ -202,7 +202,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				var replaced = await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
 				Assert.AreEqual(folderName, replaced.Name);
 				var files = await replaced.GetFilesAsync();
-				Assert.AreEqual(0, files.Count);
+				Assert.IsEmpty(files);
 			}
 			finally
 			{
@@ -719,7 +719,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(folderName);
 				var files = await createdFolder.GetFilesAsync();
-				Assert.AreEqual(0, files.Count);
+				Assert.IsEmpty(files);
 			}
 			finally
 			{
@@ -742,7 +742,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFolderAsync(GetRandomFolderName());
 				}
 				var files = await createdFolder.GetFilesAsync();
-				Assert.AreEqual(0, files.Count);
+				Assert.IsEmpty(files);
 			}
 			finally
 			{
@@ -811,7 +811,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(folderName);
 				var folders = await createdFolder.GetFoldersAsync();
-				Assert.AreEqual(0, folders.Count);
+				Assert.IsEmpty(folders);
 			}
 			finally
 			{
@@ -834,7 +834,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFileAsync(GetRandomTextFileName());
 				}
 				var folders = await createdFolder.GetFoldersAsync();
-				Assert.AreEqual(0, folders.Count);
+				Assert.IsEmpty(folders);
 			}
 			finally
 			{
@@ -903,7 +903,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(folderName);
 				var folders = await createdFolder.GetItemsAsync();
-				Assert.AreEqual(0, folders.Count);
+				Assert.IsEmpty(folders);
 			}
 			finally
 			{

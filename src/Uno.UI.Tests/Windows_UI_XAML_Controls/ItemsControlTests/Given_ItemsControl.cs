@@ -79,7 +79,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			Assert.AreEqual(2, SUT.OnItemsChangedCallCount);
 			Assert.AreEqual(2, onVectorChanged);
-			Assert.AreEqual(0, SUT.Items.Count);
+			Assert.IsEmpty(SUT.Items);
 		}
 
 #if IS_UNIT_TESTS
@@ -479,7 +479,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			listView.ItemsSource = null;
 
 			Assert.AreEqual(3, triggerCount);
-			Assert.AreEqual(0, listView.Items.Count);
+			Assert.IsEmpty(listView.Items);
 		}
 
 #if IS_UNIT_TESTS

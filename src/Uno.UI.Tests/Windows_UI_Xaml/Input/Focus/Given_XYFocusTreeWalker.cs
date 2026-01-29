@@ -133,7 +133,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			root.AddChild(current);
 
 			var candidateList = FindElements(root, current, null, true, false);
-			Assert.AreEqual(0, candidateList.Count);
+			Assert.IsEmpty(candidateList);
 		}
 
 		[Ignore("ScrollViewer-related XY navigation does not work properly yet")]

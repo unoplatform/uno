@@ -168,7 +168,7 @@ public class Given_Frame
 		SUT.IsNavigationStackEnabled = false;
 		SUT.Navigate(typeof(MyPage));
 
-		Assert.AreEqual(0, SUT.BackStack.Count);
+		Assert.IsEmpty(SUT.BackStack);
 		Assert.IsFalse(SUT.CanGoBack);
 	}
 
@@ -243,7 +243,7 @@ public class Given_Frame
 		SUT.GoBack();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-		Assert.AreEqual(0, SUT.BackStack.Count);
+		Assert.IsEmpty(SUT.BackStack);
 		Assert.AreEqual(2, SUT.ForwardStack.Count);
 	}
 

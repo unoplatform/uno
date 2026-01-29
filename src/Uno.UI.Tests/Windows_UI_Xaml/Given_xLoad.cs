@@ -154,7 +154,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, stubs.Count());
 
 			var borders = SUT.EnumerateAllChildren().OfType<Border>();
-			Assert.AreEqual(0, borders.Count());
+			Assert.IsEmpty(borders);
 		}
 
 		[TestMethod]
@@ -179,7 +179,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			model.Visible = true;
 
 			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
-			Assert.AreEqual(0, stubs.Count());
+			Assert.IsEmpty(stubs);
 
 			Assert.IsNotNull(tb02.Foreground);
 			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb02.Foreground.ToString());

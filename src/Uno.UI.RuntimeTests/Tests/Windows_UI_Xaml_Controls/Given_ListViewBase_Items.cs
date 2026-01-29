@@ -66,7 +66,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var listView = new ListView();
 			listView.Items.Add(1);
 			listView.ItemsSource = new List<int>();
-			Assert.AreEqual(0, listView.Items.Count);
+			Assert.IsEmpty(listView.Items);
 		}
 
 		[TestMethod]
@@ -186,7 +186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var listView = new ListView();
 
-			Assert.AreEqual(0, listView.Items.Count);
+			Assert.IsEmpty(listView.Items);
 
 			listView.ItemsSource = new List<int>() { 1, 2, 3 };
 
@@ -201,7 +201,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var listView = new ListView();
 
-			Assert.AreEqual(0, listView.Items.Count);
+			Assert.IsEmpty(listView.Items);
 
 			var items = new List<int>() { 1, 2, 3 };
 			listView.ItemsSource = items;

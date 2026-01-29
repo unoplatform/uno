@@ -175,7 +175,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual(source[0], SUT.SelectedValue);
 			Assert.AreEqual(1, selectionChanged.Count);
 			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
-			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+			Assert.IsEmpty(selectionChanged[0].RemovedItems);
 		}
 
 		[TestMethod]
@@ -207,14 +207,14 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual(source[0], SUT.SelectedValue);
 			Assert.AreEqual(1, selectionChanged.Count);
 			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
-			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+			Assert.IsEmpty(selectionChanged[0].RemovedItems);
 
 			SUT.SelectedItem = new ListViewItem() { Content = "unknown item" };
 
 			Assert.AreEqual(source[0], SUT.SelectedValue);
 			Assert.AreEqual(1, selectionChanged.Count);
 			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
-			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+			Assert.IsEmpty(selectionChanged[0].RemovedItems);
 		}
 
 		[TestMethod]
@@ -252,7 +252,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual(source[0], SUT.SelectedValue);
 			Assert.AreEqual(1, selectionChanged.Count);
 			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
-			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+			Assert.IsEmpty(selectionChanged[0].RemovedItems);
 			Assert.IsTrue(source[0].IsSelected);
 
 			source[1].IsSelected = true;

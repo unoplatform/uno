@@ -50,7 +50,7 @@ namespace Uno.UI.Tests.FrameTests
 			SUT.IsNavigationStackEnabled = false;
 			SUT.Navigate(typeof(MyPage));
 
-			Assert.AreEqual(0, SUT.BackStack.Count);
+			Assert.IsEmpty(SUT.BackStack);
 			Assert.IsFalse(SUT.CanGoBack);
 		}
 
@@ -125,7 +125,7 @@ namespace Uno.UI.Tests.FrameTests
 			SUT.GoBack();
 
 			Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-			Assert.AreEqual(0, SUT.BackStack.Count);
+			Assert.IsEmpty(SUT.BackStack);
 			Assert.AreEqual(2, SUT.ForwardStack.Count);
 		}
 
