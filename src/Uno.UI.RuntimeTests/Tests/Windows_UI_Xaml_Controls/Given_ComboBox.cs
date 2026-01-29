@@ -1293,7 +1293,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var child = (FrameworkElement)popup.Child;
 			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
-			Assert.AreEqual(Enum.GetValues<PickerLocationId>().Length, comboBoxItems.Length);
+			Assert.HasCount(Enum.GetValues<PickerLocationId>().Length, comboBoxItems);
 		}
 
 #if HAS_UNO
@@ -1320,13 +1320,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var destination = origin + sv.ViewportHeight * 2;
 			sv.ChangeView(null, verticalOffset: destination, null, disableAnimation: true);
 			await UITestHelper.WaitForIdle();
-			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 
 			// force an arrange
 			var cbi = sv.FindFirstChild<ComboBoxItem>();
 			cbi.InvalidateArrange();
 			await UITestHelper.WaitForIdle();
-			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 		}
 #endif
 

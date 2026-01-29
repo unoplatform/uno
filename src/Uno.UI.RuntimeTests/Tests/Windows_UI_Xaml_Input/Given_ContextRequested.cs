@@ -375,7 +375,7 @@ public partial class Given_ContextRequested
 		await UITestHelper.Load(target);
 
 		Assert.IsInstanceOfType(target.ContextFlyout, typeof(MenuFlyout));
-		Assert.AreEqual(3, ((MenuFlyout)target.ContextFlyout).Items.Count);
+		Assert.HasCount(3, ((MenuFlyout)target.ContextFlyout).Items);
 	}
 
 	[TestMethod]
@@ -536,7 +536,7 @@ public partial class Given_ContextRequested
 
 		await UITestHelper.Load(target);
 
-		Assert.AreEqual(5, ((MenuFlyout)target.ContextFlyout).Items.Count);
+		Assert.HasCount(5, ((MenuFlyout)target.ContextFlyout).Items);
 	}
 
 	[TestMethod]

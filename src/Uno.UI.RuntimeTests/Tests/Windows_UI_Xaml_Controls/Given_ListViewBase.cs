@@ -3818,11 +3818,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			var second = GetCurrenState();
 
-			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
-			Assert.IsTrue(initial.Count + BatchSize <= first.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={first.Count}");
-			Assert.IsTrue(initial.LastMaterialized < first.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index1={first.LastMaterialized}");
-			Assert.IsTrue(first.Count + BatchSize <= second.Count, $"Should have even more batch(es) after second scroll: count1={first.Count}, count2={second.Count}");
-			Assert.IsTrue(first.LastMaterialized < second.LastMaterialized, $"No extra item materialized after second scroll: index1={first.LastMaterialized}, index2={second.LastMaterialized}");
+			Assert.IsGreaterThan(0, initial.Count / BatchSize, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsLessThanOrEqualTo(first.Count, initial.Count + BatchSize, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={first.Count}");
+			Assert.IsLessThan(first.LastMaterialized, initial.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index1={first.LastMaterialized}");
+			Assert.IsLessThanOrEqualTo(second.Count, first.Count + BatchSize, $"Should have even more batch(es) after second scroll: count1={first.Count}, count2={second.Count}");
+			Assert.IsLessThan(second.LastMaterialized, first.LastMaterialized, $"No extra item materialized after second scroll: index1={first.LastMaterialized}, index2={second.LastMaterialized}");
 
 			(int Count, int LastMaterialized) GetCurrenState() =>
 			(
@@ -3874,9 +3874,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var secondScroll = GetCurrenState();
 
-			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
-			Assert.IsTrue(initial.Count + BatchSize <= firstScroll.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
-			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
+			Assert.IsGreaterThan(0, initial.Count / BatchSize, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsLessThanOrEqualTo(firstScroll.Count, initial.Count + BatchSize, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
+			Assert.IsLessThan(firstScroll.LastMaterialized, initial.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
 			Assert.AreEqual(firstScroll.Count, secondScroll.Count, $"Should still have same number of batches after second scroll: count1={firstScroll.Count}, count2={secondScroll.Count}");
 			Assert.AreEqual(firstScroll.Count - 1, secondScroll.LastMaterialized, $"Should reach end of list from first scroll: count1={firstScroll.LastMaterialized}, index2={secondScroll.LastMaterialized}");
 

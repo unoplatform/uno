@@ -1195,7 +1195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			const int expectedCount = 9;
 
-			Assert.AreEqual(expectedCount, events.Count);
+			Assert.HasCount(expectedCount, events);
 			Assert.AreEqual("Parent Loading", events[0]);
 			Assert.AreEqual("Child Loading", events[1]);
 			Assert.AreEqual("Child OnApplyTemplate", events[2]);

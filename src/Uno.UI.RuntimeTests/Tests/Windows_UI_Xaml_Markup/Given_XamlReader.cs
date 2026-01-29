@@ -1125,7 +1125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var expectations = expectedTree.Split('\n', StringSplitOptions.TrimEntries);
 			var descendants = FlattenInlines(tb.Inlines).ToArray();
 
-			Assert.AreEqual(expectations.Length, descendants.Length, "Mismatched descendant size");
+			Assert.HasCount(expectations.Length, descendants, "Mismatched descendant size");
 			for (int i = 0; i < expectations.Length; i++)
 			{
 				var line = expectations[i].TrimStart("0123456789. ".ToArray());
