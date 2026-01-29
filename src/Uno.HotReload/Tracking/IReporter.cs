@@ -9,5 +9,8 @@ public interface IReporter
 	void Verbose(string message);
 	void Output(string message);
 	void Warn(string message);
+
+#pragma warning disable CA1716 // Identifiers should not match keywords
 	void Error(string message);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 }

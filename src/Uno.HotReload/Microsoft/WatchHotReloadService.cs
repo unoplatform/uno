@@ -73,7 +73,9 @@ internal partial class WatchHotReloadService
 
 				if (watchHotReloadServiceType.GetMethod(nameof(EndSession)) is { } endSessionMethod)
 				{
+#pragma warning disable CA2263
 					_endSession = (Action)endSessionMethod.CreateDelegate(typeof(Action), _targetInstance);
+#pragma warning restore CA2263
 				}
 				else
 				{

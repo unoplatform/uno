@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Uno.UI.Tasks.HotReloadInfo;
 
-public class HotReloadInfoHelper
+public static class HotReloadInfoHelper
 {
 	/// <summary>
 	/// The relative path (from IntermediateOutputPath) where the HotReloadInfo.Attribute.g.cs file is generated.

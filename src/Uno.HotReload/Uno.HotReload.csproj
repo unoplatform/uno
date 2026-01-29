@@ -1,18 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0'">
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisLevel>10.0</AnalysisLevel>
+		<AnalysisMode>All</AnalysisMode>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
+	<Import Project="..\Uno.DevServer.Processors.Override.targets" />
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfoHelper.cs" />
 	</ItemGroup>
-
-	<Import Project="..\Uno.DevServer.Processors.Override.targets" />
 
 	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="6.0.0" />

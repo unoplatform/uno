@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1051
+
+using System;
 using System.Collections.Immutable;
 
 namespace Uno.HotReload;
