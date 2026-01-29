@@ -109,6 +109,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Deactivate() => _animationImplementation.Deactivate();
 
+		void ITimeline.BeginReversed() => _animationImplementation.BeginReversed();
+
+		void ITimeline.SkipToFillReversed() => _animationImplementation.SkipToFillReversed();
+
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>

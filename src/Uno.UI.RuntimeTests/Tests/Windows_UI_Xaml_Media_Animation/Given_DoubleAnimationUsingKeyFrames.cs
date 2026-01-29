@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -61,4 +62,53 @@ public class Given_DoubleAnimationUsingKeyFrames
 		await UITestHelper.Load(SUT);
 		await TestServices.WindowHelper.WaitFor(() => SUT.MyAnimatedTranslateTransform.X == 500);
 	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_AutoReverse_True()
+	{
+		var target = new TextBlock() { Text = "Test KeyFrame AutoReverse" };
+		WindowHelper.WindowContent = target;
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForLoaded(target);
+
+		var transform = new TranslateTransform();
+		target.RenderTransform = transform;
+
+		var animation = new DoubleAnimationUsingKeyFrames()
+		{
+			Duration = TimeSpan.FromMilliseconds(400),
+			AutoReverse = true,
+			FillBehavior = FillBehavior.HoldEnd,
+		};
+		animation.KeyFrames.Add(new LinearDoubleKeyFrame()
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(100)),
+			Value = 25
+		});
+		animation.KeyFrames.Add(new LinearDoubleKeyFrame()
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(400)),
+			Value = 100
+		});
+		Storyboard.SetTarget(animation, transform);
+		Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		bool completed = false;
+		storyboard.Completed += (s, e) => completed = true;
+
+		storyboard.Begin();
+
+		// Wait for completion (400ms forward + 400ms reverse = 800ms)
+		await WindowHelper.WaitFor(() => completed, timeoutMS: 2000);
+
+		// Final value should be back at start (~0)
+		var finalValue = transform.X;
+		Assert.IsTrue(Math.Abs(finalValue) < 10,
+			$"Final value should be close to 0 after keyframe AutoReverse, got {finalValue}");
+	}
+
 }

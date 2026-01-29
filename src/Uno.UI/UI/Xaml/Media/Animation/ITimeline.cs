@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 
 	/// <summary>
-	/// This interface maps to public methods on <see cref="Storyboard"/>, which are implemented internally in Uno on types that inherit 
+	/// This interface maps to public methods on <see cref="Storyboard"/>, which are implemented internally in Uno on types that inherit
 	/// from <see cref="Timeline"/> and called from <see cref="Storyboard"/>.
 	/// </summary>
 	internal interface ITimeline
@@ -21,5 +21,18 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		void Deactivate();
 		void RegisterListener(ITimelineListener storyboard);
 		void UnregisterListener(ITimelineListener storyboard);
+
+		/// <summary>
+		/// Begins the animation in reverse, playing from the end value back to the start value.
+		/// Used by Storyboard-level AutoReverse to signal child animations to play in reverse.
+		/// </summary>
+		void BeginReversed();
+
+		/// <summary>
+		/// Skips to the fill state as if the animation had played in reverse.
+		/// Sets the animated property to its starting value (the "reversed" end state).
+		/// Used by Storyboard-level AutoReverse when SkipToFill is called.
+		/// </summary>
+		void SkipToFillReversed();
 	}
 }

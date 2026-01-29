@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests
 {
@@ -338,6 +339,54 @@ namespace Uno.UI.RuntimeTests
 			}
 		}
 
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+		public async Task When_AutoReverse_True()
+		{
+			var target = new TextBlock() { Text = "Initial" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var animation = new ObjectAnimationUsingKeyFrames()
+			{
+				Duration = TimeSpan.FromMilliseconds(400),
+				AutoReverse = true,
+			};
+			animation.KeyFrames.Add(new DiscreteObjectKeyFrame()
+			{
+				KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0)),
+				Value = "A"
+			});
+			animation.KeyFrames.Add(new DiscreteObjectKeyFrame()
+			{
+				KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(200)),
+				Value = "B"
+			});
+			animation.KeyFrames.Add(new DiscreteObjectKeyFrame()
+			{
+				KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(400)),
+				Value = "C"
+			});
+			Storyboard.SetTarget(animation, target);
+			Storyboard.SetTargetProperty(animation, nameof(TextBlock.Text));
+
+			var storyboard = new Storyboard();
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// Wait for completion (400ms forward + 400ms reverse = 800ms)
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 2000);
+
+			// After reverse, should be back at starting value "Initial"
+			var finalValue = target.Text;
+			Assert.AreEqual("Initial", finalValue,
+				$"Final value should be 'Initial' after ObjectAnimation AutoReverse, got {finalValue}");
+		}
 
 		/// <summary>
 		/// Ensure dark theme is applied for the course of a single test.
