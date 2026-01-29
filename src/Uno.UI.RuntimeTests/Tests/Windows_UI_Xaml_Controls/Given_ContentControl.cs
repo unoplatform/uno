@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -186,7 +186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 			Assert.IsNotNull(comboBox);
-			Assert.AreEqual(3, comboBox.Items.Count);
+			Assert.HasCount(3, comboBox.Items);
 
 			contentControl.Content = null;
 
@@ -194,7 +194,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsEmpty(comboBox.Items);
 			Assert.AreEqual(-1, comboBox.SelectedIndex);
 #else // this is correct
-			Assert.AreEqual(3, comboBox.Items.Count);
+			Assert.HasCount(3, comboBox.Items);
 			Assert.AreEqual(1, comboBox.SelectedIndex);
 #endif
 		}

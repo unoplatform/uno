@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -561,12 +561,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ProcessTextInput("a");
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => SUT.IsSuggestionListOpen);
-			Assert.AreEqual(2, listView.Items.Count);
+			Assert.HasCount(2, listView.Items);
 			Assert.AreEqual("a1", listView.Items[0].ToString());
 			Assert.AreEqual("a2", listView.Items[1].ToString());
 #if __WASM__
 			//ItemsPanelRoot.Children works only on wasm
-			Assert.AreEqual(2, listView.ItemsPanelRoot.Children.Count);
+			Assert.HasCount(2, listView.ItemsPanelRoot.Children);
 			Assert.AreEqual("a1", (listView.ItemsPanelRoot.Children[0] as ContentControl).Content.ToString());
 			Assert.AreEqual("a2", (listView.ItemsPanelRoot.Children[1] as ContentControl).Content.ToString());
 #endif

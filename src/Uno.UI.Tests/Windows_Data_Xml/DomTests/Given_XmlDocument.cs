@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Uno.UI.Tests.Windows_Data_Xml.DomTests
 		{
 			var document = new XmlDocument();
 			document.LoadXml(GetTestXml());
-			Assert.AreEqual(1, document.ChildNodes.Count);
+			Assert.HasCount(1, document.ChildNodes);
 			Assert.IsInstanceOfType(document.FirstChild, typeof(XmlElement));
 			Assert.AreEqual("chapter", document.FirstChild.NodeName);
 		}

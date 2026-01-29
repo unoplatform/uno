@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -1165,16 +1165,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 			Assert.AreEqual("Second", list[0]);
 
 			mouse.MoveTo(clickPosition1);
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 			mouse.Press(clickPosition1);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(2, list.Count);
+			Assert.HasCount(2, list);
 			Assert.AreEqual("First", list[1]);
 
 			FocusManager.GotFocus -= FocusManager_GotFocus;

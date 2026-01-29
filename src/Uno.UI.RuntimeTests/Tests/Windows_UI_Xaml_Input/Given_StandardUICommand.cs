@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Private.Infrastructure;
 using Windows.System;
@@ -343,7 +343,7 @@ public class Given_StandardUICommand
 		}
 		else
 		{
-			Assert.AreEqual(1, command.KeyboardAccelerators.Count);
+			Assert.HasCount(1, command.KeyboardAccelerators);
 			var keyboardAccelerator = command.KeyboardAccelerators[0];
 			Assert.AreEqual(virtualKey, keyboardAccelerator.Key);
 			Assert.AreEqual(modifiers, keyboardAccelerator.Modifiers);

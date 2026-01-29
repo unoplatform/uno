@@ -74,7 +74,7 @@ public partial class Given_FromJson
 			return;
 		}
 
-		Assert.AreEqual(3, numbers.Count);
+		Assert.HasCount(3, numbers);
 		Assert.AreEqual(1, numbers[0]);
 		Assert.AreEqual(2, numbers[1]);
 		Assert.AreEqual(3, numbers[2]);
@@ -126,7 +126,7 @@ public partial class Given_FromJson
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual("Feature Work", title.Text);
-		Assert.AreEqual(2, listView.Items.Count, "Tasks list should expose two entries from the JSON payload.");
+		Assert.HasCount(2, listView.Items, "Tasks list should expose two entries from the JSON payload.");
 
 		if (listView.Items[0] is not IDictionary<string, object?> firstTask ||
 			listView.Items[1] is not IDictionary<string, object?> secondTask)

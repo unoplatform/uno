@@ -392,7 +392,7 @@ public partial class TemplatedParentTests // helper methods
 			var node = descendants[i];
 			var actual = string.Join(", ", debugVT(node));
 
-			Assert.AreEqual(2, parts.Length, $"Failed to parse expectation on line {i}: {expectations[i]}");
+			Assert.HasCount(2, parts, $"Failed to parse expectation on line {i}: {expectations[i]}");
 			Assert.AreEqual(parts[0], DescribeObject(node), $"Invalid node on line {i}");
 			Assert.AreEqual(parts[1], actual, $"Invalid property(ies) on line {i}");
 		}

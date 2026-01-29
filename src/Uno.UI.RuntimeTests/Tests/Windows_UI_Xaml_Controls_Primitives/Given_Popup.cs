@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
@@ -404,7 +404,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot);
 
 				// Verify count
-				Assert.AreEqual(3, openPopups.Count, "Should have 3 open popups");
+				Assert.HasCount(3, openPopups, "Should have 3 open popups");
 
 				// Verify order: most recently opened (popup3) should be first
 				Assert.AreSame(popup3, openPopups[0], "Most recently opened popup should be at index 0");

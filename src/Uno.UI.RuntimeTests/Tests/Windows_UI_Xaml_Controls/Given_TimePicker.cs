@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -247,7 +247,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeTimePickerFlyout
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
 #endif
@@ -298,7 +298,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
@@ -344,7 +344,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
 			var timePickerFlyout = (TimePickerFlyout)associatedFlyout;

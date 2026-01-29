@@ -482,7 +482,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(image);
 			await TestServices.WindowHelper.WaitFor(() => imageOpened);
 
-			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
+			Assert.HasCount(2, logs, string.Join(Environment.NewLine, logs));
 			Assert.AreEqual("BitmapImage_ImageOpened. 100x150", logs[0]);
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
 		}

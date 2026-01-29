@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 using System;
 using System.Text.RegularExpressions;
 using Windows.System.Profile;
@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System.Profile
 		{
 			var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
 			var split = deviceFamily.Split('.');
-			Assert.AreEqual(2, split.Length);
+			Assert.HasCount(2, split);
 		}
 
 		[TestMethod]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -391,7 +391,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
 			Assert.IsNotNull(result);
 
-			Assert.AreEqual(2, result.Count);
+			Assert.HasCount(2, result);
 		}
 
 		[TestMethod]
@@ -419,7 +419,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
 			Assert.IsNotNull(result);
 
-			Assert.AreEqual(3, result.Count);
+			Assert.HasCount(3, result);
 			Assert.AreEqual("value3", result["key1"]);
 			Assert.AreEqual("value2", result["key2"]);
 			Assert.AreEqual("value4", result["key3"]);

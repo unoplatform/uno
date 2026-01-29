@@ -560,11 +560,11 @@ public partial class Given_ContextRequested
 		await UITestHelper.Load(target);
 
 		var menuFlyout = (MenuFlyout)target.ContextFlyout;
-		Assert.AreEqual(2, menuFlyout.Items.Count);
+		Assert.HasCount(2, menuFlyout.Items);
 
 		var subMenu = menuFlyout.Items[1] as MenuFlyoutSubItem;
 		Assert.IsNotNull(subMenu);
-		Assert.AreEqual(2, subMenu.Items.Count);
+		Assert.HasCount(2, subMenu.Items);
 	}
 
 	#endregion

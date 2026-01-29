@@ -1,4 +1,4 @@
-﻿#if !WINAPPSDK
+#if !WINAPPSDK
 using System;
 using System.Globalization;
 using System.Linq;
@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
 					var openFlyouts = FlyoutBase.OpenFlyouts;
-					Assert.AreEqual(1, openFlyouts.Count);
+					Assert.HasCount(1, openFlyouts);
 					var associatedFlyout = (DatePickerFlyout)openFlyouts[0];
 					Assert.IsNotNull(associatedFlyout);
 
@@ -286,7 +286,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeDatePickerFlyout
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
 #endif
@@ -343,7 +343,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var associatedFlyout = flyoutBase.AssociatedFlyout;
 #else // FlyoutBase.OpenFlyouts also includes native popups like NativeDatePickerFlyout
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 #endif
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
@@ -379,7 +379,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout));
 
@@ -424,7 +424,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
 			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;

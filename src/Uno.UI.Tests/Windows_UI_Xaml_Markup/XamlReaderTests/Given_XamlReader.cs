@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -80,7 +80,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var grid = r.Content as Grid;
 			Assert.IsNotNull(grid);
 
-			Assert.AreEqual(2, grid.Children.Count);
+			Assert.HasCount(2, grid.Children);
 
 			var border1 = grid.Children.ElementAt(0) as Border;
 			var border2 = grid.Children.ElementAt(1) as Border;
@@ -122,7 +122,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var border01 = photoTemplateContent.FindName("border01") as Border;
 			Assert.IsNotNull(border01);
 			var stops = (border01.Background as LinearGradientBrush).GradientStops;
-			Assert.AreEqual(2, stops.Count);
+			Assert.HasCount(2, stops);
 			Assert.AreEqual(Microsoft.UI.Colors.Transparent, stops[0].Color);
 			Assert.AreEqual(Microsoft.UI.ColorHelper.FromARGB(0x33, 0, 0, 0), stops[1].Color);
 			Assert.AreEqual(0.0, stops[0].Offset);
@@ -401,7 +401,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(r.Resources);
 			Assert.IsEmpty(r.Resources);
 			Assert.IsNotNull(r.Resources.ThemeDictionaries);
-			Assert.AreEqual(2, r.Resources.ThemeDictionaries.Count);
+			Assert.HasCount(2, r.Resources.ThemeDictionaries);
 		}
 
 		[TestMethod]
@@ -563,7 +563,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var tb2 = r.FindName("tb02") as TextBlock;
 
-			Assert.AreEqual(5, tb2.Inlines.Count);
+			Assert.HasCount(5, tb2.Inlines);
 			Assert.AreEqual("start ", (tb2.Inlines[0] as Run).Text);
 			Assert.AreEqual(" ", (tb2.Inlines[1] as Run).Text);
 
@@ -742,7 +742,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var root = r.FindName("root") as Grid;
 
-			Assert.AreEqual(3, root.RowDefinitions.Count);
+			Assert.HasCount(3, root.RowDefinitions);
 			Assert.AreEqual(GridUnitType.Star, root.RowDefinitions[0].Height.GridUnitType);
 			Assert.AreEqual(1.0, root.RowDefinitions[0].Height.Value);
 			Assert.AreEqual(GridUnitType.Star, root.RowDefinitions[1].Height.GridUnitType);
@@ -942,7 +942,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var tabView1 = r.FindName("tabView1") as Microsoft.UI.Xaml.Controls.TabView;
 
-			Assert.AreEqual(2, tabView1.TabItems.Count);
+			Assert.HasCount(2, tabView1.TabItems);
 		}
 
 		[TestMethod]
@@ -1260,7 +1260,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				</muxc:SwipeItems>
 				""");
 
-			Assert.AreEqual(1, SUT.Count);
+			Assert.HasCount(1, SUT);
 			Assert.AreEqual("asd", SUT[0].Text);
 		}
 
@@ -1279,7 +1279,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			Assert.IsNotNull(SUT.LeftItems);
 			Assert.AreEqual(SwipeMode.Execute, SUT.LeftItems.Mode); // check we are using the very same collection in the xaml, and not a new instance
-			Assert.AreEqual(1, SUT.LeftItems.Count);
+			Assert.HasCount(1, SUT.LeftItems);
 			Assert.AreEqual("asd", SUT.LeftItems[0].Text);
 		}
 
@@ -1302,7 +1302,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			Assert.IsNotNull(SUT.LeftItems);
 			Assert.AreEqual(SwipeMode.Execute, SUT.LeftItems.Mode); // check we are using the very same collection in the xaml, and not a new instance
-			Assert.AreEqual(1, SUT.LeftItems.Count);
+			Assert.HasCount(1, SUT.LeftItems);
 			Assert.AreEqual("qwe", SUT.LeftItems[0].Text);
 		}
 
@@ -1364,8 +1364,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var light = (ResourceDictionary)panel.Resources.ThemeDictionaries["Light"];
 			var dark = (ResourceDictionary)panel.Resources.ThemeDictionaries["Dark"];
 
-			Assert.AreEqual(1, light.Count);
-			Assert.AreEqual(1, dark.Count);
+			Assert.HasCount(1, light);
+			Assert.HasCount(1, dark);
 		}
 
 		[TestMethod]
@@ -1384,7 +1384,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var root = Microsoft.UI.Xaml.Markup.XamlReader.Load($@"<{rootName} xml:space=""preserve"" xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">regular text<Bold>bold text</Bold><Underline>underline text</Underline><Italic>italic text</Italic><Hyperlink Name=""name"">this is a hyperlink</Hyperlink>more regular text</{rootName}>");
 			var inlines = getInlines(root).ToArray();
-			Assert.AreEqual(6, inlines.Length);
+			Assert.HasCount(6, inlines);
 			Assert.AreEqual("regular text", ((Run)inlines[0]).Text);
 			Assert.AreEqual("bold text", ((Run)((Bold)inlines[1]).Inlines.Single()).Text);
 			Assert.AreEqual("underline text", ((Run)((Underline)inlines[2]).Inlines.Single()).Text);
@@ -1554,7 +1554,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var s = GetContent(nameof(When_ResourceDictionary_With_Theme_And_Static));
 			var SUT = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
 
-			Assert.AreEqual(2, SUT.ThemeDictionaries.Count);
+			Assert.HasCount(2, SUT.ThemeDictionaries);
 			Assert.IsNotNull(SUT["CustomSecondBrush"]);
 			Assert.IsNotNull(SUT["MyCustomFirstBrush"]);
 		}
@@ -1565,7 +1565,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var s = GetContent(nameof(When_ResourceDictionary_With_Theme_And_No_Static));
 			var SUT = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
 
-			Assert.AreEqual(2, SUT.ThemeDictionaries.Count);
+			Assert.HasCount(2, SUT.ThemeDictionaries);
 			Assert.IsNotNull(SUT["PrimaryColor"]);
 		}
 
@@ -1582,7 +1582,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				</TextBlock>
 				""") as TextBlock;
 
-			Assert.AreEqual(5, SUT.Inlines.Count);
+			Assert.HasCount(5, SUT.Inlines);
 			Assert.AreEqual("BeforeLineBreak", ((Run)SUT.Inlines[0]).Text);
 			Assert.IsInstanceOfType(SUT.Inlines[1], typeof(LineBreak));
 			Assert.AreEqual("You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.", ((Run)SUT.Inlines[2]).Text);
@@ -1603,7 +1603,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				</TextBlock>
 				""") as TextBlock;
 
-			Assert.AreEqual(5, SUT.Inlines.Count);
+			Assert.HasCount(5, SUT.Inlines);
 			Assert.AreEqual("\n   BeforeLineBreak\n", ((Run)SUT.Inlines[0]).Text);
 			Assert.IsInstanceOfType(SUT.Inlines[1], typeof(LineBreak));
 			Assert.AreEqual("\n   You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.\n", ((Run)SUT.Inlines[2]).Text);

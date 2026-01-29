@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -92,7 +92,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			var randomAccessStream = stream.AsRandomAccessStream();
 
 			Assert.AreEqual(5, stream.Position);
-			Assert.AreEqual(10, stream.Length);
+			Assert.HasCount(10, stream);
 			Assert.AreEqual((ulong)5, randomAccessStream.Position);
 			Assert.AreEqual((ulong)10, randomAccessStream.Size);
 
