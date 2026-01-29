@@ -8,11 +8,15 @@ internal partial record HotReloadStatusMessage
 		: this(
 			(HotReloadState)status.State,
 			[.. status.Operations.Select(op => new HotReloadServerOperationData(op))],
-			status.ServerError) { }
+			status.ServerError)
+	{
+	}
 }
 
 public partial record HotReloadServerOperationData
 {
 	public HotReloadServerOperationData(Uno.HotReload.Tracking.HotReloadOperationInfo op)
-		: this(op.Id, op.StartTime, op.FilePaths, op.IgnoredFilePaths, op.EndTime, (HotReloadServerResult?)op.Result, op.Diagnostics) { }
+		: this(op.Id, op.StartTime, op.FilePaths, op.IgnoredFilePaths, op.EndTime, (HotReloadServerResult?)op.Result, op.Diagnostics)
+	{
+	}
 }
