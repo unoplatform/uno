@@ -27,17 +27,6 @@ internal static class ChangeSetExtensions
 			solution = solution.WithAdditionalDocumentText(additionalDocument.Id, await GetSourceTextAsync(additionalDocument.FilePath!, ct).ConfigureAwait(false));
 		}
 
-		foreach (var projectWithEditedAdditionalDocument in changeSet.EditedAdditionalDocuments.Select(ad => ad.Project.Id).Distinct())
-		{
-			// Generate an empty document to force the generators to run in a separate project of the same solution.
-			// This is not needed for the head project, but it's no causing issues either.
-			solution = solution.AddAdditionalDocument(
-				DocumentId.CreateNewId(projectWithEditedAdditionalDocument),
-				Guid.NewGuid().ToString(),
-				SourceText.From("")
-			);
-		}
-
 		// Added documents has been detected using a temporary solution.
 		// We need to make sure to find the right project instance in the current solution, and update the document ID accordingly.
 		// Note: A project may appear multiple times in the solution (e.g. different TFM), so we need to add the document to **all** instances.

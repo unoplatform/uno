@@ -70,8 +70,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"Failed to initialize compilation workspace: {e}");
-
+				_reporter.Error($"Failed to initialize compilation workspace, hot-reload is disabled:\r\n{e}");
 				_ = _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
 				_ = Notify(HotReloadEvent.Disabled);
 
@@ -100,8 +99,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine($"Failed to initialize compilation workspace: {e}");
-
+					_reporter.Error($"Failed to initialize compilation workspace, hot-reload is disabled:\r\n{e}");
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
 					await Notify(HotReloadEvent.Disabled);
 

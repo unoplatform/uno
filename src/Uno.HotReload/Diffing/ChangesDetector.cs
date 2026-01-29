@@ -29,7 +29,7 @@ internal class ChangesDetector(Func<CancellationToken, ValueTask<Workspace>> Cre
 			var documents = solution
 				.Projects
 				.SelectMany(p => p.Documents)
-				.Where(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
+				.Where(d => string.Equals(d.FilePath, file, PathComparer.Comparison));
 			foreach (var document in documents)
 			{
 				found = true;
@@ -46,7 +46,7 @@ internal class ChangesDetector(Func<CancellationToken, ValueTask<Workspace>> Cre
 			var additionalDocuments = solution
 				.Projects
 				.SelectMany(p => p.AdditionalDocuments)
-				.Where(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
+				.Where(d => string.Equals(d.FilePath, file, PathComparer.Comparison));
 			foreach (var additionalDocument in additionalDocuments)
 			{
 				found = true;
