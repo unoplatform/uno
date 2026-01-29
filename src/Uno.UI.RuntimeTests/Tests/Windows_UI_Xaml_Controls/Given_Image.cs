@@ -215,7 +215,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);
+			Assert.IsGreaterThan(img.ActualHeight, 0);
 		}
 
 		[TestMethod]
@@ -240,7 +240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);
+			Assert.IsGreaterThan(img.ActualHeight, 0);
 		}
 
 		[TestMethod]
@@ -253,7 +253,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.explicitRelativeNonRooted.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.explicitRelativeNonRooted.ActualHeight > 0);
+			Assert.IsGreaterThan(SUT.explicitRelativeNonRooted.ActualHeight, 0);
 		}
 
 		[TestMethod]
@@ -266,7 +266,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.relativeNonRooted.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.relativeNonRooted.ActualHeight > 0);
+			Assert.IsGreaterThan(SUT.relativeNonRooted.ActualHeight, 0);
 		}
 
 		[TestMethod]
@@ -279,7 +279,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.relativeRooted.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.relativeRooted.ActualHeight > 0);
+			Assert.IsGreaterThan(SUT.relativeRooted.ActualHeight, 0);
 		}
 
 
@@ -293,7 +293,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.absoluteLocal.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.absoluteLocal.ActualHeight > 0);
+			Assert.IsGreaterThan(SUT.absoluteLocal.ActualHeight, 0);
 		}
 
 		[TestMethod]
@@ -306,7 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.absoluteMain.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.absoluteMain.ActualHeight > 0);
+			Assert.IsGreaterThan(SUT.absoluteMain.ActualHeight, 0);
 		}
 
 
@@ -323,7 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);
+			Assert.IsGreaterThan(img.ActualHeight, 0);
 		}
 
 		[TestMethod]
@@ -482,7 +482,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(image);
 			await TestServices.WindowHelper.WaitFor(() => imageOpened);
 
-			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
+			Assert.HasCount(2, logs, string.Join(Environment.NewLine, logs));
 			Assert.AreEqual("BitmapImage_ImageOpened. 100x150", logs[0]);
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
 		}

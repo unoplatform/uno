@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Verify that the last tab is closed and the second last tab is selected
-			Assert.IsFalse(tabView.TabItems.Contains(tabToSelectAndClose), "Expected the tab to be removed from the TabItems collection.");
+			Assert.DoesNotContain(tabToSelectAndClose, tabView.TabItems, "Expected the tab to be removed from the TabItems collection.");
 			Assert.AreEqual(expectedSelectedTabAfterClose, tabView.SelectedItem, "Expected different tab to be selected after closing the selected tab.");
 			Assert.IsTrue(expectedSelectedTabAfterClose.IsSelected, "Expected tab is not selected.");
 

@@ -2781,7 +2781,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			{
 				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
-				Assert.AreEqual(1, popups.Count, "Expected exactly one open Popup.");
+				Assert.HasCount(1, popups, "Expected exactly one open Popup.");
 
 				var popup = popups[0];
 

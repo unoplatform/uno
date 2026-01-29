@@ -57,10 +57,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel
 			// At minimum, we expect the Major version to be set (not just all zeros)
 			// unless the app explicitly sets version 0.0.0.0
 			// This test verifies that the Version property can be accessed without exception
-			Assert.IsTrue(version.Major >= 0);
-			Assert.IsTrue(version.Minor >= 0);
-			Assert.IsTrue(version.Build >= 0);
-			Assert.IsTrue(version.Revision >= 0);
+			Assert.IsGreaterThanOrEqualTo(version.Major, 0);
+			Assert.IsGreaterThanOrEqualTo(version.Minor, 0);
+			Assert.IsGreaterThanOrEqualTo(version.Build, 0);
+			Assert.IsGreaterThanOrEqualTo(version.Revision, 0);
 		}
 #endif
 	}

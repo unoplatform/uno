@@ -53,8 +53,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(child.ActualWidth > 50);
-			Assert.IsTrue(child.ActualHeight > 50);
+			Assert.IsGreaterThan(child.ActualWidth, 50);
+			Assert.IsGreaterThan(child.ActualHeight, 50);
 		}
 
 		[TestMethod]

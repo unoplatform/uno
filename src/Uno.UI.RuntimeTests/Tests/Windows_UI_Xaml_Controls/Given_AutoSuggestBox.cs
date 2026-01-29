@@ -239,7 +239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			border.Width = 100;
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(initialWidth < sv.ActualWidth);
+			Assert.IsLessThan(initialWidth, sv.ActualWidth);
 		}
 
 		[TestMethod]
@@ -1059,8 +1059,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var popupPoint = popup.Child.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
 				var suggestBoxPoint = SUT.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
-				Assert.IsTrue(
-					popupPoint.Y + popup.Child.ActualSize.Y <= suggestBoxPoint.Y + 1, // Added 1 to adjust for border on Windows
+				Assert.IsLessThanOrEqualTo(
+					popupPoint.Y + popup.Child.ActualSize.Y, suggestBoxPoint.Y + 1, // Added 1 to adjust for border on Windows
 					$"Expected `{popupPoint.Y} + {popup.Child.ActualSize.Y}`={popupPoint.Y + popup.Child.ActualSize.Y} <= {suggestBoxPoint.Y + 1}");
 			});
 		}
@@ -1073,7 +1073,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var popupPoint = popup.Child.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
 				var suggestBoxPoint = SUT.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
-				Assert.IsTrue(popupPoint.Y + 1 >= suggestBoxPoint.Y + SUT.ActualHeight); // Added 1 to adjust for border on Windows
+				Assert.IsGreaterThanOrEqualTo(popupPoint.Y + 1, suggestBoxPoint.Y + SUT.ActualHeight); // Added 1 to adjust for border on Windows
 			});
 		}
 
@@ -1158,7 +1158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ProcessTextInput("a");
 
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 		}
 #endif
 
@@ -1196,14 +1196,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ProcessTextInput("a");
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0];
 			var oldPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
 
 			textBox.ProcessTextInput("ab");
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 			var newPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
 
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);

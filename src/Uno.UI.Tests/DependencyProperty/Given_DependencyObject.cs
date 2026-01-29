@@ -118,8 +118,8 @@ namespace Uno.UI.Tests
 		public void Should_Have_Bindable_Attribute()
 		{
 			// For context, DependencyObjectGenerator used to put the bindable attribute on the wrong type when it's nested.
-			Assert.AreEqual(0, typeof(Given_DependencyObject).GetCustomAttributes(typeof(BindableAttribute), true).Length);
-			Assert.AreEqual(1, typeof(MyObject).GetCustomAttributes(typeof(BindableAttribute), true).Length);
+			Assert.IsEmpty(typeof(Given_DependencyObject).GetCustomAttributes(typeof(BindableAttribute), true));
+			Assert.HasCount(1, typeof(MyObject).GetCustomAttributes(typeof(BindableAttribute), true));
 		}
 
 		[TestMethod]

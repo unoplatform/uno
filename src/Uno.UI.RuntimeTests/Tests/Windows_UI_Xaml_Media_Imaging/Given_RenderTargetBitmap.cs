@@ -74,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			var pixels = (await renderer.GetPixelsAsync()).ToArray();
 
 			//Using of the loop instead of IsSameData method to get more information in case of failure.
-			Assert.AreEqual(rawBorderSnapshot.Length, pixels.Length, $"Invalid length. Expected {rawBorderSnapshot.Length} found {pixels.Length}.");
+			Assert.HasCount(rawBorderSnapshot.Length, pixels, $"Invalid length. Expected {rawBorderSnapshot.Length} found {pixels.Length}.");
 
 			for (var i = 0; i < pixels.Length; i += 4)
 			{

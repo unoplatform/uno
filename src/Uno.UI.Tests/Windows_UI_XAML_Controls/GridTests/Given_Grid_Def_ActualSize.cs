@@ -128,8 +128,8 @@ namespace Uno.UI.Tests.GridTests
 			params (int Row, int Column, FrameworkElement Element)[] cells
 		)
 		{
-			Assert.AreEqual(rowDefinitions.Length, expectedRowHeights.Length);
-			Assert.AreEqual(columnDefinitions.Length, expectedColumnWidths.Length);
+			Assert.HasCount(rowDefinitions.Length, expectedRowHeights);
+			Assert.HasCount(columnDefinitions.Length, expectedColumnWidths);
 
 			var grid = ConstructGrid(rowDefinitions, columnDefinitions, cells);
 

@@ -474,13 +474,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				keys.Add(kvp.Key);
 			}
 
-			Assert.IsTrue(keys.Contains("foot"));
+			Assert.Contains(keys, "foot");
 
-			Assert.IsFalse(keys.Contains("hand"));
-			Assert.IsTrue(rd.ContainsKey("hand"));
+			Assert.DoesNotContain(keys, "hand");
+			Assert.Contains(rd, "hand");
 
-			Assert.IsFalse(keys.Contains("eyes"));
-			Assert.IsTrue(rd.ContainsKey("eyes"));
+			Assert.DoesNotContain(keys, "eyes");
+			Assert.Contains(rd, "eyes");
 		}
 
 		[TestMethod]

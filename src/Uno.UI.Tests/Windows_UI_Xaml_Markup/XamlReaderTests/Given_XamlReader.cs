@@ -401,7 +401,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(r.Resources);
 			Assert.AreEqual(0, r.Resources.Count);
 			Assert.IsNotNull(r.Resources.ThemeDictionaries);
-			Assert.AreEqual(2, r.Resources.ThemeDictionaries.Count);
+			Assert.HasCount(2, r.Resources.ThemeDictionaries);
 		}
 
 		[TestMethod]
@@ -942,7 +942,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var tabView1 = r.FindName("tabView1") as Microsoft.UI.Xaml.Controls.TabView;
 
-			Assert.AreEqual(2, tabView1.TabItems.Count);
+			Assert.HasCount(2, tabView1.TabItems);
 		}
 
 		[TestMethod]
@@ -1384,7 +1384,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var root = Microsoft.UI.Xaml.Markup.XamlReader.Load($@"<{rootName} xml:space=""preserve"" xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">regular text<Bold>bold text</Bold><Underline>underline text</Underline><Italic>italic text</Italic><Hyperlink Name=""name"">this is a hyperlink</Hyperlink>more regular text</{rootName}>");
 			var inlines = getInlines(root).ToArray();
-			Assert.AreEqual(6, inlines.Length);
+			Assert.HasCount(6, inlines);
 			Assert.AreEqual("regular text", ((Run)inlines[0]).Text);
 			Assert.AreEqual("bold text", ((Run)((Bold)inlines[1]).Inlines.Single()).Text);
 			Assert.AreEqual("underline text", ((Run)((Underline)inlines[2]).Inlines.Single()).Text);
@@ -1554,7 +1554,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var s = GetContent(nameof(When_ResourceDictionary_With_Theme_And_Static));
 			var SUT = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
 
-			Assert.AreEqual(2, SUT.ThemeDictionaries.Count);
+			Assert.HasCount(2, SUT.ThemeDictionaries);
 			Assert.IsNotNull(SUT["CustomSecondBrush"]);
 			Assert.IsNotNull(SUT["MyCustomFirstBrush"]);
 		}
@@ -1565,7 +1565,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var s = GetContent(nameof(When_ResourceDictionary_With_Theme_And_No_Static));
 			var SUT = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
 
-			Assert.AreEqual(2, SUT.ThemeDictionaries.Count);
+			Assert.HasCount(2, SUT.ThemeDictionaries);
 			Assert.IsNotNull(SUT["PrimaryColor"]);
 		}
 

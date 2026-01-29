@@ -645,7 +645,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 
-			Assert.AreEqual(0, list.SelectedItems.Count);
+			Assert.IsEmpty(list.SelectedItems);
 		}
 
 		[TestMethod]
@@ -3818,11 +3818,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			var second = GetCurrenState();
 
-			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
-			Assert.IsTrue(initial.Count + BatchSize <= first.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={first.Count}");
-			Assert.IsTrue(initial.LastMaterialized < first.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index1={first.LastMaterialized}");
-			Assert.IsTrue(first.Count + BatchSize <= second.Count, $"Should have even more batch(es) after second scroll: count1={first.Count}, count2={second.Count}");
-			Assert.IsTrue(first.LastMaterialized < second.LastMaterialized, $"No extra item materialized after second scroll: index1={first.LastMaterialized}, index2={second.LastMaterialized}");
+			Assert.IsGreaterThan(initial.Count / BatchSize, 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsLessThanOrEqualTo(initial.Count + BatchSize, first.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={first.Count}");
+			Assert.IsLessThan(initial.LastMaterialized, first.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index1={first.LastMaterialized}");
+			Assert.IsLessThanOrEqualTo(first.Count + BatchSize, second.Count, $"Should have even more batch(es) after second scroll: count1={first.Count}, count2={second.Count}");
+			Assert.IsLessThan(first.LastMaterialized, second.LastMaterialized, $"No extra item materialized after second scroll: index1={first.LastMaterialized}, index2={second.LastMaterialized}");
 
 			(int Count, int LastMaterialized) GetCurrenState() =>
 			(
@@ -3874,9 +3874,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var secondScroll = GetCurrenState();
 
-			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
-			Assert.IsTrue(initial.Count + BatchSize <= firstScroll.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
-			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
+			Assert.IsGreaterThan(initial.Count / BatchSize, 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsLessThanOrEqualTo(initial.Count + BatchSize, firstScroll.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
+			Assert.IsLessThan(initial.LastMaterialized, firstScroll.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
 			Assert.AreEqual(firstScroll.Count, secondScroll.Count, $"Should still have same number of batches after second scroll: count1={firstScroll.Count}, count2={secondScroll.Count}");
 			Assert.AreEqual(firstScroll.Count - 1, secondScroll.LastMaterialized, $"Should reach end of list from first scroll: count1={firstScroll.LastMaterialized}, index2={secondScroll.LastMaterialized}");
 
@@ -4155,7 +4155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.SelectedIndex = 1;
 			Assert.AreEqual(1, sut.SelectedIndex);
 
-			Assert.AreEqual(3, list.Count);
+			Assert.HasCount(3, list);
 			var removed1 = list[0].RemovedItems;
 			var removed2 = list[1].RemovedItems;
 			var removed3 = list[2].RemovedItems;
@@ -4170,7 +4170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			else
 			{
-				Assert.AreEqual(0, removed1.Count);
+				Assert.IsEmpty(removed1);
 			}
 
 			Assert.AreEqual("String 1", (string)added1.Single());
@@ -4212,7 +4212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, sut.SelectedIndex);
 			Assert.AreSame(obj1, sut.SelectedItem);
 
-			Assert.AreEqual(2, list.Count);
+			Assert.HasCount(2, list);
 			var removed1 = list[0].RemovedItems;
 			var removed2 = list[1].RemovedItems;
 
@@ -4225,7 +4225,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			else
 			{
-				Assert.AreEqual(0, removed1.Count);
+				Assert.IsEmpty(removed1);
 			}
 			Assert.AreSame(obj2, added1.Single());
 
@@ -4345,7 +4345,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Where(x => x.Name == "HeaderTemplateRoot")
 				.ToArray();
 
-			Assert.AreEqual(1, roots.Length);
+			Assert.HasCount(1, roots);
 			Assert.AreEqual((string)SUT.Header, roots[0].Text);
 		}
 

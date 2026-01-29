@@ -161,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var contentCenter = content.GetOnScreenBounds().GetCenter();
 				var targetCenter = target.GetOnScreenBounds().GetCenter();
 
-				Assert.IsTrue(targetCenter.X > MarginValue);
+				Assert.IsGreaterThan(targetCenter.X, MarginValue);
 				Assert.AreEqual(targetCenter.X, contentCenter.X, delta: 2);
 			}
 			finally
@@ -198,7 +198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var contentCenter = content.GetOnScreenBounds().GetCenter();
 				var targetCenter = target.GetOnScreenBounds().GetCenter();
 
-				Assert.IsTrue(targetCenter.X > MarginValue);
+				Assert.IsGreaterThan(targetCenter.X, MarginValue);
 				Assert.AreEqual(targetCenter.X, contentCenter.X, delta: 2);
 			}
 			finally
@@ -1783,8 +1783,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var targetScreenBounds = target.GetOnScreenBounds();
 			var targetCenter = targetScreenBounds.GetCenter();
 
-			Assert.IsTrue(targetCenter.X > minimumTargetOffset);
-			Assert.IsTrue(targetCenter.Y > minimumTargetOffset);
+			Assert.IsGreaterThan(targetCenter.X, minimumTargetOffset);
+			Assert.IsGreaterThan(targetCenter.Y, minimumTargetOffset);
 			switch (horizontalPosition)
 			{
 				case HorizontalPosition.BeyondLeft:
@@ -1840,8 +1840,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var targetCenter = targetScreenBounds.GetCenter();
 			var anchorPoint = new Windows.Foundation.Point(targetScreenBounds.X + position.X, targetScreenBounds.Y + position.Y);
 
-			Assert.IsTrue(targetCenter.X > minimumTargetOffset);
-			Assert.IsTrue(targetCenter.Y > minimumTargetOffset);
+			Assert.IsGreaterThan(targetCenter.X, minimumTargetOffset);
+			Assert.IsGreaterThan(targetCenter.Y, minimumTargetOffset);
 			switch (horizontalPosition)
 			{
 				case HorizontalPosition.BeyondLeft:
