@@ -71,17 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
-			ParsedText = new UnicodeText(
-				availableSizeWithoutPadding,
-				Inlines.TraversedTree.leafTree,
-				GetDefaultFontDetails(),
-				MaxLines,
-				(float)LineHeight,
-				LineStackingStrategy,
-				FlowDirection,
-				(OwningTextBox as IDependencyObjectStoreProvider)?.Store.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
-				TextWrapping,
-				out var desiredSize);
+			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -103,6 +93,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return desiredSize;
 		}
+
+		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size) =>
+			new UnicodeText(
+				availableSizeWithoutPadding,
+				Inlines.TraversedTree.leafTree,
+				GetDefaultFontDetails(),
+				MaxLines,
+				(float)LineHeight,
+				LineStackingStrategy,
+				FlowDirection,
+				(OwningTextBox as IDependencyObjectStoreProvider)?.Store
+					.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue
+						? null
+						: TextAlignment,
+				TextWrapping,
+				out size);
 
 		// the entire body of the text block is considered hit-testable
 		internal override bool HitTest(Point point)
@@ -132,17 +138,8 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			ParsedText = new UnicodeText(
-				availableSizeWithoutPadding,
-				Inlines.TraversedTree.leafTree,
-				GetDefaultFontDetails(),
-				MaxLines,
-				(float)LineHeight,
-				LineStackingStrategy,
-				FlowDirection,
-				(OwningTextBox as IDependencyObjectStoreProvider)?.Store.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
-				TextWrapping,
-				out var arrangedSize);
+			ParsedText = ParseText(availableSizeWithoutPadding, out var arrangedSize);
+
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
 			var result = base.ArrangeOverride(finalSize);
