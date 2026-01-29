@@ -1,8 +1,10 @@
 # Hot Reload Telemetry Events
 
-This document summarizes all Hot Reload telemetry events emitted by the server (`ServerHotReloadProcessor.Notify`).
+This document summarizes all Hot Reload telemetry tracked by the server (`ServerHotReloadProcessor.Notify`).
 
 **Note:** Starting with Uno.DevTools.Telemetry v1.3.0, exceptions are tracked using the `TrackException` API instead of encoding exception details (ErrorMessage, ErrorType) as properties in `TrackEvent` calls. This provides better grouping, analytics, and diagnostics in Application Insights and other telemetry backends.
+
+## Events
 
 Event name prefix: uno/dev-server/hot-reload
 
@@ -18,7 +20,16 @@ Event name prefix: uno/dev-server/hot-reload
 | **notify-failed** [[src]](HotReload/ServerHotReloadProcessor.cs#L201)           | Event, Source, PreviousState                          | FileCount, DurationMs (optional)      |
 | **notify-rude-edit** [[src]](HotReload/ServerHotReloadProcessor.cs#L206)        | Event, Source, PreviousState                          | FileCount, DurationMs (optional)      |
 | **notify-complete** [[src]](HotReload/ServerHotReloadProcessor.cs#L212)         | Event, Source, PreviousState, NewState, HasCurrentOperation  | FileCount, DurationMs (optional)      |
-| **notify-error** [[src]](HotReload/ServerHotReloadProcessor.cs#L221)            | Event, Source, PreviousState, NewState, HasCurrentOperation, *(exception tracked via TrackException)* | FileCount, DurationMs (optional) |
+
+## Exceptions
+
+Exceptions during Hot Reload operations are tracked using `TrackException` [[src]](HotReload/ServerHotReloadProcessor.cs#L227):
+
+- **Context Properties**: Event, Source, PreviousState, NewState, HasCurrentOperation
+- **Context Measurements**: FileCount, DurationMs (optional)
+- **Exception Details**: Automatically captured by TrackException (type, message, stack trace)
+
+These exceptions can be identified in Application Insights by their context properties (e.g., Event="ProcessingFiles") alongside the standard exception data.
 
 ## Property Value Examples
 
@@ -33,10 +44,9 @@ Event name prefix: uno/dev-server/hot-reload
 - **Event**: The type of event that triggered the notification
 - **Source**: The source of the event
 - **PreviousState**: The state before the operation
-- **NewState**: The state after the operation (only present in notify-complete and notify-error)
-- **HasCurrentOperation**: Indicates if a Hot Reload operation is in progress (only present in notify-complete and notify-error)
+- **NewState**: The state after the operation (only present in notify-complete and exceptions)
+- **HasCurrentOperation**: Indicates if a Hot Reload operation is in progress (only present in notify-complete and exceptions)
 - **FileCount**: Number of files affected by the operation (only present if there is a current operation)
 - **DurationMs**: Duration of the operation in milliseconds (only present if the operation has completed)
-- For **notify-error** events, exception details are captured via the TrackException API (no longer as ErrorMessage/ErrorType properties)
 
-All events are tracked server-side in `Notify()`.
+All events and exceptions are tracked server-side in `Notify()`.

@@ -41,8 +41,13 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		public void TrackException(Exception exception, IDictionary<string, string>? properties = null, IDictionary<string, double>? measurements = null)
 		{
-			var propertiesDict = properties as IReadOnlyDictionary<string, string>;
-			var measurementsDict = measurements as IReadOnlyDictionary<string, double>;
+			// Convert IDictionary to IReadOnlyDictionary since the inner API requires it
+			IReadOnlyDictionary<string, string>? propertiesDict = properties != null
+				? new Dictionary<string, string>(properties)
+				: null;
+			IReadOnlyDictionary<string, double>? measurementsDict = measurements != null
+				? new Dictionary<string, double>(measurements)
+				: null;
 			inner.TrackException(exception, propertiesDict, measurementsDict);
 		}
 

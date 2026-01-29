@@ -226,7 +226,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 			catch (Exception ex)
 			{
-				// Remove ErrorMessage and ErrorType from properties since they're now included in the exception
+				// Exception details are now tracked via TrackException instead of adding ErrorMessage and ErrorType properties
 				_telemetry.TrackException(ex, properties, measurements);
 				throw;
 			}
