@@ -47,6 +47,9 @@
         <div class="col-md-8">
         {{/_disableAffix}}
         <article class="content wrap" id="_content" data-uid="{{uid}}" data-pagefind-body>
+            {{#uid}}
+            <p data-pagefind-weight="5" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">{{uid}}</p>
+            {{/uid}}
             {{!body}}
         </article>
     </div>
