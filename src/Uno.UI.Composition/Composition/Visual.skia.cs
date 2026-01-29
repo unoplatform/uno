@@ -31,6 +31,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal static bool EnablePictureCollapsingOptimization { get; set; } = true;
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
 	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
+	internal static bool IgnoreTransparentVisualsForNativeHosting { get; set; } = true;
 
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
@@ -533,7 +534,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal void GetNativeViewPathAndZOrder(SKPath clipFromParent, SKPath clipPath, List<Visual> nativeVisualsInZOrder)
 	{
-		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
+		if (this is { IsVisible: false } || clipFromParent.IsEmpty || (this is { Opacity: 0 } && IgnoreTransparentVisualsForNativeHosting))
 		{
 			return;
 		}

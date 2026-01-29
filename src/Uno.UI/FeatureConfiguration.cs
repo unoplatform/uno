@@ -957,6 +957,23 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+
+			/// <summary>
+			/// Ignores fully transparent visuals when calculating the clipping region for native elements.
+			/// This is useful for elements that use transparency for hit-testing but should not clip their native children.
+			/// Most specifically, this is important for popups, which typically cover the entire window with a transparent background.
+			/// This feature is only relevant when using the Skia renderer.
+			/// </summary>
+			public static bool IgnoreTransparentVisualsForNativeElementClipping
+			{
+#if __SKIA__
+				get => Visual.IgnoreTransparentVisualsForNativeHosting;
+				set => Visual.IgnoreTransparentVisualsForNativeHosting = value;
+#else
+				get => true;
+				set { }
+#endif
+			}
 		}
 
 		public static class DependencyProperty
