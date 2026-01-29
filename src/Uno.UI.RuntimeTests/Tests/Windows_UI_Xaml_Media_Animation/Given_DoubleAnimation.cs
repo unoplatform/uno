@@ -190,7 +190,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				// This 500ms animation is expected to climb from 0 to 50, reset to 0 instantly, and repeat forever.
 				// Given that we are taking 5measurements per cycle, we can expect the followings:
 				Assert.AreEqual(10d, averageIncrement, 2.5, $"Expected an rough average of increment (excluding the drop) of 10 (+-25% error margin).\n" + context);
-				Assert.IsTrue(incrementSizes.Count(x => x >= 3) >= 8, $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
+				Assert.IsGreaterThanOrEqual(8, incrementSizes.Count(x => x >= 3), $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
 
 				double NanToZero(double value) => double.IsNaN(value) ? 0 : value;
 
@@ -240,7 +240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			// ~125ms into a 5s animation where the value is animating from 50 to -50,
 			// the value should be still positive.
 			var y = GetTranslateY(translate, isStillAnimating: true);
-			Assert.IsTrue(y > 0, $"Expecting Translate.Y to be still positive: {y}");
+			Assert.IsGreaterThan(0, y, $"Expecting Translate.Y to be still positive: {y}");
 		}
 
 		[TestMethod]
@@ -289,7 +289,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			if (value is double y)
 			{
 				// Animation #1 should be animating from around[100~105] to 50, and not from 0 (unanimated Local value).
-				Assert.IsTrue(y > 50, $"Expecting Translate.Y to be still positive: {y}");
+				Assert.IsGreaterThan(50, y, $"Expecting Translate.Y to be still positive: {y}");
 			}
 			else
 			{

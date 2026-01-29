@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 
 			await Task.Delay(500);
 
-			Assert.IsTrue(handlerCount > 1);
+			Assert.IsGreaterThan(1, handlerCount);
 		}
 	}
 }

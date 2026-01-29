@@ -114,8 +114,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(SUT.BackgroundElement);
 
 				var actualHeight = SUT.BackgroundElement.ActualHeight;
-				Assert.IsTrue(actualHeight > 0); // Is displayed
-				Assert.IsTrue(actualHeight < 300); // Is not stretched
+				Assert.IsGreaterThan(0, actualHeight); // Is displayed
+				Assert.IsLessThan(300, actualHeight); // Is not stretched
 			}
 			finally
 			{
@@ -147,8 +147,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(SUT.BackgroundElement);
 
 				var actualHeight = SUT.BackgroundElement.ActualHeight;
-				Assert.IsTrue(actualHeight > 0); // Is displayed
-				Assert.IsTrue(actualHeight > 400); // Is stretched to full size
+				Assert.IsGreaterThan(0, actualHeight); // Is displayed
+				Assert.IsGreaterThan(400, actualHeight); // Is stretched to full size
 			}
 			finally
 			{

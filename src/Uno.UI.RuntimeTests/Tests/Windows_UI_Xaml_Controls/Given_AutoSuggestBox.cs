@@ -239,7 +239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			border.Width = 100;
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(initialWidth < sv.ActualWidth);
+			Assert.IsLessThan(sv.ActualWidth, initialWidth);
 		}
 
 		[TestMethod]
@@ -1073,7 +1073,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var popupPoint = popup.Child.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
 				var suggestBoxPoint = SUT.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
-				Assert.IsTrue(popupPoint.Y + 1 >= suggestBoxPoint.Y + SUT.ActualHeight); // Added 1 to adjust for border on Windows
+				Assert.IsGreaterThanOrEqual(suggestBoxPoint.Y + SUT.ActualHeight, popupPoint.Y + 1); // Added 1 to adjust for border on Windows
 			});
 		}
 

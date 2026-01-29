@@ -61,7 +61,7 @@ public class Given_DispatcherTimer
 
 			// The second tick must be scheduled only after the first one finishes completely -
 			// around 200ms must have elapsed on the stopwatch.
-			Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 180);
+			Assert.IsGreaterThanOrEqual(180, stopwatch.ElapsedMilliseconds);
 		}
 		finally
 		{
@@ -90,7 +90,7 @@ public class Given_DispatcherTimer
 			await TestServices.WindowHelper.WaitFor(() => !dispatcherTimer.IsEnabled);
 			// We increased the interval to 600ms after about 100ms elapsed, so the next tick should be scheduled
 			// around 500ms after stopwatch started.
-			Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 400);
+			Assert.IsGreaterThanOrEqual(400, stopwatch.ElapsedMilliseconds);
 		}
 		finally
 		{

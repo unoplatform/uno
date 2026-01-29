@@ -93,42 +93,42 @@ namespace Common
 
 		public static void IsLessThan(double expectedLess, double expectedGreater, string message = null)
 		{
-			Assert.IsTrue(expectedLess < expectedGreater, message);
+			Assert.IsLessThan(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsLessThan(int expectedLess, int expectedGreater, string message = null)
 		{
-			Assert.IsTrue(expectedLess < expectedGreater, message);
+			Assert.IsLessThan(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsLessThanOrEqual(int expectedLess, int expectedGreater, string message = null)
 		{
-			Assert.IsTrue(expectedLess <= expectedGreater, message);
+			Assert.IsLessThanOrEqual(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsLessThanOrEqual(double expectedLess, double expectedGreater, string message = null)
 		{
-			Assert.IsTrue(expectedLess <= expectedGreater, message);
+			Assert.IsLessThanOrEqual(expectedGreater, expectedLess, message);
 		}
 
 		public static void IsGreaterThan(int expectedGreater, int expectedLess, string message = null)
 		{
-			Assert.IsTrue(expectedGreater > expectedLess, message);
+			Assert.IsGreaterThan(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsGreaterThan(double expectedGreater, double expectedLess, string message = null)
 		{
-			Assert.IsTrue(expectedGreater > expectedLess, message);
+			Assert.IsGreaterThan(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsGreaterThanOrEqual(double expectedGreater, double expectedLess, string message = null)
 		{
-			Assert.IsTrue(expectedGreater >= expectedLess, message);
+			Assert.IsGreaterThanOrEqual(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsGreaterThanOrEqual(int expectedGreater, int expectedLess, string message = null)
 		{
-			Assert.IsTrue(expectedGreater >= expectedLess, message);
+			Assert.IsGreaterThanOrEqual(expectedLess, expectedGreater, message);
 		}
 
 		public static void IsNull(object value, string message = null)

@@ -210,7 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 
 				// The second tick must be scheduled only after the first one finishes completely -
 				// around 200ms must have elapsed on the stopwatch.
-				Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 180);
+				Assert.IsGreaterThanOrEqual(180, stopwatch.ElapsedMilliseconds);
 			}
 			finally
 			{
@@ -234,13 +234,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 					{
 						// We increased the interval to 600ms after about 100ms elapsed,
 						// but this should not reset the existing scheduled tick.
-						Assert.IsTrue(stopwatch.ElapsedMilliseconds <= 400);
+						Assert.IsLessThanOrEqual(400, stopwatch.ElapsedMilliseconds);
 						stopwatch.Restart();
 					}
 					else if (repeats == 2)
 					{
 						// The second tick should be scheduled after 600ms
-						Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 400);
+						Assert.IsGreaterThanOrEqual(400, stopwatch.ElapsedMilliseconds);
 						stopwatch.Stop();
 						dispatcherTimer.Stop();
 					}
@@ -289,7 +289,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 				// The time keeps ticking even after an exception
 				Assert.IsTrue(dispatcherTimer.IsRunning);
 				Assert.IsTrue(dispatcherTimer.IsRepeating);
-				Assert.IsTrue(tickCounter > 1);
+				Assert.IsGreaterThan(1, tickCounter);
 			}
 			finally
 			{

@@ -100,7 +100,7 @@ public class Given_CalendarView
 
 		// The first visible index should be less than the max possible index minus the max items we can display
 		// Worst case scenario is that the last row only has 1 item
-		Assert.IsTrue(pHost.Panel.FirstVisibleIndex <= maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1));
+		Assert.IsLessThanOrEqual(maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1), pHost.Panel.FirstVisibleIndex);
 	}
 
 #if __WASM__

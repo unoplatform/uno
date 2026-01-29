@@ -1150,8 +1150,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var scp1Bounds = scp1.GetAbsoluteBounds();
 			var scp2Bounds = scp2.GetAbsoluteBounds();
 
-			Assert.IsTrue(tb1Bounds.X < scp1Bounds.X);
-			Assert.IsTrue(tb2Bounds.X < scp2Bounds.X);
+			Assert.IsLessThan(scp1Bounds.X, tb1Bounds.X);
+			Assert.IsLessThan(scp2Bounds.X, tb2Bounds.X);
 
 			var clickPosition1 = new Point((tb1Bounds.X + scp1Bounds.X) / 2, (tb1Bounds.Top + tb1Bounds.Bottom) / 2);
 			var clickPosition2 = new Point((tb2Bounds.X + scp2Bounds.X) / 2, (tb2Bounds.Top + tb2Bounds.Bottom) / 2);
