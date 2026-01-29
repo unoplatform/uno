@@ -14,21 +14,13 @@ namespace Newtonsoft.Json
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
-	internal record HotReloadStatusMessage(
+	internal partial record HotReloadStatusMessage(
 		[property: JsonProperty] HotReloadState State,
 		[property: JsonProperty] IImmutableList<HotReloadServerOperationData> Operations,
 		[property: JsonProperty] string? ServerError = null)
 		: IMessage
 	{
 		public const string Name = nameof(HotReloadStatusMessage);
-
-		public HotReloadStatusMessage(Uno.HotReload.Tracking.HotReloadStatusInfo status)
-			: this(
-				(HotReloadState)status.State,
-				[.. status.Operations.Select(op => new HotReloadServerOperationData(op))],
-				status.ServerError)
-		{
-		}
 
 		/// <inheritdoc />
 		[JsonProperty]
@@ -39,7 +31,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		string IMessage.Name => Name;
 	}
 
-	public record HotReloadServerOperationData(
+	public partial record HotReloadServerOperationData(
 		long Id,
 		DateTimeOffset StartTime,
 		ImmutableHashSet<string> FilePaths,
@@ -47,8 +39,5 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		DateTimeOffset? EndTime,
 		HotReloadServerResult? Result,
 		IImmutableList<string>? Diagnostics)
-	{
-		public HotReloadServerOperationData(Uno.HotReload.Tracking.HotReloadOperationInfo op)
-			: this(op.Id, op.StartTime, op.FilePaths, op.IgnoredFilePaths, op.EndTime, (HotReloadServerResult?)op.Result, op.Diagnostics) { }
-	}
+	{ }
 }
