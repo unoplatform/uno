@@ -495,6 +495,21 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+	public struct XFixesSelectionNotifyEvent
+	{
+		public XEventName type;
+		public IntPtr serial;
+		public int send_event;
+		public IntPtr display;
+		public IntPtr window;
+		public int subtype;
+		public IntPtr owner;
+		public IntPtr selection;
+		public IntPtr timestamp;
+		public IntPtr selection_timestamp;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
 	public struct XColormapEvent
 	{
 		public XEventName type;
@@ -637,6 +652,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		[FieldOffset(0)] public XSelectionClearEvent SelectionClearEvent;
 		[FieldOffset(0)] public XSelectionRequestEvent SelectionRequestEvent;
 		[FieldOffset(0)] public XSelectionEvent SelectionEvent;
+		[FieldOffset(0)] public XFixesSelectionNotifyEvent SelectionNotifyEvent;
 		[FieldOffset(0)] public XColormapEvent ColormapEvent;
 		[FieldOffset(0)] public XClientMessageEvent ClientMessageEvent;
 		[FieldOffset(0)] public XMappingEvent MappingEvent;
@@ -899,6 +915,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		MappingNotify = 34,
 		GenericEvent = 35,
 		LASTEvent
+	}
+
+	public enum SelectionEvent
+	{
+		SetSelectionOwner = 0,
+		SelectionWindowDestroy = 1,
+		SelectionClientClose = 2,
 	}
 
 	[Flags]
