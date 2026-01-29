@@ -145,7 +145,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			foreach (var bitmapImage in bitmapImages)
 			{
-				Assert.IsTrue(bitmapImage.PixelWidth > 0, "Image should have valid pixel dimensions after loading");
+				Assert.IsGreaterThan(0, bitmapImage.PixelWidth, "Image should have valid pixel dimensions after loading");
 			}
 
 			foreach (var image in images)

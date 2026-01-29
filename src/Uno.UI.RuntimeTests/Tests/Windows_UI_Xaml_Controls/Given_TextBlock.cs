@@ -241,14 +241,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBlock { Text = "Some text" };
 			var size = new Size(1000, 1000);
 			SUT.Measure(size);
-			Assert.IsTrue(SUT.DesiredSize.Width > 0);
-			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Width);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 
 			// For simplicity, currently we don't insist on a specific value here. The exact details of text measurement are highly
 			// platform-specific, and additionally on UWP the ActualWidth and DesiredSize.Width are not exactly the same, a subtlety Uno
 			// currently doesn't try to replicate.
-			Assert.IsTrue(SUT.ActualWidth > 0);
-			Assert.IsTrue(SUT.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.ActualWidth);
+			Assert.IsGreaterThan(0, SUT.ActualHeight);
 		}
 
 		[TestMethod]
@@ -727,7 +727,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new TextBlock
 			{
-				Text = "••••••••",
+				Text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 				FontSize = 24,
 				Foreground = new SolidColorBrush(Colors.Red) { Opacity = 0.5 },
 			};
@@ -806,7 +806,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
 #endif
-			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 		}
 
 		[TestMethod]
@@ -903,7 +903,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var textBlockOrigin = textBlockTransform.TransformPoint(new Point(0, 0));
 
 				Assert.AreEqual(previousOrigin.X, textBlockOrigin.X);
-				Assert.IsTrue(previousOrigin.Y < textBlockOrigin.Y);
+				Assert.IsLessThan(textBlockOrigin.Y, previousOrigin.Y);
 
 				previousOrigin = textBlockOrigin;
 			}

@@ -62,7 +62,7 @@ public class Given_PdfDocument
 		// Render Page onto stream
 		var pageStream = new InMemoryRandomAccessStream();
 		await page.RenderToStreamAsync(pageStream, options);
-		Assert.IsTrue(pageStream.Size > 0, "Invalid size of page stream.");
+		Assert.IsGreaterThan(0, pageStream.Size, "Invalid size of page stream.");
 
 		// Comparing rendered PdfPage with reference Page Image
 

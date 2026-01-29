@@ -117,22 +117,22 @@ namespace Private.Infrastructure
 
 		public static void VERIFY_IS_LESS_THAN(double actual, double expected)
 		{
-			Assert.IsTrue(actual < expected, $"{actual} is not less than {expected}");
+			Assert.IsLessThan(expected, actual, $"{actual} is not less than {expected}");
 		}
 
 		public static void VERIFY_IS_LESS_THAN_OR_EQUAL(double actual, double expected)
 		{
-			Assert.IsTrue(actual <= expected, $"{actual} is not less than {expected}");
+			Assert.IsLessThanOrEqual(expected, actual, $"{actual} is not less than or equal to {expected}");
 		}
 
 		public static void VERIFY_IS_GREATER_THAN(double actual, double expected)
 		{
-			Assert.IsTrue(actual > expected, $"{actual} is not greater than {expected}");
+			Assert.IsGreaterThan(expected, actual, $"{actual} is not greater than {expected}");
 		}
 
 		public static void VERIFY_IS_GREATER_THAN_OR_EQUAL(double actual, double expected)
 		{
-			Assert.IsTrue(actual >= expected, $"{actual} is not greater than {expected}");
+			Assert.IsGreaterThanOrEqual(expected, actual, $"{actual} is not greater than or equal to {expected}");
 		}
 
 		public static void VERIFY_THROWS_WINRT(Action action, Type exceptionType)

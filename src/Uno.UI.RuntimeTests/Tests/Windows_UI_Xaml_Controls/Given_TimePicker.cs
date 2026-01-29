@@ -92,7 +92,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(hourLoopingSelector, "HourLoopingSelector should be found");
 
 			var items = hourLoopingSelector.Items;
-			Assert.IsTrue(items.Count > 0, "Hour items should be populated");
+			Assert.IsGreaterThan(0, items.Count, "Hour items should be populated");
 
 			var firstItem = items[0] as DatePickerFlyoutItem;
 			Assert.IsNotNull(firstItem, "First item should be a DatePickerFlyoutItem");

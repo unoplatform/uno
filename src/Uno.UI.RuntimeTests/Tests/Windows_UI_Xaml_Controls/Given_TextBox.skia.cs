@@ -4373,7 +4373,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
@@ -4389,7 +4389,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 		}
 
 		[TestMethod]
@@ -4831,7 +4831,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				double radius = Math.Sqrt(Math.Pow(boundary.X - ellipseCenter.X, 2) + Math.Pow(boundary.Y - ellipseCenter.Y, 2));
 				// Check that the line from bottomLeft to bottomRight intersects the ellipse using DistancePointToSegment
 				var distance = DistancePointToSegment(ellipseCenter, bottomLeft, bottomRight);
-				Assert.IsTrue(distance < radius, "Caret ellipse should intersect the bottom border of the TextBox");
+				Assert.IsLessThan(radius, distance, "Caret ellipse should intersect the bottom border of the TextBox");
 			}
 		}
 

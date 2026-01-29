@@ -803,7 +803,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// waiting for wheel animation
 			await Task.Delay(500);
 
-			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
+			Assert.IsGreaterThan(outer.ScrollableHeight / 2, outer.VerticalOffset);
 		}
 
 		[TestMethod]

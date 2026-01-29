@@ -161,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var contentCenter = content.GetOnScreenBounds().GetCenter();
 				var targetCenter = target.GetOnScreenBounds().GetCenter();
 
-				Assert.IsTrue(targetCenter.X > MarginValue);
+				Assert.IsGreaterThan(MarginValue, targetCenter.X);
 				Assert.AreEqual(targetCenter.X, contentCenter.X, delta: 2);
 			}
 			finally
@@ -198,7 +198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var contentCenter = content.GetOnScreenBounds().GetCenter();
 				var targetCenter = target.GetOnScreenBounds().GetCenter();
 
-				Assert.IsTrue(targetCenter.X > MarginValue);
+				Assert.IsGreaterThan(MarginValue, targetCenter.X);
 				Assert.AreEqual(targetCenter.X, contentCenter.X, delta: 2);
 			}
 			finally
@@ -1616,7 +1616,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var transform = child.TransformToVisual(grid);
 				var topLeft = transform.TransformPoint(default);
 				Assert.AreEqual(0, topLeft.X); // Positioned on the left edge of the screen
-				Assert.IsTrue(topLeft.Y > 100); // Positioned lower on the screen
+				Assert.IsGreaterThan(100, topLeft.Y); // Positioned lower on the screen
 			}
 			finally
 			{
@@ -1783,8 +1783,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var targetScreenBounds = target.GetOnScreenBounds();
 			var targetCenter = targetScreenBounds.GetCenter();
 
-			Assert.IsTrue(targetCenter.X > minimumTargetOffset);
-			Assert.IsTrue(targetCenter.Y > minimumTargetOffset);
+			Assert.IsGreaterThan(minimumTargetOffset, targetCenter.X);
+			Assert.IsGreaterThan(minimumTargetOffset, targetCenter.Y);
 			switch (horizontalPosition)
 			{
 				case HorizontalPosition.BeyondLeft:
@@ -1840,8 +1840,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var targetCenter = targetScreenBounds.GetCenter();
 			var anchorPoint = new Windows.Foundation.Point(targetScreenBounds.X + position.X, targetScreenBounds.Y + position.Y);
 
-			Assert.IsTrue(targetCenter.X > minimumTargetOffset);
-			Assert.IsTrue(targetCenter.Y > minimumTargetOffset);
+			Assert.IsGreaterThan(minimumTargetOffset, targetCenter.X);
+			Assert.IsGreaterThan(minimumTargetOffset, targetCenter.Y);
 			switch (horizontalPosition)
 			{
 				case HorizontalPosition.BeyondLeft:
