@@ -98,6 +98,213 @@ public class Given_AlcContentHost
 			"TestAccentBrush should have the expected color");
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Activate_Then_ActivatedEventRaised()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		bool activatedFired = false;
+		Windows.UI.Core.CoreWindowActivationState? activationState = null;
+
+		alcWindow.Activated += (sender, args) =>
+		{
+			activatedFired = true;
+			activationState = args.WindowActivationState;
+		};
+
+		alcWindow.Activate();
+
+		Assert.IsTrue(activatedFired, "Activated event should fire when Activate() is called on ALC window");
+		Assert.AreEqual(Windows.UI.Core.CoreWindowActivationState.CodeActivated, activationState,
+			"Activation state should be CodeActivated");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Then_VisibleReturnsHostVisibility()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		// Window should be visible when content host is loaded
+		Assert.IsTrue(alcWindow.Visible, "ALC window Visible should be true when ContentHostOverride is loaded");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Then_BoundsMatchesHostBounds()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		// Set a specific size on the content host
+		contentHost.Width = 400;
+		contentHost.Height = 300;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var bounds = alcWindow.Bounds;
+		Assert.AreEqual(400, bounds.Width, 1, "ALC window Bounds.Width should match ContentHostOverride.ActualWidth");
+		Assert.AreEqual(300, bounds.Height, 1, "ALC window Bounds.Height should match ContentHostOverride.ActualHeight");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_HostSizeChanges_Then_SizeChangedEventRaised()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		bool sizeChangedFired = false;
+		Windows.Foundation.Size? newSize = null;
+
+		alcWindow.SizeChanged += (sender, args) =>
+		{
+			sizeChangedFired = true;
+			newSize = args.Size;
+		};
+
+		// Change the content host size
+		contentHost.Width = 500;
+		contentHost.Height = 400;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(sizeChangedFired, "SizeChanged event should fire when ContentHostOverride size changes");
+		Assert.IsNotNull(newSize, "SizeChanged args should contain new size");
+		Assert.AreEqual(500, newSize!.Value.Width, 1, "New size width should match");
+		Assert.AreEqual(400, newSize!.Value.Height, 1, "New size height should match");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Close_Then_ClosedEventRaised()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		bool closedFired = false;
+		alcWindow.Closed += (sender, args) =>
+		{
+			closedFired = true;
+		};
+
+		alcWindow.Close();
+
+		Assert.IsTrue(closedFired, "Closed event should fire when Close() is called on ALC window");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Close_Then_ContentClearedFromHost()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		Assert.IsNotNull(contentHost.Content, "Content should be set before close");
+
+		alcWindow.Close();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNull(contentHost.Content, "Content should be cleared from host after Close()");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Close_Then_VisibilityChangedEventRaised()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		bool visibilityChangedFired = false;
+		bool? newVisibility = null;
+
+		alcWindow.VisibilityChanged += (sender, args) =>
+		{
+			visibilityChangedFired = true;
+			newVisibility = args.Visible;
+		};
+
+		alcWindow.Close();
+
+		Assert.IsTrue(visibilityChangedFired, "VisibilityChanged event should fire when Close() is called");
+		Assert.IsFalse(newVisibility, "Visibility should be false after Close()");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Close_Then_VisibleReturnsFalse()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		Assert.IsTrue(alcWindow.Visible, "Window should be visible before close");
+
+		alcWindow.Close();
+
+		Assert.IsFalse(alcWindow.Visible, "Window Visible should be false after Close()");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_ClosedEventHandled_Then_CloseIsCancelled()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		alcWindow.Closed += (sender, args) =>
+		{
+			args.Handled = true; // Cancel the close
+		};
+
+		alcWindow.Close();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(contentHost.Content, "Content should NOT be cleared when Closed event is handled");
+		Assert.IsTrue(alcWindow.Visible, "Window should still be visible when close is cancelled");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_ActivateAfterClose_Then_ThrowsException()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		alcWindow.Close();
+
+		bool threwException = false;
+		try
+		{
+			alcWindow.Activate();
+		}
+		catch (InvalidOperationException)
+		{
+			threwException = true;
+		}
+
+		Assert.IsTrue(threwException, "Activate() should throw InvalidOperationException after Close()");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Then_NotInApplicationHelperWindows()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		var windows = Uno.UI.ApplicationHelper.Windows;
+		Assert.IsFalse(windows.Contains(alcWindow),
+			"ALC window should NOT be in ApplicationHelper.Windows to avoid blocking app closure");
+	}
+
+	private async Task<(AlcContentHost contentHost, Window alcWindow)> StartSecondaryAlcAppWithWindowAsync()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		// Get the Window from the secondary ALC app via reflection
+		var alcAppAssembly = _testAlc!.Assemblies.First(a => a.GetName().Name == "Uno.UI.RuntimeTests.AlcApp");
+		var appType = alcAppAssembly.GetType("AlcTestApp.App");
+		Assert.IsNotNull(appType, "App type should be found");
+
+		var testWindowField = appType!.GetField("TestWindow", BindingFlags.NonPublic | BindingFlags.Static);
+		Assert.IsNotNull(testWindowField, "TestWindow field should be found");
+
+		var alcWindow = testWindowField!.GetValue(null) as Window;
+		Assert.IsNotNull(alcWindow, "TestWindow should be a Window instance");
+
+		return (contentHost, alcWindow!);
+	}
+
 	private async Task<AlcContentHost> StartSecondaryAlcAppAsync()
 	{
 		var alcAppPath = await BuildAlcAppAsync();

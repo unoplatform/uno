@@ -17,8 +17,28 @@ partial class Window
 	/// </summary>
 	public event TypedEventHandler<object, WindowEventArgs> Closed
 	{
-		add => _windowImplementation.Closed += value;
-		remove => _windowImplementation.Closed -= value;
+		add
+		{
+			if (_alcState is { } state)
+			{
+				state.Closed += value;
+			}
+			else
+			{
+				_windowImplementation.Closed += value;
+			}
+		}
+		remove
+		{
+			if (_alcState is { } state)
+			{
+				state.Closed -= value;
+			}
+			else
+			{
+				_windowImplementation.Closed -= value;
+			}
+		}
 	}
 #endif
 

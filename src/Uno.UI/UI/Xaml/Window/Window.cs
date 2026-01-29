@@ -140,8 +140,28 @@ partial class Window
 	/// </summary>
 	public event WindowActivatedEventHandler? Activated
 	{
-		add => _windowImplementation.Activated += value;
-		remove => _windowImplementation.Activated -= value;
+		add
+		{
+			if (_alcState is { } state)
+			{
+				state.Activated += value;
+			}
+			else
+			{
+				_windowImplementation.Activated += value;
+			}
+		}
+		remove
+		{
+			if (_alcState is { } state)
+			{
+				state.Activated -= value;
+			}
+			else
+			{
+				_windowImplementation.Activated -= value;
+			}
+		}
 	}
 
 	/// <summary>
@@ -149,8 +169,28 @@ partial class Window
 	/// </summary>
 	public event WindowSizeChangedEventHandler? SizeChanged
 	{
-		add => _windowImplementation.SizeChanged += value;
-		remove => _windowImplementation.SizeChanged -= value;
+		add
+		{
+			if (_alcState is { } state)
+			{
+				state.SizeChanged += value;
+			}
+			else
+			{
+				_windowImplementation.SizeChanged += value;
+			}
+		}
+		remove
+		{
+			if (_alcState is { } state)
+			{
+				state.SizeChanged -= value;
+			}
+			else
+			{
+				_windowImplementation.SizeChanged -= value;
+			}
+		}
 	}
 
 	/// <summary>
@@ -158,8 +198,28 @@ partial class Window
 	/// </summary>
 	public event WindowVisibilityChangedEventHandler? VisibilityChanged
 	{
-		add => _windowImplementation.VisibilityChanged += value;
-		remove => _windowImplementation.VisibilityChanged -= value;
+		add
+		{
+			if (_alcState is { } state)
+			{
+				state.VisibilityChanged += value;
+			}
+			else
+			{
+				_windowImplementation.VisibilityChanged += value;
+			}
+		}
+		remove
+		{
+			if (_alcState is { } state)
+			{
+				state.VisibilityChanged -= value;
+			}
+			else
+			{
+				_windowImplementation.VisibilityChanged -= value;
+			}
+		}
 	}
 
 #if HAS_UNO_WINUI
@@ -173,7 +233,7 @@ partial class Window
 	/// <summary>
 	/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
 	/// </summary>
-	public Rect Bounds => _windowImplementation.Bounds;
+	public Rect Bounds => _alcState is not null ? GetAlcWindowBounds() : _windowImplementation.Bounds;
 
 	/// <summary>
 	/// Gets the Compositor for this window.
@@ -322,7 +382,7 @@ partial class Window
 	/// <summary>
 	/// Gets a value that reports whether the window is visible.
 	/// </summary>
-	public bool Visible => _windowImplementation.Visible;
+	public bool Visible => _alcState is not null ? GetAlcWindowVisible() : _windowImplementation.Visible;
 
 	/// <summary>
 	/// This is the real root of the **managed** visual tree.
@@ -341,16 +401,25 @@ partial class Window
 
 	public void Activate()
 	{
-		if (IsContentHostedInSecondaryAlc())
+		if (_alcState is not null)
 		{
-			// Don't activate - we're hosted in another window
+			ActivateAlcWindow();
 			return;
 		}
 
 		_windowImplementation.Activate();
 	}
 
-	public void Close() => _windowImplementation.Close();
+	public void Close()
+	{
+		if (_alcState is not null)
+		{
+			CloseAlcWindow();
+			return;
+		}
+
+		_windowImplementation.Close();
+	}
 
 	// The parameter name differs between UWP and WinUI.
 	// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
