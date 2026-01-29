@@ -62,13 +62,18 @@ internal static class FontDetailsCache
 
 		try
 		{
-			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-			return SKTypeface.FromStream(stream);
+			var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+			using var stream = await file.OpenStreamForReadAsync();
+			return stream is null ? null : SKTypeface.FromStream(stream);
 		}
 		catch (Exception e)
 		{
-			typeof(FontDetailsCache).LogError()?.Error($"Loading font from {uri} failed: {e}");
-			return null;
+			if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(FontDetailsCache).Log().LogError($"Failed to load font {uri}: {e}");
+			}
+
+			throw;
 		}
 	}
 
@@ -112,20 +117,14 @@ internal static class FontDetailsCache
 		}
 
 		var (skWeight, skWidth, skSlant) = (weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
-		var key = new FontEntry(name, skWeight, skWidth, skSlant);
+		var fontCacheKey = new FontEntry(name, skWeight, skWidth, skSlant);
 
-		Task<SKTypeface?> typefaceTask;
-		lock (_fontCacheGate)
-		{
-			if (!_fontCache.TryGetValue(key, out var nullableTask))
-			{
-				_fontCache[key] = nullableTask = GetFontInternal(name, weight, stretch, style);
-			}
-			typefaceTask = nullableTask;
-		}
+		var typefaceTask = GetTypefaceTask(name, weight, stretch, style, fontCacheKey);
 
 		var canChange = !typefaceTask.IsCompleted; // don't read from task.IsCompleted again, it could've changed
-		var typeface = !canChange ? typefaceTask.Result : null;
+		var wasSuccessfullyLoaded = typefaceTask.IsCompletedSuccessfully;
+
+		var typeface = !canChange && wasSuccessfullyLoaded ? typefaceTask.Result : null;
 
 		if (typeface == null)
 		{
@@ -133,17 +132,32 @@ internal static class FontDetailsCache
 			{
 				if (canChange)
 				{
-					typeof(Inline).Log().LogDebug($"{key} is still loading, using system default for now.");
+					typeof(Inline).Log().LogDebug($"{fontCacheKey} is still loading, using system default for now.");
 				}
 				else
 				{
-					typeof(Inline).Log().LogDebug($"{key} could not be found, using system default");
+					typeof(Inline).Log().LogDebug($"{fontCacheKey} could not be found, using system default");
 				}
 			}
 
-			typeface = SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
-						?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant)
-						?? SKTypeface.FromFamilyName(null);
+			// Try to fall back to default font family (which could be a ms-appx:/// Uri).
+			if (name != FeatureConfiguration.Font.DefaultTextFontFamily)
+			{
+				var fallbackFontCacheKey = new FontEntry(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant);
+				Task<SKTypeface?> fallbackTypefaceTask = GetTypefaceTask(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fallbackFontCacheKey);
+				canChange = !fallbackTypefaceTask.IsCompleted;
+				wasSuccessfullyLoaded = fallbackTypefaceTask.IsCompletedSuccessfully;
+
+				typeface = !canChange && wasSuccessfullyLoaded ? fallbackTypefaceTask.Result : null;
+			}
+
+			// If we still don't have a typeface, we try to load directly via SKTypeface.
+			if (typeface is null)
+			{
+				typeface = SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
+							?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant)
+							?? SKTypeface.FromFamilyName(null);
+			}
 		}
 
 		var details = FontDetails.Create(typeface, fontSize);
@@ -156,7 +170,10 @@ internal static class FontDetailsCache
 			{
 				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
+					if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(FontDetailsCache).Log().LogError($"Failed to load {fontCacheKey}", t.Exception);
+					}
 				}
 
 				return details;
@@ -169,7 +186,22 @@ internal static class FontDetailsCache
 		return (details, detailsTask);
 	});
 
-	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
+	private static Task<SKTypeface?> GetTypefaceTask(string name, FontWeight weight, FontStretch stretch, FontStyle style, FontEntry key)
+	{
+		Task<SKTypeface?> typefaceTask;
+		lock (_fontCacheGate)
+		{
+			if (!_fontCache.TryGetValue(key, out var nullableTask))
+			{
+				_fontCache[key] = nullableTask = GetFontInternal(name, weight, stretch, style);
+			}
+			typefaceTask = nullableTask;
+		}
+
+		return typefaceTask;
+	}
+
+	public static (FontDetails details, Task<SKTypeface?> loadedTask) GetFont(
 		string? name,
 		float fontSize,
 		FontWeight weight,
