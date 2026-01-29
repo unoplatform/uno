@@ -32,7 +32,7 @@ public sealed class InProcessDevServerTests
 		});
 
 	[TestMethod]
-public async Task ConnectApplication_ShouldRespondToDiscoveryFrames()
+	public async Task ConnectApplication_ShouldRespondToDiscoveryFrames()
 	{
 		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
 		var processorFactory = new RecordingProcessorFactory();
@@ -68,7 +68,7 @@ public async Task ConnectApplication_ShouldRespondToDiscoveryFrames()
 	}
 
 	[TestMethod]
-public async Task ConnectApplication_ShouldRouteRuntimeFramesToProcessors()
+	public async Task ConnectApplication_ShouldRouteRuntimeFramesToProcessors()
 	{
 		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
 		var processorFactory = new RecordingProcessorFactory();
