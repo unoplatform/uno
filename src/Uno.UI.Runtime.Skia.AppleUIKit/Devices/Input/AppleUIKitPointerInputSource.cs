@@ -27,33 +27,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	private const int MaxScrollDelta = 120;
 	private const double MinTranslationThreshold = 1.0;
 	private const double MaxTranslationThreshold = 4.0;
-
-	private static bool IsRunningOnMac()
-	{
-		if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-		{
-			return NSProcessInfo.ProcessInfo.IsiOSApplicationOnMac;
-		}
-		return false;
-	}
-
-	private static bool IsNaturalScrollingEnabled()
-	{
-		if (!IsRunningOnMac())
-		{
-			return false;
-		}
-
-		var defaults = NSUserDefaults.StandardUserDefaults;
-		var key = "com.apple.swipescrolldirection";
-
-		if (defaults[key] == null)
-		{
-			return true;
-		}
-
-		return defaults.BoolForKey(key);
-	}
 #endif
 
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
@@ -197,7 +170,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	}
 
 #if __IOS__
-	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState)
+	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState, bool isNaturalScrollingEnabled)
 	{
 		try
 		{
@@ -223,7 +196,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");
 
-			var args = CreateScrollGestureEventArgs(translation, location);
+			var args = CreateScrollGestureEventArgs(translation, location, isNaturalScrollingEnabled);
 
 			_trace?.Invoke($"ScrollGesture: {args}>");
 
@@ -240,10 +213,9 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
-	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location)
+	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location, bool isNaturalScrollingEnabled)
 	{
-		var isNaturalScrolling = IsNaturalScrollingEnabled();
-		var multiplier = isNaturalScrolling ? -ScrollWheelDeltaMultiplier : ScrollWheelDeltaMultiplier;
+		var multiplier = isNaturalScrollingEnabled ? -ScrollWheelDeltaMultiplier : ScrollWheelDeltaMultiplier;
 
 		var scrollDeltaX = (int)(translation.X * multiplier);
 		var scrollDeltaY = (int)(translation.Y * multiplier);
