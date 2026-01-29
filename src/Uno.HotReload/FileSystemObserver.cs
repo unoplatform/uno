@@ -29,7 +29,7 @@ public sealed partial class FileSystemObserver : IDisposable
 
 	[GeneratedRegex("(debug|release)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
 	private static partial Regex ConfigRegex();
-	
+
 	private readonly HotReloadManager _manager;
 	private readonly IReporter _reporter;
 	private readonly BufferGate _solutionWatchersGate;
