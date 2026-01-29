@@ -64,6 +64,37 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
+		/// <summary>
+		/// Internal theme state for this element. Matches WinUI's m_theme field in CDependencyObject.
+		/// </summary>
+		private Theme _theme = Theme.None;
+
+		/// <summary>
+		/// Flag to prevent infinite recursion during theme walk.
+		/// Matches WinUI's protection against re-entrant theme notifications.
+		/// </summary>
+		private bool _isProcessingThemeWalk;
+
+		/// <summary>
+		/// Gets the current theme value for this element.
+		/// </summary>
+		internal Theme GetTheme() => _theme;
+
+		/// <summary>
+		/// Sets the theme value for this element.
+		/// </summary>
+		internal void SetTheme(Theme theme) => _theme = theme;
+
+		/// <summary>
+		/// Gets whether this element is currently processing a theme walk.
+		/// </summary>
+		internal bool IsProcessingThemeWalk => _isProcessingThemeWalk;
+
+		/// <summary>
+		/// Sets whether this element is currently processing a theme walk.
+		/// </summary>
+		internal void SetIsProcessingThemeWalk(bool value) => _isProcessingThemeWalk = value;
+
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()

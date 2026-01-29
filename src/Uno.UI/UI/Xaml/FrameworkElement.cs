@@ -420,17 +420,95 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
-			if (RequestedTheme is not ElementTheme.Default)
+			// Inherit theme from parent if we don't have explicit RequestedTheme
+			if (RequestedTheme == ElementTheme.Default)
 			{
-				SyncRootRequestedTheme();
+				var parent = this.GetParent() as UIElement;
+				if (parent != null && parent.GetTheme() != Theme.None)
+				{
+					SetTheme(parent.GetTheme());
+				}
+			}
+			else
+			{
+				// We have explicit theme - ensure it's applied
+				NotifyThemeChanged(Theming.FromElementTheme(RequestedTheme));
 			}
 
-			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
-			ApplyStyles();
+			// Push the element's theme context so ThemeResource references in styles
+			// and bindings resolve with the correct theme, especially for elements
+			// that had their RequestedTheme set during XAML parsing before their
+			// themed properties were set.
+			var effectiveTheme = GetTheme();
+			var needsPush = effectiveTheme != Theme.None;
+			if (needsPush)
+			{
+				var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			}
 
-			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
-			// Updates theme references to account for new ancestor theme dictionaries.
-			this.UpdateResourceBindings();
+			try
+			{
+				// Apply active style and default style when we enter the visual tree.
+				ApplyStyles();
+
+				// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
+				// Updates theme references to account for new ancestor theme dictionaries.
+				this.UpdateResourceBindings();
+
+				// If this element is loading into a themed subtree (RequestedTheme == Default
+				// but we inherited a theme), apply the themed Foreground if we have Foreground
+				// property at default value. This matches WinUI behavior where children inherit
+				// the themed subtree's DefaultTextForegroundThemeBrush.
+				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
+				{
+					ApplyInheritedThemeForeground(effectiveTheme);
+				}
+			}
+			finally
+			{
+				if (needsPush)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Applies theme-aware Foreground when loading into a themed subtree,
+		/// if this element has Foreground property and it's at default value.
+		/// </summary>
+		private void ApplyInheritedThemeForeground(Theme effectiveTheme)
+		{
+			DependencyProperty foregroundProperty = null;
+			if (this is Controls.Control)
+			{
+				foregroundProperty = Controls.Control.ForegroundProperty;
+			}
+			else if (this is Controls.TextBlock)
+			{
+				foregroundProperty = Controls.TextBlock.ForegroundProperty;
+			}
+
+			if (foregroundProperty == null)
+			{
+				return;
+			}
+
+			// Only apply if Foreground is at default value (not set locally or by style)
+			var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
+			if (precedence != DependencyPropertyValuePrecedences.DefaultValue &&
+			    precedence != DependencyPropertyValuePrecedences.Inheritance)
+			{
+				return;
+			}
+
+			// The theme context is already pushed, so lookup will use the correct theme
+			var brush = (Brush)ResourceResolver.ResolveTopLevelResource("DefaultTextForegroundThemeBrush", null);
+			if (brush != null)
+			{
+				SetValue(foregroundProperty, brush);
+			}
 		}
 
 		partial void OnUnloadedPartial()
@@ -540,11 +618,6 @@ namespace Microsoft.UI.Xaml
 
 		#region Requested theme dependency property
 
-		// TODO Uno: ActualTheme should always be initialized with Application.Current.RequestedTheme,
-		// and should trigger ActualThemeChanged, when the element enters the visual tree, where some
-		// higher-level element has explicitly changed its RequestedTheme. This may could start working
-		// automatically when the RequestedTheme property supports inheritance.
-
 		public ElementTheme RequestedTheme
 		{
 			get => (ElementTheme)GetValue(RequestedThemeProperty);
@@ -560,53 +633,277 @@ namespace Microsoft.UI.Xaml
 					ElementTheme.Default,
 					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
 
+		// MUX Reference framework.cpp, lines 3501-3559
 		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 		{
-			SyncRootRequestedTheme();
+			var theme = Theme.None;
 
-			if (ActualThemeChanged != null)
+			switch (newValue)
 			{
-				var actualThemeChanged =
-					// 1. Previously was default, and new explicit value differs from application theme
-					(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
-					// 2. Previously was explicit, and new ActualTheme is different
-					(oldValue != ElementTheme.Default && oldValue != ActualTheme);
-
-				if (actualThemeChanged)
-				{
-					ActualThemeChanged?.Invoke(this, null);
-				}
+				case ElementTheme.Dark:
+					theme = Theme.Dark;
+					break;
+				case ElementTheme.Light:
+					theme = Theme.Light;
+					break;
+				case ElementTheme.Default:
+					// Use parent's requested theme if this property was cleared
+					var parent = this.GetParent() as UIElement;
+					if (parent != null)
+					{
+						theme = parent.GetTheme();
+					}
+					// If there is no parent, or parent's theme has not been set,
+					// default to the application's requested theme.
+					if (theme == Theme.None)
+					{
+						theme = Theming.FromElementTheme(
+							Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+					}
+					// Unfreeze inherited properties at this element's level
+					NotifyThemeChangedForInheritedProperties(theme, freeze: false);
+					break;
 			}
-		}
 
-		private void SyncRootRequestedTheme()
-		{
-			if (XamlRoot?.Content == this) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
-			{
-				Application.Current.SyncRequestedThemeFromXamlRoot(XamlRoot);
-			}
+			// Apply theme to this element and its subtree
+			NotifyThemeChanged(theme);
 		}
-
 
 		#endregion
 
+		#region Theme propagation
+
+		// MUX Reference framework.cpp, lines 3969-3994
 		/// <summary>
-		/// Gets or sets a value that determines the light-dark
-		/// preference for the overall theme of an app.
+		/// Gets the UI theme that is currently used by the element.
 		/// </summary>
 		/// <remarks>
-		/// This is always either Dark or Light. By default the color matches Application.Current.RequestedTheme.
-		/// When the FrameworkElement.RequestedTheme has non-default value, it has precedence.
-		/// When the value changes ActualThemeChanged event is triggered.
+		/// This is always either Dark or Light, never Default.
 		/// </remarks>
-		public ElementTheme ActualTheme => RequestedTheme == ElementTheme.Default ?
-			(Application.Current?.ActualElementTheme ?? ElementTheme.Light) :
-			RequestedTheme;
+		public ElementTheme ActualTheme
+		{
+			get
+			{
+				// Get base (non-HighContrast) theme.
+				// Fall back to default (system or app) theme if the local theme isn't set.
+				var baseTheme = Theming.GetBaseValue(GetTheme());
+				if (baseTheme == Theme.None)
+				{
+					baseTheme = Theming.FromElementTheme(
+						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+				}
+				return Theming.ToElementTheme(baseTheme);
+			}
+		}
 
 		/// <summary>
 		/// Occurs when the ActualTheme property value has changed.
 		/// </summary>
 		public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged;
+
+		// MUX Reference framework.cpp, lines 3313-3333
+		/// <summary>
+		/// Notifies this element and its subtree that the theme has changed.
+		/// </summary>
+		internal void NotifyThemeChanged(Theme theme)
+		{
+			// Cycle protection - prevent re-entrant theme notifications
+			if (IsProcessingThemeWalk)
+			{
+				return;
+			}
+
+			SetIsProcessingThemeWalk(true);
+			try
+			{
+				NotifyThemeChangedCore(theme);
+			}
+			finally
+			{
+				SetIsProcessingThemeWalk(false);
+			}
+		}
+
+		// MUX Reference Theming.cpp CDependencyObject::NotifyThemeChanged (line 110)
+		// WinUI uses a push-process-pop pattern where each element temporarily
+		// "owns" the global theme context during its processing.
+		/// <summary>
+		/// Core implementation of theme change notification using WinUI's push-pop pattern.
+		/// </summary>
+		private protected virtual void NotifyThemeChangedCore(Theme theme)
+		{
+			// 1. Determine if ActualTheme is changing
+			var oldTheme = GetTheme();
+			var appBaseTheme = Theming.FromElementTheme(
+				Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+			var oldBase = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
+			var newBase = Theming.GetBaseValue(theme);
+
+			bool themeChanged = oldBase != newBase;
+
+			// 2. PUSH this element's theme to global context for resource lookups
+			var themeKey = newBase == Theme.Light ? "Light" : "Dark";
+			var currentActiveTheme = ResourceDictionary.GetActiveTheme();
+			var needsPush = !themeKey.Equals(currentActiveTheme.Key);
+
+			if (needsPush)
+			{
+				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			}
+
+			try
+			{
+				// 3. Store the new theme BEFORE updating resources
+				SetTheme(theme);
+
+				// 4. Update theme resources (uses pushed global context)
+				if (themeChanged)
+				{
+					RaiseActualThemeChanged();
+					UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
+				}
+
+				// 5. Handle inherited property freezing at theme boundary
+				if (RequestedTheme != ElementTheme.Default)
+				{
+					NotifyThemeChangedForInheritedProperties(theme, freeze: true);
+				}
+
+				// 6. Propagate to children (they may push their own context)
+				PropagateThemeToChildren(theme);
+			}
+			finally
+			{
+				// 7. POP the global context
+				if (needsPush)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+			}
+		}
+
+		// MUX Reference uielement.cpp, lines 14469-14495
+		/// <summary>
+		/// Propagates theme changes to child elements.
+		/// </summary>
+		private void PropagateThemeToChildren(Theme theme)
+		{
+			var childCount = VisualTreeHelper.GetChildrenCount(this);
+			for (var i = 0; i < childCount; i++)
+			{
+				var child = VisualTreeHelper.GetChild(this, i);
+				if (child is FrameworkElement fe)
+				{
+					// Skip children that have their own explicit RequestedTheme
+					if (fe.RequestedTheme == ElementTheme.Default)
+					{
+						fe.NotifyThemeChanged(theme);
+					}
+				}
+			}
+		}
+
+		// MUX Reference framework.cpp, lines 3346-3386
+		/// <summary>
+		/// Raises the ActualThemeChanged event.
+		/// </summary>
+		private void RaiseActualThemeChanged()
+		{
+			try
+			{
+				ActualThemeChanged?.Invoke(this, null);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("ActualThemeChanged handler threw an exception", e);
+				}
+			}
+		}
+
+		// MUX Reference framework.cpp, lines 3401-3492
+		/// <summary>
+		/// Handles inherited property behavior at theme boundaries.
+		/// When freeze is true, sets theme-appropriate Foreground on this element
+		/// so it doesn't inherit from ancestors outside the themed subtree.
+		/// Children will handle their own Foreground via OnLoadingPartial when they load.
+		/// When freeze is false, clears the locally-set Foreground to allow normal inheritance.
+		/// </summary>
+		/// <remarks>
+		/// WinUI uses TextFormatting storage which exists on all FrameworkElements.
+		/// In Uno, Foreground property only exists on Control and TextBlock.
+		/// For elements without Foreground (like Panel), children handle their own
+		/// Foreground via ApplyInheritedThemeForeground in OnLoadingPartial.
+		/// </remarks>
+		internal void NotifyThemeChangedForInheritedProperties(Theme theme, bool freeze)
+		{
+			// Trigger re-evaluation of theme resources for this element
+			if (this is IThemeChangeAware themeAware)
+			{
+				themeAware.OnThemeChanged();
+			}
+
+			// MUX: Currently only handles Foreground property
+			// Get the Foreground property for this element (only Control and TextBlock have it)
+			DependencyProperty foregroundProperty = null;
+			if (this is Controls.Control)
+			{
+				foregroundProperty = Controls.Control.ForegroundProperty;
+			}
+			else if (this is Controls.TextBlock)
+			{
+				foregroundProperty = Controls.TextBlock.ForegroundProperty;
+			}
+
+			// If this element doesn't have Foreground property (e.g., Panel),
+			// children will handle their own Foreground via OnLoadingPartial
+			if (foregroundProperty == null)
+			{
+				return;
+			}
+
+			// If Foreground is already set locally, by style, or animated,
+			// there's nothing to do because that value will be used.
+			var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
+			if (precedence == DependencyPropertyValuePrecedences.Local ||
+			    precedence == DependencyPropertyValuePrecedences.ExplicitStyle ||
+			    precedence == DependencyPropertyValuePrecedences.ImplicitStyle ||
+			    precedence == DependencyPropertyValuePrecedences.Animations)
+			{
+				return;
+			}
+
+			if (freeze)
+			{
+				// Freeze: Set the theme's default text foreground brush at this element's level
+				var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
+
+				// Push theme context for resource lookup
+				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+				try
+				{
+					// Look up DefaultTextForegroundThemeBrush with the current theme context
+					var brush = (Brush)ResourceResolver.ResolveTopLevelResource("DefaultTextForegroundThemeBrush", null);
+					if (brush != null)
+					{
+						SetValue(foregroundProperty, brush);
+					}
+				}
+				finally
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+			}
+			else
+			{
+				// Unfreeze: Clear the locally-set Foreground to allow normal inheritance
+				// Only clear if we set it (at Local precedence)
+				ClearValue(foregroundProperty);
+			}
+		}
+
+		#endregion
 
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = CreateFocusVisualSecondaryThicknessProperty();
@@ -972,24 +1269,14 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
+			// Pass element's ActualTheme to resource binding updates
 			TryGetResources()?.UpdateThemeBindings(updateReason);
-			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(
+				updateReason,
+				resourceContextProvider: this);
 
-			if (updateReason == ResourceUpdateReason.ThemeResource)
-			{
-				// Trigger ActualThemeChanged if relevant
-				if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
-				{
-					try
-					{
-						ActualThemeChanged?.Invoke(this, null);
-					}
-					catch (Exception e)
-					{
-						this.LogError()?.Error("An exception was thrown during theme binding updates in response to theme changes.", e);
-					}
-				}
-			}
+			// Don't fire ActualThemeChanged here anymore - it's now fired
+			// in NotifyThemeChangedCore when the theme actually changes
 		}
 
 		#region AutomationPeer

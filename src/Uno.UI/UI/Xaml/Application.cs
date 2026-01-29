@@ -204,24 +204,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsThemeSetExplicitly { get; private set; }
 
-		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
-		{
-			if (xamlRoot is null)
-			{
-				throw new ArgumentNullException(nameof(xamlRoot));
-			}
-
-			// Sync the requested theme from the XamlRoot
-			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
-			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
-			// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
-			if (xamlRoot.Content is FrameworkElement fe)
-			{
-				var theme = fe.RequestedTheme;
-				SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
-			}
-		}
-
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
 			// this flag makes sure the app will not respond to OS events
@@ -531,6 +513,17 @@ namespace Microsoft.UI.Xaml
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{
+				// If element has explicit RequestedTheme and this is a theme change,
+				// the element controls its own subtree - don't override its theme
+				if (updateReason == ResourceUpdateReason.ThemeResource &&
+					fe.RequestedTheme != ElementTheme.Default)
+				{
+					// Update this element's bindings but don't propagate to children
+					// The element's subtree will use its own RequestedTheme
+					fe.UpdateThemeBindings(updateReason);
+					return;
+				}
+
 				fe.UpdateThemeBindings(updateReason);
 			}
 
