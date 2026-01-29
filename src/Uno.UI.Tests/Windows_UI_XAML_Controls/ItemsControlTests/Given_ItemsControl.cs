@@ -235,7 +235,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			void CheckIndexes()
 			{
-				panel.Children­.Should().HaveCount(source.Count);
+				panel.Children.Should().HaveCount(source.Count);
 
 				for (var i = 0; i < panel.Children.Count; i++)
 				{
