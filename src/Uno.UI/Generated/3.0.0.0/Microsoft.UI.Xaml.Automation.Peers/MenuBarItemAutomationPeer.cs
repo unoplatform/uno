@@ -8,16 +8,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class MenuBarItemAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider, global::Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ExpandCollapseState MenuBarItemAutomationPeer.ExpandCollapseState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpandCollapseState%20MenuBarItemAutomationPeer.ExpandCollapseState");
-			}
-		}
-#endif
+		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBarItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBarItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.ExpandCollapseState.get
