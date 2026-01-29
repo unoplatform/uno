@@ -13,6 +13,53 @@ document.addEventListener(
             subnav.appendChild(sdkBadge);
         }
         
+        // Check for overlap between SDK badge and breadcrumb
+        function checkBadgeOverlap() {
+            const badge = document.getElementById('sdk-version-info');
+            const breadcrumbList = document.querySelector('#breadcrumb .breadcrumb');
+            
+            if (!badge || !breadcrumbList) return;
+            
+            // Get the last breadcrumb item (the actual visible content, not the container)
+            const breadcrumbItems = breadcrumbList.children;
+            if (breadcrumbItems.length === 0) return;
+            
+            const lastItem = breadcrumbItems[breadcrumbItems.length - 1];
+            const badgeRect = badge.getBoundingClientRect();
+            const lastItemRect = lastItem.getBoundingClientRect();
+            
+            // Check if last breadcrumb item extends into the badge's horizontal space
+            // Add 16px margin to give some breathing room
+            const margin = 16;
+            const hasOverlap = lastItemRect.right + margin > badgeRect.left;
+            
+            if (hasOverlap) {
+                badge.classList.add('hidden-overlap');
+            } else {
+                badge.classList.remove('hidden-overlap');
+            }
+        }
+        
+        // Check on load and resize
+        if (sdkBadge) {
+            // Initial check after a short delay to ensure layout is complete
+            setTimeout(checkBadgeOverlap, 100);
+            
+            // Check on window resize
+            window.addEventListener('resize', checkBadgeOverlap);
+            
+            // Check when breadcrumb content changes (using MutationObserver)
+            const breadcrumbContainer = document.getElementById('breadcrumb');
+            if (breadcrumbContainer) {
+                const observer = new MutationObserver(checkBadgeOverlap);
+                observer.observe(breadcrumbContainer, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            }
+        }
+        
         // Cache key and expiration (1 hour)
         const CACHE_KEY = 'uno_sdk_versions';
         const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
