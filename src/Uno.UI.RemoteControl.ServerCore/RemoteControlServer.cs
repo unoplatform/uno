@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.WebSockets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -165,7 +164,8 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 	}
 
 	private static bool IsTransportClosure(Exception error)
-		=> error is OperationCanceledException or TaskCanceledException or ObjectDisposedException or WebSocketException;
+		// TransportClosedException is thrown by transport implementations (e.g., WebSocket) to keep ServerCore transport-agnostic.
+		=> error is OperationCanceledException or TaskCanceledException or ObjectDisposedException or TransportClosedException;
 
 	private void ProcessIdeMessage(object? sender, IdeMessage message)
 	{

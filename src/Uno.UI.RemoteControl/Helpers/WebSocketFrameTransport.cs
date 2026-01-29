@@ -22,8 +22,18 @@ internal sealed class WebSocketFrameTransport(WebSocket socket) : IFrameTranspor
 		=> WebSocketHelper.ReadFrame(_socket, ct);
 
 	/// <inheritdoc />
-	public Task SendAsync(Frame frame, CancellationToken ct)
-		=> WebSocketHelper.SendFrame(_socket, frame, ct);
+	public async Task SendAsync(Frame frame, CancellationToken ct)
+	{
+		try
+		{
+			await WebSocketHelper.SendFrame(_socket, frame, ct).ConfigureAwait(false);
+		}
+		catch (WebSocketException ex)
+		{
+			// Normalize WebSocket-specific failures into a transport-agnostic signal for ServerCore.
+			throw new TransportClosedException("WebSocket transport closed.", ex);
+		}
+	}
 
 	/// <inheritdoc />
 	public async Task CloseAsync()
