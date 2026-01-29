@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO.Pipes;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using StreamJsonRpc;
@@ -483,13 +485,19 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	}
 
 	/// <summary>
-	/// Gets a random port number between 10000 and 65535.
+	/// Reserves an ephemeral port by asking the OS for an available loopback socket.
 	/// </summary>
-	/// <remarks>
-	/// That's lazy approach that should work often enough for CI.
-	/// </remarks>
-	/// <returns>A random port number.</returns>
-	private static int GetRandomPort() => new Random().Next(10_000, 65_500);
+	/// <returns>A port number guaranteed to be free at the time of selection.</returns>
+	private static int GetRandomPort()
+	{
+		// Best-effort: another process could still bind the port after we release the socket, but this has been reliable enough for CI needs.
+		// Let the OS pick a free ephemeral port so tests never collide with privileged ranges.
+		var listener = new TcpListener(IPAddress.Loopback, 0);
+		listener.Start();
+		var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+		listener.Stop();
+		return port;
+	}
 
 	public async ValueTask DisposeAsync()
 	{

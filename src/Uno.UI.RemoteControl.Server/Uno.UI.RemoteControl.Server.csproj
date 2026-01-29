@@ -8,25 +8,22 @@
 
 	<Import Project="../targetframework-override-noplatform.props" />
 
-	<ItemGroup>
-		<Compile Include="..\Uno.UI.RemoteControl\Helpers\VersionHelper.cs" Link="Helpers/%(Filename)" />
-		<Compile Include="..\Uno.UI.RemoteControl\Messages\**\*.cs" Link="Messages/%(Filename)" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="..\Uno.UI.RemoteControl\Messages\Frame.cs" />
-		<Compile Remove="..\Uno.UI.RemoteControl\Messages\IMessage.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl\Helpers\VersionHelper.cs" Link="Helpers/%(Filename)" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.ServerCore\Uno.UI.RemoteControl.ServerCore.csproj" />
 	</ItemGroup>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

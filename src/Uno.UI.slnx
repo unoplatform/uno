@@ -104,6 +104,9 @@
     <Project Path="Uno.UI.RemoteControl.Server/Uno.UI.RemoteControl.Server.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.RemoteControl.ServerCore/Uno.UI.RemoteControl.ServerCore.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="Uno.UI.RemoteControl.TestProcessor/Uno.UI.RemoteControl.TestProcessor.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>

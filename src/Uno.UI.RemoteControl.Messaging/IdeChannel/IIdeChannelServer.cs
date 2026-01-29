@@ -64,5 +64,12 @@ namespace Uno.UI.RemoteControl.Services
 		/// <param name="ct">CancellationToken to cancel the async operation.</param>
 		/// <returns>An async bool representing the fact that the message has been sent to the IDE or not (does not include any form of processing by IDE).</returns>
 		Task<bool> TrySendToIdeAsync(IdeMessage message, CancellationToken ct);
+
+		/// <summary>
+		/// Waits for the channel to become ready for sending/receiving messages.
+		/// </summary>
+		/// <param name="ct">Cancellation token used to observe cancellation.</param>
+		/// <returns>True when the channel is ready.</returns>
+		Task<bool> WaitForReady(CancellationToken ct = default);
 	}
 }

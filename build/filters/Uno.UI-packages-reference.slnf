@@ -24,6 +24,7 @@
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
+      "Uno.UI.RemoteControl.ServerCore\\Uno.UI.RemoteControl.ServerCore.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Reference.csproj",
       "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",

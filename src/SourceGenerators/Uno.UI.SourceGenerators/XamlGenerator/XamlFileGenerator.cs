@@ -487,12 +487,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildApplicationInitializerBody(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			writer.AppendLineIndented($"var __that = this;");
+
+			InitializeRemoteControlClient(writer);
+
 			writer.AppendLineIndented($"var __isDefaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly) == global::System.Runtime.Loader.AssemblyLoadContext.Default;");
 
 			using (writer.BlockInvariant($"if (__isDefaultAlc)"))
 			{
 				TryAnnotateWithGeneratorSource(writer);
-				InitializeRemoteControlClient(writer);
 				GenerateApiExtensionRegistrations(writer);
 
 				GenerateResourceLoader(writer);

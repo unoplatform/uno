@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.RemoteControl.Messaging;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.UI.RemoteControl.Host

@@ -40,6 +40,9 @@
 
 	<ItemGroup>
 		<!-- Normal project references - use Skia implementation of the Remote Control client -->
+		<ProjectReference Include="..\Uno.UI.RemoteControl.ServerCore\Uno.UI.RemoteControl.ServerCore.csproj">
+			<Aliases>RemoteServerCore</Aliases>
+		</ProjectReference>
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 	</ItemGroup>
