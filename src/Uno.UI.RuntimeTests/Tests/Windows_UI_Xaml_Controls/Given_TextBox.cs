@@ -1160,7 +1160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			mouse.MoveTo(clickPosition2);
-			Assert.AreEqual(0, list.Count);
+			Assert.IsEmpty(list);
 			mouse.Press(clickPosition2);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();

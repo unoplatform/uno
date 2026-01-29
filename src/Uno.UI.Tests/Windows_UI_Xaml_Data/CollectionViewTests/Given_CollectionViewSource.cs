@@ -111,13 +111,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 			SUT.Source = items;
 
 			Assert.IsNotNull(SUT.View);
-			Assert.AreEqual(0, SUT.View.Count);
+			Assert.IsEmpty(SUT.View);
 			Assert.AreEqual(1, viewChanged);
 
 			Assert.AreEqual(1, SUT.View.CollectionGroups.Count);
 
 			var firstGroup = SUT.View.CollectionGroups.First() as ICollectionViewGroup;
-			Assert.AreEqual(0, firstGroup.GroupItems.Count);
+			Assert.IsEmpty(firstGroup.GroupItems);
 		}
 	}
 }

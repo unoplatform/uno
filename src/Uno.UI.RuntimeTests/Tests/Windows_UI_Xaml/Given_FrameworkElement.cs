@@ -1165,7 +1165,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// NOTE: On WinUI, Unloaded is fired.
 			// In Uno, we only fire Unloaded if IsLoaded is true.
 			// See UIElement.Leave for more details.
-			Assert.AreEqual(0, events.Count);
+			Assert.IsEmpty(events);
 			//Assert.AreEqual("Unloaded", events[0]);
 
 			void Sut_Loading(FrameworkElement sender, object args)

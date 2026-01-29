@@ -388,7 +388,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			Assert.IsNotNull(r);
 			Assert.IsNotNull(r.Resources);
-			Assert.AreEqual(0, r.Resources.Count);
+			Assert.IsEmpty(r.Resources);
 		}
 
 		[TestMethod]
@@ -399,7 +399,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			Assert.IsNotNull(r);
 			Assert.IsNotNull(r.Resources);
-			Assert.AreEqual(0, r.Resources.Count);
+			Assert.IsEmpty(r.Resources);
 			Assert.IsNotNull(r.Resources.ThemeDictionaries);
 			Assert.AreEqual(2, r.Resources.ThemeDictionaries.Count);
 		}

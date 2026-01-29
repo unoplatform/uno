@@ -218,7 +218,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Action act = () => nv.MenuItems.Clear();
 				act.Should().NotThrow("Clearing MenuItems should not throw an exception.");
-				Assert.AreEqual(0, nv.MenuItems.Count, "MenuItems should be empty after clearing.");
+				Assert.IsEmpty(nv.MenuItems, "MenuItems should be empty after clearing.");
 			}
 		}
 	}

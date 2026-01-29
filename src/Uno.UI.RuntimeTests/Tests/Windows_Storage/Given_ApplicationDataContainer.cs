@@ -203,7 +203,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 				keysPresent.Remove(value.Key);
 			}
 
-			Assert.AreEqual(0, keysPresent.Count);
+			Assert.IsEmpty(keysPresent);
 		}
 
 		[TestMethod]

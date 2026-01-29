@@ -645,7 +645,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 
-			Assert.AreEqual(0, list.SelectedItems.Count);
+			Assert.IsEmpty(list.SelectedItems);
 		}
 
 		[TestMethod]
@@ -1407,7 +1407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var page = new ListViewCollectionViewSourcePage();
 
-			Assert.AreEqual(0, page.SubjectListView.Items.Count);
+			Assert.IsEmpty(page.SubjectListView.Items);
 
 			page.CVS.Source = new[] { "One", "Two", "Three" };
 
@@ -3620,7 +3620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// up after being removed.
 				Assert.IsNull(container.Content);
 
-				Assert.AreEqual(0, SUT.Items.Count);
+				Assert.IsEmpty(SUT.Items);
 
 				await WindowHelper.WaitForIdle();
 
@@ -4170,7 +4170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			else
 			{
-				Assert.AreEqual(0, removed1.Count);
+				Assert.IsEmpty(removed1);
 			}
 
 			Assert.AreEqual("String 1", (string)added1.Single());
@@ -4225,7 +4225,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			else
 			{
-				Assert.AreEqual(0, removed1.Count);
+				Assert.IsEmpty(removed1);
 			}
 			Assert.AreSame(obj2, added1.Single());
 

@@ -168,7 +168,7 @@ public class Given_CalendarView
 		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
-		Assert.AreEqual(0, calendar.SelectedDates.Count);
+		Assert.IsEmpty(calendar.SelectedDates);
 		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
 
 		//Add day2 to SelectedDatesItem. { } => { day2 }
@@ -230,7 +230,7 @@ public class Given_CalendarView
 		//Click day2. { day2 } => { }
 		OnTappedInfo.Invoke(dayItem2, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(0, calendar.SelectedDates.Count);
+		Assert.IsEmpty(calendar.SelectedDates);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
 		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });

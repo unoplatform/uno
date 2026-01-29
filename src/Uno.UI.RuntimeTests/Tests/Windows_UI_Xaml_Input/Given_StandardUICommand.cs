@@ -339,7 +339,7 @@ public class Given_StandardUICommand
 		}
 		if (virtualKey == VirtualKey.None)
 		{
-			Assert.AreEqual(0, command.KeyboardAccelerators.Count);
+			Assert.IsEmpty(command.KeyboardAccelerators);
 		}
 		else
 		{
