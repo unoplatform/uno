@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class NavigationThemeTransition : global::Microsoft.UI.Xaml.Media.Animation.Transition
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false // Implemented in NavigationThemeTransition.mux.cs
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo DefaultNavigationTransitionInfo
 		{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false // Implemented in NavigationThemeTransition.mux.cs
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DefaultNavigationTransitionInfoProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

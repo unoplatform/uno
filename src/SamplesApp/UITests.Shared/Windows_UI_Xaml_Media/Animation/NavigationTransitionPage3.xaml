@@ -1,0 +1,24 @@
+<Page
+	x:Class="UITests.Windows_UI_Xaml_Media.Animation.NavigationTransitionPage3"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="#FF9800">
+
+	<Grid>
+		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
+			<TextBlock Text="Orange Page"
+					   FontSize="48"
+					   FontWeight="Bold"
+					   Foreground="White"
+					   HorizontalAlignment="Center" />
+			<TextBlock Text="Page 3 of the navigation stack"
+					   FontSize="18"
+					   Foreground="White"
+					   HorizontalAlignment="Center"
+					   Opacity="0.8" />
+		</StackPanel>
+	</Grid>
+</Page>
