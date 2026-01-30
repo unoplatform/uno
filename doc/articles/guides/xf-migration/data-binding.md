@@ -45,6 +45,7 @@ Bindings support multiple modes that determine how the binding behaves when valu
 Converters are classes used to convert a value into an appropriate format for the UI control. They implement the **IValueConverter** interface, which defines two methods to convert to and from another type. There is no strong typing used, so you must ensure you use a converter in the right place to return the expected type for the bound control. If you are using the converter for a one-way binding, you don't need to write code for the `ConvertBack` method.
 
 Common scenarios include:
+
 - Converting ranges of values into colors
 - Converting Enum values into formatted strings
 
