@@ -563,5 +563,5 @@ Migrating custom renderers to Uno Platform:
 ## See Also
 
 - [Native Views in Uno Platform](xref:Uno.Development.NativeViews)
-- [Platform-Specific C#](xref:Uno.Development.PlatformSpecificCsharp)
+- [Platform-Specific C#](xref:Uno.Development.PlatformSpecificCSharp)
 - [Platform-Specific XAML](xref:Uno.Development.PlatformSpecificXaml)
