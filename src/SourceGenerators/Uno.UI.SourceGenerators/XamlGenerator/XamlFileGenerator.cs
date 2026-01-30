@@ -3601,6 +3601,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var dataTypeObject = FindMember(template.xamlObject!, "DataType", XamlConstants.XamlXmlNamespace);
 						if (dataTypeObject?.Value == null)
 						{
+							// Check if this is a static method binding (path starts with a namespace prefix like "local:Type")
+							// Static bindings don't require x:DataType because they don't access the DataContext
+							var pathParts = path.Split('.');
+							var isStaticBinding = pathParts.FirstOrDefault()?.Contains(":") ?? false;
+
+							if (isStaticBinding)
+							{
+								// Extract the type from the static path (e.g., "local:StaticHandler" from "local:StaticHandler.OnClick")
+								return GetType(RewriteNamespaces(pathParts[0]));
+							}
+
 							throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate for x:Bind event", bind);
 						}
 
@@ -4211,9 +4222,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (isInsideDataTemplate)
 			{
 				var dataTypeObject = FindMember(dataTemplateObject!, "DataType", XamlConstants.XamlXmlNamespace);
+
+				// Check if this might be a static-only binding (no instance member access needed)
+				// Static-only bindings don't require x:DataType because they don't access the DataContext
 				if (dataTypeObject?.Value == null)
 				{
-					throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate", bindNode);
+					// Try parsing without a context type to see if it's a static-only binding
+					var staticContextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, null, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
+
+					// Check if all properties are static (start with global::) or if there are no instance properties
+					var hasInstanceProperties = staticContextFunction.Properties.Any(p => !p.StartsWith("global::", StringComparison.Ordinal));
+
+					if (!hasInstanceProperties && !string.IsNullOrEmpty(rawFunction))
+					{
+						// This is a static-only binding - no x:DataType required
+						if (staticContextFunction.MethodDeclaration is not null)
+						{
+							RegisterXBindTryGetDeclaration(staticContextFunction.MethodDeclaration);
+						}
+
+						// TwoWay binding to static properties is not supported
+						if (modeMember == "TwoWay")
+						{
+							throw new XamlGenerationException("TwoWay binding to static properties is not supported", bindNode);
+						}
+
+						return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ({staticContextFunction.Expression}), null))";
+					}
+					else
+					{
+						// Has instance properties but no x:DataType - throw the original error
+						throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate", bindNode);
+					}
 				}
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
