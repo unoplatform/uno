@@ -435,13 +435,9 @@ h5 {
 #breadcrumb {
   padding: 0 32px;
   position: relative;
-  overflow: hidden;
 }
 
 .breadcrumb {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: 14px;
   line-height: 24px;
   font-weight:400;
