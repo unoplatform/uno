@@ -93,18 +93,22 @@ Several common components exist with different names between these two flavors o
 ### Size Properties
 
 **Xamarin.Forms:**
+
 - `HeightRequest` and `WidthRequest` to set preferred size
 
 **Uno Platform:**
+
 - `Height` and `Width` properties
 - These may change based on layout constraints
 
 ### Color Properties
 
 **Xamarin.Forms:**
+
 - Often uses `Color` properties for controls
 
 **Uno Platform:**
+
 - Uses `Brush` properties, which can be solid colors, gradients, and more
 - You can pass a `Color` as a property, and it's converted to a `SolidColorBrush` under the hood
 - Preset colors are defined on the `Colors` type
@@ -116,10 +120,12 @@ Several common components exist with different names between these two flavors o
 ### Alignment Properties
 
 **Xamarin.Forms:**
+
 - `HorizontalOptions` and `VerticalOptions` use the same enumeration
 - Values: `Start`, `End`, `Fill`, `Center`
 
 **Uno Platform:**
+
 - Separate horizontal and vertical enumerations
 - Properties are called `Alignment` rather than `Options`
 
@@ -130,9 +136,11 @@ Example:
 ### Font Properties
 
 **Xamarin.Forms:**
+
 - `FontAttributes` for bold or italic styling
 
 **Uno Platform:**
+
 - `FontWeight` for setting bold (e.g., `FontWeight="Bold"`)
 - `FontStyle` for setting italic (e.g., `FontStyle="Italic"`)
 
