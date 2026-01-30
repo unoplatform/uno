@@ -32,11 +32,13 @@ Transforms allow you to rotate, scale, translate, and skew visual elements witho
 #### Rotation
 
 **Xamarin.Forms:**
+
 ```csharp
 await myElement.RotateTo(360, 1000);
 ```
 
 **Uno Platform:**
+
 ```xml
 <Storyboard x:Name="RotateStoryboard">
     <DoubleAnimation Storyboard.TargetName="myElement"
@@ -59,6 +61,7 @@ To use transforms in Uno Platform, you must first apply the transform to the ele
 #### Scaling
 
 **Xamarin.Forms:**
+
 ```csharp
 await myElement.ScaleTo(2.0, 1000);
 await myElement.ScaleXTo(2.0, 1000);
@@ -66,6 +69,7 @@ await myElement.ScaleYTo(2.0, 1000);
 ```
 
 **Uno Platform:**
+
 ```xml
 <Storyboard x:Name="ScaleStoryboard">
     <DoubleAnimation Storyboard.TargetName="myElement"
@@ -92,11 +96,13 @@ With the transform applied:
 #### Translation
 
 **Xamarin.Forms:**
+
 ```csharp
 await myElement.TranslateTo(100, 100, 1000);
 ```
 
 **Uno Platform:**
+
 ```xml
 <Storyboard x:Name="TranslateStoryboard">
     <DoubleAnimation Storyboard.TargetName="myElement"
@@ -123,11 +129,13 @@ With the transform applied:
 ### Opacity Animations
 
 **Xamarin.Forms:**
+
 ```csharp
 await myElement.FadeTo(0.5, 1000);
 ```
 
 **Uno Platform:**
+
 ```xml
 <Storyboard x:Name="FadeStoryboard">
     <DoubleAnimation Storyboard.TargetName="myElement"
@@ -278,6 +286,7 @@ Keyframe animations allow you to specify exact values at specific points in time
 ```
 
 Types of keyframes:
+
 - **LinearDoubleKeyFrame**: Linear interpolation between values
 - **DiscreteDoubleKeyFrame**: Jumps to the value (no interpolation)
 - **EasingDoubleKeyFrame**: Applies an easing function between keyframes
@@ -288,11 +297,13 @@ Types of keyframes:
 ### Starting Animations
 
 **Xamarin.Forms:**
+
 ```csharp
 await myElement.RotateTo(360, 1000);
 ```
 
 **Uno Platform:**
+
 ```csharp
 RotateStoryboard.Begin();
 ```
@@ -300,6 +311,7 @@ RotateStoryboard.Begin();
 ### Stopping Animations
 
 **Uno Platform:**
+
 ```csharp
 RotateStoryboard.Stop();
 ```
@@ -307,6 +319,7 @@ RotateStoryboard.Stop();
 ### Pausing and Resuming
 
 **Uno Platform:**
+
 ```csharp
 RotateStoryboard.Pause();
 RotateStoryboard.Resume();
@@ -315,12 +328,14 @@ RotateStoryboard.Resume();
 ### Handling Completion
 
 **Xamarin.Forms:**
+
 ```csharp
 await myElement.RotateTo(360, 1000);
 // Code here runs after animation completes
 ```
 
 **Uno Platform:**
+
 ```csharp
 RotateStoryboard.Completed += (s, e) =>
 {
@@ -334,6 +349,7 @@ RotateStoryboard.Begin();
 ### Repeat Forever
 
 **Uno Platform:**
+
 ```xml
 <Storyboard x:Name="RepeatStoryboard" RepeatBehavior="Forever">
     <DoubleAnimation Storyboard.TargetName="myElement"
@@ -347,6 +363,7 @@ RotateStoryboard.Begin();
 ### Repeat Count
 
 **Uno Platform:**
+
 ```xml
 <Storyboard x:Name="RepeatStoryboard" RepeatBehavior="3x">
     <!-- Animation repeats 3 times -->
@@ -356,6 +373,7 @@ RotateStoryboard.Begin();
 ### Auto-Reverse
 
 **Uno Platform:**
+
 ```xml
 <Storyboard x:Name="ReverseStoryboard" AutoReverse="True">
     <!-- Animation plays forward, then backward -->
