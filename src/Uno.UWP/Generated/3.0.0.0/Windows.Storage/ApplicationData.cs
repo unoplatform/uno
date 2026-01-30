@@ -121,15 +121,15 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.SetVersionAsync%28uint%20desiredVersion%2C%20ApplicationDataSetVersionHandler%20handler%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncAction ClearAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.ClearAsync%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncAction ClearAsync(global::Windows.Storage.ApplicationDataLocality locality)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.ClearAsync%28ApplicationDataLocality%20locality%29");
