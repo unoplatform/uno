@@ -48,7 +48,7 @@ Common scenarios include:
 - Converting ranges of values into colors
 - Converting Enum values into formatted strings
 
-When migrating from Xamarin.Forms to Uno Platform, you'll likely need to make changes to converters. For example, if your converter returns a `Xamarin.Forms.Color`, it will need to be reworked to return a `Windows.UI.Color` or `Microsoft.UI.Colors` instead.
+When migrating from Xamarin.Forms to Uno Platform, you'll likely need to make changes to converters. For example, if your converter returns a `Xamarin.Forms.Color`, it will need to be reworked to return a `Microsoft.UI.Color` (or `Windows.UI.Color`) instead.
 
 ## String Formatting
 
