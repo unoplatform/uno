@@ -9,12 +9,14 @@ This guide explains how to migrate navigation patterns from Xamarin.Forms to Uno
 ## Navigation Fundamentals
 
 ### Xamarin.Forms Navigation
+
 Xamarin.Forms uses a stack-based navigation model with the `INavigation` interface:
 - Navigation is accessed via `Navigation` property on pages
 - `NavigationPage` provides the navigation chrome (back button, title bar)
 - Async/await pattern for all navigation operations
 
 ### Uno Platform Navigation
+
 Uno Platform uses the WinUI `Frame` control for navigation:
 - `Frame` maintains the navigation stack
 - Navigation is synchronous (no await needed)
@@ -25,11 +27,13 @@ Uno Platform uses the WinUI `Frame` control for navigation:
 ### Navigate Forward
 
 **Xamarin.Forms:**
+
 ```csharp
 await Navigation.PushAsync(new DetailPage());
 ```
 
 **Uno Platform:**
+
 ```csharp
 Frame.Navigate(typeof(DetailPage));
 ```
@@ -37,6 +41,7 @@ Frame.Navigate(typeof(DetailPage));
 ### Navigate Back
 
 **Xamarin.Forms:**
+
 ```csharp
 await Navigation.PopAsync();
 ```
@@ -52,11 +57,13 @@ if (Frame.CanGoBack)
 ### Navigate to Root
 
 **Xamarin.Forms:**
+
 ```csharp
 await Navigation.PopToRootAsync();
 ```
 
 **Uno Platform:**
+
 ```csharp
 while (Frame.CanGoBack)
 {
@@ -72,12 +79,14 @@ Frame.Navigate(typeof(MainPage));
 ### Simple Parameters
 
 **Xamarin.Forms:**
+
 ```csharp
 var detailPage = new DetailPage(itemId);
 await Navigation.PushAsync(detailPage);
 ```
 
 **Uno Platform:**
+
 ```csharp
 Frame.Navigate(typeof(DetailPage), itemId);
 ```
@@ -100,6 +109,7 @@ protected override void OnNavigatedTo(NavigationEventArgs e)
 ### Complex Parameters
 
 **Xamarin.Forms:**
+
 ```csharp
 var parameters = new NavigationParameters
 {
@@ -122,12 +132,14 @@ Frame.Navigate(typeof(DetailPage), parameters);
 ## Navigation Without Animation
 
 **Xamarin.Forms:**
+
 ```csharp
 await Navigation.PushAsync(new DetailPage(), animated: false);
 await Navigation.PopAsync(animated: false);
 ```
 
 **Uno Platform:**
+
 ```csharp
 Frame.Navigate(typeof(DetailPage), null, 
     new SuppressNavigationTransitionInfo());
@@ -140,11 +152,13 @@ Frame.GoBack(new SuppressNavigationTransitionInfo());
 ### Remove a Page from Stack
 
 **Xamarin.Forms:**
+
 ```csharp
 Navigation.RemovePage(pageToRemove);
 ```
 
 **Uno Platform:**
+
 ```csharp
 // Remove specific page by index
 Frame.BackStack.RemoveAt(index);
@@ -162,11 +176,13 @@ if (Frame.BackStack.Count > 0)
 ### Insert Page into Stack
 
 **Xamarin.Forms:**
+
 ```csharp
 Navigation.InsertPageBefore(newPage, existingPage);
 ```
 
 **Uno Platform:**
+
 ```csharp
 // Insert a page entry into the back stack
 var entry = new PageStackEntry(typeof(NewPage), parameter, null);
@@ -178,11 +194,13 @@ Frame.BackStack.Insert(index, entry);
 ### Present Modal
 
 **Xamarin.Forms:**
+
 ```csharp
 await Navigation.PushModalAsync(new LoginPage());
 ```
 
 **Uno Platform:**
+
 ```csharp
 // Option 1: Use ContentDialog for modal dialogs
 var dialog = new LoginDialog();
@@ -197,11 +215,13 @@ modalFrame.Navigate(typeof(LoginPage));
 ### Dismiss Modal
 
 **Xamarin.Forms:**
+
 ```csharp
 await Navigation.PopModalAsync();
 ```
 
 **Uno Platform:**
+
 ```csharp
 // For ContentDialog
 dialog.Hide();
@@ -251,6 +271,7 @@ public class NavigationService : INavigationService
 ## TabbedPage Migration
 
 **Xamarin.Forms:**
+
 ```xml
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms">
     <ContentPage Title="Tab 1" />
@@ -260,6 +281,7 @@ public class NavigationService : INavigationService
 ```
 
 **Uno Platform - Using NavigationView:**
+
 ```xml
 <NavigationView PaneDisplayMode="Top">
     <NavigationView.MenuItems>
@@ -272,6 +294,7 @@ public class NavigationService : INavigationService
 ```
 
 **Uno Platform - Using TabView (simpler):**
+
 ```xml
 <TabView>
     <TabViewItem Header="Tab 1">
@@ -289,6 +312,7 @@ public class NavigationService : INavigationService
 ## MasterDetailPage / FlyoutPage Migration
 
 **Xamarin.Forms:**
+
 ```xml
 <FlyoutPage>
     <FlyoutPage.Flyout>
@@ -307,6 +331,7 @@ public class NavigationService : INavigationService
 ```
 
 **Uno Platform - Using NavigationView:**
+
 ```xml
 <NavigationView x:Name="NavView" 
                 PaneDisplayMode="Left"
@@ -395,6 +420,7 @@ protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 ### Using Commands for Navigation
 
 **View Model:**
+
 ```csharp
 public class MainViewModel
 {
@@ -432,12 +458,14 @@ public partial record MainModel(INavigator Navigator)
 ## Deep Linking
 
 ### Xamarin.Forms Shell
+
 ```csharp
 Routing.RegisterRoute("details", typeof(DetailPage));
 await Shell.Current.GoToAsync("details?id=123");
 ```
 
 ### Uno Platform with Uno.Extensions
+
 ```csharp
 // Configure routes in App.cs
 protected override void OnLaunched(LaunchActivatedEventArgs args)
@@ -459,6 +487,7 @@ await navigator.NavigateRouteAsync(this, "details?id=123");
 ### Custom Transitions
 
 **Uno Platform:**
+
 ```csharp
 // Slide in from right
 Frame.Navigate(typeof(DetailPage), null, 
@@ -496,6 +525,7 @@ When migrating navigation:
 ### Confirm Before Navigation
 
 **Xamarin.Forms:**
+
 ```csharp
 protected override bool OnBackButtonPressed()
 {
@@ -509,6 +539,7 @@ protected override bool OnBackButtonPressed()
 ```
 
 **Uno Platform:**
+
 ```csharp
 protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 {
@@ -525,6 +556,7 @@ protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 ### Pass Data Back on Navigation
 
 **Xamarin.Forms:**
+
 ```csharp
 // In detail page
 MessagingCenter.Send(this, "ItemUpdated", updatedItem);
@@ -536,6 +568,7 @@ MessagingCenter.Subscribe<DetailPage, Item>(this, "ItemUpdated",
 ```
 
 **Uno Platform:**
+
 ```csharp
 // Option 1: Use navigation parameter on back navigation
 // Store data in a service or shared state
