@@ -136,6 +136,7 @@ public static class TextBoxErrorHelper
 ```
 
 The code:
+
 1. Gets the `ContentControl` defined in the template
 2. Accesses the inner native `EditText` control
 3. Sets its `Error` property, which defines the message to display
@@ -173,6 +174,7 @@ While Uno Platform doesn't have a direct equivalent to Xamarin.Forms Effects, yo
 2. **Conditional Compilation with Attached Properties**: For accessing platform-specific native control features
 
 The choice depends on your requirements:
+
 - Use control templates when you need to change the visual appearance
 - Use conditional compilation when you need to access platform-specific native control methods and properties that aren't exposed by the standard WinUI controls
 
