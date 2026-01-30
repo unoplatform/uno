@@ -18,6 +18,7 @@ Xamarin.Forms uses a stack-based navigation model with the `INavigation` interfa
 ### Uno Platform Navigation
 
 Uno Platform uses the WinUI `Frame` control for navigation:
+
 - `Frame` maintains the navigation stack
 - Navigation is synchronous (no await needed)
 - Pages are navigated to by `Type` rather than instance
@@ -47,6 +48,7 @@ await Navigation.PopAsync();
 ```
 
 **Uno Platform:**
+
 ```csharp
 if (Frame.CanGoBack)
 {
@@ -120,6 +122,7 @@ await Navigation.PushAsync(new DetailPage(parameters));
 ```
 
 **Uno Platform:**
+
 ```csharp
 var parameters = new NavigationParameters
 {
