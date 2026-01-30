@@ -33,6 +33,8 @@ Because of this, you probably don't need to change any of the SkiaSharp drawing 
 1. Create a library with a class derived from `SKXamlCanvas`
 2. Hook up the drawing logic from your Xamarin.Forms control
 
+> [!NOTE]
+> While `SKXamlCanvas` is the most straightforward option for migrating existing Xamarin.Forms controls (because its API closely matches `SKCanvasView`), the Uno Platform documentation recommends using `SKCanvasElement` on Skia-based targets when possible. `SKCanvasElement` is designed for Uno's Skia renderers, providing hardware acceleration and avoiding additional buffer copies, which can improve performance on platforms such as WebAssembly, Skia GTK, and Skia WPF.
 ## Migration Example: Microcharts
 
 [Microcharts](https://github.com/microcharts-dotnet/Microcharts/) is a simple open-source charting library written in C# that utilizes SkiaSharp to draw a wide range of chart types. It had implementations for Xamarin.Forms, .NET MAUI, UWP, and others but initially had no Uno support.
