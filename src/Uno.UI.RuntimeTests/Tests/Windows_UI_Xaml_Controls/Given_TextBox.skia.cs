@@ -1916,7 +1916,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var text = "???? ?????";
+			var text = "صباح الخير";
 			foreach (var c in text)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
@@ -2962,7 +2962,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new TextBox
 			{
-				Text = "?? Hello world"
+				Text = "🚫 Hello world"
 			};
 
 			await UITestHelper.Load(SUT);
