@@ -485,10 +485,13 @@ namespace Uno.UI
 
 			if (assemblyName is not null && _registeredDictionariesByAssembly.TryGetValue(assemblyName, out var assemblyDict))
 			{
+				// The assemblyDict is a ResourceDictionary that contains ResourceDictionaries for each registered Generic.xaml.
+				// When iterating, kvp.Value is already the materialized ResourceDictionary.
 				foreach (var kvp in assemblyDict)
 				{
-					var rd = kvp.Value as ResourceDictionary;
-					if (rd.TryGetValue(type, out var value, shouldCheckSystem: false) && value is Style foundStyle)
+					if (kvp.Value is ResourceDictionary rd
+						&& rd.TryGetValue(type, out var value, shouldCheckSystem: false)
+						&& value is Style foundStyle)
 					{
 						style = foundStyle;
 						return true;
