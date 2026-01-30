@@ -14,13 +14,14 @@ Each article provides guidance on how to migrate different areas of your existin
 
 ## What's covered
 
+* [Control Mappings](xref:Uno.XamarinFormsMigration.ControlMappings) - Complete reference of Xamarin.Forms to Uno Platform control mappings
 * [Animations](xref:Uno.XamarinFormsMigration.Animations)
 * [Custom Controls](xref:Uno.XamarinFormsMigration.CustomControls)
 * [Custom-Drawn Controls](xref:Uno.XamarinFormsMigration.CustomDrawnControls)
 * [Data Binding](xref:Uno.XamarinFormsMigration.DataBinding)
 * [Effects](xref:Uno.XamarinFormsMigration.Effects)
-* [Navigation](https://platform.uno/blog/migrating-page-navigation-apps-from-xamarin-forms/)
-* [Renderers](https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/)
+* [Navigation](xref:Uno.XamarinFormsMigration.Navigation)
+* [Renderers and Native Controls](xref:Uno.XamarinFormsMigration.NativeControls)
 
 <!-- * [Animations](xref:Uno.XamarinFormsMigration.Animations)
 * [Controls](xref:Uno.XamarinFormsMigration.Controls)
