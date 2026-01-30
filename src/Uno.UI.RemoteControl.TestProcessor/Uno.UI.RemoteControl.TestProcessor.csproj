@@ -18,7 +18,7 @@
 
 	<Target Name="CopyTestProcessorDependencies" AfterTargets="Build">
 		<ItemGroup>
-			<_TestProcessorDependency Include="..\Uno.UI.RemoteControl.TestProcessor.Dependency\bin\$(Configuration)\$(TargetFramework)\Uno.UI.RemoteControl.TestProcessor.Dependency.dll" />
+			<_TestProcessorDependency Include="..\Uno.UI.RemoteControl.TestProcessor.Dependency\bin\$(Configuration)\$(NetCurrent)\Uno.UI.RemoteControl.TestProcessor.Dependency.dll" />
 		</ItemGroup>
 		<Copy SourceFiles="@(_TestProcessorDependency)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
 	</Target>

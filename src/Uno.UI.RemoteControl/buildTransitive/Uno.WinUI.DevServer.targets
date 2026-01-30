@@ -80,7 +80,7 @@
 	</Target>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios' and '$(Optimize)'!='true'">
-		<MlaunchEnvironmentVariables  Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
+		<MlaunchEnvironmentVariables Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'browserwasm' and '$(Optimize)'!='true'">

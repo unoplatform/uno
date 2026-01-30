@@ -32,16 +32,12 @@
 		<Compile Remove="**\*.xaml.cs" />
 		<None Include="**\*.xaml.cs" />
 
-		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotReloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<Compile Include="MetadataUpdateTests\Scenarios\When_Empty\_._" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
@@ -50,6 +46,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.HotReload\Uno.HotReload.csproj" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<ProjectReference Include="..\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" />
 		<ProjectReference Include="..\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj" />
 	</ItemGroup>

@@ -79,7 +79,7 @@ public partial class ClientHotReloadProcessor
 
 		public Status Current { get; private set; } = null!;
 
-		public void ReportInvalidRuntime()
+		public void ReportLocallyDisabledState(string reason)
 		{
 			_serverState = HotReloadState.Disabled;
 			_isFinalServerState = true;
