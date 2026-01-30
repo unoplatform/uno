@@ -15,6 +15,7 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia.Generic")]
+[assembly: InternalsVisibleTo("SamplesApp.Skia.WebAssembly.Browser")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.WinUI.SpellChecking")]
 
