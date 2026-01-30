@@ -9,11 +9,13 @@ This guide explains how to migrate Xamarin.Forms custom renderers and native lib
 ## Understanding Custom Renderers in Xamarin.Forms
 
 In Xamarin.Forms, custom renderers allowed you to:
+
 - Create platform-specific implementations of custom controls
 - Override the default rendering of built-in controls
 - Access native platform APIs and controls
 
 Each platform had its own renderer implementation:
+
 ```csharp
 // Xamarin.Forms - iOS Renderer
 [assembly: ExportRenderer(typeof(CustomEntry), typeof(CustomEntryRenderer))]
@@ -39,6 +41,7 @@ Uno Platform doesn't use the renderer pattern. Instead, you have several approac
 For visual customizations, use control templates. This is the most common migration path for renderers that only changed appearance.
 
 **Xamarin.Forms Renderer:**
+
 ```csharp
 // Removed underline on Android Entry
 protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
@@ -52,6 +55,7 @@ protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
 ```
 
 **Uno Platform Equivalent:**
+
 ```xml
 <Style x:Key="NoUnderlineTextBox" TargetType="TextBox">
     <Setter Property="Template">
@@ -76,6 +80,7 @@ See the [Effects Migration Guide](xref:Uno.XamarinFormsMigration.Effects) for mo
 For accessing platform-specific APIs, use conditional compilation.
 
 **Xamarin.Forms Renderer:**
+
 ```csharp
 // iOS Renderer
 protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
@@ -90,6 +95,7 @@ protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
 ```
 
 **Uno Platform Equivalent:**
+
 ```csharp
 #if __IOS__
 using UIKit;
@@ -122,6 +128,7 @@ public partial class CustomTextBox : TextBox
 For behaviors that can be applied to any control, use attached properties.
 
 **Xamarin.Forms Effect:**
+
 ```csharp
 public class ShadowEffect : PlatformEffect
 {
@@ -133,6 +140,7 @@ public class ShadowEffect : PlatformEffect
 ```
 
 **Uno Platform Attached Property:**
+
 ```csharp
 public static class ShadowExtensions
 {
@@ -162,6 +170,7 @@ public static class ShadowExtensions
 ```
 
 Usage:
+
 ```xml
 <Border local:ShadowExtensions.EnableShadow="True">
     <TextBlock Text="With Shadow" />
@@ -241,6 +250,7 @@ If you have Xamarin bindings for native libraries, you'll need to adapt them for
 #### Android Libraries
 
 **Xamarin.Android Binding:**
+
 ```xml
 <!-- Metadata.xml -->
 <metadata>
@@ -249,6 +259,7 @@ If you have Xamarin bindings for native libraries, you'll need to adapt them for
 ```
 
 **For Uno Platform:**
+
 The same Xamarin.Android binding can often be used directly. Reference the binding library in your Android head project:
 
 ```xml
@@ -260,6 +271,7 @@ The same Xamarin.Android binding can often be used directly. Reference the bindi
 #### iOS Libraries
 
 **Xamarin.iOS Binding:**
+
 ```csharp
 [BaseType(typeof(NSObject))]
 interface CustomSDK
@@ -270,6 +282,7 @@ interface CustomSDK
 ```
 
 **For Uno Platform:**
+
 Similar to Android, iOS bindings can be referenced in your iOS head project. Create the binding using the standard Xamarin.iOS binding process.
 
 ### Using Native Controls in XAML
@@ -277,6 +290,7 @@ Similar to Android, iOS bindings can be referenced in your iOS head project. Cre
 You can include native controls directly in your Uno Platform XAML:
 
 **Android:**
+
 ```xml
 <Page xmlns:android="http://uno.ui/android"
       xmlns:androidwidget="using:Android.Widget"
@@ -292,6 +306,7 @@ You can include native controls directly in your Uno Platform XAML:
 ```
 
 **iOS:**
+
 ```xml
 <Page xmlns:ios="http://uno.ui/ios"
       xmlns:uikit="using:UIKit"
@@ -354,6 +369,7 @@ partial class CustomRatingControl
 ### Scenario 1: Removing Platform-Specific UI Elements
 
 **Xamarin.Forms:**
+
 ```csharp
 // Android: Remove default underline
 Control.Background = null;
@@ -363,16 +379,19 @@ Control.BorderStyle = UITextBorderStyle.None;
 ```
 
 **Uno Platform:**
+
 Use a custom control template that doesn't include those elements, or set them via platform-specific code as shown above.
 
 ### Scenario 2: Customizing Touch/Click Behavior
 
 **Xamarin.Forms:**
+
 ```csharp
 Control.Touch += OnTouch;
 ```
 
 **Uno Platform:**
+
 ```csharp
 element.PointerPressed += OnPointerPressed;
 element.PointerReleased += OnPointerReleased;
@@ -391,6 +410,7 @@ For custom drawing, see the [Custom-Drawn Controls Migration Guide](xref:Uno.Xam
 ### Scenario 4: Platform-Specific Events
 
 **Xamarin.Forms:**
+
 ```csharp
 protected override void OnElementPropertyChanged(object sender, 
     PropertyChangedEventArgs e)
@@ -405,6 +425,7 @@ protected override void OnElementPropertyChanged(object sender,
 ```
 
 **Uno Platform:**
+
 ```csharp
 public partial class CustomEntry : TextBox
 {
