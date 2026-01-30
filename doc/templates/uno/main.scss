@@ -47,6 +47,12 @@ body {
   display: flex;
   align-items: center;
   z-index: 1000;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  
+  &.hidden-overlap {
+    opacity: 0;
+    visibility: hidden;
+  }
   
   // Mobile: adjust positioning and size
   @media only screen and (max-width: 768.98px) {
@@ -142,7 +148,7 @@ body {
 .sdk-modal-content {
   background: white;
   border-radius: 12px;
-  max-width: 600px;
+  max-width: 680px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
@@ -212,6 +218,23 @@ body {
       padding: 2px 6px;
       border-radius: 3px;
       font-size: 13px;
+    }
+    
+    &.sdk-important {
+      background: #fff3cd;
+      border-left-color: #ffc107;
+      color: #856404;
+      
+      strong {
+        color: #856404;
+      }
+    }
+    
+    &.sdk-instruction {
+      background: #e8f4fd;
+      border-left-color: #159BFF;
+      font-weight: 500;
+      margin-bottom: 24px;
     }
   }
 }
@@ -412,10 +435,13 @@ h5 {
 #breadcrumb {
   padding: 0 32px;
   position: relative;
+  overflow: hidden;
 }
 
 .breadcrumb {
-  white-space: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 14px;
   line-height: 24px;
   font-weight:400;
