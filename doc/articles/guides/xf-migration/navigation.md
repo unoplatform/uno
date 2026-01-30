@@ -11,6 +11,7 @@ This guide explains how to migrate navigation patterns from Xamarin.Forms to Uno
 ### Xamarin.Forms Navigation
 
 Xamarin.Forms uses a stack-based navigation model with the `INavigation` interface:
+
 - Navigation is accessed via `Navigation` property on pages
 - `NavigationPage` provides the navigation chrome (back button, title bar)
 - Async/await pattern for all navigation operations
