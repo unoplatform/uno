@@ -40,14 +40,23 @@
   }
 }
 
-.NOTE, .TIP {
-  @include alert-block(lighten($blue, 40%), $blue, $blue);
+// GitHub-style alert colors
+.NOTE {
+  @include alert-block($github-note-bg, $github-note-blue, $github-note-blue);
 }
 
-.IMPORTANT, .WARNING {
-  @include alert-block(lighten($orange, 40%), $orange, $orange);
+.TIP {
+  @include alert-block($github-tip-bg, $github-tip-green, $github-tip-green);
+}
+
+.IMPORTANT {
+  @include alert-block($github-important-bg, $github-important-purple, $github-important-purple);
+}
+
+.WARNING {
+  @include alert-block($github-warning-bg, $github-warning-yellow, $github-warning-yellow);
 }
 
 .CAUTION {
-  @include alert-block(lighten($red, 40%), $red, $red);
+  @include alert-block($github-caution-bg, $github-caution-red, $github-caution-red);
 }
