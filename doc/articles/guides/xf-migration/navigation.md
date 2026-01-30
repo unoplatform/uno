@@ -569,5 +569,5 @@ Key differences when migrating navigation:
 ## See Also
 
 - [Uno.Extensions.Navigation Documentation](https://aka.platform.uno/uno-extensions-navigation)
-- [Frame Class (WinUI)](https://learn.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.frame)
-- [NavigationView Control](https://learn.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.navigationview)
+- [Frame Class (WinUI)](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.frame)
+- [NavigationView Control](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.navigationview)
