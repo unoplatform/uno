@@ -122,6 +122,78 @@ public class Given_AlcContentHost
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_Activate_WithFrameNavigation_Then_ActivatedEventRaised()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--use-frame" });
+
+		bool activatedFired = false;
+		Windows.UI.Core.CoreWindowActivationState? activationState = null;
+
+		alcWindow.Activated += (sender, args) =>
+		{
+			activatedFired = true;
+			activationState = args.WindowActivationState;
+		};
+
+		alcWindow.Activate();
+
+		Assert.IsTrue(activatedFired, "Activated event should fire when Activate() is called on ALC window with Frame navigation");
+		Assert.AreEqual(Windows.UI.Core.CoreWindowActivationState.CodeActivated, activationState,
+			"Activation state should be CodeActivated when using Frame navigation");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_ActivatedRegisteredBeforeContent_Then_ActivatedEventRaised()
+	{
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content" });
+
+		bool activatedFired = false;
+		Windows.UI.Core.CoreWindowActivationState? activationState = null;
+
+		alcWindow.Activated += (sender, args) =>
+		{
+			activatedFired = true;
+			activationState = args.WindowActivationState;
+		};
+
+		ApplyDeferredContentFromSecondaryApp();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		alcWindow.Activate();
+
+		Assert.IsTrue(activatedFired, "Activated event should fire when registered before content is set");
+		Assert.AreEqual(Windows.UI.Core.CoreWindowActivationState.CodeActivated, activationState,
+			"Activation state should be CodeActivated when activated after deferred content is applied");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcWindow_ActivatedRegisteredBeforeContent_WithFrameNavigation_Then_ActivatedEventRaised()
+	{
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content", "--use-frame" });
+
+		bool activatedFired = false;
+		Windows.UI.Core.CoreWindowActivationState? activationState = null;
+
+		alcWindow.Activated += (sender, args) =>
+		{
+			activatedFired = true;
+			activationState = args.WindowActivationState;
+		};
+
+		ApplyDeferredContentFromSecondaryApp();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		alcWindow.Activate();
+
+		Assert.IsTrue(activatedFired, "Activated event should fire when registered before Frame content is set");
+		Assert.AreEqual(Windows.UI.Core.CoreWindowActivationState.CodeActivated, activationState,
+			"Activation state should be CodeActivated when activated after deferred Frame content is applied");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
 	public async Task When_AlcWindow_Then_VisibleReturnsHostVisibility()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -287,9 +359,25 @@ public class Given_AlcContentHost
 			"ALC window should NOT be in ApplicationHelper.Windows to avoid blocking app closure");
 	}
 
-	private async Task<(AlcContentHost contentHost, Window alcWindow)> StartSecondaryAlcAppWithWindowAsync()
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcContentHost_Then_FrameContentNavigates()
 	{
-		var contentHost = await StartSecondaryAlcAppAsync();
+		var contentHost = await StartSecondaryAlcAppAsync(new[] { "--use-frame" });
+
+		var frame = contentHost.Content as Frame;
+		Assert.IsNotNull(frame, "ContentHost.Content should be a Frame when --use-frame is specified");
+
+		var page = frame!.Content as FrameworkElement;
+		Assert.IsNotNull(page, "Frame should navigate to MainPage and set its Content");
+
+		var titleTextBlock = page!.FindName("TitleTextBlock") as TextBlock;
+		Assert.IsNotNull(titleTextBlock, "TitleTextBlock should be discoverable in the navigated page");
+	}
+
+	private async Task<(AlcContentHost contentHost, Window alcWindow)> StartSecondaryAlcAppWithWindowAsync(string[]? launchArguments = null)
+	{
+		var contentHost = await StartSecondaryAlcAppAsync(launchArguments);
 
 		// Get the Window from the secondary ALC app via reflection
 		var alcAppAssembly = _testAlc!.Assemblies.First(a => a.GetName().Name == "Uno.UI.RuntimeTests.AlcApp");
@@ -305,7 +393,7 @@ public class Given_AlcContentHost
 		return (contentHost, alcWindow!);
 	}
 
-	private async Task<AlcContentHost> StartSecondaryAlcAppAsync()
+	private async Task<AlcContentHost> StartSecondaryAlcAppAsync(string[]? launchArguments = null)
 	{
 		var alcAppPath = await BuildAlcAppAsync();
 		Assert.IsNotNull(alcAppPath, "AlcApp build should succeed");
@@ -334,7 +422,7 @@ public class Given_AlcContentHost
 		{
 			try
 			{
-				mainMethod!.Invoke(null, new object[] { Array.Empty<string>() });
+				mainMethod!.Invoke(null, new object[] { launchArguments ?? Array.Empty<string>() });
 			}
 			catch (Exception ex)
 			{
@@ -351,6 +439,18 @@ public class Given_AlcContentHost
 		await TestServices.WindowHelper.WaitForIdle();
 
 		return _contentHost!;
+	}
+
+	private void ApplyDeferredContentFromSecondaryApp()
+	{
+		var alcAppAssembly = _testAlc!.Assemblies.First(a => a.GetName().Name == "Uno.UI.RuntimeTests.AlcApp");
+		var appType = alcAppAssembly.GetType("AlcTestApp.App");
+		Assert.IsNotNull(appType, "App type should be found in AlcApp assembly");
+
+		var applyDeferredContent = appType!.GetMethod("ApplyDeferredContent", BindingFlags.NonPublic | BindingFlags.Static);
+		Assert.IsNotNull(applyDeferredContent, "ApplyDeferredContent should be available on AlcTestApp.App");
+
+		applyDeferredContent!.Invoke(null, null);
 	}
 
 	private static async Task WaitForSecondaryWindowAsync(Type appType)

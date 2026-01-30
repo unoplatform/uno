@@ -34,32 +34,11 @@ partial class Window
 		public bool IsClosed;
 		public bool IsVisible;
 
-		// Event backing fields
-		public event WindowActivatedEventHandler? Activated;
-		public event WindowSizeChangedEventHandler? SizeChanged;
-		public event WindowVisibilityChangedEventHandler? VisibilityChanged;
-		public event TypedEventHandler<object, WindowEventArgs>? Closed;
-
 		// Subscription handlers for cleanup
 		public SizeChangedEventHandler? HostSizeChangedHandler;
 		public RoutedEventHandler? HostLoadedHandler;
 		public RoutedEventHandler? HostUnloadedHandler;
 
-		public void RaiseActivated(Window window, CoreWindowActivationState state)
-			=> Activated?.Invoke(window, new WindowActivatedEventArgs(state));
-
-		public void RaiseSizeChanged(Window window, Size newSize)
-			=> SizeChanged?.Invoke(window, new WindowSizeChangedEventArgs(newSize));
-
-		public void RaiseVisibilityChanged(Window window, bool visible)
-			=> VisibilityChanged?.Invoke(window, new VisibilityChangedEventArgs { Visible = visible });
-
-		public bool RaiseClosed(Window window)
-		{
-			var args = new WindowEventArgs();
-			Closed?.Invoke(window, args);
-			return args.Handled;
-		}
 	}
 
 	private partial bool TryGetContentFromSecondaryAlc(out UIElement? content)
@@ -152,7 +131,7 @@ partial class Window
 			return;
 		}
 
-		state.RaiseSizeChanged(this, e.NewSize);
+		_windowImplementation.RaiseSizeChanged(new WindowSizeChangedEventArgs(e.NewSize));
 	}
 
 	/// <summary>
@@ -167,7 +146,7 @@ partial class Window
 		}
 
 		state.IsVisible = true;
-		state.RaiseVisibilityChanged(this, true);
+		_windowImplementation.RaiseVisibilityChanged(new VisibilityChangedEventArgs { Visible = true });
 	}
 
 	/// <summary>
@@ -182,7 +161,7 @@ partial class Window
 		}
 
 		state.IsVisible = false;
-		state.RaiseVisibilityChanged(this, false);
+		_windowImplementation.RaiseVisibilityChanged(new VisibilityChangedEventArgs { Visible = false });
 	}
 
 	/// <summary>
@@ -226,7 +205,7 @@ partial class Window
 			throw new InvalidOperationException("Cannot activate a closed window.");
 		}
 
-		state.RaiseActivated(this, CoreWindowActivationState.CodeActivated);
+		_windowImplementation.RaiseActivated(new WindowActivatedEventArgs(CoreWindowActivationState.CodeActivated));
 	}
 
 	/// <summary>
@@ -240,7 +219,9 @@ partial class Window
 			return false;
 		}
 
-		if (state.RaiseClosed(this))
+		var closedArgs = new WindowEventArgs();
+		_windowImplementation.RaiseClosed(closedArgs);
+		if (closedArgs.Handled)
 		{
 			return false; // Handled, cancel close
 		}
@@ -258,7 +239,7 @@ partial class Window
 		if (state.IsVisible)
 		{
 			state.IsVisible = false;
-			state.RaiseVisibilityChanged(this, false);
+			_windowImplementation.RaiseVisibilityChanged(new VisibilityChangedEventArgs { Visible = false });
 		}
 
 		// Cleanup subscriptions

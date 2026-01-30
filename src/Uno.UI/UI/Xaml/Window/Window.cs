@@ -142,25 +142,11 @@ partial class Window
 	{
 		add
 		{
-			if (_alcState is { } state)
-			{
-				state.Activated += value;
-			}
-			else
-			{
-				_windowImplementation.Activated += value;
-			}
+			_windowImplementation.Activated += value;
 		}
 		remove
 		{
-			if (_alcState is { } state)
-			{
-				state.Activated -= value;
-			}
-			else
-			{
-				_windowImplementation.Activated -= value;
-			}
+			_windowImplementation.Activated -= value;
 		}
 	}
 
@@ -171,25 +157,11 @@ partial class Window
 	{
 		add
 		{
-			if (_alcState is { } state)
-			{
-				state.SizeChanged += value;
-			}
-			else
-			{
-				_windowImplementation.SizeChanged += value;
-			}
+			_windowImplementation.SizeChanged += value;
 		}
 		remove
 		{
-			if (_alcState is { } state)
-			{
-				state.SizeChanged -= value;
-			}
-			else
-			{
-				_windowImplementation.SizeChanged -= value;
-			}
+			_windowImplementation.SizeChanged -= value;
 		}
 	}
 
@@ -200,25 +172,11 @@ partial class Window
 	{
 		add
 		{
-			if (_alcState is { } state)
-			{
-				state.VisibilityChanged += value;
-			}
-			else
-			{
-				_windowImplementation.VisibilityChanged += value;
-			}
+			_windowImplementation.VisibilityChanged += value;
 		}
 		remove
 		{
-			if (_alcState is { } state)
-			{
-				state.VisibilityChanged -= value;
-			}
-			else
-			{
-				_windowImplementation.VisibilityChanged -= value;
-			}
+			_windowImplementation.VisibilityChanged -= value;
 		}
 	}
 
