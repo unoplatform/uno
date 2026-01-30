@@ -130,7 +130,9 @@
 	"xunit",
 	"Raygun",
 	"waitlist",
-	"subviews"
+	"subviews",
+	"Swipeable",
+	"backgrounded"
   ],
   "ignoreWords": [
 	"ADAL",
