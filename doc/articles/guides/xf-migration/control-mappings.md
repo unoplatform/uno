@@ -164,16 +164,19 @@ This guide provides a comprehensive mapping of Xamarin.Forms controls and their 
 Some Xamarin.Forms features don't have direct equivalents and require alternative approaches:
 
 ### CollectionView Features
+
 - **EmptyView**: Implement with conditional visibility and custom empty state UI
 - **ItemsLayout**: Use `ItemsPanel` with different panel templates in `ListView` or `ItemsRepeater`
 - **RemainingItemsThreshold**: Implement using `IncrementalLoadingTrigger` or scroll position monitoring
 
 ### SwipeView
+
 - Use platform-specific implementations with conditional compilation
 - Consider `SwipeControl` for Windows 10+
 - Implement custom gestures for other platforms
 
 ### Shell Navigation
+
 - Use `Uno.Extensions.Navigation` for similar URI-based routing
 - Implement with `Frame` and view models for simpler scenarios
 - Use `NavigationView` for hierarchical navigation
@@ -196,16 +199,19 @@ When migrating controls:
 ## Platform-Specific Considerations
 
 ### Native Renderer vs Skia
+
 - **Native renderer** on iOS/Android: Maps WinUI controls to native platform controls
 - **Skia renderer**: Uses Skia for consistent pixel-perfect rendering across platforms
 - Some controls behave differently between renderers - test thoroughly
 
 ### WebAssembly
+
 - `WebView2` becomes an HTML iframe
 - Media controls may have limitations
 - File pickers use browser file input
 
 ### Performance
+
 - `ListView` and `ItemsRepeater` are optimized for large lists
 - Use virtualization for long scrolling lists
 - Consider `ItemsStackPanel` or `ItemsWrapGrid` for layout panels
