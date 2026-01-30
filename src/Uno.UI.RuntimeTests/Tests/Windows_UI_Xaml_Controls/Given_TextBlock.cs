@@ -133,7 +133,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Fails on CI")]
 		public async Task Check_FontFallback()
 		{
-			var SUT = new TextBlock { Text = "????", FontSize = 24 };
+			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
 			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
@@ -141,7 +141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
 
-			var expected = new TextBlock { Text = "????", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
+			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
 
 			await UITestHelper.Load(SUT);
 			var screenshot1 = await UITestHelper.ScreenShot(SUT);
@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new TextBlock
 			{
-				Text = "????? ???????",
+				Text = "اللغة العربية",
 				FontSize = 24,
 				LineHeight = 34,
 			};
@@ -176,7 +176,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var expected = new TextBlock
 			{
-				Text = "????? ???????",
+				Text = "اللغة العربية",
 				FontSize = 24,
 				FontFamily = new FontFamily(fallbackFont.FamilyName),
 				LineHeight = 34,
@@ -291,7 +291,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBlock
 			{
 				Inlines = {
-					new Run { Text = "?", FontSize = 16, CharacterSpacing = 18 }
+					new Run { Text = "", FontSize = 16, CharacterSpacing = 18 }
 				},
 				TextWrapping = TextWrapping.Wrap,
 				FontSize = 16,
@@ -727,7 +727,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new TextBlock
 			{
-				Text = "��������",
+				Text = "••••••••",
 				FontSize = 24,
 				Foreground = new SolidColorBrush(Colors.Red) { Opacity = 0.5 },
 			};
@@ -1389,7 +1389,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new TextBlock
 			{
-				Text = "?? Hello world",
+				Text = "🚫 Hello world",
 				IsTextSelectionEnabled = true,
 			};
 
