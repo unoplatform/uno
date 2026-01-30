@@ -55,6 +55,7 @@ When migrating from Xamarin.Forms to Uno Platform, you'll likely need to make ch
 Xamarin.Forms, like WPF, supports the **StringFormat** property on bindings. This allows you to specify how to format the data-bound value. For example, if you have a numerical value you want to display as a percentage, you can apply this in the string format rather than using converters or exposing a string property in the view model with the value already formatted.
 
 On UWP and WinUI, there isn't an equivalent to `StringFormat`, so you must either:
+
 - Use a converter to return the formatted string
 - Expose a view model property with the string already formatted
 - Use `x:Bind`, which supports inline functions (discussed below)
@@ -70,6 +71,7 @@ The `ICommand` interface includes an event that is fired when the state may have
 Normal bindings are resolved at runtime. This means they are not as performant as compiled code, and there is no validation at build time, which can lead to unexpected errors.
 
 Xamarin.Forms can use compiled bindings that provide extra performance benefits and binding errors at build time. There are two prerequisites:
+
 1. Enable compiled XAML at the assembly level (enabled by default in new project templates)
 2. Indicate the data type of the bound object in XAML using the `x:DataType` attribute
 
