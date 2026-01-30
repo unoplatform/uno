@@ -84,6 +84,9 @@
     <Project Path="AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="AddIns/Uno.WinUI.SpellChecking/Uno.WinUI.SpellChecking.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
   </Folder>
   <Folder Name="/DevServer/">
     <Project Path="Uno.UI.DevServer.Cli/Uno.UI.DevServer.Cli.csproj">

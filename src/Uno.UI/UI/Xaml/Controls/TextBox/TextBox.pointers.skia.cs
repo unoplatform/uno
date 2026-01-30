@@ -345,9 +345,7 @@ public partial class TextBox
 
 			if (IsSpellCheckEnabled && TextBoxView?.DisplayBlock?.ParsedText is UnicodeText unicodeText)
 			{
-				var (correctionIndexStart, correctionIndexEnd, suggestions) = unicodeText.GetSpellCheckSuggestions(SelectionStart, SelectionStart + SelectionLength);
-
-				if (suggestions.Count > 0)
+				if (unicodeText.GetSpellCheckSuggestions(SelectionStart, SelectionStart + SelectionLength) is var (correctionIndexStart, correctionIndexEnd, suggestions) && suggestions.Count > 0)
 				{
 					var proofingMenuHeader = new MenuFlyoutSubItem
 					{
