@@ -36,6 +36,14 @@ internal interface IWindowImplementation
 
 	event WindowVisibilityChangedEventHandler? VisibilityChanged;
 
+	void RaiseActivated(Microsoft.UI.Xaml.WindowActivatedEventArgs args);
+
+	void RaiseClosed(WindowEventArgs args);
+
+	void RaiseSizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventArgs args);
+
+	void RaiseVisibilityChanged(VisibilityChangedEventArgs args);
+
 	void Initialize();
 
 	void Activate();

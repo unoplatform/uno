@@ -19,25 +19,11 @@ partial class Window
 	{
 		add
 		{
-			if (_alcState is { } state)
-			{
-				state.Closed += value;
-			}
-			else
-			{
-				_windowImplementation.Closed += value;
-			}
+			_windowImplementation.Closed += value;
 		}
 		remove
 		{
-			if (_alcState is { } state)
-			{
-				state.Closed -= value;
-			}
-			else
-			{
-				_windowImplementation.Closed -= value;
-			}
+			_windowImplementation.Closed -= value;
 		}
 	}
 #endif

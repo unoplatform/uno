@@ -54,6 +54,18 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 	public event TypedEventHandler<object, WindowEventArgs>? Closed;
 	public event WindowVisibilityChangedEventHandler? VisibilityChanged;
 
+	public void RaiseActivated(WindowActivatedEventArgs args)
+		=> Activated?.Invoke(Window, args);
+
+	public void RaiseClosed(WindowEventArgs args)
+		=> Closed?.Invoke(Window, args);
+
+	public void RaiseSizeChanged(WindowSizeChangedEventArgs args)
+		=> SizeChanged?.Invoke(Window, args);
+
+	public void RaiseVisibilityChanged(VisibilityChangedEventArgs args)
+		=> VisibilityChanged?.Invoke(Window, args);
+
 	protected Window Window { get; }
 
 	public INativeWindowWrapper? NativeWindowWrapper { get; private set; }
@@ -191,7 +203,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 #if !HAS_UNO_WINUI // CoreWindow has a different WindowSizeChangedEventArgs type, let's skip raising it completely.
 		CoreWindow?.OnSizeChanged(coreWindowSizeChangedEventArgs);
 #endif
-		SizeChanged?.Invoke(Window, windowSizeChanged);
+		RaiseSizeChanged(windowSizeChanged);
 
 		XamlRoot?.RaiseChangedEvent();
 	}
@@ -257,7 +269,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		var coreWindowActivatedEventArgs = activatedEventArgs;
 #endif
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
-		Activated?.Invoke(Window, activatedEventArgs);
+		RaiseActivated(activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
 		if (!FeatureConfiguration.DebugOptions.PreventKeyboardStateTrackerFromResettingOnWindowActivationChange)
 		{
@@ -290,7 +302,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 			windowClosedEventArgs.Handled = false;
 
 			// Raise the window closed event
-			Closed?.Invoke(Window, windowClosedEventArgs);
+			RaiseClosed(windowClosedEventArgs);
 
 			if (windowClosedEventArgs.Handled)
 			{
@@ -377,7 +389,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		var args = new VisibilityChangedEventArgs() { Visible = isVisible };
 
 		CoreWindow?.OnVisibilityChanged(args);
-		VisibilityChanged?.Invoke(Window, args);
+		RaiseVisibilityChanged(args);
 	}
 
 	public void NotifyContentLoaded()
