@@ -8,7 +8,7 @@ Uno Platform is committed to providing tools for developers to efficiently creat
 
 ## Vision
 
-Uno Platform strives to be the leading cross‑platform UI framework enabling .NET developers to reuse their skills and code, thereby shrinking development time and cost while maximizing reach. Our vision is to make true cross‑platform UI/UX parity possible—whether deploying to mobile, web, or desktop—with full support for the latest device capabilities, modern tooling including AI, and next‑generation development experiences.
+Uno Platform strives to be the leading cross-platform UI framework enabling .NET developers to reuse their skills and code, thereby shrinking development time and cost while maximizing reach. Our vision is to make true cross-platform UI/UX parity possible—whether deploying to mobile, web, or desktop—with full support for the latest device capabilities, modern tooling including AI, and next-generation development experiences.
 
 ---
 
@@ -16,11 +16,11 @@ Uno Platform strives to be the leading cross‑platform UI framework enabling .N
 
 ### 1. Leverage Existing Tools and Skills
 
-Uno Platform is built on the foundation of well‑established Microsoft technologies—including XAML and C#—so developers can apply the skills they already know instead of learning entirely new paradigms. And because Uno Platform supports development from any operating system, teams can build and ship cross‑platform applications using the tools and workflows that fit their environment best.
+Uno Platform is built on the foundation of well-established Microsoft technologies—including XAML and C#—so developers can apply the skills they already know instead of learning entirely new paradigms. And because Uno Platform supports development from any operating system, teams can build and ship cross-platform applications using the tools and workflows that fit their environment best.
 
 **Key Benefits:**
 
-- Maximize productivity with cross‑OS tooling like C# and XAML Hot Reload, Hot Design for real‑time visual editing, AI‑powered assistance through Docs MCP and App MCP, and streamlined CLI tools such as uno-check and project templates.
+- Maximize productivity with cross-OS tooling like C# and XAML Hot Reload, Hot Design for real-time visual editing, AI-powered assistance through Docs MCP and App MCP, and streamlined CLI tools such as uno-check and project templates.
 - Build apps using proven Microsoft technologies and deploy to multiple platforms: WebAssembly, iOS, Android, macOS, Windows, and Linux
 - Reduce learning curve for .NET developers transitioning to cross-platform development
 - Day-0 support for the latest .NET and Visual Studio ecosystems
@@ -31,7 +31,7 @@ As of 2024-2026, Uno Platform has embraced AI-powered development workflows to d
 
 **Innovation Highlights:**
 
-- **Hot Design:** The only visual designer that enables real‑time, on‑app visual editing and AI‑assisted UI creation.
+- **Hot Design:** The only visual designer that enables real-time, on-app visual editing and AI-assisted UI creation.
 - **AI Agents in Development:** Uno Platform Studio 2.0 (an AI-powered development tool suite) introduces AI assistants like the Hot Design Agent, an AI-powered design assistant that can understand your code, context, and even control the running app to suggest and implement UI changes in real time
 - **Human-in-the-Loop:** Developers preview and approve changes, ensuring quality while benefiting from AI assistance
 - **MCP Servers:** AI interacts with documentation, APIs, app states, and UI elements live via Model Context Protocol (MCP) servers, providing context-aware assistance
