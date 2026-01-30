@@ -107,7 +107,7 @@ This comprehensive support dramatically lowers maintenance costs and reduces tim
 ### Development Tools
 
 - **Visual Studio Integration:** Full support for Visual Studio 2026 (and previous versions)
-- **Always on the latest .NET:** Day‑0 support for new .NET releases, with preview‑specific builds available for teams who want to stay on the bleeding edge.
+- **Always on the latest .NET:** Day-0 support for new .NET releases, with preview‑specific builds available for teams who want to stay on the bleeding edge.
 - **Hot Reload & Real-Time UI Design:** Visual designer lets you tweak XAML and C# on a running app with instant changes
 - **Status Indicators:** Enhanced developer experience with environment health monitoring, restore progress, and SDK validation
 
