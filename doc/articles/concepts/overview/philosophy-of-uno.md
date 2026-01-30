@@ -1,3 +1,7 @@
+---
+uid: Uno.Overview.Philosophy
+---
+
 # Philosophy of Uno Platform
 
 ## Mission
