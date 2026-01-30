@@ -11,9 +11,9 @@ This guide explores how to migrate custom controls from Xamarin.Forms to Uno Pla
 A custom control in Xamarin.Forms consists of two files:
 
 1. **XAML file**: Defines the UI
-2. 
-3. **Code-behind file**: Contains boilerplate code and custom properties
-
+   
+2. **Code-behind file**: Contains boilerplate code and custom properties
+   
 The class for your control inherits from `ContentView` and is marked as `partial` because some functionality is added by compiler-generated code. The standard empty class contains a constructor with a call to `InitializeComponent`, which loads the associated XAML file and defines any named members (marked with `x:Name` attributes) so you can refer to them in your code.
 
 ## Example: CardView Control
