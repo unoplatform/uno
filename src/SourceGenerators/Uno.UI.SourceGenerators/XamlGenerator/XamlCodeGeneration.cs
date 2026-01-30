@@ -1078,12 +1078,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var filePath = _isDebug ? $"\"{file.FilePath.Replace("\\", "/")}\"" : "null";
 							var sourceLink = map.GetSourceLink(file);
 
-							// For Generic.xaml at the standard location (AssemblyName/Themes/Generic.xaml), pass non-null context
+							// For Generic.xaml at the standard location (Themes/Generic.xaml), pass non-null context
 							// so it gets registered in _registeredDictionariesByAssembly for default style lookup (issue #4424)
-							// Only match the standard location, not nested paths like AssemblyName/subfolder/Themes/Generic.xaml
-							var firstSlash = sourceLink.IndexOf('/');
-							var relativePath = firstSlash >= 0 ? sourceLink.Substring(firstSlash + 1) : sourceLink;
-							var isGenericXaml = relativePath.Equals("Themes/Generic.xaml", StringComparison.OrdinalIgnoreCase);
+							// Normalize path separators for cross-platform compatibility (Windows uses backslash)
+							var normalizedSourceLink = sourceLink.Replace("\\", "/");
+							// Only match root-level Themes/Generic.xaml (not nested like Subfolder/Themes/Generic.xaml)
+							// WinUI only recognizes Themes/Generic.xaml at the project root
+							var isGenericXaml = normalizedSourceLink.Equals("Themes/Generic.xaml", StringComparison.OrdinalIgnoreCase);
 							var contextArg = isGenericXaml ? ParseContextPropertyName : "null";
 
 							if (_enableAlcAppSupport)
@@ -1091,16 +1092,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								// We leave context null for most local resources because they should be found through Application.Resources
 								// Exception: Generic.xaml needs non-null context to register for default style lookup
 								// Pass ALC to support secondary ALC scenarios
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{sourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath}, __alc);");
-								// Local resources can also be found through the ms-appx:/// prefix
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{sourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary, null, __alc);");
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{normalizedSourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath}, __alc);");
+								// Local resources can also be found through the ms-appx:/// prefix (with assembly name)
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{_metadataHelper.AssemblyName}/{normalizedSourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary, null, __alc);");
 							}
 							else
 							{
 								// Standard registration without ALC support
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{sourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
-								// Local resources can also be found through the ms-appx:/// prefix
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{sourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary);");
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{normalizedSourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
+								// Local resources can also be found through the ms-appx:/// prefix (with assembly name)
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{_metadataHelper.AssemblyName}/{normalizedSourceLink}\", context: {contextArg}, dictionary: () => {file.UniqueID}_ResourceDictionary);");
 							}
 						}
 					}
