@@ -221,4 +221,4 @@ When migrating controls:
 
 - [Native Views in Uno Platform](xref:Uno.Development.NativeViews)
 - [Platform-Specific XAML](xref:Uno.Development.PlatformSpecificXaml)
-- [Platform-Specific C#](xref:Uno.Development.PlatformSpecificCsharp)
+- [Platform-Specific C#](xref:Uno.Development.PlatformSpecificCSharp)
