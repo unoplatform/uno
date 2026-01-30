@@ -182,6 +182,7 @@ Some Xamarin.Forms features don't have direct equivalents and require alternativ
 - Use `NavigationView` for hierarchical navigation
 
 ### FlexLayout
+
 - Redesign layouts using `Grid` with responsive triggers
 - Use `VariableSizedWrapGrid` for simple wrapping scenarios
 - Consider CSS Grid on WebAssembly with HTML embedding
