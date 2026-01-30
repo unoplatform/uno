@@ -95,16 +95,25 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public Application()
 		{
-			CoreApplication.StaticInitialize();
+			var isDefaultALC = AssemblyLoadContext.GetLoadContext(GetType().Assembly) == AssemblyLoadContext.Default;
 
+			if (isDefaultALC)
+			{
+				CoreApplication.StaticInitialize();
 
 #if __SKIA__ || __WASM__
-			Package.SetEntryAssembly(this.GetType().Assembly);
+				Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
-			Current = this;
-			ApplicationLanguages.ApplyCulture();
+				Current = this;
+				ApplicationLanguages.ApplyCulture();
 
-			InitializePartial();
+				InitializePartial();
+			}
+			else
+			{
+				// We only need setup the app instance for non-default ALCs.
+				Current = this;
+			}
 		}
 
 		private static void SetCurrentApplication(Application app)
