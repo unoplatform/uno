@@ -9,8 +9,10 @@ This guide explores how to migrate custom controls from Xamarin.Forms to Uno Pla
 ## Understanding Custom Controls
 
 A custom control in Xamarin.Forms consists of two files:
+
 1. **XAML file**: Defines the UI
-2. **Code-behind file**: Contains boilerplate code and custom properties
+2. 
+3. **Code-behind file**: Contains boilerplate code and custom properties
 
 The class for your control inherits from `ContentView` and is marked as `partial` because some functionality is added by compiler-generated code. The standard empty class contains a constructor with a call to `InitializeComponent`, which loads the associated XAML file and defines any named members (marked with `x:Name` attributes) so you can refer to them in your code.
 
@@ -69,10 +71,12 @@ The Uno/WinUI `DependencyObject` contains the same `GetValue`/`SetValue` methods
 ### Root Element
 
 **Xamarin.Forms:**
+
 - Root element: `ContentView`
 - Default namespace: `xmlns="http://xamarin.com/schemas/2014/forms"`
 
 **Uno Platform:**
+
 - Root element: `ContentControl`
 - Default namespace: `xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"`
 
@@ -114,6 +118,7 @@ Several common components exist with different names between these two flavors o
 - Preset colors are defined on the `Colors` type
 
 **Accent Color:**
+
 - Xamarin.Forms: `Color.Accent`
 - Uno Platform: `{ThemeResource SystemAccentColor}` resource
 
@@ -130,6 +135,7 @@ Several common components exist with different names between these two flavors o
 - Properties are called `Alignment` rather than `Options`
 
 Example:
+
 - `VerticalOptions="Center"` becomes `VerticalAlignment="Center"`
 - `HorizontalOptions="Start"` becomes `HorizontalAlignment="Left"`
 
