@@ -331,7 +331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if WINAPPSDK // Those values only works on UWP, not on Uno
 		[DataRow("", "\n", double.NaN, double.NaN)]
 		[DataRow("abc", "0\n", double.NaN, 0d)]
-		[DataRow("8", "-8", double.NaN, double.NaN)]
+		[DataRow("∞", "-∞", double.NaN, double.NaN)]
 		[DataRow("21-----covfefe", "42 you're \"smart\"", 21d, 42d)]
 		[DataRow("		21\n", "\n42-", 21d, 42d)]
 #endif
