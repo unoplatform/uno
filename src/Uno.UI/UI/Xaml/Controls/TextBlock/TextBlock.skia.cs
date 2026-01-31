@@ -21,7 +21,7 @@ using Uno.UI.Xaml.Core.Scaling;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class TextBlock : FrameworkElement, IBlock
+	partial class TextBlock : FrameworkElement, IBlock, UnicodeText.IFontCacheUpdateListener
 	{
 		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
 		internal const float CaretThickness = 1;
@@ -108,7 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 						? null
 						: TextAlignment,
 				TextWrapping,
-				InvalidateInlineAndRequireRepaint,
+				this,
 				out size);
 
 		// the entire body of the text block is considered hit-testable
@@ -227,6 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnLineStackingStrategyChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => InvalidateInlineAndRequireRepaint();
 
+		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateInlineAndRequireRepaint();
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 

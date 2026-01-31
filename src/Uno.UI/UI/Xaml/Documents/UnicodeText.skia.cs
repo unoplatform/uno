@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Helpers;
 using Windows.UI.Text;
 using HarfBuzzSharp;
 using Microsoft.UI.Composition;
@@ -116,6 +115,11 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
+	internal interface IFontCacheUpdateListener
+	{
+		void Invalidate();
+	}
+
 	internal UnicodeText(
 		Size availableSize,
 		Inline[] inlines, // only leaf nodes
@@ -126,7 +130,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		FlowDirection flowDirection,
 		TextAlignment? textAlignment, // null to determine from text. This will also infer the directionality of the text from the content
 		TextWrapping textWrapping,
-		Action onFontCacheUpdate,
+		IFontCacheUpdateListener fontListener,
 		out Size desiredSize)
 	{
 		CI.Assert(maxLines >= 0);
@@ -192,7 +196,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
-		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth, textWrapping, onFontCacheUpdate);
+		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth, textWrapping, fontListener);
 		var lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 
 		_lines = maxLines == 0 || maxLines >= lines.Count ? lines : lines[..maxLines];
@@ -209,23 +213,23 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
-	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth, TextWrapping textWrapping, Action onFontCacheUpdate)
+	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth, TextWrapping textWrapping, IFontCacheUpdateListener fontListener)
 	{
 		var logicallyOrderedRuns = new List<BidiRun>();
 		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
 		foreach (var inline in inlines)
 		{
-			logicallyOrderedRuns.AddRange(SplitTextIntoLogicallyOrderedBidiRuns(inline, onFontCacheUpdate));
+			logicallyOrderedRuns.AddRange(SplitTextIntoLogicallyOrderedBidiRuns(inline, fontListener));
 			logicallyOrderedLineBreakingOpportunities.AddRange(GetLineBreakingOpportunities(inline.Text).Select(b => (b, inline)));
 		}
 
 		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidth, logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities, rtl, textWrapping);
-		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns, onFontCacheUpdate);
+		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns, fontListener);
 
 		return linesWithBidiReordering;
 	}
 
-	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns, Action onFontCacheUpdate)
+	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns, IFontCacheUpdateListener fontListener)
 	{
 		var shapedLines = new List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)>();
 		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
@@ -270,7 +274,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						FontDetails newFontDetails;
 						if (char.ConvertToUtf32(inline.Text, startInInline + i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
 						{
-							newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, onFontCacheUpdate) ?? inline.FontDetails;
+							newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontDetails;
 						}
 						else
 						{
@@ -320,16 +324,35 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapedLines;
 	}
 
-	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, Action onFontCacheUpdate)
+	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, IFontCacheUpdateListener fontListener)
 	{
-		if (FontDetailsCache.GetFontOrDefault(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var symbolsFont) && symbolsFont.SKFont.ContainsGlyph(codepoint))
+		var symbolsFontTask = FontDetailsCache.GetFont(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle);
+		if (symbolsFontTask.loadedTask.IsCompleted)
 		{
-			return symbolsFont;
+			if (symbolsFontTask.loadedTask.IsCompletedSuccessfully
+				&& symbolsFontTask.loadedTask.Result is { } symbolsFont
+				&& symbolsFont.SKFont.ContainsGlyph(codepoint))
+			{
+				return symbolsFont;
+			}
+		}
+		else
+		{
+			symbolsFontTask.loadedTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(fontListener.Invalidate));
 		}
 
-		if (FontDetailsCache.GetFontForCodepoint(codepoint, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))
+		var fallbackFontTask = FontDetailsCache.GetFontForCodepoint(codepoint, fontSize, fontWeight, fontStretch, fontStyle);
+		if (fallbackFontTask.IsCompleted)
 		{
-			return fallbackFont;
+			if (fallbackFontTask.IsCompletedSuccessfully
+				&& fallbackFontTask.Result is { } fallbackFont)
+			{
+				return fallbackFont;
+			}
+		}
+		else
+		{
+			fallbackFontTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(fontListener.Invalidate));
 		}
 
 		if (SKFontManager.Default.MatchCharacter(codepoint) is { } typeface)
@@ -665,7 +688,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		return chunks;
 	}
 
-	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, Action onFontCacheUpdate)
+	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, IFontCacheUpdateListener fontListener)
 	{
 		using var _ = ICU.CreateBiDiAndSetPara(inline.Text, 0, inline.Text.Length, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? UBIDI_LTR : UBIDI_RTL), out var bidi);
 
@@ -686,7 +709,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				FontDetails newFontDetails;
 				if (char.ConvertToUtf32(inline.Text, i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
 				{
-					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, onFontCacheUpdate) ?? inline.FontDetails;
+					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontDetails;
 				}
 				else
 				{
