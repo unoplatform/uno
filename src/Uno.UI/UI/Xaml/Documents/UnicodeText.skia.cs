@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Helpers;
 using Windows.UI.Text;
 using HarfBuzzSharp;
 using Microsoft.UI.Composition;
@@ -100,7 +101,6 @@ internal readonly partial struct UnicodeText : IParsedText
 	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
-	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(UnicodeText), out var service) ? service : null;
 	private static readonly SKPaint _spareDrawPaint = new();
 
 	private readonly Size _size;
@@ -327,20 +327,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			return symbolsFont;
 		}
 
-		if (_fontFallbackService is not null)
+		if (FontDetailsCache.GetFontForCodepoint(codepoint, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))
 		{
-			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodepoint(codepoint);
-			if (fallbackServiceTask.IsCompleted)
-			{
-				if (fallbackServiceTask is { IsCompletedSuccessfully: true, Result: { } fallbackFontName } && FontDetailsCache.GetFontOrDefault(fallbackFontName, fontSize, fontWeight, fontStretch, fontStyle, onFontCacheUpdate, out var fallbackFont))
-				{
-					return fallbackFont;
-				}
-			}
-			else
-			{
-				NativeDispatcher.Main.Enqueue(onFontCacheUpdate);
-			}
+			return fallbackFont;
 		}
 
 		if (SKFontManager.Default.MatchCharacter(codepoint) is { } typeface)

@@ -1,9 +1,11 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Helpers;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -203,27 +205,44 @@ internal static class FontDetailsCache
 		out FontDetails fontDetails)
 	{
 		var (tempFont, task) = GetFont(name, fontSize, weight, stretch, style);
-		if (!task.IsCompleted)
+		if (TaskHelper.ResultOrContinueWith(task,
+				e => typeof(FontDetailsCache).LogError()?.Error($"Error loading font {name} asynchronously", e),
+				_ => onFontLoaded(),
+				out var result))
 		{
-			async void Wait()
-			{
-				try
-				{
-					await task;
-				}
-				catch (Exception e)
-				{
-					typeof(FontDetailsCache).LogError()?.Error($"Error loading font {name} asynchronously", e);
-				}
-
-				onFontLoaded();
-			}
-
-			Wait();
+			fontDetails = result ?? tempFont;
+			return true;
 		}
+		else
+		{
+			fontDetails = tempFont;
+			return false;
+		}
+	}
 
-		var completedSuccessfully = task.IsCompletedSuccessfully;
-		fontDetails = completedSuccessfully ? task.Result : tempFont;
-		return completedSuccessfully;
+	public static bool GetFontForCodepoint(
+		int codepoint,
+		float fontSize,
+		FontWeight weight,
+		FontStretch stretch,
+		FontStyle style,
+		Action onFontLoaded,
+		[NotNullWhen(true)] out FontDetails? fontDetails)
+	{
+		if (_fontFallbackService is not null)
+		{
+			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodepoint(codepoint);
+			if (TaskHelper.ResultOrContinueWith(fallbackServiceTask,
+					e => typeof(UnicodeText).LogError()?.Error($"Font fallback service failed to get font for codepoint U+{codepoint:X4}", e),
+					_ => onFontLoaded(),
+					out var fallbackServiceResult)
+				&& fallbackServiceResult is not null
+				&& GetFontOrDefault(fallbackServiceResult, fontSize, weight, stretch, style, onFontLoaded, out fontDetails))
+			{
+				return true;
+			}
+		}
+		fontDetails = null;
+		return false;
 	}
 }
