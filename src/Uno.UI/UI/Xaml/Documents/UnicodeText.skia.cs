@@ -102,6 +102,9 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static readonly SKPaint _spareDrawPaint = new();
 
+	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
+	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
+
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
 	private readonly bool _rtl;
@@ -338,7 +341,18 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			symbolsFontTask.loadedTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(fontListener.Invalidate));
+			if (!_fontFamilyToListeners.TryGetValue(FeatureConfiguration.Font.SymbolsFont, out var fontFamilyListeners))
+			{
+				fontFamilyListeners = new();
+			}
+			if (fontFamilyListeners.Add(fontListener))
+			{
+				symbolsFontTask.loadedTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(() =>
+				{
+					fontFamilyListeners.Remove(fontListener);
+					fontListener.Invalidate();
+				}));
+			}
 		}
 
 		var fallbackFontTask = FontDetailsCache.GetFontForCodepoint(codepoint, fontSize, fontWeight, fontStretch, fontStyle);
@@ -352,7 +366,18 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			fallbackFontTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(fontListener.Invalidate));
+			if (!_codepointToListeners.TryGetValue(codepoint, out var codepointListeners))
+			{
+				codepointListeners = new();
+			}
+			if (codepointListeners.Add(fontListener))
+			{
+				fallbackFontTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(() =>
+				{
+					codepointListeners.Remove(fontListener);
+					fontListener.Invalidate();
+				}));
+			}
 		}
 
 		if (SKFontManager.Default.MatchCharacter(codepoint) is { } typeface)
