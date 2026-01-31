@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 				LineStackingStrategy,
 				FlowDirection,
 				(OwningTextBox as IDependencyObjectStoreProvider)?.Store
-					.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue
+					.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue
 						? null
 						: TextAlignment,
 				TextWrapping,
