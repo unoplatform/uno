@@ -2,17 +2,19 @@
   href: xref:Uno.XamarinFormsMigration.Overview
 - name: Uno Platform for Xamarin.Forms developers
   href: xref:Uno.XamarinFormsMigration.Intro
+- name: Control Mappings
+  href: xref:Uno.XamarinFormsMigration.ControlMappings
 - name: Migrating Animations
-  href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
+  href: xref:Uno.XamarinFormsMigration.Animations
 - name: Migrating Custom Controls
-  href: https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/
+  href: xref:Uno.XamarinFormsMigration.CustomControls
 - name: Migrating Custom-Drawn Controls
-  href: https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/
+  href: xref:Uno.XamarinFormsMigration.CustomDrawnControls
 - name: Migrating Data Binding
-  href: https://platform.uno/blog/xamarin-forms-migration-to-uno-platform-data-binding-techniques/
+  href: xref:Uno.XamarinFormsMigration.DataBinding
 - name: Migrating Effects
-  href: https://platform.uno/blog/xamarin-forms-migration-to-uno-platform-effects-and-alternative-approaches/
+  href: xref:Uno.XamarinFormsMigration.Effects
 - name: Migrating Navigation
-  href: https://platform.uno/blog/migrating-page-navigation-apps-from-xamarin-forms/
-- name: Migrating Renderers
-  href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
+  href: xref:Uno.XamarinFormsMigration.Navigation
+- name: Migrating Renderers and Native Controls
+  href: xref:Uno.XamarinFormsMigration.NativeControls

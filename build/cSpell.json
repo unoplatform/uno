@@ -131,6 +131,8 @@
 	"Raygun",
 	"waitlist",
 	"subviews",
+	"Swipeable",
+	"backgrounded",
 	"Agentic"
   ],
   "ignoreWords": [
