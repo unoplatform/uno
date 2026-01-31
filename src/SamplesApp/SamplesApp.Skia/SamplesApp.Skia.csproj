@@ -36,7 +36,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
-		<!--	Uno.WinUI.SpellChecking can cause build issues due to a bug in the IL compiler	-->
+		<!--	Uno.WinUI.SpellChecking can cause build issues due to a bug in the IL compiler, cf. https://github.com/dotnet/runtime/issues/123833	-->
 		<ProjectReference Condition=" '$(PublishAot)' == '' or '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' != 'android' " Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
