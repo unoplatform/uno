@@ -10,8 +10,8 @@ Set-PSDebug -Trace 1
 # Each entry: repo name -> @{ ref = '<commit|branch>'; dest = '<sub-folder>'? }
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = @{ ref="93179c7736317c9e02b6bb856f5162e7c0b643da" } #latest release/stable/10.0 branch commit
-    "uno.themes"         = @{ ref="38b19bdeb791af1d63bf3e70b3e5344c498913e7" } #latest release/stable/6.1 branch commit
+    "uno.wasm.bootstrap" = @{ ref="90d991a0ff12d3c6a3a8baf61ececb0b3e5d8346" } #latest release/stable/10.0 branch commit
+    "uno.themes"         = @{ ref="1f70ae895eba4cea1658e4c8d05c99b9ad051893" } #latest release/stable/6.1 branch commit
     "uno.toolkit.ui"     = @{ ref="347d5a141e692a17c446b39b7a7e899806da1d59" } #latest release/stable/8.4 branch commit
     "uno.check"          = @{ ref="0fabc47c022c7eb86b1c4760441780ff3638b06e" } #latest release/stable/1.33 branch commit
     "uno.xamlmerge.task" = @{ ref="377ce2d9fdeab0d4f0b94a61e008731a40b10220" } #latest release/stable/1.33 branch commit
@@ -21,8 +21,8 @@ $external_docs = @{
     "uno.extensions"     = @{ ref="ce51198a52243ae9ee0e0777e4abbc90b9e142e1" } #latest release/stable/7.1 branch commit
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" } #latest master commit
     "uno.samples"        = @{ ref="8098a452951c9f73cbcf8d0ac1348f029820e53a" } #latest master commit
-    "uno.chefs"          = @{ ref="e838af9451b107bafaa56dfcd64957a11eda0f0c" } #latest main commit
-    "hd-docs"            = @{ ref="25d376dfa1456295588786354d5b1f73ccf2abec"; dest="studio/Hot Design" } #latest main commit
+    "uno.chefs"          = @{ ref="06f4f8042595473557f00cdfa622788273d3a131" } #latest main commit
+    "hd-docs"            = @{ ref="1583b191848521c57f59c5c194b314318cad5a43"; dest="studio/Hot Design" } #latest main commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
