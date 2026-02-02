@@ -119,7 +119,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 		finally
 		{
-			_settingTextFromManaged = false;
+			_settingSelectionFromManaged = false;
 		}
 	}
 
