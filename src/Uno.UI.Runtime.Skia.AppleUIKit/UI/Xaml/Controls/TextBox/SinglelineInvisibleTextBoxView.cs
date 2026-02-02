@@ -188,17 +188,25 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	{
 		base.PressesBegan(presses, evt);
 
-		if (Owner?.TextBox is { })
+		if (Owner?.TextBox is { } textBox)
 		{
 			foreach (UIPress press in presses)
 			{
-				if (press.Key is not null)
+				if (press.Key is { } key)
 				{
-					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+					var virtualKey = VirtualKeyHelper.FromKeyCode(key.KeyCode);
+					var keyModifiers = VirtualKeyHelper.FromModifierFlags(key.ModifierFlags);
 
 					if (IsNavigationKey(virtualKey))
 					{
-						SyncSelectionToTextBox();
+						var keyRoutedEventArgs = new Microsoft.UI.Xaml.Input.KeyRoutedEventArgs(
+							textBox,
+							virtualKey,
+							keyModifiers)
+						{
+							CanBubbleNatively = false
+						};
+						textBox.RaiseEvent(Microsoft.UI.Xaml.UIElement.KeyDownEvent, keyRoutedEventArgs);
 					}
 				}
 			}
@@ -209,18 +217,23 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	{
 		base.PressesEnded(presses, evt);
 
-		if (Owner?.TextBox is { })
+		if (Owner?.TextBox is { } textBox)
 		{
 			foreach (UIPress press in presses)
 			{
-				if (press.Key is not null)
+				if (press.Key is { } key)
 				{
-					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+					var virtualKey = VirtualKeyHelper.FromKeyCode(key.KeyCode);
+					var keyModifiers = VirtualKeyHelper.FromModifierFlags(key.ModifierFlags);
 
-					if (IsNavigationKey(virtualKey))
+					var keyRoutedEventArgs = new Microsoft.UI.Xaml.Input.KeyRoutedEventArgs(
+						textBox,
+						virtualKey,
+						keyModifiers)
 					{
-						SyncSelectionToTextBox();
-					}
+						CanBubbleNatively = false
+					};
+					textBox.RaiseEvent(Microsoft.UI.Xaml.UIElement.KeyUpEvent, keyRoutedEventArgs);
 				}
 			}
 		}
@@ -235,18 +248,5 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			VirtualKey.PageUp or VirtualKey.PageDown => true,
 			_ => false
 		};
-	}
-
-	private void SyncSelectionToTextBox()
-	{
-		if (TextBoxViewExtension?.Owner.TextBox is { } textBox && base.SelectedTextRange is { } range)
-		{
-			var start = (int)this.GetOffsetFromPosition(this.BeginningOfDocument, range.Start);
-			var end = (int)this.GetOffsetFromPosition(this.BeginningOfDocument, range.End);
-			var length = end - start;
-
-			textBox.SelectionStart = start;
-			textBox.SelectionLength = length;
-		}
 	}
 }
