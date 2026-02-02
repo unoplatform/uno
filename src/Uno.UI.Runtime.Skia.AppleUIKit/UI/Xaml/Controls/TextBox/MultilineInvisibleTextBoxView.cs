@@ -5,6 +5,7 @@ using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Windows.System;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -141,6 +142,70 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 					textBoxView.Owner.TextBox?.OnSelectionChanged();
 				}
 			}
+		}
+	}
+
+	public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		base.PressesBegan(presses, evt);
+
+		if (Owner?.TextBox is { })
+		{
+			foreach (UIPress press in presses)
+			{
+				if (press.Key is not null)
+				{
+					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+					if (IsNavigationKey(virtualKey))
+					{
+						SyncSelectionToTextBox();
+					}
+				}
+			}
+		}
+	}
+
+	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		base.PressesEnded(presses, evt);
+
+		if (Owner?.TextBox is { })
+		{
+			foreach (UIPress press in presses)
+			{
+				if (press.Key is not null)
+				{
+					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+					if (IsNavigationKey(virtualKey))
+					{
+						SyncSelectionToTextBox();
+					}
+				}
+			}
+		}
+	}
+
+	private static bool IsNavigationKey(VirtualKey key)
+	{
+		return key switch
+		{
+			VirtualKey.Left or VirtualKey.Right or VirtualKey.Up or VirtualKey.Down or
+			VirtualKey.Home or VirtualKey.End or
+			VirtualKey.PageUp or VirtualKey.PageDown => true,
+			_ => false
+		};
+	}
+
+	private void SyncSelectionToTextBox()
+	{
+		if (TextBoxViewExtension?.Owner.TextBox is { } textBox && base.SelectedTextRange is { } range)
+		{
+			var selectedRange = this.SelectedRange;
+
+			textBox.SelectionStart = (int)selectedRange.Location;
+			textBox.SelectionLength = (int)selectedRange.Length;
 		}
 	}
 }

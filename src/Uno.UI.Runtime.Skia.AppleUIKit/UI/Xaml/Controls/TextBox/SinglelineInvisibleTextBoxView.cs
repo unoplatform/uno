@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using CoreGraphics;
 using Foundation;
 using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
-using Uno.UI.Controls;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Media;
-using Windows.UI;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.UI;
-using Uno.UI.Xaml;
-using static Uno.UI.FeatureConfiguration;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.System;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -191,6 +181,72 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 					textBoxView.Owner.TextBox?.OnSelectionChanged();
 				}
 			}
+		}
+	}
+
+	public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		base.PressesBegan(presses, evt);
+
+		if (Owner?.TextBox is { })
+		{
+			foreach (UIPress press in presses)
+			{
+				if (press.Key is not null)
+				{
+					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+					if (IsNavigationKey(virtualKey))
+					{
+						SyncSelectionToTextBox();
+					}
+				}
+			}
+		}
+	}
+
+	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		base.PressesEnded(presses, evt);
+
+		if (Owner?.TextBox is { })
+		{
+			foreach (UIPress press in presses)
+			{
+				if (press.Key is not null)
+				{
+					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+					if (IsNavigationKey(virtualKey))
+					{
+						SyncSelectionToTextBox();
+					}
+				}
+			}
+		}
+	}
+
+	private static bool IsNavigationKey(VirtualKey key)
+	{
+		return key switch
+		{
+			VirtualKey.Left or VirtualKey.Right or VirtualKey.Up or VirtualKey.Down or
+			VirtualKey.Home or VirtualKey.End or
+			VirtualKey.PageUp or VirtualKey.PageDown => true,
+			_ => false
+		};
+	}
+
+	private void SyncSelectionToTextBox()
+	{
+		if (TextBoxViewExtension?.Owner.TextBox is { } textBox && base.SelectedTextRange is { } range)
+		{
+			var start = (int)this.GetOffsetFromPosition(this.BeginningOfDocument, range.Start);
+			var end = (int)this.GetOffsetFromPosition(this.BeginningOfDocument, range.End);
+			var length = end - start;
+
+			textBox.SelectionStart = start;
+			textBox.SelectionLength = length;
 		}
 	}
 }
