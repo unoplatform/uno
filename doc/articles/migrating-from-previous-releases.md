@@ -10,7 +10,8 @@ To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.De
 
 Uno Platform 6.5 does not contain breaking changes that require attention when upgrading
 
-- Uno App MCP: if using Visual Studio 2022/2026, sometimes the Uno App MCP does not appear in the Visual Studio tools list. See [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio).
+> [!NOTE]
+> Uno App MCP: if using Visual Studio 2022/2026, sometimes the Uno App MCP does not appear in the Visual Studio tools list. See [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio).
 
 ## Uno Platform 6.4
 
