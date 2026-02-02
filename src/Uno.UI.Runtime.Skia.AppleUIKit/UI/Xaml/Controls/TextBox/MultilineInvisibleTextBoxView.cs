@@ -1,11 +1,12 @@
 ﻿using System;
 using Foundation;
-using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Controls;
 using Windows.System;
+
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -149,17 +150,25 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	{
 		base.PressesBegan(presses, evt);
 
-		if (Owner?.TextBox is { })
+		if (Owner?.TextBox is { } textBox)
 		{
 			foreach (UIPress press in presses)
 			{
 				if (press.Key is not null)
 				{
 					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+					var keyModifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
 					if (IsNavigationKey(virtualKey))
 					{
-						SyncSelectionToTextBox();
+						var keyRoutedEventArgs = new Microsoft.UI.Xaml.Input.KeyRoutedEventArgs(
+							textBox,
+							virtualKey,
+							keyModifiers)
+						{
+							CanBubbleNatively = false
+						};
+						textBox.RaiseEvent(Microsoft.UI.Xaml.UIElement.KeyDownEvent, keyRoutedEventArgs);
 					}
 				}
 			}
@@ -170,17 +179,25 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	{
 		base.PressesEnded(presses, evt);
 
-		if (Owner?.TextBox is { })
+		if (Owner?.TextBox is { } textBox)
 		{
 			foreach (UIPress press in presses)
 			{
 				if (press.Key is not null)
 				{
 					var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+					var keyModifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
 					if (IsNavigationKey(virtualKey))
 					{
-						SyncSelectionToTextBox();
+						var keyRoutedEventArgs = new Microsoft.UI.Xaml.Input.KeyRoutedEventArgs(
+							textBox,
+							virtualKey,
+							keyModifiers)
+						{
+							CanBubbleNatively = false
+						};
+						textBox.RaiseEvent(Microsoft.UI.Xaml.UIElement.KeyUpEvent, keyRoutedEventArgs);
 					}
 				}
 			}
@@ -196,16 +213,5 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 			VirtualKey.PageUp or VirtualKey.PageDown => true,
 			_ => false
 		};
-	}
-
-	private void SyncSelectionToTextBox()
-	{
-		if (TextBoxViewExtension?.Owner.TextBox is { } textBox && base.SelectedTextRange is { } range)
-		{
-			var selectedRange = this.SelectedRange;
-
-			textBox.SelectionStart = (int)selectedRange.Location;
-			textBox.SelectionLength = (int)selectedRange.Length;
-		}
 	}
 }

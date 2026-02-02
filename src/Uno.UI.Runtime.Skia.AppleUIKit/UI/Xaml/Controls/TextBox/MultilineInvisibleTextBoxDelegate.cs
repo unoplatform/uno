@@ -46,6 +46,11 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 				return false;
 			}
 
+			if (range.Length == 0 && string.IsNullOrEmpty(replacementString))
+			{
+				return false;
+			}
+
 			// TODO:MZ:
 			//if (textBox.OnKey(text.FirstOrDefault()))
 			//{
