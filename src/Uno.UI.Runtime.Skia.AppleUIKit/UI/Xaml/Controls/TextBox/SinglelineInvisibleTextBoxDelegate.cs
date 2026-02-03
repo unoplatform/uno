@@ -76,9 +76,7 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 		{
 			var selectionStart = (int)textField.GetOffsetFromPosition(textField.BeginningOfDocument, selectedRange.Start);
 			var selectionEnd = (int)textField.GetOffsetFromPosition(textField.BeginningOfDocument, selectedRange.End);
-
-			textBox.SelectionStart = selectionStart;
-			textBox.SelectionLength = selectionEnd - selectionStart;
+			textBox.Select(selectionStart, selectionEnd - selectionStart);
 		}
 	}
 

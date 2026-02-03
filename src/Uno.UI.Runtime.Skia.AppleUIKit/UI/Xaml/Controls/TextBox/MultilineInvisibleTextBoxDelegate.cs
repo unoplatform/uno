@@ -82,8 +82,7 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 		{
 			var selectionStart = (int)textView.GetOffsetFromPosition(textView.BeginningOfDocument, selectedRange.Start);
 			var selectionEnd = (int)textView.GetOffsetFromPosition(textView.BeginningOfDocument, selectedRange.End);
-			textBox.SelectionStart = selectionStart;
-			textBox.SelectionLength = selectionEnd - selectionStart;
+			textBox.Select(selectionStart, selectionEnd - selectionStart);
 		}
 	}
 
