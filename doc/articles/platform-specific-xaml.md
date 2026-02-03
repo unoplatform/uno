@@ -99,6 +99,30 @@ Consider the following XAML which is using the Windows Community Toolkit's [Blur
 </Page>
 ```
 
+#### Example 3
+
+Using the `desktop` prefix to target only desktop Skia applications (Windows, macOS, Linux):
+
+```xml
+<Page x:Class="HelloWorld.MainPage"
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   xmlns:desktop="http://uno.ui/desktop"
+   xmlns:not_desktop="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   mc:Ignorable="d desktop">
+
+ <StackPanel>
+  <TextBlock desktop:Text="This is shown only on desktop (Windows/macOS/Linux with Skia)"
+       not_desktop:Text="This is shown on all other platforms" />
+  <desktop:TextBlock Text="This element only exists on desktop platforms" />
+ </StackPanel>
+</Page>
+```
+
+Note that on desktop targets, both `desktop` and `skia` prefixes will match. Use `desktop` when you need desktop-specific behavior, and `skia` when you want to target all Skia-based platforms (including desktop, AndroidSkia, iOSSkia, and WasmSkia).
+
 ### Available prefixes
 
 The pre-defined prefixes are listed below:
