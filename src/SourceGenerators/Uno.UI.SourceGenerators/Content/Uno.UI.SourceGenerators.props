@@ -33,12 +33,12 @@
 		<!-- Not checking for UnoWinRTRuntimeIdentifier as we want wasm to be applicable to DOM Wasm only (aka Wasm native) -->
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
 
-		<!-- Desktop should be detected before Skia so we can distinguish pure desktop from mobile Skia -->
-		<XamarinProjectType Condition="$(_IsDesktop)">desktop</XamarinProjectType>
-
-		<!-- Skia is intentionally last as we want it to win when running Android Skia -->
+		<!-- Skia is intentionally last as we want it to win when running Android Skia or Desktop -->
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia' OR '$(UnoUIRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
 		<XamarinProjectType Condition="'$(_IsUnitTests)'=='true'">IS_UNIT_TESTS</XamarinProjectType>
+
+		<_IsDesktopSkia Condition="$(_IsDesktop) AND '$(XamarinProjectType)'=='skia'">true</_IsDesktopSkia>
+		<_IsDesktopSkia Condition="'$(_IsDesktopSkia)' == ''">false</_IsDesktopSkia>
 
 		<_IsAndroidSkia Condition="$(_IsAndroid) AND '$(XamarinProjectType)'=='skia'">true</_IsAndroidSkia>
 		<_IsAndroidSkia Condition="'$(_IsAndroidSkia)' == ''">false</_IsAndroidSkia>
@@ -166,10 +166,10 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'!='wasm'" Include="not_wasm" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'!='wasm'" Include="wasm" />
 
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='desktop'" Include="desktop" />
-		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='desktop'" Include="not_desktop" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'!='desktop'" Include="not_desktop" />
-		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'!='desktop'" Include="desktop" />
+		<IncludeXamlNamespaces Condition="$(_IsDesktopSkia)" Include="desktop" />
+		<ExcludeXamlNamespaces Condition="$(_IsDesktopSkia)" Include="not_desktop" />
+		<IncludeXamlNamespaces Condition="!$(_IsDesktopSkia)" Include="not_desktop" />
+		<ExcludeXamlNamespaces Condition="!$(_IsDesktopSkia)" Include="desktop" />
 
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="skia" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_skia" />
