@@ -104,6 +104,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				else
 				{
 					// Fallback for iOS < 15.0: use the deprecated PreferredFramesPerSecond property
+					// Note: The legacy API doesn't support setting minimum/maximum frame rates,
+					// so we only set the preferred rate. This provides best-effort frame rate control.
 #pragma warning disable CA1422 // Validate platform compatibility
 					_link.PreferredFramesPerSecond = PreferredFramesPerSecond;
 #pragma warning restore CA1422 // Validate platform compatibility
