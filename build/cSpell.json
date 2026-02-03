@@ -122,7 +122,8 @@
 	"Xcodes",
 	"Raygun",
 	"waitlist",
-	"subviews"
+	"subviews",
+	"Agentic"
   ],
   "ignoreWords": [
 	"ADAL",
