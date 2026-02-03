@@ -209,8 +209,17 @@ using Microsoft.Extensions.Logging;
 public App()
 {
 #if __ANDROID__
-    // Enable verbose logging for Uno Platform
-    Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.MinimumLevel = LogLevel.Trace;
+    var factory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
+    {
+        builder.AddConsole();
+        builder.SetMinimumLevel(LogLevel.Trace);
+        builder.AddFilter("Uno", LogLevel.Trace);
+        builder.AddFilter("Windows", LogLevel.Trace);
+        builder.AddFilter("Microsoft", LogLevel.Trace);
+    });
+    
+    Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+    global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
     
     this.InitializeComponent();
