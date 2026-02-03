@@ -126,7 +126,7 @@ The pre-defined prefixes are listed below:
 | `wasmskia`        | Web running with Skia rendering                | Everything else                      | `http://uno.ui/wasmskia`                                    | yes                    |
 | `not_android`     | WinUI, iOS, web, macOS, Skia                   | Android                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_ios`         | WinUI, Android, web, macOS, Skia               | iOS                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_wasm`        | WinUI, Android, iOS, macOS, Skia (Desktop/Mobile only)               | All WebAssembly                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_wasm`        | WinUI, Android, iOS, macOS, Skia (excluding WebAssembly+Skia) | All WebAssembly                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_macos`       | WinUI, Android, iOS, web, Skia                 | macOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_skia`        | WinUI, Android, iOS, web, macOS                | Skia                                 | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_androidskia` | All except Android running with Skia rendering | Android running with Skia rendering  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
@@ -137,6 +137,8 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 
 > [!NOTE]
 > The columns below represent rendering modes, not platforms. "Web" includes both native (DOM) and Skia rendering. When WebAssembly runs with Skia rendering, both `wasm` and `skia` prefixes will be active.
+> 
+> \* Only applies when WebAssembly is running with Skia rendering
 
 | Prefix        |  Windows  | Android (Native) |  iOS (Native)  |  Web (All)  | macOS | Skia (Desktop/Mobile) |
 |---------------|-----------|------------------|----------------|-------------|-------|-----------------------|
@@ -145,7 +147,7 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 | `ios`         | ✖         | ✖                | ✔              | ✖           | ✖     | ✖                     |
 | `wasm`        | ✖         | ✖                | ✖              | ✔           | ✖     | ✖                     |
 | `macos`       | ✖         | ✖                | ✖              | ✖           | ✔     | ✖                     |
-| `skia`        | ✖         | ✖                | ✖              | ✔ (Skia)    | ✖     | ✔                     |
+| `skia`        | ✖         | ✖                | ✖              | ✔*          | ✖     | ✔                     |
 | `not_win`     | ✖         | ✔                | ✔              | ✔           | ✔     | ✔                     |
 | `not_android` | ✔         | ✖                | ✔              | ✔           | ✔     | ✔                     |
 | `not_ios`     | ✔         | ✔                | ✖              | ✔           | ✔     | ✔                     |
