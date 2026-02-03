@@ -6,7 +6,7 @@ uid: Uno.Development.WPFMigration
 
 This article covers architecture and implementation considerations for migrating WPF applications to multiple platforms (WebAssembly, Android, iOS, Mac Catalyst, Linux, macOS, and Windows) using Uno Platform and WinUI.
 
-![A WPF app migrated to the web with Uno platform](Assets/migrated-app.png)
+![A WPF app migrated to multiple platforms with Uno Platform](Assets/migrated-app.png)
 
 ## Introduction
 
