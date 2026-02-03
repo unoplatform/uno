@@ -131,7 +131,7 @@ The pre-defined prefixes are listed below:
 > Desktop in the context of this table refers to the `net9.0-desktop` or `net10.0-desktop` target framework, which is used for Skia-based desktop applications (Windows, macOS, Linux). When using the desktop target, both `desktop` and `skia` prefixes will match.
 >
 > [!NOTE]
-> Skia in the context of this table refers to all Skia targets, including desktop and when Android, iOS, or Wasm are running with Skia rendering.
+> The `skia` prefix matches all Skia rendering targets, including desktop and when Android, iOS, or Wasm are running with Skia rendering. Use `desktop` for desktop-specific XAML, or use the more specific prefixes (`androidskia`, `iosskia`, `wasmskia`) for platform-specific Skia behavior.
 >
 > [!NOTE]
 > Unless explicitly stated, Android, iOS, and web in the context of this table refer specifically to the old native platforms and not when running with Skia rendering.

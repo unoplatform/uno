@@ -33,10 +33,11 @@
 		<!-- Not checking for UnoWinRTRuntimeIdentifier as we want wasm to be applicable to DOM Wasm only (aka Wasm native) -->
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
 
-		<!-- Skia is intentionally last as we want it to win when running Android Skia or Desktop -->
+		<!-- Skia is intentionally last as we want it to apply to all Skia targets (Desktop, Android Skia, iOS Skia, Wasm Skia) -->
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia' OR '$(UnoUIRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
 		<XamarinProjectType Condition="'$(_IsUnitTests)'=='true'">IS_UNIT_TESTS</XamarinProjectType>
 
+		<!-- Desktop uses Skia, so XamarinProjectType='skia'. _IsDesktopSkia enables the desktop-specific prefix. -->
 		<_IsDesktopSkia Condition="$(_IsDesktop) AND '$(XamarinProjectType)'=='skia'">true</_IsDesktopSkia>
 		<_IsDesktopSkia Condition="'$(_IsDesktopSkia)' == ''">false</_IsDesktopSkia>
 
