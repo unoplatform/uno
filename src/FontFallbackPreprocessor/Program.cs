@@ -244,7 +244,7 @@ public static class TtfReader
 				end = codepoints[i];
 			}
 		}
-		ranges.Add((start, end));
+		ranges.Add((start, end + 1));
 
 		return ranges;
 	}
@@ -458,10 +458,7 @@ public static class FontRangeMerger
 			foreach (var range in ranges)
 			{
 				AddEvent(range.Start, font, true);
-				if (range.End == int.MaxValue)
-					AddEvent(range.End, font, false);
-				else
-					AddEvent(range.End + 1, font, false);
+				AddEvent(range.End, font, false);
 			}
 		}
 
