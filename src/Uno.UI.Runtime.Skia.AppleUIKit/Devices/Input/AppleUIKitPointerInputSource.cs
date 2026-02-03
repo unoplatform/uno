@@ -170,7 +170,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	}
 
 #if __IOS__
-	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState)
+	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState, bool isNaturalScrollingEnabled)
 	{
 		try
 		{
@@ -196,7 +196,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");
 
-			var args = CreateScrollGestureEventArgs(translation, location);
+			var args = CreateScrollGestureEventArgs(translation, location, isNaturalScrollingEnabled);
 
 			_trace?.Invoke($"ScrollGesture: {args}>");
 
@@ -213,10 +213,12 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
-	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location)
+	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location, bool isNaturalScrollingEnabled)
 	{
-		var scrollDeltaX = (int)(translation.X * ScrollWheelDeltaMultiplier);
-		var scrollDeltaY = (int)(translation.Y * ScrollWheelDeltaMultiplier);
+		var multiplier = isNaturalScrollingEnabled ? -ScrollWheelDeltaMultiplier : ScrollWheelDeltaMultiplier;
+
+		var scrollDeltaX = (int)(translation.X * multiplier);
+		var scrollDeltaY = (int)(translation.Y * multiplier);
 
 		scrollDeltaX = Math.Sign(scrollDeltaX) * Math.Min(Math.Abs(scrollDeltaX), MaxScrollDelta);
 		scrollDeltaY = Math.Sign(scrollDeltaY) * Math.Min(Math.Abs(scrollDeltaY), MaxScrollDelta);
