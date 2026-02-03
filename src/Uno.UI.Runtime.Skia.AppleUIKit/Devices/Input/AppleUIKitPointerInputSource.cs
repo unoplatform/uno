@@ -24,9 +24,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 {
 #if __IOS__
 	private const int ScrollWheelDeltaMultiplier = -45;
-	private const int MaxScrollDelta = 120;
 	private const double MinTranslationThreshold = 1.0;
-	private const double MaxTranslationThreshold = 4.0;
 #endif
 
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
@@ -189,11 +187,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 				return;
 			}
 
-			translation = new CGPoint(
-				Math.Sign(translation.X) * Math.Min(Math.Abs(translation.X), MaxTranslationThreshold),
-				Math.Sign(translation.Y) * Math.Min(Math.Abs(translation.Y), MaxTranslationThreshold)
-			);
-
 			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");
 
 			var args = CreateScrollGestureEventArgs(translation, location, isNaturalScrollingEnabled);
@@ -219,9 +212,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 		var scrollDeltaX = (int)(translation.X * multiplier);
 		var scrollDeltaY = (int)(translation.Y * multiplier);
-
-		scrollDeltaX = Math.Sign(scrollDeltaX) * Math.Min(Math.Abs(scrollDeltaX), MaxScrollDelta);
-		scrollDeltaY = Math.Sign(scrollDeltaY) * Math.Min(Math.Abs(scrollDeltaY), MaxScrollDelta);
 
 		var position = location;
 
