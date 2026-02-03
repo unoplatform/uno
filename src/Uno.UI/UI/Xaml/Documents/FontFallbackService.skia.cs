@@ -104,14 +104,17 @@ internal class NotoFontFallbackService : IFontFallbackService
 			{
 				// all CJK fonts have the same codepoint coverage, so we pick one based on locale
 				var locale = CultureInfo.CurrentCulture.Name.ToLowerInvariant();
-				font = locale switch
+				var split = locale.Split('-');
+				var languageSubtag = split[0];
+				var scriptSubtag = split.Length < 2 ? "" : split[1];
+				var regionSubtag = split.Length < 3 ? "" : split[2];
+
+				font = (languageSubtag, scriptSubtag, regionSubtag) switch
 				{
-					"zh-tw" or "zh-mo" => "TraditionalChinese",
-					"zh-hk" or "zh-hant-hk" => "TraditionalChineseHK",
-					_ when locale.Contains("hant") => "TraditionalChinese",
-					_ when locale.Contains("hans") => "SimplifiedChinese",
-					_ when locale.Contains("ja") => "Japanese",
-					_ when locale.Contains("ko") => "Korean",
+					("zh", "hant", _) => "TraditionalChinese",
+					("zh", "hans", _) => "SimplifiedChinese",
+					("ja", _, _) => "Japanese",
+					("ko", _, _) => "Korean",
 					_ => "SimplifiedChinese"
 				};
 			}
