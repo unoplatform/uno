@@ -152,8 +152,8 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 | `not_android` | ✔         | ✖                | ✔              | ✔           | ✔     | ✔                     |
 | `not_ios`     | ✔         | ✔                | ✖              | ✔           | ✔     | ✔                     |
 | `not_wasm`    | ✔         | ✔                | ✔              | ✖           | ✔     | ✔                     |
-| `not_macos`   | ✔ | ✔ | ✔ | ✔ | ✖ | ✔ |
-| `not_skia`    | ✔ | ✔ | ✔ | ✔ | ✔ | ✖ |
+| `not_macos`   | ✔         | ✔                | ✔              | ✔           | ✖     | ✔                     |
+| `not_skia`    | ✔         | ✔                | ✔              | ✔           | ✔     | ✖                     |
 
 ### XAML prefixes in cross-targeted libraries
 
