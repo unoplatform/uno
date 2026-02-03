@@ -104,7 +104,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				else
 				{
 					// Fallback for iOS < 15.0: use the deprecated PreferredFramesPerSecond property
+#pragma warning disable CA1422 // Validate platform compatibility
 					_link.PreferredFramesPerSecond = PreferredFramesPerSecond;
+#pragma warning restore CA1422 // Validate platform compatibility
 				}
 
 				_link.AddToRunLoop(NSRunLoop.Current, NSRunLoopMode.Default);
