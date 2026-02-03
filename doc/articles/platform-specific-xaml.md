@@ -153,7 +153,7 @@ The pre-defined prefixes are listed below:
 | `not_ios`         | WinUI, Android, web, macOS, desktop, Skia               | iOS                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_wasm`        | WinUI, Android, iOS, macOS, desktop, Skia               | web                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_macos`       | WinUI, Android, iOS, web, desktop, Skia                 | macOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_desktop`     | WinUI, Android, iOS, web, macOS, Skia (excl. desktop)                   | desktop                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_desktop`     | WinUI, Android, iOS, web, macOS, non-desktop Skia                   | desktop                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_skia`        | WinUI, Android, iOS, web, macOS                | desktop, Skia                                 | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_androidskia` | All except Android running with Skia rendering | Android running with Skia rendering  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_iosskia`     | All except iOS running with Skia rendering     | iOS running with Skia rendering      | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
@@ -161,7 +161,10 @@ The pre-defined prefixes are listed below:
 
 More visually, platform support for the pre-defined prefixes is shown in the below table:
 
-| Prefix        |  Windows  | Android |  iOS  |  Web  | macOS | Desktop | Skia  |
+> [!NOTE]
+> The "Skia" column refers to non-desktop Skia targets (androidskia, iosskia, wasmskia). The "Desktop" column refers specifically to the desktop Skia target.
+
+| Prefix        |  Windows  | Android |  iOS  |  Web  | macOS | Desktop | Skia (non-desktop) |
 |---------------|-------|-------|-------|-------|-------|---------|-------|
 | `win`         | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ | ✖ |
 | `android`     | ✖ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
