@@ -91,12 +91,21 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				currentThread.QualityOfService = NSQualityOfService.UserInteractive;
 				currentThread.Name = "UnoSKMetalViewRenderThread";
 
-				_link.PreferredFrameRateRange = new CAFrameRateRange()
+				// CAFrameRateRange is only available on iOS 15.0+
+				if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
 				{
-					Minimum = 30,
-					Preferred = PreferredFramesPerSecond,
-					Maximum = PreferredFramesPerSecond
-				};
+					_link.PreferredFrameRateRange = new CAFrameRateRange()
+					{
+						Minimum = 30,
+						Preferred = PreferredFramesPerSecond,
+						Maximum = PreferredFramesPerSecond
+					};
+				}
+				else
+				{
+					// Fallback for iOS < 15.0: use the deprecated PreferredFramesPerSecond property
+					_link.PreferredFramesPerSecond = PreferredFramesPerSecond;
+				}
 
 				_link.AddToRunLoop(NSRunLoop.Current, NSRunLoopMode.Default);
 
