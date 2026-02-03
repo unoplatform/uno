@@ -129,7 +129,7 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    adb devices
    ```
    
-5. Start viewing logs:
+4. Start viewing logs:
    
    ```bash
    # View all logs (verbose)
