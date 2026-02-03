@@ -274,21 +274,12 @@ Filter for these tags to focus on Uno Platform logs:
    adb logcat -c
    ```
 
-3. **Reproduce the issue** immediately after clearing logs
+1. **Reproduce the issue** immediately after clearing logs
 
-4. **Capture logs** during the issue:
+1. **Capture logs** during the issue:
    
    ```bash
    adb logcat > issue-reproduction.txt
-   ```
-
-6. **Filter to relevant logs** before sharing:
-   
-   - Focus on the timeframe when the issue occurred
-   - Include 10-20 lines before and after the error
-   - Remove sensitive information (API keys, user data, etc.)
-
-8. **Include essential context:**
    
    - Uno Platform version
    - Android version and device/emulator details
