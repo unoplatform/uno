@@ -115,7 +115,6 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    - Linux: `~/Android/Sdk`
 
 2. **Verify ADB Installation:**
-3. 
    - ADB is located in `<Android-SDK>/platform-tools/adb`
    - Add ADB to your system PATH or note its full path
    - Test by running: `adb version`
