@@ -140,7 +140,7 @@
             href: xref:Uno.Development.CommunityToolkit.v8
           - name: Windows Community Toolkit - Version 7.x
             href: xref:Uno.Development.CommunityToolkit.v7
-      - name: How to manually add a splash screen
+      - name: Splash Screen Customization
         href: xref:Uno.Development.SplashScreen
       - name: How to use native Frame navigation
         href: xref:Uno.Tutorials.UseNativeFrameNav
