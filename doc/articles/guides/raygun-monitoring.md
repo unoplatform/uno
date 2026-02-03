@@ -38,7 +38,7 @@ Start by creating a new Uno Platform project using your preferred development en
 Install the Raygun package in your Uno Platform application. Use the Manage NuGet Packages option or the following dotnet CLI command:
 
 ```sh
-dotnet add package Mindscape.Raygun4Net.NetCore
+dotnet add package Mindscape.Raygun4Net.NetCore --project MyApp
 ```
 
 ### Step 3 - Create a RaygunClient

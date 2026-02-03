@@ -127,7 +127,7 @@ Here's what to look for:
 - [Enable Startup Tracing](https://devblogs.microsoft.com/dotnet/performance-improvements-in-dotnet-maui/#record-a-custom-aot-profile) by running the following:
 
     ```bash
-    dotnet add package Mono.AotProfiler.Android
+    dotnet add package Mono.AotProfiler.Android --project MyApp
     dotnet build -t:BuildAndStartAotProfiling
     # Wait until the app launches, then navigate around the most common screens
     dotnet build -t:FinishAotProfiling
