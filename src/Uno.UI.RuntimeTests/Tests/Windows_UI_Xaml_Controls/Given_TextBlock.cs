@@ -206,16 +206,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				LineHeight = 34,
 			};
 
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
-			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
-
 			var expected = new TextBlock
 			{
 				Text = "اللغة العربية",
 				FontSize = 24,
-				FontFamily = new FontFamily("https://raw.githubusercontent.com/notofonts/notofonts.github.io/main/fonts/NotoSansArabic/hinted/ttf/NotoSansArabic-Regular.ttf"),
 				LineHeight = 34,
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/NotoSansArabic-Regular.ttf"),
 			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var matched = false;
 
@@ -225,16 +225,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT
 			});
 
-			((CompositionTarget)expected.Visual.CompositionTarget)!.FrameRendered += async () =>
+			Action OnFrameRendered = async () =>
 			{
 				var screenshot1 = await UITestHelper.ScreenShot(SUT);
 				var screenshot2 = await UITestHelper.ScreenShot(expected);
 
 				var rect = ImageAssert.GetColorBounds(screenshot2, ((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
 
-				// we tolerate a 2 pixels difference between the bitmaps due to font differences
 				matched = rect is { Width: > 0, Height: > 0 } && await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenshot1.Bitmap, screenshot2.Bitmap);
 			};
+
+			var compositionTarget = (CompositionTarget)expected.Visual.CompositionTarget!;
+			compositionTarget.FrameRendered += OnFrameRendered;
+			using var _ = Disposable.Create(() => compositionTarget.FrameRendered -= OnFrameRendered);
 
 			await UITestHelper.WaitForRender();
 			await UITestHelper.WaitFor(() => matched, 60000);

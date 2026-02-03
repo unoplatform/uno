@@ -10080,6 +10080,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\closeIcon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colored-ellipse.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ColorPicker.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\NotoSansArabic-Regular.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\when_alpha_blending.png" />
     <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
