@@ -2,17 +2,17 @@
 uid: Uno.Development.WPFMigration
 ---
 
-# Migrating WPF Apps to Web
+# Migrating WPF Apps to Uno Platform
 
-This article covers architecture and implementation considerations for migrating WPF applications to the Web using Uno Platform and WinUI.
+This article covers architecture and implementation considerations for migrating WPF applications to multiple platforms (WebAssembly, Android, iOS, Mac Catalyst, Linux, macOS, and Windows) using Uno Platform and WinUI.
 
 ![A WPF app migrated to the web with Uno platform](Assets/migrated-app.png)
 
 ## Introduction
 
-While improvements will continue to be made by Microsoft at the framework level to ensure the compatibility and reliability of your WPF application, it may be desirable to expand its reach. In this hybrid work era, previous assumptions and development decisions which served your customers well become less valid. For instance, applications targeting the Windows platform alone miss out on mobility benefits of the Web.
+While improvements will continue to be made by Microsoft at the framework level to ensure the compatibility and reliability of your WPF application, it may be desirable to expand its reach to additional platforms. In this hybrid work era, previous assumptions and development decisions which served your customers well become less valid. For instance, applications targeting the Windows platform alone miss out on the benefits of cross-platform availability, including mobile devices (iOS, Android), web browsers (WebAssembly), and other desktop operating systems (Linux, macOS).
 
-Advancements such as [WebAssembly (WASM)](https://developer.mozilla.org/docs/WebAssembly), a low-level bytecode for the web, have already become a viable, performant way to deliver your modern .NET applications.
+Uno Platform enables you to bring your WPF application to all these platforms, leveraging advancements such as [WebAssembly (WASM)](https://developer.mozilla.org/docs/WebAssembly) for the web, native mobile frameworks for iOS and Android, and Skia rendering for desktop platforms.
 
 ## Migrating the codebase
 
@@ -33,7 +33,7 @@ The vast majority of your codebase will simply "move across". Existing XAML stru
 
 ## Understanding beforehand
 
-Along the journey to bring your WPF app to the Web, you should become familiar with the Uno Platform documentation. Your team should thoroughly understand what is supported (and where) before you build a feature around it. Learn about:
+Along the journey to bring your WPF app to multiple platforms with Uno Platform, you should become familiar with the Uno Platform documentation. Your team should thoroughly understand what is supported (and where) before you build a feature around it. Learn about:
 
 * [Get started](xref:Uno.GetStarted)
 * [How-tos and tutorials](xref:Uno.Tutorials.Intro)
@@ -60,12 +60,12 @@ Either way, the ContentControls and DataTemplate pattern you make use of for var
 
 ### Data Access
 
-If your WPF application currently connects directly to a database, you should consider whether this pattern makes sense on the web and look into making use of web services.
+If your WPF application currently connects directly to a database, you should consider whether this pattern makes sense across all target platforms. For web and mobile applications, you should look into making use of web services or REST APIs to access data remotely.
 
 ### Deprecated Technology
 
 Full support for WCF and WCF Data Services are not included in modern .NET versions. Because these technologies lack a path forward, you should consider attempting to implement a service-oriented architecture with other frameworks like gRPC or REST services.
 
-### Desktop Integration
+### Platform-Specific Integration
 
-If your app relies on heavy access to Windows-specific constructs such as the registry, you should rethink your approach to fit the Web's platform agnostic app model.
+If your app relies on heavy access to Windows-specific constructs such as the registry or file system access, you should rethink your approach to fit a cross-platform app model. Uno Platform provides [platform-specific code capabilities](platform-specific-csharp.md) that allow you to handle platform differences when necessary, while keeping most of your codebase shared.

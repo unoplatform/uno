@@ -286,7 +286,7 @@
         href: guides/xf-migration/toc.yml
       - name: WPF
         items:
-          - name: Migrating WPF Apps to Web
+          - name: Migrating WPF Apps to Uno Platform
             href: wpf-migration.md
       - name: UWP-only code
         items:
