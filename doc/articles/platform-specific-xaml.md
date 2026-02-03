@@ -120,7 +120,7 @@ The pre-defined prefixes are listed below:
 | `ios`             | iOS                                            | WinUI, Android, web, macOS, Skia     | `http://uno.ui/ios`                                         | yes                    |
 | `wasm`            | All WebAssembly (native and Skia)              | WinUI, Android, iOS, macOS           | `http://uno.ui/wasm`                                        | yes                    |
 | `macos`           | macOS                                          | WinUI, Android, iOS, web, Skia       | `http://uno.ui/macos`                                       | yes                    |
-| `skia`            | Skia (all Skia platforms)                      | WinUI, Android (native), iOS (native), WebAssembly (DOM), macOS      | `http://uno.ui/skia`                                        | yes                    |
+| `skia`            | Skia (all Skia platforms)                      | WinUI, Android (without Skia), iOS (without Skia), WebAssembly (DOM only), macOS | `http://uno.ui/skia`                                        | yes                    |
 | `androidskia`     | Android running with Skia rendering            | Everything else                      | `http://uno.ui/androidskia`                                 | yes                    |
 | `iosskia`         | iOS running with Skia rendering                | Everything else                      | `http://uno.ui/iosskia`                                     | yes                    |
 | `wasmskia`        | Web running with Skia rendering                | Everything else                      | `http://uno.ui/wasmskia`                                    | yes                    |
