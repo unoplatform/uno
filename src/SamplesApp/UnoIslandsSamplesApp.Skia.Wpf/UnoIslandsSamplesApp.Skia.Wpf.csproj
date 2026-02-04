@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetWpfPreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrentWpf)</TargetFrameworks>
 
 		<!--
 		Enable implicit dotnet runtime forward rolling, as the specifed target framework
@@ -15,7 +15,6 @@
 		<!-- Keep full exception strings in release -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
-
 	<Import Project="../../targetframework-override-windows.props" />
 
 	<PropertyGroup>

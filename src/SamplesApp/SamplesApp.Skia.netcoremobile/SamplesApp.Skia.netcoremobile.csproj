@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrentNetCoreMobile)</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
