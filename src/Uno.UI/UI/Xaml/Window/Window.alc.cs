@@ -281,7 +281,7 @@ partial class Window
 	/// <summary>
 	/// Gets whether this window is operating in ALC mode.
 	/// </summary>
-	internal bool IsAlcWindow => _alcState is not null;
+	internal bool IsAlcWindow => _isWindowFromSecondaryAlc || _alcState is not null;
 
 	/// <summary>
 	/// Checks if the given content element is from a secondary AssemblyLoadContext.
