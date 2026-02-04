@@ -143,31 +143,48 @@ echo "=== Available iPad devices for $UNO_UITEST_SIMULATOR_VERSION ==="
 xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i ipad || echo "(no iPad devices found)"
 echo ""
 
-# Try to find the specified device, or fall back to iPad Pro 13-inch, then any iPad Pro
-export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+# Try to find the specified device, or fall back to iPad Pro 13-inch, then any iPad Pro.
+# Retry loop handles delay between runtime install and simulators becoming available.
+MAX_ATTEMPTS=24  # 2 minutes max (24 * 5 seconds)
+ATTEMPT=0
 
-if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	echo "Device '$UNO_UITEST_SIMULATOR_NAME' not found, looking for any iPad Pro 13-inch device..."
-	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "13-inch" | head -1 || true`
-	if [ -n "$FALLBACK_DEVICE" ]; then
-		echo "Found fallback device: $FALLBACK_DEVICE"
-		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
-		export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+	ATTEMPT=$((ATTEMPT + 1))
+
+	# Try the specified device first
+	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+	SELECTED_DEVICE="$UNO_UITEST_SIMULATOR_NAME"
+
+	# Fallback to any iPad Pro 13-inch
+	if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+		FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "13-inch" | head -1 || true`
+		if [ -n "$FALLBACK_DEVICE" ]; then
+			SELECTED_DEVICE="$FALLBACK_DEVICE"
+			export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+		fi
 	fi
-fi
 
-if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	echo "No iPad Pro 13-inch found, looking for any iPad Pro device..."
-	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | head -1 || true`
-	if [ -n "$FALLBACK_DEVICE" ]; then
-		echo "Found fallback device: $FALLBACK_DEVICE"
-		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
-		export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+	# Fallback to any iPad Pro
+	if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+		FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | head -1 || true`
+		if [ -n "$FALLBACK_DEVICE" ]; then
+			SELECTED_DEVICE="$FALLBACK_DEVICE"
+			export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+		fi
 	fi
-fi
+
+	# If found, update the simulator name and break out of the loop
+	if [ -n "$UITEST_IOSDEVICE_ID" ]; then
+		export UNO_UITEST_SIMULATOR_NAME="$SELECTED_DEVICE"
+		break
+	fi
+
+	echo "Waiting for simulator to be available (attempt $ATTEMPT/$MAX_ATTEMPTS)..."
+	sleep 5
+done
 
 if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	echo "ERROR: No iPad Pro simulator found for runtime $UNO_UITEST_SIMULATOR_VERSION"
+	echo "ERROR: No iPad Pro simulator found for runtime $UNO_UITEST_SIMULATOR_VERSION after $MAX_ATTEMPTS attempts"
 	echo "Available devices:"
 	xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name'
 	exit 1
