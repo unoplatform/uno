@@ -6,7 +6,8 @@ parameters:
 jobs:
 - job: iOS_TestFlight
   displayName: 'Build Samples App - TestFlight'
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  # TODO: Revert after verifying PR CI coverage - temporarily enabled for all builds
+  condition: succeededOrFailed()
   cancelTimeoutInMinutes: 0
 
   strategy:
