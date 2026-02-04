@@ -34,6 +34,9 @@ internal readonly partial struct UnicodeText
 			Init();
 		}
 
+		const int MinSupportedIcuucVersion = 50;
+		const int MaxSupportedIcuucVersion = 100;
+
 		private static unsafe void Init()
 		{
 			IntPtr libicuuc;
@@ -65,7 +68,7 @@ internal readonly partial struct UnicodeText
 				{
 					if (OperatingSystem.IsLinux())
 					{
-						for (int j = 100; j >= 67; j--)
+						for (int j = MaxSupportedIcuucVersion; j >= MinSupportedIcuucVersion; j--)
 						{
 							// some environments only have a versioned library and don't symlink it to libicuuc.so
 							if (NativeLibrary.TryLoad($"libicuuc.so.{j}", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
@@ -82,17 +85,18 @@ internal readonly partial struct UnicodeText
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
 				// we try a wide range of versions.
-				for (int i = 100; i >= 67; i--)
+				for (int i = MaxSupportedIcuucVersion; i >= MinSupportedIcuucVersion; i--)
 				{
 					if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}", out _))
 					{
 						_icuVersion = i;
+						break;
 					}
 				}
 
 				if (_icuVersion == 0)
 				{
-					throw new Exception("Failed to load icuuc.");
+					throw new Exception($"Loaded icuuc, but could not find symbol `u_getVersion_N`, where N is in range [{MinSupportedIcuucVersion}-{MaxSupportedIcuucVersion}].");
 				}
 			}
 			else if (OperatingSystem.IsBrowser())
