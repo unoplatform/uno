@@ -143,12 +143,11 @@ echo "=== Available iPad devices for $UNO_UITEST_SIMULATOR_VERSION ==="
 xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i ipad || echo "(no iPad devices found)"
 echo ""
 
-# Try to find the specified device, or fall back to the first available iPad
+# Try to find the specified device, or fall back to iPad Pro 13-inch, then any iPad Pro
 export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 
 if [ -z "$UITEST_IOSDEVICE_ID" ]; then
 	echo "Device '$UNO_UITEST_SIMULATOR_NAME' not found, looking for any iPad Pro 13-inch device..."
-	# Try to find any iPad Pro 13-inch device (Apple renamed 12.9-inch to 13-inch)
 	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "13-inch" | head -1 || true`
 	if [ -n "$FALLBACK_DEVICE" ]; then
 		echo "Found fallback device: $FALLBACK_DEVICE"
@@ -168,17 +167,7 @@ if [ -z "$UITEST_IOSDEVICE_ID" ]; then
 fi
 
 if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	echo "No iPad Pro found, looking for any iPad device..."
-	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad" | head -1 || true`
-	if [ -n "$FALLBACK_DEVICE" ]; then
-		echo "Found fallback device: $FALLBACK_DEVICE"
-		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
-		export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
-	fi
-fi
-
-if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	echo "ERROR: No iPad simulator found for runtime $UNO_UITEST_SIMULATOR_VERSION"
+	echo "ERROR: No iPad Pro simulator found for runtime $UNO_UITEST_SIMULATOR_VERSION"
 	echo "Available devices:"
 	xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name'
 	exit 1
