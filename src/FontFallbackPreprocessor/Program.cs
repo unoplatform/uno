@@ -239,7 +239,7 @@ public static class TtfReader
 			}
 			else
 			{
-				ranges.Add((start, end));
+				ranges.Add((start, end + 1));
 				start = codepoints[i];
 				end = codepoints[i];
 			}
