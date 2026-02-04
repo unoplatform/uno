@@ -66,7 +66,7 @@ namespace SamplesApp.UITests
 			{
 				if (AppInitializer.GetLocalPlatform() == Platform.iOS)
 				{
-					AppInitializer.ColdStartApp();
+					ColdStartWithRetry();
 				}
 				else
 				{
@@ -265,6 +265,38 @@ namespace SamplesApp.UITests
 			{
 				return null;
 			}
+		}
+
+		// iOS simulator startup can intermittently fail (e.g., XcodeService socket bind), so retry with reset.
+		private static void ColdStartWithRetry()
+		{
+			const int maxAttempts = 3;
+			var retryDelay = TimeSpan.FromSeconds(15);
+			Exception lastError = null;
+
+			for (var attempt = 1; attempt <= maxAttempts; attempt++)
+			{
+				try
+				{
+					AppInitializer.ColdStartApp();
+					return;
+				}
+				catch (Exception ex)
+				{
+					lastError = ex;
+					Console.WriteLine($"Cold start attempt {attempt}/{maxAttempts} failed: {ex.Message}");
+					ResetSimulator();
+
+					if (attempt < maxAttempts)
+					{
+						Task.Delay(retryDelay).Wait();
+					}
+				}
+			}
+
+			throw new InvalidOperationException(
+				$"Cold start failed after {maxAttempts} attempts.",
+				lastError);
 		}
 
 		private void WriteSystemLogs(string fileName)
