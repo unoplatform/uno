@@ -58,6 +58,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private SKColor _background;
 	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
+	private string? _iconPath;
+	private HICON _smallIcon;
+	private HICON _bigIcon;
+	private static readonly int s_taskbarIconSize = Environment.OSVersion.Version.Major >= 10 ? 24 : 32;
+
 	static unsafe Win32WindowWrapper()
 	{
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
@@ -407,6 +412,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		UpdateDisplayInfo();
 		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+		RefreshIcon();
+	}
+
+	private void RefreshIcon()
+	{
+		if (_iconPath != null)
+		{
+			SetIcon(_iconPath);
+		}
 	}
 
 	private void OnWmDestroy()
@@ -417,7 +431,22 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
+		DestroyIcons();
 		XamlRootMap.Unregister(XamlRoot!);
+	}
+
+	private void DestroyIcons()
+	{
+		if (_smallIcon != HICON.Null)
+		{
+			PInvoke.DestroyIcon(_smallIcon);
+			_smallIcon = HICON.Null;
+		}
+		if (_bigIcon != HICON.Null)
+		{
+			PInvoke.DestroyIcon(_bigIcon);
+			_bigIcon = HICON.Null;
+		}
 	}
 
 	private bool OnWmClose()
@@ -614,6 +643,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		//    misrepresented as being the original software.
 		// 3. This notice may not be removed or altered from any source distribution.
 
+		_iconPath = iconPath;
+
 		if (!File.Exists(iconPath))
 		{
 			this.LogError()?.Error($"Couldn't find icon file [{iconPath}].");
@@ -628,43 +659,87 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 		using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
 
-		var maskLength = image.Height * (image.Width + 7) / 8;
-		var imageSize = image.Height * image.Width * Marshal.SizeOf<uint>();
+		// Destroy existing icons before creating new ones
+		DestroyIcons();
+
+		// Create small icon (16px base) for titlebar and window list
+		var smallIconSize = GetScaledIconSize(16);
+		_smallIcon = CreateIconFromImage(image, smallIconSize);
+
+		// Create big icon (24px on Win10+, 32px on older) for taskbar and Alt+Tab
+		var bigIconSize = GetScaledIconSize(s_taskbarIconSize);
+		_bigIcon = CreateIconFromImage(image, bigIconSize);
+
+		if (_smallIcon != HICON.Null)
+		{
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, _smallIcon.Value);
+		}
+		if (_bigIcon != HICON.Null)
+		{
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, _bigIcon.Value);
+		}
+
+		// Force taskbar to refresh the icon by setting a null overlay
+		TaskBarList.SetOverlayIcon(_hwnd, HICON.Null, null);
+	}
+
+	private int GetScaledIconSize(int baseSize)
+	{
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		return (int)(baseSize * scale);
+	}
+
+	private unsafe HICON CreateIconFromImage(SKImage source, int targetSize)
+	{
+		// Scale the source image to the target size
+		using var scaledBitmap = new SKBitmap(targetSize, targetSize);
+		using var canvas = new SKCanvas(scaledBitmap);
+		canvas.Clear(SKColors.Transparent);
+
+		using var paint = new SKPaint
+		{
+			FilterQuality = SKFilterQuality.High,
+			IsAntialias = true
+		};
+
+		var destRect = new SKRect(0, 0, targetSize, targetSize);
+		canvas.DrawImage(source, destRect, paint);
+
+		var maskLength = targetSize * (targetSize + 7) / 8;
+		var imageSize = targetSize * targetSize * Marshal.SizeOf<uint>();
 		var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
 		var presBits = stackalloc byte[iconLength];
 
 		var bmi = (BITMAPINFOHEADER*)presBits;
 		bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
-		bmi->biWidth = image.Width;
-		bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
+		bmi->biWidth = targetSize;
+		bmi->biHeight = targetSize * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
 		bmi->biPlanes = 1;
 		bmi->biBitCount = 32;
 		bmi->biCompression = /* BI_RGB */ 0x0000;
 
 		// Write the pixels upside down into the bitmap buffer
-		var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888);
+		var info = new SKImageInfo(targetSize, targetSize, SKColorType.Bgra8888);
 		using (var surface = SKSurface.Create(info))
 		{
-			var canvas = surface.Canvas;
-			canvas.Translate(0, image.Height);
-			canvas.Scale(1, -1);
-			canvas.DrawImage(image, 0, 0);
+			var surfaceCanvas = surface.Canvas;
+			surfaceCanvas.Translate(0, targetSize);
+			surfaceCanvas.Scale(1, -1);
+			using var scaledImage = SKImage.FromBitmap(scaledBitmap);
+			surfaceCanvas.DrawImage(scaledImage, 0, 0);
 			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
 		}
 
 		// Write the mask
 		new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
 
-		// No need to destroy icons created with CreateIconFromResource
 		var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
 		if (hIcon == HICON.Null)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
 		}
 
-		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value);
-		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value);
+		return hIcon;
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
