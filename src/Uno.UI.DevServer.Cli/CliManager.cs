@@ -15,6 +15,11 @@ internal class CliManager
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
 	private readonly ILogger<CliManager> _logger;
+	private static readonly JsonSerializerOptions _discoJsonOptions = new()
+	{
+		WriteIndented = true,
+		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+	};
 
 	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator)
 	{
@@ -47,7 +52,26 @@ internal class CliManager
 					solutionDirParseResult.SolutionDirectory);
 			}
 
-			ShowBanner();
+			var isDisco = originalArgs is { Length: > 0 } &&
+				string.Equals(originalArgs[0], "disco", StringComparison.OrdinalIgnoreCase);
+			var discoJson = isDisco &&
+				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
+
+			if (!isDisco || !discoJson)
+			{
+				ShowBanner();
+			}
+
+			if (isDisco && discoJson)
+			{
+				// Avoid banner/log noise when emitting JSON output
+				return await RunDiscoAsync(workingDirectory, outputJson: true);
+			}
+
+			if (isDisco)
+			{
+				return await RunDiscoAsync(workingDirectory, outputJson: false);
+			}
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
@@ -94,6 +118,24 @@ internal class CliManager
 		{
 			_logger.LogInformation("Uno Platform DevServer CLI - Dev Version");
 		}
+	}
+
+	private async Task<int> RunDiscoAsync(string workingDirectory, bool outputJson)
+	{
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory);
+
+		if (outputJson)
+		{
+			var json = JsonSerializer.Serialize(info, _discoJsonOptions);
+			Console.WriteLine(json);
+		}
+		else
+		{
+			var useColor = !Console.IsOutputRedirected;
+			Console.WriteLine(DiscoveryOutputFormatter.ToPlainText(info, useColor));
+		}
+
+		return info.Errors.Count > 0 ? 1 : 0;
 	}
 
 	private async Task<int> OpenSettings(string[] originalArgs, string workingDirectory)
