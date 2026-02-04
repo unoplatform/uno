@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<!-- We keep TFM as NetPrevious to allow local build to work with "Previous" SDK -->
 		<!-- However, in CI, we run with "Current" SDK and so "Previous" .NET runtime may not be installed, so we set RollForward -->
-		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<RollForward>Major</RollForward>
 
@@ -14,7 +14,6 @@
 		<!-- Use 'GeneratedRegexAttribute' to generate the regular expression -->
 		<NoWarn>$(NoWarn);SYSLIB1045;CS1998</NoWarn>
 	</PropertyGroup>
-
 	<ItemGroup Label="GlobalUsings">
 		<Using Include="AwesomeAssertions" />
 	</ItemGroup>

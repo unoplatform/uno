@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)</TargetFrameworks>
 	</PropertyGroup>
-
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
