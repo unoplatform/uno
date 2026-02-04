@@ -256,7 +256,8 @@
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.netcoremobile.csproj" />
+		<!-- Exclude RuntimeTests from TestFlight builds to avoid trimmer IL20xx errors in release packaging. -->
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.netcoremobile.csproj" Condition="'$(BuildForTestFlight)'!='true'" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
