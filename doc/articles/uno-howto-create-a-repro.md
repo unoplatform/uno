@@ -110,29 +110,29 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
 **Prerequisites:**
 
 1. **Install Android SDK** (if not already installed):
-   
+
    - Windows: Typically located at `C:\Users\<username>\AppData\Local\Android\Sdk`
    - macOS: `~/Library/Android/sdk`
    - Linux: `~/Android/Sdk`
 
-1. **Verify ADB Installation:**
-   
+2. **Verify ADB Installation:**
+
    - ADB is located in `<Android-SDK>/platform-tools/adb`
    - Add ADB to your system PATH or note its full path
    - Test by running: `adb version`
 
-**Option 1: Using Terminal (Manual ADB)**
+### Option 1: Using Terminal (Manual ADB)
 
 1. Open VS Code's integrated terminal: **View** → **Terminal** or press **Ctrl+`** (Windows/Linux) or **⌘`** (macOS)
 2. Ensure your device or emulator is running and connected
 3. Verify device connection:
-   
+
    ```bash
    adb devices
    ```
-   
+
 4. Start viewing logs:
-   
+
    ```bash
    # View all logs (verbose)
    adb logcat
@@ -159,17 +159,17 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    adb logcat -d
    ```
 
-**Option 2: Using VS Code Extensions**
+### Option 2: Using VS Code Extensions
 
 1. Open the Extensions view: **View** → **Extensions** or press **Ctrl+Shift+X** (Windows/Linux) or **⌘⇧X** (macOS)
 1. Search for and install one of these extensions:
-   
+
    - **[Android](https://marketplace.visualstudio.com/items?itemName=adelphes.android-dev-ext)** by adelphes
    - **[ADB Interface for VSCode](https://marketplace.visualstudio.com/items?itemName=vinicioslc.adb-interface-vscode)** by Vinicios Clarindo
    - **[Android iOS Emulator](https://marketplace.visualstudio.com/items?itemName=DiemasMichiels.emulate)** by Diemas Michiels
-     
+
 1. Follow the extension-specific instructions to:
-   
+
    - Configure the Android SDK path in VS Code settings
    - Open the Logcat view (usually in the sidebar or via command palette)
    - Connect to your device/emulator
@@ -203,6 +203,7 @@ adb logcat -c && adb logcat
 **Tips for Effective Filtering:**
 
 - Use `grep` (Linux/macOS) or `findstr`/`Select-String` (Windows) to filter output:
+
   ```bash
   # Linux/macOS
   adb logcat | grep -i "exception"
@@ -271,7 +272,7 @@ Filter for these tags to focus on Uno Platform logs:
 **Best Practices When Reporting Issues:**
 
 1. **Clear old logs:**
-   
+
    ```bash
    adb logcat -c
    ```
@@ -279,19 +280,19 @@ Filter for these tags to focus on Uno Platform logs:
 1. **Reproduce the issue** immediately after clearing logs
 
 1. **Capture logs** during the issue:
-   
+
    ```bash
    adb logcat > issue-reproduction.txt
    ```
 
 1. **Filter to relevant logs** before sharing:
-   
+
    - Focus on the timeframe when the issue occurred
    - Include 10-20 lines before and after the error
    - Remove sensitive information (API keys, user data, etc.)
 
 1. **Include essential context:**
-   
+
    - Uno Platform version
    - Android version and device/emulator details
    - Steps to reproduce
