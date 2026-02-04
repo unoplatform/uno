@@ -255,7 +255,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			return;
 		}
 
-		var unlayoutedLines = SplitTextIntoLines(text, _rtl, _inlines, availableSize, textWrapping, maxLines, textTrimming, lineStackingStrategy, lineHeight, fontListener, forMeasure);
+		var unlayoutedLines = SplitTextIntoLines(text, _rtl, _inlines, availableSize, textWrapping, maxLines, textTrimming, lineStackingStrategy, lineHeight, fontListener);
 		var lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 
 		_lines = maxLines == 0 || maxLines >= lines.Count ? lines : lines[..maxLines];
@@ -282,7 +282,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
 	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(
 		string text, bool rtl, List<ReadonlyInlineCopy> inlines, Size availableSize, TextWrapping textWrapping,
-		int maxLines, TextTrimming textTrimming, LineStackingStrategy lineStackingStrategy, float lineHeight, IFontCacheUpdateListener fontListener, bool forMeasure)
+		int maxLines, TextTrimming textTrimming, LineStackingStrategy lineStackingStrategy, float lineHeight, IFontCacheUpdateListener fontListener)
 	{
 		var logicallyOrderedRuns = new List<BidiRun>();
 		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
@@ -297,9 +297,11 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var lineWidthForLineBreaking = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidthForLineBreaking, logicallyOrderedRuns, lineBreakingOpporunities, rtl, textWrapping);
-		if (!forMeasure && textTrimming is TextTrimming.WordEllipsis)
+
+		var lastLineNeedsEllipsis = RemoveOutOfViewLines(linesWithLogicallyOrderedRuns, maxLines, lineStackingStrategy, lineHeight, availableSize);
+		if (textTrimming is TextTrimming.WordEllipsis)
 		{
-			ApplyWholeWordsTextTrimming(text, linesWithLogicallyOrderedRuns, lineBreakingIndices, maxLines, availableSize, lineStackingStrategy, lineHeight, rtl);
+			ApplyWholeWordsTextTrimming(text, linesWithLogicallyOrderedRuns, lineBreakingIndices, availableSize, rtl, lastLineNeedsEllipsis);
 		}
 		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns, fontListener);
 
@@ -307,8 +309,67 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static void ApplyWholeWordsTextTrimming(string text, List<List<BidiRun>> linesWithLogicallyOrderedRuns,
-		List<int> lineBreakingIndices, int maxLines, Size availableSize,
-		LineStackingStrategy lineStackingStrategy, float lineHeight, bool rtl)
+		List<int> lineBreakingOpportunities, Size availableSize, bool rtl, bool lastLineNeedsEllipsis)
+	{
+		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
+		{
+			var line = linesWithLogicallyOrderedRuns[lineIndex];
+			if (line.Count == 0)
+			{
+				CI.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
+				return;
+			}
+
+			var fullLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, line.Count, line[^1].endInInline, rtl);
+
+			if (fullLineWidthWithoutTrailingSpaces <= availableSize.Width && !(lastLineNeedsEllipsis && lineIndex == linesWithLogicallyOrderedRuns.Count - 1))
+			{
+				continue;
+			}
+
+			var lineBreakingOpportunityIndex = lineBreakingOpportunities.Count - 1;
+			var lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+
+			var foundTrimPoint = false;
+			for (var endRunIndex = line.Count - 1; !foundTrimPoint && endRunIndex >= 0; endRunIndex--)
+			{
+				while (lineBreakingOpportunityIndex > 0 && lineBreakingOpportunity > line[endRunIndex].endInInline + line[endRunIndex].inline.StartIndex)
+				{
+					lineBreakingOpportunityIndex--;
+					lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+				}
+
+				while (lineBreakingOpportunity > line[endRunIndex].startInInline + line[endRunIndex].inline.StartIndex)
+				{
+					lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+					var lastRun = line[endRunIndex];
+					var ellipses = ShapeRun("\u2026", rtl, lastRun.fontDetails, null, false);
+					var ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
+					var (measuringEndRunIndex, endIndexInLastRun) = (endRunIndex + 1, lineBreakingOpportunity - lastRun.inline.StartIndex);
+					var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, measuringEndRunIndex, endIndexInLastRun, rtl);
+					if (testLineWidthWithoutTrailingSpaces + ellipsesWidth <= availableSize.Width || lineBreakingOpportunityIndex == 0 || lineBreakingOpportunities[lineBreakingOpportunityIndex - 1] <= line[0].startInInline + line[0].inline.StartIndex)
+					{
+						var indexAtTrim = lineBreakingOpportunity - TrailingSpaceCount(text, lastRun.inline.StartIndex + lastRun.startInInline, lineBreakingOpportunity);
+						var trimEnd = lineIndex == linesWithLogicallyOrderedRuns.Count - 1 ? text.Length : line[^1].inline.StartIndex + line[^1].endInInline;
+						var trimmedText = text[indexAtTrim..trimEnd];
+						var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
+						line.RemoveRange(endRunIndex, line.Count - endRunIndex);
+						line.Add(lastRun with { endInInline = indexAtTrim });
+						line.Add(new BidiRun(ellipsesRun, 0, trimmedText.Length, lastRun.rtl, lastRun.fontDetails));
+						foundTrimPoint = true;
+						break;
+					}
+					else
+					{
+						lineBreakingOpportunityIndex--;
+						lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+					}
+				}
+			}
+		}
+	}
+
+	private static bool RemoveOutOfViewLines(List<List<BidiRun>> linesWithLogicallyOrderedRuns, int maxLines, LineStackingStrategy lineStackingStrategy, float lineHeight, Size availableSize)
 	{
 		var resultingLineCount = linesWithLogicallyOrderedRuns.Count;
 		if (maxLines > 0)
@@ -328,65 +389,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		var lastLineNeedsEllipsis = resultingLineCount < linesWithLogicallyOrderedRuns.Count;
+		var linesRemoved = resultingLineCount < linesWithLogicallyOrderedRuns.Count;
 		linesWithLogicallyOrderedRuns.RemoveRange(resultingLineCount, linesWithLogicallyOrderedRuns.Count - resultingLineCount);
-
-		for (var lineIndex = 0; lineIndex < resultingLineCount; lineIndex++)
-		{
-			var line = linesWithLogicallyOrderedRuns[lineIndex];
-			if (line.Count == 0)
-			{
-				CI.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
-				return;
-			}
-
-			var fullLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, line.Count, line[^1].endInInline, rtl);
-
-			if (fullLineWidthWithoutTrailingSpaces <= availableSize.Width && !(lastLineNeedsEllipsis && lineIndex == resultingLineCount - 1))
-			{
-				continue;
-			}
-
-			var testLineBreakingIndexIndex = lineBreakingIndices.Count - 1;
-			var testLineBreakingIndex = lineBreakingIndices[testLineBreakingIndexIndex];
-
-			var foundTrimPoint = false;
-			for (var endRunIndex = line.Count - 1; !foundTrimPoint && endRunIndex >= 0; endRunIndex--)
-			{
-				while (testLineBreakingIndexIndex > 0 && testLineBreakingIndex > line[endRunIndex].endInInline + line[endRunIndex].inline.StartIndex)
-				{
-					testLineBreakingIndexIndex--;
-					testLineBreakingIndex = lineBreakingIndices[testLineBreakingIndexIndex];
-				}
-
-				while (testLineBreakingIndex > line[endRunIndex].startInInline + line[endRunIndex].inline.StartIndex)
-				{
-					testLineBreakingIndex = lineBreakingIndices[testLineBreakingIndexIndex];
-					var lastRun = line[endRunIndex];
-					var ellipses = ShapeRun("\u2026", rtl, lastRun.fontDetails, null, false);
-					var ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
-					var (measuringEndRunIndex, endIndexInLastRun) = (endRunIndex + 1, testLineBreakingIndex - lastRun.inline.StartIndex);
-					var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, measuringEndRunIndex, endIndexInLastRun, rtl);
-					if (testLineWidthWithoutTrailingSpaces + ellipsesWidth <= availableSize.Width || testLineBreakingIndexIndex == 0 || lineBreakingIndices[testLineBreakingIndexIndex - 1] <= line[0].startInInline + line[0].inline.StartIndex)
-					{
-						var indexAtTrim = testLineBreakingIndex - TrailingSpaceCount(text, lastRun.inline.StartIndex + lastRun.startInInline, testLineBreakingIndex);
-						var trimEnd = lineIndex == resultingLineCount - 1 ? text.Length : line[^1].inline.StartIndex + line[^1].endInInline;
-						var trimmedText = text[indexAtTrim..trimEnd];
-						var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
-						line.RemoveRange(endRunIndex, line.Count - endRunIndex);
-						line.Add(lastRun with { endInInline = indexAtTrim });
-						line.Add(new BidiRun(ellipsesRun, 0, trimmedText.Length, lastRun.rtl, lastRun.fontDetails));
-						foundTrimPoint = true;
-						break;
-					}
-					else
-					{
-						testLineBreakingIndexIndex--;
-						testLineBreakingIndex = lineBreakingIndices[testLineBreakingIndexIndex];
-					}
-				}
-			}
-		}
+		return linesRemoved;
 	}
 
 	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns, IFontCacheUpdateListener fontListener)
