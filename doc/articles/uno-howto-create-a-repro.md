@@ -110,11 +110,13 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
 **Prerequisites:**
 
 1. **Install Android SDK** (if not already installed):
+   
    - Windows: Typically located at `C:\Users\<username>\AppData\Local\Android\Sdk`
    - macOS: `~/Library/Android/sdk`
    - Linux: `~/Android/Sdk`
 
-2. **Verify ADB Installation:**
+3. **Verify ADB Installation:**
+4. 
    - ADB is located in `<Android-SDK>/platform-tools/adb`
    - Add ADB to your system PATH or note its full path
    - Test by running: `adb version`
@@ -162,9 +164,9 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
 1. Open the Extensions view: **View** → **Extensions** or press **Ctrl+Shift+X** (Windows/Linux) or **⌘⇧X** (macOS)
 2. Search for and install one of these extensions:
    
-   - **"Android"** by adelphes
-   - **"ADB Interface for VSCode"** by vincenthage
-   - **"Android iOS Emulator"** by DiemasMichiels
+   - **[Android](https://marketplace.visualstudio.com/items?itemName=adelphes.android-dev-ext)** by adelphes
+   - **[ADB Interface for VSCode](https://marketplace.visualstudio.com/items?itemName=vinicioslc.adb-interface-vscode)** by Vinicios Clarindo
+   - **[Android iOS Emulator](https://marketplace.visualstudio.com/items?itemName=DiemasMichiels.emulate)** by Diemas Michiels
      
 4. Follow the extension-specific instructions to:
    
