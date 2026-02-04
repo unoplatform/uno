@@ -138,33 +138,43 @@ echo ""
 echo "=== Available Runtime Keys in JSON ==="
 xcrun simctl list -j | jq -r '.devices | keys[]' | head -20
 echo ""
+echo "=== Available iPad devices for $UNO_UITEST_SIMULATOR_VERSION ==="
+xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i ipad || echo "(no iPad devices found)"
+echo ""
 
-# Wait while ios runtime is not having simulators. The install process may
-# take a few seconds and "simctl list devices" may not return devices.
-WAIT_COUNT=0
-MAX_WAIT=24  # 2 minutes max (24 * 5 seconds)
-while true; do
-	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
-	export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
+# Try to find the specified device, or fall back to the first available iPad
+export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 
-	if [ -n "$UITEST_IOSDEVICE_ID" ]; then
-		break
+if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+	echo "Device '$UNO_UITEST_SIMULATOR_NAME' not found, looking for any iPad Pro 12.9-inch device..."
+	# Try to find any iPad Pro 12.9-inch device
+	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "12.9" | head -1`
+	if [ -n "$FALLBACK_DEVICE" ]; then
+		echo "Found fallback device: $FALLBACK_DEVICE"
+		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
+		export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 	fi
+fi
 
-	WAIT_COUNT=$((WAIT_COUNT + 1))
-	if [ $WAIT_COUNT -ge $MAX_WAIT ]; then
-		echo "ERROR: Simulator not found after $MAX_WAIT attempts"
-		echo "Available devices for runtime $UNO_UITEST_SIMULATOR_VERSION:"
-		xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // empty | .[].name' || echo "(none or runtime not found)"
-		echo ""
-		echo "All available devices:"
-		xcrun simctl list devices
-		exit 1
+if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+	echo "No iPad Pro 12.9-inch found, looking for any iPad device..."
+	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad" | head -1`
+	if [ -n "$FALLBACK_DEVICE" ]; then
+		echo "Found fallback device: $FALLBACK_DEVICE"
+		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
+		export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 	fi
+fi
 
-	echo "Waiting for the simulator to be available (attempt $WAIT_COUNT/$MAX_WAIT)"
-	sleep 5
-done
+if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+	echo "ERROR: No iPad simulator found for runtime $UNO_UITEST_SIMULATOR_VERSION"
+	echo "Available devices:"
+	xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name'
+	exit 1
+fi
+
+export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .dataPath'`
+echo "Selected simulator: $UNO_UITEST_SIMULATOR_NAME (ID: $UITEST_IOSDEVICE_ID)"
 
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
