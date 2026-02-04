@@ -11,6 +11,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 {
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
+	private string? _lastText;
 
 	public MultilineInvisibleTextBoxDelegate(WeakReference<InvisibleTextBoxViewExtension> textBoxViewExtension)
 	{
@@ -19,8 +20,15 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 
 	public override void Changed(UITextView textView)
 	{
-		var bindableTextView = textView as MultilineInvisibleTextBoxView;
-		bindableTextView?.OnTextChanged();
+		if (textView is MultilineInvisibleTextBoxView bindableTextView)
+		{
+			var currentText = textView.Text;
+			if (_lastText != currentText)
+			{
+				_lastText = currentText;
+				bindableTextView.OnTextChanged();
+			}
+		}
 	}
 
 	public override bool ShouldChangeText(UITextView textView, NSRange range, string replacementString)
@@ -34,6 +42,11 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 
 			// Both IsReadOnly = true and IsTabStop = false can prevent editing
 			if (textBox.IsReadOnly || !textBox.IsTabStop)
+			{
+				return false;
+			}
+
+			if (range.Length == 0 && string.IsNullOrEmpty(replacementString))
 			{
 				return false;
 			}
@@ -55,6 +68,22 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 		}
 
 		return true;
+	}
+
+	public override void SelectionChanged(UITextView textView)
+	{
+		SyncSelectionToTextView(textView);
+	}
+
+	private void SyncSelectionToTextView(UITextView textView)
+	{
+		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is { } textBox &&
+		textView.SelectedTextRange is { } selectedRange)
+		{
+			var selectionStart = (int)textView.GetOffsetFromPosition(textView.BeginningOfDocument, selectedRange.Start);
+			var selectionEnd = (int)textView.GetOffsetFromPosition(textView.BeginningOfDocument, selectedRange.End);
+			textBox.Select(selectionStart, selectionEnd - selectionStart);
+		}
 	}
 
 	public override bool ShouldEndEditing(UITextView textView)
