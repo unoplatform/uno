@@ -115,8 +115,8 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    - macOS: `~/Library/Android/sdk`
    - Linux: `~/Android/Sdk`
 
-3. **Verify ADB Installation:**
-4. 
+1. **Verify ADB Installation:**
+   
    - ADB is located in `<Android-SDK>/platform-tools/adb`
    - Add ADB to your system PATH or note its full path
    - Test by running: `adb version`
@@ -162,13 +162,13 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
 **Option 2: Using VS Code Extensions**
 
 1. Open the Extensions view: **View** → **Extensions** or press **Ctrl+Shift+X** (Windows/Linux) or **⌘⇧X** (macOS)
-2. Search for and install one of these extensions:
+1. Search for and install one of these extensions:
    
    - **[Android](https://marketplace.visualstudio.com/items?itemName=adelphes.android-dev-ext)** by adelphes
    - **[ADB Interface for VSCode](https://marketplace.visualstudio.com/items?itemName=vinicioslc.adb-interface-vscode)** by Vinicios Clarindo
    - **[Android iOS Emulator](https://marketplace.visualstudio.com/items?itemName=DiemasMichiels.emulate)** by Diemas Michiels
      
-4. Follow the extension-specific instructions to:
+1. Follow the extension-specific instructions to:
    
    - Configure the Android SDK path in VS Code settings
    - Open the Logcat view (usually in the sidebar or via command palette)
@@ -282,6 +282,15 @@ Filter for these tags to focus on Uno Platform logs:
    
    ```bash
    adb logcat > issue-reproduction.txt
+   ```
+
+1. **Filter to relevant logs** before sharing:
+   
+   - Focus on the timeframe when the issue occurred
+   - Include 10-20 lines before and after the error
+   - Remove sensitive information (API keys, user data, etc.)
+
+1. **Include essential context:**
    
    - Uno Platform version
    - Android version and device/emulator details
