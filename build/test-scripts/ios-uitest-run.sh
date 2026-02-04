@@ -110,10 +110,10 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
-export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-5"
-export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
+export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-26-2"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro 13-inch (M5)"
 
-export UnoTargetFrameworkOverride="net9.0-ios18.0"
+export UnoTargetFrameworkOverride="net10.0-ios26.0"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
@@ -127,19 +127,71 @@ fi
 echo "Current system date"
 date
 
-# Wait while ios runtime 16.1 is not having simulators. The install process may 
-# take a few seconds and "simctl list devices" may not return devices.
-while true; do
-	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
-	export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
+# Output the available simulator/runtime/device list
+echo ""
+echo "=== Simulator Configuration ==="
+echo "Looking for runtime: $UNO_UITEST_SIMULATOR_VERSION"
+echo "Looking for device: $UNO_UITEST_SIMULATOR_NAME"
+echo ""
+echo "=== Available Runtimes ==="
+xcrun simctl list runtimes
+echo ""
+echo "=== Available Runtime Keys in JSON ==="
+xcrun simctl list -j | jq -r '.devices | keys[]' | head -20
+echo ""
+echo "=== Available iPad devices for $UNO_UITEST_SIMULATOR_VERSION ==="
+xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i ipad || echo "(no iPad devices found)"
+echo ""
 
+# Try to find the specified device, or fall back to iPad Pro 13-inch, then any iPad Pro.
+# Retry loop handles delay between runtime install and simulators becoming available.
+MAX_ATTEMPTS=24 # 2 minutes max (24 * 5 seconds)
+ATTEMPT=0
+
+while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+	ATTEMPT=$((ATTEMPT + 1))
+
+	# Try the specified device first
+	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+	SELECTED_DEVICE="$UNO_UITEST_SIMULATOR_NAME"
+
+	# Fallback to any iPad Pro 13-inch
+	if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+		FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "13-inch" | head -1 || true`
+		if [ -n "$FALLBACK_DEVICE" ]; then
+			SELECTED_DEVICE="$FALLBACK_DEVICE"
+			export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+		fi
+	fi
+
+	# Fallback to any iPad Pro
+	if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+		FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | head -1 || true`
+		if [ -n "$FALLBACK_DEVICE" ]; then
+			SELECTED_DEVICE="$FALLBACK_DEVICE"
+			export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+		fi
+	fi
+
+	# If found, update the simulator name and break out of the loop
 	if [ -n "$UITEST_IOSDEVICE_ID" ]; then
+		export UNO_UITEST_SIMULATOR_NAME="$SELECTED_DEVICE"
 		break
 	fi
 
-	echo "Waiting for the simulator to be available"
+	echo "Waiting for simulator to be available (attempt $ATTEMPT/$MAX_ATTEMPTS)..."
 	sleep 5
 done
+
+if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+	echo "ERROR: No iPad Pro simulator found for runtime $UNO_UITEST_SIMULATOR_VERSION after $MAX_ATTEMPTS attempts"
+	echo "Available devices:"
+	xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name'
+	exit 1
+fi
+
+export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .dataPath'`
+echo "Selected simulator: $UNO_UITEST_SIMULATOR_NAME (ID: $UITEST_IOSDEVICE_ID)"
 
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
