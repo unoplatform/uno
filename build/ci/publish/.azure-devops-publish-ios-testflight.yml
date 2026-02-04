@@ -62,7 +62,7 @@ jobs:
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-ios'
+      UnoCheckParameters: '--tfm net10.0-ios26.0'
 
   - template: ../templates/ios-build-select-version.yml
     parameters:
@@ -73,10 +73,10 @@ jobs:
   - bash: |
       cd $(_BuildFolder)
       dotnet publish \
-        -f net9.0-ios \
+        -f net10.0-ios26.0 \
         -c Release \
         -p:BuildForTestFlight=true \
-        -p:UnoTargetFrameworkOverride=net9.0-ios \
+        -p:UnoTargetFrameworkOverride=net10.0-ios26.0 \
         /bl:$(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
 
     displayName: Build for TestFlight
@@ -88,7 +88,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(_BuildFolder)/bin/Release/net9.0-ios/ios-arm64/publish
+      SourceFolder: $(_BuildFolder)/bin/Release/net10.0-ios26.0/ios-arm64/publish
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/TestFlight
       CleanTargetFolder: false
