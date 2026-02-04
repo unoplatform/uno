@@ -82,17 +82,18 @@ internal readonly partial struct UnicodeText
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
 				// we try a wide range of versions.
-				for (int i = 100; i >= 67; i--)
+				for (int i = 100; i >= 50; i--)
 				{
 					if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}", out _))
 					{
 						_icuVersion = i;
+						break;
 					}
 				}
 
 				if (_icuVersion == 0)
 				{
-					throw new Exception("Failed to load icuuc.");
+					throw new Exception("Loaded icuuc, but could not find symbol `u_getVersion_N`, where N is in range [50-100].");
 				}
 			}
 			else if (OperatingSystem.IsBrowser())
