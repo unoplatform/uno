@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>$(NetPreviousWinAppSDK)</TargetFramework>
+		<TargetFramework>$(NetCurrentWinAppSDK)</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>SamplesApp.Windows</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -21,6 +21,7 @@
 		<AppxAutoIncrementPackageRevision>false</AppxAutoIncrementPackageRevision>
 		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
 	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<Content Include="Assets\SplashScreen.scale-200.png" />
