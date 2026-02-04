@@ -137,7 +137,6 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 
 > [!NOTE]
 > The columns below represent rendering modes, not platforms. "Web" includes both native (DOM) and Skia rendering. When WebAssembly runs with Skia rendering, both `wasm` and `skia` prefixes will be active.
-> 
 > \* Only applies when WebAssembly is running with Skia rendering
 
 | Prefix        |  Windows  | Android (Native) |  iOS (Native)  |  Web (All)  | macOS | Skia (Desktop/Mobile) |
