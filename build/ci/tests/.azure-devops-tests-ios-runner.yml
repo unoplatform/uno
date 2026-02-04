@@ -71,13 +71,19 @@ jobs:
 
   - bash: |
       set -euo pipefail
-      if xcrun simctl list runtimes | grep -q "iOS 26.2"; then
-        echo "iOS 26.2 runtime already installed"
-        exit 0
+      echo "=== Available Xcode runtimes ==="
+      xcrun simctl list runtimes
+      echo ""
+      echo "=== Available simulator devices ==="
+      xcrun simctl list devicetypes | grep -i ipad || true
+      echo ""
+      if xcrun simctl list runtimes | grep -q "iOS 26"; then
+        echo "iOS 26.x runtime already installed"
+      else
+        echo "Downloading iOS simulator runtime for current Xcode"
+        sudo xcodebuild -downloadPlatform iOS
       fi
-      echo "Downloading iOS 26.2 simulator runtime"
-      sudo xcodebuild -downloadPlatform iOS -buildVersion 26.2
-    displayName: Ensure iOS 26.2 simulator runtime
+    displayName: Ensure iOS simulator runtime
 
   - bash: |
       rm -f ${HOME}/Library/Preferences/Xamarin/Settings.plist

@@ -127,8 +127,22 @@ fi
 echo "Current system date"
 date
 
-# Wait while ios runtime 16.1 is not having simulators. The install process may 
+echo ""
+echo "=== Simulator Configuration ==="
+echo "Looking for runtime: $UNO_UITEST_SIMULATOR_VERSION"
+echo "Looking for device: $UNO_UITEST_SIMULATOR_NAME"
+echo ""
+echo "=== Available Runtimes ==="
+xcrun simctl list runtimes
+echo ""
+echo "=== Available Runtime Keys in JSON ==="
+xcrun simctl list -j | jq -r '.devices | keys[]' | head -20
+echo ""
+
+# Wait while ios runtime is not having simulators. The install process may
 # take a few seconds and "simctl list devices" may not return devices.
+WAIT_COUNT=0
+MAX_WAIT=24  # 2 minutes max (24 * 5 seconds)
 while true; do
 	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
 	export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
@@ -137,7 +151,18 @@ while true; do
 		break
 	fi
 
-	echo "Waiting for the simulator to be available"
+	WAIT_COUNT=$((WAIT_COUNT + 1))
+	if [ $WAIT_COUNT -ge $MAX_WAIT ]; then
+		echo "ERROR: Simulator not found after $MAX_WAIT attempts"
+		echo "Available devices for runtime $UNO_UITEST_SIMULATOR_VERSION:"
+		xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // empty | .[].name' || echo "(none or runtime not found)"
+		echo ""
+		echo "All available devices:"
+		xcrun simctl list devices
+		exit 1
+	fi
+
+	echo "Waiting for the simulator to be available (attempt $WAIT_COUNT/$MAX_WAIT)"
 	sleep 5
 done
 
