@@ -240,6 +240,11 @@ fi
 ##
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
+# Ensure a clean simulator to reduce transient XcodeService/socket bind failures.
+echo "Cleaning simulator state: [$UITEST_IOSDEVICE_ID]"
+xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+xcrun simctl erase "$UITEST_IOSDEVICE_ID" || true
+
 echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
