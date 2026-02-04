@@ -301,15 +301,116 @@ internal readonly partial struct UnicodeText : IParsedText
 		var lastLineNeedsEllipsis = RemoveOutOfViewLines(linesWithLogicallyOrderedRuns, maxLines, lineStackingStrategy, lineHeight, availableSize);
 		if (textTrimming is TextTrimming.WordEllipsis)
 		{
-			ApplyWholeWordsTextTrimming(text, linesWithLogicallyOrderedRuns, lineBreakingIndices, availableSize, rtl, lastLineNeedsEllipsis);
+			ApplyWholeWordsTextTrimming(text, linesWithLogicallyOrderedRuns, lineBreakingIndices, (float)availableSize.Width, rtl, lastLineNeedsEllipsis);
+		}
+		else if (textTrimming is TextTrimming.CharacterEllipsis)
+		{
+			ApplyCharacterTextTrimming(text, linesWithLogicallyOrderedRuns, (float)availableSize.Width, rtl, lastLineNeedsEllipsis);
 		}
 		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns, fontListener);
 
 		return linesWithBidiReordering;
 	}
 
+	private static void ApplyCharacterTextTrimming(string text, List<List<BidiRun>> linesWithLogicallyOrderedRuns, float availableWidth, bool rtl, bool lastLineNeedsEllipsis)
+	{
+		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
+		{
+			var line = linesWithLogicallyOrderedRuns[lineIndex];
+			if (line.Count == 0)
+			{
+				CI.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
+				return;
+			}
+
+			var lastRun = line[^1];
+			var fullLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, line.Count, lastRun.endInInline, rtl);
+
+			if (fullLineWidthWithoutTrailingSpaces <= availableWidth && !(lastLineNeedsEllipsis && lineIndex == linesWithLogicallyOrderedRuns.Count - 1))
+			{
+				continue;
+			}
+
+			var indexOfRunToTrimAt = 0;
+			(GlyphInfo info, UnoGlyphPosition position)[] ellipses = [];
+			var ellipsesWidth = 0f;
+			for (var endRunIndex = line.Count - 1; endRunIndex >= 0; endRunIndex--)
+			{
+				var testLastRun = line[endRunIndex];
+				var testEllipses = ShapeRun("\u2026", rtl, testLastRun.fontDetails, null, false);
+				var testEllipsesWidth = RunWidth(testEllipses, testLastRun.fontDetails);
+				var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, endRunIndex + 1, testLastRun.endInInline, rtl);
+				if (testLineWidthWithoutTrailingSpaces + testEllipsesWidth <= availableWidth)
+				{
+					indexOfRunToTrimAt = endRunIndex + 1;
+					break;
+				}
+				else
+				{
+					(ellipses, ellipsesWidth) = (testEllipses, testEllipsesWidth);
+				}
+			}
+
+			if (ellipses.Length == 0)
+			{
+				ellipses = ShapeRun("\u2026", rtl, lastRun.fontDetails, null, false);
+				ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
+			}
+
+			int indexAtTrim;
+			if (indexOfRunToTrimAt == line.Count)
+			{
+				indexAtTrim = lastRun.endInInline + lastRun.inline.StartIndex;
+				indexAtTrim -= TrailingCRLFCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
+				indexAtTrim -= TrailingSpaceCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
+			}
+			else
+			{
+				var runToTrimAt = line[indexOfRunToTrimAt];
+				var endIndexInTrimRun = runToTrimAt.endInInline;
+				for (; endIndexInTrimRun > 0; endIndexInTrimRun--)
+				{
+					var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, indexOfRunToTrimAt + 1, endIndexInTrimRun, rtl);
+					if (testLineWidthWithoutTrailingSpaces + ellipsesWidth <= availableWidth)
+					{
+						line[indexOfRunToTrimAt] = runToTrimAt with { endInInline = endIndexInTrimRun };
+						break;
+					}
+				}
+
+				if (endIndexInTrimRun == 0)
+				{
+					indexOfRunToTrimAt--;
+					if (indexOfRunToTrimAt >= 0)
+					{
+						runToTrimAt = line[indexOfRunToTrimAt];
+						endIndexInTrimRun = runToTrimAt.endInInline;
+					}
+				}
+
+				if (indexOfRunToTrimAt >= 0)
+				{
+					indexAtTrim = runToTrimAt.inline.StartIndex + endIndexInTrimRun;
+					indexAtTrim -= TrailingCRLFCount(text, runToTrimAt.inline.StartIndex + runToTrimAt.startInInline, indexAtTrim);
+					indexAtTrim -= TrailingSpaceCount(text, runToTrimAt.inline.StartIndex + runToTrimAt.startInInline, indexAtTrim);
+				}
+				else
+				{
+					indexAtTrim = line[0].inline.StartIndex + line[0].inline.StartIndex + 1; // at least one character
+				}
+			}
+
+			var trimEnd = lineIndex == linesWithLogicallyOrderedRuns.Count - 1 ? text.Length : lastRun.inline.StartIndex + lastRun.endInInline;
+			var trimmedText = text[indexAtTrim..trimEnd];
+			var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
+			line.RemoveRange(indexOfRunToTrimAt + 1, line.Count - (indexOfRunToTrimAt + 1));
+			line.Add(lastRun with { endInInline = indexAtTrim });
+			line.Add(new BidiRun(ellipsesRun, 0, trimmedText.Length, lastRun.rtl, lastRun.fontDetails));
+		}
+	}
+
 	private static void ApplyWholeWordsTextTrimming(string text, List<List<BidiRun>> linesWithLogicallyOrderedRuns,
-		List<int> lineBreakingOpportunities, Size availableSize, bool rtl, bool lastLineNeedsEllipsis)
+		List<int> lineBreakingOpportunities, float availableWidth, bool rtl, bool lastLineNeedsEllipsis)
 	{
 		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
 		{
@@ -322,7 +423,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			var fullLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, line.Count, line[^1].endInInline, rtl);
 
-			if (fullLineWidthWithoutTrailingSpaces <= availableSize.Width && !(lastLineNeedsEllipsis && lineIndex == linesWithLogicallyOrderedRuns.Count - 1))
+			if (fullLineWidthWithoutTrailingSpaces <= availableWidth && !(lastLineNeedsEllipsis && lineIndex == linesWithLogicallyOrderedRuns.Count - 1))
 			{
 				continue;
 			}
@@ -347,9 +448,11 @@ internal readonly partial struct UnicodeText : IParsedText
 					var ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
 					var (measuringEndRunIndex, endIndexInLastRun) = (endRunIndex + 1, lineBreakingOpportunity - lastRun.inline.StartIndex);
 					var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, measuringEndRunIndex, endIndexInLastRun, rtl);
-					if (testLineWidthWithoutTrailingSpaces + ellipsesWidth <= availableSize.Width || lineBreakingOpportunityIndex == 0 || lineBreakingOpportunities[lineBreakingOpportunityIndex - 1] <= line[0].startInInline + line[0].inline.StartIndex)
+					if (testLineWidthWithoutTrailingSpaces + ellipsesWidth <= availableWidth || lineBreakingOpportunityIndex == 0 || lineBreakingOpportunities[lineBreakingOpportunityIndex - 1] <= line[0].startInInline + line[0].inline.StartIndex)
 					{
-						var indexAtTrim = lineBreakingOpportunity - TrailingSpaceCount(text, lastRun.inline.StartIndex + lastRun.startInInline, lineBreakingOpportunity);
+						var indexAtTrim = lineBreakingOpportunity;
+						indexAtTrim -= TrailingCRLFCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
+						indexAtTrim -= TrailingSpaceCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
 						var trimEnd = lineIndex == linesWithLogicallyOrderedRuns.Count - 1 ? text.Length : line[^1].inline.StartIndex + line[^1].endInInline;
 						var trimmedText = text[indexAtTrim..trimEnd];
 						var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
