@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
-			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
+			ParsedText = ParseText(availableSizeWithoutPadding, true, out var desiredSize);
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size) =>
+		private UnicodeText ParseText(Size availableSizeWithoutPadding, bool forMeasure, out Size size) =>
 			new UnicodeText(
 				availableSizeWithoutPadding,
 				Inlines.TraversedTree.leafTree,
@@ -116,8 +116,10 @@ namespace Microsoft.UI.Xaml.Controls
 						? null
 						: TextAlignment,
 				TextWrapping,
+				TextTrimming,
 				IsSpellCheckEnabled,
 				this,
+				false,
 				out size);
 
 		// the entire body of the text block is considered hit-testable
@@ -148,7 +150,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			ParsedText = ParseText(availableSizeWithoutPadding, out var arrangedSize);
+			ParsedText = ParseText(availableSizeWithoutPadding, false, out var arrangedSize);
 
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
