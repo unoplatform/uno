@@ -127,6 +127,13 @@ fi
 echo "Current system date"
 date
 
+# Workaround for Xcode 26 simulator platform availability (see #13570).
+# Preload simulator runtimes and ensure iOS platform is downloaded.
+echo ""
+echo "=== Xcode Platform Warmup ==="
+xcrun simctl list >/dev/null 2>&1 || echo "Warning: simctl list failed during warmup"
+xcodebuild -downloadPlatform iOS -architectureVariant universal || echo "Warning: xcodebuild platform download failed"
+
 # Output the available simulator/runtime/device list
 echo ""
 echo "=== Simulator Configuration ==="
