@@ -127,6 +127,7 @@ fi
 echo "Current system date"
 date
 
+# Output the available simulator/runtime/device list
 echo ""
 echo "=== Simulator Configuration ==="
 echo "Looking for runtime: $UNO_UITEST_SIMULATOR_VERSION"
