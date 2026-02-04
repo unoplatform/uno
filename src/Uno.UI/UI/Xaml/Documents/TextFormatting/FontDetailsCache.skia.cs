@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.Extensions;
@@ -11,6 +12,7 @@ using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
+using Uno.Helpers;
 using SKFontStyleWidth = SkiaSharp.SKFontStyleWidth;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -58,9 +60,16 @@ internal static class FontDetailsCache
 			typeof(FontDetailsCache).Log().LogDebug($"Fetching font from {uri}");
 		}
 
-		var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-		using var stream = await file.OpenStreamForReadAsync();
-		return stream is null ? null : SKTypeface.FromStream(stream);
+		try
+		{
+			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
+			return SKTypeface.FromStream(stream);
+		}
+		catch (Exception e)
+		{
+			typeof(FontDetailsCache).LogError()?.Error($"Loading font from {uri} failed: {e}");
+			return null;
+		}
 	}
 
 	private static Task<SKTypeface?> GetFontInternal(
@@ -79,7 +88,7 @@ internal static class FontDetailsCache
 			name = name.Substring(0, hashIndex);
 		}
 
-		if (Uri.TryCreate(name, UriKind.Absolute, out var uri) && uri.IsLocalResource())
+		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
 			return LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
@@ -90,7 +99,7 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<SKTypeface?> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
+	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
 		string? name,
 		float fontSize,
 		FontWeight weight,
@@ -137,30 +146,30 @@ internal static class FontDetailsCache
 						?? SKTypeface.FromFamilyName(null);
 		}
 
-		var details = FontDetails.Create(typeface, fontSize, canChange);
+		var details = FontDetails.Create(typeface, fontSize);
 
-		if (canChange)
+		var detailsTask = typefaceTask.ContinueWith(t =>
 		{
-			typefaceTask.ContinueWith(t =>
-			{
-				var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
+			var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
 
-				if (loadedTypeface is null)
+			if (loadedTypeface is null)
+			{
+				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 				{
-					if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
-					}
+					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
 				}
 
-				details.FontLoaded(loadedTypeface);
-			});
-		}
-
-		return (details, typefaceTask);
+				return details;
+			}
+			else
+			{
+				return FontDetails.Create(loadedTypeface, details.SKFontSize);
+			}
+		});
+		return (details, detailsTask);
 	});
 
-	public static (FontDetails details, Task<SKTypeface?> loadedTask) GetFont(
+	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
 		string? name,
 		float fontSize,
 		FontWeight weight,

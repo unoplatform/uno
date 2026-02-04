@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,9 +17,9 @@ using Microsoft.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
 #if __WASM__
-	[SampleControlInfo("CommandBar", "Flyouts", ignoreInSnapshotTests: true)]
+	[Sample("CommandBar", Name = "Flyouts", IgnoreInSnapshotTests = true)]
 #else
-	[SampleControlInfo("CommandBar", "Flyouts")]
+	[Sample("CommandBar", Name = "Flyouts")]
 #endif
 	public sealed partial class CommandBar_Flyout : UserControl
 	{

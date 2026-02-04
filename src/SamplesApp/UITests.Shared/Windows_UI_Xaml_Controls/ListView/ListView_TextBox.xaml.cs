@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_TextBox", typeof(ListViewViewModel), description: "On iOS, Textbox crashes with TextWrapping or AcceptsReturn")]
+	[Sample("ListView", Name = "ListView_TextBox", ViewModelType = typeof(ListViewViewModel), Description = "On iOS, Textbox crashes with TextWrapping or AcceptsReturn")]
 	public sealed partial class ListView_TextBox : UserControl
 	{
 		public ListView_TextBox()

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BackdropMaterial.properties.cpp, commit 0db5d03
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -28,8 +29,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Applies the backdrop material to the root or background of the XAML content.
 		/// </summary>
-		public static DependencyProperty ApplyToRootOrPageBackgroundProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty ApplyToRootOrPageBackgroundProperty
+		{
+			[DynamicDependency(nameof(GetApplyToRootOrPageBackground))]
+			[DynamicDependency(nameof(SetApplyToRootOrPageBackground))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"ApplyToRootOrPageBackground",
 				typeof(bool),
 				typeof(BackdropMaterial),

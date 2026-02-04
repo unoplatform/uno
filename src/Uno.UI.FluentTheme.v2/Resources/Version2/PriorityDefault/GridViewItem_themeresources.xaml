@@ -20,6 +20,29 @@
             <StaticResource x:Key="GridViewItemDragBackground" ResourceKey="SubtleFillColorTransparentBrush" />
             <StaticResource x:Key="GridViewItemDragForeground" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
             <StaticResource x:Key="GridViewItemPlaceholderBackground" ResourceKey="ControlStrongFillColorDisabledBrush" />
+            <CornerRadius x:Key="GridViewItemCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="GridViewItemCheckBoxCornerRadius">3</CornerRadius>
+            <Thickness x:Key="GridViewItemSelectedBorderThickness">2</Thickness>
+            <StaticResource x:Key="GridViewItemPointerOverBorderBrush" ResourceKey="ControlStrokeColorOnAccentTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemSelectedBorderBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemSelectedPointerOverBorderBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemSelectedPressedBorderBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemSelectedDisabledBorderBrush" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemSelectedInnerBorderBrush" ResourceKey="ControlSolidFillColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckPressedBrush" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckDisabledBrush" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPointerOverBrush" ResourceKey="ControlOnImageFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPressedBrush" ResourceKey="ControlOnImageFillColorTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxDisabledBrush" ResourceKey="ControlOnImageFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedPointerOverBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedPressedBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPointerOverBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPressedBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxDisabledBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemBackgroundSelectedDisabled" ResourceKey="SubtleFillColorSecondaryBrush" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <StaticResource x:Key="GridViewItemBackground" ResourceKey="SystemControlTransparentBrush" />
@@ -40,6 +63,29 @@
             <StaticResource x:Key="GridViewItemDragBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="GridViewItemDragForeground" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />
             <StaticResource x:Key="GridViewItemPlaceholderBackground" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+            <CornerRadius x:Key="GridViewItemCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="GridViewItemCheckBoxCornerRadius">3</CornerRadius>
+            <Thickness x:Key="GridViewItemSelectedBorderThickness">2</Thickness>
+            <SolidColorBrush x:Key="GridViewItemPointerOverBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="GridViewItemSelectedBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="GridViewItemSelectedPointerOverBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="GridViewItemSelectedPressedBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="GridViewItemSelectedDisabledBorderBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="GridViewItemSelectedInnerBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckPressedBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxPointerOverBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxPressedBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxDisabledBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxSelectedBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxSelectedPointerOverBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxSelectedPressedBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxSelectedDisabledBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxPointerOverBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxPressedBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="GridViewItemCheckBoxDisabledBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="GridViewItemBackgroundSelectedDisabled" Color="{ThemeResource SystemColorWindowColor}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <StaticResource x:Key="GridViewItemBackground" ResourceKey="SubtleFillColorTransparentBrush" />
@@ -60,6 +106,29 @@
             <StaticResource x:Key="GridViewItemDragBackground" ResourceKey="SubtleFillColorTransparentBrush" />
             <StaticResource x:Key="GridViewItemDragForeground" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
             <StaticResource x:Key="GridViewItemPlaceholderBackground" ResourceKey="ControlStrongFillColorDisabledBrush" />
+            <CornerRadius x:Key="GridViewItemCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="GridViewItemCheckBoxCornerRadius">3</CornerRadius>
+            <Thickness x:Key="GridViewItemSelectedBorderThickness">2</Thickness>
+            <StaticResource x:Key="GridViewItemPointerOverBorderBrush" ResourceKey="ControlStrokeColorOnAccentTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemSelectedBorderBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemSelectedPointerOverBorderBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemSelectedPressedBorderBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemSelectedDisabledBorderBrush" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemSelectedInnerBorderBrush" ResourceKey="ControlSolidFillColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckPressedBrush" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckDisabledBrush" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPointerOverBrush" ResourceKey="ControlOnImageFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPressedBrush" ResourceKey="ControlOnImageFillColorTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxDisabledBrush" ResourceKey="ControlOnImageFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedPointerOverBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedPressedBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxSelectedDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPointerOverBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxPressedBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemCheckBoxDisabledBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="GridViewItemBackgroundSelectedDisabled" ResourceKey="SubtleFillColorSecondaryBrush" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -67,7 +136,8 @@
     <!-- <Style TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}" /> -->
     <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemExpanded}" />
 
-    <Style x:Key="DefaultGridViewItemStyle" TargetType="GridViewItem">
+    <!-- GridViewItemExpanded style - uses expanded visual tree instead of ListViewItemPresenter -->
+    <Style x:Key="GridViewItemExpanded" TargetType="GridViewItem">
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <Setter Property="Background" Value="{ThemeResource GridViewItemBackground}" />
@@ -89,38 +159,173 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GridViewItem">
-                    <ListViewItemPresenter ContentTransitions="{TemplateBinding ContentTransitions}"
-                        x:Name="Root"
+                    <Grid x:Name="ContentBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{ThemeResource GridViewItemCornerRadius}"
                         Control.IsTemplateFocusTarget="True"
-                        FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
-                        FocusVisualPrimaryBrush="{TemplateBinding FocusVisualPrimaryBrush}"
-                        FocusVisualPrimaryThickness="{TemplateBinding FocusVisualPrimaryThickness}"
-                        FocusVisualSecondaryBrush="{TemplateBinding FocusVisualSecondaryBrush}"
-                        FocusVisualSecondaryThickness="{TemplateBinding FocusVisualSecondaryThickness}"
-                        SelectionCheckMarkVisualEnabled="{ThemeResource GridViewItemSelectionCheckMarkVisualEnabled}"
-                        CheckBrush="{ThemeResource GridViewItemCheckBrush}"
-                        CheckBoxBrush="{ThemeResource GridViewItemCheckBoxBrush}"
-                        DragBackground="{ThemeResource GridViewItemDragBackground}"
-                        DragForeground="{ThemeResource GridViewItemDragForeground}"
-                        FocusBorderBrush="{ThemeResource GridViewItemFocusBorderBrush}"
-                        FocusSecondaryBorderBrush="{ThemeResource GridViewItemFocusSecondaryBorderBrush}"
-                        PlaceholderBackground="{ThemeResource GridViewItemPlaceholderBackground}"
-                        PointerOverBackground="{ThemeResource GridViewItemBackgroundPointerOver}"
-                        PointerOverForeground="{ThemeResource GridViewItemForegroundPointerOver}"
-                        SelectedBackground="{ThemeResource GridViewItemBackgroundSelected}"
-                        SelectedForeground="{ThemeResource GridViewItemForegroundSelected}"
-                        SelectedPointerOverBackground="{ThemeResource GridViewItemBackgroundSelectedPointerOver}"
-                        PressedBackground="{ThemeResource GridViewItemBackgroundPressed}"
-                        SelectedPressedBackground="{ThemeResource GridViewItemBackgroundSelectedPressed}"
-                        DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
-                        DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
-                        ReorderHintOffset="{ThemeResource GridViewItemReorderHintThemeOffset}"
-                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                        ContentMargin="{TemplateBinding Padding}"
-                        CheckMode="{ThemeResource GridViewItemCheckMode}"/>
+                        FocusVisualMargin="{TemplateBinding FocusVisualMargin}">
+                        
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                    </Storyboard>
+                                </VisualState>
+                                
+                                <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BorderBackground"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemForegroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderRectangle" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemPointerOverBorderBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                    </Storyboard>
+                                </VisualState>
+                                
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BorderBackground"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemForegroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <PointerDownThemeAnimation TargetName="ContentPresenter" />
+                                    </Storyboard>
+                                </VisualState>
+                                
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BorderBackground"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemBackgroundSelected}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemForegroundSelected}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimation Storyboard.TargetName="BorderRectangle"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderRectangle" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemSelectedBorderBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                    </Storyboard>
+                                </VisualState>
+                                
+                                <VisualState x:Name="PointerOverSelected">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BorderBackground"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemBackgroundSelectedPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemForegroundSelected}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimation Storyboard.TargetName="BorderRectangle"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderRectangle" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemSelectedPointerOverBorderBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                    </Storyboard>
+                                </VisualState>
+                                
+                                <VisualState x:Name="PressedSelected">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BorderBackground"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemBackgroundSelectedPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemForegroundSelected}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimation Storyboard.TargetName="BorderRectangle"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderRectangle" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource GridViewItemSelectedPressedBorderBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <PointerDownThemeAnimation TargetName="ContentPresenter" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            
+                            <VisualStateGroup x:Name="DisabledStates">
+                                <VisualState x:Name="Enabled" />
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="{ThemeResource ListViewItemDisabledThemeOpacity}" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            
+                            <VisualStateGroup x:Name="MultiSelectStates">
+                                <VisualState x:Name="MultiSelectDisabled" />
+                                <VisualState x:Name="MultiSelectEnabled" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        
+                        <!-- Background -->
+                        <Rectangle x:Name="BorderBackground"
+                            Fill="{ThemeResource GridViewItemBackground}"
+                            RadiusX="4"
+                            RadiusY="4"
+                            Opacity="0" />
+                        
+                        <!-- Content -->
+                        <ContentPresenter x:Name="ContentPresenter"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Margin="{TemplateBinding Padding}" />
+                        
+                        <!-- Selection Border -->
+                        <Rectangle x:Name="BorderRectangle"
+                            IsHitTestVisible="False"
+                            Stroke="{ThemeResource GridViewItemSelectedBorderBrush}"
+                            StrokeThickness="2"
+                            RadiusX="4"
+                            RadiusY="4"
+                            Opacity="0" />
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="DefaultGridViewItemStyle" TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemExpanded}" />
+
 </ResourceDictionary>

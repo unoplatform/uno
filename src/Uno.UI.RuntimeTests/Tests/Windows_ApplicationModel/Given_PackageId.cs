@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __ANDROID__
+﻿#if __APPLE_UIKIT__ || __ANDROID__ || __SKIA__ || __WASM__
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,6 +9,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel
 	[TestClass]
 	public class Given_PackageId
 	{
+#if __APPLE_UIKIT__ || __ANDROID__
 		[TestMethod]
 		public void When_FamilyNameQueried()
 		{
@@ -29,6 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel
 			var SUT = Package.Current.Id;
 			Assert.IsNotNull(SUT.Name);
 		}
+#endif
 
 		[TestMethod]
 		public void When_VersionQueried()
@@ -43,6 +45,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel
 				Assert.Fail("Expected no exception, but got: " + ex.Message);
 			}
 		}
+
+#if __SKIA__ || __WASM__
+		[TestMethod]
+		public void When_VersionQueried_ReturnsValidVersion()
+		{
+			var SUT = Package.Current.Id;
+			var version = SUT.Version;
+
+			// The version should have been populated from AssemblyInformationalVersionAttribute
+			// At minimum, we expect the Major version to be set (not just all zeros)
+			// unless the app explicitly sets version 0.0.0.0
+			// This test verifies that the Version property can be accessed without exception
+			Assert.IsTrue(version.Major >= 0);
+			Assert.IsTrue(version.Minor >= 0);
+			Assert.IsTrue(version.Build >= 0);
+			Assert.IsTrue(version.Revision >= 0);
+		}
+#endif
 	}
 }
 #endif

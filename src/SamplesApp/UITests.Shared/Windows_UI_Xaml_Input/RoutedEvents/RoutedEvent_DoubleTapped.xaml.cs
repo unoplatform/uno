@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents
 {
-	[SampleControlInfo("Routed Events", "DoubleTappedEvent")]
+	[Sample("Routed Events", Name = "DoubleTappedEvent")]
 	public sealed partial class RoutedEvent_DoubleTapped : Page
 	{
 		public RoutedEvent_DoubleTapped()

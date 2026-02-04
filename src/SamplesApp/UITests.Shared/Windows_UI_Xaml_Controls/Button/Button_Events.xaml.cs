@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 {
-	[SampleControlInfo("Buttons", "Button_Events")]
+	[Sample("Buttons", Name = "Button_Events")]
 	public sealed partial class Button_Events : Page
 	{
 		private int _btnTappedCount;

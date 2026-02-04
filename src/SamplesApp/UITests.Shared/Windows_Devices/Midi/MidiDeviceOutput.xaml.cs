@@ -1,4 +1,4 @@
-﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace UITests.Shared.Windows_Devices.Midi
 {
 	// Based on https://github.com/microsoft/Windows-universal-samples/blob/master/Samples/MIDI/cs/Scenario3_SendMIDIMessages.xaml.cs
-	[SampleControlInfo("Windows.Devices", "Midi_Output", description: "Output to a connected MIDI device")]
+	[Sample("Windows.Devices", Name = "Midi_Output", Description = "Output to a connected MIDI device")]
 	public sealed partial class MidiDeviceOutputTests : UserControl
 	{
 		/// <summary>

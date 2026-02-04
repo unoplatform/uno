@@ -15,10 +15,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls.Primitives;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ColorPicker : Control

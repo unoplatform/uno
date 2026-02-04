@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes", "PolylinePage")]
+	[Sample("Shapes", Name = "PolylinePage")]
 	public sealed partial class PolylinePage : Page
 	{
 		public PolylinePage()

@@ -300,7 +300,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_textBox != null)
 			{
-				_textBox.KeyDown += OnTextBoxKeyDown;
+				_textBox.PostKeyDown += OnTextBoxPostKeyDown;
 				_queryButton = _textBox.GetTemplateChild<Button>("QueryButton");
 			}
 
@@ -332,7 +332,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_textBoxLoadedDisposable?.Dispose();
 			if (_textBox != null)
 			{
-				_textBox.KeyDown -= OnTextBoxKeyDown;
+				_textBox.PostKeyDown -= OnTextBoxPostKeyDown;
 			}
 
 			if (_queryButton != null)
@@ -448,7 +448,7 @@ namespace Microsoft.UI.Xaml.Controls
 			IsSuggestionListOpen = false;
 		}
 
-		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
+		private void OnTextBoxPostKeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			if (e.Key == VirtualKey.Enter)
 			{

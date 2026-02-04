@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,14 +20,14 @@ using System.ComponentModel;
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo(
+	[Sample(
 		"ListView",
 		"ListView_DataContext_Reference",
-		viewModelType: typeof(DataContextReferenceViewModel),
-		description: "Display a ListView of items. Each row has a TextBox and a Click Button. \n" +
+		ViewModelType = typeof(DataContextReferenceViewModel),
+		Description = "Display a ListView of items. Each row has a TextBox and a Click Button. \n" +
 		"When Cliking on a row's button the item description will change into `Selected Item [Number]` where `Number` \n" +
 		"is the row number of the item in question. This whole process should not fail.",
-		isManualTest: true)]
+		IsManualTest = true)]
 	public sealed partial class ListView_DataContext_Reference : UserControl
 	{
 		public ListView_DataContext_Reference()

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
@@ -90,7 +91,7 @@ internal partial class NumberBoxParser
 		{
 			// Might be a number
 			var matchLength = match.Groups[0].Length;
-			var parsedNum = ApiInformation.IsTypePresent(numberParser?.GetType().AssemblyQualifiedName)
+			var parsedNum = IsTypePresent(numberParser?.GetType())
 				? numberParser.ParseDouble(input.Substring(0, matchLength))
 				: double.TryParse(input.AsSpan().Slice(0, matchLength), out var d)
 					? (double?)d
@@ -104,6 +105,10 @@ internal partial class NumberBoxParser
 		}
 
 		return (double.NaN, 0);
+
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
+		static bool IsTypePresent(Type type)
+			=> ApiInformation.IsTypePresent(type.AssemblyQualifiedName);
 	}
 
 	static int GetPrecedenceValue(char c)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -23,8 +24,11 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal static readonly UnsafeWeakAttachedDictionary<View, string> LayoutProperties = new UnsafeWeakAttachedDictionary<View, string>();
 
+#pragma warning disable IL3050
 		internal static readonly FastInvokerBuilder.FastInvokerHandler SetMeasuredDimensions = GetSetMeasuredDimensionMethod();
+#pragma warning restore IL3050
 
+		[RequiresDynamicCode("From DynamicMethod: Creating a DynamicMethod requires dynamic code.")]
 		private static FastInvokerBuilder.FastInvokerHandler GetSetMeasuredDimensionMethod()
 		{
 			//

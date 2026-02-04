@@ -269,11 +269,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// CompleteReordering will remove the children and add them back on next measure.
 			// We defer ChangeSelectorItemsVisualState to the next measure so that the children are there and updated.
 			// An alternative could be to retrieve the children before CompleteReordering and then update the visual state here.
-#if HAS_UNO_WINUI
 			that.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => that.ChangeSelectorItemsVisualState(true));
-#else
-			_ = that.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => that.ChangeSelectorItemsVisualState(true));
-#endif
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue
@@ -477,5 +473,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// Determines whether this ListViewBase is draggable.
+		/// Returns true if CanDragItems is enabled.
+		/// </summary>
+		internal override bool IsDraggableOrPannable() => GetIsDragEnabled();
+
+		// Returns TRUE if the current interaction mode requires drag and drop.
+		// This is the case if CanDragItems == TRUE, or CanReorderItems == TRUE
+		// unless we're grouping.
+		private bool GetIsDragEnabled()
+		{
+			// Ignore canReorderItems if we're grouping.
+			var reorderActive = CanReorderItems && !IsGrouping;
+			var pDragEnabled = (CanDragItems || reorderActive);
+			return pDragEnabled;
+		}
 	}
 }

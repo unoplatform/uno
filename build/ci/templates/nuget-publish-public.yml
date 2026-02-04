@@ -8,4 +8,5 @@ steps:
       nuGetFeedType: 'external'
       publishFeedCredentials: 'nuget.org uno packages'
       verbosityPush: 'Normal'
+      allowPackageConflicts: true
 

@@ -368,7 +368,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if __APPLE_UIKIT__ || __ANDROID__
-		private static DependencyProperty NavigationCommandProperty = Uno.UI.ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "NavigationCommand");
+		private static DependencyProperty NavigationCommandProperty = Uno.UI.ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "NavigationCommand");
 
 		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{

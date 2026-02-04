@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelWebUri", Description = "UniformAlignmentCenterInDoubleStackPanelWebUri - The image below should still appear the second time the sample is loaded")]
+	[Sample("Image", Name = "UniformAlignmentCenterInDoubleStackPanelWebUri", Description = "UniformAlignmentCenterInDoubleStackPanelWebUri - The image below should still appear the second time the sample is loaded")]
 	public sealed partial class UniformAlignmentCenterInDoubleStackPanelWebUri : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

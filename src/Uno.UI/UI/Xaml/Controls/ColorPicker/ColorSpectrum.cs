@@ -20,12 +20,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Core;
 using Uno.UI.Xaml.Core;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {

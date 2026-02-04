@@ -1,11 +1,11 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewChangeHeight", typeof(ListViewViewModel), description: "ListView with variable-height items whose available height can be changed. This shouldn't screw up the sizes of the items.")]
+	[Sample("ListView", Name = "ListViewChangeHeight", ViewModelType = typeof(ListViewViewModel), Description = "ListView with variable-height items whose available height can be changed. This shouldn't screw up the sizes of the items.")]
 	public sealed partial class ListViewChangeHeight : UserControl
 	{
 		public ListViewChangeHeight()

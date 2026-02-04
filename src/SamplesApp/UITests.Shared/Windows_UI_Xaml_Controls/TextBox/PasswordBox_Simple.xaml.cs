@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Text;
@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "PasswordBox_Simple")]
+	[Sample("TextBox", Name = "PasswordBox_Simple")]
 	public sealed partial class PasswordBox_Simple : UserControl
 	{
 		int currentMode = 0;

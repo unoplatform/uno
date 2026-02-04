@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,7 +27,7 @@ using Uno.Logging;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "Transformed_Ancestor_And_UI_Blocked", ignoreInSnapshotTests: true, description: "Animation in transformed hierarchy, under simulated heavy UI load. Animation should remain smooth on Android 8+ devices.")]
+	[Sample("Transform", Name = "Transformed_Ancestor_And_UI_Blocked", IgnoreInSnapshotTests = true, Description = "Animation in transformed hierarchy, under simulated heavy UI load. Animation should remain smooth on Android 8+ devices.")]
 	public sealed partial class Transformed_Ancestor_And_UI_Blocked : UserControl
 	{
 #pragma warning disable CS0109

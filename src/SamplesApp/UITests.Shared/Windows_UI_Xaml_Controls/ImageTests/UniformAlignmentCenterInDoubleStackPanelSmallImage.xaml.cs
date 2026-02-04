@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelSmallImage", Description = "UniformAlignmentCenterInDoubleStackPanelSmallImage")]
+	[Sample("Image", Name = "UniformAlignmentCenterInDoubleStackPanelSmallImage", Description = "UniformAlignmentCenterInDoubleStackPanelSmallImage")]
 	public sealed partial class UniformAlignmentCenterInDoubleStackPanelSmallImage : UserControl
 	{
 		public UniformAlignmentCenterInDoubleStackPanelSmallImage()

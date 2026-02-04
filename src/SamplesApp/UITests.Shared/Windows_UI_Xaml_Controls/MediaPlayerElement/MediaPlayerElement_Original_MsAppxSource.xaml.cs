@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("MediaPlayerElement", "Original using a local ms-appx source", ignoreInSnapshotTests: true, description: "Video using a local ms-appx source for video and poster")]
+	[Sample("MediaPlayerElement", Name = "Original using a local ms-appx source", IgnoreInSnapshotTests = true, Description = "Video using a local ms-appx source for video and poster")]
 	public sealed partial class MediaPlayerElement_Original_MsAppxSource : UserControl
 	{
 		public MediaPlayerElement_Original_MsAppxSource()

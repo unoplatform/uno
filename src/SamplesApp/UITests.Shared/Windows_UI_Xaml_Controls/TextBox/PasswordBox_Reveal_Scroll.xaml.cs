@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
@@ -6,7 +6,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo(category: "TextBox")]
+	[Sample("TextBox")]
 	public sealed partial class PasswordBox_Reveal_Scroll : Page
 	{
 		public PasswordBox_Reveal_Scroll()

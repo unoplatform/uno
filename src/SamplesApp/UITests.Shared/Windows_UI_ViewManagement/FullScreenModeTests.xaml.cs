@@ -1,11 +1,11 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {
-	[SampleControlInfo("Windows.UI.ViewManagement", "FullScreenMode", description: "Showcases entering/exiting full screen mode.")]
+	[Sample("Windows.UI.ViewManagement", Name = "FullScreenMode", Description = "Showcases entering/exiting full screen mode.")]
 	public sealed partial class FullScreenModeTests : UserControl
 	{
 		public FullScreenModeTests()

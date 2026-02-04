@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("MediaPlayerElement", "Using .ogg", description: "Test .ogg video")]
+	[Sample("MediaPlayerElement", Name = "Using .ogg", Description = "Test .ogg video")]
 	public sealed partial class MediaPlayerElement_Ogg_Extension : UserControl
 	{
 		public MediaPlayerElement_Ogg_Extension()

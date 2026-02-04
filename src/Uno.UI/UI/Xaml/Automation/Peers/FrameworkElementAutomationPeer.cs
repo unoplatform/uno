@@ -344,6 +344,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	protected override void ShowContextMenuCore()
 	{
+		// This should instead raise the ContextRequested event, but for now we'll just show the ContextFlyout directly.
 		if (Owner is Control control)
 		{
 			control.ContextFlyout?.ShowAt(control);

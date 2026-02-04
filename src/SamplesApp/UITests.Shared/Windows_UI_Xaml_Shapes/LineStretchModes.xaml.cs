@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes")]
+	[Sample("Shapes")]
 	public sealed partial class LineStretchModes : Page
 	{
 		public LineStretchModes()

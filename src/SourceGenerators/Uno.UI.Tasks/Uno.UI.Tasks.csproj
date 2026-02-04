@@ -1,11 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="AssemblyName.props" />
 	<PropertyGroup>
 		<!-- Projects that provide MSBuild tasks should be netstandard2.0 -->
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RootNamespace>Uno.UI.Tasks</RootNamespace>
-		<AssemblyName>Uno.UI.Tasks.v0</AssemblyName>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
@@ -33,6 +34,7 @@
 			<Link>Resources\AndroidResourceNameEncoder.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.SourceGenerators\BindableTypeProviders\LinkerHintsHelpers.cs" Link="Helpers\LinkerHintsHelpers.cs" />
+		<Compile Include="..\..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfo/%(Filename)%(Extension)" />
 	</ItemGroup>
 
 	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">

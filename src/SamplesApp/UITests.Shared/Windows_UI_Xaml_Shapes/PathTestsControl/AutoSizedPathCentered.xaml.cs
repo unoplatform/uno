@@ -1,9 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "AutoSizedPathCentered")]
+	[Sample("Path", Name = "AutoSizedPathCentered")]
 	public sealed partial class AutoSizedPathCentered : UserControl
 	{
 		public AutoSizedPathCentered()

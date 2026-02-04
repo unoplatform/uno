@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Microsoft.CodeAnalysis.Text;
 using Uno.UI.SourceGenerators.DependencyObject;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
@@ -210,6 +209,7 @@ public class Given_DependencyObjectGenerator
 	 		}
 	 		
 	 		// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
+	 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
 	 		public static DependencyProperty DataContextProperty { get ; } =
 	 			DependencyProperty.Register(
 	 				name: nameof(DataContext),
@@ -240,6 +240,7 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
 	 		[EditorBrowsable(EditorBrowsableState.Never)]
+	 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
 	 		public static DependencyProperty TemplatedParentProperty { get ; } =
 	 			DependencyProperty.Register(
 	 				name: nameof(TemplatedParent),

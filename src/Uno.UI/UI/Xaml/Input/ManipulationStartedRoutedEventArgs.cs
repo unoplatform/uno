@@ -4,12 +4,8 @@ using Windows.Foundation;
 using Uno.Extensions;
 using Uno.UI;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Input
 {

@@ -51,8 +51,11 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	/// <inheritdoc />
 	public event EventHandler<IdeMessage>? MessageFromIde;
 
-	/// <inheritdoc />
 	async Task IIdeChannel.SendToIdeAsync(IdeMessage message, CancellationToken ct)
+		=> await ((IIdeChannel)this).TrySendToIdeAsync(message, ct);
+
+	/// <inheritdoc />
+	async Task<bool> IIdeChannel.TrySendToIdeAsync(IdeMessage message, CancellationToken ct)
 	{
 		await WaitForReady(ct);
 
@@ -61,16 +64,17 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 			this.Log().LogInformation(
 				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
 				message.Scope);
+
+			return false;
 		}
 		else
 		{
 			_proxy.SendToIde(message);
 			ScheduleKeepAlive();
+
+			return true;
 		}
-
-		await Task.Yield();
 	}
-
 	#endregion
 
 	/// <inheritdoc />
@@ -114,7 +118,9 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 				direction: PipeDirection.InOut,
 				maxNumberOfServerInstances: 1,
 				transmissionMode: PipeTransmissionMode.Byte,
-				options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+				options: PipeOptions.Asynchronous | PipeOptions.WriteThrough,
+				inBufferSize: 8 * 1024 * 1024,
+				outBufferSize: 8 * 1024 * 1024);
 
 			await _pipeServer.WaitForConnectionAsync();
 

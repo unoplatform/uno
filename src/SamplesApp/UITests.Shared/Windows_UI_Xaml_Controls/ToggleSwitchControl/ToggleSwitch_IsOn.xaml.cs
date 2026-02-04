@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl
 {
-	[SampleControlInfo("ToggleSwitch", "ToggleSwitch_IsOn", typeof(ToggleSwitchViewModel))]
+	[Sample("ToggleSwitch", Name = "ToggleSwitch_IsOn", ViewModelType = typeof(ToggleSwitchViewModel))]
 	public sealed partial class ToggleSwitch_IsOn : UserControl
 	{
 		public ToggleSwitch_IsOn()

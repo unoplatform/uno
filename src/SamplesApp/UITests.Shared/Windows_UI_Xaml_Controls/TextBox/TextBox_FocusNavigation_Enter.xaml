@@ -1,0 +1,44 @@
+<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_FocusNavigation_Enter"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <StackPanel Spacing="20" Padding="20">        
+        <TextBlock x:Name="StatusText" 
+                   Text="Currently focused: None" 
+                   FontWeight="Bold" 
+                   TextWrapping="Wrap"/>
+
+        <TextBox x:Name="TextBox1" 
+                 Header="TextBox 1 (Single-line)" 
+                 PlaceholderText="Press Enter to move to next"/>
+        
+        <TextBox x:Name="TextBox2" 
+                 Header="TextBox 2 (Single-line)" 
+                 PlaceholderText="Press Enter to move to next"/>
+        
+        <TextBox x:Name="TextBox3" 
+                 Header="TextBox 3 (Single-line)" 
+                 PlaceholderText="Press Enter to move to next"/>
+        
+        <TextBox x:Name="TextBox4" 
+                 Header="TextBox 4 (Multi-line - AcceptsReturn=true)" 
+                 AcceptsReturn="True"
+                 Height="80"
+                 PlaceholderText="Enter should insert newline, NOT navigate"/>
+        
+        <TextBox x:Name="TextBox5" 
+                 Header="TextBox 5 (Single-line)" 
+                 PlaceholderText="Last TextBox"/>
+        
+        <TextBlock Text="Log:" FontWeight="SemiBold" Margin="0,20,0,0"/>
+        <ScrollViewer Height="150" BorderBrush="Gray" BorderThickness="1">
+            <TextBlock x:Name="LogText" TextWrapping="Wrap" Padding="5"/>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

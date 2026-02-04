@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.DependencyObject;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 using System.Collections.Immutable;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;

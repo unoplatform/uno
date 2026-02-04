@@ -8,7 +8,7 @@ uid: Uno.Development.FAQ
 
 ### What is the Uno Platform?
 
-Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md). Read more [here](xref:Uno.Documentation.Intro).
+Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md). Read more in the [Uno Platform introduction](xref:Uno.Documentation.Intro).
 
 ### Who makes Uno Platform?
 
@@ -60,7 +60,7 @@ No, there's no need to have an existing WinUI application or have that specific 
 
 ### What 3rd parties support Uno Platform?
 
-Uno Platform is supported by several 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart, and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI, and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
+Uno Platform is supported by several 3rd-party packages and libraries. This includes advanced controls from Microsoft Windows Community Toolkit, Syncfusion, and LightningChart; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI, and MVVMCross; HTTP/API clients with Refit and Kiota; and local database management with SQLite. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
 
 ### Where can I get support?
 

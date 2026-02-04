@@ -18,16 +18,8 @@ using Uno.Disposables;
 using Uno.Extensions;
 using System.Threading;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Controls.Legacy;
-using Windows.UI.ViewManagement;
-
-#endif
 #if __APPLE_UIKIT__
 using UIKit;
 #else
@@ -313,7 +305,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Flyout nested:
 			BindFlyout(m_tpVolumeFlyout, OnFlyoutOpened, OnFlyoutClosed);
 			BindButtonClick(m_tpMuteButton, ToggleMute);
-			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += OnVolumeChanged, x => x.ValueChanged -= OnVolumeChanged);
+			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += OnVolumeSliderVolumeChanged, x => x.ValueChanged -= OnVolumeSliderVolumeChanged);
 			BindFlyout(_playbackRateFlyout, OnFlyoutOpened, OnFlyoutClosed);
 			Bind(_playbackRateListView, x => x.SelectionChanged += PlaybackRateListView_SelectionChanged, x => x.SelectionChanged -= PlaybackRateListView_SelectionChanged);
 

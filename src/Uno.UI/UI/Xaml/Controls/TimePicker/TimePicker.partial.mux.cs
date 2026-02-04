@@ -811,6 +811,15 @@ partial class TimePicker
 				spDateFormatter = CreateNewFormatterWithClock(s_strHourFormat, strClockIdentifier);
 				strFormattedDate = spDateFormatter.Format(date);
 
+#if HAS_UNO
+				// Because DateTimeFormatter does not match WinAppSDK it is returning 0 for 12-hour clock hour 12. #22207
+				// In 12-hour clock, hour 0 should display as 12.
+				if (m_is12HourClock && strFormattedDate == $"{TIMEPICKER_COERCION_INDEX}")
+				{
+					strFormattedDate = $"{TIMEPICKER_COERCION_OFFSET}";
+				}
+#endif
+
 				m_tpHourTextBlock.Text = strFormattedDate;
 			}
 			else

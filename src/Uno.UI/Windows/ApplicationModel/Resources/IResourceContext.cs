@@ -1,4 +1,3 @@
-#if HAS_UNO_WINUI
 using System.Collections.Generic;
 
 namespace Microsoft.Windows.ApplicationModel.Resources;
@@ -14,4 +13,3 @@ public partial interface IResourceContext
 	/// </summary>
 	IDictionary<string, string> QualifierValues { get; }
 }
-#endif

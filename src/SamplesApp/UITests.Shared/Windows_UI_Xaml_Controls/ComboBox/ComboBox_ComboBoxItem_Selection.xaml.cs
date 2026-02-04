@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.UI.Xaml;
@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_ComboBoxItem_Selection")]
+	[Sample("ComboBox", Name = "ComboBox_ComboBoxItem_Selection")]
 	public sealed partial class ComboBox_ComboBoxItem_Selection : UserControl
 	{
 		public ComboBox_ComboBoxItem_Selection()

@@ -1,4 +1,4 @@
-ï»¿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System;
 using Windows.Foundation;
 
-// Pour en savoir plus sur le modÃ¨le d'Ã©lÃ©ment ContrÃ´le utilisateur, consultez la page https://go.microsoft.com/fwlink/?LinkId=234236
+// Pour en savoir plus sur le modèle d'élément Contrôle utilisateur, consultez la page https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace SamplesApp.Wasm.Windows_UI_Core
 {
-	[SampleControlInfo("Windows.UI.Core", "SetCursor", isManualTest: true, description: "Demonstrates use of CoreWindow.PointerCursor / CoreCursor / CoreCursorType")]
+	[Sample("Windows.UI.Core", Name = "SetCursor", IsManualTest = true, Description = "Demonstrates use of CoreWindow.PointerCursor / CoreCursor / CoreCursorType")]
 	public sealed partial class SetCursor : Page
 	{
 		public SetCursor()

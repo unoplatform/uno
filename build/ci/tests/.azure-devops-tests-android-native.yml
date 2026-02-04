@@ -23,6 +23,7 @@ jobs:
 
 - job: Android_Build_NetCoreMobile_For_Tests
   displayName: 'Build Samples App'
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -31,6 +32,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
 
   steps:
   - checkout: self
@@ -53,7 +55,7 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Samples app
 
   - task: CopyFiles@2
@@ -79,7 +81,7 @@ jobs:
   - Android_Build_NetCoreMobile_For_Tests
 
   timeoutInMinutes: 45
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   variables:
     CI_Build: true

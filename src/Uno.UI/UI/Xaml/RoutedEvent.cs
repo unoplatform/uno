@@ -20,6 +20,7 @@ namespace Microsoft.UI.Xaml
 			IsManipulationEvent = flag.IsManipulationEvent();
 			IsGestureEvent = flag.IsGestureEvent();
 			IsDragAndDropEvent = flag.IsDragAndDropEvent();
+			IsContextEvent = flag.IsContextEvent();
 
 			IsTunnelingEvent = flag.IsTunnelingEvent();
 		}
@@ -49,6 +50,7 @@ namespace Microsoft.UI.Xaml
 		internal bool IsManipulationEvent { get; }
 		internal bool IsGestureEvent { get; }
 		internal bool IsDragAndDropEvent { get; }
+		internal bool IsContextEvent { get; }
 
 		/// <inheritdoc />
 		public override string ToString()

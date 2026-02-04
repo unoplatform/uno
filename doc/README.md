@@ -58,6 +58,26 @@ build command is ran just before committing your work; this will minify the code
 folders and build the DocFx according to the `docfx.json`. The CI only runs the DocFx command, it will not regenerate
 the `styles` folder.
 
+### External docs hashes updater (CI)
+
+The script `update_external_docs_hashes.ps1` is used by CI to keep
+`doc/import_external_docs.ps1` pinned to the latest commits of the
+external documentation repositories.
+
+- It discovers the list of repos via `import_external_docs.ps1 -ListRepos`.
+- For normal branches (for example `master`), it uses each repo's default branch.
+- For `release/stable/*` branches, it prefers each repo's latest `release/stable/*` branch, falling back to its default branch when none exist.
+- It updates only the `ref="..."` hashes and replaces the trailing comment with `latest <branch> commit`.
+
+You can run it locally (for example, to validate changes) with:
+
+```bash
+pwsh ./update_external_docs_hashes.ps1 -Branch master -GitHubToken "$GITHUB_TOKEN"
+```
+
+When run locally, `-GitHubToken` is optional but recommended to avoid hitting
+GitHub API rate limits.
+
 ## Generating LLM Files
 
 The documentation can be exported into LLM-friendly formats using the `generate-llms-full.ps1` PowerShell script. The script generates two files:

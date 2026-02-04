@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +25,7 @@ using Uno.Logging;
 
 namespace Uno.UI.Samples.Content.UITests
 {
-	[SampleControlInfo("Animations", "DoubleAnimationTestsControl")]
+	[Sample("Animations", Name = "DoubleAnimationTestsControl")]
 
 	public sealed partial class DoubleAnimationTestsControl : UserControl
 	{

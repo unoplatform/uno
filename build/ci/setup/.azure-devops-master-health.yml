@@ -1,0 +1,31 @@
+parameters:
+  vmImage: ''
+
+stages:
+- stage: master_health
+  displayName: Validate Master Health
+  dependsOn:
+    - Setup
+  condition: and(eq(variables['Build.Reason'], 'PullRequest'), not(startsWith(variables['System.PullRequest.TargetBranch'], 'refs/heads/release/stable/')))
+
+  jobs:
+  - job: MasterHealth
+    displayName: Check Master Build Status
+    cancelTimeoutInMinutes: 0
+
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+
+    steps:
+    - checkout: self
+      clean: false
+
+    - task: PowerShell@2
+      inputs:
+        pwsh: true
+        filePath: build/ci/scripts/check-master-status.ps1
+        arguments: >
+          -Project "$(System.TeamProject)"
+          -DefinitionId "$(System.DefinitionId)"
+      env:
+        SYSTEM_COLLECTIONURI: $(System.CollectionUri)

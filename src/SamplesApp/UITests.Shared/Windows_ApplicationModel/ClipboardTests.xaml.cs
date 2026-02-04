@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +25,7 @@ using Windows.Storage.Streams;
 
 namespace UITests.Windows_ApplicationModel
 {
-	[SampleControlInfo("Windows.ApplicationModel", viewModelType: typeof(ClipboardTestsViewModel))]
+	[Sample("Windows.ApplicationModel", ViewModelType = typeof(ClipboardTestsViewModel))]
 	public sealed partial class ClipboardTests : Page
 	{
 		public ClipboardTests()

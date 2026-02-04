@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,10 +24,10 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_System.UserProfile
 {
-	[SampleControlInfo(
+	[Sample(
 		"Windows.System",
-		description: "Allows setting user's wallpaper and lockscreen",
-		viewModelType: typeof(UserProfilePersonalizationSettingsTestsViewModel))]
+		Description = "Allows setting user's wallpaper and lockscreen",
+		ViewModelType = typeof(UserProfilePersonalizationSettingsTestsViewModel))]
 	public sealed partial class UserProfilePersonalizationSettingsTests : Page
 	{
 		public UserProfilePersonalizationSettingsTests()

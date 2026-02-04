@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Windows.Media.Core;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement;
 
-[SampleControlInfo("MediaPlayerElement", "ManualTest", ignoreInSnapshotTests: true, IsManualTest = true)]
+[Sample("MediaPlayerElement", Name = "ManualTest", IgnoreInSnapshotTests = true, IsManualTest = true)]
 public sealed partial class MediaPlayerElement_ManualTest : UserControl
 {
 	public MediaPlayerElement_ManualTest()

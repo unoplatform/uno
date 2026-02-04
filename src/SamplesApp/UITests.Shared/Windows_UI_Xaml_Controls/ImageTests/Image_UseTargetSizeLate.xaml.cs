@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo("Image")]
+	[Sample("Image")]
 	public sealed partial class Image_UseTargetSizeLate : UserControl
 	{
 		public Image_UseTargetSizeLate()

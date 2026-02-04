@@ -7,6 +7,7 @@ public enum FileUpdateResult
 {
 	Success = 200,
 	NoChanges = 204,
+	// 300+ : errors cases (globally validated by casting to int)
 	BadRequest = 400,
 	FileNotFound = 404,
 	Failed = 500,

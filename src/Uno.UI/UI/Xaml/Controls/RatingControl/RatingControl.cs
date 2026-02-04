@@ -1,7 +1,3 @@
-#if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Controls;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>

@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
@@ -54,13 +55,22 @@ namespace Microsoft.UI.Xaml
 
 		private readonly Flags _flags;
 		private string _name;
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _propertyType;
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _ownerType;
 		private readonly int _uniqueId;
 
 		private static int _globalId = -1;
 
-		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached)
+		private DependencyProperty(
+			string name,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
+			Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
+			Type ownerType,
+			PropertyMetadata defaultMetadata,
+			bool attached)
 		{
 			_name = name;
 			_propertyType = propertyType;
@@ -140,8 +150,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata typeMetadata)
 		{
 			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
@@ -196,8 +206,8 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> Register(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
@@ -214,8 +224,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(
 			string name,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata defaultMetadata)
 		{
 			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
@@ -297,11 +307,13 @@ namespace Microsoft.UI.Xaml
 			return _ownerTypeMetadata.CloneWithOverwrittenDefaultValue(defaultValueForType);
 		}
 
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type OwnerType
 		{
 			get { return _ownerType; }
 		}
 
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type Type
 		{
 			get { return _propertyType; }

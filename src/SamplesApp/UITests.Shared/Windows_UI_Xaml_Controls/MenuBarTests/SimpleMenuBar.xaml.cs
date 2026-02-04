@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +22,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests
 {
-	[SampleControlInfo("MenuBar", "SimpleMenuBar", description: "A simple MenuBar")]
+	[Sample("MenuBar", Name = "SimpleMenuBar", Description = "A simple MenuBar")]
 	public sealed partial class SimpleMenuBar : UserControl
 	{
 		public SimpleMenuBar()

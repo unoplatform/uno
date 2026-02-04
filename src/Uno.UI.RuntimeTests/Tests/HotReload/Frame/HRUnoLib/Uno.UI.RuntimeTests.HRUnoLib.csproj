@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<UnoSingleProject>true</UnoSingleProject>
+		<OutputType>Library</OutputType>
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- in-solution build -->
+		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
+
+		<!-- CI runtime test job -->
+		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
+
+		<UnoUIRuntimeTestEngine_DisableValidateUno>true</UnoUIRuntimeTestEngine_DisableValidateUno>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<!--
+			UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+			https://aka.platform.uno/singleproject-features
+		-->
+
+		<UnoFeatures>
+			SkiaRenderer;
+		</UnoFeatures>
+
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);CS1998;IDE0051;IDE0055;NU1903;MSB3277</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/SamplesApp*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Uno.UI.RuntimeTests*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/System*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Microsoft*.dll" />
+
+		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" Exclude="@(UnoReferenceExclusion)" />
+
+		<PackageReference Include="Uno.Fonts.Fluent" />
+		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
+	</ItemGroup>
+
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.props" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.targets" />
+	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />
+	<Import Project="$(MSBuildThisFileDirectory)../../../../../SourceGenerators/sourcegenerators.local.props" />
+
+</Project>

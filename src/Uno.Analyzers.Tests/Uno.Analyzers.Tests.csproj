@@ -8,12 +8,6 @@
 		<IsPackable>false</IsPackable>
 		<OutputType>Exe</OutputType>
 		<CodeAnalysisVersionForAnalyzersTests>4.0.0</CodeAnalysisVersionForAnalyzersTests>
-
-		<!-- To be able to get newer versions of Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest -->
-		<!-- that are not yet published to NuGet.org -->
-		<!-- The latest on NuGet.org doesn't have the fix from https://github.com/dotnet/roslyn-sdk/pull/988 -->
-		<!-- which is very important for us -->
-		<RestoreAdditionalProjectSources>https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,7 +18,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest" Version="1.1.2-beta1.23578.3" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.2" />
 
 		<PackageReference Include="NuGet.Packaging" Version="6.0.2" />
 		<PackageReference Include="System.Formats.Asn1" Version="6.0.1" />

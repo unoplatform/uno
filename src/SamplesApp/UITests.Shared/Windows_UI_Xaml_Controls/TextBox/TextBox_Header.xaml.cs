@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "TextBox_Header", typeof(TextBoxViewModel))]
+	[Sample("TextBox", Name = "TextBox_Header", ViewModelType = typeof(TextBoxViewModel))]
 	public sealed partial class TextBox_Header : UserControl
 	{
 		public TextBox_Header()

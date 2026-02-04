@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "Border_CornerRadius_Alignments")]
+	[Sample("Border", Name = "Border_CornerRadius_Alignments")]
 	public sealed partial class Border_CornerRadius_Alignments : Page
 	{
 		public Border_CornerRadius_Alignments()

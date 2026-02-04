@@ -20,6 +20,7 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" />
 
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" TaskFactory="TaskHostFactory"/>
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" TaskFactory="TaskHostFactory"/>
@@ -27,6 +28,7 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" TaskFactory="TaskHostFactory" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" TaskFactory="TaskHostFactory" />
 
 	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
@@ -405,14 +407,11 @@
 			   Condition="'$(_UnoWasmBootstrapVersionString)'!='' and '$(_UnoWasmBootstrapVersionString.Split(`-`)[0])'&lt;'3.0'"/>
 	</Target>
 
-	<!--
-    Warn when the task is executed in devenv.exe: https://github.com/dotnet/project-system/issues/4494
-    -->
-
+	<!-- Warn when the task is executed in devenv.exe: https://github.com/dotnet/project-system/issues/4494 -->
 	<UsingTask
-  TaskName="CheckForDevenv"
-  TaskFactory="CodeTaskFactory"
-  AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+		TaskName="CheckForDevenv"
+		TaskFactory="CodeTaskFactory"
+		AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
 		<ParameterGroup />
 		<Task>
 			<Reference Include="System.Xml"/>
@@ -428,5 +427,22 @@
 			</Code>
 		</Task>
 	</UsingTask>
+
+	<Target
+		Name="_GenerateHotReloadInfo"
+		BeforeTargets="BeforeCompile"
+		Condition="'$(UnoGenerateHotReloadInfo)' == 'True'">
+
+		<HotReloadInfoTask_v0
+			IntermediateOutputPath="$(IntermediateOutputPath)">
+			<Output
+				TaskParameter="GeneratedFiles"
+				ItemName="_HotReloadInfoTaskGeneratedFiles" />
+		</HotReloadInfoTask_v0>
+
+		<ItemGroup>
+			<Compile Include="@(_HotReloadInfoTaskGeneratedFiles)" />
+		</ItemGroup>
+	</Target>
 
 </Project>

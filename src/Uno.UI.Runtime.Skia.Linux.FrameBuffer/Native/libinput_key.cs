@@ -1,6 +1,6 @@
 ﻿namespace Uno.UI.Runtime.Skia.Native
 {
-	enum libinput_key : int
+	enum libinput_key : uint
 	{
 		KEY_RESERVED = 0,
 		KEY_ESC = 1,

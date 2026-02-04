@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 {
-	[SampleControlInfo("Border")]
+	[Sample("Border")]
 	public sealed partial class Border_LinearGradientBrush : UserControl
 	{
 		public Border_LinearGradientBrush()

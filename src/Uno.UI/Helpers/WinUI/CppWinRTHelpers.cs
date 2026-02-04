@@ -65,12 +65,6 @@ internal static class CppWinRTHelpers
 			{
 				return hyperlink.Focus(focusState);
 			}
-#if !HAS_UNO_WINUI // ContentLink is no longer available in WinUI
-			else if (obj is ContentLink contentlink)
-			{
-				return contentlink.Focus(focusState);
-			}
-#endif
 			else if (obj is WebView webview)
 			{
 				return webview.Focus(focusState);

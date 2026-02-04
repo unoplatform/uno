@@ -37,9 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-#if !HAS_UNO_WINUI
-		private
-#endif
 		protected override IconElement CreateIconElementCore()
 		{
 			AnimatedIcon animatedIcon = new AnimatedIcon();
@@ -60,9 +57,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return animatedIcon;
 		}
 
-#if !HAS_UNO_WINUI
-		private
-#endif
 		protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 		{
 			if (iconSourceProperty == SourceProperty)

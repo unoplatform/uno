@@ -1,8 +1,40 @@
 parameters:
   UnoCheckParameters: ''
+  DotNetRoot: '$(DOTNET_ROOT)'
 
 steps:
-  - powershell: |
-      & dotnet workload install wasm-tools-net9
+  - task: PowerShell@2
     displayName: Install Previous .NET Wasm Workloads
+    inputs:
+      pwsh: true
+      targetType: inline
+      script: |
+        $ErrorActionPreference = 'Stop'
+        $dotnetExe = 'dotnet'
+        $dotnetRoot = $null
+        if (-not $IsWindows) {
+          $dotnetRoot = '${{ parameters.DotNetRoot }}'
+          if ([string]::IsNullOrWhiteSpace($dotnetRoot)) {
+            $dotnetRoot = "$(Agent.ToolsDirectory)/dotnet"
+          }
+
+          $dotnetExeCandidate = Join-Path $dotnetRoot 'dotnet'
+          if (Test-Path $dotnetExeCandidate) {
+            $dotnetExe = $dotnetExeCandidate
+          }
+
+          Write-Host "Using dotnet root $dotnetRoot"
+          $env:DOTNET_ROOT = $dotnetRoot
+        }
+
+        $args = @('workload', 'install', 'wasm-tools-net9')
+        if ($IsWindows) {
+          & $dotnetExe @args
+        }
+        else {
+          $envArgs = @("DOTNET_ROOT=${dotnetRoot}", "PATH=${dotnetRoot}:${env:PATH}")
+          sudo env @envArgs $dotnetExe @args
+        }
     retryCountOnTaskFailure: 3
+    env:
+      DOTNET_ROOT: ${{ parameters.DotNetRoot }}

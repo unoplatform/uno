@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Windows.Foundation.Metadata;
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {
-	[SampleControlInfo("Windows.UI.ViewManagement", "IsScreenCaptureEnabled", description: "Allows disabling screen capture (currently available on Android only)")]
+	[Sample("Windows.UI.ViewManagement", Name = "IsScreenCaptureEnabled", Description = "Allows disabling screen capture (currently available on Android only)")]
 	public sealed partial class IsScreenCaptureEnabledTests : UserControl
 	{
 		public IsScreenCaptureEnabledTests()

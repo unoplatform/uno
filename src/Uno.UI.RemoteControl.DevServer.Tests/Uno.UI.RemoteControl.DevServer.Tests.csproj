@@ -1,4 +1,4 @@
-<Project Sdk="MSTest.Sdk/3.10.0">
+<Project Sdk="MSTest.Sdk/4.0.2">
 
 	<PropertyGroup>
 		<TargetFramework>$(NetCurrent)</TargetFramework>

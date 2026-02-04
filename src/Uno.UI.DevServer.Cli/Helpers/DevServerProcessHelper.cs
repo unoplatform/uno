@@ -11,9 +11,31 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 
 internal static class DevServerProcessHelper
 {
+	/// <summary>
+	/// Environment variables related to DOTNET_ROOT that should be propagated to child processes.
+	/// </summary>
+	private static readonly string[] DotnetRootEnvironmentVariables =
+	[
+		"DOTNET_ROOT",
+		"DOTNET_ROOT(x86)",
+		"DOTNET_ROOT_X64",
+		"DOTNET_ROOT_X86",
+		"DOTNET_ROOT_ARM64",
+		"DOTNET_ROOT_ARM"
+	];
+
+	/// <summary>
+	/// Propagation list in order to get licensing working properly on Linux.
+	/// </summary>
+	private static readonly string[] XdgEnvironmentVariables =
+	[
+		"XDG_DATA_HOME",
+	];
+
 	public static ProcessStartInfo CreateDotnetProcessStartInfo(
 		string hostPath,
 		IEnumerable<string> arguments,
+		string workingDirectory,
 		bool redirectOutput,
 		bool redirectInput = false)
 	{
@@ -27,7 +49,7 @@ internal static class DevServerProcessHelper
 			RedirectStandardOutput = redirectOutput,
 			RedirectStandardError = redirectOutput,
 			RedirectStandardInput = redirectInput,
-			WorkingDirectory = Directory.GetCurrentDirectory(),
+			WorkingDirectory = workingDirectory,
 		};
 
 		var hostArgPath = hostPath;
@@ -45,7 +67,34 @@ internal static class DevServerProcessHelper
 			psi.ArgumentList.Add(a);
 		}
 
+		PropagateDotnetRootVariables(psi);
+		PropagateXdgVariables(psi);
+
 		return psi;
+	}
+
+	private static void PropagateDotnetRootVariables(ProcessStartInfo startInfo)
+	{
+		foreach (var variableName in DotnetRootEnvironmentVariables)
+		{
+			var value = Environment.GetEnvironmentVariable(variableName);
+			if (!string.IsNullOrWhiteSpace(value))
+			{
+				startInfo.Environment[variableName] = value;
+			}
+		}
+	}
+
+	private static void PropagateXdgVariables(ProcessStartInfo startInfo)
+	{
+		foreach (var variableName in XdgEnvironmentVariables)
+		{
+			var value = Environment.GetEnvironmentVariable(variableName);
+			if (!string.IsNullOrWhiteSpace(value))
+			{
+				startInfo.Environment[variableName] = value;
+			}
+		}
 	}
 
 	public static async Task<(int? ExitCode, string StdOut, string StdErr)> RunGuiProcessAsync(
@@ -61,7 +110,7 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (outputSb, errorSb) = ObserveOutputs(startInfo, "studio", logger, process);
+		var (outputSb, errorSb) = ObserveOutputs(startInfo, "studio", logger, process, forwardOutputToConsole: false);
 
 		var processExited = new TaskCompletionSource();
 		process.Exited += (_, __) =>
@@ -103,7 +152,12 @@ internal static class DevServerProcessHelper
 		return (gracePeriodTask == resultTask || !process.HasExited ? null : process.ExitCode, stdOut, stdErr);
 	}
 
-	private static (StringBuilder output, StringBuilder error) ObserveOutputs(ProcessStartInfo startInfo, string displayName, ILogger logger, Process process)
+	private static (StringBuilder output, StringBuilder error) ObserveOutputs(
+		ProcessStartInfo startInfo,
+		string displayName,
+		ILogger logger,
+		Process process,
+		bool forwardOutputToConsole)
 	{
 		var outputSb = new StringBuilder();
 		var errorSb = new StringBuilder();
@@ -115,7 +169,11 @@ internal static class DevServerProcessHelper
 				if (e.Data != null)
 				{
 					outputSb.AppendLine(e.Data);
-					if (logger.IsEnabled(LogLevel.Debug))
+					if (forwardOutputToConsole)
+					{
+						Console.Out.WriteLine(e.Data);
+					}
+					else if (logger.IsEnabled(LogLevel.Debug))
 					{
 						logger.LogDebug("[{DisplayName}:stdout] {Data}", displayName, e.Data);
 					}
@@ -130,7 +188,11 @@ internal static class DevServerProcessHelper
 				if (e.Data != null)
 				{
 					errorSb.AppendLine(e.Data);
-					if (logger.IsEnabled(LogLevel.Debug))
+					if (forwardOutputToConsole)
+					{
+						Console.Error.WriteLine(e.Data);
+					}
+					else if (logger.IsEnabled(LogLevel.Debug))
 					{
 						logger.LogDebug("[{DisplayName}:stderr] {Data}", displayName, e.Data);
 					}
@@ -141,7 +203,10 @@ internal static class DevServerProcessHelper
 		return (outputSb, errorSb);
 	}
 
-	public static async Task<(int ExitCode, string StdOut, string StdErr)> RunConsoleProcessAsync(ProcessStartInfo startInfo, ILogger logger)
+	public static async Task<(int ExitCode, string StdOut, string StdErr)> RunConsoleProcessAsync(
+		ProcessStartInfo startInfo,
+		ILogger logger,
+		bool forwardOutputToConsole = false)
 	{
 		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, string.Join(" ", startInfo.ArgumentList));
 
@@ -151,7 +216,7 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (outputSb, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process);
+		var (outputSb, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole);
 
 		var processExited = new TaskCompletionSource();
 		process.Exited += (_, __) =>

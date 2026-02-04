@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "TextBox_Simple", ignoreInSnapshotTests: true /*Cursor blinks in TextBox*/)]
+	[Sample("TextBox", Name = "TextBox_Simple", IgnoreInSnapshotTests = true /*Cursor blinks in TextBox*/)]
 	public sealed partial class TextBox_Simple : UserControl
 	{
 		public TextBox_Simple()

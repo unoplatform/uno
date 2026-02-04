@@ -20,11 +20,7 @@ using Windows.Foundation;
 using static System.Net.Mime.MediaTypeNames;
 using static Uno.UI.Xaml.Core.InputManager.PointerManager;
 
-#if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
-#else
-using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

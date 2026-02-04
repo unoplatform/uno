@@ -1333,15 +1333,6 @@ public partial class NavigationView : ContentControl
 
 	internal void OnRepeaterElementPrepared(ItemsRepeater ir, ItemsRepeaterElementPreparedEventArgs args)
 	{
-#if !HAS_UNO_WINUI
-		// This validation is only relevant outside of the Windows build where WUXC and MUXC have distinct types.
-		// Certain items are disallowed in a NavigationView's items list. Check for them.
-		if (args.Element is Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
-		{
-			throw new InvalidOperationException("MenuItems contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
-		}
-#endif
-
 		if (args.Element is NavigationViewItemBase nvib)
 		{
 			var nvibImpl = nvib;

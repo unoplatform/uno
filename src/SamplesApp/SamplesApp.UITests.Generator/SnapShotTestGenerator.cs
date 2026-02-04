@@ -67,18 +67,17 @@ namespace Uno.Samples.UITest.Generator
 		{
 			var compilation = GetCompilation(context);
 
-			var sampleControlInfoSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
 			var sampleSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
-			if (sampleControlInfoSymbol is null || sampleSymbol is null)
+			if (sampleSymbol is null)
 			{
-				throw new Exception("Cannot find 'SampleControlInfoAttribute' or 'SampleAttribute'.");
+				throw new Exception("Cannot find 'SampleAttribute'.");
 			}
 
 			var query = from typeSymbol in compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
 						where typeSymbol.DeclaredAccessibility == Accessibility.Public
-						let info = typeSymbol.FindAttributeFlattened(sampleSymbol) ?? typeSymbol.FindAttributeFlattened(sampleControlInfoSymbol)
+						let info = typeSymbol.FindAttributeFlattened(sampleSymbol)
 						where info != null
-						let sampleInfo = GetSampleInfo(typeSymbol, info, sampleControlInfoSymbol)
+						let sampleInfo = GetSampleInfo(typeSymbol, info)
 						orderby sampleInfo.categories.First()
 						select (typeSymbol, sampleInfo.categories, sampleInfo.name, sampleInfo.ignoreInSnapshotTests, sampleInfo.isManual);
 
@@ -87,63 +86,45 @@ namespace Uno.Samples.UITest.Generator
 			GenerateTests(assembly, context, query);
 		}
 
-		private static (string[] categories, string name, bool ignoreInSnapshotTests, bool isManual) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr, INamedTypeSymbol sampleControlInfoSymbol)
+		private static (string[] categories, string name, bool ignoreInSnapshotTests, bool isManual) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
 		{
-			if (SymbolEqualityComparer.Default.Equals(attr.AttributeClass, sampleControlInfoSymbol))
-			{
-				return (
-					categories: new[] { GetConstructorParameterValue(attr, "category")?.ToString() ?? "Default" },
-					name: AlignName(GetConstructorParameterValue(attr, "controlName")?.ToString() ?? symbol.ToDisplayString()),
-					ignoreInSnapshotTests: GetConstructorParameterValue(attr, "ignoreInSnapshotTests") is bool b && b,
-					isManual: GetConstructorParameterValue(attr, "isManualTest") is bool m && m
-				);
-			}
-			else
-			{
-				var categories = attr
-					.ConstructorArguments
-					.Where(arg => arg.Kind == TypedConstantKind.Array)
-					.Select(arg => GetCategories(arg.Values))
-					.SingleOrDefault()
-					?? GetCategories(attr.ConstructorArguments);
+			var categories = attr
+				.ConstructorArguments
+				.Where(arg => arg.Kind == TypedConstantKind.Array)
+				.Select(arg => GetCategories(arg.Values))
+				.SingleOrDefault()
+				?? GetCategories(attr.ConstructorArguments);
 
-				if (categories.Any(string.IsNullOrWhiteSpace))
+			if (categories.Any(string.IsNullOrWhiteSpace))
+			{
+				throw new InvalidOperationException(
+					"Invalid syntax for the SampleAttribute (found an empty category name). "
+					+ "Usually this is because you used nameof(Control) to set the categories, which is not supported by the compiler. "
+					+ "You should instead use the overload which accepts type (i.e. use typeof() instead of nameof()).");
+			}
+
+			return (
+				categories: categories.Length > 0 ? categories : _defaultCategories,
+				name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
+				ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b,
+				isManual: GetAttributePropertyValue(attr, "IsManualTest") is bool m && m
+				)!;
+
+			string?[] GetCategories(ImmutableArray<TypedConstant> args) => args
+				.Select(v =>
 				{
-					throw new InvalidOperationException(
-						"Invalid syntax for the SampleAttribute (found an empty category name). "
-						+ "Usually this is because you used nameof(Control) to set the categories, which is not supported by the compiler. "
-						+ "You should instead use the overload which accepts type (i.e. use typeof() instead of nameof()).");
-				}
-
-				return (
-					categories: categories.Length > 0 ? categories : _defaultCategories,
-					name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
-					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b,
-					isManual: GetAttributePropertyValue(attr, "IsManualTest") is bool m && m
-					)!;
-
-				string?[] GetCategories(ImmutableArray<TypedConstant> args) => args
-					.Select(v =>
+					switch (v.Kind)
 					{
-						switch (v.Kind)
-						{
-							case TypedConstantKind.Primitive: return v.Value!.ToString();
-							case TypedConstantKind.Type: return ((ITypeSymbol)v.Value!).Name;
-							default: return null;
-						}
-					})
-					.ToArray();
-			}
+						case TypedConstantKind.Primitive: return v.Value!.ToString();
+						case TypedConstantKind.Type: return ((ITypeSymbol)v.Value!).Name;
+						default: return null;
+					}
+				})
+				.ToArray();
 		}
 
 		private static object? GetAttributePropertyValue(AttributeData attr, string name)
 			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value.Value;
-
-		private static object? GetConstructorParameterValue(AttributeData info, string name)
-			=> info.ConstructorArguments[GetParameterIndex(info, name)].Value;
-
-		private static int GetParameterIndex(AttributeData info, string name)
-			=> info.AttributeConstructor!.Parameters.Single(p => p.Name == name).Ordinal;
 
 		private static string AlignName(string v)
 			=> v.Replace('/', '_').Replace(' ', '_').Replace('-', '_').Replace(':', '_');

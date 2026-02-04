@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
 
-	[SampleControlInfo("Buttons", nameof(Button_Opacity_Automated))]
+	[Sample("Buttons", Name = nameof(Button_Opacity_Automated))]
 	public sealed partial class Button_Opacity_Automated : UserControl
 	{
 		private int increment = 0;

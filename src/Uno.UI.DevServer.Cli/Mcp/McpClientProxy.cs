@@ -17,8 +17,10 @@ internal class McpClientProxy
 	private readonly DevServerMonitor _monitor;
 	private Func<Task>? _toolListChanged;
 	private readonly CancellationTokenSource _disposeCts = new();
+	private TaskCompletionSource<McpClient> _clientCompletionSource = new();
 
-	public IMcpClient? UpstreamClient { get; internal set; }
+	public Task<McpClient> UpstreamClient
+		=> _clientCompletionSource.Task;
 
 	public McpClientProxy(ILogger<McpClientProxy> logger, DevServerMonitor monitor)
 	{
@@ -34,7 +36,7 @@ internal class McpClientProxy
 		{
 			try
 			{
-				UpstreamClient = await ConnectOrDieAsync(url, _logger, _disposeCts.Token);
+				await ConnectOrDieAsync(url, _logger, _disposeCts.Token);
 			}
 			catch (Exception ex)
 			{
@@ -43,11 +45,11 @@ internal class McpClientProxy
 		}, _disposeCts.Token);
 	}
 
-	async Task<IMcpClient> ConnectOrDieAsync(string url, Microsoft.Extensions.Logging.ILogger log, CancellationToken ct)
+	async Task ConnectOrDieAsync(string url, Microsoft.Extensions.Logging.ILogger log, CancellationToken ct)
 	{
 		try
 		{
-			var clientTransport = new SseClientTransport(new()
+			var clientTransport = new HttpClientTransport(new()
 			{
 				Name = "Devserver",
 				Endpoint = new Uri(url),
@@ -61,12 +63,14 @@ internal class McpClientProxy
 					Name = "stdio-http-proxy",
 					Version = "1.0.0",
 				},
-				Capabilities = new()
+				Handlers = new()
 				{
 					NotificationHandlers =
 					[
 						new(NotificationMethods.ToolListChangedNotification, (notification, cancellationToken) =>
 						{
+							log.LogTrace("Upstream MCP notified tool list changed");
+
 							var notificationParams = JsonSerializer.Deserialize<ResourceUpdatedNotificationParams>(notification.Params, McpJsonUtilities.DefaultOptions);
 
 							_toolListChanged?.Invoke();
@@ -78,9 +82,20 @@ internal class McpClientProxy
 			};
 
 			log.LogInformation("Connecting to upstream MCP at {Url}", url);
-			var client = await McpClientFactory.CreateAsync(clientTransport, options, cancellationToken: ct);
+			var client = await McpClient.CreateAsync(clientTransport, options, cancellationToken: ct);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
-			return client;
+
+			_clientCompletionSource.TrySetResult(client);
+
+			var tools = await client.ListToolsAsync(cancellationToken: ct);
+
+			log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
+
+			if (tools?.Count > 0)
+			{
+				// We already have a list, raise now.
+				_toolListChanged?.Invoke();
+			}
 		}
 		catch (Exception ex)
 		{
@@ -99,8 +114,7 @@ internal class McpClientProxy
 		if (UpstreamClient is not null)
 		{
 			_logger.LogInformation("Disconnecting from upstream MCP");
-			await UpstreamClient.DisposeAsync();
-			UpstreamClient = null;
+			await (await UpstreamClient).DisposeAsync();
 		}
 	}
 }

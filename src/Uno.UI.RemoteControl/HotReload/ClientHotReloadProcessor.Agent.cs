@@ -29,7 +29,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		private bool _runningInsideVSCodeExtension; // running with Uno VS Code extension allows Hot Reload to work while debugging
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
-		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
+		private void ProcessWorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
 		{
 			// If we get a workspace loaded message, we can assume that we are running with the dev-server
 			// This mean that HR won't work with the debugger attached.

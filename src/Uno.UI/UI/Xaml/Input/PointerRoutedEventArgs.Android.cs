@@ -11,12 +11,7 @@ using Windows.System;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-using Windows.Devices.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Input
 {

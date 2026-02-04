@@ -160,5 +160,33 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var _MyProperty = SUT.FindName("_MyProperty") as TextBlock;
 			Assert.AreEqual("Hello", _MyProperty.Text);
 		}
+
+		[TestMethod]
+		public void When_StaticOnly_Property_Binding_In_DataTemplate_Without_DataType()
+		{
+			var SUT = new DataTemplate_StaticOnly_NoDataType();
+			SUT.root.Content = new object(); // Any object, DataContext doesn't matter for static bindings
+			SUT.ForceLoaded();
+
+			var textBlock = SUT.FindName("_StaticPropertyText") as TextBlock;
+			Assert.AreEqual("Static Value", textBlock.Text);
+		}
+
+		[TestMethod]
+		public void When_StaticOnly_Event_Binding_In_DataTemplate_Without_DataType()
+		{
+			var SUT = new DataTemplate_StaticOnly_NoDataType();
+			SUT.root.Content = new object();
+			SUT.ForceLoaded();
+
+			var button = SUT.FindName("_StaticEventButton") as Button;
+			DataTemplate_StaticOnly_NoDataType_Static.ClickCount = 0;
+
+			// Use automation peer to invoke the button click
+			var peer = new Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer(button);
+			peer.Invoke();
+
+			Assert.AreEqual(1, DataTemplate_StaticOnly_NoDataType_Static.ClickCount);
+		}
 	}
 }

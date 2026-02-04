@@ -1,195 +1,243 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Tests.UnitTestsControl"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:skia="http://platform.uno/skia"
-			 xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d skia"
-			 x:Name="UnitTestsRootControl"
-			 d:DesignHeight="300"
-			 d:DesignWidth="400">
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Tests.UnitTestsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:skia="http://platform.uno/skia"
+    x:Name="UnitTestsRootControl"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d skia">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="0" x:Name="failedTestDetailsRow" />
-			<!--Will be set to height = 100 if any exception-->
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" x:Name="outputColumn" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Row="0" Spacing="4">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-				<Button
-					x:Name="runButton"
-					Grid.Column="0"
-					Click="OnRunTests"
-					Margin="0,0,4,0">
-					<StackPanel Orientation="Horizontal" Spacing="8">
-						<SymbolIcon Symbol="Play" />
-						<TextBlock Text="Run" />
-					</StackPanel>
-				</Button>
-				<Button
-					x:Name="stopButton"
-					Grid.Column="1"
-					IsEnabled="False"
-					Click="OnStopTests"
-					Margin="0,0,4,0">
-					<StackPanel Orientation="Horizontal" Spacing="8">
-						<SymbolIcon Symbol="Stop" />
-						<TextBlock Text="Stop" />
-					</StackPanel>
-				</Button>
-				<TextBox
-					x:Name="testFilter"
-					Grid.Column="2"
-					PlaceholderText="Enter test filter here"
-					HorizontalAlignment="Stretch"
-					Margin="0,0,4,0"/>
-				<Button
-					Content="..."
-					Grid.Column="3">
-					<Button.Flyout>
-						<Flyout>
-							<StackPanel>
-								<ToggleButton x:Name="consoleOutput">
-									<StackPanel Orientation="Horizontal" Spacing="8">
-										<FontIcon Glyph="&#xED0D;" />
-										<TextBlock Text="Console Output" />
-									</StackPanel>
-								</ToggleButton>
-								<ToggleButton x:Name="runIgnored">
-									<StackPanel Orientation="Horizontal" Spacing="8">
-										<FontIcon Glyph="&#xEE35;" />
-										<TextBlock Text="Run ignored tests" />
-									</StackPanel>
-								</ToggleButton>
-								<ToggleButton x:Name="retry" IsChecked="True">
-									<StackPanel Orientation="Horizontal" Spacing="8">
-										<FontIcon Glyph="&#xEC57;" />
-										<TextBlock Text="Auto retry" />
-									</StackPanel>
-								</ToggleButton>
-							</StackPanel>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-			</Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition x:Name="failedTestDetailsRow" Height="0" />
+            <!--  Will be set to height = 100 if any exception  -->
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="outputColumn" Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Spacing="4">
+            <Grid ColumnSpacing="4" RowSpacing="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="runButton"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    HorizontalAlignment="Stretch"
+                    Click="OnRunTests"
+                    Style="{ThemeResource AccentButtonStyle}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <SymbolIcon Symbol="Play" />
+                        <TextBlock Text="Run" />
+                    </StackPanel>
+                </Button>
+                <Button
+                    x:Name="stopButton"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Click="OnStopTests"
+                    IsEnabled="False">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <SymbolIcon Symbol="Stop" />
+                        <TextBlock Text="Stop" />
+                    </StackPanel>
+                </Button>
+                <Button Grid.Column="2">
+                    <Button.Content>
+                        <SymbolIcon Symbol="Setting" />
+                    </Button.Content>
+                    <Button.Flyout>
+                        <Flyout>
+                            <StackPanel>
+                                <ToggleButton x:Name="consoleOutput">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xED0D;" />
+                                        <TextBlock Text="Console Output" />
+                                    </StackPanel>
+                                </ToggleButton>
+                                <ToggleButton x:Name="runIgnored">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xEE35;" />
+                                        <TextBlock Text="Run ignored tests" />
+                                    </StackPanel>
+                                </ToggleButton>
+                                <ToggleButton x:Name="retry" IsChecked="True">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xEC57;" />
+                                        <TextBlock Text="Auto retry" />
+                                    </StackPanel>
+                                </ToggleButton>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
 
-			<StackPanel Orientation="Horizontal" Margin="0,8">
-				<TextBlock Text="Status: " />
-				<TextBlock x:Name="runStatus" Text="Not initialized" />
-			</StackPanel>
+                <TextBox
+                    x:Name="testFilter"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="3"
+                    HorizontalAlignment="Stretch"
+                    PlaceholderText="Enter test filter here" />
+            </Grid>
 
-			<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-				<StackPanel.Resources>
-					<Style TargetType="TextBlock">
-						<Setter Property="VerticalAlignment" Value="Center" />
-						<Setter Property="Width" Value="40" />
-					</Style>
-					<Style TargetType="FontIcon">
-						<Setter Property="VerticalAlignment" Value="Center" />
-					</Style>
-				</StackPanel.Resources>
+            <StackPanel Margin="0,8" Orientation="Horizontal">
+                <TextBlock Text="Status: " />
+                <TextBlock x:Name="runStatus" Text="Not initialized" />
+            </StackPanel>
 
-				<FontIcon Glyph="&#xE768;" />
-				<TextBlock
-					x:Name="runTestCount"
-					Text="None" />
+            <Grid Margin="8" RowSpacing="8">
+                <Grid.Resources>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Spacing" Value="4" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Orientation" Value="Horizontal" />
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Width" Value="40" />
+                    </Style>
+                    <Style TargetType="FontIcon">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-				<FontIcon Glyph="&#xE73E;" Foreground="DarkGreen" />
-				<TextBlock
-					x:Name="succeededTestCount"
-					Foreground="DarkGreen"
-					Text="None" />
+                <StackPanel ToolTipService.ToolTip="Total tests">
+                    <FontIcon Glyph="&#xE768;" />
+                    <TextBlock x:Name="runTestCount" Text="None" />
+                </StackPanel>
 
-				<FontIcon Glyph="&#xE711;" Foreground="Red" />
-				<TextBlock
-					x:Name="failedTestCount"
-					Foreground="Red"
-					Text="None" />
+                <StackPanel Grid.Column="1" ToolTipService.ToolTip="Succeeded tests">
+                    <FontIcon Foreground="DarkGreen" Glyph="&#xE73E;" />
+                    <TextBlock
+                        x:Name="succeededTestCount"
+                        Foreground="DarkGreen"
+                        Text="None" />
+                </StackPanel>
 
-				<FontIcon Glyph="&#xEE35;" Foreground="DarkGray" />
-				<TextBlock
-					x:Name="ignoredTestCount"
-					Foreground="DarkGray"
-					Text="None" />
-			</StackPanel>
-		</StackPanel>
+                <StackPanel Grid.Column="2" ToolTipService.ToolTip="Failed tests">
+                    <FontIcon Foreground="Red" Glyph="&#xE711;" />
+                    <TextBlock
+                        x:Name="failedTestCount"
+                        Foreground="Red"
+                        Text="None" />
+                </StackPanel>
 
-		<ScrollViewer
-			Grid.Row="1"
-			VerticalScrollBarVisibility="Auto"
-			VerticalScrollMode="Auto"
-			HorizontalScrollBarVisibility="Auto"
-			HorizontalScrollMode="Auto">
-			<TextBlock
-				x:Name="failedTestDetails"
-				Opacity="0.8"
-				IsTextSelectionEnabled="True" />
-		</ScrollViewer>
-		<Button
-			Grid.Row="1"
-			HorizontalAlignment="Right"
-			VerticalAlignment="Top"
-			Margin="0,0,24,0"
-			Background="#66CCCCCC"
-			Click="CopyFailedTestDetails">
-			<TextBlock Text="Copy" Foreground="{StaticResource SystemControlForegroundAccentBrush}" />
-		</Button>
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    ToolTipService.ToolTip="Inconclusive tests">
+                    <FontIcon Foreground="DarkViolet" Glyph="&#xE9CE;" />
+                    <TextBlock
+                        x:Name="inconclusiveTestCount"
+                        Foreground="DarkViolet"
+                        Text="None" />
+                </StackPanel>
 
-		<Rectangle
-			Grid.Row="2"
-			Height="5"
-			Fill="{ThemeResource SystemControlForegroundAccentBrush}"
-			HorizontalAlignment="Stretch"
-			ManipulationMode="TranslateY"
-			ManipulationDelta="UpdateFailedTestDetailsSize"/>
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    ToolTipService.ToolTip="Retried tests">
+                    <FontIcon Foreground="Orange" Glyph="&#xE8EE;" />
+                    <TextBlock
+                        x:Name="retriedTestCount"
+                        Foreground="Orange"
+                        Text="None" />
+                </StackPanel>
 
-		<TextBlock x:Name="failedTests" Grid.Row="3" />
-		<TextBlock x:Name="runningState" Grid.Row="3" />
-		<ScrollViewer Grid.Row="3">
-			<StackPanel
-				x:Name="testResults"
-				Background="Black">
-			</StackPanel>
-		</ScrollViewer>
-		<Button
-			Grid.Row="3"
-			HorizontalAlignment="Right"
-			VerticalAlignment="Top"
-			Margin="0,0,24,0"
-			Background="#66CCCCCC"
-			Click="CopyTestResults">
-			<TextBlock Text="Copy" Foreground="{StaticResource SystemControlForegroundAccentBrush}" />
-		</Button>
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    ToolTipService.ToolTip="Ignored tests">
+                    <FontIcon Foreground="DarkGray" Glyph="&#xEE35;" />
+                    <TextBlock
+                        x:Name="ignoredTestCount"
+                        Foreground="DarkGray"
+                        Text="None" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
 
-		<Rectangle
-			Grid.Column="1"
-			Grid.RowSpan="4"
-			Width="5"
-			Fill="{ThemeResource SystemControlForegroundAccentBrush}"
-			VerticalAlignment="Stretch"
-			ManipulationMode="TranslateX"
-			ManipulationDelta="UpdateOuputSize"/>
+        <ScrollViewer
+            Grid.Row="1"
+            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollMode="Auto"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <TextBlock
+                x:Name="failedTestDetails"
+                IsTextSelectionEnabled="True"
+                Opacity="0.8" />
+        </ScrollViewer>
+        <Button
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="CopyFailedTestDetails">
+            <FontIcon Glyph="&#xE8C8;" />
+        </Button>
 
-		<ContentControl
-			x:Name="unitTestContentRoot"
-			Grid.Column="2"
-			Grid.RowSpan="4"
-			HorizontalContentAlignment="Left"
-			VerticalAlignment="Top" />
-	</Grid>
+        <Rectangle
+            Grid.Row="2"
+            Height="5"
+            HorizontalAlignment="Stretch"
+            Fill="{ThemeResource SystemControlForegroundAccentBrush}"
+            ManipulationDelta="UpdateFailedTestDetailsSize"
+            ManipulationMode="TranslateY" />
+
+        <TextBlock x:Name="failedTests" Grid.Row="3" />
+        <TextBlock x:Name="runningState" Grid.Row="3" />
+        <ScrollViewer Grid.Row="3">
+            <StackPanel x:Name="testResults" Background="Black" />
+        </ScrollViewer>
+        <Button
+            Grid.Row="3"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="CopyTestResults">
+            <FontIcon Glyph="&#xE8C8;" />
+        </Button>
+
+        <Rectangle
+            Grid.RowSpan="4"
+            Grid.Column="1"
+            Width="5"
+            VerticalAlignment="Stretch"
+            Fill="{ThemeResource SystemControlForegroundAccentBrush}"
+            ManipulationDelta="UpdateOuputSize"
+            ManipulationMode="TranslateX" />
+
+        <ContentControl
+            x:Name="unitTestContentRoot"
+            Grid.RowSpan="4"
+            Grid.Column="2"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Left" />
+    </Grid>
 </UserControl>

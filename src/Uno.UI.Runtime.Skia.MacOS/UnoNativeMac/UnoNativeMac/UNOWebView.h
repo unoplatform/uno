@@ -36,6 +36,11 @@ typedef bool (*uno_webview_unsupported_scheme_identified_fn_ptr)(WKWebView* /* h
 uno_webview_unsupported_scheme_identified_fn_ptr uno_get_webview_unsupported_scheme_identified_callback(void);
 void uno_set_webview_unsupported_scheme_identified_callback(uno_webview_unsupported_scheme_identified_fn_ptr fn_ptr);
 
+// WebResourceRequested callback - returns JSON string of headers to add, or NULL if no modification needed
+typedef const char* _Nullable (*uno_webview_resource_requested_fn_ptr)(WKWebView* /* handle */, const char* /* url */, const char* /* method */);
+uno_webview_resource_requested_fn_ptr uno_get_webview_resource_requested_callback(void);
+void uno_set_webview_resource_requested_callback(uno_webview_resource_requested_fn_ptr fn_ptr);
+
 NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel);
 
 typedef int (*uno_webview_new_window_requested_fn_ptr)(WKWebView* /* handle */, const char* /* targetUrl */, const char* /* refererUrl */);

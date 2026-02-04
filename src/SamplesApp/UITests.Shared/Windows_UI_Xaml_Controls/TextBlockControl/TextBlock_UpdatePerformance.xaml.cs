@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", "TextBlock_UpdatePerformance")]
+	[Sample("TextBlock", Name = "TextBlock_UpdatePerformance")]
 	public sealed partial class TextBlock_UpdatePerformance : UserControl
 	{
 		public TextBlock_UpdatePerformance()

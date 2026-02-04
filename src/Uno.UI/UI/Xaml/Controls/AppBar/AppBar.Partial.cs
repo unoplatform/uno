@@ -28,13 +28,7 @@ using Uno.UI.Controls;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-using Windows.Devices.Input;
-using Windows.UI.Core;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

@@ -1,4 +1,3 @@
-﻿#if HAS_UNO_WINUI
 using Uno;
 
 namespace Microsoft.UI.Input
@@ -24,4 +23,3 @@ namespace Microsoft.UI.Input
 			=> new InputDesktopResourceCursor(moduleName, resourceId);
 	}
 }
-#endif

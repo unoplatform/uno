@@ -26,11 +26,6 @@ using _View = UIKit.UIView;
 using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
-#if HAS_UNO_WINUI
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ComboBox : Selector

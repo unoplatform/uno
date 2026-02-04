@@ -18,7 +18,7 @@ jobs:
 - job: Skia_Windows_Screenshot_Tests
   displayName: 'Snapshot Tests'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -62,7 +62,7 @@ jobs:
 - job: Skia_Windows_Runtime_Tests_Build
   displayName: 'Runtime Tests'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -128,7 +128,7 @@ jobs:
 # - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
 #   displayName: 'WPF Islands Runtime Tests'
 #   timeoutInMinutes: 45
-#   cancelTimeoutInMinutes: 1
+#   cancelTimeoutInMinutes: 0
 #   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 #   pool:
 #     vmImage: ${{ parameters.vmImage }}

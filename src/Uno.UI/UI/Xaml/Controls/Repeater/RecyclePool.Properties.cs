@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.UI.Xaml;
 
@@ -6,7 +7,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class RecyclePool
 	{
-		public static DependencyProperty PoolInstanceProperty { get; } = DependencyProperty.RegisterAttached(
+		public static DependencyProperty PoolInstanceProperty
+		{
+			[DynamicDependency(nameof(GetPoolInstance))]
+			[DynamicDependency(nameof(SetPoolInstance))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 			"PoolInstance", typeof(RecyclePool), typeof(RecyclePool), new FrameworkPropertyMetadata(default(RecyclePool)));
 
 		public static RecyclePool GetPoolInstance(DataTemplate dataTemplate)

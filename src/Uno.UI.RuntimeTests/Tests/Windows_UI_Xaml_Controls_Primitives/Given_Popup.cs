@@ -366,6 +366,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 #endif
 
+		[TestMethod]
+		public async Task When_Multiple_Popups_Opened_Order_Is_Most_Recent_First()
+		{
+			// This test validates that GetOpenPopupsForXamlRoot returns popups in order
+			// with the most recently opened popup at the head (index 0)
+			var popup1 = new Popup
+			{
+				Child = new Button { Content = "Popup 1" }
+			};
+			popup1.XamlRoot = WindowHelper.XamlRoot;
+
+			var popup2 = new Popup
+			{
+				Child = new Button { Content = "Popup 2" }
+			};
+			popup2.XamlRoot = WindowHelper.XamlRoot;
+
+			var popup3 = new Popup
+			{
+				Child = new Button { Content = "Popup 3" }
+			};
+			popup3.XamlRoot = WindowHelper.XamlRoot;
+
+			try
+			{
+				// Open popups in sequence: 1, 2, 3
+				popup1.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				popup2.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				popup3.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot);
+
+				// Verify count
+				Assert.AreEqual(3, openPopups.Count, "Should have 3 open popups");
+
+				// Verify order: most recently opened (popup3) should be first
+				Assert.AreSame(popup3, openPopups[0], "Most recently opened popup should be at index 0");
+				Assert.AreSame(popup2, openPopups[1], "Second most recently opened popup should be at index 1");
+				Assert.AreSame(popup1, openPopups[2], "First opened popup should be at index 2");
+			}
+			finally
+			{
+				popup1.IsOpen = false;
+				popup2.IsOpen = false;
+				popup3.IsOpen = false;
+			}
+		}
+
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{
 			var currentElement = startingElement;

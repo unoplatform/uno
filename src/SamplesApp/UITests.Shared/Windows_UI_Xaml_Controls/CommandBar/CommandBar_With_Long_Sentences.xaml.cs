@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
 	/// 
-	[SampleControlInfo("CommandBar", nameof(CommandBar_With_Long_Sentences))]
+	[Sample("CommandBar", Name = nameof(CommandBar_With_Long_Sentences))]
 	public sealed partial class CommandBar_With_Long_Sentences : Page
 	{
 		public CommandBar_With_Long_Sentences()

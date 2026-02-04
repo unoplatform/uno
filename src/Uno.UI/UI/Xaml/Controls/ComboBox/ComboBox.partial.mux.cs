@@ -27,11 +27,7 @@ using static DirectUI.ElevationHelper;
 using Uno.UI;
 #endif
 
-#if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -211,12 +207,7 @@ partial class ComboBox
 		// Tells the selector to prevent Custom Values.
 		SetAllowCustomValues(false /*allow*/);
 
-		m_tpEditableTextPart.Text =
-#if HAS_UNO_WINUI
-			null;
-#else // In UWP, setting Text to null will throw an exception.
-			"";
-#endif
+		m_tpEditableTextPart.Text = null;
 
 		m_isEditModeConfigured = false;
 	}

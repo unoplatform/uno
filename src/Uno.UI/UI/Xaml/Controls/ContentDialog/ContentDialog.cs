@@ -17,11 +17,7 @@ using Windows.UI.Core;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -297,13 +293,6 @@ namespace Microsoft.UI.Xaml.Controls
 					throw new InvalidOperationException("A ContentDialog is already opened.");
 				}
 
-#if !HAS_UNO_WINUI
-				if (XamlRoot is null &&
-					WinUICoreServices.Instance.InitializationType != InitializationType.IslandsOnly)
-				{
-					XamlRoot = WinUICoreServices.Instance.MainRootVisual?.XamlRoot;
-				}
-#endif
 
 				// TODO: support in-place
 				m_placementMode = PlacementMode.EntireControlInPopup;

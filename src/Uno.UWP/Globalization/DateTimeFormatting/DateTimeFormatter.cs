@@ -797,27 +797,45 @@ public sealed partial class DateTimeFormatter
 
 		string ConstructPattern(string str)
 		{
-			var builder = new StringBuilder();
-			char lastChar = str[0];
-			int count = 1;
-			for (int i = 1; i < str.Length; i++)
+			if (string.IsNullOrEmpty(str))
 			{
-				if (lastChar != str[i])
-				{
-					AddToBuilder(builder, lastChar, count);
+				return string.Empty;
+			}
 
-					lastChar = str[i];
-					count = 1;
+			var builder = new StringBuilder();
+
+			foreach (var part in StringLiteralRegex().Split(str))
+			{
+				// skip empty block
+				if (part.Length == 0)
+				{
+					continue;
 				}
+				// add quoted literal as is, without the quotes
+				else if (part.StartsWith('\''))
+				{
+					if (part.Length > 2)
+					{
+						builder.Append(part[1..^1]);
+					}
+				}
+				// for non-quoted parts, further segment them by grouping repeated character(s)
 				else
 				{
-					count++;
+					foreach (var segment in RepeatedCharactersRegex().EnumerateMatches(part))
+					{
+						AddToBuilder(builder, part[segment.Index], segment.Length);
+					}
 				}
 			}
 
-			AddToBuilder(builder, lastChar, count);
 			return builder.ToString();
 		}
 	}
 
+	[GeneratedRegex(@"('[^']+')")]
+	private static partial Regex StringLiteralRegex();
+
+	[GeneratedRegex(@"(.)(\1+)?")]
+	private static partial Regex RepeatedCharactersRegex();
 }

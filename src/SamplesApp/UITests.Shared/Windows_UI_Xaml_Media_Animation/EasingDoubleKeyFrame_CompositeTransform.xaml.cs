@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfo("Animations", "EasingDoubleKeyFrame_CompositeTransform", ignoreInSnapshotTests: true)]
+	[Sample("Animations", Name = "EasingDoubleKeyFrame_CompositeTransform", IgnoreInSnapshotTests = true)]
 	public sealed partial class EasingDoubleKeyFrame_CompositeTransform : UserControl
 	{
 		public EasingDoubleKeyFrame_CompositeTransform()

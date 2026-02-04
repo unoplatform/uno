@@ -1,4 +1,4 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", "ForcedTextWithCarriageReturn_MaxLines_One")]
+	[Sample("TextBlock", Name = "ForcedTextWithCarriageReturn_MaxLines_One")]
 	public sealed partial class ForcedTextWithCarriageReturn_MaxLines_One : UserControl
 	{
 		public ForcedTextWithCarriageReturn_MaxLines_One()

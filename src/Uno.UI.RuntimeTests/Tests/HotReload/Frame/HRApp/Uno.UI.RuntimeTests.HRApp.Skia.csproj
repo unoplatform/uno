@@ -4,6 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
+		<IsUnoHead>true</IsUnoHead>
 
 		<!-- in-solution build -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
@@ -12,6 +13,7 @@
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
 
 		<UnoUIRuntimeTestEngine_DisableValidateUno>true</UnoUIRuntimeTestEngine_DisableValidateUno>
+		<UnoGenerateHotReloadInfo>True</UnoGenerateHotReloadInfo>
        <!-- Required until https://github.com/dotnet/sdk/issues/36666 is released -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
@@ -24,13 +26,12 @@
 	</Target>
 
 	<ItemGroup>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/SamplesApp*.dll"/>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Uno.UI.RuntimeTests*.dll"/>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/System*.dll"/>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Microsoft*.dll"/>
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/SamplesApp*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Uno.UI.RuntimeTests*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/System*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Microsoft*.dll" />
 
-		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" 
-				   Exclude="@(UnoReferenceExclusion)" />
+		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" Exclude="@(UnoReferenceExclusion)" />
 
 		<!-- C:/s/uno.github/uno/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/../../../../SamplesApp/SamplesApp.Skia.Gtk/bin -->
 		
@@ -44,6 +45,7 @@
 		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
+		<PackageReference Include="Uno.icu-win" Version="77.1.2" />
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
@@ -53,8 +55,10 @@
 		<PackageReference Include="Uno.WinUI.DevServer" Version="4.8.33" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.33" />
 		-->
+
+		<ProjectReference Include="..\HRUnoLib\Uno.UI.RuntimeTests.HRUnoLib.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.props" />
 	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />

@@ -1,10 +1,10 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "TransformToVisual_Simple", description: "The ellipse should track the y-position of the text inside the scroll viewer, using TransformToVisual")]
+	[Sample("Transform", Name = "TransformToVisual_Simple", Description = "The ellipse should track the y-position of the text inside the scroll viewer, using TransformToVisual")]
 	public sealed partial class TransformToVisual_Simple : UserControl
 	{
 		public TransformToVisual_Simple()

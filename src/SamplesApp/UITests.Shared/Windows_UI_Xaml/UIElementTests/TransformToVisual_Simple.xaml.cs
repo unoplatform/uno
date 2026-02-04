@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
 using Microsoft.UI.Xaml;
@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", "TransformToVisual_Simple")]
+	[Sample("UIElement", Name = "TransformToVisual_Simple")]
 	public sealed partial class TransformToVisual_Simple : UserControl
 	{
 		private Grid _outer;

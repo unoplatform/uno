@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,13 @@ namespace Uno.UI.DataBinding
 	/// </summary>
 	public class BindableType : IBindableType
 	{
+		internal const DynamicallyAccessedMemberTypes TypeRequirements =
+			  DynamicallyAccessedMemberTypes.NonPublicConstructors  // DependencyProperty.Register()
+			| DynamicallyAccessedMemberTypes.PublicConstructors
+			| DynamicallyAccessedMemberTypes.PublicFields
+			| DynamicallyAccessedMemberTypes.PublicProperties
+			;
+
 		private readonly Hashtable _properties;
 		private StringIndexerGetterDelegate? _stringIndexerGetter;
 		private StringIndexerSetterDelegate? _stringIndexerSetter;
@@ -26,12 +34,16 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		/// <param name="estimatedPropertySize">Provide an estimated number of properties, so the dictionary does not need to grow unnecessarily.</param>
 		/// <param name="sourceType">The actual .NET type that corresponds to this instance.</param>
-		public BindableType(int estimatedPropertySize, Type sourceType)
+		public BindableType(
+			int estimatedPropertySize,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
+			Type sourceType)
 		{
 			_properties = new Hashtable(estimatedPropertySize);
 			Type = sourceType;
 		}
 
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		public Type Type { get; }
 
 		public ActivatorDelegate? CreateInstance()
@@ -61,7 +73,9 @@ namespace Uno.UI.DataBinding
 			_activator = activator;
 		}
 
-		public void AddProperty<T>(string name, PropertyGetterHandler getter, PropertySetterHandler? setter = null)
+		public void AddProperty<
+			[DynamicallyAccessedMembers(TypeRequirements)] T
+		>(string name, PropertyGetterHandler getter, PropertySetterHandler? setter = null)
 		{
 			_properties[name] = new BindableProperty(typeof(T), getter, setter);
 		}
@@ -71,7 +85,12 @@ namespace Uno.UI.DataBinding
 			_properties[property.Name] = new BindableProperty(property);
 		}
 
-		public void AddProperty(string name, Type propertyType, PropertyGetterHandler getter, PropertySetterHandler? setter = null)
+		public void AddProperty(
+			string name,
+			[DynamicallyAccessedMembers(TypeRequirements)]
+			Type propertyType,
+			PropertyGetterHandler getter,
+			PropertySetterHandler? setter = null)
 		{
 			_properties[name] = new BindableProperty(propertyType, getter, setter);
 		}

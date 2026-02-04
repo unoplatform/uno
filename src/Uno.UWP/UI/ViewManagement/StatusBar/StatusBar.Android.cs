@@ -23,6 +23,17 @@ namespace Windows.UI.ViewManagement
 		private IOnApplyWindowInsetsListener _insetsListener;
 		private DisplayInformation _displayInformation;
 
+		internal void ResetListener()
+		{
+			// used to reset the stale instance of the insets listener
+			// when the activity&decor-view is recreated, eg: on deep-linking
+			if (_insetsListener is { })
+			{
+				_insetsListener = null;
+				SetStatusBarBackgroundColor(_backgroundColor);
+			}
+		}
+
 		private void SetStatusBarForegroundType(StatusBarForegroundType? foregroundType)
 		{
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
@@ -261,9 +272,12 @@ namespace Windows.UI.ViewManagement
 
 			public WindowInsetsCompat OnApplyWindowInsets(View view, WindowInsetsCompat insets)
 			{
-				var statusBarInsets = insets.GetInsets(WindowInsets.Type.StatusBars());
-				view.SetBackgroundColor((Android.Graphics.Color)_statusBar._backgroundColor);
-				view.SetPadding(0, statusBarInsets.Top, 0, 0); // adjust padding to avoid overlap
+				if (_statusBar._insetsListener == this)
+				{
+					var statusBarInsets = insets.GetInsets(WindowInsets.Type.StatusBars());
+					view.SetBackgroundColor((Android.Graphics.Color)(_statusBar._backgroundColor ?? Colors.Transparent));
+					view.SetPadding(0, statusBarInsets.Top, 0, 0); // adjust padding to avoid overlap
+				}
 				return insets;
 			}
 		}

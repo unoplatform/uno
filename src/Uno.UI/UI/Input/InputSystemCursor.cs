@@ -1,11 +1,7 @@
 ﻿using System;
 namespace Microsoft.UI.Input;
 
-#if HAS_UNO_WINUI
 public sealed partial class InputSystemCursor : InputCursor
-#else
-internal sealed partial class InputSystemCursor : InputCursor
-#endif
 {
 	private readonly InputSystemCursorShape _cursorShape;
 

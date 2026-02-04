@@ -38,7 +38,7 @@ Start by creating a new Uno Platform project using your preferred development en
 Install the Raygun package in your Uno Platform application. Use the Manage NuGet Packages option or the following dotnet CLI command:
 
 ```sh
-dotnet add package Mindscape.Raygun4Net.NetCore
+dotnet add package Mindscape.Raygun4Net.NetCore --project [YourProjectName]
 ```
 
 ### Step 3 - Create a RaygunClient
@@ -73,7 +73,7 @@ catch (Exception ex)
 ```
 
 > [!IMPORTANT]
-> If you are setting up Raygun on Wasm, you need to either enable support for multithreading (more information [here](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-threading.html)) or use the `SendAsync` method instead of `SendInBackground`.
+> If you are setting up Raygun on Wasm, you need to either enable support for multithreading (see the [Wasm threading documentation](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-threading.html) for more information) or use the `SendAsync` method instead of `SendInBackground`.
 
 ### Step 5 - Observe the Website
 

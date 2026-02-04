@@ -9,9 +9,7 @@ using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Windows.UI.Core;
 
-#if HAS_UNO_WINUI
 using Windows.UI;
-#endif
 
 namespace Microsoft.UI.Xaml.Media
 {

@@ -1,53 +1,47 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading;
-using Uno.Extensions;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
-using static Windows.UI.Input.PointerUpdateKind;
-using System.Runtime.CompilerServices;
-using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
 using Uno.Disposables;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 {
-	private static readonly Lazy<WebAssemblyWindowWrapper> _instance = new Lazy<WebAssemblyWindowWrapper>(() => new());
-	private DisplayInformation _displayInformation;
+	private static WebAssemblyWindowWrapper? _instance;
+	private DisplayInformation? _displayInformation;
 
-	internal static WebAssemblyWindowWrapper Instance => _instance.Value;
+	internal static WebAssemblyWindowWrapper Instance => _instance!;
 
-	public WebAssemblyWindowWrapper()
+	public static async Task Initialize()
 	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Initializing {nameof(WebAssemblyWindowWrapper)}");
-		}
+		_instance = new();
+		await NativeMethods.Initialize(_instance);
 
-		NativeMethods.Initialize(this);
+		typeof(WebAssemblyWindowWrapper).LogTrace()?.Trace($"Initializing {nameof(WebAssemblyWindowWrapper)}");
 
-		_displayInformation = DisplayInformation.GetForCurrentView();
-		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
-		_displayInformation.DpiChanged += (_, _) => RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
+		_instance._displayInformation = DisplayInformation.GetForCurrentView();
+		_instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
+		_instance._displayInformation.DpiChanged += (_, _) => _instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
+
+		// The font prefetching must be done after Application is created,
+		// after the default fonts are updated e.g. by OpenSansGenerator.
+		NativeDispatcher.Main.Enqueue(() => _ = PrefetchFonts());
+	}
+
+	private WebAssemblyWindowWrapper()
+	{
 	}
 
 	public override object? NativeWindow => null;
@@ -101,7 +95,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	[JSExport]
 	private static async Task PrefetchFonts()
 	{
 		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);

@@ -1,4 +1,4 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System.Threading.Tasks;
@@ -6,7 +6,7 @@ using UITests.Shared.Helpers;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "TransformToVisual_Translate2d", description: "The ellipses should track the x- and y-positions of the duck inside the scroll viewer, using TransformToVisual")]
+	[Sample("Transform", Name = "TransformToVisual_Translate2d", Description = "The ellipses should track the x- and y-positions of the duck inside the scroll viewer, using TransformToVisual")]
 	public sealed partial class TransformToVisual_Translate2d : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

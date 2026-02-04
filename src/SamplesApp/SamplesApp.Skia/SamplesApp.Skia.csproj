@@ -18,6 +18,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<SkipIcuDataInitializerGenerator>true</SkipIcuDataInitializerGenerator>
+	</PropertyGroup>
+	<ItemGroup>
+		<CompilerVisibleProperty Include="SkipIcuDataInitializerGenerator" />
+	</ItemGroup>
+
+	<PropertyGroup>
 		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 		<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>

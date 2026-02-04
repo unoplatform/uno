@@ -1,11 +1,11 @@
-﻿using System.Linq;
+using System.Linq;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewContainerFromItem", description: "ListView where ContainerFromItem+TransformToVisual is used to align indicator when SelectedItem changes")]
+	[Sample("ListView", Name = "ListViewContainerFromItem", Description = "ListView where ContainerFromItem+TransformToVisual is used to align indicator when SelectedItem changes")]
 	public sealed partial class ListViewContainerFromItem : UserControl
 	{
 		public ListViewContainerFromItem()

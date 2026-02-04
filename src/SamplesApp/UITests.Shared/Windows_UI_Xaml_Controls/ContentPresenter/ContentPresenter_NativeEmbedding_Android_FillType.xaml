@@ -11,7 +11,7 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 	<Grid>
-		<WebView2 Source="https://google.com" />
+		<WebView2 Source="https://microsoft.com" />
 		<Rectangle Height="30" Width="30" VerticalAlignment="Center" Fill="Orange" />
 	</Grid>
 </UserControl>

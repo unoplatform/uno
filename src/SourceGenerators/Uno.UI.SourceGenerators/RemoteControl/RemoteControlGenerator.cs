@@ -176,6 +176,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 						.Where(x => !IPAddress.IsLoopback(x.Address));
 					//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
+					var hasAddresses = false;
 					foreach (var addressInfo in addresses)
 					{
 						var address = addressInfo.Address;
@@ -191,6 +192,15 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 							addressStr = address.ToString();
 						}
 						sb.AppendLineIndented($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressStr}\", {unoRemoteControlPort})]");
+						hasAddresses = true;
+					}
+
+					// If no network addresses are available, add loopback as a fallback.
+					// This is only a fallback for desktop and WASM platforms; it will NOT work for mobile endpoints
+					// that need to connect to a different machine.
+					if (!hasAddresses)
+					{
+						sb.AppendLineIndented($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"127.0.0.1\", {unoRemoteControlPort})]");
 					}
 				}
 			}

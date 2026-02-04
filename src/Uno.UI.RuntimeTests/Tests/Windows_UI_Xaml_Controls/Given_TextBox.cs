@@ -38,7 +38,9 @@ using Combinatorial.MSTest;
 using Uno.UI.Extensions;
 #elif __APPLE_UIKIT__
 using UIKit;
-#else
+#elif __SKIA__
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Foundation.Extensibility;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -935,6 +937,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				// TODO: Investigate what happens on Wasm Skia when running this test.
 				Assert.Inconclusive("Fails on Wasm Skia for unknown reason");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
 			}
 #endif
 			var SUT = new TextBox();

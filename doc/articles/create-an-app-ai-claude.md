@@ -4,6 +4,9 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Claude
 
 # Creating an app with Claude Code
 
+> [!IMPORTANT]
+> Before creating an app, make sure you have completed the [Claude Code setup](xref:Uno.GetStarted.AI.Claude) to install and configure the Uno Platform MCPs.
+
 1. Create a new project using the [Uno Platform Live Wizard](https://aka.platform.uno/app-wizard), or [`dotnet new`](xref:Uno.GetStarted.dotnet-new)
 
     ```bash

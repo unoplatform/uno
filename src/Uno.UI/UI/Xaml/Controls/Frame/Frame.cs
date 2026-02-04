@@ -165,7 +165,7 @@ public partial class Frame : ContentControl
 
 	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 	internal static object CreatePageInstance(
-		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
 		Type sourcePageType)
 	{
 		var replacementType = sourcePageType.GetReplacementType(); // Get latest replacement type to handle Hot Reload.

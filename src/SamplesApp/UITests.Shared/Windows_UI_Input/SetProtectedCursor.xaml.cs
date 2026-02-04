@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 #if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
 #endif
@@ -12,7 +12,7 @@ using Microsoft.UI.Input;
 
 namespace SamplesApp.Wasm.Windows_UI_Input
 {
-	[SampleControlInfo("Windows.UI.Input", "SetProtectedCursor", isManualTest: true, description: "Demonstrates use of UIElement.ProtectedCursor / InputSystemCursor / InputSystemCursorShape")]
+	[Sample("Windows.UI.Input", Name = "SetProtectedCursor", IsManualTest = true, Description = "Demonstrates use of UIElement.ProtectedCursor / InputSystemCursor / InputSystemCursorShape")]
 	public sealed partial class SetProtectedCursor : Page
 	{
 		public SetProtectedCursor()

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace MUXControlsTestApp
 {
-	[SampleControlInfo(
+	[Sample(
 		"MUX",
 		"PersonPictureLateBinding",
-		description: "Shows a PersonPicture control and a Textblock with a name. \n" +
+		Description = "Shows a PersonPicture control and a Textblock with a name. \n" +
 		"The PersonPicture control image is set after 1 second delay. \n" +
 		"The image should be displayed after the delay.",
-		isManualTest: true)]
+		IsManualTest = true)]
 #pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class PersonPictureLateBindingPage
 #pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.

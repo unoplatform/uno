@@ -1,10 +1,10 @@
-﻿using System.Linq;
+using System.Linq;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo("Scrolling", "ScrollViewer_Transforms", description: "Apply transforms and ensure manipulations are still working smoothly.", ignoreInSnapshotTests: true)]
+	[Sample("Scrolling", Name = "ScrollViewer_Transforms", Description = "Apply transforms and ensure manipulations are still working smoothly.", IgnoreInSnapshotTests = true)]
 	public sealed partial class ScrollViewer_Transforms : Page
 	{
 		public ScrollViewer_Transforms()

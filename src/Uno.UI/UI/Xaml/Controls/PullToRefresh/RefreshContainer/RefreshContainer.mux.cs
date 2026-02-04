@@ -266,6 +266,9 @@ public partial class RefreshContainer : ContentControl, IRefreshContainerPrivate
 					if (adaptFromTreeResult != null)
 					{
 						((IRefreshVisualizerPrivate)m_refreshVisualizer).InfoProvider = adaptFromTreeResult;
+#if HAS_UNO && !__ANDROID__ && !__IOS__
+						(m_refreshInfoProviderAdapter as ScrollViewerIRefreshInfoProviderAdapter)?.SetupVisualizer(m_refreshVisualizer);
+#endif
 						m_refreshInfoProviderAdapter.SetAnimations(m_refreshVisualizer);
 					}
 				}

@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MenuFlyout
 	{
-		private static DependencyProperty IsDestructiveProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutItemExtensions", "IsDestructive");
+		private static DependencyProperty IsDestructiveProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutItemExtensions, Uno.UI.Toolkit", "IsDestructive");
 
 		private UIAlertController _alertController;
 

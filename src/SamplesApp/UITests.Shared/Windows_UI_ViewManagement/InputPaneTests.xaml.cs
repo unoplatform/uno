@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,7 +9,7 @@ using System;
 
 namespace UITests.Windows_UI_ViewManagement
 {
-	[SampleControlInfo(category: "Windows.UI.ViewManagement")]
+	[Sample("Windows.UI.ViewManagement")]
 
 	public sealed partial class InputPaneTests : Page
 	{

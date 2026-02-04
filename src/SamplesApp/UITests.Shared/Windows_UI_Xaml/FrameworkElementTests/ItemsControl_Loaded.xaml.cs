@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-	[SampleControlInfo("FrameworkElement", nameof(ItemsControl_Loaded))]
+	[Sample("FrameworkElement", Name = nameof(ItemsControl_Loaded))]
 	public sealed partial class ItemsControl_Loaded : UserControl
 	{
 		public ItemsControl_Loaded()

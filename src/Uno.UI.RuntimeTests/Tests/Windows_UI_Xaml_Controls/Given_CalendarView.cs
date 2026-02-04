@@ -201,6 +201,7 @@ public class Given_CalendarView
 			MinDate = DateTimeOffset.Now.AddDays(-10),
 			MaxDate = DateTimeOffset.Now.AddDays(10)
 		};
+
 		Assert.AreEqual(2, calendar.SelectedDates.Count);
 		Assert.AreEqual(day1, calendar.SelectedDates[0]);
 		Assert.AreEqual(day2, calendar.SelectedDates[1]);
@@ -302,6 +303,32 @@ public class Given_CalendarView
 			offsets.Zip(offsets.Skip(1)).All(x => x.Second >= x.First),
 			$"should never rewind back: (v-offsets: {string.Join(", ", offsets)})"
 		);
+	}
+
+	[TestMethod]
+	public async Task When_Spanish_Language()
+	{
+		var calendarView = new CalendarView()
+		{
+			Language = "es-ES"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		Assert.AreEqual("enero de 2024", calendarView.TemplateSettings.HeaderText);
+	}
+
+	[TestMethod]
+	public async Task When_English_Language()
+	{
+		var calendarView = new CalendarView()
+		{
+			Language = "en-US"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		Assert.AreEqual("January 2024", calendarView.TemplateSettings.HeaderText);
 	}
 }
 #endif

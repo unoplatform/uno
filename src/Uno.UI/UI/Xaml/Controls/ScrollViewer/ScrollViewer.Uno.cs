@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.UI.Xaml;
 
@@ -35,7 +36,12 @@ namespace Uno.UI.Xaml.Controls
 		/// <summary>
 		/// Backing property for the <see cref="ScrollViewerUpdatesMode"/> of a ScrollViewer.
 		/// </summary>
-		public static DependencyProperty UpdatesModeProperty { get; } = DependencyProperty.RegisterAttached(
+		public static DependencyProperty UpdatesModeProperty
+		{
+			[DynamicDependency(nameof(GetUpdatesMode))]
+			[DynamicDependency(nameof(SetUpdatesMode))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 			"UpdatesMode",
 			typeof(ScrollViewerUpdatesMode),
 			typeof(ScrollViewer),
@@ -81,6 +87,8 @@ namespace Uno.UI.Xaml.Controls
 			scrollViewer.SetValue(ShouldFallBackToNativeScrollBarsProperty, value);
 		}
 
+		[DynamicDependency(nameof(GetShouldFallBackToNativeScrollBars))]
+		[DynamicDependency(nameof(SetShouldFallBackToNativeScrollBars))]
 		public static readonly DependencyProperty ShouldFallBackToNativeScrollBarsProperty =
 			DependencyProperty.RegisterAttached("ShouldFallBackToNativeScrollBars", typeof(bool), typeof(ScrollViewer), new FrameworkPropertyMetadata(true));
 

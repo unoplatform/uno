@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,7 +35,7 @@ using Uno.UI;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 {
-	[SampleControlInfo("Buttons", "Button_UseUWPDefaultStyles", description: "Demonstrates correct operation of UseUWPDefaultStyles flag.")]
+	[Sample("Buttons", Name = "Button_UseUWPDefaultStyles", Description = "Demonstrates correct operation of UseUWPDefaultStyles flag.")]
 	public sealed partial class Button_UseUWPDefaultStyles : UserControl
 	{
 		public Button_UseUWPDefaultStyles()

@@ -1052,6 +1052,30 @@ NSOperatingSystemVersion _osVersion;
     return handled;
 }
 
+- (void) windowWillStartLiveResize:(NSNotification *) notification {
+    NSScreen *screen = ((NSWindow*) notification.object).screen;
+    NSView* contentView = self.contentView;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowWillStartLiveResize scaling from %g to %g", self, contentView.layer.contentsScale, screen.backingScaleFactor);
+#endif
+    // This does not flow automatically when moving the window from a retina screen to a normal screen
+    contentView.layer.contentsScale = screen.backingScaleFactor;
+    // prevent content stretching during window resize by pinning to top-left. cf. https://github.com/unoplatform/uno/issues/22159
+    contentView.layerContentsPlacement = NSViewLayerContentsPlacementTopLeft;
+}
+
+- (void) windowDidEndLiveResize:(NSNotification *) notification {
+    NSScreen *screen = ((NSWindow*) notification.object).screen;
+    NSView* contentView = self.contentView;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidEndLiveResize scaling from %g to %g", self, contentView.layer.contentsScale, screen.backingScaleFactor);
+#endif
+    // Ensure the scale stays in sync up to the end
+    contentView.layer.contentsScale = screen.backingScaleFactor;
+    // Reset the layerContentsPlacement property to its default value
+    contentView.layerContentsPlacement = NSViewLayerContentsPlacementScaleAxesIndependently;
+}
+
 - (void) performMiniaturize:(id) sender {
     self.overlappedPresenterState = OverlappedPresenterStateMinimized;
     [super performMiniaturize:sender];

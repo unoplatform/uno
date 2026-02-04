@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[SampleControlInfo("Flyouts", "Flyout_ToggleMenu")]
+	[Sample("Flyouts", Name = "Flyout_ToggleMenu")]
 	public sealed partial class Flyout_ToggleMenu : Page
 	{
 		public Flyout_ToggleMenu()

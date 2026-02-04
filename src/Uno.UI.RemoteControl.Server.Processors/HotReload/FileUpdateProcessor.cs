@@ -41,8 +41,8 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 	{
 		switch (frame.Name)
 		{
-			case nameof(UpdateFile):
-				ProcessUpdateFile(JsonConvert.DeserializeObject<UpdateFile>(frame.Content)!);
+			case nameof(UpdateSingleFileRequest):
+				ProcessUpdateFile(JsonConvert.DeserializeObject<UpdateSingleFileRequest>(frame.Content)!);
 				break;
 		}
 
@@ -53,7 +53,7 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 	public Task ProcessIdeMessage(IdeMessage message, CancellationToken ct)
 		=> Task.CompletedTask;
 
-	private void ProcessUpdateFile(UpdateFile? message)
+	private void ProcessUpdateFile(UpdateSingleFileRequest? message)
 	{
 		if (message?.IsValid() is not true)
 		{

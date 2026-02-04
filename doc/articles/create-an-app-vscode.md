@@ -85,7 +85,7 @@ Next, open the project using Visual Studio Code.
    }
    ```
 
-1. On top of the registration for the uno MCP, click the **start** button.
+1. Save the file, then on top of the registration for the uno MCP, click the **start** button.
 
     ![start MCP](Assets/vscode-start-mcp.png)
 

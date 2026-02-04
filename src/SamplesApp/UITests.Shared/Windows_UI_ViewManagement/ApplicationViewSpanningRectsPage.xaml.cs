@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_ViewManagement
 {
-	[SampleControlInfo(category: "Windows.UI.ViewManagement")]
+	[Sample("Windows.UI.ViewManagement")]
 	public sealed partial class ApplicationViewSpanningRectsPage : Page
 	{
 		public ApplicationViewSpanningRectsPage()

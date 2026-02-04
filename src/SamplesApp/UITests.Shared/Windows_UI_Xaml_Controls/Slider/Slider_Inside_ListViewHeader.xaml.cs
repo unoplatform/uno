@@ -1,9 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Slider
 {
-	[SampleControlInfo("Slider", "Slider_Inside_ListViewHeader")]
+	[Sample("Slider", Name = "Slider_Inside_ListViewHeader")]
 	public sealed partial class Slider_Inside_ListViewHeader : UserControl
 	{
 #pragma warning disable CS0414

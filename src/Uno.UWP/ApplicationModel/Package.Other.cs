@@ -1,6 +1,7 @@
 #if !(__APPLE_UIKIT__ || __ANDROID__ || __TVOS__)
 #nullable enable
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Xml;
 using Uno.Foundation.Logging;
@@ -25,21 +26,34 @@ public partial class Package
 	private DateTimeOffset GetInstallDate() => DateTimeOffset.Now;
 
 	private string GetInstalledPath()
+		=> GetAppInstallDirectory(_entryAssembly) ?? Environment.CurrentDirectory;
+
+	internal static string? GetAppInstallDirectory(Assembly? appAssembly)
 	{
-#pragma warning disable IL3000
-		// "Assembly.Location.get' always returns an empty string for assemblies embedded in a single-file app."
-		// We check the return value; it should be safe to ignore this.
-		if (_entryAssembly?.Location is { Length: > 0 } location)
-#pragma warning restore IL3000
+		if (GetAssemblyLocation(appAssembly) is string location &&
+				global::System.IO.Path.GetDirectoryName(location) is string directory)
 		{
-			return global::System.IO.Path.GetDirectoryName(location) ?? "";
+			return directory;
 		}
 		else if (AppContext.BaseDirectory is { Length: > 0 } baseDirectory)
 		{
 			return global::System.IO.Path.GetDirectoryName(baseDirectory) ?? "";
 		}
 
-		return Environment.CurrentDirectory;
+		return null;
+
+		// "Assembly.Location.get' always returns an empty string for assemblies embedded in a single-file app."
+		// We check the return value; it should be safe to ignore this.
+		[UnconditionalSuppressMessage("Trimming", "IL3000", Justification = "On an empty string, we fallback to other locations.")]
+		static string? GetAssemblyLocation(Assembly? assembly)
+		{
+			var loc = assembly?.Location;
+			if (!string.IsNullOrEmpty(loc))
+			{
+				return loc;
+			}
+			return null;
+		}
 	}
 
 	public string DisplayName
@@ -53,7 +67,12 @@ public partial class Package
 	internal static void SetEntryAssembly(Assembly entryAssembly)
 	{
 		_entryAssembly = entryAssembly;
-		Current.Id.Name = entryAssembly.GetName().Name; // Set the package name to the entry assembly name by default.
+		var assemblyName = entryAssembly.GetName();
+		Current.Id.Name = assemblyName.Name; // Set the package name to the entry assembly name by default.
+		if (assemblyName.Version is not null)
+		{
+			Current.Id.Version = new PackageVersion(assemblyName.Version);
+		}
 		Current.ParsePackageManifest();
 		IsManifestInitialized = true;
 	}
@@ -117,10 +136,15 @@ public partial class Package
 			{
 				Id.Name = idNode.Attributes?.GetNamedItem("Name")?.Value ?? "";
 
-				var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
-				if (Version.TryParse(versionString, out var version))
+				// By default we use the entry assembly version, which is usually set by the <AssemblyDisplayVersion> MSBuild property.
+				// If not set yet, we try to get the version from the manifest instead.
+				if (Id.Version == default)
 				{
-					Id.Version = new PackageVersion(version);
+					var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
+					if (Version.TryParse(versionString, out var version))
+					{
+						Id.Version = new PackageVersion(version);
+					}
 				}
 
 				Id.Publisher = idNode.Attributes?.GetNamedItem("Publisher")?.Value ?? "";

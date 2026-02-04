@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -134,6 +135,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
+
+	public static void CloseAllWindows()
+	{
+		foreach (var hwnd in _hwndToWrapper.Keys.ToList())
+		{
+			if (_hwndToWrapper.TryGetValue(hwnd, out var wrapper))
+			{
+				wrapper.CloseCore();
+			}
+		}
+	}
 
 	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
 	{
@@ -287,6 +299,25 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_KEYUP:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYUP)} message.");
 				OnKey(wParam, lParam, false);
+				break;
+			case PInvoke.WM_SYSKEYDOWN:
+				// Handles Alt & F10 keys
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SYSKEYDOWN)} message.");
+				OnKey(wParam, lParam, true);
+				break;
+			case PInvoke.WM_SYSKEYUP:
+				// Handles Alt & F10 keys
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SYSKEYUP)} message.");
+				OnKey(wParam, lParam, false);
+				break;
+			case PInvoke.WM_SYSCOMMAND:
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SYSCOMMAND)} message.");
+				// Disable system handling of Alt & F10 keys.
+				// Per Win32 conventions, HIWORD(lParam) == 0 indicates a keyboard-generated system command.
+				if (wParam == PInvoke.SC_KEYMENU && Win32Helper.HIWORD(lParam) == 0)
+				{
+					return new LRESULT(0);
+				}
 				break;
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:

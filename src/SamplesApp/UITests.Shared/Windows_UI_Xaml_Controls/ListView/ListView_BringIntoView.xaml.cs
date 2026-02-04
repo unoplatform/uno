@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
@@ -7,10 +7,9 @@ using Microsoft.UI.Xaml;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_BringIntoView",
-		typeof(ListViewViewModel),
-		isManualTest: true,
-		description: "Select item scroll and then click on the button")]
+	[Sample("ListView", Name = "ListView_BringIntoView", ViewModelType = typeof(ListViewViewModel),
+		IsManualTest = true,
+		Description = "Select item scroll and then click on the button")]
 	public sealed partial class ListView_BringIntoView : UserControl
 	{
 		private string[] items;

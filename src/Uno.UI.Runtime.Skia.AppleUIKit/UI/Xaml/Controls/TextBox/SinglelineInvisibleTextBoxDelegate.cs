@@ -64,6 +64,22 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 		return true;
 	}
 
+	public override void DidChangeSelection(UITextField textField)
+	{
+		SyncSelectionToTextBox(textField);
+	}
+
+	private void SyncSelectionToTextBox(UITextField textField)
+	{
+		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is { } textBox &&
+		textField.SelectedTextRange is { } selectedRange)
+		{
+			var selectionStart = (int)textField.GetOffsetFromPosition(textField.BeginningOfDocument, selectedRange.Start);
+			var selectionEnd = (int)textField.GetOffsetFromPosition(textField.BeginningOfDocument, selectedRange.End);
+			textBox.Select(selectionStart, selectionEnd - selectionStart);
+		}
+	}
+
 	public override bool ShouldReturn(UITextField textField)
 	{
 		if (IsKeyboardHiddenOnEnter)

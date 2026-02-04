@@ -1,9 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfo("ContentPresenter", "ContentPresenter_TextProperties")]
+	[Sample("ContentPresenter", Name = "ContentPresenter_TextProperties")]
 	public sealed partial class ContentPresenter_TextProperties : UserControl
 	{
 		public ContentPresenter_TextProperties()
