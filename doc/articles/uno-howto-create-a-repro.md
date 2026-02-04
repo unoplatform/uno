@@ -218,7 +218,7 @@ adb logcat -c && adb logcat
 
 **Enable Verbose Uno Logging:**
 
-Add this code to your `App.xaml.cs` constructor to increase Uno-specific logging detail:
+Add or modify this code to your `App.xaml.cs` constructor to increase Uno-specific logging detail:
 
 ```csharp
 using Microsoft.Extensions.Logging;
