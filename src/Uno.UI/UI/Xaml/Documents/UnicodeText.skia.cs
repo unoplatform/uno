@@ -369,6 +369,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			if (!_fontFamilyToListeners.TryGetValue(FeatureConfiguration.Font.SymbolsFont, out var fontFamilyListeners))
 			{
 				fontFamilyListeners = new();
+				_fontFamilyToListeners[FeatureConfiguration.Font.SymbolsFont] = fontFamilyListeners;
 			}
 			if (fontFamilyListeners.Add(fontListener))
 			{
@@ -394,6 +395,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			if (!_codepointToListeners.TryGetValue(codepoint, out var codepointListeners))
 			{
 				codepointListeners = new();
+				_codepointToListeners[codepoint] = codepointListeners;
 			}
 			if (codepointListeners.Add(fontListener))
 			{
