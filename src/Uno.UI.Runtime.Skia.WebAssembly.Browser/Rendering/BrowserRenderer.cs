@@ -53,6 +53,13 @@ internal partial class BrowserRenderer
 
 	private void RenderFrame()
 	{
+		// The RootElement may not be set yet during startup because the JavaScript
+		// requestAnimationFrame can fire before the app initialization completes.
+		if (_host.RootElement is not { Visual.CompositionTarget: CompositionTarget compositionTarget })
+		{
+			return;
+		}
+
 		_renderStopwatch.Restart();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -68,7 +75,7 @@ internal partial class BrowserRenderer
 			_canvas = null;
 		}
 
-		var currentClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_canvas, size =>
+		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
 		{
 			return _canvas = _renderer.Resize((int)size.Width, (int)size.Height);
 		});
