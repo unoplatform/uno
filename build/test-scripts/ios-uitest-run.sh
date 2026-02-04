@@ -111,7 +111,7 @@ export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-26-2"
-export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro 13-inch (M5)"
 
 export UnoTargetFrameworkOverride="net9.0-ios18.0"
 
@@ -146,9 +146,9 @@ echo ""
 export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 
 if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	echo "Device '$UNO_UITEST_SIMULATOR_NAME' not found, looking for any iPad Pro 12.9-inch device..."
-	# Try to find any iPad Pro 12.9-inch device
-	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "12.9" | head -1`
+	echo "Device '$UNO_UITEST_SIMULATOR_NAME' not found, looking for any iPad Pro 13-inch device..."
+	# Try to find any iPad Pro 13-inch device (Apple renamed 12.9-inch to 13-inch)
+	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "13-inch" | head -1 || true`
 	if [ -n "$FALLBACK_DEVICE" ]; then
 		echo "Found fallback device: $FALLBACK_DEVICE"
 		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
@@ -157,8 +157,18 @@ if [ -z "$UITEST_IOSDEVICE_ID" ]; then
 fi
 
 if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	echo "No iPad Pro 12.9-inch found, looking for any iPad device..."
-	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad" | head -1`
+	echo "No iPad Pro 13-inch found, looking for any iPad Pro device..."
+	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | head -1 || true`
+	if [ -n "$FALLBACK_DEVICE" ]; then
+		echo "Found fallback device: $FALLBACK_DEVICE"
+		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
+		export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+	fi
+fi
+
+if [ -z "$UITEST_IOSDEVICE_ID" ]; then
+	echo "No iPad Pro found, looking for any iPad device..."
+	FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad" | head -1 || true`
 	if [ -n "$FALLBACK_DEVICE" ]; then
 		echo "Found fallback device: $FALLBACK_DEVICE"
 		export UNO_UITEST_SIMULATOR_NAME="$FALLBACK_DEVICE"
