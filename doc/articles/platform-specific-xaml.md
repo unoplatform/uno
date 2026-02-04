@@ -134,7 +134,10 @@ The pre-defined prefixes are listed below:
 > The `skia` prefix matches all Skia rendering targets, including desktop and when Android, iOS, or Wasm are running with Skia rendering. Use `desktop` for desktop-specific XAML, or use the more specific prefixes (`androidskia`, `iosskia`, `wasmskia`) for platform-specific Skia behavior.
 >
 > [!NOTE]
-> Unless explicitly stated, Android, iOS, and web in the context of this table refer specifically to the old native platforms and not when running with Skia rendering.
+> Unless explicitly stated, Android, iOS, and web in the context of this table refer to all rendering modes for those platforms (both native and Skia where applicable).
+>
+> [!IMPORTANT]
+> The `wasm` prefix applies to **all** WebAssembly platforms, including both native (DOM-based) WebAssembly and WebAssembly running with Skia rendering. If you need to target only WebAssembly with Skia, use the `wasmskia` prefix. If you need to exclude WebAssembly with Skia, there is no dedicated prefix - use conditional compilation or platform-specific files instead.
 
 | Prefix            | Included platforms                             | Excluded platforms                   | Namespace                                                   | Put in `mc:Ignorable`? |
 |-------------------|------------------------------------------------|--------------------------------------|-------------------------------------------------------------|------------------------|

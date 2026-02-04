@@ -3,7 +3,9 @@ uid: Uno.Development.GettingHelp
 ---
 
 > [!TIP]
-> Take a look at our [common issues list](xref:Uno.UI.CommonIssues) and [health status](https://aka.platform.uno/health-status) if you're having any troubles.
+> If you’re running into issues, start by checking our [common issues list](xref:Uno.UI.CommonIssues) and the [Uno Platform health status](https://aka.platform.uno/health-status).
 >
-> If you are experiencing issues with Uno Platform, please visit our [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord Server](https://www.platform.uno/discord) - where our engineering team and community will be able to help you.
+> You can also verify whether there is an ongoing outage affecting Uno Platform online services at:
+> https://status.platform.uno/
 >
+> If you still need help, reach out via our [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or join our [Discord server](https://www.platform.uno/discord), where both the engineering team and the community are available to assist you.
