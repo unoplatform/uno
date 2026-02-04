@@ -23,8 +23,10 @@ partial class Window
 	// Lazily allocated ALC window state - null when not in ALC mode
 	private AlcWindowState? _alcState;
 
-	partial void InitializeAlcState()
-		=> _isWindowFromSecondaryAlc = IsAssemblyFromSecondaryAlc(GetType().Assembly);
+	partial void InitializeAlcState(Assembly callingAssembly)
+	{
+		_isWindowFromSecondaryAlc = IsAssemblyFromSecondaryAlc(callingAssembly);
+	}
 
 	/// <summary>
 	/// Encapsulates all ALC window lifecycle state to avoid memory overhead when ALC is not used.

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Loader;
 using Microsoft.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Core;
@@ -38,9 +39,9 @@ partial class ContentRoot
 	private static bool IsHostFromSecondaryAlc(object host)
 	{
 		// Check if the host is a Window from a secondary ALC
-		if (host is Window window)
+		if (host is NativeWindowWrapperBase window)
 		{
-			return window.IsAlcWindow;
+			return window.Window?.IsAlcWindow ?? false;
 		}
 
 		return false;
