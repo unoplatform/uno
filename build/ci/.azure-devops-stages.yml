@@ -140,7 +140,8 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
+  # TODO: Revert after verifying iOS CI fix - temporarily enabled for all builds
+  condition: succeededOrFailed()
   dependsOn:
     - Setup
 
