@@ -77,7 +77,8 @@ stages:
 
 - stage: packages_tests
   displayName: Tests - Templates
-  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TemplateTestsRequired'], 'true')))
+  # TODO: Revert after verifying PR CI coverage - temporarily enabled for all builds
+  condition: succeededOrFailed()
   dependsOn:
     - Setup
     - binaries_build_winui
@@ -104,7 +105,8 @@ stages:
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
+  # TODO: Revert after verifying PR CI coverage - temporarily enabled for all builds
+  condition: succeededOrFailed()
   dependsOn:
     - Setup
 
@@ -129,7 +131,8 @@ stages:
 
 - stage: android_tests
   displayName: Tests - Android Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeAndroid'], 'true')))
+  # TODO: Revert after verifying PR CI coverage - temporarily enabled for all builds
+  condition: succeededOrFailed()
   dependsOn:
     - Setup
 
@@ -170,7 +173,8 @@ stages:
 - stage: test_finalization
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true')))
+  # TODO: Revert after verifying PR CI coverage - temporarily enabled for all builds
+  condition: succeededOrFailed()
   dependsOn:
     - Setup
     - wasm_tests
