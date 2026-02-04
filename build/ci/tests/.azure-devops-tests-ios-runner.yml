@@ -71,18 +71,8 @@ jobs:
 
   - bash: |
       set -euo pipefail
-      echo "=== Available Xcode runtimes ==="
-      xcrun simctl list runtimes
-      echo ""
-      echo "=== Available simulator devices ==="
-      xcrun simctl list devicetypes | grep -i ipad || true
-      echo ""
-      if xcrun simctl list runtimes | grep -q "iOS 26"; then
-        echo "iOS 26.x runtime already installed"
-      else
-        echo "Downloading iOS simulator runtime for current Xcode"
-        sudo xcodebuild -downloadPlatform iOS
-      fi
+      echo "Downloading iOS simulator runtime for current Xcode"
+      sudo xcodebuild -downloadPlatform iOS
     displayName: Ensure iOS simulator runtime
 
   - bash: |
