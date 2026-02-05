@@ -3668,6 +3668,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Fast_Scrolling.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8072,6 +8076,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Infinite_Breadth.xaml.cs">
       <DependentUpon>ListView_Infinite_Breadth.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Fast_Scrolling.xaml.cs">
+      <DependentUpon>ListView_Fast_Scrolling.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml.cs">
       <DependentUpon>ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml</DependentUpon>
