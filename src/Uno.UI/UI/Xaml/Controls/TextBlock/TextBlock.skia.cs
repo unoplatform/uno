@@ -18,6 +18,8 @@ using Uno.Extensions;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Input;
 
 #nullable enable
 
@@ -411,5 +413,104 @@ namespace Microsoft.UI.Xaml.Controls
 				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);
 		}
+
+		#region SelectionFlyout Support
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/text/common/TextSelectionManager.cpp (lines 3381-3420)
+		// TextSelectionManager::UpdateSelectionFlyoutVisibility
+
+		private PointerDeviceType _lastInputDeviceType;
+		private Point _lastPointerPosition;
+		private bool _isSelectionFlyoutUpdateQueued;
+
+		private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+		/// <summary>
+		/// Called from OnPointerReleased to queue SelectionFlyout visibility update for non-mouse input.
+		/// </summary>
+		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e)
+		{
+			// Only show SelectionFlyout for touch/pen input, not mouse (matching WinUI behavior)
+			if (e.Pointer.PointerDeviceType is not PointerDeviceType.Mouse && IsTextSelectionEnabled)
+			{
+				QueueUpdateSelectionFlyoutVisibility(e.Pointer.PointerDeviceType, e.GetCurrentPoint(this).Position);
+			}
+		}
+
+		private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+		{
+			_lastInputDeviceType = deviceType;
+			_lastPointerPosition = position;
+
+			// Prevent duplicate queued updates (matching TextBox behavior)
+			if (!_isSelectionFlyoutUpdateQueued)
+			{
+				_isSelectionFlyoutUpdateQueued = true;
+				DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+			}
+		}
+
+		private void UpdateSelectionFlyoutVisibility()
+		{
+			// Reset the queued flag
+			_isSelectionFlyoutUpdateQueued = false;
+
+			if (!HasSelectionFlyout() || (ContextFlyout?.IsOpen ?? false))
+			{
+				return;
+			}
+
+			var selectionLength = Math.Abs(Selection.end - Selection.start);
+			var showMode = FlyoutShowMode.Transient;
+			var shouldShow = false;
+
+			switch (_lastInputDeviceType)
+			{
+				case PointerDeviceType.Mouse:
+					// Mouse doesn't show SelectionFlyout (matching WinUI behavior)
+					shouldShow = false;
+					break;
+				case PointerDeviceType.Pen:
+				case PointerDeviceType.Touch:
+					if (selectionLength > 0)
+					{
+						shouldShow = true;
+						showMode = FlyoutShowMode.Transient;
+					}
+					break;
+				default:
+					shouldShow = false;
+					break;
+			}
+
+			if (shouldShow)
+			{
+				// Get selection bounds and adjust flyout position (Y = top of selection)
+				var position = _lastPointerPosition;
+
+				var startIndex = Math.Min(Selection.start, Selection.end);
+				var endIndex = Math.Max(Selection.start, Selection.end);
+				var startRect = ParsedText.GetRectForIndex(startIndex);
+				var endRect = ParsedText.GetRectForIndex(endIndex);
+				var selectionTop = Math.Min(startRect.Top, endRect.Top);
+
+				// Adjust for padding
+				position = new Point(position.X, selectionTop + Padding.Top);
+
+				SelectionFlyout?.ShowAt(this, new FlyoutShowOptions
+				{
+					Position = position,
+					ShowMode = showMode
+				});
+			}
+			else
+			{
+				// Close SelectionFlyout if it's open and we shouldn't show it
+				if (SelectionFlyout?.IsOpen == true)
+				{
+					SelectionFlyout.Hide();
+				}
+			}
+		}
+		#endregion
 	}
 }
