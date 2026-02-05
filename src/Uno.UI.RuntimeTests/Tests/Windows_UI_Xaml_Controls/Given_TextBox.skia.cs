@@ -445,7 +445,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Option_Or_Command_Key_Alone()
+		public async Task When_Alt_Or_Win_Key_Alone()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
