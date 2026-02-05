@@ -52,7 +52,7 @@ partial class Window
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
-	internal Window(WindowType windowType)
+	internal Window(WindowType windowType, Assembly? callingAssembly = null)
 	{
 #if !__SKIA__
 		if (_current is null && CoreApplication.IsFullFledgedApp)
@@ -100,7 +100,12 @@ partial class Window
 			_ => throw new InvalidOperationException("Unsupported window type")
 		};
 
-		InitializeAlcState();
+		if (ContentHostOverride is not null)
+		{
+			// Called only when a secondary ALC is setting content
+
+			InitializeAlcState(callingAssembly ?? Assembly.GetCallingAssembly());
+		}
 
 		Compositor = Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
@@ -130,7 +135,7 @@ partial class Window
 	}
 
 	partial void InitializeWindowingFlavor();
-	partial void InitializeAlcState();
+	partial void InitializeAlcState(Assembly callingAssembly);
 	private partial bool TryGetContentFromSecondaryAlc(out UIElement? content);
 	private partial bool TrySetContentFromSecondaryAlc(UIElement? value, ContentControl host, Assembly callingAssembly);
 

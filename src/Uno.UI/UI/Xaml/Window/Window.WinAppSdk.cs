@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Reflection;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
@@ -8,7 +9,7 @@ namespace Microsoft.UI.Xaml;
 partial class Window
 {
 #if HAS_UNO_WINUI
-	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)
+	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource, Assembly.GetCallingAssembly())
 	{
 	}
 

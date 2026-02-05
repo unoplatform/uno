@@ -375,6 +375,130 @@ public class Given_AlcContentHost
 		Assert.IsNotNull(titleTextBlock, "TitleTextBlock should be discoverable in the navigated page");
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAlcApp_Then_AlcWindowModeEnabled()
+	{
+		// This test verifies that the ALC window is properly set up in ALC mode.
+		// The _alcState is set when content from a secondary ALC is set on the window,
+		// which triggers the ALC-specific behavior (content redirection, event forwarding).
+
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		// Get the main app's ContentRoot and verify its InputManager IS initialized
+		var mainAppContentRoot = Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(contentHost);
+		Assert.IsNotNull(mainAppContentRoot, "Main app ContentRoot should be found");
+		Assert.IsTrue(mainAppContentRoot!.InputManager.Initialized,
+			"Main app's InputManager should be initialized");
+
+		var alcWindowType = alcWindow.GetType();
+
+		// Verify the ALC window is operating in ALC mode (content redirected).
+		// The _alcState is set when content from a secondary ALC is set, which is
+		// the reliable way to detect ALC mode.
+		var isAlcWindowProperty = alcWindowType.GetProperty("IsAlcWindow",
+			BindingFlags.NonPublic | BindingFlags.Instance);
+		Assert.IsNotNull(isAlcWindowProperty, "IsAlcWindow property should exist on Window");
+
+		var isAlcWindow = (bool)isAlcWindowProperty!.GetValue(alcWindow)!;
+		Assert.IsTrue(isAlcWindow,
+			"ALC window should report IsAlcWindow = true after content is set from secondary ALC");
+
+		// The secondary ALC content is hosted inside the main app's visual tree
+		// (via ContentHostOverride), so it should use the main app's InputManager.
+		Assert.IsNotNull(contentHost.Content,
+			"Secondary ALC content should be hosted in the main app's ContentHostOverride");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAlcApp_Then_KeyboardInputStillWorks()
+	{
+		// This test verifies that keyboard input continues to work after loading a secondary ALC app.
+		// Before the fix, initializing a secondary ALC app would overwrite the TypeScript keyboard
+		// handler, breaking keyboard input for the entire application.
+
+		// Create a TextBox in the main app to test keyboard input
+		var mainAppTextBox = new TextBox { Name = "MainAppTextBox" };
+		var container = new StackPanel
+		{
+			Children =
+			{
+				mainAppTextBox,
+				new AlcContentHost() // Will host the secondary ALC content
+			}
+		};
+
+		_contentHost = (AlcContentHost)container.Children[1];
+
+		// Set up the container as the window content
+		TestServices.WindowHelper.WindowContent = container;
+		await TestServices.WindowHelper.WaitForLoaded(container);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verify keyboard input works BEFORE loading secondary ALC
+		mainAppTextBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TestServices.KeyboardHelper.InputText("before", mainAppTextBox);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("before", mainAppTextBox.Text,
+			"Keyboard input should work before loading secondary ALC app");
+
+		// Clear the textbox
+		mainAppTextBox.Text = "";
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Now load the secondary ALC app
+		WindowHelper.ContentHostOverride = _contentHost;
+
+		var alcAppPath = await BuildAlcAppAsync();
+		Assert.IsNotNull(alcAppPath, "AlcApp build should succeed");
+
+		var alcAppDirectory = Path.GetDirectoryName(alcAppPath)!;
+		_testAlc = new TestAssemblyLoadContext(alcAppDirectory);
+		var alcAppAssembly = _testAlc.LoadFromAssemblyPath(alcAppPath);
+
+		var programType = alcAppAssembly.GetType("AlcTestApp.Program");
+		var mainMethod = programType!.GetMethod("Main", BindingFlags.Public | BindingFlags.Static);
+		var appType = alcAppAssembly.GetType("AlcTestApp.App");
+
+		var mainThread = new System.Threading.Thread(() =>
+		{
+			try
+			{
+				mainMethod!.Invoke(null, new object[] { Array.Empty<string>() });
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error("Secondary ALC app execution failed", ex);
+			}
+		})
+		{
+			IsBackground = true,
+			Name = "AlcApp-Main"
+		};
+		mainThread.Start();
+
+		await WaitForSecondaryWindowAsync(appType!);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verify secondary ALC content is loaded
+		Assert.IsNotNull(_contentHost.Content,
+			"Secondary ALC content should be loaded in ContentHost");
+
+		// Verify keyboard input still works AFTER loading secondary ALC
+		mainAppTextBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await TestServices.KeyboardHelper.InputText("after", mainAppTextBox);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("after", mainAppTextBox.Text,
+			"Keyboard input should still work after loading secondary ALC app");
+	}
+
 	private async Task<(AlcContentHost contentHost, Window alcWindow)> StartSecondaryAlcAppWithWindowAsync(string[]? launchArguments = null)
 	{
 		var contentHost = await StartSecondaryAlcAppAsync(launchArguments);

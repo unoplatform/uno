@@ -37,8 +37,15 @@ internal class WebAssemblyWindowFactoryExtension : INativeWindowFactoryExtension
 		}
 
 		_initialWindow = window;
-		WebAssemblyWindowWrapper.Instance.SetWindow(window, xamlRoot);
-		XamlRootMap.Register(xamlRoot, _host);
+
+		// If a windows is from another ALC, we should not set it as the main window
+		// of the wrapper, as it initializes native interop (e.g. input) which get
+		// incorrectly redirected.
+		if (!window.IsAlcWindow)
+		{
+			WebAssemblyWindowWrapper.Instance.SetWindow(window, xamlRoot);
+			XamlRootMap.Register(xamlRoot, _host);
+		}
 
 		return WebAssemblyWindowWrapper.Instance;
 	}

@@ -2,6 +2,9 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Loader;
+using Microsoft.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Core;
@@ -17,6 +20,7 @@ partial class ContentRoot
 		if (_host is null)
 		{
 			_host = host;
+
 			InputManager.Initialize(host);
 		}
 		else
