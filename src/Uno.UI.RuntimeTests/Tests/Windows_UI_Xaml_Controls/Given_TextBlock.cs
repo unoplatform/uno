@@ -30,6 +30,7 @@ using Uno.UI.Toolkit.DevTools.Input;
 using Microsoft.UI.Xaml.Data;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Xaml.Media;
 #endif
 
 using Point = Windows.Foundation.Point;
@@ -191,6 +192,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// we tolerate a 2 pixels difference between the bitmaps due to font differences
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
 		}
+
+#pragma warning disable MSTEST0045 // Cooperating cancellation
+		[TestMethod]
+		[Timeout(60000, CooperativeCancellation = false)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task Check_FontFallback_Shaping2()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/NotoSansArabic-Regular.ttf"),
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var matched = false;
+
+			await UITestHelper.Load(new StackPanel
+			{
+				expected,
+				SUT
+			});
+
+			Action OnFrameRendered = async () =>
+			{
+				var screenshot1 = await UITestHelper.ScreenShot(SUT);
+				var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+				var rect = ImageAssert.GetColorBounds(screenshot2, ((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
+
+				matched = rect is { Width: > 0, Height: > 0 } && await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenshot1.Bitmap, screenshot2.Bitmap);
+			};
+
+			var compositionTarget = (CompositionTarget)expected.Visual.CompositionTarget!;
+			compositionTarget.FrameRendered += OnFrameRendered;
+			using var _ = Disposable.Create(() => compositionTarget.FrameRendered -= OnFrameRendered);
+
+			await UITestHelper.WaitForRender();
+			await UITestHelper.WaitFor(() => matched, 60000);
+		}
+#pragma warning restore MSTEST0045
 #endif
 
 		[TestMethod]

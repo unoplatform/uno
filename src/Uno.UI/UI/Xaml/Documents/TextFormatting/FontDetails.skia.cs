@@ -1,8 +1,10 @@
 ﻿#nullable enable
 
+using System;
 using System.Runtime.InteropServices;
 using HarfBuzzSharp;
 using SkiaSharp;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
@@ -55,7 +57,10 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 		return value;
 	}
 
-	internal static FontDetails Create(SKTypeface skTypeFace, float fontSize)
+	internal static FontDetails Create(SKTypeface skTypeFace, float fontSize) => _createMemorized(skTypeFace, fontSize);
+
+	private static readonly Func<SKTypeface, float, FontDetails> _createMemorized = ((Func<SKTypeface, float, FontDetails>)CreateInternal).AsMemoized();
+	private static FontDetails CreateInternal(SKTypeface skTypeFace, float fontSize)
 	{
 		var skFont = CreateSKFont(skTypeFace, fontSize);
 		var hbFont = CreateHarfBuzzFont(skTypeFace);
