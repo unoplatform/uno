@@ -710,6 +710,181 @@ function Test-McpModeWithoutSolutionDir {
     }
 }
 
+function Test-McpModeWithRootsFallback {
+    param(
+        [string]$SlnDir,
+        [int]$DefaultPort,
+        [int]$MaxAllocatedPort,
+        [int]$CheckAttempts = 5,
+        [int]$MaxAttempts = 30
+    )
+
+    Write-Log "Validating MCP mode with --force-roots-fallback: devserver should start only after SetRoots is called"
+
+    $mcpTestPort = if ($MaxAllocatedPort -ge 65533) { $DefaultPort + 3 } else { $MaxAllocatedPort + 1 }
+
+    $process = $null
+    $mcpProcessStarted = $false
+    $stdoutLogPath = [System.IO.Path]::GetTempFileName()
+    $stderrLogPath = [System.IO.Path]::GetTempFileName()
+
+    try {
+        # Start MCP with --force-roots-fallback flag - devserver should NOT start until roots are provided
+        $mcpArguments = Get-DevserverCliArguments -Arguments @("--mcp-app", "--force-roots-fallback", "--port", $mcpTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), "-l", "trace")
+
+        $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+        $startInfo.FileName = $script:DevServerHostExecutable
+        foreach ($arg in $mcpArguments) {
+            [void]$startInfo.ArgumentList.Add($arg)
+        }
+        $startInfo.WorkingDirectory = $SlnDir
+        $startInfo.UseShellExecute = $false
+        $startInfo.CreateNoWindow = $true
+        $startInfo.RedirectStandardOutput = $true
+        $startInfo.RedirectStandardError = $true
+        $startInfo.RedirectStandardInput = $true
+        $startInfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+        $startInfo.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+
+        $process = New-Object System.Diagnostics.Process
+        $process.StartInfo = $startInfo
+
+        if (-not $process.Start()) {
+            throw "Failed to start MCP proxy process for roots-fallback test."
+        }
+        $mcpProcessStarted = $true
+
+        # Start background tasks to capture stdout/stderr to files
+        $stdoutStream = New-Object System.IO.FileStream($stdoutLogPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+        $stderrStream = New-Object System.IO.FileStream($stderrLogPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+        $cts = New-Object System.Threading.CancellationTokenSource
+        $stdoutTask = $process.StandardOutput.BaseStream.CopyToAsync($stdoutStream, 81920, $cts.Token)
+        $stderrTask = $process.StandardError.BaseStream.CopyToAsync($stderrStream, 81920, $cts.Token)
+
+        # Give the MCP proxy a moment to initialize
+        Start-Sleep -Seconds 5
+
+        # PHASE 1: Verify the devserver does NOT appear in the list (because roots-fallback is enabled and no roots were set)
+        Write-Log "Phase 1: Verifying devserver did NOT auto-start..."
+        $foundInList = $false
+        for ($attempt = 1; $attempt -le $CheckAttempts; $attempt++) {
+            Write-Log "Checking devserver list for absence of auto-started instance (attempt $attempt/$CheckAttempts)..."
+
+            $listOutput = ""
+            try {
+                $listOutput = Invoke-DevserverCli -Arguments @('list') 2>&1
+            }
+            catch {
+                $listOutput = $_.Exception.Message
+            }
+
+            $listText = ($listOutput | Out-String)
+            $portPattern = "Port\s*:\s*$mcpTestPort"
+            $endpointPattern = ":$mcpTestPort(\b|/)"
+
+            if ($LASTEXITCODE -eq 0 -and ($listText -match $portPattern -or $listText -match $endpointPattern)) {
+                $foundInList = $true
+                break
+            }
+
+            Start-Sleep -Seconds 2
+        }
+
+        if ($foundInList) {
+            $stdoutLog = if (Test-Path $stdoutLogPath) { Get-Content $stdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if (Test-Path $stderrLogPath) { Get-Content $stderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver with --force-roots-fallback should NOT have started automatically, but it appeared in 'uno-devserver list'.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Phase 1 passed: Devserver did NOT auto-start (as expected)"
+
+        # PHASE 2: Send MCP initialize and SetRoots call via STDIO, then verify devserver starts
+        Write-Log "Phase 2: Sending MCP initialize and SetRoots via STDIO..."
+
+        # MCP JSON-RPC initialize request
+        $initializeRequest = @{
+            jsonrpc = "2.0"
+            id = 1
+            method = "initialize"
+            params = @{
+                protocolVersion = "2024-11-05"
+                capabilities = @{}
+                clientInfo = @{
+                    name = "test-client"
+                    version = "1.0.0"
+                }
+            }
+        } | ConvertTo-Json -Depth 10 -Compress
+
+        # MCP JSON-RPC tools/call request for uno_app_set_roots
+        $normalizedSlnDir = $SlnDir -replace '\\', '/'
+        $setRootsRequest = @{
+            jsonrpc = "2.0"
+            id = 2
+            method = "tools/call"
+            params = @{
+                name = "uno_app_set_roots"
+                arguments = @{
+                    roots = @($normalizedSlnDir)
+                }
+            }
+        } | ConvertTo-Json -Depth 10 -Compress
+
+        # Write requests to stdin (each message is a single line in MCP STDIO transport)
+        $stdinWriter = $process.StandardInput
+        $stdinWriter.WriteLine($initializeRequest)
+        $stdinWriter.Flush()
+
+        Start-Sleep -Seconds 2
+
+        $stdinWriter.WriteLine($setRootsRequest)
+        $stdinWriter.Flush()
+
+        Write-Log "Sent SetRoots request with root: $normalizedSlnDir"
+
+        # PHASE 3: Verify the devserver NOW appears in the list
+        Write-Log "Phase 3: Verifying devserver started after SetRoots..."
+        $mcpStarted = Wait-ForDevserverListEntry -Port $mcpTestPort -SolutionDirectory $SlnDir -MaxAttempts $MaxAttempts -DelaySeconds 2
+
+        if (-not $mcpStarted) {
+            $stdoutLog = if (Test-Path $stdoutLogPath) { Get-Content $stdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if (Test-Path $stderrLogPath) { Get-Content $stderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver with --force-roots-fallback did NOT start after SetRoots was called via MCP STDIO.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Phase 3 passed: Devserver started after SetRoots call"
+        Write-Log "Test-McpModeWithRootsFallback completed successfully"
+    }
+    finally {
+        # Clean up
+        if ($cts) {
+            try { $cts.Cancel() } catch {}
+            try { $cts.Dispose() } catch {}
+        }
+
+        if ($process -and $mcpProcessStarted -and -not $process.HasExited) {
+            try { $process.Kill() } catch {}
+            try { $process.WaitForExit(5000) } catch {}
+        }
+
+        if ($stdoutStream) {
+            try { $stdoutStream.Flush() } catch {}
+            try { $stdoutStream.Dispose() } catch {}
+        }
+        if ($stderrStream) {
+            try { $stderrStream.Flush() } catch {}
+            try { $stderrStream.Dispose() } catch {}
+        }
+
+        Stop-DevserverInDirectory -Directory $SlnDir
+
+        if (Test-Path $stdoutLogPath) { Remove-Item $stdoutLogPath -ErrorAction SilentlyContinue }
+        if (Test-Path $stderrLogPath) { Remove-Item $stderrLogPath -ErrorAction SilentlyContinue }
+    }
+
+    return $mcpTestPort
+}
+
 function Stop-DevserverInDirectory {
     param([string]$Directory)
 
@@ -796,6 +971,8 @@ try {
     $primaryPort = Test-DevserverStartStop -SlnDir $slnDir -CsprojDir $csprojDir -CsprojPath $csprojPath -DefaultPort $defaultPort -MaxAttempts $maxAttempts
     $solutionDirTestPort = Test-DevserverSolutionDirSupport -SlnDir $slnDir -DefaultPort $defaultPort -BaselinePort $primaryPort -MaxAttempts $maxAttempts
     Test-McpModeWithoutSolutionDir -SlnDir $slnDir -DefaultPort $defaultPort -PrimaryPort $primaryPort -SolutionDirPort $solutionDirTestPort -MaxAttempts $maxAttempts
+    $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort)
+    Test-McpModeWithRootsFallback -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort
     Test-CodexIntegration -SlnDir $slnDir
 
     $finalExitCode = 0
