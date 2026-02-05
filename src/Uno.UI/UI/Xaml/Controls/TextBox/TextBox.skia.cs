@@ -528,9 +528,32 @@ public partial class TextBox
 
 		if (shouldShow)
 		{
+			// Line 5424-5441: Get selection bounds and adjust flyout position
+			var position = _lastPointerPosition;
+
+			if (_isSkiaTextBox && TextBoxView?.DisplayBlock?.ParsedText is { } parsedText)
+			{
+				// Get selection bounding rect in DisplayBlock coordinates
+				var startRect = parsedText.GetRectForIndex(SelectionStart);
+				var endRect = parsedText.GetRectForIndex(SelectionStart + SelectionLength);
+
+				// Compute union of start and end rects for full selection bounds
+				var selectionTop = Math.Min(startRect.Top, endRect.Top);
+
+				// Transform from DisplayBlock coordinates to TextBox coordinates
+				var transform = TextBoxView.DisplayBlock.TransformToVisual(this);
+				var transformedTop = transform.TransformPoint(new Point(0, selectionTop));
+
+				// Set Y position to top of selection for consistent placement
+				// (WinUI: "We want the point to appear at a consistent location regardless of
+				// whether it overlaps the selection, so we'll set its vertical position to be
+				// the top of the exclusion rectangle.")
+				position = new Point(position.X, transformedTop.Y);
+			}
+
 			SelectionFlyout?.ShowAt(this, new FlyoutShowOptions
 			{
-				Position = _lastPointerPosition,
+				Position = position,
 				ShowMode = showMode
 			});
 		}
