@@ -1065,7 +1065,7 @@ internal readonly partial struct UnicodeText : IParsedText
 								using var p = new SKPath();
 								var y = line.y + line.baselineOffset + yOffset;
 								p.MoveTo(currentLineX + leftX, y);
-								for (float x = currentLineX + leftX; x < currentLineX + rightX; x += step)
+								for (float x = currentLineX + leftX; x + step < currentLineX + rightX; x += step)
 								{
 									p.LineTo(x + step / 2, y + amplitude);
 									p.LineTo(x + step, y);
