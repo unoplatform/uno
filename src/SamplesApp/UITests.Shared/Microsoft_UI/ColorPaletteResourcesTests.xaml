@@ -1,0 +1,230 @@
+<UserControl
+    x:Class="UITests.Shared.Microsoft_UI.ColorPaletteResourcesTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls">
+
+    <Grid Padding="16" ColumnSpacing="24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Header  -->
+        <StackPanel
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,16"
+            Spacing="12">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="ColorPaletteResources Explorer" />
+            <TextBlock
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="Use the Samples app menu (top-right) to switch between Light and Dark themes." />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="ResetButton"
+                    Click="OnResetClick"
+                    Content="Reset" />
+                <Button
+                    x:Name="OceanButton"
+                    Click="OnOceanClick"
+                    Content="Ocean" />
+                <Button
+                    x:Name="ForestButton"
+                    Click="OnForestClick"
+                    Content="Forest" />
+                <Button
+                    x:Name="SunsetButton"
+                    Click="OnSunsetClick"
+                    Content="Sunset" />
+            </StackPanel>
+        </StackPanel>
+
+        <!--  Color Editors (Left Column)  -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ColorEditorsPanel" Spacing="8">
+                <!--  Color editors will be created dynamically  -->
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--  Preview Panel (Right Column)  -->
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Padding="16"
+            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="16">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Live Preview" />
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Controls below use the scoped ColorPaletteResources" />
+
+                    <!--  Preview Controls Container - ColorPaletteResources in ThemeDictionaries  -->
+                    <!--  Note: "Default" key is used as Dark theme fallback, "Light" for light theme  -->
+                    <Grid x:Name="PreviewControlsContainer" RequestedTheme="Light">
+                        <Grid.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.ThemeDictionaries>
+                                    <ResourceDictionary x:Key="Light">
+                                        <ResourceDictionary.MergedDictionaries>
+                                            <ColorPaletteResources x:Name="LightPalette" />
+                                        </ResourceDictionary.MergedDictionaries>
+                                    </ResourceDictionary>
+                                    <ResourceDictionary x:Key="Default">
+                                        <ResourceDictionary.MergedDictionaries>
+                                            <ColorPaletteResources x:Name="DarkPalette" />
+                                        </ResourceDictionary.MergedDictionaries>
+                                    </ResourceDictionary>
+                                </ResourceDictionary.ThemeDictionaries>
+                            </ResourceDictionary>
+                        </Grid.Resources>
+                        <StackPanel Spacing="12">
+                            <!--  ToggleButton (toggled - shows accent color)  -->
+                            <TextBlock FontWeight="SemiBold" Text="ToggleButton" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <ToggleButton Content="Toggled" IsChecked="True" />
+                                <ToggleButton Content="Not Toggled" IsChecked="False" />
+                                <ToggleButton
+                                    Content="Disabled"
+                                    IsChecked="True"
+                                    IsEnabled="False" />
+                            </StackPanel>
+
+                            <!--  Button  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="Button" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Content="Enabled" />
+                                <Button Content="Disabled" IsEnabled="False" />
+                            </StackPanel>
+
+                            <!--  TextBox  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="TextBox" />
+                            <TextBox
+                                Width="250"
+                                HorizontalAlignment="Left"
+                                PlaceholderText="Enter text here..." />
+
+                            <!--  TextBlock  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="TextBlock" />
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Normal text using system colors" />
+                                <TextBlock Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}" Text="Error text using SystemErrorTextColor" />
+                            </StackPanel>
+
+                            <!--  CheckBox  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="CheckBox" />
+                            <StackPanel Spacing="4">
+                                <CheckBox Content="Checked" IsChecked="True" />
+                                <CheckBox Content="Unchecked" IsChecked="False" />
+                                <CheckBox
+                                    Content="Disabled"
+                                    IsChecked="True"
+                                    IsEnabled="False" />
+                            </StackPanel>
+
+                            <!--  ToggleSwitch  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="ToggleSwitch" />
+                            <StackPanel Spacing="4">
+                                <ToggleSwitch Header="On" IsOn="True" />
+                                <ToggleSwitch Header="Off" IsOn="False" />
+                                <ToggleSwitch
+                                    Header="Disabled"
+                                    IsEnabled="False"
+                                    IsOn="True" />
+                            </StackPanel>
+
+                            <!--  Slider  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="Slider" />
+                            <Slider
+                                Width="250"
+                                HorizontalAlignment="Left"
+                                Value="50" />
+
+                            <!--  ProgressBar  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="ProgressBar" />
+                            <ProgressBar
+                                Width="250"
+                                HorizontalAlignment="Left"
+                                Value="70" />
+
+                            <!--  RadioButton  -->
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                FontWeight="SemiBold"
+                                Text="RadioButton" />
+                            <StackPanel Spacing="4">
+                                <RadioButton
+                                    Content="Selected"
+                                    GroupName="PreviewRadio"
+                                    IsChecked="True" />
+                                <RadioButton
+                                    Content="Not Selected"
+                                    GroupName="PreviewRadio"
+                                    IsChecked="False" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <!--  Color Swatches Summary  -->
+                    <TextBlock
+                        Margin="0,16,0,0"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        Text="Active Color Overrides" />
+                    <ItemsControl x:Name="ColorSwatchesSummary">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel
+                                    Margin="0,4"
+                                    Orientation="Horizontal"
+                                    Spacing="8">
+                                    <Border
+                                        Width="20"
+                                        Height="20"
+                                        Background="{Binding Color}"
+                                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="2" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding HexValue}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

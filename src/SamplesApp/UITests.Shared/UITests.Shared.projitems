@@ -14,6 +14,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI\ColorPaletteResourcesTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5720,6 +5724,9 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI\ColorHelperTests.xaml.cs">
       <DependentUpon>ColorHelperTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI\ColorPaletteResourcesTests.xaml.cs">
+      <DependentUpon>ColorPaletteResourcesTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BindableBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\IWaitableSample.cs" />
