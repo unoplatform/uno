@@ -64,13 +64,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IsSpellCheckEnabled { get; set; }
 
-#if DEBUG
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+#if DEBUG
 			Visual.Comment = $"{Visual.Comment}#text";
-		}
 #endif
+			// Ensure the default ContextFlyout has its Opening event subscribed.
+			// This is needed because default flyouts (via GetDefaultValue) don't trigger OnContextFlyoutChanged.
+			EnsureContextFlyoutSubscription();
+		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -422,7 +425,47 @@ namespace Microsoft.UI.Xaml.Controls
 		private Point _lastPointerPosition;
 		private bool _isSelectionFlyoutUpdateQueued;
 
+		// Track the flyout we've subscribed to for Opening event (to avoid double-subscription)
+		private FlyoutBase _subscribedContextFlyout;
+
 		private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+		private void EnsureContextFlyoutSubscription()
+		{
+			var currentFlyout = ContextFlyout;
+			if (currentFlyout is not null && _subscribedContextFlyout != currentFlyout)
+			{
+				if (_subscribedContextFlyout is not null)
+				{
+					_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
+				}
+				currentFlyout.Opening += OnContextFlyoutOpening;
+				_subscribedContextFlyout = currentFlyout;
+			}
+		}
+
+		// Handle ContextFlyout/SelectionFlyout coordination - ContextFlyout takes priority
+		private protected override void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
+		{
+			base.OnContextFlyoutChanged(oldValue, newValue);
+
+			if (oldValue is not null && oldValue == _subscribedContextFlyout)
+			{
+				oldValue.Opening -= OnContextFlyoutOpening;
+				_subscribedContextFlyout = null;
+			}
+			if (newValue is not null)
+			{
+				newValue.Opening += OnContextFlyoutOpening;
+				_subscribedContextFlyout = newValue;
+			}
+		}
+
+		private void OnContextFlyoutOpening(object sender, object e)
+		{
+			// Close SelectionFlyout when ContextFlyout opens (ContextFlyout takes priority)
+			SelectionFlyout?.Hide();
+		}
 
 		/// <summary>
 		/// Called from OnPointerReleased to queue SelectionFlyout visibility update for non-mouse input.

@@ -137,9 +137,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
+		partial void OnLoadedPartial();
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
+			OnLoadedPartial();
 
 #if __ANDROID__
 			SetupTextBoxView();
