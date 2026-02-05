@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml.Documents;
 
-internal interface ISpellCheckingService
+public interface ISpellCheckingService
 {
 	public List<(int correctionStart, int correctionEnd)?> SpellCheck(List<int> wordBoundaries, string text);
 
