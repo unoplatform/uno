@@ -105,16 +105,6 @@ jobs:
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
 
-  - bash: |
-      set -euo pipefail
-      if xcrun simctl list runtimes | grep -q "iOS 26.2"; then
-        echo "iOS 26.2 runtime already installed"
-        exit 0
-      fi
-      echo "Downloading iOS 26.2 simulator runtime"
-      sudo xcodebuild -downloadPlatform iOS -buildVersion 26.2
-    displayName: Ensure iOS 26.2 simulator runtime
-
   - template: ../templates/dotnet-mobile-install-mac.yml
   - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/uno-dev-feed.yml
