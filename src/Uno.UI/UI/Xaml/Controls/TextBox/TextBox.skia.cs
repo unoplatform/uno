@@ -447,9 +447,10 @@ public partial class TextBox
 	#region SelectionFlyout Support
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.h (lines 225-226)
-	// m_lastInputDeviceType, m_lastPointerPositionForFlyout
+	// m_lastInputDeviceType, m_lastPointerPositionForFlyout, m_isSelectionFlyoutUpdateQueued
 	private PointerDeviceType _lastInputDeviceType;
 	private Point _lastPointerPosition;
+	private bool _isSelectionFlyoutUpdateQueued;
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
 	// HasContextFlyout() and HasSelectionFlyout()
@@ -485,14 +486,21 @@ public partial class TextBox
 		_lastInputDeviceType = deviceType;
 		_lastPointerPosition = position;
 
-		// Use dispatcher to queue the update
-		DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+		// Line 5358-5360: Prevent duplicate queued updates
+		if (!_isSelectionFlyoutUpdateQueued)
+		{
+			_isSelectionFlyoutUpdateQueued = true;
+			DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+		}
 	}
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5379-5452)
 	// UpdateSelectionFlyoutVisibility - shows/hides SelectionFlyout based on device type and selection
 	private void UpdateSelectionFlyoutVisibility()
 	{
+		// Line 5381: Reset the queued flag
+		_isSelectionFlyoutUpdateQueued = false;
+
 		// Line 5383: Only shows SelectionFlyout if ContextFlyout is NOT open
 		if (!HasSelectionFlyout() || (ContextFlyout?.IsOpen ?? false))
 		{
