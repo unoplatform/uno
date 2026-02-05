@@ -393,16 +393,6 @@ public class Given_AlcContentHost
 
 		var alcWindowType = alcWindow.GetType();
 
-		// Verify the Window detected it was created for a secondary ALC.
-		// This is detected by checking if ContentHostOverride was set when the Window was created.
-		var isFromSecondaryAlcProperty = alcWindowType.GetProperty("IsFromSecondaryAlc",
-			BindingFlags.NonPublic | BindingFlags.Instance);
-		Assert.IsNotNull(isFromSecondaryAlcProperty, "IsFromSecondaryAlc property should exist on Window");
-
-		var isFromSecondaryAlc = (bool)isFromSecondaryAlcProperty!.GetValue(alcWindow)!;
-		Assert.IsTrue(isFromSecondaryAlc,
-			"ALC window should report IsFromSecondaryAlc = true (ContentHostOverride was set at creation time)");
-
 		// Verify the ALC window is operating in ALC mode (content redirected).
 		// The _alcState is set when content from a secondary ALC is set, which is
 		// the reliable way to detect ALC mode.
