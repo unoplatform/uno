@@ -13,7 +13,7 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
 ## Setting up Uno Platform MCPs
 
 > [!NOTE]
-> The Uno Platform extension is not functional in Antigravity at this time. 
+> The Uno Platform extension is not functional in Antigravity at this time.
 
 1. Install [Google Antigravity](https://antigravity.google/) by following Google's official instructions for your operating system.
 1. Configure [Antigravity MCPs](https://antigravity.google/docs/mcp):
