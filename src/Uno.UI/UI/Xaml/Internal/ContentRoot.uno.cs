@@ -21,30 +21,12 @@ partial class ContentRoot
 		{
 			_host = host;
 
-			// Skip InputManager initialization for secondary ALC hosts.
-			// Secondary ALC content is rendered inside the main app's ContentHostOverride,
-			// so it uses the main app's input handling. Creating new input sources would
-			// override the TypeScript keyboard handler and break input for the entire app.
-			if (!IsHostFromSecondaryAlc(host))
-			{
-				InputManager.Initialize(host);
-			}
+			InputManager.Initialize(host);
 		}
 		else
 		{
 			Debug.Assert(_host == host);
 		}
-	}
-
-	private static bool IsHostFromSecondaryAlc(object host)
-	{
-		// Check if the host is a Window from a secondary ALC
-		if (host is NativeWindowWrapperBase window)
-		{
-			return window.Window?.IsAlcWindow ?? false;
-		}
-
-		return false;
 	}
 
 	internal CoreDispatcher Dispatcher => CoreDispatcher.Main; //TODO:MZ: set dispatcher per content root (from SetHost?)
