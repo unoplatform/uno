@@ -62,6 +62,9 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
+		private static readonly Type FrameworkElementType = typeof(FrameworkElement);
+		private static readonly Type IEnumerableOfFrameworkElementType = typeof(IEnumerable<FrameworkElement>);
+
 		private bool _isDisposed;
 
 		private readonly DependencyPropertyDetailsCollection _properties;
@@ -598,7 +601,9 @@ namespace Microsoft.UI.Xaml
 		{
 			if (property.IsUnoType
 				&& propertyDetails.HasValueInherits
-				&& !propertyDetails.HasValueDoesNotInherit)
+				&& !propertyDetails.HasValueDoesNotInherit
+				&& (property.Type.IsAssignableTo(FrameworkElementType) || property.Type.IsAssignableTo(IEnumerableOfFrameworkElementType))
+			)
 			{
 				// This block is used to synchronize the DataContext property of DependencyProperty values marked as
 				// being able to inherit the DataContext.
