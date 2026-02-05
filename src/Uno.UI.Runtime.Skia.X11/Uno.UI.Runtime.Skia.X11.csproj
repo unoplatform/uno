@@ -22,7 +22,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Tmds.DBus.Protocol" Version="0.21.2" />
+		<PackageReference Include="Tmds.DBus.Protocol" Version="0.90.0" />
+		<PackageReference Include="Tmds.DBus.Generator" Version="0.90.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.FileChooser.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Request.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Settings.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
 	</ItemGroup>
 
 	<ItemGroup>
