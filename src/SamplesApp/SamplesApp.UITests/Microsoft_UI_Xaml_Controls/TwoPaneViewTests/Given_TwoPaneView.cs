@@ -49,7 +49,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			// _app.Repl();
 
-			Assert.IsTrue(controlWidthText.GetDependencyPropertyValue<int>("Text") > 641, "The window size must be large enough for the control Width to be larger than 641");
+			Assert.IsGreaterThan(641, controlWidthText.GetDependencyPropertyValue<int>("Text"), "The window size must be large enough for the control Width to be larger than 641");
 		}
 
 		[Test]
@@ -330,15 +330,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				case ViewMode.LeftRight:
 				case ViewMode.RightLeft:
 					Assert.AreEqual(paneContent1BoundingRectangle.Y, paneContent2BoundingRectangle.Y, "Assert panes are horizontally aligned");
-					if (mode == ViewMode.LeftRight) Assert.IsTrue(paneContent2BoundingRectangle.X >= paneContent1BoundingRectangle.Right, "Assert left/right pane placement");
-					else Assert.IsTrue(paneContent1BoundingRectangle.X >= -paneContent2BoundingRectangle.Right, "Assert right/left pane placement");
+					if (mode == ViewMode.LeftRight) Assert.IsGreaterThanOrEqualTo(paneContent1BoundingRectangle.Right, paneContent2BoundingRectangle.X, "Assert left/right pane placement");
+					else Assert.IsGreaterThanOrEqualTo(-paneContent2BoundingRectangle.Right, paneContent1BoundingRectangle.X, "Assert right/left pane placement");
 					break;
 
 				case ViewMode.TopBottom:
 				case ViewMode.BottomTop:
 					Assert.AreEqual(paneContent1BoundingRectangle.X, paneContent2BoundingRectangle.X, "Assert panes are vertically aligned");
-					if (mode == ViewMode.TopBottom) Assert.IsTrue(paneContent2BoundingRectangle.Y >= paneContent1BoundingRectangle.Bottom, "Assert top/bottom pane placement");
-					else Assert.IsTrue(paneContent1BoundingRectangle.Y >= paneContent2BoundingRectangle.Bottom, "Assert bottom/top pane placement");
+					if (mode == ViewMode.TopBottom) Assert.IsGreaterThanOrEqualTo(paneContent1BoundingRectangle.Bottom, paneContent2BoundingRectangle.Y, "Assert top/bottom pane placement");
+					else Assert.IsGreaterThanOrEqualTo(paneContent2BoundingRectangle.Bottom, paneContent1BoundingRectangle.Y, "Assert bottom/top pane placement");
 					break;
 			}
 		}

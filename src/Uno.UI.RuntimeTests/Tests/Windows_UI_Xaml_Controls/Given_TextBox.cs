@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -1150,8 +1150,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var scp1Bounds = scp1.GetAbsoluteBounds();
 			var scp2Bounds = scp2.GetAbsoluteBounds();
 
-			Assert.IsTrue(tb1Bounds.X < scp1Bounds.X);
-			Assert.IsTrue(tb2Bounds.X < scp2Bounds.X);
+			Assert.IsLessThan(scp1Bounds.X, tb1Bounds.X);
+			Assert.IsLessThan(scp2Bounds.X, tb2Bounds.X);
 
 			var clickPosition1 = new Point((tb1Bounds.X + scp1Bounds.X) / 2, (tb1Bounds.Top + tb1Bounds.Bottom) / 2);
 			var clickPosition2 = new Point((tb2Bounds.X + scp2Bounds.X) / 2, (tb2Bounds.Top + tb2Bounds.Bottom) / 2);
@@ -1160,21 +1160,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			mouse.MoveTo(clickPosition2);
-			Assert.AreEqual(0, list.Count);
+			Assert.IsEmpty(list);
 			mouse.Press(clickPosition2);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 			Assert.AreEqual("Second", list[0]);
 
 			mouse.MoveTo(clickPosition1);
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 			mouse.Press(clickPosition1);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(2, list.Count);
+			Assert.HasCount(2, list);
 			Assert.AreEqual("First", list[1]);
 
 			FocusManager.GotFocus -= FocusManager_GotFocus;

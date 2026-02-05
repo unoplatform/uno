@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -697,7 +697,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 
 				using (c.BatchUpdate())
 				{
@@ -710,7 +710,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(5, SUT.Items.Count);
+				Assert.HasCount(5, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem("One"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Four"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Five"));
@@ -801,7 +801,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				SUT.DataContext = new { MySource = c, SelectedItem = "Two" };
 
-				Assert.AreEqual(12, SUT.Items.Count);
+				Assert.HasCount(12, SUT.Items);
 			}
 			finally
 			{
@@ -844,7 +844,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Not required on WinUI. Fixing this in Uno requires porting ComboBox.
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 
 				using (c.BatchUpdate())
 				{
@@ -859,7 +859,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -906,7 +906,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -925,7 +925,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -1293,7 +1293,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var child = (FrameworkElement)popup.Child;
 			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
-			Assert.AreEqual(Enum.GetValues<PickerLocationId>().Length, comboBoxItems.Length);
+			Assert.HasCount(Enum.GetValues<PickerLocationId>().Length, comboBoxItems);
 		}
 
 #if HAS_UNO
@@ -1320,13 +1320,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var destination = origin + sv.ViewportHeight * 2;
 			sv.ChangeView(null, verticalOffset: destination, null, disableAnimation: true);
 			await UITestHelper.WaitForIdle();
-			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 
 			// force an arrange
 			var cbi = sv.FindFirstChild<ComboBoxItem>();
 			cbi.InvalidateArrange();
 			await UITestHelper.WaitForIdle();
-			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 		}
 #endif
 

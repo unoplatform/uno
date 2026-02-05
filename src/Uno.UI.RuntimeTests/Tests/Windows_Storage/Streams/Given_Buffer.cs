@@ -147,26 +147,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		public void When_ToArray_Then_ResultLengthIsBufferLength()
 		{
 			// Buffer's length equals
-			Assert.AreEqual(42, new Buffer(42) { Length = 42 }.ToArray().Length);
+			Assert.HasCount(42, new Buffer(42) { Length = 42 }.ToArray());
 
 			// Buffer's length lower
-			Assert.AreEqual(21, new Buffer(42) { Length = 21 }.ToArray().Length);
+			Assert.HasCount(21, new Buffer(42) { Length = 21 }.ToArray());
 
 			// Empty buffer
-			Assert.AreEqual(0, new Buffer(42) { Length = 0 }.ToArray().Length);
+			Assert.IsEmpty(new Buffer(42) { Length = 0 }.ToArray());
 		}
 
 		[TestMethod]
 		public void When_ToArrayWithCount_Then_ResultLengthIsCount()
 		{
 			// Buffer's length equals
-			Assert.AreEqual(42, new Buffer(42) { Length = 42 }.ToArray(0, 42).Length);
+			Assert.HasCount(42, new Buffer(42) { Length = 42 }.ToArray(0, 42));
 
 			// Buffer's length lower
-			Assert.AreEqual(42, new Buffer(42) { Length = 21 }.ToArray(0, 42).Length);
+			Assert.HasCount(42, new Buffer(42) { Length = 21 }.ToArray(0, 42));
 
 			// Empty buffer
-			Assert.AreEqual(42, new Buffer(42) { Length = 0 }.ToArray(0, 42).Length);
+			Assert.HasCount(42, new Buffer(42) { Length = 0 }.ToArray(0, 42));
 		}
 
 		[TestMethod]

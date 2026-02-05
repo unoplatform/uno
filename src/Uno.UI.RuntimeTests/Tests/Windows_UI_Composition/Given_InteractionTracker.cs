@@ -93,7 +93,7 @@ public partial class Given_InteractionTracker
 
 		helper.Advance();
 		var linesSkipped = helper.SkipLines(current => current.StartsWith("ValuesChanged:", StringComparison.Ordinal));
-		Assert.IsTrue(linesSkipped >= 2);
+		Assert.IsGreaterThanOrEqualTo(2, linesSkipped);
 		helper.Back();
 
 		Assert.AreEqual(
@@ -158,7 +158,7 @@ public partial class Given_InteractionTracker
 
 		helper.Advance();
 		var linesSkipped = helper.SkipLines(current => current.StartsWith("ValuesChanged:", StringComparison.Ordinal));
-		Assert.IsTrue(linesSkipped >= 2);
+		Assert.IsGreaterThanOrEqualTo(2, linesSkipped);
 		helper.Back();
 
 		Assert.AreEqual(
@@ -240,7 +240,7 @@ public partial class Given_InteractionTracker
 		helper.Advance();
 
 		var linesSkipped = helper.SkipLines(current => current.StartsWith("ValuesChanged:", StringComparison.Ordinal));
-		Assert.IsTrue(linesSkipped >= 2);
+		Assert.IsGreaterThanOrEqualTo(2, linesSkipped);
 		helper.Back();
 
 		Assert.AreEqual(
@@ -315,7 +315,7 @@ public partial class Given_InteractionTracker
 		helper.Advance();
 
 		var linesSkipped = helper.SkipLines(current => current.StartsWith("ValuesChanged:", StringComparison.Ordinal));
-		Assert.IsTrue(linesSkipped >= 2);
+		Assert.IsGreaterThanOrEqualTo(2, linesSkipped);
 		helper.Back();
 
 		Assert.AreEqual(

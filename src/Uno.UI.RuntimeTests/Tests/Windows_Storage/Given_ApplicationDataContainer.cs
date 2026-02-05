@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -169,22 +169,22 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var SUT = ApplicationData.Current.LocalSettings;
 			var originalCount = SUT.Values.Count;
 
-			Assert.IsFalse(SUT.Values.Keys.Contains("test"));
-			Assert.IsFalse(SUT.Values.Keys.Contains("test2"));
-			Assert.IsFalse(SUT.Values.Values.Contains("42"));
-			Assert.IsFalse(SUT.Values.Values.Contains("43"));
+			Assert.DoesNotContain("test", SUT.Values.Keys);
+			Assert.DoesNotContain("test2", SUT.Values.Keys);
+			Assert.DoesNotContain("42", SUT.Values.Values);
+			Assert.DoesNotContain("43", SUT.Values.Values);
 
 			SUT.Values.Add("test", "42");
 			SUT.Values.Add("test2", "43");
 
-			Assert.AreEqual(originalCount + 2, SUT.Values.Count);
-			Assert.AreEqual(originalCount + 2, SUT.Values.Keys.Count);
-			Assert.IsTrue(SUT.Values.Keys.Contains("test"));
-			Assert.IsTrue(SUT.Values.Keys.Contains("test2"));
+			Assert.HasCount(originalCount + 2, SUT.Values);
+			Assert.HasCount(originalCount + 2, SUT.Values.Keys);
+			Assert.Contains("test", SUT.Values.Keys);
+			Assert.Contains("test2", SUT.Values.Keys);
 
-			Assert.AreEqual(originalCount + 2, SUT.Values.Values.Count);
-			Assert.IsTrue(SUT.Values.Values.Contains("42"));
-			Assert.IsTrue(SUT.Values.Values.Contains("43"));
+			Assert.HasCount(originalCount + 2, SUT.Values.Values);
+			Assert.Contains("42", SUT.Values.Values);
+			Assert.Contains("43", SUT.Values.Values);
 		}
 
 		[TestMethod]
@@ -203,7 +203,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 				keysPresent.Remove(value.Key);
 			}
 
-			Assert.AreEqual(0, keysPresent.Count);
+			Assert.IsEmpty(keysPresent);
 		}
 
 		[TestMethod]
@@ -391,7 +391,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
 			Assert.IsNotNull(result);
 
-			Assert.AreEqual(2, result.Count);
+			Assert.HasCount(2, result);
 		}
 
 		[TestMethod]
@@ -419,7 +419,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
 			Assert.IsNotNull(result);
 
-			Assert.AreEqual(3, result.Count);
+			Assert.HasCount(3, result);
 			Assert.AreEqual("value3", result["key1"]);
 			Assert.AreEqual("value2", result["key2"]);
 			Assert.AreEqual("value4", result["key3"]);

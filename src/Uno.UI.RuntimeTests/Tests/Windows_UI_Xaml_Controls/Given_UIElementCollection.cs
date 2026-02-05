@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +23,7 @@ public class Given_UIElementCollection
 
 		panel.Children.Move((uint)from, (uint)to);
 
-		Assert.AreEqual(5, panel.Children.Count);
+		Assert.HasCount(5, panel.Children);
 		for (var i = 0; i < panel.Children.Count; i++)
 		{
 			if (i == to)

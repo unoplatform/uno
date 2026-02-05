@@ -38,10 +38,10 @@ public partial class Given_TextBox_ContextMenuPosition
 		Assert.IsNotNull(position, "GetContextMenuShowPosition should return a valid position");
 
 		// Position should be within reasonable bounds of the TextBox
-		Assert.IsTrue(position.Value.X >= 0, "X position should be non-negative");
-		Assert.IsTrue(position.Value.Y >= 0, "Y position should be non-negative");
-		Assert.IsTrue(position.Value.X <= textBox.ActualWidth + 10, "X position should be within TextBox width");
-		Assert.IsTrue(position.Value.Y <= textBox.ActualHeight + 10, "Y position should be within TextBox height");
+		Assert.IsGreaterThanOrEqualTo(0d, position.Value.X, "X position should be non-negative");
+		Assert.IsGreaterThanOrEqualTo(0d, position.Value.Y, "Y position should be non-negative");
+		Assert.IsLessThanOrEqualTo(textBox.ActualWidth + 10, position.Value.X, "X position should be within TextBox width");
+		Assert.IsLessThanOrEqualTo(textBox.ActualHeight + 10, position.Value.Y, "Y position should be within TextBox height");
 	}
 
 	[TestMethod]
@@ -76,7 +76,7 @@ public partial class Given_TextBox_ContextMenuPosition
 		Assert.IsNotNull(positionAtEnd, "Position should be valid at end");
 
 		// Position at end should be to the right of position at start
-		Assert.IsTrue(positionAtEnd.Value.X > positionAtStart.Value.X,
+		Assert.IsGreaterThan(positionAtStart.Value.X, positionAtEnd.Value.X,
 			"Position at end of text should be to the right of position at start");
 	}
 
@@ -111,7 +111,7 @@ public partial class Given_TextBox_ContextMenuPosition
 
 		// The position with selection should be at or near the selection end
 		// Allow some tolerance for rendering differences
-		Assert.IsTrue(Math.Abs(positionWithSelection.Value.X - positionAtSelectionEnd.Value.X) < 5,
+		Assert.IsLessThan(5d, Math.Abs(positionWithSelection.Value.X - positionAtSelectionEnd.Value.X),
 			"Position should be at selection end");
 	}
 
@@ -136,8 +136,8 @@ public partial class Given_TextBox_ContextMenuPosition
 
 		// Should still return a valid position for empty TextBox
 		Assert.IsNotNull(position, "GetContextMenuShowPosition should return valid position for empty TextBox");
-		Assert.IsTrue(position.Value.X >= 0, "X position should be non-negative");
-		Assert.IsTrue(position.Value.Y >= 0, "Y position should be non-negative");
+		Assert.IsGreaterThanOrEqualTo(0d, position.Value.X, "X position should be non-negative");
+		Assert.IsGreaterThanOrEqualTo(0d, position.Value.Y, "Y position should be non-negative");
 	}
 
 	[TestMethod]

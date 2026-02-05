@@ -37,7 +37,7 @@ public class Given_CalendarDatePicker
 		await WindowHelper.WaitForIdle();
 		var calendarView = (CalendarView)flyout.Content;
 
-		Assert.IsTrue(calendarView.ActualHeight > 300);
+		Assert.IsGreaterThan(300, calendarView.ActualHeight);
 
 		flyout.Close();
 	}
@@ -70,11 +70,11 @@ public class Given_CalendarDatePicker
 			await WindowHelper.WaitFor(() => opened);
 
 			var items = VisualTreeUtils.FindVisualChildrenByType<CalendarViewDayItem>(flyout.Content).ToArray();
-			Assert.IsTrue(items.Length > 0);
+			Assert.IsGreaterThan(0, items.Length);
 			foreach (var item in items)
 			{
 				var foreground = ((SolidColorBrush)item.Foreground).Color;
-				Assert.IsTrue(foreground.Luminance < 0.5);
+				Assert.IsLessThan(0.5, foreground.Luminance);
 
 				if (item.GetItemBackgroundBrush() is not { } backgroundBrush)
 				{
@@ -85,7 +85,7 @@ public class Given_CalendarDatePicker
 				// Skip colored dates (selected), or those with opacity of zero.
 				if (background.R == background.G && background.G == background.B && background.A != 0)
 				{
-					Assert.IsTrue(background.Luminance > 0.5);
+					Assert.IsGreaterThan(0.5, background.Luminance);
 				}
 			}
 
@@ -104,11 +104,11 @@ public class Given_CalendarDatePicker
 			await WindowHelper.WaitFor(() => opened);
 
 			items = VisualTreeUtils.FindVisualChildrenByType<CalendarViewDayItem>(flyout.Content).ToArray();
-			Assert.IsTrue(items.Length > 0);
+			Assert.IsGreaterThan(0, items.Length);
 			foreach (var item in items)
 			{
 				var foreground = ((SolidColorBrush)item.Foreground).Color;
-				Assert.IsTrue(foreground.Luminance > 0.5);
+				Assert.IsGreaterThan(0.5, foreground.Luminance);
 
 				if (item.GetItemBackgroundBrush() is not { } backgroundBrush)
 				{
@@ -119,7 +119,7 @@ public class Given_CalendarDatePicker
 				// Skip colored dates (selected), or those with opacity of zero.
 				if (background.R == background.G && background.G == background.B && background.A != 0)
 				{
-					Assert.IsTrue(background.Luminance < 0.5);
+					Assert.IsLessThan(0.5, background.Luminance);
 				}
 			}
 		}

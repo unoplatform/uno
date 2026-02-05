@@ -79,7 +79,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			var path = new Uri("ms-appx:///Assets/scale-test.png");
 			var resolved = await BitmapImage.TryResolveLocalResource(path, scaleOverride: Windows.Graphics.Display.ResolutionScale.Scale400Percent);
 
-			Assert.IsTrue(resolved.PathAndQuery.Contains("scale-400"), $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
+			Assert.Contains("scale-400", resolved.PathAndQuery, $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
 		}
 #endif
 
@@ -145,7 +145,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			foreach (var bitmapImage in bitmapImages)
 			{
-				Assert.IsTrue(bitmapImage.PixelWidth > 0, "Image should have valid pixel dimensions after loading");
+				Assert.IsGreaterThan(0, bitmapImage.PixelWidth, "Image should have valid pixel dimensions after loading");
 			}
 
 			foreach (var image in images)
@@ -165,7 +165,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			GC.WaitForPendingFinalizers();
 			GC.Collect();
 
-			Assert.IsTrue(images.Count == imageUris.Length, "All images were processed");
+			Assert.HasCount(imageUris.Length, images, "All images were processed");
 		}
 
 		[TestMethod]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -50,7 +50,7 @@ namespace Uno.UI.Tests.FrameTests
 			SUT.IsNavigationStackEnabled = false;
 			SUT.Navigate(typeof(MyPage));
 
-			Assert.AreEqual(0, SUT.BackStack.Count);
+			Assert.IsEmpty(SUT.BackStack);
 			Assert.IsFalse(SUT.CanGoBack);
 		}
 
@@ -68,33 +68,33 @@ namespace Uno.UI.Tests.FrameTests
 
 			SUT.Navigate(typeof(ThirdPage));
 
-			Assert.AreEqual(2, SUT.BackStack.Count);
+			Assert.HasCount(2, SUT.BackStack);
 
 			SUT.GoBack();
 
 			SUT.IsNavigationStackEnabled = false;
 
-			Assert.AreEqual(1, SUT.BackStack.Count);
-			Assert.AreEqual(1, SUT.ForwardStack.Count);
+			Assert.HasCount(1, SUT.BackStack);
+			Assert.HasCount(1, SUT.ForwardStack);
 
 			SUT.Navigate(typeof(MyPage));
 			SUT.Navigate(typeof(MyPage));
 
 			Assert.IsInstanceOfType(SUT.Content, typeof(MyPage));
-			Assert.AreEqual(1, SUT.BackStack.Count);
-			Assert.AreEqual(1, SUT.ForwardStack.Count);
+			Assert.HasCount(1, SUT.BackStack);
+			Assert.HasCount(1, SUT.ForwardStack);
 
 			SUT.GoBack();
 
 			Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-			Assert.AreEqual(1, SUT.BackStack.Count);
-			Assert.AreEqual(1, SUT.ForwardStack.Count);
+			Assert.HasCount(1, SUT.BackStack);
+			Assert.HasCount(1, SUT.ForwardStack);
 
 			SUT.GoForward();
 
 			Assert.IsInstanceOfType(SUT.Content, typeof(ThirdPage));
-			Assert.AreEqual(1, SUT.BackStack.Count);
-			Assert.AreEqual(1, SUT.ForwardStack.Count);
+			Assert.HasCount(1, SUT.BackStack);
+			Assert.HasCount(1, SUT.ForwardStack);
 		}
 
 		[TestMethod]
@@ -118,15 +118,15 @@ namespace Uno.UI.Tests.FrameTests
 			SUT.GoBack();
 
 			Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-			Assert.AreEqual(1, SUT.BackStack.Count);
-			Assert.AreEqual(1, SUT.ForwardStack.Count);
+			Assert.HasCount(1, SUT.BackStack);
+			Assert.HasCount(1, SUT.ForwardStack);
 
 			SUT.IsNavigationStackEnabled = true;
 			SUT.GoBack();
 
 			Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-			Assert.AreEqual(0, SUT.BackStack.Count);
-			Assert.AreEqual(2, SUT.ForwardStack.Count);
+			Assert.IsEmpty(SUT.BackStack);
+			Assert.HasCount(2, SUT.ForwardStack);
 		}
 
 		[TestMethod]

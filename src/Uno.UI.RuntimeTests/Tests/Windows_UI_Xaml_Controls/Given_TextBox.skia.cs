@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -3407,7 +3407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			Assert.HasCount(3, flyoutItems);
 
 			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
 			mouse.Press();
@@ -3423,7 +3423,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			Assert.HasCount(3, flyoutItems);
 
 			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
 			mouse.Press();
@@ -4373,7 +4373,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
@@ -4389,7 +4389,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 		}
 
 		[TestMethod]
@@ -4804,7 +4804,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Get the caret popups
 			var caretPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).ToList();
 			// We should have two caret popups (start and end)
-			Assert.AreEqual(2, caretPopups.Count);
+			Assert.HasCount(2, caretPopups);
 
 			// Validate the Ellipses of the carets are intersecting the bottom border of the TextBox
 			var textBoxTransform = textBox.TransformToVisual(null);
@@ -4831,7 +4831,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				double radius = Math.Sqrt(Math.Pow(boundary.X - ellipseCenter.X, 2) + Math.Pow(boundary.Y - ellipseCenter.Y, 2));
 				// Check that the line from bottomLeft to bottomRight intersects the ellipse using DistancePointToSegment
 				var distance = DistancePointToSegment(ellipseCenter, bottomLeft, bottomRight);
-				Assert.IsTrue(distance < radius, "Caret ellipse should intersect the bottom border of the TextBox");
+				Assert.IsLessThan(radius, distance, "Caret ellipse should intersect the bottom border of the TextBox");
 			}
 		}
 

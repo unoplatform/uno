@@ -38,8 +38,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if WINAPPSDK
 			Assert.AreEqual(new Size(11, 50), SUT.DesiredSize);
 #else
-			Assert.IsTrue(Math.Abs(11 - SUT.DesiredSize.Width) <= 1, $"Actual size: {SUT.DesiredSize}");
-			Assert.IsTrue(Math.Abs(50 - SUT.DesiredSize.Height) <= 1, $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(11 - SUT.DesiredSize.Width), $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(50 - SUT.DesiredSize.Height), $"Actual size: {SUT.DesiredSize}");
 #endif
 		}
 
