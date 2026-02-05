@@ -51,7 +51,7 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 	{
 		try
 		{
-			var sessionsAddressBus = DBusAddress.Session;
+			var sessionsAddressBus = Address.Session;
 			if (sessionsAddressBus is null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
@@ -61,10 +61,10 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 				return;
 			}
 
-			var connection = new DBusConnection(sessionsAddressBus);
+			var connection = new Connection(sessionsAddressBus);
 			await connection.ConnectAsync();
 
-			var desktopService = new DBusService(connection, Service);
+			var desktopService = new DesktopService(connection, Service);
 			var settings = desktopService.CreateSettings(ObjectPath);
 
 			var version = await settings.GetVersionAsync();
