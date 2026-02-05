@@ -57,9 +57,9 @@ variables:
   linuxVMImage: 'ubuntu-24.04'
   linuxScaledPool: 'Ubuntu2404-20251016'
   macOSVMImage: 'macOS-15'
-  macOSVMImage_UITests: 'macOS-14'
+  macOSVMImage_UITests: 'macOS-15'
   xCodeRoot: '/Applications/Xcode_26.2.app'
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_15.3.app'
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_26.2.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline

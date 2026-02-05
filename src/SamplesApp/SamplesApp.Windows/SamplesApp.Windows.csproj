@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>$(NetPreviousWinAppSDK)</TargetFramework>
+		<TargetFramework>$(NetCurrentWinAppSDK)</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>SamplesApp.Windows</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -15,7 +15,6 @@
 		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
 		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
 	</PropertyGroup>
-
 	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
