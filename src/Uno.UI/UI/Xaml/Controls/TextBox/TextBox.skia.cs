@@ -536,6 +536,14 @@ public partial class TextBox
 				ShowMode = showMode
 			});
 		}
+		else
+		{
+			// Line 5444-5447: Close SelectionFlyout if it's open and we shouldn't show it
+			if (SelectionFlyout?.IsOpen == true)
+			{
+				SelectionFlyout.Hide();
+			}
+		}
 	}
 
 	#endregion
