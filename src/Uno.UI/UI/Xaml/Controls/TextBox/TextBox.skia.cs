@@ -452,10 +452,34 @@ public partial class TextBox
 	private Point _lastPointerPosition;
 	private bool _isSelectionFlyoutUpdateQueued;
 
+	// Track the flyout we've subscribed to for Opening event (to avoid double-subscription)
+	private FlyoutBase _subscribedContextFlyout;
+
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
 	// HasContextFlyout() and HasSelectionFlyout()
 	private bool HasContextFlyout() => ContextFlyout is not null;
 	private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+	partial void OnLoadedPartial()
+	{
+		// Ensure the default ContextFlyout has its Opening event subscribed.
+		// This is needed because default flyouts (via GetDefaultValue) don't trigger OnContextFlyoutChanged.
+		EnsureContextFlyoutSubscription();
+	}
+
+	private void EnsureContextFlyoutSubscription()
+	{
+		var currentFlyout = ContextFlyout;
+		if (currentFlyout is not null && _subscribedContextFlyout != currentFlyout)
+		{
+			if (_subscribedContextFlyout is not null)
+			{
+				_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
+			}
+			currentFlyout.Opening += OnContextFlyoutOpening;
+			_subscribedContextFlyout = currentFlyout;
+		}
+	}
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/dxaml/lib/TextBoxBase_Partial.cpp
 	// Handle ContextFlyout/SelectionFlyout coordination - ContextFlyout takes priority
@@ -463,13 +487,15 @@ public partial class TextBox
 	{
 		base.OnContextFlyoutChanged(oldValue, newValue);
 
-		if (oldValue is not null)
+		if (oldValue is not null && oldValue == _subscribedContextFlyout)
 		{
 			oldValue.Opening -= OnContextFlyoutOpening;
+			_subscribedContextFlyout = null;
 		}
 		if (newValue is not null)
 		{
 			newValue.Opening += OnContextFlyoutOpening;
+			_subscribedContextFlyout = newValue;
 		}
 	}
 
