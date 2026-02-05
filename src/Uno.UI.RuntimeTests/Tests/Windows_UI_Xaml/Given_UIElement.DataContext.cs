@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -65,4 +66,62 @@ partial class Given_UIElement
 		Assert.AreEqual(DC, nested3.DataContext, "3. when reattached, DC (nested3) should still be inherited&unaffected");
 		Assert.AreEqual(DC, nested4.DataContext, "3. when reattached, DC (nested4) should still be inherited&unaffected");
 	}
+
+#if HAS_UNO && false
+	// DC on any DependencyObject is only an uno concept, not in WinUI
+	// disabled until #22610 being fixed
+	
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_DataContext_DoesNotPropagate_To_NonFrameworkElement_Property()
+	{
+		var setups = new Func<object, Brush, FrameworkElement>[]
+		{
+			// the order of property matters here
+			(dc, brush) => new Border { DataContext = dc, Background = brush, },
+			(dc, brush) => new Border { Background = brush, DataContext = dc, },
+			(dc, brush) => new Control { DataContext = dc, Foreground = brush, },
+			(dc, brush) => new Control { Foreground = brush, DataContext = dc, },
+		};
+		foreach (var setup in setups)
+		{
+			var brush = new SolidColorBrush(Colors.SkyBlue);
+			var dc = new { Data = "Context" };
+
+#if DEBUG
+			using var disp = brush.RegisterDisposablePropertyChangedCallback(
+				SolidColorBrush.DataContextProperty,
+				(s, e) => { /* breakpoint here to investigate */ });
+#endif
+
+			var sut = setup(dc, brush);
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			Assert.IsNull(brush.DataContext, "DataContext should not propagate into Brush (via Control.Background)");
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_DC_Propagate_To_NonFE_Property_In_Subtree()
+	{
+		var brush = new SolidColorBrush(Colors.SkyBlue);
+		var dc = new object();
+
+#if DEBUG
+		using var disp = brush.RegisterDisposablePropertyChangedCallback(
+			SolidColorBrush.DataContextProperty,
+			(s, e) => { /* breakpoint here to investigate */ });
+#endif
+
+		var sut = new Control { Foreground = brush, };
+		var host = new Border { DataContext = dc, Child = sut, };
+
+		await UITestHelper.Load(host, x => x.IsLoaded);
+
+		Assert.IsNull(brush.DataContext, "DataContext should not propagate into Brush (via Control.Foreground)");
+	}
+#endif
 }

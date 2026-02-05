@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -986,6 +987,13 @@ namespace Uno.UI
 #else
 				global::System.Diagnostics.Debugger.IsAttached;
 #endif
+
+			/// <summary>
+			/// When true (default), DataContext propagates to all properties where the type implements IDependencyObjectStoreProvider.
+			/// When false, restricts DataContext propagation to FrameworkElement instances only.
+			/// </summary>
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public static bool LegacyDataContextPropagation { get; set; } = true;
 		}
 
 		/// <summary>
