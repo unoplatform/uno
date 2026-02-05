@@ -75,6 +75,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnSelectionChanged();
 
+		/// <summary>
+		/// Called from OnPointerReleased to handle SelectionFlyout visibility updates.
+		/// Implemented in TextBlock.skia.cs.
+		/// </summary>
+		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e);
+
 #if !UNO_REFERENCE_API
 		public TextBlock()
 		{
@@ -1018,6 +1024,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if !__WASM__
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/text/common/TextSelectionManager.cpp
+			// Queue SelectionFlyout visibility update after pointer release (for touch/pen input)
+			that.OnPointerReleasedForSelectionFlyout(e);
+
 			e.Handled |= that.IsTextSelectionEnabled;
 #endif
 		};
