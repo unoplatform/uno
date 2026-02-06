@@ -11,6 +11,34 @@ Uno Platform provides two [MCPs](https://modelcontextprotocol.io/docs/getting-st
 
 This document explains how to interact with both those MCPs. You can find further below descriptions of the provided tools and prompts.
 
+## Where to Use MCPs
+
+The Uno Platform MCPs can be used in different environments:
+
+### Remote MCP (Documentation & Guidance)
+
+The Uno Platform Remote MCP is available in:
+
+- **GitHub Copilot Coding Agent** - [Setup guide](xref:Uno.GetStarted.AI.CopilotCodingAgent)
+- **GitHub Copilot CLI** - [Setup guide](xref:Uno.GetStarted.AI.CopilotCLI)
+- **VS Code Copilot** - [Setup guide](xref:Uno.GetStarted.vscode)
+- **Claude Desktop** - [Setup guide](xref:Uno.GetStarted.AI.Claude)
+- **Codex** - [Setup guide](xref:Uno.GetStarted.AI.Codex)
+- **Cursor** - [Setup guide](xref:Uno.GetStarted.AI.Cursor)
+
+### Local App MCP (Interactive Testing)
+
+The Uno Platform App MCP is available for local development in:
+
+- **GitHub Copilot CLI** - [Setup guide](xref:Uno.GetStarted.AI.CopilotCLI)
+- **VS Code Copilot** - [Setup guide](xref:Uno.GetStarted.vscode)
+- **Claude Desktop** - [Setup guide](xref:Uno.GetStarted.AI.Claude)
+- **Codex** - [Setup guide](xref:Uno.GetStarted.AI.Codex)
+- **Cursor** - [Setup guide](xref:Uno.GetStarted.AI.Cursor)
+
+> [!NOTE]
+> The App MCP is **not available** for the GitHub Copilot Coding Agent as it requires a locally running application.
+
 ## MCP (Remote)
 
 This is a remotely hosted publicly and provides:
@@ -75,3 +103,9 @@ The Pro license App MCP app tools are:
 ## Troubleshooting MCP Servers
 
 You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.
+
+## See Also
+
+- [Get Started with GitHub Copilot Coding Agent](xref:Uno.GetStarted.AI.CopilotCodingAgent) - Using MCPs with GitHub Copilot on GitHub.com
+- [Get Started with GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI) - Using MCPs with GitHub Copilot CLI
+- [Building Your App with AI Agents](xref:Uno.BuildYourApp.AI.Agents) - General AI agent development guide
