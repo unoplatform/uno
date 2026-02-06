@@ -67,14 +67,13 @@ namespace Microsoft.UI.Xaml
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
 		{
-			if (child is IDependencyObjectStoreProvider)
-			{
-				return true;
-			}
-
-			// The property value may be an enumerable of providers
-			var isValidEnumerable = child is not string;
-			return isValidEnumerable && child is IEnumerable;
+			// only FrameworkElement can have DataContext inheritance, and collection of FE too.
+			// while we do source-generate .DataContext for all DependencyObject, this is not correct for WinUI.
+			// for binding on non-FE DO, eg: Setter or RowDefinition, we would use bindings that don't rely on data-context,
+			// such as TemplateBinding(via TemplatedParent) or x:Bind(via the top-level xaml element, typically Page/UserControl).
+			return child
+				is FrameworkElement
+				or IEnumerable<FrameworkElement>;
 		}
 
 		private void ApplyChildrenBindable(object? inheritedValue)
