@@ -172,20 +172,19 @@ foreach ($repo in $repos) {
         $latestHash = $commitInfo.sha
         Write-Host "  Latest commit on '$targetBranch': $latestHash" -ForegroundColor Gray
 
-        # Update the hash in the script using regex
-        # Match pattern: "repo-name" = @{ ref="<hash>" } [; dest=...] [anything-after]
-        # We intentionally ignore any existing comment and always replace it with
-        #   #latest $branchDescription commit
+        # Update only the hash value while preserving existing spacing, comments, and other keys.
         $escapedRepo = [regex]::Escape($repo)
         # The hash pattern matches either:
         #   - 7 to 40 lowercase hex chars (abbreviated/full SHA-1, as supported by Git)
         #   - exactly 64 lowercase hex chars (full SHA-256, as GitHub is transitioning to SHA-256)
         # This ensures forward compatibility while avoiding accidental matches of partial hashes.
-        $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"(?:[a-f0-9]{7,40}|[a-f0-9]{64})`"\s*\}(\s*;\s*[^#]*)?.*"
-        $comment = "latest $branchDescription commit"
-        $replacement = "`"$repo`" = @{ ref=`"$latestHash`" }${1} #$comment"
+        $hashPattern = "(?:[a-f0-9]{7,40}|[a-f0-9]{64})"
+        $pattern = "(`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`" )$hashPattern(`")"
 
-        $newContent = $content -replace $pattern, $replacement
+        $newContent = [regex]::Replace($content, $pattern, {
+                param($match)
+                $match.Groups[1].Value + $latestHash + $match.Groups[2].Value
+            })
 
         if ($newContent -ne $content) {
             $content = $newContent
