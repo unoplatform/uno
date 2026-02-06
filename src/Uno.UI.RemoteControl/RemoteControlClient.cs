@@ -25,11 +25,12 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
-	// Overridden connection to server
-	private static IFrameTransport? _connectionTransportOverride;
+	// Legacy override for the default singleton client.
+	private static IFrameTransport? _defaultConnectionTransportOverride;
 
 	private readonly string? _additionalServerProcessorsDiscoveryPath;
 	private readonly bool _autoRegisterAppIdentity;
+	private readonly IFrameTransport? _connectionTransportOverride;
 
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
 
@@ -106,7 +107,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// environment variables or assembly attributes emitted at build time by the IDE integration.
 	/// </remarks>
 	public static RemoteControlClient Initialize(Type appType)
-		=> Instance = new RemoteControlClient(appType);
+		=> CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient, connectionTransportOverride: null);
 
 	/// <summary>
 	/// Initializes the remote control client with explicit server endpoints.
@@ -121,7 +122,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </remarks>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	internal static RemoteControlClient Initialize(Type appType, ServerEndpointAttribute[]? endpoints)
-		=> Instance = new RemoteControlClient(appType, endpoints);
+		=> CreateClient(appType, endpoints, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient, connectionTransportOverride: null);
 
 	/// <summary>
 	/// Initializes the remote control client with explicit server endpoints and an additional processors discovery path.
@@ -141,7 +142,57 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		ServerEndpointAttribute[]? endpoints,
 		string? additionalServerProcessorsDiscoveryPath,
 		bool autoRegisterAppIdentity = true)
-		=> Instance = new RemoteControlClient(appType, endpoints, additionalServerProcessorsDiscoveryPath, autoRegisterAppIdentity);
+		=> CreateClient(
+			appType,
+			endpoints,
+			additionalServerProcessorsDiscoveryPath,
+			RemoteControlClientOptions.DefaultClient with { AutoRegisterAppIdentity = autoRegisterAppIdentity },
+			connectionTransportOverride: null);
+
+	/// <summary>
+	/// Creates an additional remote control client independent from <see cref="Instance"/>.
+	/// </summary>
+	/// <param name="appType">The type of the application entry point.</param>
+	/// <param name="transport">The pre-connected transport to use for this client.</param>
+	/// <param name="options">Additional client options. Defaults to <see cref="RemoteControlClientOptions.AdditionalClient"/>.</param>
+	/// <returns>The initialized additional client instance.</returns>
+	public static RemoteControlClient CreateAdditional(Type appType, IFrameTransport transport, RemoteControlClientOptions? options = null)
+	{
+		if (transport is null)
+		{
+			throw new ArgumentNullException(nameof(transport));
+		}
+
+		var effectiveOptions = options ?? RemoteControlClientOptions.AdditionalClient;
+		if (effectiveOptions.SetAsDefaultInstance)
+		{
+			throw new ArgumentException("Additional client options must not set SetAsDefaultInstance=true.", nameof(options));
+		}
+
+		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, effectiveOptions, connectionTransportOverride: transport);
+	}
+
+	private static RemoteControlClient CreateClient(
+		Type appType,
+		ServerEndpointAttribute[]? endpoints,
+		string? additionalServerProcessorsDiscoveryPath,
+		RemoteControlClientOptions options,
+		IFrameTransport? connectionTransportOverride)
+	{
+		var client = new RemoteControlClient(
+			appType,
+			endpoints,
+			additionalServerProcessorsDiscoveryPath,
+			options,
+			connectionTransportOverride);
+
+		if (options.SetAsDefaultInstance)
+		{
+			Instance = client;
+		}
+
+		return client;
+	}
 
 	public event RemoteControlFrameReceivedEventHandler? FrameReceived;
 	public event RemoteControlClientEventEventHandler? ClientEvent;
@@ -161,7 +212,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </remarks>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void OverrideConnectionTransportWhenClientAvailable(IFrameTransport transport)
-		=> _connectionTransportOverride = transport;
+		=> _defaultConnectionTransportOverride = transport;
 
 	/// <summary>
 	/// Gets the minimum interval between re-connection attempts.
@@ -229,13 +280,18 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private RemoteControlClient(Type appType,
 		ServerEndpointAttribute[]? endpoints = null,
 		string? additionalServerProcessorsDiscoveryPath = null,
-		bool autoRegisterAppIdentity = true)
+		RemoteControlClientOptions? options = null,
+		IFrameTransport? connectionTransportOverride = null)
 	{
+		var effectiveOptions = options ?? RemoteControlClientOptions.DefaultClient;
+
 		AppType = appType;
 		_additionalServerProcessorsDiscoveryPath = additionalServerProcessorsDiscoveryPath;
-		_autoRegisterAppIdentity = autoRegisterAppIdentity;
+		_autoRegisterAppIdentity = effectiveOptions.AutoRegisterAppIdentity;
+		_connectionTransportOverride = connectionTransportOverride
+			?? (effectiveOptions.SetAsDefaultInstance ? _defaultConnectionTransportOverride : null);
 
-		_status = new StatusSink(this);
+		_status = new StatusSink(this, effectiveOptions.RegisterDiagnosticView);
 		var error = default(ConnectionError?);
 
 		// Environment variables are the first priority as they are used by runtime tests engine to test hot-reload.
@@ -310,10 +366,13 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				.ToArray();
 		}
 
-		// Enable hot-reload
-		// Note: We register the HR processor even if we _serverAddresses is empty. This is to make sure to create the HR indicator.
-		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
-		_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+		if (effectiveOptions.EnableHotReloadProcessor)
+		{
+			// Enable hot-reload
+			// Note: We register the HR processor even if we _serverAddresses is empty. This is to make sure to create the HR indicator.
+			RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
+			_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+		}
 
 		if (_connectionTransportOverride is not null)
 		{
