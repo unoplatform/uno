@@ -99,12 +99,39 @@ Consider the following XAML which is using the Windows Community Toolkit's [Blur
 </Page>
 ```
 
+#### Example 3
+
+Using the `desktop` prefix to target only desktop Skia applications (Windows, macOS, Linux):
+
+```xml
+<Page x:Class="HelloWorld.MainPage"
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   xmlns:desktop="http://uno.ui/desktop"
+   xmlns:not_desktop="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   mc:Ignorable="d desktop">
+
+ <StackPanel>
+  <TextBlock desktop:Text="This is shown only on desktop (Windows/macOS/Linux with Skia)"
+       not_desktop:Text="This is shown on all other platforms" />
+  <desktop:TextBlock Text="This element only exists on desktop platforms" />
+ </StackPanel>
+</Page>
+```
+
+Note that on desktop targets, both `desktop` and `skia` prefixes will match. Use `desktop` when you need desktop-specific behavior, and `skia` when you want to target all Skia-based platforms (including desktop, AndroidSkia, iOSSkia, and WasmSkia).
+
 ### Available prefixes
 
 The pre-defined prefixes are listed below:
 
 > [!NOTE]
-> Skia in the context of this table refers to all Skia targets, including when Android, iOS, or Wasm are running with Skia rendering.
+> Desktop in the context of this table refers to the `net9.0-desktop` or `net10.0-desktop` target framework, which is used for Skia-based desktop applications (Windows, macOS, Linux). When using the desktop target, both `desktop` and `skia` prefixes will match.
+>
+> [!NOTE]
+> The `skia` prefix matches all Skia rendering targets, including desktop and when Android, iOS, or Wasm are running with Skia rendering. Use `desktop` for desktop-specific XAML, or use the more specific prefixes (`androidskia`, `iosskia`, `wasmskia`) for platform-specific Skia behavior.
 >
 > [!NOTE]
 > Unless explicitly stated, Android, iOS, and web in the context of this table refer to all rendering modes for those platforms (both native and Skia where applicable).
@@ -114,21 +141,23 @@ The pre-defined prefixes are listed below:
 
 | Prefix            | Included platforms                             | Excluded platforms                   | Namespace                                                   | Put in `mc:Ignorable`? |
 |-------------------|------------------------------------------------|--------------------------------------|-------------------------------------------------------------|------------------------|
-| `win`             | WinUI                                          | Android, iOS, web, macOS, Skia       | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_win`         | Android, iOS, web, macOS, Skia                 | WinUI                                | `http://uno.ui/not_win`                                     | yes                    |
-| `android`         | Android                                        | WinUI, iOS, web, macOS, Skia         | `http://uno.ui/android`                                     | yes                    |
-| `ios`             | iOS                                            | WinUI, Android, web, macOS, Skia     | `http://uno.ui/ios`                                         | yes                    |
-| `wasm`            | All WebAssembly (native and Skia)              | WinUI, Android, iOS, macOS           | `http://uno.ui/wasm`                                        | yes                    |
-| `macos`           | macOS                                          | WinUI, Android, iOS, web, Skia       | `http://uno.ui/macos`                                       | yes                    |
-| `skia`            | Skia (all Skia platforms)                      | WinUI, Android (without Skia), iOS (without Skia), WebAssembly (DOM only), macOS | `http://uno.ui/skia`                                        | yes                    |
+| `win`             | WinUI                                          | Android, iOS, web, macOS, desktop, Skia       | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_win`         | Android, iOS, web, macOS, desktop, Skia                 | WinUI                                | `http://uno.ui/not_win`                                     | yes                    |
+| `android`         | Android                                        | WinUI, iOS, web, macOS, desktop, Skia         | `http://uno.ui/android`                                     | yes                    |
+| `ios`             | iOS                                            | WinUI, Android, web, macOS, desktop, Skia     | `http://uno.ui/ios`                                         | yes                    |
+| `wasm`            | web                                            | WinUI, Android, iOS, macOS, desktop, Skia     | `http://uno.ui/wasm`                                        | yes                    |
+| `macos`           | macOS                                          | WinUI, Android, iOS, web, desktop, Skia       | `http://uno.ui/macos`                                       | yes                    |
+| `desktop`         | desktop                                        | WinUI, Android, iOS, web, macOS      | `http://uno.ui/desktop`                                     | yes                    |
+| `skia`            | desktop, Skia                                           | WinUI, Android, iOS, web, macOS      | `http://uno.ui/skia`                                        | yes                    |
 | `androidskia`     | Android running with Skia rendering            | Everything else                      | `http://uno.ui/androidskia`                                 | yes                    |
 | `iosskia`         | iOS running with Skia rendering                | Everything else                      | `http://uno.ui/iosskia`                                     | yes                    |
 | `wasmskia`        | Web running with Skia rendering                | Everything else                      | `http://uno.ui/wasmskia`                                    | yes                    |
-| `not_android`     | WinUI, iOS, web, macOS, Skia                   | Android                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_ios`         | WinUI, Android, web, macOS, Skia               | iOS                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_wasm`        | WinUI, Android, iOS, macOS, Skia (Desktop/Mobile only)       | All WebAssembly                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_macos`       | WinUI, Android, iOS, web, Skia                 | macOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_skia`        | WinUI, Android, iOS, web, macOS                | Skia                                 | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_android`     | WinUI, iOS, web, macOS, desktop, Skia                   | Android                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_ios`         | WinUI, Android, web, macOS, desktop, Skia               | iOS                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_wasm`        | WinUI, Android, iOS, macOS, desktop, Skia               | web                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_macos`       | WinUI, Android, iOS, web, desktop, Skia                 | macOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_desktop`     | WinUI, Android, iOS, web, macOS, non-desktop Skia                   | desktop                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_skia`        | WinUI, Android, iOS, web, macOS                | desktop, Skia                                 | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_androidskia` | All except Android running with Skia rendering | Android running with Skia rendering  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_iosskia`     | All except iOS running with Skia rendering     | iOS running with Skia rendering      | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_wasmskia`    | All except web running with Skia rendering     | web running with Skia rendering      | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
@@ -136,23 +165,24 @@ The pre-defined prefixes are listed below:
 More visually, platform support for the pre-defined prefixes is shown in the below table:
 
 > [!NOTE]
-> The columns below represent rendering modes, not platforms. "Web" includes both native (DOM) and Skia rendering. When WebAssembly runs with Skia rendering, both `wasm` and `skia` prefixes will be active.
-> \* Only applies when WebAssembly is running with Skia rendering
+> The "Skia" column refers to non-desktop Skia targets (androidskia, iosskia, wasmskia). The "Desktop" column refers specifically to the desktop Skia target.
 
-| Prefix        |  Windows  | Android (Native) |  iOS (Native)  |  Web (All)  | macOS | Skia (Desktop/Mobile) |
-|---------------|-----------|------------------|----------------|-------------|-------|-----------------------|
-| `win`         | ✔         | ✖                | ✖              | ✖           | ✖     | ✖                     |
-| `android`     | ✖         | ✔                | ✖              | ✖           | ✖     | ✖                     |
-| `ios`         | ✖         | ✖                | ✔              | ✖           | ✖     | ✖                     |
-| `wasm`        | ✖         | ✖                | ✖              | ✔           | ✖     | ✖                     |
-| `macos`       | ✖         | ✖                | ✖              | ✖           | ✔     | ✖                     |
-| `skia`        | ✖         | ✖                | ✖              | ✔*          | ✖     | ✔                     |
-| `not_win`     | ✖         | ✔                | ✔              | ✔           | ✔     | ✔                     |
-| `not_android` | ✔         | ✖                | ✔              | ✔           | ✔     | ✔                     |
-| `not_ios`     | ✔         | ✔                | ✖              | ✔           | ✔     | ✔                     |
-| `not_wasm`    | ✔         | ✔                | ✔              | ✖           | ✔     | ✔                     |
-| `not_macos`   | ✔         | ✔                | ✔              | ✔           | ✖     | ✔                     |
-| `not_skia`    | ✔         | ✔                | ✔              | ✔           | ✔     | ✖                     |
+| Prefix        |  Windows  | Android |  iOS  |  Web  | macOS | Desktop | Skia (non-desktop) |
+|---------------|-------|-------|-------|-------|-------|---------|-------|
+| `win`         | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ | ✖ |
+| `android`     | ✖ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
+| `ios`         | ✖ | ✖ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| `wasm`        | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ | ✖ |
+| `macos`       | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ |
+| `desktop`     | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ |
+| `skia`        | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ | ✔ |
+| `not_win`     | ✖ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `not_android` | ✔ | ✖ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `not_ios`     | ✔ | ✔ | ✖ | ✔ | ✔ | ✔ | ✔ |
+| `not_wasm`    | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ | ✔ |
+| `not_macos`   | ✔ | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ |
+| `not_desktop` | ✔ | ✔ | ✔ | ✔ | ✔ | ✖ | ✔ |
+| `not_skia`    | ✔ | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ |
 
 ### XAML prefixes in cross-targeted libraries
 
