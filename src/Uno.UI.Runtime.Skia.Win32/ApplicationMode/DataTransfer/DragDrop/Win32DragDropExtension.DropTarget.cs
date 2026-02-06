@@ -13,6 +13,9 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Security;
+using Windows.Win32.System.Com;
+using Windows.Win32.System.Com.StructuredStorage;
 using Windows.Win32.System.Ole;
 using Windows.Win32.System.SystemServices;
 using Windows.Win32.UI.Shell;
@@ -23,6 +26,7 @@ using FORMATETC = Windows.Win32.System.Com.FORMATETC;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
 using IEnumFORMATETC = Windows.Win32.System.Com.IEnumFORMATETC;
 using IStream = Windows.Win32.System.Com.IStream;
+using IStorage = Windows.Win32.System.Com.StructuredStorage.IStorage;
 using STGMEDIUM = Windows.Win32.System.Com.STGMEDIUM;
 using TYMED = Windows.Win32.System.Com.TYMED;
 
@@ -327,19 +331,13 @@ internal partial class Win32DragDropExtension
 			}
 			else
 			{
-				var parentDir = Path.GetDirectoryName(tempPath);
-				if (parentDir != null && !Directory.Exists(parentDir))
-				{
-					Directory.CreateDirectory(parentDir);
-				}
-
 				var fileContentsFormatEtc = new FORMATETC
 				{
 					cfFormat = (ushort)CFSTR_FILECONTENTS,
 					ptd = null,
 					dwAspect = (uint)DVASPECT.DVASPECT_CONTENT,
 					lindex = i, // Index of the file in the file group descriptor
-					tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL
+					tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL | (uint)TYMED.TYMED_ISTORAGE
 				};
 
 				var getFileContentResult = dataObject->GetData(fileContentsFormatEtc, out STGMEDIUM fileContentMedium);
@@ -351,26 +349,30 @@ internal partial class Win32DragDropExtension
 
 				using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
 
-				using var fileStream = File.Create(tempPath);
-
-				var success = false;
 				if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
 				{
+					using var fileStream = File.Create(tempPath);
 					ReadFromIStream(fileContentMedium.u.pstm, fileStream);
-					success = true;
+					storageItems.Add(StorageFile.GetFileFromPath(tempPath));
 				}
 				else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
 				{
-					success = ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream);
+					using var fileStream = File.Create(tempPath);
+					if (ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream))
+					{
+						storageItems.Add(StorageFile.GetFileFromPath(tempPath));
+					}
+				}
+				else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTORAGE) != 0 && fileContentMedium.u.pstg != null)
+				{
+					if (ReadFromIStorage(fileContentMedium.u.pstg, tempPath))
+					{
+						storageItems.Add(StorageFile.GetFileFromPath(tempPath));
+					}
 				}
 				else
 				{
 					this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
-				}
-
-				if (success)
-				{
-					storageItems.Add(StorageFile.GetFileFromPath(tempPath));
 				}
 			}
 		}
@@ -432,6 +434,46 @@ internal partial class Win32DragDropExtension
 			fileStream.Write(new ReadOnlySpan<byte>(currentPtr, bytesToWrite));
 			currentPtr += bytesToWrite;
 			remaining -= bytesToWrite;
+		}
+		return true;
+	}
+
+	private unsafe bool ReadFromIStorage(IStorage* pStorage, string filePath)
+	{
+		using ComScope<IStorage> destStorage = new(null);
+		using var filePathUnmanaged = new Win32Helper.NativeNulTerminatedUtf16String(filePath);
+
+		var riid = IStorage.IID_Guid;
+
+		HRESULT hr = PInvoke.StgCreateStorageEx(
+			filePathUnmanaged,
+			STGM.STGM_CREATE | STGM.STGM_WRITE | STGM.STGM_SHARE_EXCLUSIVE,
+			STGFMT.STGFMT_DOCFILE,
+			0,
+			null,
+			new PSECURITY_DESCRIPTOR(),
+			&riid,
+			destStorage
+		);
+
+		if (hr.Failed)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.StgCreateStorageEx)} failed for file path {filePath}: {Win32Helper.GetErrorMessage(hr)}");
+			return false;
+		}
+
+		hr = pStorage->CopyTo(0, null, null, destStorage);
+		if (hr.Failed)
+		{
+			this.LogError()?.Error($"{nameof(IStorage.CopyTo)} failed for file path {filePath}: {Win32Helper.GetErrorMessage(hr)}");
+			return false;
+		}
+
+		hr = destStorage.Value->Commit((uint)STGC.STGC_DEFAULT);
+		if (hr.Failed)
+		{
+			this.LogError()?.Error($"{nameof(IStorage.Commit)} failed for file path {filePath}: {Win32Helper.GetErrorMessage(hr)}");
+			return false;
 		}
 		return true;
 	}
