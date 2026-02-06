@@ -6,11 +6,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
@@ -21,6 +21,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
+using WeCantSpell.Hunspell;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -47,7 +48,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	// and not a struct because we don't want to copy the same Inline for each run.
 	private class ReadonlyInlineCopy
 	{
-		public Inline Inline { get; }
+		public Inline? Inline { get; }
 		public int StartIndex { get; }
 		public int EndIndex { get; }
 		public string Text { get; }
@@ -58,6 +59,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		public FontStretch FontStretch { get; }
 		public FontStyle FontStyle { get; }
 		public Brush Foreground { get; }
+		public bool IsEllipsis { get; }
 
 		public ReadonlyInlineCopy(Inline inline, int startIndex, FlowDirection defaultFlowDirection, bool forceDefaultFlowDirection = false)
 		{
@@ -73,6 +75,25 @@ internal readonly partial struct UnicodeText : IParsedText
 			FontStyle = inline.FontStyle;
 			StartIndex = startIndex;
 			EndIndex = startIndex + Text.Length;
+			IsEllipsis = false;
+		}
+
+		public static ReadonlyInlineCopy CreateEllipsis(BidiRun trimmedBidiRun, string trimmedText, int startIndex)
+			=> new(trimmedBidiRun, trimmedText, startIndex);
+		private ReadonlyInlineCopy(BidiRun trimmedBidiRun, string trimmedText, int startIndex)
+		{
+			Inline = null;
+			Text = trimmedText;
+			Foreground = trimmedBidiRun.inline.Foreground;
+			FlowDirection = trimmedBidiRun.rtl ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+			FontDetails = trimmedBidiRun.fontDetails;
+			FontSize = trimmedBidiRun.inline.FontSize;
+			FontWeight = trimmedBidiRun.inline.FontWeight;
+			FontStretch = trimmedBidiRun.inline.FontStretch;
+			FontStyle = trimmedBidiRun.inline.FontStyle;
+			StartIndex = startIndex;
+			EndIndex = startIndex + Text.Length;
+			IsEllipsis = true;
 		}
 	}
 
@@ -94,16 +115,48 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		public float width { get; set; } = width;
 		public LayoutedLine line { get; set; } = line;
+
+		public int CompareTo(LayoutedLineBrokenBidiRun other)
+		{
+			return inline.StartIndex + startInInline - (other.inline.StartIndex + other.startInInline);
+		}
+
+		public static bool operator <(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) < 0;
+
+		public static bool operator >(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) > 0;
+
+		public static bool operator <=(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) <= 0;
+
+		public static bool operator >=(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) >= 0;
 	}
 	// runs are always sorted LTR even in RTL text
 	// Each line must have at least one run except the very last line.
 	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
+	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new();
+	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
+
+	private static readonly Lazy<ISpellCheckingService?> _spellCheckingService = new(() =>
+	{
+		if (ApiExtensibility.CreateInstance<ISpellCheckingService>(typeof(UnicodeText), out var service))
+		{
+			return service;
+		}
+		else
+		{
+			typeof(UnicodeText).LogError()?.Error($"No implementation of {nameof(ISpellCheckingService)} was found. Spell checking will be disabled.");
+			return null;
+		}
+	});
 
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
@@ -115,6 +168,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
+	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
@@ -133,8 +187,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		FlowDirection flowDirection,
 		TextAlignment? textAlignment, // null to determine from text. This will also infer the directionality of the text from the content
 		TextWrapping textWrapping,
+		TextTrimming textTrimming,
+		bool isSpellCheckEnabled,
 		IFontCacheUpdateListener fontListener,
-		out Size desiredSize)
+		bool forMeasure,
+		out Size calculatedSize)
 	{
 		CI.Assert(maxLines >= 0);
 		_size = availableSize;
@@ -189,17 +246,17 @@ internal readonly partial struct UnicodeText : IParsedText
 		if (_inlines.Count == 0)
 		{
 			_lines = new();
-			desiredSize = new Size(0, GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, true, true).lineHeight);
+			calculatedSize = new Size(0, GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, true, true).lineHeight);
 			_textIndexToGlyph = [];
 			_inlines = [];
 			_wordBoundaries = new();
+			_corrections = null;
 			_textAlignment = textAlignment.Value;
 			_text = "";
 			return;
 		}
 
-		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
-		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth, textWrapping, fontListener);
+		var unlayoutedLines = SplitTextIntoLines(text, _rtl, _inlines, availableSize, textWrapping, maxLines, textTrimming, lineStackingStrategy, lineHeight, fontListener);
 		var lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 
 		_lines = maxLines == 0 || maxLines >= lines.Count ? lines : lines[..maxLines];
@@ -208,15 +265,25 @@ internal readonly partial struct UnicodeText : IParsedText
 		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
-		_wordBoundaries = GetWordBreakingOpportunities(text);
+		_wordBoundaries = GetWords(text);
+		if (isSpellCheckEnabled && _spellCheckingService.Value is { } spellCheckingService)
+		{
+			_corrections = spellCheckingService.SpellCheck(_wordBoundaries, text);
+		}
+		else
+		{
+			_corrections = null;
+		}
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
-		_desiredSize = desiredSize = new Size(desiredWidth, desiredHeight);
+		_desiredSize = calculatedSize = new Size(desiredWidth, desiredHeight);
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
-	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth, TextWrapping textWrapping, IFontCacheUpdateListener fontListener)
+	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(
+		string text, bool rtl, List<ReadonlyInlineCopy> inlines, Size availableSize, TextWrapping textWrapping,
+		int maxLines, TextTrimming textTrimming, LineStackingStrategy lineStackingStrategy, float lineHeight, IFontCacheUpdateListener fontListener)
 	{
 		var logicallyOrderedRuns = new List<BidiRun>();
 		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
@@ -226,10 +293,209 @@ internal readonly partial struct UnicodeText : IParsedText
 			logicallyOrderedLineBreakingOpportunities.AddRange(GetLineBreakingOpportunities(inline.Text).Select(b => (b, inline)));
 		}
 
-		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidth, logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities, rtl, textWrapping);
+		var lineBreakingOpporunities = SplitByLineBreakingOpportunities(logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities).ToList();
+		var lineBreakingIndices = lineBreakingOpporunities.Select(t => t.endIndexInLastRun + logicallyOrderedRuns[t.endRunIndex - 1].startInInline).ToList();
+
+		var lineWidthForLineBreaking = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
+		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidthForLineBreaking, logicallyOrderedRuns, lineBreakingOpporunities, rtl, textWrapping);
+
+		var lastLineNeedsEllipsis = RemoveOutOfViewLines(linesWithLogicallyOrderedRuns, maxLines, lineStackingStrategy, lineHeight, availableSize);
+		if (textTrimming is TextTrimming.WordEllipsis)
+		{
+			ApplyWholeWordsTextTrimming(text, linesWithLogicallyOrderedRuns, lineBreakingIndices, (float)availableSize.Width, rtl, lastLineNeedsEllipsis);
+		}
+		else if (textTrimming is TextTrimming.CharacterEllipsis)
+		{
+			ApplyCharacterTextTrimming(text, linesWithLogicallyOrderedRuns, (float)availableSize.Width, rtl, lastLineNeedsEllipsis);
+		}
 		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns, fontListener);
 
 		return linesWithBidiReordering;
+	}
+
+	private static void ApplyCharacterTextTrimming(string text, List<List<BidiRun>> linesWithLogicallyOrderedRuns, float availableWidth, bool rtl, bool lastLineNeedsEllipsis)
+	{
+		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
+		{
+			var line = linesWithLogicallyOrderedRuns[lineIndex];
+			if (line.Count == 0)
+			{
+				CI.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
+				return;
+			}
+
+			var lastRun = line[^1];
+			var fullLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, line.Count, lastRun.endInInline, rtl);
+
+			if (fullLineWidthWithoutTrailingSpaces <= availableWidth && !(lastLineNeedsEllipsis && lineIndex == linesWithLogicallyOrderedRuns.Count - 1))
+			{
+				continue;
+			}
+
+			var indexOfRunToTrimAt = 0;
+			(GlyphInfo info, UnoGlyphPosition position)[] ellipses = [];
+			var ellipsesWidth = 0f;
+			for (var endRunIndex = line.Count - 1; endRunIndex >= 0; endRunIndex--)
+			{
+				var testLastRun = line[endRunIndex];
+				var testEllipses = ShapeRun("\u2026", rtl, testLastRun.fontDetails, null, false);
+				var testEllipsesWidth = RunWidth(testEllipses, testLastRun.fontDetails);
+				var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, endRunIndex + 1, testLastRun.endInInline, rtl);
+				if (testLineWidthWithoutTrailingSpaces + testEllipsesWidth <= availableWidth)
+				{
+					indexOfRunToTrimAt = endRunIndex + 1;
+					break;
+				}
+				else
+				{
+					(ellipses, ellipsesWidth) = (testEllipses, testEllipsesWidth);
+				}
+			}
+
+			if (ellipses.Length == 0)
+			{
+				ellipses = ShapeRun("\u2026", rtl, lastRun.fontDetails, null, false);
+				ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
+			}
+
+			int indexAtTrim;
+			if (indexOfRunToTrimAt == line.Count)
+			{
+				indexAtTrim = lastRun.endInInline + lastRun.inline.StartIndex;
+				indexAtTrim -= TrailingCRLFCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
+				indexAtTrim -= TrailingSpaceCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
+			}
+			else
+			{
+				var runToTrimAt = line[indexOfRunToTrimAt];
+				var endIndexInTrimRun = runToTrimAt.endInInline;
+				for (; endIndexInTrimRun > 0; endIndexInTrimRun--)
+				{
+					var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, indexOfRunToTrimAt + 1, endIndexInTrimRun, rtl);
+					if (testLineWidthWithoutTrailingSpaces + ellipsesWidth <= availableWidth)
+					{
+						line[indexOfRunToTrimAt] = runToTrimAt with { endInInline = endIndexInTrimRun };
+						break;
+					}
+				}
+
+				if (endIndexInTrimRun == 0)
+				{
+					indexOfRunToTrimAt--;
+					if (indexOfRunToTrimAt >= 0)
+					{
+						runToTrimAt = line[indexOfRunToTrimAt];
+						endIndexInTrimRun = runToTrimAt.endInInline;
+					}
+				}
+
+				if (indexOfRunToTrimAt >= 0)
+				{
+					indexAtTrim = runToTrimAt.inline.StartIndex + endIndexInTrimRun;
+					indexAtTrim -= TrailingCRLFCount(text, runToTrimAt.inline.StartIndex + runToTrimAt.startInInline, indexAtTrim);
+					indexAtTrim -= TrailingSpaceCount(text, runToTrimAt.inline.StartIndex + runToTrimAt.startInInline, indexAtTrim);
+				}
+				else
+				{
+					indexAtTrim = line[0].inline.StartIndex + line[0].inline.StartIndex + 1; // at least one character
+				}
+			}
+
+			var trimEnd = lineIndex == linesWithLogicallyOrderedRuns.Count - 1 ? text.Length : lastRun.inline.StartIndex + lastRun.endInInline;
+			var trimmedText = text[indexAtTrim..trimEnd];
+			var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
+			line.RemoveRange(indexOfRunToTrimAt + 1, line.Count - (indexOfRunToTrimAt + 1));
+			line.Add(lastRun with { endInInline = indexAtTrim });
+			line.Add(new BidiRun(ellipsesRun, 0, trimmedText.Length, lastRun.rtl, lastRun.fontDetails));
+		}
+	}
+
+	private static void ApplyWholeWordsTextTrimming(string text, List<List<BidiRun>> linesWithLogicallyOrderedRuns,
+		List<int> lineBreakingOpportunities, float availableWidth, bool rtl, bool lastLineNeedsEllipsis)
+	{
+		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
+		{
+			var line = linesWithLogicallyOrderedRuns[lineIndex];
+			if (line.Count == 0)
+			{
+				CI.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
+				return;
+			}
+
+			var fullLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, line.Count, line[^1].endInInline, rtl);
+
+			if (fullLineWidthWithoutTrailingSpaces <= availableWidth && !(lastLineNeedsEllipsis && lineIndex == linesWithLogicallyOrderedRuns.Count - 1))
+			{
+				continue;
+			}
+
+			var lineBreakingOpportunityIndex = lineBreakingOpportunities.Count - 1;
+			var lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+
+			var foundTrimPoint = false;
+			for (var endRunIndex = line.Count - 1; !foundTrimPoint && endRunIndex >= 0; endRunIndex--)
+			{
+				while (lineBreakingOpportunityIndex > 0 && lineBreakingOpportunity > line[endRunIndex].endInInline + line[endRunIndex].inline.StartIndex)
+				{
+					lineBreakingOpportunityIndex--;
+					lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+				}
+
+				while (lineBreakingOpportunity > line[endRunIndex].startInInline + line[endRunIndex].inline.StartIndex)
+				{
+					lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+					var lastRun = line[endRunIndex];
+					var ellipses = ShapeRun("\u2026", rtl, lastRun.fontDetails, null, false);
+					var ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
+					var (measuringEndRunIndex, endIndexInLastRun) = (endRunIndex + 1, lineBreakingOpportunity - lastRun.inline.StartIndex);
+					var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, measuringEndRunIndex, endIndexInLastRun, rtl);
+					if (testLineWidthWithoutTrailingSpaces + ellipsesWidth <= availableWidth || lineBreakingOpportunityIndex == 0 || lineBreakingOpportunities[lineBreakingOpportunityIndex - 1] <= line[0].startInInline + line[0].inline.StartIndex)
+					{
+						var indexAtTrim = lineBreakingOpportunity;
+						indexAtTrim -= TrailingCRLFCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
+						indexAtTrim -= TrailingSpaceCount(text, lastRun.inline.StartIndex + lastRun.startInInline, indexAtTrim);
+						var trimEnd = lineIndex == linesWithLogicallyOrderedRuns.Count - 1 ? text.Length : line[^1].inline.StartIndex + line[^1].endInInline;
+						var trimmedText = text[indexAtTrim..trimEnd];
+						var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
+						line.RemoveRange(endRunIndex, line.Count - endRunIndex);
+						line.Add(lastRun with { endInInline = indexAtTrim });
+						line.Add(new BidiRun(ellipsesRun, 0, trimmedText.Length, lastRun.rtl, lastRun.fontDetails));
+						foundTrimPoint = true;
+						break;
+					}
+					else
+					{
+						lineBreakingOpportunityIndex--;
+						lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
+					}
+				}
+			}
+		}
+	}
+
+	private static bool RemoveOutOfViewLines(List<List<BidiRun>> linesWithLogicallyOrderedRuns, int maxLines, LineStackingStrategy lineStackingStrategy, float lineHeight, Size availableSize)
+	{
+		var resultingLineCount = linesWithLogicallyOrderedRuns.Count;
+		if (maxLines > 0)
+		{
+			resultingLineCount = Math.Min(resultingLineCount, maxLines);
+		}
+		var totalHeight = 0f;
+		for (var lineIndex = 0; lineIndex < resultingLineCount; lineIndex++)
+		{
+			var fontDetailsWithMaxHeight = linesWithLogicallyOrderedRuns[lineIndex].MaxBy(r => r.fontDetails.LineHeight).fontDetails;
+			var (currentLineHeight, _) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetailsWithMaxHeight, lineIndex == 0, lineIndex == resultingLineCount - 1);
+			totalHeight += currentLineHeight;
+			if (totalHeight > availableSize.Height && lineIndex > 0)
+			{
+				resultingLineCount = lineIndex;
+				break;
+			}
+		}
+
+		var linesRemoved = resultingLineCount < linesWithLogicallyOrderedRuns.Count;
+		linesWithLogicallyOrderedRuns.RemoveRange(resultingLineCount, linesWithLogicallyOrderedRuns.Count - resultingLineCount);
+		return linesRemoved;
 	}
 
 	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns, IFontCacheUpdateListener fontListener)
@@ -257,6 +523,22 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			foreach (var (inline, startInInline, endInInline) in GroupByInline(line))
 			{
+				if (inline.IsEllipsis)
+				{
+					var ellipsisRun = line[^1];
+					var ellipsisGlyphs = ShapeRun("\u2026", ellipsisRun.rtl, ellipsisRun.fontDetails, null, false);
+					var shapedEllipsisRun = new ShapedLineBrokenBidiRun(inline, ellipsisRun.startInInline, ellipsisRun.endInInline, ellipsisGlyphs, ellipsisRun.fontDetails, ellipsisRun.rtl);
+					if (rtl)
+					{
+						lineRuns.AddToFront(shapedEllipsisRun);
+					}
+					else
+					{
+						lineRuns.AddToBack(shapedEllipsisRun);
+					}
+					continue;
+				}
+
 				var sameInlineRuns = new List<ShapedLineBrokenBidiRun>();
 
 				using var _ = ICU.CreateBiDiAndSetPara(inline.Text, startInInline, endInInline, (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), out var bidi);
@@ -489,7 +771,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static List<List<BidiRun>> ApplyLineBreaking(float lineWidth, List<BidiRun> logicallyOrderedRuns,
-		List<(int indexInInline, ReadonlyInlineCopy inline)> logicallyOrderedLineBreakingOpportunities, bool rtl,
+		List<(int endRunIndex, int endIndexInLastRun)> lineBreakingOpporunities, bool rtl,
 		TextWrapping textWrapping)
 	{
 		var lines = new List<List<BidiRun>>();
@@ -497,7 +779,6 @@ internal readonly partial struct UnicodeText : IParsedText
 		(int firstRunIndex, int startingIndexInFirstRun) = (0, 0);
 		(int endRunIndex, int endIndexInLastRun)? prevInSameLine = null;
 
-		var lineBreakingOpporunities = SplitByLineBreakingOpportunities(logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities).ToList();
 		for (var lineBreakingOpportunityIndex = 0; lineBreakingOpportunityIndex < lineBreakingOpporunities.Count; lineBreakingOpportunityIndex++)
 		{
 			var lineBreakingOpporunity = lineBreakingOpporunities[lineBreakingOpportunityIndex];
@@ -603,11 +884,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		return lines;
 	}
 
-	private static unsafe IEnumerable<int> GetLineBreakingOpportunities(string text)
+	private static IEnumerable<int> GetLineBreakingOpportunities(string text)
 	{
-		var ret = new List<int>();
 		if (OperatingSystem.IsBrowser())
 		{
+			var ret = new List<int>();
 			var breaker = ICU.BrowserICUSymbols.init_line_breaker(text);
 			if (breaker == IntPtr.Zero)
 			{
@@ -635,82 +916,54 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				ret.Add(next);
 			}
+			return ret;
 		}
 		else
 		{
-			fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+			return GetBoundaries( /* Line */ 2, text);
+		}
+	}
+
+	private static unsafe List<int> GetBoundaries(int boundaryType, string text)
+	{
+		var ret = new List<int>();
+		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		{
+			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				fixed (char* textPtr = &text.GetPinnableReference())
+				var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(boundaryType, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
+				ICU.CheckErrorCode<ICU.ubrk_open>(status);
+				ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
+				while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
 				{
-					var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(/* Line */ 2, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
-					ICU.CheckErrorCode<ICU.ubrk_open>(status);
-					ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
-					while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
-					{
-						ret.Add(next);
-					}
-					ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
+					ret.Add(next);
 				}
+				ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
 			}
 		}
 		return ret;
 	}
 
-	private static List<int> GetWordBreakingOpportunities(string text)
+	private static List<int> GetWords(string text)
 	{
-		// libICU's BreakIterator does not return what we want here. It only returns what it considers proper words
-		// like sequences of latin characters, but e.g. a sequence of symbols is ignored.
-		var chunks = new List<int>();
+		var boundaries = GetBoundaries(/* Word */ 1, text);
+		var ret = new List<int> { boundaries[0] };
+		for (var index = 1; index < boundaries.Count; index++)
 		{
-			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-			// \r\n, \r, \n and \t are always their own chunks
-			var length = text.Length;
-			for (var i = 0; i < length;)
-			{
-				var start = i;
-				var c = text[i];
-				if (c is '\r' && i < (length - 1) && text[i + 1] == '\n')
-				{
-					i += 2;
-				}
-				else if (c is '\r' or '\t' or '\n')
-				{
-					i++;
-				}
-				else if (c == ' ')
-				{
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else if (char.IsLetterOrDigit(text[i]))
-				{
-					while (i < length && char.IsLetterOrDigit(text[i]))
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else
-				{
-					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
+			var boundary = boundaries[index];
 
-				chunks.Add(i);
+			if (boundary - ret[^1] == 1 && (char.IsPunctuation(text[boundary - 1]) || char.IsSymbol(text[boundary - 1])) && (char.IsPunctuation(text[ret[^1] - 1]) || char.IsSymbol(text[ret[^1] - 1])))
+			{
+				ret.RemoveAt(ret.Count - 1);
 			}
+			else if (Enumerable.Range(ret[^1], boundary - ret[^1]).All(c => text[c] == ' ') && !char.IsWhiteSpace(text[ret[^1] - 1]))
+			{
+				ret.RemoveAt(ret.Count - 1);
+			}
+			ret.Add(boundary);
 		}
-		return chunks;
+
+		return ret;
 	}
 
 	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, IFontCacheUpdateListener fontListener)
@@ -929,99 +1182,145 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	public void Draw(in Visual.PaintingSession session, (int index, CompositionBrush brush, float thickness)? caret,
-		(int selectionStart, int selectionEnd, CompositionBrush selectedTextBackgroundBrush, Brush selectedTextForegroundBrush)? selection)
+	public void Draw(in Visual.PaintingSession session,
+		(int index, CompositionBrush brush, float thickness)? caret,
+		IEnumerable<TextHighlighter> highlighters)
 	{
-		// if selection is out of range, this means that the parent TextBlock/TextBox updated the text and the
-		// selection but a new UnicodeText instance has not been created yet. In that case, skip rendering
-		// the selection this frame and wait to be called again after measuring.
-		(int selectionIndexStart, int selectionIndexEnd, Cluster selectionClusterStart, Cluster selectionClusterEnd, CompositionBrush background, Brush foreground)? selectionDetails = null;
-		if (selection is { } s && s.selectionStart != s.selectionEnd && s.selectionStart <= _text.Length && s.selectionEnd <= _text.Length && _text.Length > 0)
+		var wholeTextSlicer = new RangeSlicer<(Cluster selectionClusterStart, Cluster? selectionClusterEnd, CompositionBrush? background, Brush foreground)>(0, _text.Length);
+		foreach (var highlighter in highlighters)
 		{
-			selectionDetails = (s.selectionStart, s.selectionEnd, _textIndexToGlyph[s.selectionStart], _textIndexToGlyph[Math.Min(_textIndexToGlyph.Length - 1, s.selectionEnd)], s.selectedTextBackgroundBrush, s.selectedTextForegroundBrush);
+			foreach (var range in highlighter.Ranges)
+			{
+				if (range.Length != 0 && range.StartIndex < _text.Length && _text.Length > 0)
+				{
+					var selectionClusterStart = _textIndexToGlyph[range.StartIndex];
+					var selectionClusterEnd = range.StartIndex + range.Length < _text.Length ? _textIndexToGlyph[range.StartIndex + range.Length] : null;
+					wholeTextSlicer.Mark(
+						selectionClusterStart.sourceTextStart,
+						selectionClusterEnd?.sourceTextStart ?? _text.Length,
+						(selectionClusterStart,
+							selectionClusterEnd,
+							highlighter.Background?.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+							highlighter.Foreground ?? _blackBrush));
+				}
+			}
 		}
+
+		using var textBlobBuilder = new SKTextBlobBuilder();
 
 		for (var index = 0; index < _lines.Count; index++)
 		{
+			List<(SKFont skFont, SKTextBlobBuilder blobBuilder, float x, float y, ushort[] glyphs, SKPoint[] positions, Range glyphsAndPositionsRange, Brush brush)> drawCommands = new();
+			List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
+
 			var line = _lines[index];
 			var currentLineX = line.xAlignmentOffset;
 			foreach (var run in line.runs)
 			{
-				// Ideally, we would want to get the path of the glyphs and then draw them using CompositionBrush.Paint, but this
-				// does not work for Emojis which don't have a path and instead must be drawn directly with SKCanvas.DrawText
-				// var path = new SKPath();
-				// for (var i = 0; i < run.glyphs.Length; i++)
-				// {
-				// 	var glyph = run.glyphs[i];
-				// 	var p = run.fontDetails.SKFont.GetGlyphPath((ushort)glyph.info.Codepoint);
-				// 	p.Transform(SKMatrix.CreateTranslation(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY), p);
-				// 	path.AddPath(p);
-				// }
-				// path.Transform(SKMatrix.CreateTranslation(currentLineX, line.y + line.baselineOffset), path);
-				//
-				// session.Canvas.Save();
-				// session.Canvas.ClipPath(path, antialias: true);
-				// run.inline.Foreground.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()).Paint(session.Canvas, session.Opacity, path.Bounds);
-				// session.Canvas.Restore();
-
-				using (var textBlobBuilder = new SKTextBlobBuilder())
+				var glyphs = new ushort[run.glyphs.Length];
+				var positions = new SKPoint[run.glyphs.Length];
+				for (var i = 0; i < run.glyphs.Length; i++)
 				{
-					var glyphs = new ushort[run.glyphs.Length];
-					var positions = new SKPoint[run.glyphs.Length];
-					for (var i = 0; i < run.glyphs.Length; i++)
+					var glyph = run.glyphs[i];
+					glyphs[i] = (ushort)glyph.info.Codepoint;
+					positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.GlyphPosition.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.GlyphPosition.YOffset * run.fontDetails.TextScale.textScaleY);
+				}
+
+				var runSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, run.glyphs.Length);
+				foreach (var highlighter in wholeTextSlicer.GetSegments())
+				{
+					if (highlighter.HasValue)
 					{
-						var glyph = run.glyphs[i];
-						glyphs[i] = (ushort)glyph.info.Codepoint;
-						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.GlyphPosition.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.GlyphPosition.YOffset * run.fontDetails.TextScale.textScaleY);
+						var (selectionLeft, selectionRight) = ClusterRangeToRunGlyphRange(run, highlighter.Value.selectionClusterStart, highlighter.Value.selectionClusterEnd);
+						runSlicer.Mark(selectionLeft, selectionRight, (highlighter.Value.background, highlighter.Value.foreground));
 					}
+				}
 
-					void DrawText(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<SKPoint> positions, Visual.PaintingSession session, Brush brush)
+				foreach (var slice in runSlicer.GetSegments())
+				{
+					var leftX = positions[slice.Start].X;
+					var rightX = positions[slice.End - 1].X + GlyphWidth(run.glyphs[slice.End - 1].position, run.fontDetails);
+					var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
+					var (background, foreground) = slice.HasValue ? slice.Value : (null, run.inline.Foreground);
+					background?.Paint(session.Canvas, session.Opacity, selectionRect);
+					drawCommands.Add((run.fontDetails.SKFont, textBlobBuilder, currentLineX, line.baselineOffset, glyphs, positions, new Range((int)slice.Start, (int)slice.End), foreground));
+				}
+
+				var runStartIndex = run.startInInline + run.inline.StartIndex;
+				var runEndIndex = run.endInInline + run.inline.StartIndex;
+
+				if (_corrections is not null)
+				{
+					var correctionIndex = _wordBoundaries.BinarySearch(0, _corrections.Count, runStartIndex, null);
+					if (correctionIndex < 0)
 					{
-						textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
-						var blob1 = textBlobBuilder.Build(); // Build resets the blob builder
-						var paint = SetupPaint(brush, session.Opacity);
-						session.Canvas.DrawText(blob1, currentLineX, line.baselineOffset, paint);
-					}
-
-					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && (selection!.Value.selectionEnd == _text.Length || run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart)))
-					{
-						int selectionLeft;
-						int selectionRight; // the selection ends to the left of positions[selectionRight].X
-						if (run.rtl)
-						{
-							selectionLeft = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? sd.selectionClusterEnd.glyphInRunIndexEnd : 0;
-							selectionRight = sd.selectionClusterStart.layoutedRun == run ? sd.selectionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
-						}
-						else
-						{
-							selectionLeft = sd.selectionClusterStart.layoutedRun == run ? sd.selectionClusterStart.glyphInRunIndexStart : 0;
-							selectionRight = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? sd.selectionClusterEnd.glyphInRunIndexStart : run.glyphs.Length;
-						}
-
-						var leftX = positions[selectionLeft].X;
-						var rightX = positions[selectionRight - 1].X + GlyphWidth(run.glyphs[selectionRight - 1].position, run.fontDetails);
-						var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
-						sd.background.Paint(session.Canvas, session.Opacity, selectionRect);
-
-						var glyphsSpan = glyphs.AsSpan();
-						var positionsSpan = positions.AsSpan();
-						if (selectionLeft > 0)
-						{
-							DrawText(glyphsSpan[..selectionLeft], positionsSpan[..selectionLeft], session, run.inline.Foreground);
-						}
-						DrawText(glyphsSpan[selectionLeft..selectionRight], positionsSpan[selectionLeft..selectionRight], session, sd.foreground);
-						if (selectionRight < run.glyphs.Length)
-						{
-							DrawText(glyphsSpan[selectionRight..], positionsSpan[selectionRight..], session, run.inline.Foreground);
-						}
+						correctionIndex = ~correctionIndex;
 					}
 					else
 					{
-						DrawText(glyphs, positions, session, run.inline.Foreground);
+						correctionIndex++;
 					}
 
-					currentLineX += run.width;
+					while (correctionIndex < _corrections.Count && (correctionIndex == 0 ? 0 : _wordBoundaries[correctionIndex - 1]) is var wordStart && wordStart < runEndIndex)
+					{
+						var correction = _corrections[correctionIndex];
+
+						if (correction is not null)
+						{
+							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
+							var correctionClusterEnd = wordStart + correction.Value.correctionEnd < runEndIndex ? _textIndexToGlyph[wordStart + correction.Value.correctionEnd] : null;
+							var (correctionLeft, correctionRight) = ClusterRangeToRunGlyphRange(run, correctionClusterStart, correctionClusterEnd);
+
+							if (correctionLeft < correctionRight)
+							{
+								var leftX = positions[correctionLeft].X;
+								var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
+
+								var fontSize = (float)run.inline.FontSize;
+								var scale = fontSize / 12.0f;
+								var step = 4 * scale;
+								var amplitude = 2 * scale;
+								var yOffset = 2 * scale;
+
+								var p = new SKPath();
+								var y = line.y + line.baselineOffset + yOffset;
+								var width = rightX - leftX;
+
+								p.MoveTo(currentLineX + leftX, y);
+
+								var cycles = (int)(width / step);
+								for (var i = 0; i < cycles; i++)
+								{
+									p.RQuadTo(step / 2, amplitude * 2, step, 0);
+								}
+
+								spellCheckUnderlines.Add((p, scale));
+							}
+						}
+
+						correctionIndex++;
+					}
 				}
+
+				currentLineX += run.width;
+			}
+
+			foreach (var drawCommand in drawCommands)
+			{
+				DrawText(drawCommand.skFont,
+					drawCommand.blobBuilder,
+					drawCommand.x,
+					drawCommand.y,
+					drawCommand.glyphs.AsSpan(drawCommand.glyphsAndPositionsRange),
+					drawCommand.positions.AsSpan(drawCommand.glyphsAndPositionsRange),
+					session,
+					drawCommand.brush);
+			}
+
+			foreach (var (path, strokeThickness) in spellCheckUnderlines)
+			{
+				_spareSpellCheckPaint.StrokeWidth = strokeThickness;
+				session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 			}
 		}
 
@@ -1032,6 +1331,56 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			c.brush.Paint(session.Canvas, session.Opacity, GetCaretRectForIndex(c.index, c.thickness).ToSKRect());
 		}
+	}
+
+	private static void DrawText(SKFont skFont, SKTextBlobBuilder blobBuilder, float x, float y, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<SKPoint> positions, Visual.PaintingSession session, Brush brush)
+	{
+		// Ideally, we would want to get the path of the glyphs and then draw them using CompositionBrush.Paint, but this
+		// does not work for Emojis which don't have a path and instead must be drawn directly with SKCanvas.DrawText
+		blobBuilder.AddPositionedRun(glyphs, skFont, positions);
+		var blob1 = blobBuilder.Build(); // Build resets the blob builder
+		var paint = SetupPaint(brush, session.Opacity);
+		session.Canvas.DrawText(blob1, x, y, paint);
+	}
+
+	// The range ends to the left of positions[rangeRight].X. If the range should go to the end, rangeRight == positions.Length
+	private static (int rangeLeft, int rangeRight) ClusterRangeToRunGlyphRange(LayoutedLineBrokenBidiRun run, Cluster selectionClusterStart, Cluster? selectionClusterEnd)
+	{
+		int selectionLeft;
+		int selectionRight;
+
+		if (run.rtl)
+		{
+			selectionLeft = selectionClusterEnd?.layoutedRun == run
+				? selectionClusterEnd.glyphInRunIndexEnd
+				: selectionClusterEnd is not null && selectionClusterEnd.layoutedRun < run
+					? run.glyphs.Length
+					: 0;
+			selectionRight = selectionClusterStart.layoutedRun == run
+				? selectionClusterStart.glyphInRunIndexStart + 1
+				: selectionClusterStart.layoutedRun < run
+					? run.glyphs.Length
+					: 0;
+		}
+		else
+		{
+			selectionLeft = selectionClusterStart.layoutedRun == run
+				? selectionClusterStart.glyphInRunIndexStart
+				: selectionClusterStart.layoutedRun < run
+					? 0
+					: run.glyphs.Length;
+			selectionRight = selectionClusterEnd?.layoutedRun == run
+				? selectionClusterEnd.glyphInRunIndexStart
+				: selectionClusterEnd is not null && selectionClusterEnd.layoutedRun < run
+					? 0
+					: run.glyphs.Length;
+		}
+
+		if (selectionRight < selectionLeft)
+		{
+			selectionRight = selectionLeft;
+		}
+		return (selectionLeft, selectionRight);
 	}
 
 	private static SKPaint SetupPaint(Brush foreground, float opacity)
@@ -1212,7 +1561,6 @@ internal readonly partial struct UnicodeText : IParsedText
 				CI.Assert(line == _lines[^1]);
 				return extendedSelection ? (0, _lines[^2].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)) : (-1, null);
 			}
-
 			{
 				if (line.runs[0] is var firstRun && firstRun.xPosInLine + firstRun.line.xAlignmentOffset > p.X)
 				{
@@ -1429,6 +1777,18 @@ internal readonly partial struct UnicodeText : IParsedText
 		else
 		{
 			throw new ArgumentOutOfRangeException(nameof(lineStackingStrategy));
+		}
+	}
+
+	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions)? GetSpellCheckSuggestions(int correctionStart, int correctionEnd)
+	{
+		if (_spellCheckingService.Value is { } spellCheckingService)
+		{
+			return spellCheckingService.GetSpellCheckSuggestions(_text, _wordBoundaries, correctionStart, correctionEnd);
+		}
+		else
+		{
+			return null;
 		}
 	}
 }
