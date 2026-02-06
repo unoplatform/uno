@@ -65,7 +65,7 @@ public class SpellCheckingService : ISpellCheckingService
 		var assembly = Assembly.GetAssembly(typeof(SpellCheckingService))!;
 		var enAff = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.aff"));
 		var enDic = assembly.GetManifestResourceNames().First(r => r.Contains("en_US.dic"));
-		wordLists.Add(WordList.CreateFromStreams(assembly.GetManifestResourceStream(enDic), assembly.GetManifestResourceStream(enAff)));
+		wordLists.Add(WordList.CreateFromStreams(assembly.GetManifestResourceStream(enDic)!, assembly.GetManifestResourceStream(enAff)!));
 
 		if (FeatureConfiguration.TextBox.CustomSpellCheckDictionaries is { } dictionaries)
 		{

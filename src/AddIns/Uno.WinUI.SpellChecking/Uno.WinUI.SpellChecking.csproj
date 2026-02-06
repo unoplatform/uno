@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<LangVersion>14.0</LangVersion>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 	
@@ -18,10 +19,13 @@
 	
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
+		<DefineConstants>$(DefineConstants);HAS_SEARCHVALUES;HAS_THROWNULL;HAS_THROWOOR;HAS_SPANCULTUREPARSE_INT;HAS_FROZENDICTIONARY</DefineConstants>
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="WeCantSpell.Hunspell" Version="3.0.1" />
+		<!--	Until https://github.com/dotnet/runtime/issues/123833 is resolved, we include the source files directly
+			instead of reference the package to be able to patch it, see EncodingEx.cs -->
+		<!--		<PackageReference Include="WeCantSpell.Hunspell" Version="3.0.1" />-->
 
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
