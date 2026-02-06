@@ -8,8 +8,8 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
 
 > [!WARNING]
 > Antigravity is currently a preview feature.
->  
-> If changes (SDKs, templates, tools, MCP) are not detected immediately, restarting the Antigravity agent, reopening the workspace, or re-running setup usually resolves the issue.
+>
+> If changes (SDKs, templates, tools, MCPs) are not detected immediately, restarting the Antigravity agent, reopening the workspace, or re-running setup usually resolves the issue.
 
 ## Check your environment
 
