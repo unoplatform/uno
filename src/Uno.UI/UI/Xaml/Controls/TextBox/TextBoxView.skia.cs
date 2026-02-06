@@ -34,6 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
 				OwningTextBox = textBox,
+				IsSpellCheckEnabled = textBox.IsSpellCheckEnabled
 			};
 
 			SetFlowDirection();

@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="HarfBuzzSharp" />
+		<PackageReference Include="WeCantSpell.Hunspell" Version="3.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -51,7 +52,7 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
+		<EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
 	</ItemGroup>
 
 	<ItemGroup>
