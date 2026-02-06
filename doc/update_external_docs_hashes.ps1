@@ -179,7 +179,7 @@ foreach ($repo in $repos) {
         #   - exactly 64 lowercase hex chars (full SHA-256, as GitHub is transitioning to SHA-256)
         # This ensures forward compatibility while avoiding accidental matches of partial hashes.
         $hashPattern = "(?:[a-f0-9]{7,40}|[a-f0-9]{64})"
-        $pattern = "(`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`" )$hashPattern(`")"
+        $pattern = "(`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"\s*)$hashPattern(`")"
 
         $newContent = [regex]::Replace($content, $pattern, {
                 param($match)
