@@ -14,6 +14,7 @@ using static Private.Infrastructure.TestServices;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation.TestPages;
 using Private.Infrastructure;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 
@@ -75,7 +76,7 @@ public class Given_DoubleAnimationUsingKeyFrames
 		await WindowHelper.WaitForIdle();
 
 		var control = page.TestControl;
-		var border = control.GetTemplateChild("AnimatedBorder") as Border;
+		var border = control.FindVisualChildByName("AnimatedBorder") as Border;
 		Assert.IsNotNull(border, "AnimatedBorder should exist in the template");
 
 		// Verify initial state
