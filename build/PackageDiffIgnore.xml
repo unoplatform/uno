@@ -2141,6 +2141,22 @@
 		  <Member fullName="Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
 		  <Member fullName="Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
 	  </Types>
+    
+    <Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN DiagnosticsOverlay -->
+			<Member fullName="Windows.Foundation.Rect Uno.Diagnostics.UI.DiagnosticsOverlay.GetSafeArea()" reason="Should not have been public" />
+			<Member fullName="Windows.Foundation.Point Uno.Diagnostics.UI.DiagnosticsOverlay.GetAbsoluteLocation()" reason="Should not have been public" />
+			<!-- END DiagnosticsOverlay -->
+		</Methods>
 	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
