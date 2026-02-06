@@ -1338,7 +1338,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			var bounds = SUT.GetAbsoluteBounds();
-			// Double click within Hello. We should only find Hello selected without "_" or "world"
+			// Double click within Hello. We should only find Hello_world
 			mouse.MoveTo(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
 			await WindowHelper.WaitForIdle();
 
@@ -1352,17 +1352,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
 			// compare vertical slices to see if they have highlighted text in them or not
-			for (var i = 0; i < 5; i++)
+			for (var i = 0; i < 10; i++)
 			{
 				ImageAssert.HasColorInRectangle(
-					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
-					SUT.SelectionHighlightColor.Color);
-			}
-			// skip 5 for relaxed tolerance
-			for (var i = 6; i < 10; i++)
-			{
-				ImageAssert.DoesNotHaveColorInRectangle(
 					bitmap,
 					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
