@@ -1,0 +1,53 @@
+<Page x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation.TestPages.KeyFrameAnimationTemplatePage"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d">
+
+	<Page.Resources>
+		<x:Double x:Key="TargetOpacity">0.5</x:Double>
+		<Color x:Key="TargetColor">Green</Color>
+
+		<!-- A control whose template contains DoubleAnimationUsingKeyFrames and ColorAnimationUsingKeyFrames
+			 with keyframe values sourced from StaticResource. This validates that resource bindings
+			 on keyframe values are resolved before Begin() calls Play(). -->
+		<Style x:Key="AnimatedControlStyle" TargetType="ContentControl">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ContentControl">
+						<Grid>
+							<Border x:Name="AnimatedBorder"
+									Background="Red"
+									Width="50"
+									Height="50"
+									Opacity="1" />
+
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="TestStates">
+									<VisualState x:Name="Normal" />
+									<VisualState x:Name="Animated">
+										<Storyboard>
+											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="AnimatedBorder" Storyboard.TargetProperty="Opacity">
+												<LinearDoubleKeyFrame KeyTime="0" Value="{StaticResource TargetOpacity}" />
+											</DoubleAnimationUsingKeyFrames>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetName="AnimatedBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+												<LinearColorKeyFrame KeyTime="0" Value="{StaticResource TargetColor}" />
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Page.Resources>
+
+	<Grid>
+		<ContentControl x:Name="TestControl"
+						x:FieldModifier="Public"
+						Style="{StaticResource AnimatedControlStyle}" />
+	</Grid>
+</Page>
