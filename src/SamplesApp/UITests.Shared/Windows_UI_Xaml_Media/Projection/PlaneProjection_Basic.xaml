@@ -191,6 +191,15 @@
                                 Maximum="60"
                                 Minimum="-60"
                                 Value="15" />
+                            <TextBlock
+                                Text="{Binding ElementName=CombinedRotationX, Path=Value}"
+                                TextWrapping="NoWrap" />
+                            <TextBlock
+                                Text="{Binding ElementName=CombinedRotationY, Path=Value}"
+                                TextWrapping="NoWrap" />
+                            <TextBlock
+                                Text="{Binding ElementName=CombinedRotationZ, Path=Value}"
+                                TextWrapping="NoWrap" />
                         </StackPanel>
 
                         <Border
