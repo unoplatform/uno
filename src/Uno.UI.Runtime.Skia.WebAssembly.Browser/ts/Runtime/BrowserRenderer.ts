@@ -10,13 +10,8 @@ namespace Uno.UI.Runtime.Skia {
 			const skiaSharpExports = WebAssemblyWindowWrapper.getAssemblyExports();
 			this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrame(this.managedHandle);
 
-			setTimeout(() => {
-				// The managedHandle isn't ready yet because the constructor is called
-				// from within the managed constructor, so we delay it slightly.
-				// queueMicrotask is too early. setTimeout seems to work.
-				this.setCanvasSize();
-				window.addEventListener("resize", x => this.setCanvasSize());
-			}, 0);
+			this.setCanvasSize();
+			window.addEventListener("resize", x => this.setCanvasSize());
 		}
 
 		public static createInstance(managedHandle: number, canvasId: string) {
