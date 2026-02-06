@@ -1,4 +1,5 @@
-﻿using CoreAnimation;
+﻿using System;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using UIKit;
@@ -15,10 +16,43 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 /// </summary>
 internal partial class TopViewLayer : UIView
 {
-#if __IOS__
 	public TopViewLayer()
 	{
+#if __IOS__
 		MultipleTouchEnabled = true;
+		SetupScrollGestureRecognizer();
+#endif
+	}
+
+#if __IOS__
+	private void SetupScrollGestureRecognizer()
+	{
+
+		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
+		{
+			var scrollGesture = new UIPanGestureRecognizer(HandleScrollGesture)
+			{
+				AllowedScrollTypesMask = UIScrollTypeMask.All,
+				MaximumNumberOfTouches = 0,
+				MinimumNumberOfTouches = 0,
+				ShouldRecognizeSimultaneously = (recognizer, otherRecognizer) => true
+			};
+			AddGestureRecognizer(scrollGesture);
+		}
+	}
+
+	private void HandleScrollGesture(UIPanGestureRecognizer gesture)
+	{
+		var translation = gesture.TranslationInView(this);
+		var location = gesture.LocationInView(this);
+		var gestureState = gesture.State;
+
+		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location, gestureState);
+
+		if (gestureState == UIGestureRecognizerState.Changed)
+		{
+			gesture.SetTranslation(CGPoint.Empty, this);
+		}
 	}
 #endif
 
