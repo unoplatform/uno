@@ -25,6 +25,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_ContentPresenter
 {
 	[TestMethod]
+#if !UNO_HAS_ENHANCED_LIFECYCLE && !WINAPPSDK
+	[Ignore("This works only for the ContentPresenter that's ported from WinUI, which is so far for lifecycle only")]
+#endif
+	public async Task When_ContentTemplateSelector_Then_Content_Changes()
+	{
+		var selector = new LoggingContentTemplateSelector();
+		var SUT = new ContentPresenter()
+		{
+			Width = 200,
+			Height = 200,
+			Content = "Dummy",
+			ContentTemplateSelector = selector,
+		};
+
+#if HAS_UNO
+		// Because we support both overloads of SelectTemplate.
+		// We should better align with WinUI, but not very important for now.
+		Assert.AreEqual(2, selector.Logs.Count);
+		Assert.AreEqual("Dummy", selector.Logs[0]);
+		Assert.AreEqual("Dummy", selector.Logs[1]);
+#else
+		Assert.AreEqual(1, selector.Logs.Count);
+		Assert.AreEqual("Dummy", selector.Logs[0]);
+#endif
+		await UITestHelper.Load(SUT);
+
+		SUT.Content = "Content1";
+		await TestServices.WindowHelper.WaitForIdle();
+		SUT.Content = "Content2";
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Quite surprising, but ContentPresenter doesn't re-select the template when Content changes (WinUI behavior).
+		// This is very different from ContentControl behavior, where Content changes will re-select the template
+		// IMPORTANT IMPORTANT IMPORTANT:
+		// This behavior that's originating from WinUI means that adding `ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"` workaround can
+		// break (see history for this workaround in https://github.com/unoplatform/uno/pull/5691)
+		// Without the workaround, ContentPresenter code will template-bind the SelectedContentTemplate to the ContentControl TemplatedParent.
+		// So, whenever the Content changes, ContentControl will properly evaluate SelectedContentTemplate, and then it will flow to ContentPresenter.
+		// However, with the workaround, things will go wrong because changing ContentTemplateSelector will
+		// set SelectedContentTemplate to a local value, breaking the template-binding for SelectedContentTemplate.
+		// And then, ContentPresenter alone will not basically re-select the template when the Content changes.
+		Assert.AreEqual(2, selector.Logs.Count);
+		Assert.AreEqual("Dummy", selector.Logs[0]);
+		Assert.AreEqual("Dummy", selector.Logs[1]);
+
+		SUT.ContentTemplateSelector = null;
+		SUT.ContentTemplateSelector = selector;
+
+#if HAS_UNO
+		Assert.AreEqual(4, selector.Logs.Count);
+		Assert.AreEqual("Dummy", selector.Logs[0]);
+		Assert.AreEqual("Dummy", selector.Logs[1]);
+		Assert.AreEqual("Content2", selector.Logs[2]);
+		Assert.AreEqual("Content2", selector.Logs[3]);
+#else
+		Assert.AreEqual(2, selector.Logs.Count);
+		Assert.AreEqual("Dummy", selector.Logs[0]);
+		Assert.AreEqual("Content2", selector.Logs[1]);
+#endif
+	}
+
+	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
 	{
 		var SUT = new ContentPresenter()
@@ -100,7 +162,11 @@ public partial class Given_ContentPresenter
 
 		sut.emptyTestRoot.DataContext = "43";
 
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "emptyTest"));
+#else
 		Assert.AreEqual("43", GetTextBlockText(sut, "emptyTest"));
+#endif
 	}
 
 	[TestMethod]
@@ -109,17 +175,32 @@ public partial class Given_ContentPresenter
 		var sut = new ContentPresenter_Content_DataContext();
 
 		TestServices.WindowHelper.WindowContent = sut;
-
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
+#else
 		Assert.AreEqual("43", GetTextBlockText(sut, "priorityTest"));
+#endif
 
 		sut.priorityTestRoot.DataContext = "44";
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
+#else
 		Assert.AreEqual("44", GetTextBlockText(sut, "priorityTest"));
+#endif
 
 		sut.priorityTestRoot.Content = "45";
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
+#else
 		Assert.AreEqual("45", GetTextBlockText(sut, "priorityTest"));
+#endif
 
 		sut.priorityTestRoot.DataContext = "46";
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
+#else
 		Assert.AreEqual("46", GetTextBlockText(sut, "priorityTest"));
+#endif
 	}
 
 	[TestMethod]
@@ -128,8 +209,11 @@ public partial class Given_ContentPresenter
 		var sut = new ContentPresenter_Content_DataContext();
 
 		TestServices.WindowHelper.WindowContent = sut;
-
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "sameValueTest"));
+#else
 		Assert.AreEqual("42", GetTextBlockText(sut, "sameValueTest"));
+#endif
 	}
 
 	[TestMethod]
@@ -139,19 +223,39 @@ public partial class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
+#else
 		Assert.AreEqual("DataContext", GetTextBlockText(sut, "inheritanceTest"));
+#endif
 
 		sut.inheritanceTestRoot.DataContext = "46";
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
+#else
 		Assert.AreEqual("46", GetTextBlockText(sut, "inheritanceTest"));
+#endif
 
 		sut.inheritanceTestRoot.DataContext = "47";
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
+#else
 		Assert.AreEqual("47", GetTextBlockText(sut, "inheritanceTest"));
+#endif
 
 		sut.inheritanceTestInner.DataContext = "48";
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
+#else
 		Assert.AreEqual("48", GetTextBlockText(sut, "inheritanceTest"));
+#endif
 
 		sut.inheritanceTestRoot.DataContext = "49";
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
+#else
 		Assert.AreEqual("48", GetTextBlockText(sut, "inheritanceTest"));
+#endif
 	}
 
 	[TestMethod]
@@ -166,7 +270,7 @@ public partial class Given_ContentPresenter
 		var border1 = presenter1.FindVisualChildByType<Border>();
 		var tb1 = presenter1.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightGreen), border1.Background);
+		Assert.AreEqual(Microsoft.UI.Colors.LightGreen, ((SolidColorBrush)border1.Background).Color);
 		Assert.AreEqual("Item 1", tb1.Text);
 
 		var cc2 = control.FindName("CCWithContentTemplate") as ContentControl;
@@ -174,7 +278,7 @@ public partial class Given_ContentPresenter
 		var border2 = presenter2.FindVisualChildByType<Border>();
 		var tb2 = presenter2.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightPink), border2.Background);
+		Assert.AreEqual(Microsoft.UI.Colors.LightPink, ((SolidColorBrush)border2.Background).Color);
 		Assert.AreEqual("Item 2", tb2.Text);
 
 		var cc3 = control.FindName("CCWithContentTemplateAndContent") as ContentControl;
@@ -182,7 +286,7 @@ public partial class Given_ContentPresenter
 		var border3 = presenter3.FindVisualChildByType<Border>();
 		var tb3 = presenter3.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightGreen), border3.Background);
+		Assert.AreEqual(Microsoft.UI.Colors.LightGreen, ((SolidColorBrush)border3.Background).Color);
 		Assert.AreEqual("Item 3", tb3.Text);
 
 		var cc4 = control.FindName("CCWithContent") as ContentControl;
@@ -199,8 +303,11 @@ public partial class Given_ContentPresenter
 		var sut = new ContentPresenter_Content_DataContext();
 
 		TestServices.WindowHelper.WindowContent = sut;
-
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "sameValueChangingTest"));
+#else
 		Assert.AreEqual("DataContext", GetTextBlockText(sut, "sameValueChangingTest"));
+#endif
 	}
 
 	[TestMethod]
@@ -209,8 +316,11 @@ public partial class Given_ContentPresenter
 		var sut = new ContentPresenter_Content_DataContext();
 
 		TestServices.WindowHelper.WindowContent = sut;
-
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("", GetTextBlockText(sut, "nullContentChanged"));
+#else
 		Assert.AreEqual("42", GetTextBlockText(sut, "nullContentChanged"));
+#endif
 	}
 
 	[TestMethod]
@@ -452,7 +562,11 @@ public partial class Given_ContentPresenter
 		TestServices.WindowHelper.WindowContent = SUT;
 
 		var wref = SetContent();
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual(null, SUT.DataContext);
+#else
 		Assert.AreEqual(wref.Target, SUT.DataContext);
+#endif
 
 		SUT.Content = null;
 

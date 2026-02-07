@@ -3280,6 +3280,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		[Ignore("This test actually fails on WinUI")]
+#endif
 		public async Task When_ItemTemplate_Selector_And_Clear_Then_Released()
 		{
 			var selector = new KeyedTemplateSelector<ItemColor>(o => (o as ItemColorViewModel)?.ItemType ?? ItemColor.None)
