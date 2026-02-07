@@ -24,6 +24,7 @@ internal static class InputInjectorExtensions
 			PointerDeviceType.Touch => GetFinger(injector),
 #if HAS_UNO
 			PointerDeviceType.Mouse => GetMouse(injector),
+			PointerDeviceType.Pen => GetPen(injector),
 #endif
 			_ => throw new NotSupportedException($"Injection of {pointer} is not supported on this platform.")
 		};
@@ -34,5 +35,8 @@ internal static class InputInjectorExtensions
 #if HAS_UNO
 	public static Mouse GetMouse(this InputInjector injector)
 		=> new(injector);
+
+	public static Pen GetPen(this InputInjector injector, uint id = 1)
+		=> new(injector, id);
 #endif
 }
