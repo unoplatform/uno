@@ -315,6 +315,7 @@
 			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
+			<StaticResource x:Key="ScrollViewerScrollBarSeparatorBackground" ResourceKey="SystemControlTransparentBrush" />
 
 			<!--
     ******************************************************************
@@ -1620,6 +1621,7 @@
 			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
+			<StaticResource x:Key="ScrollViewerScrollBarSeparatorBackground" ResourceKey="SystemControlTransparentBrush" />
 
 			<!--
     ******************************************************************
@@ -2914,6 +2916,7 @@
 			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
+			<StaticResource x:Key="ScrollViewerScrollBarSeparatorBackground" ResourceKey="SystemControlTransparentBrush" />
 
 			<!--
     ******************************************************************
