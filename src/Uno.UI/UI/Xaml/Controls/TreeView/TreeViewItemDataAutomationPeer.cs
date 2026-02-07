@@ -1,11 +1,12 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeViewItemDataAutomationPeer.cpp, tag winui3/release/1.4.2
+// MUX Reference TreeViewItemDataAutomationPeer.cpp, tag winui3/release/1.8.4
+
+#nullable enable
 
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 
@@ -16,66 +17,49 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpandCollapseProvider
 {
-	private const string UIA_E_ELEMENTNOTENABLED = "Element not enabled";
-
-	/// <summary>
-	/// Initializes a new instance of the TreeViewItemDataAutomationPeer class.
-	/// </summary>
-	/// <param name="item">The TreeViewItem.</param>
-	/// <param name="parent">The TreeViewList parent control instance for which to create the peer.</param>
-	public TreeViewItemDataAutomationPeer(object item, ItemsControlAutomationPeer parent)
+	public TreeViewItemDataAutomationPeer(object item, TreeViewListAutomationPeer parent)
 		: base(item, parent)
 	{
 	}
 
 	// IExpandCollapseProvider
-
-	/// <summary>
-	/// Gets a value indicating the expanded or collapsed state of the associated TreeViewItemDataAutomationPeer.
-	/// </summary>
 	public ExpandCollapseState ExpandCollapseState
 	{
 		get
 		{
-			var peer = GetTreeViewItemAutomationPeer();
-			if (peer != null)
+			if (GetTreeViewItemAutomationPeer() is { } peer)
 			{
 				return peer.ExpandCollapseState;
 			}
-			throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+
+			throw new InvalidOperationException("UIA_E_ELEMENTNOTENABLED");
 		}
 	}
 
-	/// <summary>
-	/// Collapses the associated Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
-	/// </summary>
 	public void Collapse()
 	{
-		var peer = GetTreeViewItemAutomationPeer();
-		if (peer != null)
+		if (GetTreeViewItemAutomationPeer() is { } peer)
 		{
 			peer.Collapse();
 			return;
 		}
-		throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+
+		throw new InvalidOperationException("UIA_E_ELEMENTNOTENABLED");
 	}
 
-	/// <summary>
-	/// Expands the associated Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
-	/// </summary>
 	public void Expand()
 	{
-		var peer = GetTreeViewItemAutomationPeer();
-		if (peer != null)
+		if (GetTreeViewItemAutomationPeer() is { } peer)
 		{
 			peer.Expand();
 			return;
 		}
-		throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+
+		throw new InvalidOperationException("UIA_E_ELEMENTNOTENABLED");
 	}
 
 	// IAutomationPeerOverrides
-	protected override object GetPatternCore(PatternInterface patternInterface)
+	protected override object? GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.ExpandCollapse)
 		{
@@ -85,27 +69,24 @@ public partial class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpan
 		return base.GetPatternCore(patternInterface);
 	}
 
-	private TreeViewItemAutomationPeer GetTreeViewItemAutomationPeer()
+	private TreeViewItemAutomationPeer? GetTreeViewItemAutomationPeer()
 	{
 		// ItemsAutomationPeer hold ItemsControlAutomationPeer and Item properties.
 		// ItemsControlAutomationPeer -> ItemsControl by ItemsControlAutomationPeer.Owner -> ItemsControl Look up Item to get TreeViewItem -> Get TreeViewItemAutomationPeer
-		var itemsControlAutomationPeer = ItemsControlAutomationPeer;
-		if (itemsControlAutomationPeer != null)
+		if (ItemsControlAutomationPeer is { } itemsControlAutomationPeer)
 		{
-			var itemsControl = itemsControlAutomationPeer.Owner as ItemsControl;
-			if (itemsControl != null)
+			if (itemsControlAutomationPeer.Owner is ItemsControl itemsControl)
 			{
-				var item = itemsControl.ContainerFromItem(Item) as UIElement;
-				if (item != null)
+				if (itemsControl.ContainerFromItem(Item) is UIElement item)
 				{
-					var treeViewItemAutomationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(item) as TreeViewItemAutomationPeer;
-					if (treeViewItemAutomationPeer != null)
+					if (FrameworkElementAutomationPeer.CreatePeerForElement(item) is TreeViewItemAutomationPeer treeViewItemAutomationPeer)
 					{
 						return treeViewItemAutomationPeer;
 					}
 				}
 			}
 		}
-		throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+
+		return null;
 	}
 }

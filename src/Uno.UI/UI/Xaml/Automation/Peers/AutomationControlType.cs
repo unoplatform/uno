@@ -209,4 +209,9 @@ public enum AutomationControlType
 	/// An AppBar control type
 	/// </summary>
 	AppBar = 40,
+
+	/// <summary>
+	/// A FlipView control type
+	/// </summary>
+	FlipView = 41,
 }
