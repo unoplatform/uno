@@ -109,7 +109,7 @@
 			BuildInParallel="true" />
 
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Build" />
-		<MSBuild Properties="Configuration=Release;Platform=x86" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Build" />
+		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Build" />
 
 		<ItemGroup>
 			<MixinTargetFrameworks Include="net9.0-ios18.0" />
