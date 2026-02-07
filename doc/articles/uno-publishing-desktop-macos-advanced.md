@@ -66,7 +66,7 @@ You can edit the `Info.plist` file, add any required entries (for permissions), 
 Then from the CLI run:
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSCustomInfoPlist=path/to/Info.plist
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:UnoMacOSCustomInfoPlist=path/to/Info.plist
 ```
 
 ### Hardened Runtime
@@ -76,7 +76,7 @@ dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 If needed you can turn it off by providing `-p:UnoMacOSHardenedRuntime=false` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSHardenedRuntime=false
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:UnoMacOSHardenedRuntime=false
 ```
 
 ### Custom Entitlements
@@ -97,7 +97,7 @@ dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 You can provide your own entitlement file if needed using `-p:UnoMacOSEntitlements=/path/to/entitlements.plist` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSEntitlements=/path/to/entitlements.plist
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:UnoMacOSEntitlements=/path/to/entitlements.plist
 ```
 
 ### Trimming
@@ -107,11 +107,32 @@ App bundles that are distributed should be self-contained applications that depe
 To reduce the size of the app bundle you can enable dotnet's [trimming](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options#enable-trimming) when publishing the app, using `-p:PublishTrimmed=true`. The full command from the CLI would be:
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:PublishTrimmed=true
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:PublishTrimmed=true
 ```
 
 > [!IMPORTANT]
 > Your code and dependencies need to be [trimmer-aware](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/prepare-libraries-for-trimming) and the trimmed app bundle should be carefully tested to ensure the code removed by the trimmer does not affect its functionality.
+
+### Removing other platforms
+
+Since app bundles will **only** run on macOS, you can remove the unused platforms from the app bundle to reduce its size. This can be done by modifying the `./Platforms/Desktop/Program.cs` file of your project, like this (diff format):
+
+```diff
+         var host = UnoPlatformHostBuilder.Create()
+             .App(() => new App())
++#if !UNO_MACOS_APPBUNDLE
+             .UseX11()
+             .UseLinuxFrameBuffer()
+-            .UseMacOS()
+             .UseWin32()
++#endif
++            .UseMacOS()
+             .Build();
+
+         host.Run();
+```
+
+and the build (or publish) with and additional `-p:DefineConstants=UNO_MACOS_APPBUNDLE` on the command line. This works best when trimming is also enabled.
 
 ### Optional files
 
@@ -124,7 +145,7 @@ Although useful for debugging, the `createdump` executable is rarely used by the
 If you wish to include `createdump` inside your app bundle add the `-p:UnoMacOSIncludeCreateDump=true` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeCreateDump=true
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:UnoMacOSIncludeCreateDump=true
 ```
 
 #### Including `libclrgc.dylib` extraneous GC
@@ -134,7 +155,7 @@ An alternate garbage collection (GC) library is included by `dotnet publish`. It
 If you wish to include this extra GC library inside your app bundle add the `-p:UnoMacOSIncludeExtraClrGC=true` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeExtraClrGC=true
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:UnoMacOSIncludeExtraClrGC=true
 ```
 
 #### Including `libmscordaccore.dylib` and `libmscordbi.dylib` debugging support
@@ -144,7 +165,7 @@ Extraneous debugging support libraries are included by `dotnet publish`. They ar
 If you wish to include the extra debugging libraries inside your app bundle add the `-p:UnoMacOSIncludeNativeDebugging=true` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeNativeDebugging=true
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:UnoMacOSIncludeNativeDebugging=true
 ```
 
 #### Including assemblies debugging symbols (.pdb) files
@@ -154,7 +175,7 @@ dotnet debugging symbols (`.pdb`) are generally included in released application
 If you wish to remove them anyway, you can do so by adding the `-p:UnoMacOSIncludeDebugSymbols=false` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeDebugSymbols=false
+dotnet publish -f net9.0-desktop -p:PackageFormat=app -p:UnoMacOSIncludeDebugSymbols=false
 ```
 
 ## Disk Image (.dmg) Customization
@@ -164,7 +185,7 @@ dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 By default, the produced disk image will contain a symlink to `/Applications` so users can drag-and-drop the app bundle inside it. If you do not want the symlink to be present inside the disk image you can add `-p:UnoMacOSIncludeSymlinkToApplications=false` on the command line.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=dmg -p:UnoMacOSIncludeSymlinkToApplications=false -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
+dotnet publish -f net9.0-desktop -p:PackageFormat=dmg -p:UnoMacOSIncludeSymlinkToApplications=false -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
 ```
 
 ### Additional Customization
@@ -173,3 +194,78 @@ Further disk image customization is possible but can be tricky since it requires
 
 - [create-dmg](https://github.com/sindresorhus/create-dmg)
 - [dmgbuild](https://dmgbuild.readthedocs.io/en/latest/)
+
+## Re-using the app packaging tasks individually
+
+If you already have an app bundle built, then you can use those commands to (re)sign, package, create a disk image, and notarize it. It's useful for fat app bundles, which require an extra merge step, as well as allowing further customization (that would break a digital signature) after an app bundle is created.
+
+### Create a fat app bundle from arch-specific app bundles
+
+This approach is useful when you want to provide some custom build options when creating the arch-specific app bundles, e.g. enabling trimming, or if you want to create a fat app bundle from existing arch-specific app bundles.
+
+If you want to create a fat app bundle that can run on both Intel and Apple Silicon Macs, you need to merge the arch-specific app bundles for `x64` and `arm64` architectures together.
+
+First, create the `x64` app bundle using the `-r osx-x64` runtime identifier (RID) and any other options you need.
+
+```bash
+dotnet publish project.csproj -f net9.0-desktop -r osx-x64 -p:PackageFormat=app ...
+```
+
+> [!NOTE]
+> There is no need to sign the _thin_ app bundles since the merge process will invalidate any digital signature.
+
+Next, create the `arm64` app bundle using the `-r osx-arm64` runtime identifier (RID), again specifying any other options you need.
+
+```bash
+dotnet publish project.csproj -f net9.0-desktop -r osx-arm64 -p:PackageFormat=app ...
+```
+
+Finally, merge both arch-specific app bundles into a fat (multi-arch) app bundle.
+
+```bash
+dotnet build project.csproj -t:UnoMergeBundles -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:UnoX64Bundle=bin/Release/net9.0-desktop/osx-x64/publish/UnoApp.app -p:UnoArm64Bundle=bin/Release/net9.0-desktop/osx-arm64/publish/UnoApp.app -p:UnoFatBundle=UnoApp.app
+```
+
+Where `UnoX64Bundle` and `UnoArm64Bundle` are the (input) paths to the arch-specific app bundles created in the previous steps and `UnoFatBundle` is the (output) path where the resulting fat app bundle will be created (replacing any existing one).
+
+> [!NOTE]
+> You can sign the fat app bundle at this stage by providing `-p:CodesignKey={{identity}}`. However you can also [sign it later](https://platform.uno/docs/articles/uno-publishing-desktop-macos-advanced.html#(re)signing-an-app-bundle) if you have to customize the app bundle.
+
+### (Re)signing an app bundle
+
+Most changes done to an app bundle will break the digital signature, if present. If you need to customize the app bundle after it has been created, you will need to re-sign it using this command:
+
+```bash
+dotnet build project.csproj -t:UnoSignAppBundle -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:AppBundlePath=UnoApp.app -p:CodesignKey={{identity}}
+```
+
+where `{{identity}}` is the name of the signing identity to use for signing the app bundle, more details in [How to find your identity](https://platform.uno/docs/articles/uno-publishing-desktop-macos.html#how-to-find-your-identity)
+
+### Creating a package for an app bundle
+
+If you did not create a package (.pkg) while building the app bundle, you can create one using the following command:
+
+```bash
+dotnet build project.csproj -t:UnoPackageAppBundle -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:AppBundlePath=UnoApp.app
+```
+
+### Creating a disk image for an app bundle
+
+If you did not create a disk image (.dmg) while building the app bundle, you can create one using the following command:
+
+```bash
+dotnet build project.csproj -t:UnoCreateDiskImage -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:AppBundlePath=UnoApp.app
+```
+
+### Notarizing an app bundle, package or disk image
+
+It's possible to notarize an app bundle, package or disk image after it has been created. This is useful for fat app bundles, which require an extra merge step, as well as allowing further customization (that would break a digital signature) after an app bundle is created.
+
+```bash
+dotnet build project.csproj -t:UnoNotarize -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:InputFilePath={{file-to-notarize}} -p:PackageFormat={{file-format}} ...
+```
+
+See the following notarization section for each format.
+
+- [`.pkg`](https://platform.uno/docs/articles/uno-publishing-desktop-macos.html#notarize-the-package)
+- [`.dmg`](https://platform.uno/docs/articles/uno-publishing-desktop-macos.html#notarize-the-disk-image)
