@@ -20,7 +20,7 @@ This guide will walk you through the setup process for getting started with Clau
     claude mcp add --scope user --transport stdio "uno-app" -- dotnet dnx -y uno.devserver --mcp-app
     ```
 
-1. Open Claude and run:
+1. Start Claude Code in your terminal and then run:
 
     ```bash
     /mcp
