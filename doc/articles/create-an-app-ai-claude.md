@@ -19,7 +19,6 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Claude
     ```bash
     dnx -y uno.devserver login
     ```
-    
 1. Still in the app folder, open Claude Code:
 
     ```bash
