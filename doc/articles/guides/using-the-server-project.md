@@ -10,7 +10,7 @@ You will find [more information](xref:Uno.GettingStarted.UsingWizard#server) on 
 
 When creating an app with the server option enabled, you'll get:
 
-- An app project, which contains a target framework with `net9.0-browserwasm`
+- An app project, which contains a target framework with `net10.0-browserwasm`
 - A server project, which references the app project and will by default host it at its root
 
 ## Using the server project
@@ -31,7 +31,7 @@ You can start debugging the app in the same way you would when starting the app 
 In order to launch the server project in VS Code:
 
 - In a terminal, navigate to your `ReplaceMe.Server` folder
-- Type `dotnet run -f net9.0 --launch-profile ReplaceMe.Server`
+- Type `dotnet run -f net10.0 --launch-profile ReplaceMe.Server`
 
 > [!IMPORTANT]
 > See the section below on HTTPS to ensure that debugging works properly
