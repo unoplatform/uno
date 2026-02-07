@@ -8,6 +8,8 @@ using System.IO;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.XamlGenerator;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators.CommunityToolkitMvvm;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
 using System.Threading;
@@ -46,6 +48,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _assemblyName;
 			private bool _xamlResourcesTrimming;
 			private CancellationToken _cancellationToken;
+			private IBindableTypeProvider[] _bindableTypeProviders = Array.Empty<IBindableTypeProvider>();
 
 			public string[] AnalyzerSuppressions { get; set; } = Array.Empty<string>();
 
@@ -87,6 +90,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.NonBindableAttribute");
 						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.ResourceDictionary");
 						_currentModule = context.Compilation.SourceModule;
+
+						// Initialize bindable type providers from third-party generators
+						_bindableTypeProviders = new IBindableTypeProvider[]
+						{
+							new MvvmBindableTypeProvider(context.Compilation)
+						};
 
 						var modules = from ext in context.Compilation.ExternalReferences
 									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
@@ -130,7 +139,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						where
 							!type.IsGenericType
 							&& !type.IsAbstract
-							&& type.GetAllAttributes().Any(a => a.AttributeClass?.Name == "BindableAttribute")
+							&& IsBindableType(type)
 							&& IsValidProvider(type)
 						select type;
 
@@ -166,6 +175,26 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				// Exclude resource dictionaries for linking constraints (XamlControlsResources in particular)
 				// Those are not databound, so there's no need to generate providers for them.
 				&& !type.Is(_resourceDictionarySymbol);
+
+			private bool IsBindableType(INamedTypeSymbol type)
+			{
+				// Check if type has [Bindable] attribute (original behavior)
+				if (type.GetAllAttributes().Any(a => a.AttributeClass?.Name == "BindableAttribute"))
+				{
+					return true;
+				}
+
+				// Check with third-party bindable type providers
+				foreach (var provider in _bindableTypeProviders)
+				{
+					if (provider.IsBindableType(type))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
 
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
