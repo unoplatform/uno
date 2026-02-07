@@ -30,6 +30,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSFolderPickerExtension.Register();
 		MacOSLauncherExtension.Register();
 		MacOSNativeElementHostingExtension.Register();
+		MacOSNativeMenuBarExtension.Register();
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
 		MacOSNativeOpenGLWrapper.Register();
