@@ -43,7 +43,7 @@ Launching with the debugger is pending on [this issue](https://github.com/unopla
 - Select the "ReplaceMe.Server" project in the top right debugger selector
 - Start the app
 
-> ![IMPORTANT]
+> [!IMPORTANT]
 > WebAssembly Debugging is [not yet supported](https://github.com/unoplatform/uno/issues/15226) in Rider.
 > [!IMPORTANT]
 > See the section below on HTTPS to ensure that debugging works properly
