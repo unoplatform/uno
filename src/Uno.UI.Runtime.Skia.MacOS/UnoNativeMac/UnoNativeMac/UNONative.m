@@ -151,3 +151,66 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     [element dispose];
     [transients removeObject:element];
 }
+
+// Camera capture implementation using IKPictureTaker from Quartz framework
+// Note: IKPictureTaker is deprecated in macOS 10.15+, but still functional.
+// A future enhancement could use AVFoundation for modern camera APIs.
+const char* _Nullable uno_capture_photo(bool useJpeg)
+{
+    @autoreleasepool {
+        NSString *tempDir = NSTemporaryDirectory();
+        NSString *fileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], useJpeg ? @"jpg" : @"png"];
+        NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
+        
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        
+        __block NSString *resultPath = nil;
+        __block dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Create an IKPictureTaker instance
+            IKPictureTaker *pictureTaker = [IKPictureTaker pictureTaker];
+            
+            // Run the picture taker modal dialog
+            NSInteger result = [pictureTaker runModal];
+            
+            if (result == NSModalResponseOK) {
+                // Get the captured image
+                NSImage *image = [pictureTaker outputImage];
+                
+                if (image) {
+                    // Convert NSImage to the requested format
+                    CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+                    NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithCGImage:cgImage];
+                    
+                    NSData *imageData;
+                    if (useJpeg) {
+                        imageData = [imageRep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{NSImageCompressionFactor: @0.9}];
+                    } else {
+                        imageData = [imageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+                    }
+                    
+                    // Write to file
+                    if ([imageData writeToFile:filePath atomically:YES]) {
+                        resultPath = [filePath copy];
+                    }
+                }
+            }
+            
+            dispatch_semaphore_signal(semaphore);
+        });
+        
+        // Wait for completion (caller is responsible for calling from appropriate thread)
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        
+        #pragma clang diagnostic pop
+        
+        if (resultPath) {
+            // Note: Caller is responsible for freeing the returned string using free()
+            return strdup([resultPath UTF8String]);
+        }
+        
+        return NULL;
+    }
+}
