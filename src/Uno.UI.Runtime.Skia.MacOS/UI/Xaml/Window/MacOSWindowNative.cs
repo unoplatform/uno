@@ -46,6 +46,9 @@ internal class MacOSWindowNative
 
 		MacOSWindowHost.Register(Handle, xamlRoot, Host);
 
+		// Initialize accessibility for this window
+		MacOSAccessibility.Instance.Initialize(Handle);
+
 		// call resize as late as possible (after the host creation)
 		NativeUno.uno_window_resize(Handle, initialWidth, initialHeight);
 

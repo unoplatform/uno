@@ -628,7 +628,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		var @this = Instance;
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			// TODO: We shouldn't check individual scrollers.
+			// // TODO (DOTI): We shouldn't check individual scrollers.
 			// Instead, we should scroll using automation peers once they are implemented correctly for SCP and ScrollPresenter
 			if (owner is ScrollContentPresenter scp)
 			{
@@ -1178,6 +1178,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		var verticallyScrollable = false;
 		if (automationPeer is not null)
 		{
+
 			if (string.IsNullOrEmpty(automationId))
 			{
 				automationId = automationPeer.GetName();
@@ -1199,6 +1200,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		}
 		else if (child.IsScrollPort)
 		{
+			// TODO (DOTI)
 			// Workaround: ScrollViewerAutomationPeer isn't implemented.
 			//var extentWidth = sv.ExtentWidth;
 			//var viewportWidth = sv.ViewportWidth;
@@ -1469,6 +1471,40 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		}
 	}
 
+	public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		if (eventId == AutomationEvents.AutomationFocusChanged &&
+			TryGetPeerOwner(peer, out var element))
+		{
+			NativeMethods.FocusSemanticElement(element.Visual.Handle);
+		}
+	}
+
+	public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+	{
+		if (!IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
+		{
+			return;
+		}
+
+		var assertive = notificationProcessing == AutomationNotificationProcessing.ImportantAll ||
+						notificationProcessing == AutomationNotificationProcessing.ImportantMostRecent;
+
+		if (assertive)
+		{
+			NativeMethods.AnnounceAssertive(displayString);
+		}
+		else
+		{
+			NativeMethods.AnnouncePolite(displayString);
+		}
+	}
+
 	public bool ListenerExistsHelper(AutomationEvents eventId)
 		=> IsAccessibilityEnabled;
 
@@ -1483,10 +1519,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		owner = null;
 		return false;
 	}
-
-	// TODO (DOTI): Added with macOS automation, maybe won't be needed for wasm
-	public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => throw new NotImplementedException();
-	public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) => throw new NotImplementedException();
 
 	private static partial class NativeMethods
 	{

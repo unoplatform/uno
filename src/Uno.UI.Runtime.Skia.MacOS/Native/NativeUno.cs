@@ -503,4 +503,109 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
+
+	// Accessibility
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_init(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_accessibility_set_callbacks(
+		delegate* unmanaged[Cdecl]<nint, void> invokeCallback,
+		delegate* unmanaged[Cdecl]<nint, void> focusCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_accessibility_set_range_callbacks(
+		delegate* unmanaged[Cdecl]<nint, void> incrementCallback,
+		delegate* unmanaged[Cdecl]<nint, void> decrementCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_accessibility_set_expand_collapse_callback(
+		delegate* unmanaged[Cdecl]<nint, void> expandCollapseCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_add_element(
+		nint parentHandle, nint handle, int index,
+		float width, float height, float x, float y,
+		string? role, string? label,
+		[MarshalAs(UnmanagedType.I1)] bool focusable,
+		[MarshalAs(UnmanagedType.I1)] bool visible);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_remove_element(nint parentHandle, nint handle);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_label(nint handle, string? label);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_frame(nint handle, float width, float height, float x, float y);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_visibility(nint handle, [MarshalAs(UnmanagedType.I1)] bool visible);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_focusable(nint handle, [MarshalAs(UnmanagedType.I1)] bool focusable);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_value(nint handle, string? value);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_enabled(nint handle, [MarshalAs(UnmanagedType.I1)] bool enabled);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_help(nint handle, string? help);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_role_description(nint handle, string? roleDescription);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_role(nint handle, string? role);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_heading_level(nint handle, int headingLevel);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_is_password(nint handle, [MarshalAs(UnmanagedType.I1)] bool isPassword);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_expand_collapse(nint handle, [MarshalAs(UnmanagedType.I1)] bool hasExpandCollapse, [MarshalAs(UnmanagedType.I1)] bool isExpanded);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_has_range_value(nint handle, [MarshalAs(UnmanagedType.I1)] bool hasRangeValue);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_range_bounds(nint handle, double minValue, double maxValue);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_selected(nint handle, [MarshalAs(UnmanagedType.I1)] bool isSelected);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_position_in_set(nint handle, int position, int setSize);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_landmark(nint handle, string? landmarkRole);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_required(nint handle, [MarshalAs(UnmanagedType.I1)] bool required);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_description(nint handle, string? description);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_set_focused(nint handle);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_announce(string text, [MarshalAs(UnmanagedType.I1)] bool assertive);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_post_layout_changed();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_post_children_changed();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_post_live_region_created(nint handle);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_post_live_region_changed(nint handle);
 }
