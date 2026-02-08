@@ -513,7 +513,7 @@ public partial class AutomationPeer : DependencyObject
 	{
 #if __SKIA__
 	if (ListenerExists(eventId))
-	{//give it just the automationpeer.cs and .cpp and make it port it line by line to c#
+	{
 		AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
 	}
 #else
