@@ -335,12 +335,14 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// <summary>
 	/// Indicates that this view is a container for accessibility elements, not an element itself.
 	/// </summary>
-	public override bool IsAccessibilityElement => false;
+	[Export("isAccessibilityElement")]
+	public bool IsAccessibilityElement => false;
 
 	/// <summary>
 	/// Gets the number of accessibility elements in this container.
 	/// </summary>
-	public override nint AccessibilityElementCount()
+	[Export("accessibilityElementCount")]
+	public nint AccessibilityElementCount()
 	{
 		return UIKitAccessibilityBridge.Instance.ElementCount;
 	}
@@ -348,7 +350,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// <summary>
 	/// Gets the accessibility element at the specified index.
 	/// </summary>
-	public override NSObject? GetAccessibilityElement(nint index)
+	[Export("accessibilityElementAtIndex:")]
+	public NSObject? GetAccessibilityElement(nint index)
 	{
 		return UIKitAccessibilityBridge.Instance.GetElement((int)index);
 	}
@@ -356,7 +359,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// <summary>
 	/// Gets the index of the specified accessibility element.
 	/// </summary>
-	public override nint GetIndexOfAccessibilityElement(NSObject element)
+	[Export("indexOfAccessibilityElement:")]
+	public nint GetIndexOfAccessibilityElement(NSObject element)
 	{
 		return UIKitAccessibilityBridge.Instance.GetIndexOf(element);
 	}

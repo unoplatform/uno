@@ -3,6 +3,8 @@
 using System;
 using CoreGraphics;
 using Foundation;
+using ObjCRuntime;
+using System.Globalization;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -45,17 +47,17 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 			AccessibilityIdentifier = peer.GetAutomationId() ?? string.Empty;
 
 			// Control type -> Traits
-			var traits = MapControlTypeToTraits(peer.GetAutomationControlType());
+			var traits = (ulong)MapControlTypeToTraits(peer.GetAutomationControlType());
 
 			// State-based traits
 			if (!peer.IsEnabled())
 			{
-				traits |= UIAccessibilityTrait.NotEnabled;
+				traits |= (ulong)UIAccessibilityTrait.NotEnabled;
 			}
 
 			if (peer.GetHeadingLevel() != AutomationHeadingLevel.None)
 			{
-				traits |= UIAccessibilityTrait.Header;
+				traits |= (ulong)UIAccessibilityTrait.Header;
 			}
 
 			// Selected state for toggleable/selectable items
@@ -63,14 +65,14 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 			{
 				if (toggleProvider.ToggleState == ToggleState.On)
 				{
-					traits |= UIAccessibilityTrait.Selected;
+					traits |= (ulong)UIAccessibilityTrait.Selected;
 				}
 			}
 			else if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionProvider)
 			{
 				if (selectionProvider.IsSelected)
 				{
-					traits |= UIAccessibilityTrait.Selected;
+					traits |= (ulong)UIAccessibilityTrait.Selected;
 				}
 			}
 
@@ -87,11 +89,11 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 				if (max > min)
 				{
 					var percentage = (value - min) / (max - min) * 100;
-					AccessibilityValue = $"{percentage:F0}%";
+					AccessibilityValue = string.Format(CultureInfo.InvariantCulture, "{0:F0}%", percentage);
 				}
 				else
 				{
-					AccessibilityValue = value.ToString("F1");
+					AccessibilityValue = value.ToString("F1", CultureInfo.InvariantCulture);
 				}
 			}
 			else if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
@@ -135,7 +137,8 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 	/// <summary>
 	/// Called when VoiceOver user double-taps to activate the element.
 	/// </summary>
-	public override bool AccessibilityActivate()
+	[Export("accessibilityActivate")]
+	public bool AccessibilityActivate()
 	{
 		if (!_peerRef.TryGetTarget(out var peer))
 		{
@@ -195,7 +198,8 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 	/// <summary>
 	/// Called when VoiceOver user swipes up on an adjustable element.
 	/// </summary>
-	public override void AccessibilityIncrement()
+	[Export("accessibilityIncrement")]
+	public new void AccessibilityIncrement()
 	{
 		if (!_peerRef.TryGetTarget(out var peer))
 		{
@@ -223,7 +227,8 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 	/// <summary>
 	/// Called when VoiceOver user swipes down on an adjustable element.
 	/// </summary>
-	public override void AccessibilityDecrement()
+	[Export("accessibilityDecrement")]
+	public new void AccessibilityDecrement()
 	{
 		if (!_peerRef.TryGetTarget(out var peer))
 		{
@@ -251,7 +256,8 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 	/// <summary>
 	/// Called when VoiceOver user performs escape gesture (two-finger Z).
 	/// </summary>
-	public override bool AccessibilityPerformEscape()
+	[Export("accessibilityPerformEscape")]
+	public new bool AccessibilityPerformEscape()
 	{
 		// This could be used to dismiss popups or go back
 		// For now, let the system handle it
@@ -261,7 +267,8 @@ internal sealed class UnoAccessibilityElement : UIAccessibilityElement
 	/// <summary>
 	/// Called when VoiceOver user performs scroll gesture.
 	/// </summary>
-	public override bool AccessibilityScroll(UIAccessibilityScrollDirection direction)
+	[Export("accessibilityScroll:")]
+	public new bool AccessibilityScroll(UIAccessibilityScrollDirection direction)
 	{
 		if (!_peerRef.TryGetTarget(out var peer))
 		{

@@ -318,7 +318,7 @@ internal sealed class UIKitAccessibilityBridge : IAutomationPeerListener, IUnoAc
 			else if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty)
 			{
 				// Toggle state changed - announce the element
-				UIAccessibility.PostNotification(UIAccessibilityPostNotification.Announcement, element.AccessibilityLabel);
+				UIAccessibility.PostNotification(UIAccessibilityPostNotification.Announcement, new NSString(element.AccessibilityLabel ?? string.Empty));
 			}
 			else
 			{
