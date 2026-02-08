@@ -3,6 +3,7 @@
 // MUX Reference AutomationPeer.h, tag winui3/release/1.8.2
 
 #nullable enable
+#pragma warning disable IDE0051 // Remove unused private members
 
 using System.Collections.Generic;
 

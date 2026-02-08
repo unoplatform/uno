@@ -149,6 +149,7 @@ namespace Microsoft.UI.Xaml
 			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
+			UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(this, child, index);
 
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();

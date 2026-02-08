@@ -334,7 +334,7 @@ partial class Selector
 		{
 			// Only change the focus if there is a selected item.
 			// Use InputActivationBehavior.NoActivate because just changing selected item by default shouldn't steal activation from another window/island.
-			SetFocusedItem(newSelectedIndex, true /*shouldScrollIntoView*/, animateIfBringIntoView, focusNavigationDirection, InputActivationBehavior.NoActivate);
+			SetFocusedItem(newSelectedIndex, true /*shouldScrollIntoView*/, animateIfBringIntoView, focusNavigationDirection, Uno.UI.Xaml.Input.InputActivationBehavior.NoActivate);
 		}
 	}
 }

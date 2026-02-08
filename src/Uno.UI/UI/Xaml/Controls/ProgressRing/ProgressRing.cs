@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 			RegisterPropertyChangedCallback(BackgroundProperty, OnBackgroundPropertyChanged);
 		}
 
-		protected override AutomationPeer OnCreateAutomationPeer() => new ProgressRingAutomationPeer(progressRing: this);
+		protected override AutomationPeer OnCreateAutomationPeer() => new ProgressRingAutomationPeer(this);
 
 		protected override void OnApplyTemplate()
 		{

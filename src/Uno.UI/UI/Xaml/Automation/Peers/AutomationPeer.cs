@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #nullable enable
+#pragma warning disable CS8604 // Possible null reference argument
+#pragma warning disable IDE0051 // Remove unused private members
 
 using System;
 using System.Collections.Generic;
@@ -302,10 +304,7 @@ public partial class AutomationPeer : DependencyObject
 
 	#region Internal Helpers
 
-	// UNO TODO: Check the implementations of IsKeyboardFocusableHelper and IsOffscreenHelper
-	internal bool IsKeyboardFocusableHelper() => false;
-
-	internal bool IsOffscreenHelper(bool ignoreClippingOnScrollContentPresenters) => false;
+	// IsKeyboardFocusableHelper and IsOffscreenHelper are implemented in AutomationPeer.mux.cs
 
 	private static string LocalizeControlType(AutomationControlType controlType) =>
 		// TODO: Humanize ("AppBarButton" -> "app bar button")
@@ -316,6 +315,7 @@ public partial class AutomationPeer : DependencyObject
 	/// Invokes the default action on the automation peer if supported.
 	/// </summary>
 	/// <returns>True if the action was invoked.</returns>
+	// TODO (DOTI) Not in WinUI?
 	internal bool InvokeAutomationPeer()
 	{
 		// TODO: Add support for ComboBox, Slider, CheckBox, ToggleButton, RadioButton, ToggleSwitch, Selector, etc.
@@ -336,6 +336,149 @@ public partial class AutomationPeer : DependencyObject
 		}
 
 		return false;
+	}
+
+	#endregion
+
+	#region Core Layer Helper Overrides
+
+	/// <summary>
+	/// Core layer helper that returns whether this AutomationPeer is enabled.
+	/// </summary>
+	/// <returns>True if the peer is enabled.</returns>
+	internal bool IsEnabledHelper()
+	{
+		return IsEnabledCore();
+	}
+
+	/// <summary>
+	/// Returns whether this AutomationPeer has keyboard focus.
+	/// </summary>
+	/// <returns>True if the peer has keyboard focus.</returns>
+	internal bool HasKeyboardFocusHelper()
+	{
+		return HasKeyboardFocusCore();
+	}
+
+	/// <summary>
+	/// Returns whether this element can receive keyboard focus.
+	/// Implementation is in AutomationPeer.mux.cs (IsKeyboardFocusableImpl).
+	/// </summary>
+	/// <returns>True if the element can receive keyboard focus.</returns>
+	internal bool IsKeyboardFocusableHelper() => IsKeyboardFocusableImpl();
+
+	/// <summary>
+	/// Returns whether this element is offscreen.
+	/// Implementation is in AutomationPeer.mux.cs (IsOffscreenImpl).
+	/// </summary>
+	/// <param name="ignoreClippingOnScrollContentPresenters">Whether to ignore clipping on scroll presenters.</param>
+	/// <returns>True if the element is offscreen.</returns>
+	internal bool IsOffscreenHelper(bool ignoreClippingOnScrollContentPresenters)
+		=> IsOffscreenImpl(ignoreClippingOnScrollContentPresenters);
+
+	/// <summary>
+	/// Shows the context menu for this automation peer's element.
+	/// </summary>
+	internal void ShowContextMenuHelper()
+	{
+		ShowContextMenuCore();
+	}
+
+	#endregion
+
+	#region UIA Infrastructure Methods
+
+	/// <summary>
+	/// Initializes this AutomationPeer instance.
+	/// </summary>
+	public void InitInstance()
+	{
+		// TODO Uno: Platform-specific initialization for UIA infrastructure.
+		// In WinUI, this sets up core automation peer state.
+	}
+
+	/// <summary>
+	/// Deinitializes the members when the managed UIElement is gone or when this object dies itself.
+	/// </summary>
+	public void Deinit()
+	{
+		// TODO Uno: Platform-specific cleanup for UIA infrastructure.
+		// In WinUI, this cleans up pattern providers, UIA wrapper, and event handlers.
+	}
+
+	/// <summary>
+	/// Gets the raw UIA element provider for this automation peer.
+	/// </summary>
+	/// <returns>The IRawElementProviderSimple, or null if unavailable.</returns>
+	public object? GetRawElementProviderSimple()
+	{
+		// TODO Uno: Return platform-specific UIA provider when available.
+		// On platforms without UIAutomation infrastructure, return null.
+		return null;
+	}
+
+	/// <summary>
+	/// Sets the UIA wrapper for this automation peer.
+	/// When CUIAWrapper gets created for a given AutomationPeer, it caches itself here for reuse.
+	/// </summary>
+	public void SetUIAWrapper()
+	{
+		// TODO Uno: Implement UIA wrapper caching when UIA infrastructure is available.
+		// In WinUI, this associates the wrapper as a weak reference with validation patterns.
+	}
+
+	#endregion
+
+	#region Managed Value Retrieval Helpers
+
+	/// <summary>
+	/// Calls into managed to retrieve an AutomationPeer value.
+	/// </summary>
+	/// <returns>The automation peer value, or null.</returns>
+	public object? GetAutomationPeerAPValueFromManaged()
+	{
+		// TODO Uno: Implement retrieval from managed automation property values.
+		// In WinUI, this bridges between native and managed layers.
+		return null;
+	}
+
+	/// <summary>
+	/// Calls into managed to retrieve a rectangle value.
+	/// </summary>
+	/// <returns>The rectangle value, or null.</returns>
+	public object? GetAutomationPeerRectValueFromManaged()
+	{
+		// TODO Uno: Implement retrieval from managed automation property values.
+		// In WinUI, this retrieves XRECTF from managed properties.
+		return null;
+	}
+
+	#endregion
+
+	#region Core Virtual Methods
+
+	/// <summary>
+	/// Gets the root children of this automation peer.
+	/// Walks the root DO tree to return the children APs.
+	/// </summary>
+	/// <returns>The collection of root child peers, or null.</returns>
+	protected virtual object? GetRootChildrenCore()
+	{
+		// Default implementation returns null; root window peers override this.
+		// In WinUI, this is implemented in the root automation peer to walk the visual tree.
+		return null;
+	}
+
+	#endregion
+
+	#region Error Handling
+
+	/// <summary>
+	/// Throws an ElementNotAvailableException for UIA.
+	/// </summary>
+	public void ThrowElementNotAvailableError()
+	{
+		throw new InvalidOperationException("UIA element is not available");
 	}
 
 	#endregion
@@ -369,7 +512,10 @@ public partial class AutomationPeer : DependencyObject
 	public void RaiseAutomationEvent(AutomationEvents eventId)
 	{
 #if __SKIA__
+	if (ListenerExists(eventId))
+	{//give it just the automationpeer.cs and .cpp and make it port it line by line to c#
 		AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
+	}
 #else
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 #endif
@@ -385,6 +531,7 @@ public partial class AutomationPeer : DependencyObject
 	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
 #if __SKIA__
+		// TODO (DOTI): Validate the use of: UIAXcp::AENotification, In docs there is no notifi. only in the source code
 		if (ListenerExists(AutomationEvents.Notification))
 		{
 			AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);

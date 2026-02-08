@@ -29,22 +29,33 @@ public partial class ListViewBaseAutomationPeer : SelectorAutomationPeer, IDropT
 	protected override List<AutomationPeer> GetChildrenCore()
 	{
 		var owner = ListViewBaseOwner;
-		var baseChildren = base.GetChildrenCore() ?? new List<AutomationPeer>();
+		var baseChildrenEnumerable = base.GetChildrenCore();
+		IList<AutomationPeer> baseChildrenList;
+
+		if (baseChildrenEnumerable is IList<AutomationPeer> list)
+		{
+			baseChildrenList = list;
+		}
+		else
+		{
+			baseChildrenList = new List<AutomationPeer>(baseChildrenEnumerable ?? Array.Empty<AutomationPeer>());
+		}
+
 		if (owner?.ItemsPresenter is not ItemsPresenter presenter)
 		{
-			return baseChildren;
+			return new List<AutomationPeer>(baseChildrenList);
 		}
 
 		var header = presenter.HeaderContentControl;
 		var footer = presenter.FooterContentControl;
 		if (header is null && footer is null)
 		{
-			return baseChildren;
+			return new List<AutomationPeer>(baseChildrenList);
 		}
 
-		var children = new List<AutomationPeer>(baseChildren.Count + (header is null ? 0 : 1) + (footer is null ? 0 : 1));
+		var children = new List<AutomationPeer>(baseChildrenList.Count + (header is null ? 0 : 1) + (footer is null ? 0 : 1));
 		AddPeerForElement(header, children);
-		children.AddRange(baseChildren);
+		children.AddRange(baseChildrenList);
 		AddPeerForElement(footer, children);
 		return children;
 	}

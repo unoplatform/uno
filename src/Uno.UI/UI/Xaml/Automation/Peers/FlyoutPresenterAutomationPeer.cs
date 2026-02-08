@@ -4,6 +4,7 @@
 #nullable enable
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+#pragma warning disable CS8603 // Possible null reference return
 using System;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;

@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #nullable enable
+#pragma warning disable CS8601 // Possible null reference assignment
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;

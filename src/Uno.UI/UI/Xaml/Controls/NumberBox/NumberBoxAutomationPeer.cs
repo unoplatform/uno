@@ -44,7 +44,7 @@ public partial class NumberBoxAutomationPeer : AutomationPeer, IRangeValueProvid
 
 		if (string.IsNullOrEmpty(name))
 		{
-			if (Owner is NumberBox numberBox)
+			if (_owner is NumberBox numberBox)
 			{
 				name = SharedHelpers.TryGetStringRepresentationFromObject(numberBox.Header);
 			}
