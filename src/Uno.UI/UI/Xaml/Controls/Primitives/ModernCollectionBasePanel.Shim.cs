@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	// Minimal shim to provide the ModernCollectionBasePanel type expected by WinUI ported code.
 	// Methods/properties return safe defaults so callers gracefully fall back to non-optimized logic.
-	internal class ModernCollectionBasePanel : Panel
+	internal partial class ModernCollectionBasePanel : Panel
 	{
 		// Cache indices used by automation peers / helpers
 		public virtual int FirstCacheIndexBase => -1;
