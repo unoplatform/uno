@@ -160,7 +160,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (spAutomationPeer is ToggleMenuFlyoutItemAutomationPeer spToggleButtonAutomationPeer)
 				{
-					spToggleButtonAutomationPeer.Toggle();
+					// Notify automation listeners of the property change without invoking a toggle action.
+					// Calling Toggle() would call Invoke() -> toggle IsChecked again and cause recursion.
+					spToggleButtonAutomationPeer.RaisePropertyChangedEvent(oldValue, newValue);
 				}
 			}
 		}

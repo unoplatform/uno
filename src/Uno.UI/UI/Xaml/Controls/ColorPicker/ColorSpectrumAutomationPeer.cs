@@ -9,6 +9,7 @@ using System.Numerics;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;

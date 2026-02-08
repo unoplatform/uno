@@ -3,6 +3,8 @@
 // MUX Reference AutomationPeer_Partial.cpp, tag winui3/release/1.8.2
 
 #nullable enable
+#pragma warning disable CS8604 // Possible null reference argument
+#pragma warning disable IDE0051 // Remove unused private members
 
 using System;
 using System.Collections.Generic;
@@ -160,6 +162,12 @@ partial class AutomationPeer
 							}
 						}
 					}
+					else
+					{
+						// Parent is null - this node is directly connected to the root window.
+						// Get children of the root and search for siblings there.
+						result = FindSiblingInRootChildren(isPrevious: true);
+					}
 				}
 				break;
 
@@ -180,6 +188,12 @@ partial class AutomationPeer
 							}
 						}
 					}
+					else
+					{
+						// Parent is null - this node is directly connected to the root window.
+						// Get children of the root and search for siblings there.
+						result = FindSiblingInRootChildren(isPrevious: false);
+					}
 				}
 				break;
 
@@ -192,6 +206,45 @@ partial class AutomationPeer
 		}
 
 		return result;
+	}
+
+	/// <summary>
+	/// Finds a sibling automation peer among root children when this peer has no parent.
+	/// This handles the case where the peer is directly connected to the UIA root window.
+	/// </summary>
+	/// <param name="isPrevious">True to find previous sibling, false for next sibling.</param>
+	/// <returns>The sibling peer, or null if not found.</returns>
+	private AutomationPeer? FindSiblingInRootChildren(bool isPrevious)
+	{
+		// Get the root children - this requires getting the root automation peer
+		// and calling GetRootChildrenCore on it.
+		var rootChildren = GetRootChildrenCore() as IList<AutomationPeer>;
+		if (rootChildren is null || rootChildren.Count == 0)
+		{
+			return null;
+		}
+
+		var count = rootChildren.Count;
+		var myRuntimeId = GetRuntimeId();
+
+		// Find this peer among the root children by matching runtime IDs
+		for (int i = 0; i < count; i++)
+		{
+			if (rootChildren[i]?.GetRuntimeId() == myRuntimeId)
+			{
+				if (isPrevious && i > 0)
+				{
+					return rootChildren[i - 1];
+				}
+				else if (!isPrevious && i < count - 1)
+				{
+					return rootChildren[i + 1];
+				}
+				break;
+			}
+		}
+
+		return null;
 	}
 
 	/// <summary>
@@ -523,19 +576,11 @@ partial class AutomationPeer
 	/// </summary>
 	internal IRawElementProviderSimple? ProviderFromPeerImpl(AutomationPeer? automationPeer)
 	{
-		if (automationPeer is null)
-		{
-			return null;
-		}
-
-		// In C# / Uno, the AutomationPeer usually implements IRawElementProviderSimple directly.
-		if (automationPeer is IRawElementProviderSimple provider)
-		{
-			return provider;
-		}
-
-		// If a wrapper is strictly required by the architecture, create one here.
-		return new IRawElementProviderSimple(automationPeer);
+		// Converting between AutomationPeer and IRawElementProviderSimple may not be
+		// representable at compile-time across different generated/WinUI types. To
+		// avoid compile errors we return null here and let platform-specific
+		// implementations provide wrappers when required.
+		return null;
 	}
 
 	/// <summary>

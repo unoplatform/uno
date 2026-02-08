@@ -79,11 +79,8 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 		if (string.IsNullOrEmpty(automationId))
 		{
-			//UNO TODO: Implement GetAutomationIdHelper on AutomationPeer
-
-			//Owner.GetAutomationIdHelper(out var strAutomationId);
-
-			//return strAutomationId;
+			// Use the helper which falls back to the element's Name property
+			return GetAutomationIdHelper() ?? string.Empty;
 		}
 
 		return automationId;

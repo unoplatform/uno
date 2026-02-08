@@ -59,7 +59,7 @@ public partial class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpan
 	}
 
 	// IAutomationPeerOverrides
-	protected override object? GetPatternCore(PatternInterface patternInterface)
+	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.ExpandCollapse)
 		{

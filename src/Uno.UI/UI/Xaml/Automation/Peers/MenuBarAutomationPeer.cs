@@ -18,6 +18,9 @@ public partial class MenuBarAutomationPeer : FrameworkElementAutomationPeer
 	{
 	}
 
+	protected override string GetClassNameCore()
+		=> nameof(MenuBar);
+
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.MenuBar;
 }

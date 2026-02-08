@@ -3,6 +3,7 @@
 // MUX Reference BreadcrumbBarItemAutomationPeer.cpp, tag winui3/release/1.8.4
 
 #nullable enable
+#pragma warning disable CS8603 // Possible null reference return
 
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;

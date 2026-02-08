@@ -362,7 +362,7 @@ partial class Selector
 
 		if (animateIfBringIntoView && index >= 0)
 		{
-			SetFocusedItem(index, shouldScrollIntoView: true, animateIfBringIntoView, focusNavigationDirection, InputActivationBehavior.NoActivate);
+			SetFocusedItem(index, shouldScrollIntoView: true, animateIfBringIntoView, focusNavigationDirection, Uno.UI.Xaml.Input.InputActivationBehavior.NoActivate);
 		}
 	}
 

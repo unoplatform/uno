@@ -21,4 +21,31 @@ public partial class ButtonBaseAutomationPeer : FrameworkElementAutomationPeer
 	}
 
 	protected override bool IsControlElementCore() => true;
+
+	// 	IFACEMETHODIMP ButtonBaseAutomationPeer::GetNameCore(_Out_ HSTRING* returnValue)
+	// {
+	//     HRESULT hr = S_OK;
+
+	//     xaml::IUIElement* pOwner = NULL;
+	//     IInspectable* pContent = NULL;
+
+	//     IFC(ButtonBaseAutomationPeerGenerated::GetNameCore(returnValue));
+
+	//     if (*returnValue == NULL)
+	//     {
+	//         IFC(get_Owner(&pOwner));
+	//         IFCPTR(pOwner);
+	//         IFC((static_cast<ButtonBase*>(pOwner))->get_Content(&pContent));
+	//         IFC(IValueBoxer::UnboxValue(pContent, returnValue));
+	//     }
+
+	// Cleanup:
+	//     ReleaseInterface(pOwner);
+	//     ReleaseInterface(pContent);
+
+	//     RRETURN(hr);
+	// }
+
+
+
 }
