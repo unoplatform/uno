@@ -96,6 +96,89 @@ public class Given_BackButtonIntegration
 		}
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_First_Listener_Registered_HasAnyBackHandlers_True()
+	{
+		var manager = SystemNavigationManager.GetForCurrentView();
+		var listener = new TestListener();
+		try
+		{
+			Assert.IsFalse(manager.HasAnyBackHandlers, "Should start with no handlers.");
+			BackButtonIntegration.RegisterListener(listener);
+			Assert.IsTrue(manager.HasAnyBackHandlers, "Should have handlers after registering a listener.");
+			Assert.IsTrue(manager.HasInternalBackListeners, "Should have internal listeners.");
+		}
+		finally
+		{
+			BackButtonIntegration.UnregisterListener(listener);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Last_Listener_Unregistered_HasAnyBackHandlers_False()
+	{
+		var manager = SystemNavigationManager.GetForCurrentView();
+		var listener1 = new TestListener();
+		var listener2 = new TestListener();
+		try
+		{
+			BackButtonIntegration.RegisterListener(listener1);
+			BackButtonIntegration.RegisterListener(listener2);
+			Assert.IsTrue(manager.HasAnyBackHandlers);
+
+			BackButtonIntegration.UnregisterListener(listener1);
+			Assert.IsTrue(manager.HasAnyBackHandlers, "Should still have handlers with one listener remaining.");
+
+			BackButtonIntegration.UnregisterListener(listener2);
+			Assert.IsFalse(manager.HasAnyBackHandlers, "Should have no handlers after all listeners removed.");
+			Assert.IsFalse(manager.HasInternalBackListeners);
+		}
+		finally
+		{
+			BackButtonIntegration.UnregisterListener(listener1);
+			BackButtonIntegration.UnregisterListener(listener2);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Public_And_Internal_Handlers_Combined()
+	{
+		var manager = SystemNavigationManager.GetForCurrentView();
+		var listener = new TestListener();
+		void OnBackRequested(object sender, BackRequestedEventArgs e) { }
+
+		try
+		{
+			Assert.IsFalse(manager.HasAnyBackHandlers);
+
+			// Add internal listener only
+			BackButtonIntegration.RegisterListener(listener);
+			Assert.IsTrue(manager.HasAnyBackHandlers);
+			Assert.IsFalse(manager.HasBackRequestedSubscribers);
+
+			// Add public subscriber
+			manager.BackRequested += OnBackRequested;
+			Assert.IsTrue(manager.HasAnyBackHandlers);
+			Assert.IsTrue(manager.HasBackRequestedSubscribers);
+
+			// Remove internal listener - still has public subscriber
+			BackButtonIntegration.UnregisterListener(listener);
+			Assert.IsTrue(manager.HasAnyBackHandlers);
+
+			// Remove public subscriber
+			manager.BackRequested -= OnBackRequested;
+			Assert.IsFalse(manager.HasAnyBackHandlers);
+		}
+		finally
+		{
+			manager.BackRequested -= OnBackRequested;
+			BackButtonIntegration.UnregisterListener(listener);
+		}
+	}
+
 	private class TestListener : IBackButtonListener
 	{
 		public bool WasTriggered { get; set; }
