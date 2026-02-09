@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.Messages;
-using Frame = Uno.UI.RemoteControl.HotReload.Messages.Frame;
 using static Uno.UI.RemoteControl.RemoteControlStatus;
+using Frame = Uno.UI.RemoteControl.HotReload.Messages.Frame;
 
 namespace Uno.UI.RemoteControl;
 
@@ -25,11 +25,14 @@ public partial class RemoteControlClient
 
 		private string? _hotReloadServerError;
 
-		public StatusSink(RemoteControlClient owner)
+		public StatusSink(RemoteControlClient owner, bool registerDiagnosticView)
 		{
 			_owner = owner;
 #if HAS_UNO_WINUI
-			DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner), DiagnosticViewRegistrationMode.OnDemand);
+			if (registerDiagnosticView)
+			{
+				DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner), DiagnosticViewRegistrationMode.OnDemand);
+			}
 #endif
 		}
 
