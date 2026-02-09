@@ -68,6 +68,7 @@ jobs:
 
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
   displayName: 'macOS Tests'
+  condition: and(succeededOrFailed(), false) # Temporarily disabled: runner image propagation not done yet (https://github.com/actions/runner-images/pull/13607)
   timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
 
