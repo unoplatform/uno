@@ -314,7 +314,7 @@ internal partial class Win32DragDropExtension
 				continue;
 			}
 
-			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop");
+			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop", Guid.NewGuid().ToString("N"));
 			if (!Directory.Exists(tempDir))
 			{
 				Directory.CreateDirectory(tempDir);
