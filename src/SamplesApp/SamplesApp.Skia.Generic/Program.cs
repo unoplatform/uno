@@ -55,7 +55,7 @@ namespace SkiaSharpExample
 					}
 
 #if !RUNTIME_NATIVE_AOT
-					global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(Microsoft.UI.Xaml.Documents.UnicodeText), o => new global::Uno.WinUI.SpellChecking.SpellCheckingService(o));
+					global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(Microsoft.UI.Xaml.Documents.ISpellCheckingService), o => new global::Uno.WinUI.SpellChecking.SpellCheckingService(o));
 #endif
 				})
 				.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
