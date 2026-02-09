@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\AppBar_Partial.h, tag winui3/release/1.7.1, commit 5f27a786ac96c
+// MUX Reference dxaml\xcp\dxaml\lib\AppBar_Partial.cpp, tag winui3/release/1.7.1, commit 5f27a786ac96c
 
 #nullable enable
 
 using System;
+using System.Globalization;
 using System.Linq;
 using DirectUI;
 using Microsoft.UI.Input;
@@ -24,6 +25,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
+using Uno.UI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.LocalizedResource;
 using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
@@ -54,20 +56,21 @@ partial class AppBar
 #endif
 	}
 
-	// TODO:MZ: Cleanup to unloaded
-	//~AppBar()
-	//{
-	//	auto xamlRoot = XamlRoot::GetForElementStatic(this);
-	//	if (m_xamlRootChangedEventHandler && xamlRoot)
-	//	{
-	//		VERIFYHR(m_xamlRootChangedEventHandler.DetachEventHandler(xamlRoot.Get()));
-	//	}
-
-	//	if (DXamlCore::GetCurrent() != nullptr)
-	//	{
-	//		VERIFYHR(BackButtonIntegration_UnregisterListener(this));
-	//	}
-	//}
+#if HAS_UNO
+	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
+	// Move this logic into Loaded/Unloaded event handlers to avoid leaks.
+	// Original destructor logic:
+	//   auto xamlRoot = XamlRoot::GetForElementStatic(this);
+	//   if (m_xamlRootChangedEventHandler && xamlRoot)
+	//   {
+	//       VERIFYHR(m_xamlRootChangedEventHandler.DetachEventHandler(xamlRoot.Get()));
+	//   }
+	//   if (DXamlCore::GetCurrent() != nullptr)
+	//   {
+	//       VERIFYHR(BackButtonIntegration_UnregisterListener(this));
+	//   }
+	// These are handled in OnUnloaded instead.
+#endif
 
 	protected virtual void PrepareState()
 	{
@@ -143,6 +146,19 @@ partial class AppBar
 			m_layoutUpdatedEventHandler.Disposable = null;
 		}
 
+		// Detach XamlRoot.Changed to avoid leaking through the XamlRoot reference.
+		if (m_xamlRootChangedEventHandler.Disposable is not null)
+		{
+			m_xamlRootChangedEventHandler.Disposable = null;
+		}
+
+		// Detach display modes state group event.
+		if (m_displayModeStateChangedEventHandler.Disposable is not null)
+		{
+			m_displayModeStateChangedEventHandler.Disposable = null;
+			m_tpDisplayModesStateGroup = null;
+		}
+
 		if (m_isInOverlayState)
 		{
 			TeardownOverlayState();
@@ -152,7 +168,7 @@ partial class AppBar
 		{
 			if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
 			{
-				var applicationBarService = xamlRoot.GetApplicationBarService(applicationBarService);
+				var applicationBarService = xamlRoot.GetApplicationBarService();
 				applicationBarService.UnregisterApplicationBar(this);
 			}
 		}
@@ -172,11 +188,11 @@ partial class AppBar
 
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
-		RefreshContentHeight(null /*didChange*/);
+		RefreshContentHeight();
 		UpdateTemplateSettings();
 
-		Page pageOwner;
-		if (SUCCEEDED(GetOwner(&pageOwner)) && pageOwner)
+		var pageOwner = GetOwner();
+		if (pageOwner is not null)
 		{
 			pageOwner.AppBarClosedSizeChanged();
 		}
@@ -221,7 +237,7 @@ partial class AppBar
 			{
 				if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
 				{
-					var applicationBarService = xamlRoot.GetApplicationBarService(applicationBarService);
+					var applicationBarService = xamlRoot.GetApplicationBarService();
 					applicationBarService.HandleApplicationBarClosedDisplayModeChange(this, m_Mode);
 				}
 			}
@@ -241,8 +257,8 @@ partial class AppBar
 
 	private protected override void OnVisibilityChanged()
 	{
-		Page pageOwner;
-		if (SUCCEEDED(GetOwner(&pageOwner)) && pageOwner)
+		var pageOwner = GetOwner();
+		if (pageOwner is not null)
 		{
 			pageOwner.AppBarClosedSizeChanged();
 		}
@@ -250,7 +266,71 @@ partial class AppBar
 
 	protected override void OnApplyTemplate()
 	{
-		//TODO:MZ
+		// Detach old event handlers.
+		m_contentRootSizeChangedEventHandler.Disposable = null;
+		m_expandButtonClickEventHandler.Disposable = null;
+		m_displayModeStateChangedEventHandler.Disposable = null;
+
+		// Clear old template parts.
+		m_tpLayoutRoot = null;
+		m_tpContentRoot = null;
+		m_tpExpandButton = null;
+		m_tpDisplayModesStateGroup = null;
+		m_hasExpandButtonCustomAutomationName = false;
+
+		base.OnApplyTemplate();
+
+		// Get template parts.
+		m_tpLayoutRoot = GetTemplateChild<Grid>("LayoutRoot");
+		m_tpContentRoot = GetTemplateChild<FrameworkElement>("ContentRoot");
+
+		// Try "ExpandButton" first (post-threshold name), then "MoreButton" (legacy name).
+		m_tpExpandButton = GetTemplateChild<ButtonBase>("ExpandButton")
+			?? GetTemplateChild<ButtonBase>("MoreButton");
+
+		// Attach content root size changed handler.
+		if (m_tpContentRoot is not null)
+		{
+			m_tpContentRoot.SizeChanged += OnContentRootSizeChanged;
+			m_contentRootSizeChangedEventHandler.Disposable =
+				Disposable.Create(() => m_tpContentRoot.SizeChanged -= OnContentRootSizeChanged);
+		}
+
+		// Attach expand button click handler.
+		if (m_tpExpandButton is not null)
+		{
+			m_tpExpandButton.Click += OnExpandButtonClick;
+			m_expandButtonClickEventHandler.Disposable =
+				Disposable.Create(() => m_tpExpandButton.Click -= OnExpandButtonClick);
+
+			// Check if the expand button has a custom automation name set by the user.
+			var automationName = AutomationProperties.GetName(m_tpExpandButton);
+			m_hasExpandButtonCustomAutomationName = !string.IsNullOrEmpty(automationName);
+
+			if (!m_hasExpandButtonCustomAutomationName)
+			{
+				bool isOpen = IsOpen;
+				SetExpandButtonAutomationName(m_tpExpandButton, isOpen);
+			}
+
+			bool isAppBarOpen = IsOpen;
+			SetExpandButtonToolTip(m_tpExpandButton, isAppBarOpen);
+		}
+
+		// Get overlay opening/closing storyboards from template resources.
+		m_overlayOpeningStoryboard = GetTemplateChild<Storyboard>("OverlayOpeningAnimation");
+		m_overlayClosingStoryboard = GetTemplateChild<Storyboard>("OverlayClosingAnimation");
+
+		// Query compact & minimal height from resource dictionary.
+		var compactHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeCompactHeight");
+		CompactHeight = compactHeight;
+		MinCompactHeight = compactHeight;
+
+		MinimalHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeMinimalHeight");
+
+		// Refresh our heights and update template settings.
+		RefreshContentHeight();
+		UpdateTemplateSettings();
 	}
 
 	protected override Size MeasureOverride(Size availableSize)
@@ -279,8 +359,8 @@ partial class AppBar
 				{
 					double oldCompactHeight = CompactHeight;
 
-					bool hasRightLabelDynamicPrimaryCommand = HasRightLabelDynamicPrimaryCommand;
-					bool hasNonLabeledDynamicPrimaryCommand = HasNonLabeledDynamicPrimaryCommand;
+					bool hasRightLabelDynamicPrimaryCommand = HasRightLabelDynamicPrimaryCommand();
+					bool hasNonLabeledDynamicPrimaryCommand = HasNonLabeledDynamicPrimaryCommand();
 
 					if (hasRightLabelDynamicPrimaryCommand || hasNonLabeledDynamicPrimaryCommand)
 					{
@@ -355,7 +435,7 @@ partial class AppBar
 			// a light-dismiss layer - the popup will have its own light-dismiss layer,
 			// and it can interfere with ours.
 			var popupAncestor = Popup.GetClosestPopupAncestor(this);
-			if (!popupAncestor || !popupAncestor.IsSelfOrAncestorLightDismiss())
+			if (popupAncestor is null || !popupAncestor.IsLightDismissEnabled)
 			{
 				if (!m_isInOverlayState)
 				{
@@ -387,7 +467,7 @@ partial class AppBar
 			var closedDisplayMode = ClosedDisplayMode;
 			if (closedDisplayMode == AppBarClosedDisplayMode.Hidden)
 			{
-				ApplicationBarService applicationBarService;
+				ApplicationBarService? applicationBarService = null;
 				if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
 				{
 					applicationBarService = xamlRoot.GetApplicationBarService();
@@ -396,7 +476,7 @@ partial class AppBar
 
 				// Determine the focus state
 				var focusState = (m_onLoadFocusState != FocusState.Unfocused ? m_onLoadFocusState : FocusState.Programmatic);
-				applicationBarService.FocusApplicationBar(this, focusState);
+				applicationBarService!.FocusApplicationBar(this, focusState);
 
 				// Reset the saved focus state
 				m_onLoadFocusState = FocusState.Unfocused;
@@ -452,7 +532,7 @@ partial class AppBar
 			// then focus will be restored when the flyout closes.
 			// We'll interfere with that if we restore focus before that time.
 			var popupAncestor = Popup.GetClosestPopupAncestor(this);
-			if (!popupAncestor || !popupAncestor.IsFlyout())
+			if (popupAncestor is null || !popupAncestor.IsFlyout)
 			{
 				RestoreSavedFocus();
 			}
@@ -679,16 +759,15 @@ partial class AppBar
 
 			if (isOpen && !isHandled)
 			{
-				var applicationBarService;
+				ApplicationBarService? applicationBarService = null;
 				if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
 				{
 					applicationBarService = xamlRoot.GetApplicationBarService();
 				}
 				MUX_ASSERT(applicationBarService is not null);
 
-				applicationBarService.SetFocusReturnState(xaml::FocusState_Pointer);
-				IFC_RETURN(applicationBarService.ToggleApplicationBars());
-
+				applicationBarService!.SetFocusReturnState(FocusState.Pointer);
+				applicationBarService.ToggleApplicationBars();
 				applicationBarService.ResetFocusReturnState();
 				e.Handled = true;
 			}
@@ -743,7 +822,7 @@ partial class AppBar
 
 			if (isOpen)
 			{
-				applicationBarService.SaveCurrentFocusedElement(this);
+				applicationBarService!.SaveCurrentFocusedElement(this);
 				applicationBarService.OpenApplicationBar(this, m_Mode);
 
 				// If the AppBar does not already have focus (i.e. it was opened programmatically),
@@ -755,7 +834,7 @@ partial class AppBar
 			}
 			else
 			{
-				applicationBarService.CloseApplicationBar(this, m_Mode);
+				applicationBarService!.CloseApplicationBar(this, m_Mode);
 
 				// Only restore the focus to the saved element if we have the focus just before closing.
 				// For CommandBar, we also check if the Overflow has focus in the override method "HasFocus"
@@ -765,7 +844,7 @@ partial class AppBar
 				}
 			}
 
-			applicationBarService.UpdateDismissLayer();
+			applicationBarService!.UpdateDismissLayer();
 		}
 
 		// Flag that we're transitions between opened & closed states.
@@ -809,7 +888,6 @@ partial class AppBar
 	private void OnIsOpenChangedForAutomation(DependencyPropertyChangedEventArgs args)
 	{
 		var isOpen = (bool)args.NewValue;
-		bool bAutomationListener = false;
 
 		if (isOpen)
 		{
@@ -821,7 +899,7 @@ partial class AppBar
 		}
 
 		// Raise ToggleState Property change event for Automation clients if they are listening for property changed events.
-		bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged);
+		var bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged);
 		if (bAutomationListener)
 		{
 			var automationPeer = GetOrCreateAutomationPeer();
@@ -830,7 +908,6 @@ partial class AppBar
 				applicationBarAutomationPeer.RaiseToggleStatePropertyChangedEvent(args.OldValue, args.NewValue);
 				applicationBarAutomationPeer.RaiseExpandCollapseAutomationEvent(isOpen);
 			}
-
 		}
 	}
 
@@ -861,7 +938,7 @@ partial class AppBar
 				bool isSticky = IsSticky;
 
 				// If we have focus and the app bar is not sticky close all light-dismiss app bars on ESC
-				ApplicationBarService? applicationBarService;
+				ApplicationBarService? applicationBarService = null;
 				if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
 				{
 					applicationBarService = xamlRoot.GetApplicationBarService();
@@ -871,7 +948,7 @@ partial class AppBar
 				bool hasFocus = this.HasFocus();
 				if (hasFocus)
 				{
-					isAnyAppBarClosed = applicationBarService.CloseAllNonStickyAppBars();
+					isAnyAppBarClosed = applicationBarService!.CloseAllNonStickyAppBars();
 
 					if (isSticky)
 					{
@@ -887,14 +964,17 @@ partial class AppBar
 		}
 	}
 
-	public void SetOwner(Page pOwner)
+	public void SetOwner(Page? pOwner)
 	{
 		if (m_wpOwner is not null)
 		{
 			WeakReferencePool.ReturnWeakReference(this, m_wpOwner);
 			m_wpOwner = null;
 		}
-		m_wpOwner = WeakReferencePool.RentWeakReference(this, pOwner);
+		if (pOwner is not null)
+		{
+			m_wpOwner = WeakReferencePool.RentWeakReference(this, pOwner);
+		}
 	}
 
 	public Page? GetOwner()
@@ -907,7 +987,7 @@ partial class AppBar
 		return null;
 	}
 
-	protected virtual bool ContainsElement(DependencyObject pElement)
+	internal virtual bool ContainsElement(DependencyObject pElement)
 	{
 		// For AppBar, ContainsElement is equivalent to IsAncestorOf.
 		// However, ContainsElement is a virtual method, and CommandBar's
@@ -1124,7 +1204,7 @@ partial class AppBar
 		// Pixel rounding can sometimes cause the bounds and AppBar size to be off by a pixel when we expect them to be equal.
 		// To account for that possibility, we'll allow the AppBar to open down if its height is at most one pixel greater
 		// than the layout bounds height, after rounding the values to the nearest integer.
-		var hasSpace = (XcpRound(bottomOfExpandedAppBar.Y) <= XcpRound(layoutBounds.Y + layoutBounds.Height + 1));
+		var hasSpace = (Math.Round(bottomOfExpandedAppBar.Y) <= Math.Round(layoutBounds.Y + layoutBounds.Height + 1));
 		return hasSpace;
 	}
 
@@ -1198,11 +1278,11 @@ partial class AppBar
 		m_savedFocusState = FocusState.Unfocused;
 	}
 
-	private void RestoreSavedFocusImpl(DependencyObject? savedFocusedElement, FocusState savedFocusState)
+	private protected virtual void RestoreSavedFocusImpl(DependencyObject? savedFocusedElement, FocusState savedFocusState)
 	{
 		if (savedFocusedElement is not null)
 		{
-			this.SetFocusedElement(savedFocusedElement, m_savedFocusState, false /*animateIfBringIntoView*/);
+			this.SetFocusedElement(savedFocusedElement, savedFocusState, false /*animateIfBringIntoView*/);
 		}
 	}
 
@@ -1230,7 +1310,7 @@ partial class AppBar
 
 		string expandButtonAutomationNameResourceId;
 
-		if (appBarAutomationName == null)
+		if (string.IsNullOrEmpty(appBarAutomationName))
 		{
 			expandButtonAutomationNameResourceId = isAppBarExpanded ? UIA_LESS_BUTTON : UIA_MORE_BUTTON;
 		}
@@ -1241,18 +1321,10 @@ partial class AppBar
 
 		string expandButtonAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(expandButtonAutomationNameResourceId);
 
-		if (appBarAutomationName != null)
+		if (!string.IsNullOrEmpty(appBarAutomationName))
 		{
-			// Replace %s in expandButtonAutomationName with appBarAutomationName
-			char buffer[1024];
-			int len = swprintf_s(
-			   buffer, ARRAYSIZE(buffer),
-			   expandButtonAutomationName.GetRawBuffer(null),
-			   appBarAutomationName.GetRawBuffer(null));
-
-			IFCEXPECT_RETURN(len >= 0);
-
-			expandButtonAutomationName.Set(buffer);
+			// Replace placeholder in expandButtonAutomationName with appBarAutomationName
+			expandButtonAutomationName = string.Format(CultureInfo.InvariantCulture, expandButtonAutomationName, appBarAutomationName);
 		}
 
 		AutomationProperties.SetName(expandButton, expandButtonAutomationName);
@@ -1282,12 +1354,12 @@ partial class AppBar
 		// whether the light-dismiss element is hit-testable (IsSticky=True . hit-testable=False).
 		// The pointer pressed handler simply closes the appbar and marks the routed event args
 		// message as handled.
-		if (m_tpLayoutRoot is null)
+		if (m_tpLayoutRoot is not null)
 		{
 			// Create our overlay element if necessary.
 			if (m_overlayElement is null)
 			{
-				Rectangle rectangle = new();
+				var rectangle = new Rectangle();
 				rectangle.Width = 1;
 				rectangle.Height = 1;
 				rectangle.UseLayoutRounding = false;
@@ -1305,7 +1377,7 @@ partial class AppBar
 
 			// Add our overlay element to our layout root panel.
 			var layoutRootChildren = m_tpLayoutRoot.Children;
-			layoutRootChildren.InsertAt(0, m_overlayElement);
+			layoutRootChildren.Insert(0, m_overlayElement);
 		}
 
 		CreateLTEs();
@@ -1327,7 +1399,7 @@ partial class AppBar
 		DestroyLTEs();
 
 		// Remove our light-dismiss element from our layout root panel.
-		if (m_tpLayoutRoot is not null)
+		if (m_tpLayoutRoot is not null && m_overlayElement is not null)
 		{
 			var layoutRootChildren = m_tpLayoutRoot.Children;
 
@@ -1335,7 +1407,10 @@ partial class AppBar
 			bool wasFound = indexOfOverlayElement >= 0;
 
 			MUX_ASSERT(wasFound);
-			layoutRootChildren.RemoveAt(indexOfOverlayElement);
+			if (wasFound)
+			{
+				layoutRootChildren.RemoveAt(indexOfOverlayElement);
+			}
 		}
 
 		m_isInOverlayState = false;
@@ -1359,56 +1434,18 @@ partial class AppBar
 
 	private void PositionLTEs()
 	{
-		MUX_ASSERT(m_layoutTransitionElement is not null);
-
-		DependencyObject parentDO;
-		UIElement parent;
-
-		VisualTreeHelper.GetParent(this, &parentDO);
-
-		// If we don't have a parent, then there's nothing for us to do.
-		if (parentDO)
-		{
-			parentDO.As(&parent);
-
-			IGeneralTransform transform;
-			TransformToVisual(parent.Cast<UIElement>(), &transform);
-
-			Point offset = default;
-			transform.TransformPoint({ 0, 0 }, &offset);
-
-			CoreImports.LayoutTransitionElement_SetDestinationOffset(m_layoutTransitionElement, offset.X, offset.Y);
-		}
+		// TODO Uno: LayoutTransitionElement positioning is not available in Uno.
+		// Original C++ uses CoreImports.LayoutTransitionElement_SetDestinationOffset
+		// to position the LTE relative to its parent.
 	}
 
 	private void DestroyLTEs()
 	{
-		if (m_layoutTransitionElement)
-		{
-			(CoreImports.LayoutTransitionElement_Destroy(
-				DXamlCore.GetCurrent().GetHandle(),
-				GetHandle(),
-				m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>().GetHandle() : null,
-				m_layoutTransitionElement
-			));
-
-			m_layoutTransitionElement.reset();
-		}
-
-		if (m_overlayLayoutTransitionElement)
-		{
-			// Destroy our light-dismiss element's LTE.
-			(CoreImports.LayoutTransitionElement_Destroy(
-				DXamlCore.GetCurrent().GetHandle(),
-				m_overlayElement.Cast<FrameworkElement>().GetHandle(),
-				m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>().GetHandle() : null,
-				m_overlayLayoutTransitionElement
-				));
-
-			m_overlayLayoutTransitionElement.reset();
-		}
-
-		m_parentElementForLTEs.Clear();
+		// TODO Uno: LayoutTransitionElement destruction is not available in Uno.
+		// Original C++ uses CoreImports.LayoutTransitionElement_Destroy to remove LTEs.
+		m_layoutTransitionElement = null;
+		m_overlayLayoutTransitionElement = null;
+		m_parentElementForLTEs = null;
 	}
 
 	private void OnOverlayElementPointerPressed(object sender, PointerRoutedEventArgs pArgs)
@@ -1423,7 +1460,7 @@ partial class AppBar
 	{
 		if (m_tpDisplayModesStateGroup is null)
 		{
-			VisualStateGroup displayModesStateGroup = GetTemplateChild<VisualStateGroup>("DisplayModeStates");
+			var displayModesStateGroup = GetTemplateChild<VisualStateGroup>("DisplayModeStates");
 			m_tpDisplayModesStateGroup = displayModesStateGroup;
 
 			if (m_tpDisplayModesStateGroup is not null)
@@ -1434,60 +1471,49 @@ partial class AppBar
 		}
 	}
 
+#pragma warning disable IDE0051 // Private member is unused (will be used as porting progresses)
 	private bool ShouldUseParentedLTE()
 	{
-		DependencyObject rootDO;
-		if (SUCCEEDED(VisualTreeHelper.GetRootStatic(this, &rootDO)) && rootDO)
-		{
-			PopupRoot popupRoot;
-			FullWindowMediaRoot mediaRoot;
-
-			if (SUCCEEDED(rootDO.As(&popupRoot)) && popupRoot)
-			{
-				return true;
-			}
-			else if (SUCCEEDED(rootDO.As(&mediaRoot)) && mediaRoot)
-			{
-				return true;
-			}
-		}
-
+		// TODO Uno: ShouldUseParentedLTE checks whether the AppBar is under the
+		// PopupRoot or FullWindowMediaRoot to determine if it should use a parented LTE.
+		// Since LTEs are not available in Uno, this always returns false.
+		// Original C++:
+		// CPopupRoot* popupRoot; CFullWindowMediaRoot* mediaRoot;
+		// auto rootDO = VisualTreeHelper::GetRootStatic(this);
+		// if (rootDO.As(&popupRoot)) return true;
+		// else if (rootDO.As(&mediaRoot)) return true;
 		return false;
 	}
 
-	private void OnBackButtonPressedImpl(out bool* pHandled)
+	private void OnBackButtonPressedImpl(out bool handled)
 	{
-		bool isOpen = false;
-		bool isSticky = false;
+		handled = false;
 
-		IFCPTR_RETURN(pHandled);
+		bool isOpen = IsOpen;
+		bool isSticky = IsSticky;
 
-		get_IsOpen(&isOpen);
-		get_IsSticky(&isSticky);
 		if (isOpen && !isSticky)
 		{
-			put_IsOpen(false);
-			*pHandled = true;
+			IsOpen = false;
+			handled = true;
 
 			if (m_Mode != AppBarMode.Inline)
 			{
-				IApplicationBarService applicationBarService;
-				if (var xamlRoot = XamlRoot.GetImplementationForElementStatic(this))
-            {
-					xamlRoot.GetApplicationBarService(applicationBarService);
+				ApplicationBarService? applicationBarService = null;
+				if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
+				{
+					applicationBarService = xamlRoot.GetApplicationBarService();
 				}
-				MUX_ASSERT(applicationBarService);
-				applicationBarService.CloseAllNonStickyAppBars();
+				MUX_ASSERT(applicationBarService is not null);
+				applicationBarService!.CloseAllNonStickyAppBars();
 			}
 		}
-
-		return S_OK;
 	}
+#pragma warning restore IDE0051
 
 	private void ReevaluateIsOverlayVisible()
 	{
-		bool isOverlayVisible = false;
-		LightDismissOverlayHelper.ResolveIsOverlayVisibleForControl(this, &isOverlayVisible);
+		bool isOverlayVisible = LightDismissOverlayHelper.ResolveIsOverlayVisibleForControl(this);
 
 		// Only inline app bars can enable their overlays.  Top/Bottom/Floating will use
 		// the overlay from the ApplicationBarService.
@@ -1531,64 +1557,44 @@ partial class AppBar
 
 		if (m_isOverlayVisible)
 		{
-			// Create a theme resource for the overlay brush.
-			var core = DXamlCore.Current.GetHandle();
-			var dictionary = core.GetThemeResources();
-
-			xstring_ptr themeBrush;
-			xstring_ptr.CloneBuffer("AppBarLightDismissOverlayBackground", &themeBrush);
-
-			DependencyObject* initialValueNoRef = null;
-			dictionary.GetKeyNoRef(themeBrush, &initialValueNoRef);
-
-			CREATEPARAMETERS cp(core);
-			xref_ptr<CThemeResourceExtension> themeResourceExtension;
-			(CThemeResourceExtension.Create(
-				reinterpret_cast<DependencyObject**>(themeResourceExtension.ReleaseAndGetAddressOf()),
-				&cp));
-
-			themeResourceExtension.m_strResourceKey = themeBrush;
-
-			themeResourceExtension.SetInitialValueAndTargetDictionary(initialValueNoRef, dictionary);
-
-			(themeResourceExtension.SetThemeResourceBinding(
-				m_overlayElement.Cast<FrameworkElement>().GetHandle(),
-				DirectUI.MetadataAPI.GetPropertyByIndex(KnownPropertyIndex.Shape_Fill))
-				);
+			// Use ResourceResolver.ApplyResource to create a theme-aware binding for the overlay brush,
+			// matching the pattern used by Popup, FlyoutBase, and ComboBox.
+			ResourceResolver.ApplyResource(
+				m_overlayElement!, Shape.FillProperty,
+				"AppBarLightDismissOverlayBackground",
+				isThemeResourceExtension: true, isHotReloadSupported: true);
 		}
 		else
 		{
-			SolidColorBrush transparentBrush;
-			transparentBrush = new();
-			transparentBrush.Color = Color.FromArgb(0, 0, 0, 0);
-			;
-
-			Rectangle overlayAsRect = m_overlayElement;
-			overlayAsRect.Fill = transparentBrush;
+			if (m_overlayElement is Shape overlayShape)
+			{
+				overlayShape.Fill = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+			}
 		}
 	}
 
 	private void UpdateTargetForOverlayAnimations()
 	{
-		MUX_ASSERT(m_layoutTransitionElement is not null);
+		// TODO Uno: The original C++ sets the target of overlay animations to the
+		// overlay LayoutTransitionElement. Since LTEs are not available in Uno,
+		// we target the overlay element directly if available.
 		MUX_ASSERT(m_isOverlayVisible);
 
-		if (m_overlayOpeningStoryboard is not null)
+		var targetElement = m_overlayLayoutTransitionElement ?? m_overlayElement;
+
+		if (targetElement is not null)
 		{
-			m_overlayOpeningStoryboard.Stop();
+			if (m_overlayOpeningStoryboard is not null)
+			{
+				m_overlayOpeningStoryboard.Stop();
+				Storyboard.SetTarget(m_overlayOpeningStoryboard, targetElement);
+			}
 
-			Storyboard.SetTarget(
-				(Timeline)(m_overlayOpeningStoryboard),
-				m_overlayLayoutTransitionElement));
-		}
-
-		if (m_overlayClosingStoryboard is not null)
-		{
-			m_overlayClosingStoryboard.Stop();
-
-			Storyboard.SetTarget(
-				(Timeline)(m_overlayClosingStoryboard),
-				m_overlayLayoutTransitionElement));
+			if (m_overlayClosingStoryboard is not null)
+			{
+				m_overlayClosingStoryboard.Stop();
+				Storyboard.SetTarget(m_overlayClosingStoryboard, targetElement);
+			}
 		}
 	}
 
