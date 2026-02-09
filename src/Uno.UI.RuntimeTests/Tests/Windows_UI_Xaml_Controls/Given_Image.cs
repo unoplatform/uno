@@ -243,6 +243,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsGreaterThan(0, img.ActualHeight);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+#if __ANDROID__ || __APPLE_UIKIT__
+		[Ignore("Fails")]
+#endif
+		[RunsOnUIThread]
+		public async Task When_Path_Contains_Space()
+		{
+			var img = new Image { Source = "ms-appx:///Assets/image with space in path.png" };
+
+			var imageOpened = false;
+			var imageFailed = false;
+
+			img.ImageOpened += (sender, args) => imageOpened = true;
+			img.ImageFailed += (sender, args) => imageFailed = true;
+
+			await UITestHelper.Load(img);
+			await UITestHelper.WaitFor(() => imageOpened, 3000);
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(imageOpened);
+			Assert.IsFalse(imageFailed);
+			Assert.IsTrue(img.ActualHeight > 0);
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				var screenshot = await UITestHelper.ScreenShot(img);
+				ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Microsoft.UI.Colors.Blue);
+			}
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Explicit_BitmapImage_Relative_NonRooted()
