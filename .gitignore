@@ -6,6 +6,7 @@
 !.config/
 !.github/
 !.devcontainer/
+!.specify/
 
 # operating system junk files
 thumbs.db
