@@ -182,6 +182,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			});
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_NonLightDismiss_Popup_Does_Not_Register_BackListener()
+		{
+			var manager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
+			bool hadHandlersBefore = manager.HasAnyBackHandlers;
+
+			var popup = new Popup
+			{
+				IsLightDismissEnabled = false,
+				Child = new Border { Width = 100, Height = 100 }
+			};
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				// Non-light-dismiss popup should NOT register as a back listener
+				Assert.AreEqual(hadHandlersBefore, manager.HasAnyBackHandlers,
+					"HasAnyBackHandlers should not change for non-light-dismiss popup.");
+
+				// Back press should not be handled
+				bool handled = await TestServices.Utilities.InjectBackButtonPress();
+				Assert.IsFalse(handled, "Back press should not be handled by non-light-dismiss popup.");
+				Assert.IsTrue(popup.IsOpen, "Non-light-dismiss popup should remain open after back press.");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_LightDismiss_Popup_HasAnyBackHandlers_Transitions()
+		{
+			var manager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
+
+			var popup = new Popup
+			{
+				IsLightDismissEnabled = true,
+				Child = new Border { Width = 100, Height = 100 }
+			};
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+
+			try
+			{
+				Assert.IsFalse(manager.HasAnyBackHandlers,
+					"Should start with no handlers (assuming no other listeners are present).");
+
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(manager.HasAnyBackHandlers,
+					"Should have handlers after light-dismiss popup opens.");
+
+				popup.IsOpen = false;
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(manager.HasAnyBackHandlers,
+					"Should have no handlers after light-dismiss popup closes.");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_Child_Logical_Parent_Is_Popup()
 		{
