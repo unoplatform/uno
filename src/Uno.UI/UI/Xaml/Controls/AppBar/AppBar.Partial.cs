@@ -15,35 +15,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 
 
-		private void UnregisterEvents()
-		{
-			m_contentRootSizeChangedEventHandler.Disposable = null;
-			m_expandButtonClickEventHandler.Disposable = null;
-			m_displayModeStateChangedEventHandler.Disposable = null;
-			m_overlayElementPointerPressedEventHandler.Disposable = null;
-
-			m_tpLayoutRoot = null;
-			m_tpContentRoot = null;
-			m_tpExpandButton = null;
-
-			m_overlayClosingStoryboard = null;
-			m_overlayOpeningStoryboard = null;
-		}
-
-		private protected override void OnUnloaded()
-		{
-			if (m_isInOverlayState)
-			{
-				TeardownOverlayState();
-			}
-
-			UnregisterEvents();
-
-			base.OnUnloaded();
-		}
-
-
-
 		protected virtual void GetVerticalOffsetNeededToOpenUp(out double neededOffset, out bool opensWindowed)
 		{
 			double verticalDelta = 0d;
