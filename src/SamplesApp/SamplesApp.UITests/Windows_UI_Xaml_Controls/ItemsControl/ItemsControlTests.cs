@@ -72,7 +72,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl
 
 
 			// This check validates that the native collection is properly manipulated
-			Assert.IsLessThan(item02.Rect.CenterY, item01.Rect.CenterY);
+			Assert.Less(item02.Rect.CenterY, item01.Rect.CenterY);
 		}
 	}
 }
