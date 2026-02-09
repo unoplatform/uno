@@ -282,7 +282,11 @@ namespace Microsoft.UI.Xaml
 						Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
 					};
 
-				if (e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+				if (e is UIElement uiElement &&
+					uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout &&
+					// Skip default ContextFlyout (e.g., TextBlock's default TextCommandBarFlyout) to avoid
+					// infinite recursion when the flyout's presenter contains elements with the same default.
+					uiElement.GetCurrentHighestValuePrecedence(UIElement.ContextFlyoutProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 				{
 					return FindInFlyout(name, contextFlyout);
 				}

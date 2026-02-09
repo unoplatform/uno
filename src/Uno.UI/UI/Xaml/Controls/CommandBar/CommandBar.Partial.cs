@@ -130,6 +130,61 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(CommandBar);
 		}
 
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			bool needsSyncPrimary = false;
+			bool needsSyncSecondary = false;
+
+			// Re-attach event handlers that were disposed in OnUnloaded
+			if (m_tpPrimaryCommands is not null && m_primaryCommandsChangedEventHandler.Disposable is null)
+			{
+				m_tpPrimaryCommands.VectorChanged += OnPrimaryCommandsChanged;
+				m_primaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpPrimaryCommands.VectorChanged -= OnPrimaryCommandsChanged);
+				needsSyncPrimary = true;
+			}
+
+			if (m_tpSecondaryCommands is not null && m_secondaryCommandsChangedEventHandler.Disposable is null)
+			{
+				m_tpSecondaryCommands.VectorChanged += OnSecondaryCommandsChanged;
+				m_secondaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpSecondaryCommands.VectorChanged -= OnSecondaryCommandsChanged);
+				needsSyncSecondary = true;
+			}
+
+			// Sync dynamic commands with actual commands in case changes happened while handlers were detached
+			if (needsSyncPrimary && m_tpDynamicPrimaryCommands is not null)
+			{
+				m_tpDynamicPrimaryCommands.Clear();
+				if (m_tpPrimaryCommands is not null)
+				{
+					foreach (var item in m_tpPrimaryCommands)
+					{
+						m_tpDynamicPrimaryCommands.Add(item);
+					}
+				}
+			}
+
+			if (needsSyncSecondary && m_tpDynamicSecondaryCommands is not null)
+			{
+				m_tpDynamicSecondaryCommands.Clear();
+				if (m_tpSecondaryCommands is not null)
+				{
+					SetOverflowStyleParams();
+					for (int i = 0; i < m_tpSecondaryCommands.Count; i++)
+					{
+						var item = m_tpSecondaryCommands[i];
+						m_tpDynamicSecondaryCommands.Add(item);
+						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
+						PropagateDefaultLabelPositionToElement(item);
+					}
+				}
+				InvalidateMeasure();
+				UpdateVisualState();
+				UpdateTemplateSettings();
+			}
+		}
+
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
@@ -3381,12 +3436,17 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 			if (change == CollectionChange.ItemRemoved
 				|| change == CollectionChange.ItemChanged)
 			{
-				SetOverflowStyleAndInputModeOnSecondaryCommand(changeIndex, false);
+				// Check bounds since m_tpDynamicSecondaryCommands may not be in sync with m_tpSecondaryCommands
+				if (changeIndex < (m_tpDynamicSecondaryCommands?.Count ?? 0))
+				{
+					SetOverflowStyleAndInputModeOnSecondaryCommand(changeIndex, false);
+				}
 			}
 			else if (change == CollectionChange.Reset)
 			{
-				int itemCount = 0;
-				itemCount = m_tpSecondaryCommands?.Count ?? 0;
+				// Use m_tpDynamicSecondaryCommands count since that's what SetOverflowStyleAndInputModeOnSecondaryCommand accesses.
+				// These collections may have different sizes, especially during initialization.
+				int itemCount = m_tpDynamicSecondaryCommands?.Count ?? 0;
 				for (int i = 0; i < itemCount; ++i)
 				{
 					SetOverflowStyleAndInputModeOnSecondaryCommand(i, false);

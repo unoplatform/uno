@@ -40,6 +40,12 @@ partial class AppBarButton
 		{
 			AttachFlyout(Flyout);
 		}
+
+		// Re-setup content update handlers that were disposed in OnUnloaded
+		if (m_isTemplateApplied)
+		{
+			SetupContentUpdate();
+		}
 	}
 
 	private protected override void OnUnloaded()
