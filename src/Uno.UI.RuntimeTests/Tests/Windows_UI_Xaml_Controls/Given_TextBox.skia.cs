@@ -4914,8 +4914,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
 
 			Assert.IsTrue(hasCut, "Cut button should be available when text is selected");
 			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
@@ -4947,8 +4947,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
 
 			Assert.IsFalse(hasCut, "Cut button should NOT be available when no text is selected");
 			Assert.IsFalse(hasCopy, "Copy button should NOT be available when no text is selected");
@@ -4979,9 +4979,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
-			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Paste");
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
 
 			Assert.IsFalse(hasCut, "Cut should NOT be available for ReadOnly TextBox");
 			Assert.IsFalse(hasPaste, "Paste should NOT be available for ReadOnly TextBox");
@@ -5008,8 +5008,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Cut");
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.Label == "Copy");
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
 
 			Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
 			Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
