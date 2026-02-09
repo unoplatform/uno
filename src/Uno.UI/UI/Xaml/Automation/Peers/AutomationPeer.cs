@@ -512,10 +512,10 @@ public partial class AutomationPeer : DependencyObject
 	public void RaiseAutomationEvent(AutomationEvents eventId)
 	{
 #if __SKIA__
-	if (ListenerExists(eventId))
-	{
-		AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
-	}
+		if (ListenerExists(eventId))
+		{
+			AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
+		}
 #else
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 #endif
