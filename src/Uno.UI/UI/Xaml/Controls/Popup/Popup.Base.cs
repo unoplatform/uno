@@ -107,7 +107,7 @@ public partial class Popup : FrameworkElement, IPopup
 
 				// Usually, FrameworkElements handle focus management inside OnLoaded/OnUnloaded,
 				// but since popups are (un)loaded, we have to do it here.
-				if (Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
+				if (m_shouldTakeFocus && Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
 				{
 					// Give the child focus if allowed
 					Focus(FocusState.Programmatic);

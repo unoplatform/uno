@@ -62,6 +62,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private bool m_openingCanceled;
 
+		private bool m_shouldTakeFocus = true;
+
 		[NotImplemented]
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
@@ -116,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			var focusState = contentRoot.FocusManager.GetRealFocusStateForFocusedElement();
 
-			if (focusState != FocusState.Unfocused)
+			if (m_shouldTakeFocus && focusState != FocusState.Unfocused)
 			{
 				var presenter = GetPresenter();
 				if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
@@ -482,12 +484,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_ => PopupPlacementMode.Auto,
 			};
 
-			ShowMode = showOptions?.ShowMode ?? FlyoutShowMode.Standard;
-
-			if (ShowMode == FlyoutShowMode.Auto)
-			{
-				ShowMode = FlyoutShowMode.Standard;
-			}
+			UpdateStateToShowMode(showOptions?.ShowMode ?? FlyoutShowMode.Standard);
 
 			OnOpening();
 
@@ -528,6 +525,27 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				_popup.HorizontalOffset = m_targetPoint.X;
 				_popup.VerticalOffset = m_targetPoint.Y;
+			}
+		}
+
+		private void UpdateStateToShowMode(FlyoutShowMode showMode)
+		{
+			if (showMode == FlyoutShowMode.Auto)
+			{
+				showMode = FlyoutShowMode.Standard;
+			}
+
+			ShowMode = showMode;
+
+			switch (showMode)
+			{
+				case FlyoutShowMode.Standard:
+					m_shouldTakeFocus = true;
+					break;
+				case FlyoutShowMode.Transient:
+				case FlyoutShowMode.TransientWithDismissOnPointerMoveAway:
+					m_shouldTakeFocus = false;
+					break;
 			}
 		}
 
@@ -577,6 +595,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			UpdatePopupPanelSizePartial();
 
+			_popup.SetShouldTakeFocus(m_shouldTakeFocus);
 			_popup.IsOpen = true;
 
 			AddToOpenFlyouts();
