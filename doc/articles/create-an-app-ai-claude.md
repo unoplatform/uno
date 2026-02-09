@@ -20,7 +20,7 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Claude
     dnx -y uno.devserver login
     ```
 
-    The Uno Studio app will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
+    The Uno Studio app will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access to the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
 1. Still in the app folder, open Claude Code:
 
     ```bash
