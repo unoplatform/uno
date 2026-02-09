@@ -19,20 +19,18 @@ internal static class LightDismissOverlayHelper
 	/// Resolves whether the overlay should be visible for a control.
 	/// </summary>
 	/// <param name="appBar">The AppBar to check.</param>
-	/// <param name="isOverlayVisible">Output: whether the overlay should be visible.</param>
-	internal static void ResolveIsOverlayVisibleForControl(AppBar appBar, out bool isOverlayVisible)
+	/// <returns>Whether the overlay should be visible.</returns>
+	internal static bool ResolveIsOverlayVisibleForControl(AppBar appBar)
 	{
 		var overlayMode = appBar.LightDismissOverlayMode;
 
 		if (overlayMode == LightDismissOverlayMode.Auto)
 		{
 			// Auto mode - overlay is visible on Xbox
-			isOverlayVisible = SharedHelpers.IsOnXbox();
+			return SharedHelpers.IsOnXbox();
 		}
-		else
-		{
-			// Explicit On or Off
-			isOverlayVisible = overlayMode == LightDismissOverlayMode.On;
-		}
+
+		// Explicit On or Off
+		return overlayMode == LightDismissOverlayMode.On;
 	}
 }
