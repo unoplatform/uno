@@ -426,7 +426,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isSelectionFlyoutUpdateQueued;
 
 		// Track the flyout we've subscribed to for Opening event (to avoid double-subscription)
-		private FlyoutBase _subscribedContextFlyout;
+		private FlyoutBase? _subscribedContextFlyout;
 
 		private bool HasSelectionFlyout() => SelectionFlyout is not null;
 
@@ -461,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnContextFlyoutOpening(object sender, object e)
+		private void OnContextFlyoutOpening(object? sender, object e)
 		{
 			// Close SelectionFlyout when ContextFlyout opens (ContextFlyout takes priority)
 			SelectionFlyout?.Hide();
@@ -553,6 +553,9 @@ namespace Microsoft.UI.Xaml.Controls
 					SelectionFlyout.Hide();
 				}
 			}
+
+			// Reset input device type after processing (matching WinUI behavior)
+			_lastInputDeviceType = default;
 		}
 		#endregion
 	}

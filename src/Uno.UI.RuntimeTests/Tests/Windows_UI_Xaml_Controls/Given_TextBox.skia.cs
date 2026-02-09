@@ -5017,6 +5017,121 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			flyout.Hide();
 		}
 
+		[TestMethod]
+		public async Task When_CanPasteClipboardContent_WithText()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			// Set clipboard to contain text
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("Hello");
+			Clipboard.SetContent(dataPackage);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.CanPasteClipboardContent, "CanPasteClipboardContent should be true when clipboard has text");
+		}
+
+		[TestMethod]
+		public async Task When_CanPasteClipboardContent_EmptyClipboard()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			// Clear clipboard
+			Clipboard.Clear();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.CanPasteClipboardContent, "CanPasteClipboardContent should be false when clipboard is empty");
+		}
+
+		[TestMethod]
+		public async Task When_CanPasteClipboardContent_ReadOnly()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { IsReadOnly = true };
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			// Set clipboard to contain text
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("Hello");
+			Clipboard.SetContent(dataPackage);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.CanPasteClipboardContent, "CanPasteClipboardContent should be false when TextBox is read-only");
+		}
+
+		[TestMethod]
+		public async Task When_TextBox_SelectionFlyout_IsSet()
+		{
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.IsNotNull(SUT.SelectionFlyout, "TextBox should have a default SelectionFlyout");
+			Assert.IsInstanceOfType(SUT.SelectionFlyout, typeof(TextCommandBarFlyout), "SelectionFlyout should be TextCommandBarFlyout");
+		}
+
+		[TestMethod]
+		public async Task When_TextBox_SelectionFlyout_Hides_OnFocusLoss()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "Hello world", Width = 200 };
+			var other = new Button { Content = "Other" };
+			var panel = new StackPanel
+			{
+				Children = { SUT, other }
+			};
+
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(0, 5); // Select "Hello"
+			await WindowHelper.WaitForIdle();
+
+			var flyout = SUT.SelectionFlyout as TextCommandBarFlyout;
+			Assert.IsNotNull(flyout, "SelectionFlyout should be TextCommandBarFlyout");
+
+			// Manually show the SelectionFlyout
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(flyout.IsOpen, "SelectionFlyout should be open after ShowAt");
+
+			// Move focus away
+			other.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(flyout.IsOpen, "SelectionFlyout should be closed after focus loss");
+		}
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _useOverlay;

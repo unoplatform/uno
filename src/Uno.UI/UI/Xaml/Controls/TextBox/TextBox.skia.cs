@@ -26,6 +26,7 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation;
+using Windows.ApplicationModel.DataTransfer;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using Microsoft.UI.Xaml.Media.Media3D;
 using System.Numerics;
@@ -123,13 +124,54 @@ public partial class TextBox
 		private set => SetCanRedoValue(value);
 	}
 
-	// Note: SelectionFlyout property is defined in generated code.
-	// Default value lookup is handled in DependencyProperty.GetDefaultValue().
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
+
+	public bool CanPasteClipboardContent
+	{
+		get => GetCanPasteClipboardContentValue();
+		private set => SetCanPasteClipboardContentValue(value);
+	}
+
+	public static DependencyProperty SelectionFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBox),
+			new FrameworkPropertyMetadata(default(FlyoutBase)));
+
+	public FlyoutBase SelectionFlyout
+	{
+		get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
+		set => SetValue(SelectionFlyoutProperty, value);
+	}
 
 	private void UpdateCanUndoRedo()
 	{
 		CanUndo = _historyIndex > 0;
 		CanRedo = _historyIndex < _history.Count - 1;
+	}
+
+	private void UpdateCanPasteClipboardContent()
+	{
+		if (IsReadOnly)
+		{
+			CanPasteClipboardContent = false;
+			return;
+		}
+
+		try
+		{
+			var content = Clipboard.GetContent();
+			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+		}
+		catch
+		{
+			CanPasteClipboardContent = false;
+		}
+	}
+
+	private void OnClipboardContentChanged(object sender, object e)
+	{
+		DispatcherQueue.TryEnqueue(() => UpdateCanPasteClipboardContent());
 	}
 
 	private void TrySetCurrentlyTyping(bool newValue)
@@ -168,6 +210,12 @@ public partial class TextBox
 		_selectionStartThumbfulCaret?.Hide();
 		_selectionEndThumbfulCaret?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+		Clipboard.ContentChanged -= OnClipboardContentChanged;
+	}
+
+	partial void OnIsReadonlyChangedPartial()
+	{
+		UpdateCanPasteClipboardContent();
 	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
@@ -310,16 +358,23 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
+				UpdateCanPasteClipboardContent();
+				Clipboard.ContentChanged += OnClipboardContentChanged;
 			}
 			else
 			{
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+				if (SelectionFlyout?.IsOpen == true)
+				{
+					SelectionFlyout.Hide();
+				}
 				if (!initial)
 				{
 					_textBoxNotificationsSingleton?.OnUnfocused(this);
 				}
 				_timer.Stop();
+				Clipboard.ContentChanged -= OnClipboardContentChanged;
 			}
 			UpdateDisplaySelection();
 		}
@@ -599,6 +654,9 @@ public partial class TextBox
 				SelectionFlyout.Hide();
 			}
 		}
+
+		// Line 5450: Reset input device type after processing
+		_lastInputDeviceType = default;
 	}
 
 	#endregion
@@ -710,6 +768,11 @@ public partial class TextBox
 
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
 	{
+		if (SelectionFlyout?.IsOpen == true)
+		{
+			SelectionFlyout.Hide();
+		}
+
 		if (_selection.length != 0 &&
 			args.Key is not (VirtualKey.Up or VirtualKey.Down or VirtualKey.Left or VirtualKey.Right))
 		{
