@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
-	private ApplicationBarService m_applicationBarService;
+	private ApplicationBarService? m_applicationBarService;
 
 	internal VisualTree VisualTree { get; set; }
 
@@ -51,14 +51,15 @@ public sealed partial class XamlRoot
 	{
 		if (m_applicationBarService is null)
 		{
-			var applicationBarService = new ApplicationBarService();
-			applicationBarService.SetXamlRoot(this);
+			m_applicationBarService = new ApplicationBarService();
+			m_applicationBarService.SetXamlRoot(this);
 		}
-		else
-		{
-			return m_applicationBarService;
-		}
+
+		return m_applicationBarService;
 	}
 
-	private ApplicationBarService TryGetApplicationBarService() => m_applicationBarService;
+	internal ApplicationBarService? TryGetApplicationBarService()
+	{
+		return m_applicationBarService;
+	}
 }
