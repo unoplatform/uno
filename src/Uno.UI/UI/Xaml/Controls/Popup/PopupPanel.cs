@@ -258,7 +258,7 @@ internal partial class PopupPanel : Panel
 			// rely on this workaround to close CommandBar's popup.
 			if (popup.GetTemplatedParent() is CommandBar cb)
 			{
-				cb.TryDismissInlineAppBarInternal();
+				cb.TryDismissInlineAppBar();
 			}
 			// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
 			// disabled for ContentDialogs.

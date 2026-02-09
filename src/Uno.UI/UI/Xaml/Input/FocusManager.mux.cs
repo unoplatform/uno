@@ -273,7 +273,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		/// <param name="useReverseDirection">Should be reverse direction?</param>
 		/// <returns>Focusable element or null.</returns>
-		private DependencyObject? GetFirstFocusableElementFromRoot(bool useReverseDirection)
+		internal DependencyObject? GetFirstFocusableElementFromRoot(bool useReverseDirection)
 		{
 			DependencyObject? pFocusableElement = null;
 

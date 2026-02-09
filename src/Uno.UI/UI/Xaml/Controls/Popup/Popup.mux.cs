@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // Popup.h, Popup.cpp
 
+#nullable enable
+
 using static Uno.UI.FeatureConfiguration;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,9 +19,9 @@ public partial class Popup
 		}
 	}
 
-	internal static FlyoutBase GetClosestFlyoutAncestor(UIElement pUIElement)
+	internal static FlyoutBase? GetClosestFlyoutAncestor(UIElement pUIElement)
 	{
-		UIElement pNode = pUIElement;
+		UIElement? pNode = pUIElement;
 
 		while (pNode is not null)
 		{
@@ -32,6 +34,22 @@ public partial class Popup
 			}
 
 			pNode = pNode.GetUIElementAdjustedParentInternal(false);
+		}
+
+		return null;
+	}
+
+	internal static Popup? GetClosestPopupAncestor(UIElement element)
+	{
+		var node = element.GetUIElementAdjustedParentInternal(false);
+		while (node is not null)
+		{
+			if (node is Popup popup)
+			{
+				return popup;
+			}
+
+			node = node.GetUIElementAdjustedParentInternal(false);
 		}
 
 		return null;
