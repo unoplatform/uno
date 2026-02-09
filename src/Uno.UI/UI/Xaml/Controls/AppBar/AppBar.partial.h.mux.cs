@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class AppBar
 {
-	private AppBarMode Mode
+	internal AppBarMode Mode
 	{
 		get => m_Mode;
 		set
@@ -23,7 +23,7 @@ partial class AppBar
 		}
 	}
 
-	private void SetOnLoadFocusState(FocusState focusState) => m_onLoadFocusState = focusState;
+	internal void SetOnLoadFocusState(FocusState focusState) => m_onLoadFocusState = focusState;
 
 	private double CompactHeight
 	{
@@ -49,7 +49,7 @@ partial class AppBar
 		}
 	}
 
-	private double ContentHeight
+	private protected double ContentHeight
 	{
 		get => m_contentHeight;
 		set
@@ -63,11 +63,13 @@ partial class AppBar
 
 	// Template parts.
 	private Grid? m_tpLayoutRoot;
-	private FrameworkElement? m_tpContentRoot;
-	private ButtonBase? m_tpExpandButton;
+	private protected FrameworkElement? m_tpContentRoot;
+	private protected ButtonBase? m_tpExpandButton;
 	private VisualStateGroup? m_tpDisplayModesStateGroup;
 
+#pragma warning disable CS0414 // Field is assigned but never read
 	private bool m_openedWithExpandButton;
+#pragma warning restore CS0414
 
 	private double MinCompactHeight
 	{
@@ -101,7 +103,9 @@ partial class AppBar
 	private UIElement? m_layoutTransitionElement;
 	private UIElement? m_overlayLayoutTransitionElement;
 
+#pragma warning disable CS0414 // Field is assigned but never read
 	private UIElement? m_parentElementForLTEs;
+#pragma warning restore CS0414
 	private UIElement? m_overlayElement;
 	private SerialDisposable m_overlayElementPointerPressedEventHandler = new();
 

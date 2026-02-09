@@ -243,8 +243,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			base.OnApplyTemplate();
 
-			GetTemplatePart("PrimaryItemsControl", out m_tpPrimaryItemsControlPart);
-			GetTemplatePart("SecondaryItemsControl", out m_tpSecondaryItemsControlPart);
+			m_tpPrimaryItemsControlPart = GetTemplateChild<ItemsControl>("PrimaryItemsControl");
+			m_tpSecondaryItemsControlPart = GetTemplateChild<ItemsControl>("SecondaryItemsControl");
 
 			if (m_tpSecondaryItemsControlPart is { })
 			{
@@ -255,10 +255,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// Apply a shadow
 			//IFC_RETURN(ApplyElevationEffect(m_tpSecondaryItemsControlPart.AsOrNull<IUIElement>().Get()));
 
-			GetTemplatePart<FrameworkElement>("ContentControl", out var contentControl);
-			GetTemplatePart<FrameworkElement>("OverflowContentRoot", out var overflowContentRoot);
-			GetTemplatePart<Popup>("OverflowPopup", out var overflowPopup);
-			GetTemplatePart<FrameworkElement>("WindowedPopupPadding", out var windowedPopupPadding);
+			var contentControl = GetTemplateChild<FrameworkElement>("ContentControl");
+			var overflowContentRoot = GetTemplateChild<FrameworkElement>("OverflowContentRoot");
+			var overflowPopup = GetTemplateChild<Popup>("OverflowPopup");
+			var windowedPopupPadding = GetTemplateChild<FrameworkElement>("WindowedPopupPadding");
 
 			m_tpContentControl = contentControl;
 
@@ -1589,7 +1589,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override bool ContainsElement(DependencyObject pElement)
+		internal override bool ContainsElement(DependencyObject pElement)
 		{
 			bool isAncestorOfElement = false;
 
@@ -1628,7 +1628,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void RestoreSavedFocusImpl(DependencyObject? savedFocusedElement, FocusState savedFocusState)
+		private protected override void RestoreSavedFocusImpl(DependencyObject? savedFocusedElement, FocusState savedFocusState)
 		{
 			// If we did save focus from a previous element when opening, then defer to the AppBar's
 			// implemenation to restore it.  The CommandBar handles the case where there was no

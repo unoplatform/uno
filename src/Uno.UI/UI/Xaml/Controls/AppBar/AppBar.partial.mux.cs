@@ -1343,89 +1343,18 @@ partial class AppBar
 
 	private void CreateLTEs()
 	{
-		MUX_ASSERT(m_layoutTransitionElement is null);
-		MUX_ASSERT(m_overlayLayoutTransitionElement is null);
-		MUX_ASSERT(m_parentElementForLTEs is null);
-
-		// If we're under the PopupRoot or FullWindowMediaRoot, then we'll explicitly set
-		// our LTE's parent to make sure the LTE doesn't get placed under the TransitionRoot,
-		// which is lower in z-order than these other roots.
-		if (ShouldUseParentedLTE())
-		{
-			DependencyObject parent;
-			var parent = VisualTreeHelper.GetParent(this);
-			if (parent is null)
-			{
-				throw new InvalidOperationException("AppBar must have a parent element to create LTEs.");
-			}
-
-			m_parentElementForLTEs = parent;
-		}
-
-		if (m_overlayElement is not null)
-		{
-			// Create an LTE for our overlay element.
-			(CoreImports.LayoutTransitionElement_Create(
-				DXamlCore.GetCurrent().GetHandle(),
-				m_overlayElement.Cast<FrameworkElement>().GetHandle(),
-				m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>().GetHandle() : null,
-				false /*isAbsolutelyPositioned*/,
-				m_overlayLayoutTransitionElement.ReleaseAndGetAddressOf()
-			));
-
-			// Configure the overlay LTE.
-			{
-				DependencyObject overlayLTEPeer;
-				DXamlCore.GetCurrent().GetPeer(m_overlayLayoutTransitionElement, &overlayLTEPeer);
-
-				Rect windowBounds = default;
-				DXamlCore.GetCurrent().GetContentBoundsForElement(GetHandle(), &windowBounds);
-
-				CompositeTransform compositeTransform;
-				compositeTransform = new();
-
-				compositeTransform.ScaleX = windowBounds.Width;
-				compositeTransform.ScaleY = windowBounds.Height;
-
-				overlayLTEPeer.Cast<UIElement>().RenderTransform = compositeTransform;
-
-				IGeneralTransform transformToVisual;
-				m_overlayElement.Cast<FrameworkElement>().TransformToVisual(null, &transformToVisual);
-
-				Point offsetFromRoot = default;
-				transformToVisual.TransformPoint({ 0, 0 }, &offsetFromRoot);
-
-				var flowDirection = FlowDirection_LeftToRight;
-				get_FlowDirection(&flowDirection);
-
-				// Translate the light-dismiss layer so that it is positioned at the top-left corner of the window (for LTR cases)
-				// or the top-right corner of the window (for RTL cases).
-				// TransformToVisual(null) will return an offset relative to the top-left corner of the window regardless of
-				// flow direction, so for RTL cases subtract the window width from the returned offset.x value to make it relative
-				// to the right edge of the window.
-				compositeTransform.TranslateX = flowDirection == FlowDirection_LeftToRight ? -offsetFromRoot.X : offsetFromRoot.X - windowBounds.Width;
-				compositeTransform.TranslateY = -offsetFromRoot.Y;
-			}
-		}
-
-	(CoreImports.LayoutTransitionElement_Create(
-		DXamlCore.GetCurrent().GetHandle(),
-		GetHandle(),
-		m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>().GetHandle() : null,
-		false /*isAbsolutelyPositioned*/,
-		m_layoutTransitionElement.ReleaseAndGetAddressOf()
-	));
-
-		// Forward our control's opacity to the LTE since it doesn't happen automatically.
-		{
-			double opacity = 0.0;
-			get_Opacity(&opacity);
-			m_layoutTransitionElement.SetValueByKnownIndex(KnownPropertyIndex.UIElement_Opacity, (float)(opacity));
-		}
-
-		PositionLTEs();
-
-		return S_OK;
+		// TODO Uno: LayoutTransitionElement (LTE) APIs are not available in Uno.
+		// LTEs are used in WinUI to render elements above their normal z-order
+		// (e.g., to show the AppBar overlay and content above other content).
+		// This requires CoreImports.LayoutTransitionElement_Create which relies on
+		// internal core APIs not exposed in Uno.
+		//
+		// Original C++ creates LTEs for both the overlay element and the AppBar itself,
+		// configures them with transforms to cover the entire window, and manages
+		// parenting for popups.
+		//
+		// Without LTEs, the overlay element is still added to the layout root children
+		// (see SetupOverlayState) which provides basic light-dismiss behavior.
 	}
 
 	private void PositionLTEs()
