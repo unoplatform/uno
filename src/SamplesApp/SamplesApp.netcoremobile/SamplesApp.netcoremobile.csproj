@@ -20,7 +20,7 @@
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(UnoSampleAppRuntimeIdentifiers)' != '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
 
 		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</InvariantGlobalization>
 		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</InvariantGlobalization>
@@ -238,7 +238,7 @@
 
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
