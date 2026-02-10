@@ -14,7 +14,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 {
 	/// <summary>
 	/// Gets the appropriate modifier key for standard commands based on the platform.
-	/// On macOS and iOS, Command key (VirtualKeyModifiers.Windows) is used.
+	/// On macOS and iOS, Command key (VirtualKeyModifiers.Windows maps to Command key on Apple platforms).
 	/// On other platforms, Control key is used.
 	/// </summary>
 	private static VirtualKeyModifiers PlatformCommandModifier
@@ -22,7 +22,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 		get
 		{
 #if __IOS__ || __MACCATALYST__ || __MACOS__
-			return VirtualKeyModifiers.Windows; // Command key on Apple platforms
+			return VirtualKeyModifiers.Windows; // VirtualKeyModifiers.Windows maps to Command key on Apple platforms
 #else
 			return VirtualKeyModifiers.Control;
 #endif
