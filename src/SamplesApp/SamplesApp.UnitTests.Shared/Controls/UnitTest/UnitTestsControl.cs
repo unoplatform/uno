@@ -1108,12 +1108,21 @@ namespace Uno.UI.Samples.Tests
 					return;
 				}
 
+				if (ct.IsCancellationRequested)
+				{
+					return;
+				}
+
 				try
 				{
 					// This writes the active test name to a file so CI can surface hangs.
 					await SkiaSamplesAppHelper.SaveFile(heartbeatPath, testName, ct);
 					// Emit to logs so CI can show the last started test when a shard hangs.
 					Console.WriteLine($"Runtime test heartbeat: {testName}");
+				}
+				catch (OperationCanceledException) when (ct.IsCancellationRequested)
+				{
+					return;
 				}
 				catch (Exception e)
 				{
@@ -1296,7 +1305,7 @@ namespace Uno.UI.Samples.Tests
 				for (int i = 0; i < _ciTestsGroupCountCache; i++)
 				{
 					var testGroup = GetFilteredTests(types, _ciTestsGroupCountCache, i);
-					var tests = testGroup.SelectMany(t => t.Tests);
+					var tests = testGroup.SelectMany(t => t.Tests ?? Array.Empty<MethodInfo>());
 					var testCount = tests.Count();
 					totalCount += testCount;
 
@@ -1333,7 +1342,7 @@ namespace Uno.UI.Samples.Tests
 
 			if (_ciTestsGroupCountCache != -1)
 			{
-				var activeGroupCount = groupedArray.Sum(group => group.Tests.Count());
+				var activeGroupCount = groupedArray.Sum(group => group.Tests?.Length ?? 0);
 				// CI uses these counts to spot slow shards and rebalance groups.
 				Console.WriteLine($"Active test group #{_ciTestGroupCache} contains {activeGroupCount} tests");
 			}
