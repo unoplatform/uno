@@ -44,7 +44,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			root.AddChild(candidate);
 
 			var candidateList = FindElements(root, current, null, true, false);
-			Assert.AreEqual(1, candidateList.Count);
+			Assert.HasCount(1, candidateList);
 			VerifyAreEqual(candidateList[0].Element, candidate);
 		}
 
@@ -62,7 +62,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			root.AddChild(nonFocusableCandidate);
 
 			var candidateList = FindElements(root, current, null, true, false);
-			Assert.AreEqual(1, candidateList.Count);
+			Assert.HasCount(1, candidateList);
 			VerifyAreEqual(candidateList[0].Element, candidate);
 		}
 
@@ -91,7 +91,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			candidateB.AddChild(candidateC);
 
 			var candidateList = FindElements(root, current, null, true, false);
-			Assert.AreEqual(3, candidateList.Count);
+			Assert.HasCount(3, candidateList);
 			VerifyResult(candidateList, targetList);
 		}
 
@@ -119,7 +119,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			candidateB.AddChild(candidateC);
 
 			var candidateList = FindElements(subRoot, current, null, true, false);
-			Assert.AreEqual(2, candidateList.Count);
+			Assert.HasCount(2, candidateList);
 			VerifyResult(candidateList, targetList);
 		}
 
@@ -133,7 +133,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			root.AddChild(current);
 
 			var candidateList = FindElements(root, current, null, true, false);
-			Assert.AreEqual(0, candidateList.Count);
+			Assert.IsEmpty(candidateList);
 		}
 
 		[Ignore("ScrollViewer-related XY navigation does not work properly yet")]
@@ -150,7 +150,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			scrollviewer.AddChild(candidate);
 
 			var candidateList = FindElements(root, current, scrollviewer, true, false);
-			Assert.AreEqual(1, candidateList.Count);
+			Assert.HasCount(1, candidateList);
 			VerifyAreEqual(candidateList[0].Element, candidate);
 		}
 
@@ -173,7 +173,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			scrollviewer.AddChild(candidate);
 
 			var candidateList = FindElements(root, current, scrollviewerB, true, false);
-			Assert.AreEqual(1, candidateList.Count);
+			Assert.HasCount(1, candidateList);
 			VerifyAreEqual(candidateList[0].Element, candidate);
 		}
 
@@ -194,7 +194,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			//	.ReturnValue(false);
 
 			var candidateList = FindElements(root, current, scrollviewerB, true, false);
-			Assert.AreEqual(1, candidateList.Count);
+			Assert.HasCount(1, candidateList);
 			VerifyAreEqual(candidateList[0].Element, candidate);
 		}
 
@@ -215,7 +215,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			var candidateList = FindElements(root, current, scrollviewerB, true, false);
 			// TODO: This assert is flaky
-			//Assert.AreEqual(0, candidateList.Count);
+			//Assert.HasCount(0, candidateList);
 		}
 
 		public class FocusableXYFocusCUIElement : Control

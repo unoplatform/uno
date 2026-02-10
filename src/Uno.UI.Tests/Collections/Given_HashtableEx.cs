@@ -29,10 +29,10 @@ namespace Uno.UI.Tests.Collections
 		{
 			// No exception
 			var hash1 = new ComparableHashtable(new HashtableEx());
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			hash1 = new ComparableHashtable(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx())))));
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			HashtableEx hash2 = Helpers.CreateIntHashtable(100);
 			hash1 = new ComparableHashtable(hash2);
@@ -87,11 +87,11 @@ namespace Uno.UI.Tests.Collections
 		{
 			// No exception
 			var hash1 = new ComparableHashtable(new HashtableEx(), 1f, StringComparer.OrdinalIgnoreCase);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			hash1 = new ComparableHashtable(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx(), 1f), 1f), 1f), 1f), 1f,
 				StringComparer.OrdinalIgnoreCase);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			HashtableEx hash2 = Helpers.CreateIntHashtable(100);
 			hash1 = new ComparableHashtable(hash2, 1f, StringComparer.OrdinalIgnoreCase);
@@ -117,10 +117,10 @@ namespace Uno.UI.Tests.Collections
 		{
 			// No exception
 			var hash1 = new ComparableHashtable(new HashtableEx(), 1f);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			hash1 = new ComparableHashtable(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx(), 1f), 1f), 1f), 1f), 1f);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			HashtableEx hash2 = Helpers.CreateIntHashtable(100);
 			hash1 = new ComparableHashtable(hash2, 1f);
@@ -133,10 +133,10 @@ namespace Uno.UI.Tests.Collections
 		{
 			// No exception
 			var hash1 = new ComparableHashtable(new HashtableEx(), null);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			hash1 = new ComparableHashtable(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx(new HashtableEx(), null), null), null), null), null);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			// Null comparer
 			HashtableEx hash2 = Helpers.CreateIntHashtable(100);
@@ -241,11 +241,11 @@ namespace Uno.UI.Tests.Collections
 		{
 			// No exception
 			var hash1 = new ComparableHashtable(new HashtableEx(), 1f, null);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			hash1 = new ComparableHashtable(new HashtableEx(new HashtableEx(
 				new HashtableEx(new HashtableEx(new HashtableEx(), 1f, null), 1f, null), 1f, null), 1f, null), 1f, null);
-			Assert.AreEqual(0, hash1.Count);
+			Assert.IsEmpty(hash1);
 
 			// Null comparer
 			HashtableEx hash2 = Helpers.CreateIntHashtable(100);
@@ -376,7 +376,7 @@ namespace Uno.UI.Tests.Collections
 				hash.Remove(number);
 			}
 
-			Assert.AreEqual(0, hash.Count);
+			Assert.IsEmpty(hash);
 		}
 
 		[TestMethod]
@@ -678,7 +678,7 @@ namespace Uno.UI.Tests.Collections
 		{
 			if (hash2 == null)
 			{
-				Assert.AreEqual(0, hash1.Count);
+				Assert.IsEmpty(hash1);
 			}
 			else
 			{

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Helpers;
@@ -30,6 +30,7 @@ using Uno.UI.Toolkit.DevTools.Input;
 using Microsoft.UI.Xaml.Data;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Xaml.Media;
 #endif
 
 using Point = Windows.Foundation.Point;
@@ -191,6 +192,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// we tolerate a 2 pixels difference between the bitmaps due to font differences
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
 		}
+
+#pragma warning disable MSTEST0045 // Cooperating cancellation
+		[TestMethod]
+		[Timeout(60000, CooperativeCancellation = false)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task Check_FontFallback_Shaping2()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/NotoSansArabic-Regular.ttf"),
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var matched = false;
+
+			await UITestHelper.Load(new StackPanel
+			{
+				expected,
+				SUT
+			});
+
+			Action OnFrameRendered = async () =>
+			{
+				var screenshot1 = await UITestHelper.ScreenShot(SUT);
+				var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+				var rect = ImageAssert.GetColorBounds(screenshot2, ((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
+
+				matched = rect is { Width: > 0, Height: > 0 } && await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenshot1.Bitmap, screenshot2.Bitmap);
+			};
+
+			var compositionTarget = (CompositionTarget)expected.Visual.CompositionTarget!;
+			compositionTarget.FrameRendered += OnFrameRendered;
+			using var _ = Disposable.Create(() => compositionTarget.FrameRendered -= OnFrameRendered);
+
+			await UITestHelper.WaitForRender();
+			await UITestHelper.WaitFor(() => matched, 60000);
+		}
+#pragma warning restore MSTEST0045
 #endif
 
 		[TestMethod]
@@ -221,7 +273,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __SKIA__
 			var segments = ((Run)SUT.Inlines.Single()).Segments;
-			Assert.AreEqual(2, segments.Count);
+			Assert.HasCount(2, segments);
 			Assert.IsTrue(segments[0].IsTab);
 			Assert.AreEqual("\r", segments[1].Text.ToString());
 #endif
@@ -241,14 +293,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBlock { Text = "Some text" };
 			var size = new Size(1000, 1000);
 			SUT.Measure(size);
-			Assert.IsTrue(SUT.DesiredSize.Width > 0);
-			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Width);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 
 			// For simplicity, currently we don't insist on a specific value here. The exact details of text measurement are highly
 			// platform-specific, and additionally on UWP the ActualWidth and DesiredSize.Width are not exactly the same, a subtlety Uno
 			// currently doesn't try to replicate.
-			Assert.IsTrue(SUT.ActualWidth > 0);
-			Assert.IsTrue(SUT.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.ActualWidth);
+			Assert.IsGreaterThan(0, SUT.ActualHeight);
 		}
 
 		[TestMethod]
@@ -271,7 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var panel = (StackPanel)SUT.Content;
 			var span = (Span)((TextBlock)panel.Children.Single()).Inlines.Single();
 			var inlines = span.Inlines;
-			Assert.AreEqual(3, inlines.Count);
+			Assert.HasCount(3, inlines);
 			Assert.AreEqual("Where ", ((Run)inlines[0]).Text);
 			Assert.AreEqual("did", ((Run)((Italic)inlines[1]).Inlines.Single()).Text);
 			Assert.AreEqual(" my text go?", ((Run)inlines[2]).Text);
@@ -806,7 +858,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
 #endif
-			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 		}
 
 		[TestMethod]
@@ -903,7 +955,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var textBlockOrigin = textBlockTransform.TransformPoint(new Point(0, 0));
 
 				Assert.AreEqual(previousOrigin.X, textBlockOrigin.X);
-				Assert.IsTrue(previousOrigin.Y < textBlockOrigin.Y);
+				Assert.IsLessThan(textBlockOrigin.Y, previousOrigin.Y);
 
 				previousOrigin = textBlockOrigin;
 			}
@@ -996,7 +1048,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
 
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
-			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+			Assert.IsEmpty(states, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
 
 		[TestMethod]
@@ -1519,7 +1571,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 		}
 
 #if !HAS_INPUT_INJECTOR

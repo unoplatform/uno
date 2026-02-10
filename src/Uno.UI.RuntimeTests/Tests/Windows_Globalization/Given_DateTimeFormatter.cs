@@ -36,7 +36,7 @@ public class Given_DateTimeFormatter
 
 		var formattedDate = formatter.Format(dateToFormat);
 		Assert.IsNotNull(formattedDate);
-		Assert.IsTrue(formattedDate.Length > 0);
+		Assert.IsGreaterThan(0, formattedDate.Length);
 	}
 
 	[TestMethod]
@@ -53,7 +53,7 @@ public class Given_DateTimeFormatter
 	{
 		var formatter = new DateTimeFormatter("longdate");
 
-		Assert.IsTrue(formatter.Patterns.Count > 0);
+		Assert.IsGreaterThan(0, formatter.Patterns.Count);
 	}
 
 	[TestMethod]

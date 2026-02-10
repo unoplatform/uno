@@ -3668,6 +3668,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Fast_Scrolling.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8073,6 +8077,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Infinite_Breadth.xaml.cs">
       <DependentUpon>ListView_Infinite_Breadth.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Fast_Scrolling.xaml.cs">
+      <DependentUpon>ListView_Fast_Scrolling.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml.cs">
       <DependentUpon>ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml</DependentUpon>
     </Compile>
@@ -10080,6 +10087,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\closeIcon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colored-ellipse.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ColorPicker.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\NotoSansArabic-Regular.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\when_alpha_blending.png" />
     <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
@@ -10176,6 +10184,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder _hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\image with space in path.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set_hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />

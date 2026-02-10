@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -1179,8 +1179,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sv.ScrollToVerticalOffset(100);
 			await WaitForIdle();
 
-			Assert.AreEqual(1, scpVP.Args.Count);
-			Assert.AreEqual(1, borderVP.Args.Count);
+			Assert.HasCount(1, scpVP.Args);
+			Assert.HasCount(1, borderVP.Args);
 		}
 
 		[TestMethod]
@@ -1204,7 +1204,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var context = vp.Args.Any()
 				? string.Join(", ", vp.Args.Select((x, i) => $"{i}={PrettyPrint.FormatRect(x.EffectiveViewport)}"))
 				: "(the event never proc'd)";
-			Assert.AreEqual(1, vp.Args.Count, $"EVPChanged should only ever proc once: {context}");
+			Assert.HasCount(1, vp.Args, $"EVPChanged should only ever proc once: {context}");
 
 			// without a ScrollViewer or a known SV in the Border#sut's ancestry,
 			// the EffectiveViewport values won't be deterministic to be validated.
@@ -1237,7 +1237,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var context = vp.Args.Any()
 				? string.Join(", ", vp.Args.Select((x, i) => $"{i}={PrettyPrint.FormatRect(x.EffectiveViewport)}"))
 				: "(the event never proc'd)";
-			Assert.AreEqual(1, vp.Args.Count, $"EVPChanged should only ever proc once: {context}");
+			Assert.HasCount(1, vp.Args, $"EVPChanged should only ever proc once: {context}");
 
 			// We can't really count on the EVP values to be deterministic here either...
 			// Since the device size, or the horizontal gridspliiter can impact the result

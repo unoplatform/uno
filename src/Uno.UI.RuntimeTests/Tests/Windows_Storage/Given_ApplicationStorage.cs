@@ -65,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		{
 			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Button.png"));
 
-			Assert.IsTrue((await FileIO.ReadBufferAsync(file)).Length > 0);
+			Assert.IsGreaterThan<uint>(0, (await FileIO.ReadBufferAsync(file)).Length);
 		}
 
 		[TestMethod]
@@ -73,7 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		{
 			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Icons/menu.png"));
 
-			Assert.IsTrue((await FileIO.ReadBufferAsync(file)).Length > 0);
+			Assert.IsGreaterThan<uint>(0, (await FileIO.ReadBufferAsync(file)).Length);
 		}
 	}
 }

@@ -324,11 +324,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			finger.Press(tb.GetAbsoluteBoundsRect().GetCenter());
 			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot));
 
 			finger.MoveBy(0, -50);
 			await UITestHelper.WaitForIdle();
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot));
 		}
 #endif
 

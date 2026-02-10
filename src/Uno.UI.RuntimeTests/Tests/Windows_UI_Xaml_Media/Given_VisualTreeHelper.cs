@@ -32,11 +32,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var flyout = new Flyout();
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			WindowHelper.WindowContent = button;
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 			FlyoutBase.ShowAttachedFlyout(button);
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 			flyout.Hide();
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 		}
 
 		[TestMethod]
@@ -44,11 +44,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		{
 			var popup = new Popup();
 			popup.XamlRoot = WindowHelper.XamlRoot;
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 			popup.IsOpen = true;
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 			popup.IsOpen = false;
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 		}
 
 		[TestMethod]

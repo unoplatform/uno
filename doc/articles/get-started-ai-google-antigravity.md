@@ -6,11 +6,19 @@ uid: Uno.GetStarted.AI.GoogleAntigravity
 
 This guide walks you through configuring the Uno Platform MCPs for Google Antigravity so you can use the agent with the Uno Dev Server.
 
+> [!WARNING]
+> Antigravity is currently a preview feature.
+>
+> If changes (SDKs, templates, tools, MCPs) are not detected immediately, restarting the Antigravity agent, reopening the workspace, or re-running setup usually resolves the issue.
+
 ## Check your environment
 
 [!include[getting-help](includes/use-uno-check-inline-noheader.md)]
 
 ## Setting up Uno Platform MCPs
+
+> [!NOTE]
+> The Uno Platform extension is not functional in Antigravity at this time.
 
 1. Install [Google Antigravity](https://antigravity.google/) by following Google's official instructions for your operating system.
 1. Configure [Antigravity MCPs](https://antigravity.google/docs/mcp):

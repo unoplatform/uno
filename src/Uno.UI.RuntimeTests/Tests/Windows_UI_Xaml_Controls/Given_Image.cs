@@ -215,7 +215,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);
+			Assert.IsGreaterThan(0, img.ActualHeight);
 		}
 
 		[TestMethod]
@@ -240,8 +240,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);
+			Assert.IsGreaterThan(0, img.ActualHeight);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if __ANDROID__ || __APPLE_UIKIT__
+		[Ignore("Fails")]
+#endif
+		[RunsOnUIThread]
+		public async Task When_Path_Contains_Space()
+		{
+			var img = new Image { Source = "ms-appx:///Assets/image with space in path.png" };
+
+			var imageOpened = false;
+			var imageFailed = false;
+
+			img.ImageOpened += (sender, args) => imageOpened = true;
+			img.ImageFailed += (sender, args) => imageFailed = true;
+
+			await UITestHelper.Load(img);
+			await UITestHelper.WaitFor(() => imageOpened, 3000);
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(imageOpened);
+			Assert.IsFalse(imageFailed);
+			Assert.IsTrue(img.ActualHeight > 0);
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				var screenshot = await UITestHelper.ScreenShot(img);
+				ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Microsoft.UI.Colors.Blue);
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -253,7 +284,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.explicitRelativeNonRooted.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.explicitRelativeNonRooted.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.explicitRelativeNonRooted.ActualHeight);
 		}
 
 		[TestMethod]
@@ -266,7 +297,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.relativeNonRooted.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.relativeNonRooted.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.relativeNonRooted.ActualHeight);
 		}
 
 		[TestMethod]
@@ -279,7 +310,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.relativeRooted.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.relativeRooted.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.relativeRooted.ActualHeight);
 		}
 
 
@@ -293,7 +324,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.absoluteLocal.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.absoluteLocal.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.absoluteLocal.ActualHeight);
 		}
 
 		[TestMethod]
@@ -306,7 +337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => SUT.absoluteMain.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(SUT.absoluteMain.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.absoluteMain.ActualHeight);
 		}
 
 
@@ -323,7 +354,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);
+			Assert.IsGreaterThan(0, img.ActualHeight);
 		}
 
 		[TestMethod]
@@ -482,7 +513,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(image);
 			await TestServices.WindowHelper.WaitFor(() => imageOpened);
 
-			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
+			Assert.HasCount(2, logs, string.Join(Environment.NewLine, logs));
 			Assert.AreEqual("BitmapImage_ImageOpened. 100x150", logs[0]);
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
 		}

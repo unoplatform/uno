@@ -23,21 +23,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Recipients_Default()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.AreEqual(0, emailMessage.To.Count);
+			Assert.IsEmpty(emailMessage.To);
 		}
 
 		[TestMethod]
 		public void When_CC_Default()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.AreEqual(0, emailMessage.CC.Count);
+			Assert.IsEmpty(emailMessage.CC);
 		}
 
 		[TestMethod]
 		public void When_Bcc_Default()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.AreEqual(0, emailMessage.Bcc.Count);
+			Assert.IsEmpty(emailMessage.Bcc);
 		}
 
 		[TestMethod]

@@ -188,6 +188,12 @@ internal class McpProxy
 
 	private void EnsureDevServerStartedFromSolutionDirectory()
 	{
+		if (_forceRootsFallback)
+		{
+			_logger.LogTrace("Roots fallback is enabled; skipping initial DevServer start (waiting for roots)");
+			return;
+		}
+
 		var directory = string.IsNullOrWhiteSpace(_solutionDirectory)
 			? _currentDirectory
 			: _solutionDirectory;

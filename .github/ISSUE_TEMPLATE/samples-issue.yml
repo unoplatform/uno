@@ -1,6 +1,6 @@
 name: "🧪 Samples Issue"
 description: "Report an issue with Uno Platform Samples 📚"
-labels: [kind/contributor-experience, kind/documentation, triage/untriaged, difficulty/tbd]
+labels: [kind/contributor-experience, kind/documentation, triage/untriaged]
 body:
   - type: markdown
     attributes:

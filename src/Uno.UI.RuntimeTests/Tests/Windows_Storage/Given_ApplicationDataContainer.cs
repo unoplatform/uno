@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -205,7 +205,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 				keysPresent.Remove(value.Key);
 			}
 
-			Assert.HasCount(0, keysPresent);
+			Assert.IsEmpty(keysPresent);
 		}
 
 		[TestMethod]

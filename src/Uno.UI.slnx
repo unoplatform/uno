@@ -203,6 +203,9 @@
     <File Path="Directory.Build.targets" />
   </Folder>
   <Folder Name="/Tools/">
+    <Project Path="FontFallbackPreprocessor/FontFallbackPreprocessor.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.NUnitTransformTool/Uno.NUnitTransformTool.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

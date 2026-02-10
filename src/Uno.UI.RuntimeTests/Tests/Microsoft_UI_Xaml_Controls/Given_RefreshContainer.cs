@@ -53,8 +53,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(child.ActualWidth > 50);
-			Assert.IsTrue(child.ActualHeight > 50);
+			Assert.IsGreaterThan(50, child.ActualWidth);
+			Assert.IsGreaterThan(50, child.ActualHeight);
 		}
 
 		[TestMethod]
@@ -432,7 +432,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			// Verify content position has changed (overpan occurred)
 			var currentVerticalOffset = setup.TransformToVisual(presenter).TransformPoint(default).Y;
-			Assert.IsTrue(currentVerticalOffset < 0, "content position should have changed due to overpan gesture");
+			Assert.IsLessThan(0, currentVerticalOffset, "content position should have changed due to overpan gesture");
 
 			// At this point, touch is still held and we should be in InteractionTrackerInteractingState & in Pending state
 			Assert.IsInstanceOfType<InteractionTrackerInteractingState>(it.State, "InteractionTracker should be in InteractingState while touch is held");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -645,7 +645,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 
-			Assert.AreEqual(0, list.SelectedItems.Count);
+			Assert.IsEmpty(list.SelectedItems);
 		}
 
 		[TestMethod]
@@ -1407,7 +1407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var page = new ListViewCollectionViewSourcePage();
 
-			Assert.AreEqual(0, page.SubjectListView.Items.Count);
+			Assert.IsEmpty(page.SubjectListView.Items);
 
 			page.CVS.Source = new[] { "One", "Two", "Three" };
 
@@ -1418,7 +1418,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 #if WINAPPSDK // TODO: subscribe to changes to Source property
-			Assert.AreEqual(3, page.SubjectListView.Items.Count);
+			Assert.HasCount(3, page.SubjectListView.Items);
 #endif
 			ListViewItem lvi = null;
 			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
@@ -3199,7 +3199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Items.RemoveAt(0);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, SUT.Items.Count);
+			Assert.HasCount(1, SUT.Items);
 			Assert.AreEqual(0, SUT.SelectedIndex);
 			Assert.AreEqual("Item 2", ((ListViewItem)SUT.Items[0]).Content);
 		}
@@ -3608,7 +3608,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForLoaded(SUT);
 
-				Assert.AreEqual(1, SUT.Items.Count);
+				Assert.HasCount(1, SUT.Items);
 
 				var container = SUT.ContainerFromIndex(0) as ContentControl;
 
@@ -3620,7 +3620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// up after being removed.
 				Assert.IsNull(container.Content);
 
-				Assert.AreEqual(0, SUT.Items.Count);
+				Assert.IsEmpty(SUT.Items);
 
 				await WindowHelper.WaitForIdle();
 
@@ -3672,7 +3672,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
 
-				Assert.AreEqual(5, SUT.Items.Count);
+				Assert.HasCount(5, SUT.Items);
 			}
 		}
 
@@ -3818,11 +3818,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			var second = GetCurrenState();
 
-			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
-			Assert.IsTrue(initial.Count + BatchSize <= first.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={first.Count}");
-			Assert.IsTrue(initial.LastMaterialized < first.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index1={first.LastMaterialized}");
-			Assert.IsTrue(first.Count + BatchSize <= second.Count, $"Should have even more batch(es) after second scroll: count1={first.Count}, count2={second.Count}");
-			Assert.IsTrue(first.LastMaterialized < second.LastMaterialized, $"No extra item materialized after second scroll: index1={first.LastMaterialized}, index2={second.LastMaterialized}");
+			Assert.IsGreaterThan(0, initial.Count / BatchSize, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsLessThanOrEqualTo(first.Count, initial.Count + BatchSize, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={first.Count}");
+			Assert.IsLessThan(first.LastMaterialized, initial.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index1={first.LastMaterialized}");
+			Assert.IsLessThanOrEqualTo(second.Count, first.Count + BatchSize, $"Should have even more batch(es) after second scroll: count1={first.Count}, count2={second.Count}");
+			Assert.IsLessThan(second.LastMaterialized, first.LastMaterialized, $"No extra item materialized after second scroll: index1={first.LastMaterialized}, index2={second.LastMaterialized}");
 
 			(int Count, int LastMaterialized) GetCurrenState() =>
 			(
@@ -3874,9 +3874,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var secondScroll = GetCurrenState();
 
-			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
-			Assert.IsTrue(initial.Count + BatchSize <= firstScroll.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
-			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
+			Assert.IsGreaterThan(0, initial.Count / BatchSize, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsLessThanOrEqualTo(firstScroll.Count, initial.Count + BatchSize, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
+			Assert.IsLessThan(firstScroll.LastMaterialized, initial.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
 			Assert.AreEqual(firstScroll.Count, secondScroll.Count, $"Should still have same number of batches after second scroll: count1={firstScroll.Count}, count2={secondScroll.Count}");
 			Assert.AreEqual(firstScroll.Count - 1, secondScroll.LastMaterialized, $"Should reach end of list from first scroll: count1={firstScroll.LastMaterialized}, index2={secondScroll.LastMaterialized}");
 
@@ -4155,7 +4155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.SelectedIndex = 1;
 			Assert.AreEqual(1, sut.SelectedIndex);
 
-			Assert.AreEqual(3, list.Count);
+			Assert.HasCount(3, list);
 			var removed1 = list[0].RemovedItems;
 			var removed2 = list[1].RemovedItems;
 			var removed3 = list[2].RemovedItems;
@@ -4170,7 +4170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			else
 			{
-				Assert.AreEqual(0, removed1.Count);
+				Assert.IsEmpty(removed1);
 			}
 
 			Assert.AreEqual("String 1", (string)added1.Single());
@@ -4212,7 +4212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, sut.SelectedIndex);
 			Assert.AreSame(obj1, sut.SelectedItem);
 
-			Assert.AreEqual(2, list.Count);
+			Assert.HasCount(2, list);
 			var removed1 = list[0].RemovedItems;
 			var removed2 = list[1].RemovedItems;
 
@@ -4225,7 +4225,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			else
 			{
-				Assert.AreEqual(0, removed1.Count);
+				Assert.IsEmpty(removed1);
 			}
 			Assert.AreSame(obj2, added1.Single());
 
@@ -4345,7 +4345,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Where(x => x.Name == "HeaderTemplateRoot")
 				.ToArray();
 
-			Assert.AreEqual(1, roots.Length);
+			Assert.HasCount(1, roots);
 			Assert.AreEqual((string)SUT.Header, roots[0].Text);
 		}
 
@@ -4921,7 +4921,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var tree = sut.TreeGraph();
 #if !__ANDROID__
 			var panel = sut.FindFirstDescendant<ItemsStackPanel>() ?? throw new Exception("Failed to find the ListView's Panel (ItemsStackPanel)");
-			Assert.AreEqual(3, panel.Children.Count);
+			Assert.HasCount(3, panel.Children);
 #else
 			var count = sut.MaterializedContainers.Count();
 			Assert.AreEqual(3, count);
