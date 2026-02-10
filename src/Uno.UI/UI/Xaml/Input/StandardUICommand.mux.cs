@@ -12,6 +12,23 @@ namespace Microsoft.UI.Xaml.Input;
 
 partial class StandardUICommand : IDependencyObjectInternal
 {
+	/// <summary>
+	/// Gets the appropriate modifier key for standard commands based on the platform.
+	/// On macOS and iOS, Command key (VirtualKeyModifiers.Windows) is used.
+	/// On other platforms, Control key is used.
+	/// </summary>
+	private static VirtualKeyModifiers PlatformCommandModifier
+	{
+		get
+		{
+#if __IOS__ || __MACCATALYST__ || __MACOS__
+			return VirtualKeyModifiers.Windows; // Command key on Apple platforms
+#else
+			return VirtualKeyModifiers.Control;
+#endif
+		}
+	}
+
 	private void PrepareState()
 	{
 		//base.PrepareState();
@@ -70,7 +87,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_CUT,
 					Symbol.Cut,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_CUT,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_CUT);
 				break;
 
@@ -79,7 +96,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_COPY,
 					Symbol.Copy,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_COPY,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_COPY);
 				break;
 
@@ -88,7 +105,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_PASTE,
 					Symbol.Paste,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_PASTE,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_PASTE);
 				break;
 
@@ -97,7 +114,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_SELECTALL,
 					Symbol.SelectAll,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_SELECTALL,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_SELECTALL);
 				break;
 
@@ -124,7 +141,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_SAVE,
 					Symbol.Save,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_SAVE,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_SAVE);
 				break;
 
@@ -133,7 +150,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_OPEN,
 					Symbol.OpenFile,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_OPEN,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_OPEN);
 				break;
 
@@ -142,7 +159,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_CLOSE,
 					Symbol.Cancel,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_CLOSE,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_CLOSE);
 				break;
 
@@ -196,7 +213,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_UNDO,
 					Symbol.Undo,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_UNDO,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_UNDO);
 				break;
 
@@ -205,7 +222,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 					TEXT_COMMAND_LABEL_REDO,
 					Symbol.Redo,
 					TEXT_COMMAND_KEYBOARDACCELERATORKEY_REDO,
-					VirtualKeyModifiers.Control,
+					PlatformCommandModifier,
 					TEXT_COMMAND_DESCRIPTION_REDO);
 				break;
 
