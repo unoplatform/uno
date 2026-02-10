@@ -64,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private bool m_shouldTakeFocus = true;
 
-		[NotImplemented]
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
 		internal FlyoutPlacementMode EffectivePlacement => m_hasPlacementOverride ? m_placementOverride : Placement;
@@ -311,6 +310,26 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(FlyoutBase),
 				new FrameworkPropertyMetadata(FlyoutShowMode.Standard));
 
+		/// <summary>
+		/// Gets a value that indicates whether the flyout should show commands
+		/// as primary (toolbar) based on the input device used to open it.
+		/// </summary>
+		public bool InputDevicePrefersPrimaryCommands
+		{
+			get => (bool)GetValue(InputDevicePrefersPrimaryCommandsProperty);
+			private set => SetValue(InputDevicePrefersPrimaryCommandsProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the InputDevicePrefersPrimaryCommands dependency property.
+		/// </summary>
+		public static DependencyProperty InputDevicePrefersPrimaryCommandsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(InputDevicePrefersPrimaryCommands),
+				typeof(bool),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(false));
+
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
 			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 
@@ -419,6 +438,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+
+			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
+			var contentRoot = VisualTree.GetContentRootForElement(placementTarget);
+			if (contentRoot is not null)
+			{
+				m_inputDeviceTypeUsedToOpen = contentRoot.InputManager.LastInputDeviceType;
+			}
+
 			XamlRoot = placementTarget?.XamlRoot;
 			_popup.XamlRoot = XamlRoot;
 			_popup.PlacementTarget = placementTarget;
@@ -551,6 +578,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpening()
 		{
+			// Set InputDevicePrefersPrimaryCommands based on input device type (mirrors WinUI OnOpening)
+			switch (m_inputDeviceTypeUsedToOpen)
+			{
+				case InputDeviceType.None:
+				case InputDeviceType.Mouse:
+				case InputDeviceType.Keyboard:
+				case InputDeviceType.GamepadOrRemote:
+					InputDevicePrefersPrimaryCommands = false;
+					break;
+				case InputDeviceType.Touch:
+				case InputDeviceType.Pen:
+					InputDevicePrefersPrimaryCommands = true;
+					break;
+			}
+
 			m_openingCanceled = false;
 			Opening?.Invoke(this, EventArgs.Empty);
 		}
@@ -565,6 +607,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private protected virtual void OnClosed()
 		{
 			m_isTargetPositionSet = false;
+			InputDevicePrefersPrimaryCommands = false;
 		}
 
 		private protected virtual void OnOpened() { }
