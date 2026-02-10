@@ -220,6 +220,7 @@ then
 	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP
 	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT
 	export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-`date +"%Y%m%d%H%M%S"`.xml
+		export SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE=/tmp/RuntimeCurrentTest-$UITEST_RUNTIME_TEST_GROUP.txt
 
 	# $UNO_TESTS_RUNTIMETESTS_FAILED_LIST file exists
 	if [ -f "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST" ]; then
@@ -275,8 +276,21 @@ then
 
 		# Copy the results to the build directory
 		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
+		
+		RUNTIME_CURRENT_TEST_LOCAL="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-ios-$UITEST_RUNTIME_TEST_GROUP.txt"
+		if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" ]; then
+			cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" "$RUNTIME_CURRENT_TEST_LOCAL"
+			echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+		else
+			echo "No runtime test heartbeat file found."
+		fi
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
+		if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" ]; then
+			echo "Last runtime test heartbeat: $(cat "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
+		else
+			echo "No runtime test heartbeat file found."
+		fi
 	fi
 
 else

@@ -18,6 +18,9 @@ parameters:
     - 2
     - 3
     - 4
+    - 5
+    - 6
+    - 7
 
 jobs:
 
@@ -112,6 +115,9 @@ jobs:
           ALLOW_RERUN: true
           UITEST_TEST_TIMEOUT: '270s'
 
+      # Runtime tests can re-run when a failure/timeout is detected; the script
+      # writes a marker to skip reruns after success.
+      # Use 8 groups to reduce per-job runtime and avoid 45-minute job timeouts.
       ${{ each testGroup in parameters.runtimeTestsGroups }}:
         'Runtime Tests ${{ testGroup }}':
           ANDROID_SIMULATOR_APILEVEL: 28
@@ -119,11 +125,11 @@ jobs:
           UITEST_TEST_MODE_NAME: RuntimeTests
           UNO_UITEST_BUCKET_ID: RuntimeTests
           UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
-          UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+          UITEST_RUNTIME_TEST_GROUP_COUNT: 8
           SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
           TARGETPLATFORM_NAME: net9
           FAILBUILD_ON_FAILURE: true
-          ALLOW_RERUN: false
+          ALLOW_RERUN: true
           UITEST_TEST_TIMEOUT: '2600s'
 
       'Snapshot Tests':

@@ -30,6 +30,7 @@ sleep 10
 
 export RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
 export RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
+export RUNTIME_CURRENT_TEST_FILE="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-wasm-$UITEST_RUNTIME_TEST_GROUP.txt"
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 
@@ -50,10 +51,14 @@ fi
 rawurlencode "$RESULTS_FILE"
 RESULTS_FILE_ENCODED=$ENCODED_RESULT
 
+rawurlencode "$RUNTIME_CURRENT_TEST_FILE"
+RUNTIME_CURRENT_TEST_FILE_ENCODED=$ENCODED_RESULT
+
 rawurlencode "$UITEST_RUNTIME_TESTS_FILTER"
 UITEST_RUNTIME_TESTS_FILTER_ENCODED=$ENCODED_RESULT
 
 RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${RESULTS_FILE_ENCODED}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}&--runtime-test-filter=${UITEST_RUNTIME_TESTS_FILTER_ENCODED}"
+RUNTIME_TESTS_URL+="&--runtime-current-test-file=${RUNTIME_CURRENT_TEST_FILE_ENCODED}"
 
 TRY_COUNT=0
 
@@ -95,6 +100,12 @@ fi
 while ! test -f "$RESULTS_FILE"; do
     sleep 10
 done
+
+if test -f "$RUNTIME_CURRENT_TEST_FILE"; then
+    echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_FILE")"
+else
+    echo "No runtime test heartbeat file found."
+fi
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool

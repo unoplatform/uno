@@ -13,6 +13,8 @@ export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-resul
 
 export LOGS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/android-skia-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 mkdir -p $LOGS_PATH
+# Always create the failed-results folder so artifact publishing does not fail on success.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
@@ -42,6 +44,16 @@ fi
 
 AVD_NAME=xamarin_android_emulator
 AVD_CONFIG_FILE=~/.android/avd/$AVD_NAME.avd/config.ini
+
+is_emulator_booted() {
+	if $ANDROID_HOME/platform-tools/adb devices | grep -q "emulator"; then
+		local boot_completed
+		boot_completed=$($ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)
+		[ "$boot_completed" = "1" ]
+	else
+		return 1
+	fi
+}
 
 if [[ ! -f $AVD_CONFIG_FILE ]];
 then
@@ -105,11 +117,16 @@ then
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
 
 else
-	# Restart the emulator to avoid running first-time tasks
-	$ANDROID_HOME/platform-tools/adb reboot
+	if is_emulator_booted; then
+		# Reuse the already-booted emulator during reruns to save startup time.
+		echo "Emulator already booted; skipping reboot."
+	else
+		# Restart the emulator to avoid running first-time tasks
+		$ANDROID_HOME/platform-tools/adb reboot
 
-	# Wait for the emulator to finish booting
-	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
+		# Wait for the emulator to finish booting
+		source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
+	fi
 fi
 
 # list active devices
@@ -124,6 +141,7 @@ UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
 UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH="$BUILD_SOURCESDIRECTORY/build/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/files"
 UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH="$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
+UITEST_RUNTIME_CURRENT_TEST_DEVICE_PATH="$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH/RuntimeCurrentTest-$UITEST_RUNTIME_TEST_GROUP.txt"
 
 # grant the storage permission to the app to write the test results and read the environment file
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
@@ -136,6 +154,7 @@ $ANDROID_HOME/platform-tools/adb shell am start \
   -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" \
   -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" \
   -e UITEST_RUNTIME_TESTS_FILTER "$UITEST_RUNTIME_TESTS_FILTER" \
+	-e UITEST_RUNTIME_CURRENT_TEST_FILE "$UITEST_RUNTIME_CURRENT_TEST_DEVICE_PATH"
 
 # Set the timeout in seconds
 UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
@@ -157,13 +176,27 @@ while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUT
     fi
 done
 
+if ! $ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" > /dev/null; then
+	if [ $SECONDS -ge $END_TIME ]; then
+		# Capture a timeout marker so CI artifacts explain why the run ended early.
+		echo "Runtime tests timed out after ${TIMEOUT}s (group=$UITEST_RUNTIME_TEST_GROUP)." > $BUILD_SOURCESDIRECTORY/build/uitests-failure-results/runtime-tests-timeout-skia-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt
+	else
+		echo "Runtime tests ended without results (app exited early)." > $BUILD_SOURCESDIRECTORY/build/uitests-failure-results/runtime-tests-no-results-skia-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt
+	fi
+fi
+
 $ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME || echo "ERROR: could not adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH"
+
+RUNTIME_CURRENT_TEST_LOCAL="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-skia-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt"
+$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_CURRENT_TEST_DEVICE_PATH $RUNTIME_CURRENT_TEST_LOCAL || true
+if [ -f "$RUNTIME_CURRENT_TEST_LOCAL" ]; then
+	echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+else
+	echo "No runtime test heartbeat file found."
+fi
 
 ## Dump the emulator's system log
 $ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
-
-# create $BUILD_SOURCESDIRECTORY/build/uitests-failure-results before exiting, so that `PublishBuildArtifacts@1` doesn't error out just because the tests crashed.
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME" ]; then
 	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME does not exist (did nunit crash ?)"

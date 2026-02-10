@@ -70,11 +70,18 @@ partial class App
 			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER", runtimeTestFilter);
 		}
 
+		if (argsPairs.TryGetValue("--runtime-current-test-file", out var runtimeCurrentTestFile))
+		{
+			// CI uses this file to report the last started test when a shard hangs.
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_CURRENT_TEST_FILE", runtimeCurrentTestFile);
+		}
+
 		Console.WriteLine(
 			$"Automated runtime tests output file: {runtimeTestResultFilePath} (" +
 			$"UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, " +
 			$"UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")}, " +
-			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}" +
+			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}, " +
+			$"UITEST_RUNTIME_CURRENT_TEST_FILE: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_CURRENT_TEST_FILE")}" +
 			$")");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
