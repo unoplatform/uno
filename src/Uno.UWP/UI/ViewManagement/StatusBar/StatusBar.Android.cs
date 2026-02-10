@@ -30,8 +30,10 @@ namespace Windows.UI.ViewManagement
 			if (_insetsListener is { })
 			{
 				_insetsListener = null;
-				SetStatusBarBackgroundColor(_backgroundColor);
 			}
+
+			// using background as a proxy, to trigger an insets update (InsetListener::OnApplyWindowInsets)
+			SetStatusBarBackgroundColor(_backgroundColor);
 		}
 
 		private void SetStatusBarForegroundType(StatusBarForegroundType? foregroundType)
