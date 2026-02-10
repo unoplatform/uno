@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public ItemsControl? GetTemplatedItemsControl()
 		{
-			// Uno's GroupItem doesn't currently expose this helper; callers that need the templated items
+			// TODO: Uno's GroupItem doesn't currently expose this helper; callers that need the templated items
 			// control should fall back to visual-tree based lookup. Returning null forces callers to
 			// use the fallback path which is safe for compilation and runtime.
 			return null;

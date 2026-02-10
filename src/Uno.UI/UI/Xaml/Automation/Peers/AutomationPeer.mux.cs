@@ -290,6 +290,8 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	private bool IsOffscreenImpl(bool ignoreClippingOnScrollContentPresenters)
 	{
+		//TODO (DOTI): ActualWidth/Heigh doesn't seem to be supported on some platforms
+#if __SKIA__
 		// Get the owner element if this is a FrameworkElementAutomationPeer
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is UIElement owner)
 		{
@@ -328,6 +330,7 @@ partial class AutomationPeer
 
 			return false;
 		}
+#endif
 
 		return false;
 	}
@@ -343,6 +346,8 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	internal string? GetAutomationIdHelper()
 	{
+		//TODO (DOTI): ActualWidth/Heigh doesn't seem to be supported on some platforms
+#if __SKIA__
 		// Get the owner element if this is a FrameworkElementAutomationPeer
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is FrameworkElement owner)
 		{
@@ -354,11 +359,12 @@ partial class AutomationPeer
 			}
 
 			// Fall back to the element's Name property
-			if (!string.IsNullOrEmpty(owner.Name))
+			if (!string.IsNullOrEmpty(owner.Name.ToString()))
 			{
-				return owner.Name;
+				return owner.Name.ToString();
 			}
 		}
+#endif
 
 		return null;
 	}
