@@ -297,8 +297,8 @@ public partial class TextBox
 		}
 		else
 		{
-			_selectionStartThumbfulCaret.Hide();
-			_selectionEndThumbfulCaret.Hide();
+			_selectionStartThumbfulCaret?.Hide();
+			_selectionEndThumbfulCaret?.Hide();
 		}
 	}
 
