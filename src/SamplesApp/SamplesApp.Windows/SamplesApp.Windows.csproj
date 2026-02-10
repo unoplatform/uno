@@ -37,7 +37,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
