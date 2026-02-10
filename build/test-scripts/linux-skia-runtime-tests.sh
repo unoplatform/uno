@@ -25,7 +25,11 @@ cd $SamplesAppArtifactPath
 xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
 
 if [ -f "$UITEST_RUNTIME_CURRENT_TEST_FILE" ]; then
-	echo "Last runtime test heartbeat: $(cat "$UITEST_RUNTIME_CURRENT_TEST_FILE")"
+	if command -v iconv >/dev/null 2>&1; then
+		echo "Last runtime test heartbeat: $(iconv -f utf-16 -t utf-8 "$UITEST_RUNTIME_CURRENT_TEST_FILE")"
+	else
+		echo "Last runtime test heartbeat: $(cat "$UITEST_RUNTIME_CURRENT_TEST_FILE")"
+	fi
 else
 	echo "No runtime test heartbeat file found."
 fi

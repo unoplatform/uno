@@ -280,14 +280,22 @@ then
 		RUNTIME_CURRENT_TEST_LOCAL="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-ios-$UITEST_RUNTIME_TEST_GROUP.txt"
 		if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" ]; then
 			cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" "$RUNTIME_CURRENT_TEST_LOCAL"
-			echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+			if command -v iconv >/dev/null 2>&1; then
+				echo "Last runtime test heartbeat: $(iconv -f utf-16 -t utf-8 "$RUNTIME_CURRENT_TEST_LOCAL")"
+			else
+				echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+			fi
 		else
 			echo "No runtime test heartbeat file found."
 		fi
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
 		if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" ]; then
-			echo "Last runtime test heartbeat: $(cat "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
+			if command -v iconv >/dev/null 2>&1; then
+				echo "Last runtime test heartbeat: $(iconv -f utf-16 -t utf-8 "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
+			else
+				echo "Last runtime test heartbeat: $(cat "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
+			fi
 		else
 			echo "No runtime test heartbeat file found."
 		fi

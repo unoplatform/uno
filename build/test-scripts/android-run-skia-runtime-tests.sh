@@ -190,7 +190,11 @@ $ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PA
 RUNTIME_CURRENT_TEST_LOCAL="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-skia-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt"
 $ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_CURRENT_TEST_DEVICE_PATH $RUNTIME_CURRENT_TEST_LOCAL || true
 if [ -f "$RUNTIME_CURRENT_TEST_LOCAL" ]; then
-	echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+	if command -v iconv >/dev/null 2>&1; then
+		echo "Last runtime test heartbeat: $(iconv -f utf-16 -t utf-8 "$RUNTIME_CURRENT_TEST_LOCAL")"
+	else
+		echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+	fi
 else
 	echo "No runtime test heartbeat file found."
 fi
